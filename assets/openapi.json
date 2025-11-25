@@ -2305,8 +2305,15 @@
                         "type": "string"
                     },
                     "communication_disabled_until": {
-                        "type": "string",
-                        "format": "date-time"
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -7771,6 +7778,9 @@
                                     "forEachAsync": {
                                         "type": "boolean"
                                     },
+                                    "filterAsync": {
+                                        "type": "boolean"
+                                    },
                                     "remove": {
                                         "type": "boolean"
                                     },
@@ -10892,6 +10902,10 @@
                     },
                     "bio": {
                         "type": "string"
+                    },
+                    "communication_disabled_until": {
+                        "type": "string",
+                        "nullable": true
                     }
                 }
             },
@@ -14152,6 +14166,40 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/mentions": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageListResponse"
                                 }
                             }
                         }
