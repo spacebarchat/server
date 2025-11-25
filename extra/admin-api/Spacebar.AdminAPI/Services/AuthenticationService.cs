@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
-using ArcaneLibs.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Spacebar.Db.Contexts;
 using Spacebar.Db.Models;
