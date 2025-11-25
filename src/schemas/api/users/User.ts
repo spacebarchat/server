@@ -155,30 +155,51 @@ export interface UserPrivate extends Pick<UserEntityPleaseRewriteThankYou, Priva
 	locale: string;
 }
 
-export const CUSTOM_USER_FLAG_OFFSET = BigInt(1) << BigInt(32);
-
 // This causes a failure in openapi.js...?
 export class UserFlags extends BitField {
 	static FLAGS = {
-		DISCORD_EMPLOYEE: BigInt(1) << BigInt(0),
-		PARTNERED_SERVER_OWNER: BigInt(1) << BigInt(1),
-		HYPESQUAD_EVENTS: BigInt(1) << BigInt(2),
-		BUGHUNTER_LEVEL_1: BigInt(1) << BigInt(3),
-		MFA_SMS: BigInt(1) << BigInt(4),
-		PREMIUM_PROMO_DISMISSED: BigInt(1) << BigInt(5),
-		HOUSE_BRAVERY: BigInt(1) << BigInt(6),
-		HOUSE_BRILLIANCE: BigInt(1) << BigInt(7),
-		HOUSE_BALANCE: BigInt(1) << BigInt(8),
-		EARLY_SUPPORTER: BigInt(1) << BigInt(9),
-		TEAM_USER: BigInt(1) << BigInt(10),
-		TRUST_AND_SAFETY: BigInt(1) << BigInt(11),
-		SYSTEM: BigInt(1) << BigInt(12),
-		HAS_UNREAD_URGENT_MESSAGES: BigInt(1) << BigInt(13),
-		BUGHUNTER_LEVEL_2: BigInt(1) << BigInt(14),
-		UNDERAGE_DELETED: BigInt(1) << BigInt(15),
-		VERIFIED_BOT: BigInt(1) << BigInt(16),
-		EARLY_VERIFIED_BOT_DEVELOPER: BigInt(1) << BigInt(17),
-		CERTIFIED_MODERATOR: BigInt(1) << BigInt(18),
-		BOT_HTTP_INTERACTIONS: BigInt(1) << BigInt(19),
+		DISCORD_EMPLOYEE: 1n << 0n,
+		PARTNERED_SERVER_OWNER: 1n << 1n,
+		HYPESQUAD_EVENTS: 1n << 2n,
+		BUGHUNTER_LEVEL_1: 1n << 3n,
+		MFA_SMS: 1n << 4n,
+		PREMIUM_PROMO_DISMISSED: 1n << 5n,
+		HOUSE_BRAVERY: 1n << 6n,
+		HOUSE_BRILLIANCE: 1n << 7n,
+		HOUSE_BALANCE: 1n << 8n,
+		EARLY_SUPPORTER: 1n << 9n,
+		TEAM_USER: 1n << 10n,
+		TRUST_AND_SAFETY: 1n << 11n,
+		SYSTEM: 1n << 12n,
+		HAS_UNREAD_URGENT_MESSAGES: 1n << 13n,
+		BUGHUNTER_LEVEL_2: 1n << 14n,
+		UNDERAGE_DELETED: 1n << 15n,
+		VERIFIED_BOT: 1n << 16n,
+		EARLY_VERIFIED_BOT_DEVELOPER: 1n << 17n,
+		CERTIFIED_MODERATOR: 1n << 18n,
+		BOT_HTTP_INTERACTIONS: 1n << 19n,
+		SPAMMER: 1n << 20n,
+		// @deprecated
+		DISABLE_PREMIUM: 1n << 21n,
+		ACTIVE_DEVELOPER: 1n << 22n,
+		PROVISIONAL_ACCOUNT: 1n << 23n,
+		// Where did 24-32 go???
+		HIGH_GLOBAL_RATE_LIMIT: 1n << 33n,
+		DELETED: 1n << 34n,
+		DISABLED_SUSPICIOUS_ACCOUNT: 1n << 35n,
+		SELF_DELETED: 1n << 36n,
+		PREMIUM_DISCIRMINATOR: 1n << 37n,
+		USED_DESKTOP_CLIENT: 1n << 38n,
+		USED_WEB_CLIENT: 1n << 39n,
+		USED_MOBILE_CLIENT: 1n << 40n,
+		DISABLED: 1n << 41n,
+		// 42 is unknown...
+		HAS_SESSION_STARTED: 1n << 43n,
+		QUARANTINED: 1n << 44n,
+		// 45 and 46 are unknown...
+		PREMIUM_ELEGIBLE_FOR_UNIQUE_USERNAME: 1n << 47n,
+		// 48 and 49 are unknown...
+		COLLABORATOR: 1n << 50n,
+		RESTRICTED_COLLABORATOR: 1n << 51n,
 	};
 }
