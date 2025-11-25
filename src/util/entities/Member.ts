@@ -134,7 +134,7 @@ export class Member extends BaseClassWithoutId {
 	pronouns?: string;
 
 	@Column({ nullable: true })
-	communication_disabled_until: Date;
+	communication_disabled_until: Date | null;
 
 	// TODO: add this when we have proper read receipts
 	// @Column({ type: "simple-json" })

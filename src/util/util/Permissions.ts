@@ -2,10 +2,10 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-import { Channel, Guild, Member, Role } from "../entities";
+import { Channel, Guild, Member, Role, User } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, UserFlags } from "@spacebar/schemas";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -111,7 +111,7 @@ export class Permissions extends BitField {
 
 	overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
 		if (!overwrites) return this;
-		if (!this.cache) throw new Error("permission chache not available");
+		if (!this.cache) throw new Error("permission cache not available");
 		overwrites = overwrites.filter((x) => {
 			if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id)) return true;
 			if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) return true;
@@ -147,8 +147,8 @@ export class Permissions extends BitField {
 		guild,
 		channel,
 	}: {
-		user: { id: string; roles: string[] };
-		guild: { roles: Role[] };
+		user: { id: string; roles: string[]; communication_disabled_until: Date | null; flags: number };
+		guild: { id: string; owner_id: string; roles: Role[] };
 		channel?: {
 			overwrites?: ChannelPermissionOverwrite[];
 			recipient_ids?: string[] | null;
@@ -156,6 +156,7 @@ export class Permissions extends BitField {
 		};
 	}) {
 		if (user.id === "0") return new Permissions("ADMINISTRATOR"); // system user id
+		if (guild?.owner_id === user.id) return new Permissions(Permissions.ALL);
 
 		const roles = guild.roles.filter((x) => user.roles.includes(x.id));
 		let permission = Permissions.rolePermission(roles);
@@ -192,10 +193,25 @@ export class Permissions extends BitField {
 			return new Permissions();
 		}
 
+		if (user.communication_disabled_until) {
+			if (user.communication_disabled_until > new Date()) return new Permissions(permission & Permissions.TIMED_OUT_MASK.bitfield);
+			else {
+				user.communication_disabled_until = null;
+				Member.update({ id: user.id, guild_id: guild.id }, { communication_disabled_until: null }).catch(_ => {
+					// ignored
+				});
+			}
+		}
+		if ((BigInt(user.flags) & UserFlags.FLAGS.QUARANTINED) === UserFlags.FLAGS.QUARANTINED) {
+			permission = permission & Permissions.QUARANTINED_MASK.bitfield;
+		}
+
 		return new Permissions(permission);
 	}
 
 	static NONE: Permissions = new Permissions(0);
+	static TIMED_OUT_MASK: Permissions = new Permissions(Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.READ_MESSAGE_HISTORY);
+	static QUARANTINED_MASK: Permissions = new Permissions(Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.READ_MESSAGE_HISTORY | Permissions.FLAGS.CHANGE_NICKNAME);
 	static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0)));
 }
 
@@ -224,6 +240,10 @@ export async function getPermission(
 	let channel: Channel | undefined;
 	let member: Member | undefined;
 	let guild: Guild | undefined;
+	const user = await User.findOneOrFail({
+		where: { id: user_id },
+		select: ["id", "flags"],
+	});
 
 	if (typeof channel_id === "string") {
 		channel = await Channel.findOneOrFail({
@@ -254,6 +274,7 @@ export async function getPermission(
 			// select: [
 			// "id",		// TODO: Bug in typeorm? adding these selects breaks the query.
 			// "roles",
+			// "communication_disabled_until",
 			// ...(opts.member_select || []),
 			// ],
 		});
@@ -267,8 +288,12 @@ export async function getPermission(
 		user: {
 			id: user_id,
 			roles: member?.roles.map((x) => x.id) || [],
+			communication_disabled_until: member?.communication_disabled_until ?? null,
+			flags: user.flags,
 		},
 		guild: {
+			id: guild?.id || "",
+			owner_id: guild?.owner_id || "",
 			roles: member?.roles || [],
 		},
 		channel: {

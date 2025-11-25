@@ -99,26 +99,27 @@ router.get(
 					id: req.user_id,
 				},
 			},
-			relations: ["guild", "roles"],
+			relations: ["guild", "roles", "user"],
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			// prettier-ignore
-			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id"],
+			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "communication_disabled_until", "user.flags"],
 		});
 
 		const guildsWithPermissions = guilds.map((x) => {
-			const perms =
-				x.guild.owner_id === user.id
-					? new Permissions(Permissions.FLAGS.ADMINISTRATOR)
-					: Permissions.finalPermission({
-							user: {
-								id: user.id,
-								roles: x.roles?.map((x) => x.id) || [],
-							},
-							guild: {
-								roles: x?.roles || [],
-							},
-						});
+			const perms = Permissions.finalPermission({
+				user: {
+					id: user.id,
+					roles: x.roles?.map((x) => x.id) || [],
+					communication_disabled_until: x.communication_disabled_until,
+					flags: x.user.flags
+				},
+				guild: {
+					roles: x?.roles || [],
+					id: x.guild.id,
+					owner_id: x.guild.owner_id!, // ownerless guilds...?
+				},
+			});
 
 			return {
 				id: x.guild.id,
