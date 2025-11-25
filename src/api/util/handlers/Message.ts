@@ -76,7 +76,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		console.log(limit, lastMsgTime && +lastMsgTime - (Date.now() - limit * 1000));
 		if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
 			permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
-			if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS")) {
+			//FIXME MANAGE_MESSAGES and MANAGE_CHANNELS will need to be removed once they're gone as checks
+			if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS") && !permission.has("BYPASS_SLOWMODE")) {
 				throw DiscordApiErrors.SLOWMODE_RATE_LIMIT;
 			}
 		}
