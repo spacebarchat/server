@@ -42,6 +42,7 @@ import {
 	handleFile,
 	Permissions,
 	normalizeUrl,
+	DiscordApiErrors,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
@@ -65,6 +66,21 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		relations: ["recipients"],
 	});
 	if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
+
+	let permission: undefined | Permissions;
+	const limit = channel.rate_limit_per_user;
+
+	if (limit) {
+		const lastMsgTime = (await Message.findOne({ where: { channel_id: channel.id, author_id: opts.author_id }, select: { timestamp: true }, order: { timestamp: "DESC" } }))
+			?.timestamp;
+		console.log(limit, lastMsgTime && +lastMsgTime - (Date.now() - limit * 1000));
+		if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
+			permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
+			if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS")) {
+				throw DiscordApiErrors.SLOWMODE_RATE_LIMIT;
+			}
+		}
+	}
 
 	const stickers = opts.sticker_ids ? await Sticker.find({ where: { id: In(opts.sticker_ids) } }) : undefined;
 	// cloud attachments with indexes
@@ -155,7 +171,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		});
 	}
 
-	let permission: undefined | Permissions;
 	if (opts.webhook_id) {
 		message.webhook = await Webhook.findOneOrFail({
 			where: { id: opts.webhook_id },
@@ -201,7 +216,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 			message.author.avatar = message.avatar;
 		}
 	} else {
-		permission = await getPermission(opts.author_id, channel.guild_id, opts.channel_id);
+		permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
 		permission.hasThrow("SEND_MESSAGES");
 		if (permission.cache.member) {
 			message.member = permission.cache.member;
