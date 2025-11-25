@@ -22,6 +22,7 @@ declare global {
 		partition(filter: (elem: T) => boolean): [T[], T[]];
 		single(filter: (elem: T) => boolean): T | null;
 		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
+		filterAsync(callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]>;
 		remove(item: T): void;
 		first(): T | undefined;
 		last(): T | undefined;
@@ -53,6 +54,11 @@ export function arraySingle<T>(array: T[], filter: (elem: T) => boolean): T | nu
 
 export async function arrayForEachAsync<T>(array: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void> {
 	await Promise.all(array.map(callback));
+}
+
+export async function arrayFilterAsync<T>(array: T[], callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]> {
+	const results = await Promise.all(array.map(callback));
+	return array.filter((_, index) => results[index]);
 }
 
 export function arrayRemove<T>(this: T[], item: T): void {
@@ -111,6 +117,10 @@ if (!Array.prototype.single)
 if (!Array.prototype.forEachAsync)
 	Array.prototype.forEachAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>) {
 		return arrayForEachAsync(this, callback);
+	};
+if (!Array.prototype.filterAsync)
+	Array.prototype.filterAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<boolean>) {
+		return arrayFilterAsync(this, callback);
 	};
 if (!Array.prototype.remove)
 	Array.prototype.remove = function <T>(this: T[], item: T) {
