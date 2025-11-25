@@ -197,7 +197,7 @@ export class Permissions extends BitField {
 			if (user.communication_disabled_until > new Date()) return new Permissions(permission & Permissions.TIMED_OUT_MASK.bitfield);
 			else {
 				user.communication_disabled_until = null;
-				Member.update({ id: user.id, guild_id: guild.id }, { communication_disabled_until: null }).catch(_ => {
+				Member.update({ id: user.id, guild_id: guild.id }, { communication_disabled_until: null }).catch((_) => {
 					// ignored
 				});
 			}
@@ -212,6 +212,20 @@ export class Permissions extends BitField {
 	static NONE: Permissions = new Permissions(0);
 	static TIMED_OUT_MASK: Permissions = new Permissions(Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.READ_MESSAGE_HISTORY);
 	static QUARANTINED_MASK: Permissions = new Permissions(Permissions.FLAGS.VIEW_CHANNEL | Permissions.FLAGS.READ_MESSAGE_HISTORY | Permissions.FLAGS.CHANGE_NICKNAME);
+	static DEFAULT_DM_PERMISSIONS: Permissions = new Permissions(
+		Permissions.FLAGS.VIEW_CHANNEL |
+			Permissions.FLAGS.SEND_MESSAGES |
+			Permissions.FLAGS.STREAM |
+			Permissions.FLAGS.ADD_REACTIONS |
+			Permissions.FLAGS.EMBED_LINKS |
+			Permissions.FLAGS.ATTACH_FILES |
+			Permissions.FLAGS.READ_MESSAGE_HISTORY |
+			Permissions.FLAGS.MENTION_EVERYONE |
+			Permissions.FLAGS.USE_EXTERNAL_EMOJIS |
+			Permissions.FLAGS.CONNECT |
+			Permissions.FLAGS.SPEAK |
+			Permissions.FLAGS.MANAGE_CHANNELS,
+	);
 	static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0)));
 }
 

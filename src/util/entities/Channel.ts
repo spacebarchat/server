@@ -429,7 +429,61 @@ export class Channel extends BaseClass {
 	}
 
 	async getUserPermissions(opts: { user_id?: string; user?: User; member?: Member; guild?: Guild }): Promise<Permissions> {
-		return getPermission(opts.user_id || opts.user?.id, opts.guild, this);
+		if(this.isDm()) this.owner_id == (opts.user_id ?? opts.user?.id) ? Permissions.ALL : Permissions.DEFAULT_DM_PERMISSIONS;
+		let guild = opts.guild;
+		if (!guild) {
+			if (this.guild) guild = this.guild;
+			else if (this.guild_id) guild = await Guild.findOneOrFail({ where: { id: this.guild_id } });
+			else {
+				console.error("Channel.getUserPermissions: called without guild for non-DM channel.");
+				return Permissions.NONE;
+			}
+		}
+
+		// check if we can resolve here to short-circuit possibly calling the database unnecessarily
+		// TODO: do we want to have an instance-wide opt out of this behavior? It would just be an extra if statement here
+		const ownerId = guild?.owner?.id ?? guild?.owner_id;
+		if (!!opts.user_id && ownerId === opts.user_id) return Permissions.ALL;
+		if (!!opts.user?.id && ownerId === opts.user?.id) return Permissions.ALL;
+		if (!!opts.member?.id && ownerId === opts.member?.id) return Permissions.ALL;
+
+		let member = opts.member;
+		if (!member) {
+			if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: ["roles"] });
+			else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: ["roles"] });
+			else {
+				console.error("Channel.getUserPermissions: called without user or member for non-DM channel.");
+				return Permissions.NONE;
+			}
+		}
+
+		const roles = (
+			member.roles ||
+			(
+				await Member.findOneOrFail({
+					where: { guild_id: guild.id, index: member.index },
+					relations: ["roles"],
+					select: {
+						roles: {
+							id: true,
+							permissions: true,
+							position: true,
+						},
+					},
+					loadEagerRelations: false
+				})
+			).roles
+		).sort((a, b) => a.position - b.position); // ascending by position
+
+		return Permissions.finalPermission({
+			user: {
+				...member,
+				roles: roles.map((r) => r.id),
+				flags: member.user?.flags ?? (await User.findOneOrFail({ where: { id: member.id }, select: { flags: true } })).flags,
+			},
+			guild: { id: guild.id, owner_id: guild.owner_id!, roles }, // We don't care about including *all* guild roles, as not all of them are relevant...
+			channel: this,
+		});
 	}
 
 	// TODO: should we throw for missing args?
