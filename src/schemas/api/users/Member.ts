@@ -64,7 +64,12 @@ export type PublicMemberKeys =
 	| "deaf"
 	| "mute"
 	| "premium_since"
-	| "avatar";
+	| "avatar"
+	| "banner"
+	| "bio"
+	| "theme_colors"
+	| "pronouns"
+	| "communication_disabled_until";
 
 export const PublicMemberProjection: PublicMemberKeys[] = [
 	"id",
@@ -77,6 +82,11 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
 	"mute",
 	"premium_since",
 	"avatar",
+	"banner",
+	"bio",
+	"theme_colors",
+	"pronouns",
+	"communication_disabled_until",
 ];
 
 export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
