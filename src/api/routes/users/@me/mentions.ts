@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch } from "@spacebar/util";
+import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch, Attachment } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 
@@ -182,14 +182,20 @@ router.get(
 					"referenced_message.attachments",
 				],
 			})
-		).map((m) =>
-			m.withSignedAttachments(
-				new NewUrlUserSignatureData({
-					ip: req.ip,
-					userAgent: req.headers["user-agent"] as string,
-				}),
-			).toJSON(),
-		);
+		).map((m) => {
+			return {
+				...m.toJSON(),
+				attachments: m.attachments?.map((attachment: Attachment) =>
+					Attachment.prototype.signUrls.call(
+						attachment,
+						new NewUrlUserSignatureData({
+							ip: req.ip,
+							userAgent: req.headers["user-agent"] as string,
+						}),
+					),
+				),
+			};
+		});
 
 		console.log(`[Inbox/mentions] User ${user.id} fetched full message data for ${finalMessages.length} messages in ${sw.elapsed().totalMilliseconds}ms`);
 
