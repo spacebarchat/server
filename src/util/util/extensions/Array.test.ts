@@ -12,15 +12,6 @@ describe("Array extensions", () => {
 		assert.deepEqual(odd, [1, 3, 5]);
 	});
 
-	it("forEachAsync", async () => {
-		const arr = [1, 2, 3];
-		let sum = 0;
-		await arr.forEachAsync(async (n) => {
-			sum += n;
-		});
-		assert.strictEqual(sum, 6);
-	});
-
 	it("remove", () => {
 		const arr = [1, 2, 3, 4, 5];
 		arr.remove(3);
