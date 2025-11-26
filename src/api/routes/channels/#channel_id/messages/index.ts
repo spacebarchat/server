@@ -41,6 +41,7 @@ import {
 	Snowflake,
 	uploadFile,
 	User,
+	stringGlobToRegexp,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -453,8 +454,8 @@ router.post(
 
 						if (rule.trigger_type == AutomodTriggerTypes.CUSTOM_WORDS) {
 							const triggerMeta = rule.trigger_metadata as AutomodCustomWordsRule;
-							const regexes = triggerMeta.regex_patterns.map((x) => new RegExp(x, "i")).concat(triggerMeta.keyword_filter.map((k) => k.globToRegexp("i")));
-							const allowedRegexes = triggerMeta.allow_list.map((k) => k.globToRegexp("i"));
+							const regexes = triggerMeta.regex_patterns.map((x) => new RegExp(x, "i")).concat(triggerMeta.keyword_filter.map((k) => stringGlobToRegexp(k, "i")));
+							const allowedRegexes = triggerMeta.allow_list.map((k) => stringGlobToRegexp(k, "i"));
 
 							const matches = regexes
 								.map((r) => message.content!.match(r))
