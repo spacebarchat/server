@@ -51,14 +51,6 @@ export function arrayRemove<T>(this: T[], item: T): void {
 	}
 }
 
-export function arrayFirst<T>(this: T[]): T | undefined {
-	return this[0];
-}
-
-export function arrayLast<T>(this: T[]): T | undefined {
-	return this[this.length - 1];
-}
-
 export function arrayDistinct<T>(this: T[]): T[] {
 	return Array.from(new Set(this));
 }
