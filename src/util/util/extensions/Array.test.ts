@@ -5,18 +5,6 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 describe("Array extensions", () => {
-	it("containsAll", () => {
-		const arr = [1, 2, 3, 4, 5];
-		assert(arr.containsAll([1, 2]));
-		assert(!arr.containsAll([1, 6]));
-		assert(arr.containsAll([]));
-		assert([].containsAll([]));
-
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
-		assert(![].containsAll([1]));
-	});
-
 	it("partition", () => {
 		const arr = [1, 2, 3, 4, 5];
 		const [even, odd] = arr.partition((n) => n % 2 === 0);

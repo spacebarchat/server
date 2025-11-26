@@ -280,7 +280,7 @@ export class Channel extends BaseClass {
 			if (!ur.channel.recipients) continue;
 			const re = ur.channel.recipients.map((r) => r.user_id);
 			if (re.length === channelRecipients.length) {
-				if (re.containsAll(channelRecipients)) {
+				if (channelRecipients.every((_) => re.includes(_))) {
 					if (channel == null) {
 						channel = ur.channel;
 						await ur.assign({ closed: false }).save();
@@ -429,7 +429,7 @@ export class Channel extends BaseClass {
 	}
 
 	async getUserPermissions(opts: { user_id?: string; user?: User; member?: Member; guild?: Guild }): Promise<Permissions> {
-		if(this.isDm()) this.owner_id == (opts.user_id ?? opts.user?.id) ? Permissions.ALL : Permissions.DEFAULT_DM_PERMISSIONS;
+		if (this.isDm()) return this.owner_id == (opts.user_id ?? opts.user?.id) ? Permissions.ALL : Permissions.DEFAULT_DM_PERMISSIONS;
 		let guild = opts.guild;
 		if (!guild) {
 			if (this.guild) guild = this.guild;
@@ -470,7 +470,7 @@ export class Channel extends BaseClass {
 							position: true,
 						},
 					},
-					loadEagerRelations: false
+					loadEagerRelations: false,
 				})
 			).roles
 		).sort((a, b) => a.position - b.position); // ascending by position

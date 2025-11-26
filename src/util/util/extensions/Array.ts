@@ -18,7 +18,6 @@
 
 declare global {
 	interface Array<T> {
-		containsAll(target: T[]): boolean;
 		partition(filter: (elem: T) => boolean): [T[], T[]];
 		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
 		filterAsync(callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]>;
@@ -26,10 +25,6 @@ declare global {
 		distinct(): T[];
 		distinctBy<K>(key: (elem: T) => K): T[];
 	}
-}
-
-export function arrayContainsAll<T>(arr: T[], target: T[]) {
-	return target.every((v) => arr.includes(v));
 }
 
 /* https://stackoverflow.com/a/50636286 */
@@ -86,10 +81,6 @@ export function arrayIntersect<T>(this: T[], other: T[]): T[] {
 }
 
 // register extensions
-if (!Array.prototype.containsAll)
-	Array.prototype.containsAll = function <T>(this: T[], target: T[]) {
-		return arrayContainsAll(this, target);
-	};
 if (!Array.prototype.partition)
 	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
 		return arrayPartition(this, filter);
