@@ -77,10 +77,11 @@ router.get(
 			const member = memberships.find((m) => m.guild_id === c.guild_id)!;
 			return Permissions.finalPermission({
 				user: { id: member.id, roles: member.roles.map((r) => r.id), communication_disabled_until: member.communication_disabled_until, flags: 0 },
-				guild: { id: member.guild.id, owner_id: member.guild.owner_id!, roles: member.guild.roles },
+				guild: { id: member.guild.id, owner_id: member.guild.owner_id!, roles: member.roles },
 				channel: c,
 			}).has("VIEW_CHANNEL");
 		});
+
 		const visibleChannelIds = visibleChannels.map((c) => c.id);
 		const ownedMentionableRoleIds = memberships.reduce((acc, m) => {
 			acc.push(...m.roles.filter((r) => r.mentionable).map((r) => r.id));
