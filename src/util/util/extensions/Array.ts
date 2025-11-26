@@ -18,18 +18,11 @@
 
 declare global {
 	interface Array<T> {
-		partition(filter: (elem: T) => boolean): [T[], T[]];
 		remove(item: T): void;
 	}
 }
 
 /* https://stackoverflow.com/a/50636286 */
-export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
-	const pass: T[] = [],
-		fail: T[] = [];
-	array.forEach((e) => (filter(e) ? pass : fail).push(e));
-	return [pass, fail];
-}
 
 export function arrayRemove<T>(this: T[], item: T): void {
 	const index = this.indexOf(item);
@@ -39,10 +32,6 @@ export function arrayRemove<T>(this: T[], item: T): void {
 }
 
 // register extensions
-if (!Array.prototype.partition)
-	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
-		return arrayPartition(this, filter);
-	};
 
 if (!Array.prototype.remove)
 	Array.prototype.remove = function <T>(this: T[], item: T) {

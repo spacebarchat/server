@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions } from "@spacebar/util";
+import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition } from "@spacebar/util";
 import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
@@ -98,7 +98,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 	const offlineItems = [];
 
 	for (const role of member_roles) {
-		const [role_members, other_members] = members.partition((m: Member) => !!m.roles.find((r) => r.id === role.id));
+		const [role_members, other_members] = arrayPartition(members, (m: Member) => !!m.roles.find((r) => r.id === role.id));
 		const group = {
 			count: role_members.length,
 			id: role.id === guild_id ? "online" : role.id,

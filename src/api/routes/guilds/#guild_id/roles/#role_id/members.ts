@@ -17,45 +17,30 @@
 */
 
 import { Router, Request, Response } from "express";
-import { DiscordApiErrors, Member } from "@spacebar/util";
+import { DiscordApiErrors, Member, arrayPartition } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
 
-router.patch(
-	"/",
-	route({ permission: "MANAGE_ROLES" }),
-	async (req: Request, res: Response) => {
-		// Payload is JSON containing a list of member_ids, the new list of members to have the role
-		const { guild_id, role_id } = req.params;
-		const { member_ids } = req.body;
+router.patch("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
+	// Payload is JSON containing a list of member_ids, the new list of members to have the role
+	const { guild_id, role_id } = req.params;
+	const { member_ids } = req.body;
 
-		// don't mess with @everyone
-		if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE;
+	// don't mess with @everyone
+	if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE;
 
-		const members = await Member.find({
-			where: { guild_id },
-			relations: ["roles"],
-		});
+	const members = await Member.find({
+		where: { guild_id },
+		relations: ["roles"],
+	});
 
-		const [add, remove] = members.partition(
-			(member) =>
-				member_ids.includes(member.id) &&
-				!member.roles.map((role) => role.id).includes(role_id),
-		);
+	const [add, remove] = arrayPartition(members, (member) => member_ids.includes(member.id) && !member.roles.map((role) => role.id).includes(role_id));
 
-		// TODO (erkin): have a bulk add/remove function that adds the roles in a single txn
-		await Promise.all([
-			...add.map((member) =>
-				Member.addRole(member.id, guild_id, role_id),
-			),
-			...remove.map((member) =>
-				Member.removeRole(member.id, guild_id, role_id),
-			),
-		]);
+	// TODO (erkin): have a bulk add/remove function that adds the roles in a single txn
+	await Promise.all([...add.map((member) => Member.addRole(member.id, guild_id, role_id)), ...remove.map((member) => Member.removeRole(member.id, guild_id, role_id))]);
 
-		res.sendStatus(204);
-	},
-);
+	res.sendStatus(204);
+});
 
 export default router;
