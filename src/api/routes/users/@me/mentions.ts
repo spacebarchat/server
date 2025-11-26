@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Snowflake, User, Message, Member, Channel, Permissions, timePromise } from "@spacebar/util";
+import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 
@@ -40,6 +40,7 @@ router.get(
 		const limit = req.query.limit && !isNaN(Number(req.query.limit)) ? Number(req.query.limit) : 50;
 		const everyone = !!req.query.everyone;
 		const roles = !!req.query.roles;
+		const before = req.query.before && BigInt(req.query.before as string);
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
@@ -106,7 +107,7 @@ router.get(
 					order: {
 						timestamp: "DESC",
 					},
-					take: limit ? Number(limit) : 50,
+					take: limit,
 				}),
 			),
 			await timePromise(() =>
@@ -124,7 +125,7 @@ router.get(
 							order: {
 								timestamp: "DESC",
 							},
-							take: limit ? Number(limit) : 50,
+							take: limit,
 						}),
 			),
 			await timePromise(() =>
@@ -142,20 +143,57 @@ router.get(
 							order: {
 								timestamp: "DESC",
 							},
-							take: limit ? Number(limit) : 50,
+							take: limit,
 						}),
 			),
 		]);
 
 		const allMentions = [...userMentions, ...roleMentions, ...everyoneMentions];
-		console.log(`[Inbox/mentions] User ${user.id} query results: totalRecs=${allMentions.length} | user=${userMentions.length} (took ${userMentionQueryTime}ms), role=${roleMentions.length} (took ${roleMentionQueryTime}ms), everyone=${everyoneMentions.length} (took ${everyoneMentionQueryTime}ms)`);
-
-		return res.json(
-			allMentions
-				.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-				.distinctBy((m) => m.id)
-				.slice(0, limit),
+		console.log(
+			`[Inbox/mentions] User ${user.id} query results: totalRecs=${allMentions.length} | user=${userMentions.length} (took ${userMentionQueryTime.totalMilliseconds}ms), role=${roleMentions.length} (took ${roleMentionQueryTime.totalMilliseconds}ms), everyone=${everyoneMentions.length} (took ${everyoneMentionQueryTime.totalMilliseconds}ms)`,
 		);
+		const messageIdsToReturn = allMentions
+			.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+			.distinctBy((m) => m.id)
+			.slice(0, limit);
+
+		const sw = Stopwatch.startNew();
+		const finalMessages = (
+			await Message.find({
+				where: { id: In(messageIdsToReturn.map((m) => m.id)) },
+				order: { timestamp: "DESC" },
+				relations: [
+					"author",
+					"webhook",
+					"application",
+					"mentions",
+					"mention_roles",
+					"mention_channels",
+					"sticker_items",
+					"attachments",
+					"referenced_message",
+					"referenced_message.author",
+					"referenced_message.webhook",
+					"referenced_message.application",
+					"referenced_message.mentions",
+					"referenced_message.mention_roles",
+					"referenced_message.mention_channels",
+					"referenced_message.sticker_items",
+					"referenced_message.attachments",
+				],
+			})
+		).map((m) =>
+			m.toJSON().withSignedAttachments(
+				new NewUrlUserSignatureData({
+					ip: req.ip,
+					userAgent: req.headers["user-agent"] as string,
+				}),
+			),
+		);
+
+		console.log(`[Inbox/mentions] User ${user.id} fetched full message data for ${finalMessages.length} messages in ${sw.elapsed().totalMilliseconds}ms`);
+
+		return res.json(finalMessages);
 	},
 );
 
