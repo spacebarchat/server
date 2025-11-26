@@ -16,19 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-declare module "url" {
-	interface URL {
-		normalize(): string;
-	}
-}
-
-/**
- * Normalize a URL by:
- * - Removing trailing slashes (except root path)
- * - Sorting query params alphabetically
- * - Removing empty query strings
- * - Removing fragments
- */
 export function normalizeUrl(input: string): string {
 	try {
 		const u = new URL(input);
@@ -52,9 +39,3 @@ export function normalizeUrl(input: string): string {
 		return input;
 	}
 }
-
-// register extensions
-if (!URL.prototype.normalize)
-	URL.prototype.normalize = function () {
-		return normalizeUrl(this.toString());
-	};
