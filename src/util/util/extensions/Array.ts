@@ -18,10 +18,12 @@
 
 declare global {
 	interface Array<T> {
-		remove(item: T): void;
+		/**
+		 * @deprecated never use, idk why but I can't get rid of this without errors
+		 */
+		remove(h: T): never;
 	}
 }
-
 /* https://stackoverflow.com/a/50636286 */
 export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
 	const pass: T[] = [],
@@ -30,16 +32,11 @@ export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[
 	return [pass, fail];
 }
 
-export function arrayRemove<T>(this: T[], item: T): void {
-	const index = this.indexOf(item);
+export function arrayRemove<T>(array: T[], item: T): void {
+	const index = array.indexOf(item);
 	if (index > -1) {
-		this.splice(index, 1);
+		array.splice(index, 1);
 	}
 }
 
 // register extensions
-
-if (!Array.prototype.remove)
-	Array.prototype.remove = function <T>(this: T[], item: T) {
-		return arrayRemove.call(this, item);
-	};
