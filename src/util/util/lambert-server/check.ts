@@ -96,7 +96,7 @@ export function instanceOf(type: any, value: any, { path = "", optional = false 
 		if (typeof value !== "object") throw `${path} must be a object`;
 
 		const filterset = new Set(Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x)));
-		const diff = Object.keys(value).filter((_) => filterset.has(_));
+		const diff = Object.keys(value).filter((_) => !filterset.has(_));
 
 		if (diff.length) throw `Unknown key ${diff}`;
 
