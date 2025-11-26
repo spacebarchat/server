@@ -255,7 +255,7 @@ export class Channel extends BaseClass {
 	}
 
 	static async createDMChannel(recipients: string[], creator_user_id: string, name?: string) {
-		recipients = [...new Set(recipients.distinct().filter((x) => x !== creator_user_id))];
+		recipients = [...new Set(recipients)].filter((x) => x !== creator_user_id);
 		// TODO: check config for max number of recipients
 		/** if you want to disallow note to self channels, uncomment the conditional below
 
