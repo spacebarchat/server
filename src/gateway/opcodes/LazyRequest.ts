@@ -80,10 +80,14 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
 	const groups = [];
 	const items = [];
-	const member_roles = members
-		.map((m) => m.roles)
-		.flat()
-		.distinctBy((r: Role) => r.id);
+	const member_roles = [
+		...new Map(
+			members
+				.map((m) => m.roles)
+				.flat()
+				.map((role) => [role.id, role] as [string, Role]),
+		).values(),
+	];
 	member_roles.push(
 		member_roles.splice(
 			member_roles.findIndex((x) => x.id === x.guild_id),
