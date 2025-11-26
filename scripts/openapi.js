@@ -22,6 +22,7 @@ const path = require("path");
 const fs = require("fs");
 const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("../dist/util/util/extensions");
+const { bgRedBright } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
@@ -82,7 +83,7 @@ function combineSchemas(schemas) {
 
 	for (const key in definitions) {
 		if (!schemaRegEx.test(key)) {
-			console.error(`Invalid schema name: ${key}, context:`, definitions[key]);
+			console.error(`${bgRedBright("ERROR")} Invalid schema name: ${key}, context:`, definitions[key]);
 			continue;
 		}
 		specification.components = specification.components || {};

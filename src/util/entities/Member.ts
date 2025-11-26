@@ -44,6 +44,12 @@ export const MemberPrivateProjection: (keyof Member)[] = [
 	"roles",
 	"settings",
 	"user",
+	"avatar",
+	"banner",
+	"bio",
+	"theme_colors",
+	"pronouns",
+	"communication_disabled_until",
 ];
 
 @Entity({
