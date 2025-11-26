@@ -70,7 +70,7 @@ router.get(
 			where: {
 				guild_id: In(memberships.map((m) => m.guild_id)),
 			},
-			select: { id: true, permission_overwrites: true },
+			select: { id: true, guild_id: true, permission_overwrites: true },
 		});
 
 		const visibleChannels = channels.filter((c) => {
