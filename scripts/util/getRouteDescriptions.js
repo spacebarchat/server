@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const { traverseDirectory } = require("lambert-server");
 const RouteUtility = require("../../dist/api/util/handlers/route.js");
+const { bgRedBright } = require("picocolors");
 
 const methods = ["get", "post", "put", "delete", "patch"];
 const routes = new Map();
@@ -24,7 +25,7 @@ function proxy(file, method, prefix, path, ...args) {
 	const opts = args.find((x) => x?.prototype?.OPTS_MARKER == true);
 	if (!opts)
 		return console.error(
-			`${file} has route without route() description middleware`,
+			`${bgRedBright("ERROR")} ${file} has route without route() description middleware`,
 		);
 
 	console.log(`${method.toUpperCase().padStart("OPTIONS".length)} ${prefix + path}`);

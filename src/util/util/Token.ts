@@ -147,8 +147,31 @@ export async function generateToken(id: string) {
 	});
 }
 
+let lastFsCheck: number;
+let cachedKeypair: {
+	privateKey: crypto.KeyObject;
+	publicKey: crypto.KeyObject;
+	fingerprint: string;
+}
+
 // Get ECDSA keypair from file or generate it
 export async function loadOrGenerateKeypair() {
+	if (cachedKeypair) {
+		// check for file deletion every minute
+		if (Date.now() - lastFsCheck > 60000) {
+			if (!existsSync("jwt.key") || !existsSync("jwt.key.pub")) {
+				console.log("[JWT] Keypair files disappeared... Saving them again.");
+				await Promise.all([
+					fs.writeFile("jwt.key", cachedKeypair.privateKey.export({ format: "pem", type: "sec1" })),
+					fs.writeFile("jwt.key.pub", cachedKeypair.publicKey.export({ format: "pem", type: "spki" })),
+				]);
+			}
+			lastFsCheck = Date.now();
+		}
+
+		return cachedKeypair;
+	}
+
 	let privateKey: crypto.KeyObject;
 	let publicKey: crypto.KeyObject;
 
@@ -185,5 +208,6 @@ export async function loadOrGenerateKeypair() {
 		.update(publicKey.export({ format: "pem", type: "spki" }))
 		.digest("hex");
 
-	return { privateKey, publicKey, fingerprint };
+	lastFsCheck = Date.now();
+	return cachedKeypair = { privateKey, publicKey, fingerprint };
 }

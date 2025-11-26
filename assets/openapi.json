@@ -4045,6 +4045,32 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "communication_disabled_until": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
                     },
@@ -4056,6 +4082,9 @@
                     }
                 },
                 "required": [
+                    "banner",
+                    "bio",
+                    "communication_disabled_until",
                     "deaf",
                     "guild_id",
                     "id",
@@ -4080,6 +4109,21 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -4092,26 +4136,11 @@
                     "accent_color": {
                         "type": "integer"
                     },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
                     "bot": {
                         "type": "boolean"
                     },
                     "premium_type": {
                         "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -8303,6 +8332,21 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -8315,26 +8359,11 @@
                     "accent_color": {
                         "type": "integer"
                     },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
                     "bot": {
                         "type": "boolean"
                     },
                     "premium_type": {
                         "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -8377,6 +8406,21 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -8389,26 +8433,11 @@
                     "accent_color": {
                         "type": "integer"
                     },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
                     "bot": {
                         "type": "boolean"
                     },
                     "premium_type": {
                         "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -8589,6 +8618,21 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "username": {
                         "type": "string"
                     },
@@ -8601,26 +8645,11 @@
                     "accent_color": {
                         "type": "integer"
                     },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
                     "bot": {
                         "type": "boolean"
                     },
                     "premium_type": {
                         "type": "integer"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -8852,6 +8881,32 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "communication_disabled_until": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
                     "user": {
                         "$ref": "#/components/schemas/PublicUser"
                     },
@@ -8863,6 +8918,9 @@
                     }
                 },
                 "required": [
+                    "banner",
+                    "bio",
+                    "communication_disabled_until",
                     "deaf",
                     "guild_id",
                     "id",
@@ -9481,9 +9539,6 @@
             "UserProfile": {
                 "type": "object",
                 "properties": {
-                    "accent_color": {
-                        "type": "integer"
-                    },
                     "banner": {
                         "type": "string"
                     },
@@ -9498,6 +9553,9 @@
                     },
                     "pronouns": {
                         "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
                     }
                 },
                 "required": [
