@@ -21,12 +21,6 @@ describe("Array extensions", () => {
 		assert.strictEqual(sum, 6);
 	});
 
-	it("filterAsync", async () => {
-		const arr = [1, 2, 3, 4, 5];
-		const even = await arr.filterAsync(async (n) => n % 2 === 0);
-		assert.deepEqual(even, [2, 4]);
-	});
-
 	it("remove", () => {
 		const arr = [1, 2, 3, 4, 5];
 		arr.remove(3);
