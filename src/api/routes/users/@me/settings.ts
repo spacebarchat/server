@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { User, UserSettings } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { UserSettingsUpdateSchema, UserSettingsSchema } from "@spacebar/schemas"
+import { UserSettingsUpdateSchema, UserSettingsSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -36,7 +36,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const settings = await UserSettings.getOrDefault(req.user_id)
+		const settings = await UserSettings.getOrDefault(req.user_id);
 		return res.json(settings);
 	},
 );
@@ -67,13 +67,10 @@ router.patch(
 			relations: ["settings"],
 		});
 
-		if (!user.settings)
-			user.settings = UserSettings.create(body as UserSettingsUpdateSchema);
-		else
-			user.settings.assign(body);
+		if (!user.settings) user.settings = UserSettings.create<UserSettings>(body);
+		else user.settings.assign(body);
 
-		if (body.guild_folders)
-			user.settings.guild_folders = body.guild_folders;
+		if (body.guild_folders) user.settings.guild_folders = body.guild_folders;
 
 		await user.settings.save();
 		await user.save();
