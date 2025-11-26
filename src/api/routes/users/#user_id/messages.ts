@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Config, Message, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { DmMessagesResponseSchema } from "@spacebar/schemas"
+import { DmMessagesResponseSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
@@ -42,7 +42,7 @@ router.get(
 			await Message.find({
 				where: { channel_id: channel?.id },
 				order: { timestamp: "DESC" },
-				take: Math.clamp(req.query.limit ? Number(req.query.limit) : 50, 1, Config.get().limits.message.maxPreloadCount),
+				take: Math.min(Math.max(req.query.limit ? Number(req.query.limit) : 50, 1), Config.get().limits.message.maxPreloadCount),
 			})
 		).filter((x) => x !== null) as Message[];
 
