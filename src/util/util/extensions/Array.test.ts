@@ -74,14 +74,4 @@ describe("Array extensions", () => {
 		// @ts-expect-error
 		assert.deepEqual([].intersect(arr2), []);
 	});
-
-	it("except", () => {
-		const arr1 = [1, 2, 3, 4];
-		const arr2 = [3, 4, 5, 6];
-		assert.deepEqual(arr1.except(arr2), [1, 2]);
-		assert.deepEqual(arr1.except([]), [1, 2, 3, 4]);
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
-		assert.deepEqual([].except(arr2), []);
-	});
 });
