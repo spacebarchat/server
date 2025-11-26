@@ -254,10 +254,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 		});
 	});
 
-	const groups = ops
-		.map((x) => x.groups)
-		.flat()
-		.distinct();
+	const groups = [...new Set(ops.map((x) => x.groups).flat())];
 
 	await Send(this, {
 		op: OPCODES.Dispatch,

@@ -20,7 +20,6 @@ declare global {
 	interface Array<T> {
 		partition(filter: (elem: T) => boolean): [T[], T[]];
 		remove(item: T): void;
-		distinct(): T[];
 	}
 }
 
@@ -39,10 +38,6 @@ export function arrayRemove<T>(this: T[], item: T): void {
 	}
 }
 
-export function arrayDistinct<T>(this: T[]): T[] {
-	return Array.from(new Set(this));
-}
-
 // register extensions
 if (!Array.prototype.partition)
 	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
@@ -52,9 +47,4 @@ if (!Array.prototype.partition)
 if (!Array.prototype.remove)
 	Array.prototype.remove = function <T>(this: T[], item: T) {
 		return arrayRemove.call(this, item);
-	};
-
-if (!Array.prototype.distinct)
-	Array.prototype.distinct = function <T>(this: T[]) {
-		return arrayDistinct.call(this);
 	};

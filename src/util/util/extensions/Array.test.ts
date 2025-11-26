@@ -19,10 +19,4 @@ describe("Array extensions", () => {
 		arr.remove(6);
 		assert.deepEqual(arr, [1, 2, 4, 5]);
 	});
-
-	it("distinct", () => {
-		const arr = [1, 2, 2, 3, 3, 3];
-		assert.deepEqual(arr.distinct(), [1, 2, 3]);
-		assert.deepEqual([].distinct(), []);
-	});
 });
