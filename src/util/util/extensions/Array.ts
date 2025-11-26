@@ -25,7 +25,6 @@ declare global {
 		remove(item: T): void;
 		distinct(): T[];
 		distinctBy<K>(key: (elem: T) => K): T[];
-		intersect(other: T[]): T[];
 	}
 }
 
@@ -116,8 +115,4 @@ if (!Array.prototype.distinct)
 if (!Array.prototype.distinctBy)
 	Array.prototype.distinctBy = function <T, K>(this: T[], key: (elem: T) => K) {
 		return arrayDistinctBy.call(this, key as (elem: unknown) => unknown);
-	};
-if (!Array.prototype.intersect)
-	Array.prototype.intersect = function <T>(this: T[], other: T[]) {
-		return arrayIntersect.call(this, other);
 	};
