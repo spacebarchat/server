@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch, Attachment } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { In, LessThan } from "typeorm";
+import { In, LessThan, FindOptionsWhere } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -70,7 +70,7 @@ router.get(
 
 		const channels = await Channel.find({
 			where: {
-				guild_id: In(memberships.map((m) => m.guild_id).distinct()),
+				guild_id: In(memberships.map((m) => m.guild_id)),
 			},
 			select: { id: true, guild_id: true, permission_overwrites: true },
 		});
@@ -78,7 +78,7 @@ router.get(
 		const visibleChannels = channels.filter((c) => {
 			const member = memberships.find((m) => m.guild_id === c.guild_id)!;
 			return Permissions.finalPermission({
-				user: { id: member.id, roles: member.roles.map((r) => r.id).distinct(), communication_disabled_until: member.communication_disabled_until, flags: 0 },
+				user: { id: member.id, roles: member.roles.map((r) => r.id), communication_disabled_until: member.communication_disabled_until, flags: 0 },
 				guild: { id: member.guild.id, owner_id: member.guild.owner_id!, roles: member.roles },
 				channel: c,
 			}).has("VIEW_CHANNEL");
@@ -90,81 +90,32 @@ router.get(
 			return acc;
 		}, [] as Snowflake[]);
 
-		const [
-			{ result: userMentions, elapsed: userMentionQueryTime },
-			{ result: roleMentions, elapsed: roleMentionQueryTime },
-			{ result: everyoneMentions, elapsed: everyoneMentionQueryTime },
-		] = await Promise.all([
-			await timePromise(() =>
-				Message.find({
-					where: {
-						channel_id: In(visibleChannelIds),
-						mentions: { id: user.id },
-						...(before === undefined ? {} : { id: LessThan(before) }),
-					},
-					select: {
-						id: true,
-						timestamp: true,
-					},
-					order: {
-						timestamp: "DESC",
-					},
-					take: limit,
-				}),
-			),
-			await timePromise(() =>
-				!roles
-					? Promise.resolve([])
-					: Message.find({
-							where: {
-								channel_id: In(visibleChannelIds),
-								mention_roles: { id: In(ownedMentionableRoleIds) },
-								...(before === undefined ? {} : { id: LessThan(before) }),
-							},
-							select: {
-								id: true,
-								timestamp: true,
-							},
-							order: {
-								timestamp: "DESC",
-							},
-							take: limit,
-						}),
-			),
-			await timePromise(() =>
-				!everyone
-					? Promise.resolve([])
-					: Message.find({
-							where: {
-								channel_id: In(visibleChannelIds),
-								mention_everyone: true,
-								...(before === undefined ? {} : { id: LessThan(before) }),
-							},
-							select: {
-								id: true,
-								timestamp: true,
-							},
-							order: {
-								timestamp: "DESC",
-							},
-							take: limit,
-						}),
-			),
-		]);
-
-		const allMentions = [...userMentions, ...roleMentions, ...everyoneMentions];
-		console.log(
-			`[Inbox/mentions] User ${user.id} query results: totalRecs=${allMentions.length} | user=${userMentions.length} (took ${userMentionQueryTime.totalMilliseconds}ms), role=${roleMentions.length} (took ${roleMentionQueryTime.totalMilliseconds}ms), everyone=${everyoneMentions.length} (took ${everyoneMentionQueryTime.totalMilliseconds}ms)`,
-		);
-		const messageIdsToReturn = allMentions
-			.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-			.distinctBy((m) => m.id)
-			.slice(0, limit);
+		const whereQuery: FindOptionsWhere<Message>[] = [
+			{
+				channel_id: In(visibleChannelIds),
+				mentions: { id: user.id },
+				id: before ? LessThan(before) : undefined,
+			},
+		];
+		if (everyone) {
+			whereQuery.push({
+				channel_id: In(visibleChannelIds),
+				mention_everyone: true,
+				id: before ? LessThan(before) : undefined,
+			});
+		}
+		if (roles) {
+			whereQuery.push({
+				channel_id: In(visibleChannelIds),
+				mention_roles: { id: In(ownedMentionableRoleIds) },
+				id: before ? LessThan(before) : undefined,
+			});
+		}
 
 		const sw = Stopwatch.startNew();
 		const finalMessages = (
 			await Message.find({
-				where: { id: In(messageIdsToReturn.map((m) => m.id)) },
+				where: whereQuery,
 				order: { timestamp: "DESC" },
 				relations: [
 					"author",
@@ -185,6 +136,7 @@ router.get(
 					"referenced_message.sticker_items",
 					"referenced_message.attachments",
 				],
+				take: limit,
 			})
 		).map((m) => {
 			return {
