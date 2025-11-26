@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch, Attachment } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { In } from "typeorm";
+import { In, LessThan } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -37,17 +37,18 @@ router.get(
 	}),
 	// AFAICT this endpoint doesn't list DMs
 	async (req: Request, res: Response) => {
-		const limit = req.query.limit && !isNaN(Number(req.query.limit)) ? Number(req.query.limit) : 50;
-		const everyone = !!req.query.everyone;
-		const roles = !!req.query.roles;
-		const before = req.query.before && BigInt(req.query.before as string);
+		const limit = req.query.limit && !isNaN(Number(req.query.limit)) ? Number(req.query.limit) : 25;
+		const everyone = req.query.everyone !== undefined ? Boolean(req.query.everyone) : true;
+		const roles = req.query.roles !== undefined ? Boolean(req.query.roles) : true;
+		const before = req.query.before !== undefined ? String(req.query.before as string) : undefined;
+		const guild_id = req.query.guild_id !== undefined ? req.query.guild_id : undefined;
 
 		const user = await User.findOneOrFail({
 			where: { id: req.user_id },
 		});
 
 		const memberships = await Member.find({
-			where: { id: req.user_id },
+			where: { id: req.user_id, ...(guild_id === undefined ? {} : { guild_id: String(guild_id) }) },
 			select: {
 				guild_id: true,
 				id: true,
@@ -69,7 +70,7 @@ router.get(
 
 		const channels = await Channel.find({
 			where: {
-				guild_id: In(memberships.map((m) => m.guild_id)),
+				guild_id: In(memberships.map((m) => m.guild_id).distinct()),
 			},
 			select: { id: true, guild_id: true, permission_overwrites: true },
 		});
@@ -77,7 +78,7 @@ router.get(
 		const visibleChannels = channels.filter((c) => {
 			const member = memberships.find((m) => m.guild_id === c.guild_id)!;
 			return Permissions.finalPermission({
-				user: { id: member.id, roles: member.roles.map((r) => r.id), communication_disabled_until: member.communication_disabled_until, flags: 0 },
+				user: { id: member.id, roles: member.roles.map((r) => r.id).distinct(), communication_disabled_until: member.communication_disabled_until, flags: 0 },
 				guild: { id: member.guild.id, owner_id: member.guild.owner_id!, roles: member.roles },
 				channel: c,
 			}).has("VIEW_CHANNEL");
@@ -99,6 +100,7 @@ router.get(
 					where: {
 						channel_id: In(visibleChannelIds),
 						mentions: { id: user.id },
+						...(before === undefined ? {} : { id: LessThan(before) }),
 					},
 					select: {
 						id: true,
@@ -117,6 +119,7 @@ router.get(
 							where: {
 								channel_id: In(visibleChannelIds),
 								mention_roles: { id: In(ownedMentionableRoleIds) },
+								...(before === undefined ? {} : { id: LessThan(before) }),
 							},
 							select: {
 								id: true,
@@ -135,6 +138,7 @@ router.get(
 							where: {
 								channel_id: In(visibleChannelIds),
 								mention_everyone: true,
+								...(before === undefined ? {} : { id: LessThan(before) }),
 							},
 							select: {
 								id: true,
