@@ -20,9 +20,7 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const {
-	NO_AUTHORIZATION_ROUTES,
-} = require("../dist/api/middlewares/Authentication");
+const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("../dist/util/util/extensions");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
@@ -88,8 +86,7 @@ function combineSchemas(schemas) {
 			continue;
 		}
 		specification.components = specification.components || {};
-		specification.components.schemas =
-			specification.components.schemas || {};
+		specification.components.schemas = specification.components.schemas || {};
 		specification.components.schemas[key] = definitions[key];
 		delete definitions[key].additionalProperties;
 		delete definitions[key].$schema;
@@ -121,7 +118,7 @@ function apiRoutes(missingRoutes) {
 	const tags = Array.from(routes.keys())
 		.map((x) => getTag(x))
 		.sort((a, b) => a.localeCompare(b));
-	specification.tags = tags.distinct().map((x) => ({ name: x }));
+	specification.tags = [...new Set(tags)].map((x) => ({ name: x }));
 
 	routes.forEach((route, pathAndMethod) => {
 		const [p, method] = pathAndMethod.split("|");
@@ -134,8 +131,7 @@ function apiRoutes(missingRoutes) {
 
 		if (
 			!NO_AUTHORIZATION_ROUTES.some((x) => {
-				if (typeof x === "string")
-					return (method.toUpperCase() + " " + path).startsWith(x);
+				if (typeof x === "string") return (method.toUpperCase() + " " + path).startsWith(x);
 				return x.test(method.toUpperCase() + " " + path);
 			})
 		) {
@@ -176,9 +172,7 @@ function apiRoutes(missingRoutes) {
 					};
 				else
 					obj.responses[k] = {
-						description:
-							obj?.responses?.[k]?.description ||
-							"No description available",
+						description: obj?.responses?.[k]?.description || "No description available",
 					};
 			}
 		} else {
@@ -213,7 +207,7 @@ function apiRoutes(missingRoutes) {
 			obj.parameters = [...(obj.parameters || []), ...query];
 		}
 
-		obj.tags = [...(obj.tags || []), getTag(p)].distinct();
+		obj.tags = [...new Set([...(obj.tags || []), getTag(p)])];
 
 		if (missingRoutes.additional.includes(path.replace(/\/$/, ""))) {
 			obj["x-badges"] = [
@@ -224,45 +218,28 @@ function apiRoutes(missingRoutes) {
 			];
 		}
 
-		specification.paths[path] = Object.assign(
-			specification.paths[path] || {},
-			{
-				[method]: obj,
-			},
-		);
+		specification.paths[path] = Object.assign(specification.paths[path] || {}, {
+			[method]: obj,
+		});
 	});
 }
 
 async function main() {
 	console.log("Generating OpenAPI Specification...");
 
-	const routesRes = await fetch(
-		"https://github.com/spacebarchat/missing-routes/raw/main/missing.json",
-		{
-			headers: {
-				Accept: "application/json",
-			},
+	const routesRes = await fetch("https://github.com/spacebarchat/missing-routes/raw/main/missing.json", {
+		headers: {
+			Accept: "application/json",
 		},
-	);
+	});
 	const missingRoutes = await routesRes.json();
 
 	combineSchemas(schemas);
 	apiRoutes(missingRoutes);
 
-	fs.writeFileSync(
-		openapiPath,
-		JSON.stringify(specification, null, 4)
-			.replaceAll("#/definitions", "#/components/schemas")
-			.replaceAll("bigint", "number"),
-	);
+	fs.writeFileSync(openapiPath, JSON.stringify(specification, null, 4).replaceAll("#/definitions", "#/components/schemas").replaceAll("bigint", "number"));
 	console.log("Wrote OpenAPI specification to", openapiPath);
-	console.log(
-		"Specification contains",
-		Object.keys(specification.paths).length,
-		"paths and",
-		Object.keys(specification.components.schemas).length,
-		"schemas.",
-	);
+	console.log("Specification contains", Object.keys(specification.paths).length, "paths and", Object.keys(specification.components.schemas).length, "schemas.");
 }
 
 main();
