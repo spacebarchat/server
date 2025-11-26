@@ -19,7 +19,6 @@
 declare global {
 	interface Array<T> {
 		partition(filter: (elem: T) => boolean): [T[], T[]];
-		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
 		remove(item: T): void;
 		distinct(): T[];
 	}
@@ -31,10 +30,6 @@ export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[
 		fail: T[] = [];
 	array.forEach((e) => (filter(e) ? pass : fail).push(e));
 	return [pass, fail];
-}
-
-export async function arrayForEachAsync<T>(array: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void> {
-	await Promise.all(array.map(callback));
 }
 
 export function arrayRemove<T>(this: T[], item: T): void {
@@ -52,11 +47,6 @@ export function arrayDistinct<T>(this: T[]): T[] {
 if (!Array.prototype.partition)
 	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
 		return arrayPartition(this, filter);
-	};
-
-if (!Array.prototype.forEachAsync)
-	Array.prototype.forEachAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>) {
-		return arrayForEachAsync(this, callback);
 	};
 
 if (!Array.prototype.remove)
