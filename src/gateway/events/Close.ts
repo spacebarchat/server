@@ -17,16 +17,7 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
-import {
-	emitEvent,
-	PresenceUpdateEvent,
-	PrivateSessionProjection,
-	Session,
-	SessionsReplace,
-	User,
-	VoiceState,
-	VoiceStateUpdateEvent,
-} from "@spacebar/util";
+import { emitEvent, PresenceUpdateEvent, PrivateSessionProjection, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
 	console.log("[WebSocket] closed", code, reason.toString());
@@ -44,11 +35,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 		});
 
 		// clear the voice state for this session if user was in voice channel
-		if (
-			voiceState &&
-			voiceState.session_id === this.session_id &&
-			voiceState.channel_id
-		) {
+		if (voiceState && voiceState.session_id === this.session_id && voiceState.channel_id) {
 			const prevGuildId = voiceState.guild_id;
 			const prevChannelId = voiceState.channel_id;
 
@@ -83,7 +70,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 			user_id: this.user_id,
 			data: sessions,
 		} as SessionsReplace);
-		const session = sessions.first() || {
+		const session = sessions[0] || {
 			activities: [],
 			client_status: {},
 			status: "offline",

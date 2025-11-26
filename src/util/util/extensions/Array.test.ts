@@ -1,11 +1,10 @@
 import moduleAlias from "module-alias";
 moduleAlias();
-import './Array';
-import {  describe, it } from 'node:test';
-import assert from 'node:assert/strict';
+import "./Array";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 
 describe("Array extensions", () => {
-
 	it("containsAll", () => {
 		const arr = [1, 2, 3, 4, 5];
 		assert(arr.containsAll([1, 2]));
@@ -27,8 +26,14 @@ describe("Array extensions", () => {
 
 	it("single", () => {
 		const arr = [1, 2, 3, 4, 5];
-		assert.strictEqual(arr.single((n) => n === 3), 3);
-		assert.strictEqual(arr.single((n) => n === 6), null);
+		assert.strictEqual(
+			arr.single((n) => n === 3),
+			3,
+		);
+		assert.strictEqual(
+			arr.single((n) => n === 6),
+			null,
+		);
 		assert.throws(() => arr.single((n) => n > 2));
 	});
 
@@ -55,18 +60,6 @@ describe("Array extensions", () => {
 		assert.deepEqual(arr, [1, 2, 4, 5]);
 	});
 
-	it("first", () => {
-		const arr = [1, 2, 3];
-		assert.strictEqual(arr.first(), 1);
-		assert.strictEqual([].first(), undefined);
-	});
-
-	it("last", () => {
-		const arr = [1, 2, 3];
-		assert.strictEqual(arr.last(), 3);
-		assert.strictEqual([].last(), undefined);
-	});
-
 	it("distinct", () => {
 		const arr = [1, 2, 2, 3, 3, 3];
 		assert.deepEqual(arr.distinct(), [1, 2, 3]);
@@ -75,8 +68,14 @@ describe("Array extensions", () => {
 
 	it("distinctBy", () => {
 		const arr = [{ id: 1 }, { id: 2 }, { id: 1 }, { id: 3 }];
-		assert.deepEqual(arr.distinctBy((x) => x.id), [{ id: 1 }, { id: 2 }, { id: 3 }]);
-		assert.deepEqual([].distinctBy((x) => x), []);
+		assert.deepEqual(
+			arr.distinctBy((x) => x.id),
+			[{ id: 1 }, { id: 2 }, { id: 3 }],
+		);
+		assert.deepEqual(
+			[].distinctBy((x) => x),
+			[],
+		);
 	});
 
 	it("intersect", () => {
@@ -98,5 +97,4 @@ describe("Array extensions", () => {
 		// @ts-expect-error
 		assert.deepEqual([].except(arr2), []);
 	});
-
 });

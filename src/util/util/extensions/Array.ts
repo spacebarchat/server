@@ -24,8 +24,6 @@ declare global {
 		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
 		filterAsync(callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]>;
 		remove(item: T): void;
-		first(): T | undefined;
-		last(): T | undefined;
 		distinct(): T[];
 		distinctBy<K>(key: (elem: T) => K): T[];
 		intersect(other: T[]): T[];
@@ -126,21 +124,14 @@ if (!Array.prototype.remove)
 	Array.prototype.remove = function <T>(this: T[], item: T) {
 		return arrayRemove.call(this, item);
 	};
-if (!Array.prototype.first)
-	Array.prototype.first = function <T>(this: T[]) {
-		return arrayFirst.call(this);
-	};
-if (!Array.prototype.last)
-	Array.prototype.last = function <T>(this: T[]) {
-		return arrayLast.call(this);
-	};
+
 if (!Array.prototype.distinct)
 	Array.prototype.distinct = function <T>(this: T[]) {
 		return arrayDistinct.call(this);
 	};
 if (!Array.prototype.distinctBy)
 	Array.prototype.distinctBy = function <T, K>(this: T[], key: (elem: T) => K) {
-		return arrayDistinctBy.call(this, key as ((elem: unknown) => unknown));
+		return arrayDistinctBy.call(this, key as (elem: unknown) => unknown);
 	};
 if (!Array.prototype.intersect)
 	Array.prototype.intersect = function <T>(this: T[], other: T[]) {
