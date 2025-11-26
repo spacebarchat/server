@@ -354,9 +354,9 @@ export class User extends BaseClass {
 			for (const channel of qry) {
 				console.warn(JSON.stringify(channel));
 			}
+			throw new Error("Array contains more than one matching element");
 		}
 
-		// throw if multiple
-		return qry.single((_) => true);
+		return qry[0];
 	}
 }

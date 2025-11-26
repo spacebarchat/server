@@ -24,19 +24,6 @@ describe("Array extensions", () => {
 		assert.deepEqual(odd, [1, 3, 5]);
 	});
 
-	it("single", () => {
-		const arr = [1, 2, 3, 4, 5];
-		assert.strictEqual(
-			arr.single((n) => n === 3),
-			3,
-		);
-		assert.strictEqual(
-			arr.single((n) => n === 6),
-			null,
-		);
-		assert.throws(() => arr.single((n) => n > 2));
-	});
-
 	it("forEachAsync", async () => {
 		const arr = [1, 2, 3];
 		let sum = 0;

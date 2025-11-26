@@ -20,7 +20,6 @@ declare global {
 	interface Array<T> {
 		containsAll(target: T[]): boolean;
 		partition(filter: (elem: T) => boolean): [T[], T[]];
-		single(filter: (elem: T) => boolean): T | null;
 		forEachAsync(callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void>;
 		filterAsync(callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]>;
 		remove(item: T): void;
@@ -41,13 +40,6 @@ export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[
 		fail: T[] = [];
 	array.forEach((e) => (filter(e) ? pass : fail).push(e));
 	return [pass, fail];
-}
-
-export function arraySingle<T>(array: T[], filter: (elem: T) => boolean): T | null {
-	const results = array.filter(filter);
-	if (results.length > 1) throw new Error("Array contains more than one matching element");
-	if (results.length === 0) return null;
-	return results[0];
 }
 
 export async function arrayForEachAsync<T>(array: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>): Promise<void> {
@@ -108,10 +100,7 @@ if (!Array.prototype.partition)
 	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
 		return arrayPartition(this, filter);
 	};
-if (!Array.prototype.single)
-	Array.prototype.single = function <T>(this: T[], filter: (elem: T) => boolean) {
-		return arraySingle(this, filter);
-	};
+
 if (!Array.prototype.forEachAsync)
 	Array.prototype.forEachAsync = function <T>(this: T[], callback: (elem: T, index: number, array: T[]) => Promise<void>) {
 		return arrayForEachAsync(this, callback);
