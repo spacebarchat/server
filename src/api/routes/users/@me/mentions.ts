@@ -183,12 +183,12 @@ router.get(
 				],
 			})
 		).map((m) =>
-			m.toJSON().withSignedAttachments(
+			m.withSignedAttachments(
 				new NewUrlUserSignatureData({
 					ip: req.ip,
 					userAgent: req.headers["user-agent"] as string,
 				}),
-			),
+			).toJSON(),
 		);
 
 		console.log(`[Inbox/mentions] User ${user.id} fetched full message data for ${finalMessages.length} messages in ${sw.elapsed().totalMilliseconds}ms`);
