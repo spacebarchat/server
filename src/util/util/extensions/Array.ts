@@ -23,6 +23,12 @@ declare global {
 }
 
 /* https://stackoverflow.com/a/50636286 */
+export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
+	const pass: T[] = [],
+		fail: T[] = [];
+	array.forEach((e) => (filter(e) ? pass : fail).push(e));
+	return [pass, fail];
+}
 
 export function arrayRemove<T>(this: T[], item: T): void {
 	const index = this.indexOf(item);
