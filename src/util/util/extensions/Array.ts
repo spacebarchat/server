@@ -23,7 +23,6 @@ declare global {
 		filterAsync(callback: (elem: T, index: number, array: T[]) => Promise<boolean>): Promise<T[]>;
 		remove(item: T): void;
 		distinct(): T[];
-		distinctBy<K>(key: (elem: T) => K): T[];
 	}
 }
 
@@ -55,23 +54,6 @@ export function arrayDistinct<T>(this: T[]): T[] {
 	return Array.from(new Set(this));
 }
 
-export function arrayDistinctBy<T, K>(this: T[], key: (elem: T) => K): T[] {
-	const seen = new Set<K>();
-	return this.filter((item) => {
-		const k = key(item);
-		if (seen.has(k)) {
-			return false;
-		} else {
-			seen.add(k);
-			return true;
-		}
-	});
-}
-
-export function arrayIntersect<T>(this: T[], other: T[]): T[] {
-	return this.filter((value) => other.includes(value));
-}
-
 // register extensions
 if (!Array.prototype.partition)
 	Array.prototype.partition = function <T>(this: T[], filter: (elem: T) => boolean) {
@@ -94,8 +76,4 @@ if (!Array.prototype.remove)
 if (!Array.prototype.distinct)
 	Array.prototype.distinct = function <T>(this: T[]) {
 		return arrayDistinct.call(this);
-	};
-if (!Array.prototype.distinctBy)
-	Array.prototype.distinctBy = function <T, K>(this: T[], key: (elem: T) => K) {
-		return arrayDistinctBy.call(this, key as (elem: unknown) => unknown);
 	};

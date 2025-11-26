@@ -40,16 +40,4 @@ describe("Array extensions", () => {
 		assert.deepEqual(arr.distinct(), [1, 2, 3]);
 		assert.deepEqual([].distinct(), []);
 	});
-
-	it("distinctBy", () => {
-		const arr = [{ id: 1 }, { id: 2 }, { id: 1 }, { id: 3 }];
-		assert.deepEqual(
-			arr.distinctBy((x) => x.id),
-			[{ id: 1 }, { id: 2 }, { id: 3 }],
-		);
-		assert.deepEqual(
-			[].distinctBy((x) => x),
-			[],
-		);
-	});
 });
