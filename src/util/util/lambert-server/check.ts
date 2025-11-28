@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from ".";
 
 const OPTIONAL_PREFIX = "$";
-const EMAIL_REGEX =
-	/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export function check(schema: any) {
 	return (req: Request, res: Response, next: NextFunction) => {
@@ -31,11 +30,7 @@ export class Email {
 	}
 }
 
-export function instanceOf(
-	type: any,
-	value: any,
-	{ path = "", optional = false }: { path?: string; optional?: boolean } = {}
-): Boolean {
+export function instanceOf(type: any, value: any, { path = "", optional = false }: { path?: string; optional?: boolean } = {}): boolean {
 	if (!type) return true; // no type was specified
 
 	if (value == null) {
@@ -55,7 +50,9 @@ export function instanceOf(
 			try {
 				value = BigInt(value);
 				if (typeof value === "bigint") return true;
-			} catch (error) {}
+			} catch (error) {
+				//Ignore BigInt error
+			}
 			throw `${path} must be a bigint`;
 		case Boolean:
 			if (value == "true") value = true;
@@ -98,9 +95,8 @@ export function instanceOf(
 		}
 		if (typeof value !== "object") throw `${path} must be a object`;
 
-		const diff = Object.keys(value).except(
-			Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x))
-		);
+		const filterset = new Set(Object.keys(type).map((x) => (x.startsWith(OPTIONAL_PREFIX) ? x.slice(OPTIONAL_PREFIX.length) : x)));
+		const diff = Object.keys(value).filter((_) => !filterset.has(_));
 
 		if (diff.length) throw `Unknown key ${diff}`;
 

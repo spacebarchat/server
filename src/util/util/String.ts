@@ -38,3 +38,9 @@ export function centerString(str: string, len: number): string {
 	const padLeft = Math.floor(pad / 2) + str.length;
 	return str.padStart(padLeft).padEnd(len);
 }
+
+export function stringGlobToRegexp(str: string, flags?: string): RegExp {
+	// Convert simple wildcard patterns to regex
+	const escaped = str.replace(".", "\\.").replace("?", ".").replace("*", ".*");
+	return new RegExp(escaped, flags);
+}

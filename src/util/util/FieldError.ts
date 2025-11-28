@@ -31,7 +31,7 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 	return new FieldError(
 		50035,
 		"Invalid Form Body",
-		fields.map<ErrorContent, ObjectErrorContent>(({ message, code }) => ({
+		Object.values(fields).map(({ message, code }) => ({
 			_errors: [
 				{
 					message,
@@ -39,7 +39,7 @@ export function FieldErrors(fields: Record<string, { code?: string; message: str
 				},
 			],
 		})),
-		errors
+		errors,
 	);
 }
 
@@ -51,7 +51,7 @@ export class FieldError extends Error {
 		public code: string | number,
 		public message: string,
 		public errors?: object, // TODO: I don't like this typing.
-		public _ajvErrors?: ErrorObject[]
+		public _ajvErrors?: ErrorObject[],
 	) {
 		super(message);
 	}
