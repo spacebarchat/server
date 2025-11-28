@@ -71,7 +71,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 	if (limit) {
 		const lastMsgTime = (await Message.findOne({ where: { channel_id: channel.id, author_id: opts.author_id }, select: { timestamp: true }, order: { timestamp: "DESC" } }))
 			?.timestamp;
-		console.log(limit, lastMsgTime && +lastMsgTime - (Date.now() - limit * 1000));
 		if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
 			permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
 			//FIXME MANAGE_MESSAGES and MANAGE_CHANNELS will need to be removed once they're gone as checks
