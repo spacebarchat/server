@@ -79,7 +79,7 @@
 		"ajv-formats": "^3.0.1",
 		"amqplib": "^0.10.9",
 		"bcrypt": "^6.0.0",
-		"body-parser": "^2.2.0",
+		"body-parser": "^2.2.1",
 		"chalk": "^5.6.2",
 		"cheerio": "^1.1.2",
 		"cookie-parser": "^1.4.7",
