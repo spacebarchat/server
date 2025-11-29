@@ -1,4 +1,4 @@
-import { ApplicationCommandOption, Snowflake } from "@spacebar/schemas";
+import { ApplicationCommandOption, Snowflake, StringStringDictionary } from "@spacebar/schemas";
 
 export interface ApplicationCommandSchema {
 	id?: Snowflake;
@@ -6,10 +6,10 @@ export interface ApplicationCommandSchema {
 	application_id: Snowflake;
 	guild_id?: Snowflake;
 	name: string;
-	name_localizations?: Record<string, string>;
+	name_localizations?: StringStringDictionary;
 	name_localized?: string | null;
 	description: string;
-	description_localizations?: Record<string, string>;
+	description_localizations?: StringStringDictionary;
 	description_localized?: string | null;
 	options?: ApplicationCommandOption[];
 	default_member_permissions: string | null;

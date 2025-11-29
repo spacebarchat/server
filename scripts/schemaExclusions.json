@@ -2,7 +2,9 @@
     "include": [
         "MessageInteractionSchema"
     ],
-    "includeRe": [],
+    "includeRe": [
+        "^MessageComponentType\\..*"
+    ],
     "manual": [
         "DefaultSchema",
         "Schema",
@@ -40,7 +42,9 @@
         "ListTagsForResourceResponse",
         "GetContactResponse",
         "LibraryResponse",
-        "LibraryLocalResponse"
+        "LibraryLocalResponse",
+        "SchemaTraits",
+        "TraitsSchema"
     ],
     "manualRe": [
         ".*\\.Response$",
@@ -48,8 +52,6 @@
         ".*\\..*",
         "^Axios",
         "^Internal",
-        "^Record<",
-        "^Omit<",
         "^ListContact(s|Lists)Response$",
         "^APIKeyConfiguration\\..*",
         "^AccountSetting\\..*",
@@ -82,8 +84,7 @@
     ],
     "manualWarn": [],
     "manualWarnRe": [
-        "^Record",
-        "^Partial"
+        ".*<.*>$"
     ],
     "auto": [
         {

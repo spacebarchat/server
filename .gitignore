@@ -22,3 +22,8 @@ dump/
 result
 jwt.key*
 bun.lock
+
+# optional generated outputs from schema.js
+schemas_orig/
+schemas_nested/
+schemas_final/

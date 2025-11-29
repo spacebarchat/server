@@ -87,7 +87,13 @@ export interface RouteOptions {
 export function route(opts: RouteOptions) {
 	let validate: AnyValidateFunction | undefined;
 	if (opts.requestBody) {
-		validate = ajv.getSchema(opts.requestBody);
+		try {
+			validate = ajv.getSchema(opts.requestBody);
+		} catch (e) {
+			console.error("AJV getSchema failed!");
+			throw e;
+		}
+
 		if (!validate)
 			throw new Error(`Body schema ${opts.requestBody} not found`);
 	}

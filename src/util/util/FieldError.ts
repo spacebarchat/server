@@ -21,9 +21,10 @@ import { ErrorObject } from "ajv";
 export interface FieldErrorResponse {
 	code: number;
 	message: string;
-	errors: Record<string, ObjectErrorContent>;
+	errors: ErrorList;
 }
 
+export type ErrorList = Record<string, ObjectErrorContent>;
 export type ErrorContent = { code: string; message: string };
 export type ObjectErrorContent = { _errors: ErrorContent[] };
 

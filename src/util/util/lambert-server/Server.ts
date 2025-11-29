@@ -98,7 +98,7 @@ export class Server {
 			await new Promise<void>((res) => {
 				this.http = server.listen(this.options.port, () => res());
 			});
-			if(this.options.serverInitLogging) this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
+			if (this.options.serverInitLogging) this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
 		}
 	}
 
@@ -150,17 +150,16 @@ export class Server {
 		if (!path.length) path = "/"; // first root index.js file must have a / path
 
 		try {
-			var router = require(file);
+			let router = require(file);
 			if (router.router) router = router.router;
 			if (router.default) router = router.default;
-			if (!router || router?.prototype?.constructor?.name !== "router")
-				throw `File doesn't export any default router`;
+			if (!router || router?.prototype?.constructor?.name !== "router") throw `File doesn't export any default router`;
 
 			if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
 
-			if(this.options.serverInitLogging) this.log("verbose", `[Server] Route ${path} registered`);
-		
+			if (this.options.serverInitLogging) this.log("verbose", `[Server] Route ${path} registered`);
+
 			return router;
 		} catch (error) {
 			console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));

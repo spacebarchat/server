@@ -7,6 +7,7 @@
       </value>
     </option>
     <option name="RIGHT_MARGIN" value="180" />
+    <option name="SOFT_MARGINS" value="180" />
     <HTMLCodeStyleSettings>
       <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
       <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="" />

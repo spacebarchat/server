@@ -1,11 +1,18 @@
-import { ApplicationCommandHandlerType, ApplicationCommandOption, ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from "@spacebar/schemas";
+import {
+	ApplicationCommandHandlerType,
+	ApplicationCommandOption,
+	ApplicationCommandType,
+	ApplicationIntegrationType,
+	InteractionContextType,
+	StringStringDictionary,
+} from "@spacebar/schemas";
 
 export interface ApplicationCommandCreateSchema {
 	type?: ApplicationCommandType;
 	name: string;
-	name_localizations?: Record<string, string>;
+	name_localizations?: StringStringDictionary;
 	description?: string;
-	description_localizations?: Record<string, string>;
+	description_localizations?: StringStringDictionary;
 	options?: ApplicationCommandOption[];
 	default_member_permissions?: string;
 	/*

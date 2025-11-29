@@ -59,7 +59,9 @@
     "javascript.nodejs.core.library.typings.version": "24.7.0",
     "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/migration/postgres",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "node",
     "nodejs_package_manager_path": "npm",
@@ -69,7 +71,7 @@
     "npm.build.executor": "Run",
     "npm.start.executor": "Debug",
     "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
-    "settings.editor.selected.configurable": "settings.javascript.linters.tslint",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
     "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
   "keyToStringList": {
@@ -132,7 +134,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9c94529fcfe0-JavaScript-WS-252.26199.162" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.27397.92" />
       </set>
     </attachedChunks>
   </component>
@@ -159,6 +161,7 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
+      <workItem from="1764432507485" duration="17382000" />
     </task>
     <servers />
   </component>

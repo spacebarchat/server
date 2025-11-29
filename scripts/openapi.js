@@ -16,6 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+const { Stopwatch } = require("../dist/util/util/Stopwatch");
+const totalSw = Stopwatch.startNew();
+
 require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
@@ -83,7 +86,7 @@ function combineSchemas(schemas) {
 
 	for (const key in definitions) {
 		if (!schemaRegEx.test(key)) {
-			console.error(`${bgRedBright("ERROR")} Invalid schema name: ${key}, context:`, definitions[key]);
+			console.error(` \x1b[5m${bgRedBright("ERROR")}\x1b[25m Invalid schema name: ${key}, context:`, definitions[key]);
 			continue;
 		}
 		specification.components = specification.components || {};
@@ -240,7 +243,7 @@ async function main() {
 
 	fs.writeFileSync(openapiPath, JSON.stringify(specification, null, 4).replaceAll("#/definitions", "#/components/schemas").replaceAll("bigint", "number"));
 	console.log("Wrote OpenAPI specification to", openapiPath);
-	console.log("Specification contains", Object.keys(specification.paths).length, "paths and", Object.keys(specification.components.schemas).length, "schemas.");
+	console.log("Specification contains", Object.keys(specification.paths).length, "paths and", Object.keys(specification.components.schemas).length, "schemas in", Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds), "ms.");
 }
 
 main();
