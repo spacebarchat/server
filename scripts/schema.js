@@ -39,6 +39,7 @@ const { redBright, yellowBright, bgRedBright, yellow, greenBright, green, cyanBr
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 const exclusionList = JSON.parse(fs.readFileSync(path.join(__dirname, "schemaExclusions.json"), { encoding: "utf8" }));
 
+// @type {TJS.PartialArgs}
 const settings = {
 	required: true,
 	ignoreErrors: true,
@@ -46,6 +47,7 @@ const settings = {
 	defaultNumberType: "integer",
 	noExtraProps: true,
 	defaultProps: false,
+	useTypeOfKeyword: true, // should help catch functions?
 };
 
 const baseClassProperties = [
@@ -190,8 +192,6 @@ async function main() {
 		const part = TJS.generateSchema(program, name, settings, [], generator);
 		if (!part) continue;
 
-		filterSchema(part);
-
 		if (definitions[name]) {
 			process.stdout.write(yellow(` [ERROR] Duplicate schema name detected: ${name}. Overwriting previous schema.`));
 		}
@@ -200,7 +200,7 @@ async function main() {
 			continue;
 		}
 
-		if (process.env.WRITE_SCHEMA_DIR === "true") writePromises.push(fsp.writeFile(path.join("schemas_orig", `${name}.json`), JSON.stringify(part, null, 4)));
+		if (process.env.WRITE_SCHEMA_DIR === "true") writePromises.push(async () => await fsp.writeFile(path.join("schemas_orig", `${name}.json`), JSON.stringify(part, null, 4)));
 
 		// testing:
 		function mergeDefs(schemaName, schema) {
@@ -285,6 +285,9 @@ async function main() {
 	}
 
 	deleteOneOfKindUndefinedRecursive(definitions, "$");
+	for (const defKey in definitions) {
+		filterSchema(definitions[defKey]);
+	}
 
 	if (process.env.WRITE_SCHEMA_DIR === "true") {
 		await Promise.all(writePromises);
@@ -333,10 +336,12 @@ function filterSchema(schema) {
 	if (schema.required) schema.required = schema.required.filter((x) => !baseClassProperties.includes(x));
 
 	// recurse into own definitions
-	if (schema.definitions)
+	if (schema.definitions) {
+		console.log(redBright("WARNING"), "Schema has own definitions, recursing into them to filter base class properties:", Object.keys(schema.definitions));
 		for (const defKey in schema.definitions) {
 			filterSchema(schema.definitions[defKey]);
 		}
+	}
 }
 
 function deepEqual(a, b) {
@@ -352,7 +357,7 @@ function deepEqual(a, b) {
 	if (keysA.length !== keysB.length) return false;
 
 	for (const key of keysA) {
-		if (!keysB.includes(key) || !deepEqual(a[key], b[key])) {
+		if (!keysB.includes(key) || (typeof a[key] === typeof b[key] && !deepEqual(a[key], b[key]))) {
 			return false;
 		}
 	}
