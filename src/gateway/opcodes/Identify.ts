@@ -503,7 +503,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 					user: user.toPublicUser(),
 					activities: session.activities,
 					client_status: session.client_status,
-					status: session.status,
+					status: session.getPublicStatus(),
 				},
 			} as PresenceUpdateEvent),
 		),
