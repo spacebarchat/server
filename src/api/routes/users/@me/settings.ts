@@ -17,9 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, UserSettings } from "@spacebar/util";
+import { User, UserSettings, emitEvent, Session, PrivateSessionProjection, PresenceUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { UserSettingsUpdateSchema, UserSettingsSchema } from "@spacebar/schemas";
+import { UserSettingsUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -74,6 +74,28 @@ router.patch(
 
 		await user.settings.save();
 		await user.save();
+		if (body.status) {
+			const [session] = (await Session.find({
+				where: { user_id: user.id },
+			})) as [Session | undefined];
+			if (session) {
+				session.status = body.status;
+
+				await Promise.all([
+					emitEvent({
+						event: "PRESENCE_UPDATE",
+						user_id: user.id,
+						data: {
+							user: user,
+							activities: session.activities,
+							client_status: session?.client_status,
+							status: body.status === "invisible" ? "offline" : body.status,
+						},
+					} as PresenceUpdateEvent),
+					session.save(),
+				]);
+			}
+		}
 
 		res.json({ ...user.settings, index: undefined });
 	},
