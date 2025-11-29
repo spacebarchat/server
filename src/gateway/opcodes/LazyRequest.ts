@@ -202,7 +202,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 						user: user,
 						activities: session?.activities || [],
 						client_status: session?.client_status,
-						status: session?.status || "offline",
+						status: session?.getPublicStatus() || "offline",
 					} as Presence,
 				});
 			}),

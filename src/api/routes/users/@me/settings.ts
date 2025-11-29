@@ -89,7 +89,7 @@ router.patch(
 							user: user,
 							activities: session.activities,
 							client_status: session?.client_status,
-							status: body.status === "invisible" ? "offline" : body.status,
+							status: session.getPublicStatus(),
 						},
 					} as PresenceUpdateEvent),
 					session.save(),

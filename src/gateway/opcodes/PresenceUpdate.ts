@@ -17,24 +17,16 @@
 */
 
 import { WebSocket, Payload } from "@spacebar/gateway";
-import {
-	emitEvent,
-	PresenceUpdateEvent,
-	Session,
-	User,
-} from "@spacebar/util";
+import { emitEvent, PresenceUpdateEvent, Session, User } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { ActivitySchema } from "@spacebar/schemas"
+import { ActivitySchema } from "@spacebar/schemas";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 	const startTime = Date.now();
 	check.call(this, ActivitySchema, d);
 	const presence = d as ActivitySchema;
 
-	await Session.update(
-		{ session_id: this.session_id },
-		{ status: presence.status, activities: presence.activities },
-	);
+	await Session.update({ session_id: this.session_id }, { status: presence.status, activities: presence.activities });
 
 	const session = await Session.findOneOrFail({
 		select: ["client_status"],
@@ -46,13 +38,11 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
 		user_id: this.user_id,
 		data: {
 			user: await User.getPublicUser(this.user_id),
-			status: presence.status,
+			status: session.getPublicStatus(),
 			activities: presence.activities,
 			client_status: session.client_status,
 		},
 	} as PresenceUpdateEvent);
 
-	console.log(
-		`Presence update for user ${this.user_id} processed in ${Date.now() - startTime}ms`,
-	);
+	console.log(`Presence update for user ${this.user_id} processed in ${Date.now() - startTime}ms`);
 }

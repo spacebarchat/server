@@ -57,6 +57,9 @@ export class Session extends BaseClass {
 
 	@Column({ nullable: false, type: "varchar" })
 	status: Status; //TODO enum
+	getPublicStatus() {
+		return this.status === "invisible" ? "offline" : this.status;
+	}
 }
 
 export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];
