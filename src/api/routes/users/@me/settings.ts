@@ -67,7 +67,7 @@ router.patch(
 			relations: ["settings"],
 		});
 
-		if (!user.settings) user.settings = UserSettings.create(body as UserSettingsUpdateSchema);
+		if (!user.settings) user.settings = UserSettings.create<UserSettings>(body);
 		else user.settings.assign(body);
 
 		if (body.guild_folders) user.settings.guild_folders = body.guild_folders;

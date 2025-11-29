@@ -29,6 +29,7 @@ import {
 	MessageReactionRemoveEmojiEvent,
 	MessageReactionRemoveEvent,
 	User,
+	arrayRemove,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -112,7 +113,7 @@ router.delete(
 
 		const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
 		if (!already_added) throw new HTTPError("Reaction not found", 404);
-		message.reactions.remove(already_added);
+		arrayRemove(message.reactions, already_added);
 
 		await Promise.all([
 			message.save(),
@@ -283,7 +284,7 @@ router.delete(
 
 		already_added.count--;
 
-		if (already_added.count <= 0) message.reactions.remove(already_added);
+		if (already_added.count <= 0) arrayRemove(message.reactions, already_added);
 		else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
 		await message.save();
@@ -340,7 +341,7 @@ router.delete(
 
 		already_added.count--;
 
-		if (already_added.count <= 0) message.reactions.remove(already_added);
+		if (already_added.count <= 0) arrayRemove(message.reactions, already_added);
 		else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
 		await message.save();

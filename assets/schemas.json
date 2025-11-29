@@ -40440,7 +40440,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -40566,53 +40566,20 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "containsAll": {
-                                        "type": "boolean"
-                                    },
-                                    "partition": {
-                                        "type": "boolean"
-                                    },
-                                    "single": {
-                                        "type": "boolean"
-                                    },
-                                    "forEachAsync": {
-                                        "type": "boolean"
-                                    },
-                                    "filterAsync": {
-                                        "type": "boolean"
-                                    },
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "first": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "last": {
-                                        "type": "boolean"
-                                    },
-                                    "distinct": {
-                                        "type": "boolean"
-                                    },
-                                    "distinctBy": {
-                                        "type": "boolean"
-                                    },
-                                    "intersect": {
-                                        "type": "boolean"
-                                    },
-                                    "except": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@698": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@700": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@700",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },
@@ -40666,7 +40633,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -40792,53 +40759,20 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "containsAll": {
-                                        "type": "boolean"
-                                    },
-                                    "partition": {
-                                        "type": "boolean"
-                                    },
-                                    "single": {
-                                        "type": "boolean"
-                                    },
-                                    "forEachAsync": {
-                                        "type": "boolean"
-                                    },
-                                    "filterAsync": {
-                                        "type": "boolean"
-                                    },
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "first": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "last": {
-                                        "type": "boolean"
-                                    },
-                                    "distinct": {
-                                        "type": "boolean"
-                                    },
-                                    "distinctBy": {
-                                        "type": "boolean"
-                                    },
-                                    "intersect": {
-                                        "type": "boolean"
-                                    },
-                                    "except": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@698": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@700": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@700",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },
@@ -100139,7 +100073,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -100265,53 +100199,20 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "containsAll": {
-                                        "type": "boolean"
-                                    },
-                                    "partition": {
-                                        "type": "boolean"
-                                    },
-                                    "single": {
-                                        "type": "boolean"
-                                    },
-                                    "forEachAsync": {
-                                        "type": "boolean"
-                                    },
-                                    "filterAsync": {
-                                        "type": "boolean"
-                                    },
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "first": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "last": {
-                                        "type": "boolean"
-                                    },
-                                    "distinct": {
-                                        "type": "boolean"
-                                    },
-                                    "distinctBy": {
-                                        "type": "boolean"
-                                    },
-                                    "intersect": {
-                                        "type": "boolean"
-                                    },
-                                    "except": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@698": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@700": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@700",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },

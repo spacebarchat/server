@@ -7669,7 +7669,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -7795,53 +7795,20 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "containsAll": {
-                                        "type": "boolean"
-                                    },
-                                    "partition": {
-                                        "type": "boolean"
-                                    },
-                                    "single": {
-                                        "type": "boolean"
-                                    },
-                                    "forEachAsync": {
-                                        "type": "boolean"
-                                    },
-                                    "filterAsync": {
-                                        "type": "boolean"
-                                    },
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "first": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "last": {
-                                        "type": "boolean"
-                                    },
-                                    "distinct": {
-                                        "type": "boolean"
-                                    },
-                                    "distinctBy": {
-                                        "type": "boolean"
-                                    },
-                                    "intersect": {
-                                        "type": "boolean"
-                                    },
-                                    "except": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@698": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@700": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@700",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },
@@ -19298,6 +19265,42 @@
                 ]
             }
         },
+        "/guilds/{guild_id}/force-recount/": {
+            "post": {
+                "x-right-required": "MANAGE_GUILDS",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIGuild"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "guild_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "guild_id"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            }
+        },
         "/guilds/{guild_id}/emojis/": {
             "get": {
                 "security": [
@@ -23253,6 +23256,74 @@
                 ]
             }
         },
+        "/auth/passwordless/start/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/passwordless/finish/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
         "/auth/mfa/webauthn/": {
             "post": {
                 "requestBody": {
@@ -23521,6 +23592,50 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/auth/conditional/finish/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
                 ]
             }
         },

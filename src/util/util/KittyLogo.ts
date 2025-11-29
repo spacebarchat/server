@@ -15,12 +15,9 @@ export class KittyLogo {
 	public static async initialise() {
 		this.isSupported = await this.checkSupport();
 		if (this.isSupported)
-			this.iconCache = readFileSync(
-				__dirname + "/../../../assets/icon.png",
-				{
-					encoding: "base64",
-				},
-			);
+			this.iconCache = readFileSync(__dirname + "/../../../assets/icon.png", {
+				encoding: "base64",
+			});
 	}
 
 	public static printLogo(): void {
@@ -77,11 +74,9 @@ export class KittyLogo {
 					if (resp.startsWith("\x1B_Gi=31;OK")) resolve(true);
 					else resolve(false);
 				});
-				process.stdout.write(
-					"\x1b_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\x1b\\\x1b[c",
-				);
+				process.stdout.write("\x1b_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\x1b\\\x1b[c");
 
-				await sleep(5000);
+				await new Promise((res) => setTimeout(res, 5000));
 				resolve(false);
 			})();
 		});
@@ -111,9 +106,7 @@ export class KittyLogo {
 		while (pngData.length > 0) {
 			const dataSize = Math.min(pngData.length, chunkSize);
 
-			process.stdout.write(
-				header + `,m=${dataSize == chunkSize ? 1 : 0};`,
-			);
+			process.stdout.write(header + `,m=${dataSize == chunkSize ? 1 : 0};`);
 			process.stdout.write(pngData.slice(0, chunkSize));
 			pngData = pngData.slice(chunkSize);
 			process.stdout.write("\x1b\\");

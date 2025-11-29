@@ -41,6 +41,7 @@ import {
 	Snowflake,
 	uploadFile,
 	User,
+	stringGlobToRegexp,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -244,24 +245,28 @@ router.get(
 			return x;
 		});
 
-		await ret
-			.filter((x: MessageCreateSchema) => x.interaction_metadata && !x.interaction_metadata.user)
-			.forEachAsync(async (x: MessageCreateSchema) => {
-				x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
-			});
+		await Promise.all(
+			ret
+				.filter((x: MessageCreateSchema) => x.interaction_metadata && !x.interaction_metadata.user)
+				.map(async (x: MessageCreateSchema) => {
+					x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
+				}),
+		);
 
 		// polyfill message references for old messages
-		await ret
-			.filter((msg) => msg.message_reference && !msg.referenced_message?.id)
-			.forEachAsync(async (msg) => {
-				const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
-					id: msg.message_reference!.message_id,
-				};
-				if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
-				if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
+		await Promise.all(
+			ret
+				.filter((msg) => msg.message_reference && !msg.referenced_message?.id)
+				.map(async (msg) => {
+					const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
+						id: msg.message_reference!.message_id,
+					};
+					if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
+					if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
 
-				msg.referenced_message = await Message.findOne({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
-			});
+					msg.referenced_message = await Message.findOne({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
+				}),
+		);
 
 		return res.json(ret);
 	},
@@ -449,8 +454,8 @@ router.post(
 
 						if (rule.trigger_type == AutomodTriggerTypes.CUSTOM_WORDS) {
 							const triggerMeta = rule.trigger_metadata as AutomodCustomWordsRule;
-							const regexes = triggerMeta.regex_patterns.map((x) => new RegExp(x, "i")).concat(triggerMeta.keyword_filter.map((k) => k.globToRegexp("i")));
-							const allowedRegexes = triggerMeta.allow_list.map((k) => k.globToRegexp("i"));
+							const regexes = triggerMeta.regex_patterns.map((x) => new RegExp(x, "i")).concat(triggerMeta.keyword_filter.map((k) => stringGlobToRegexp(k, "i")));
+							const allowedRegexes = triggerMeta.allow_list.map((k) => stringGlobToRegexp(k, "i"));
 
 							const matches = regexes
 								.map((r) => message.content!.match(r))

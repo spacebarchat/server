@@ -17,15 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	ChannelRecipientAddEvent,
-	DiscordApiErrors,
-	DmChannelDTO,
-	emitEvent,
-	Recipient,
-	User,
-} from "@spacebar/util";
+import { Channel, ChannelRecipientAddEvent, DiscordApiErrors, DmChannelDTO, emitEvent, Recipient, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, PublicUserProjection } from "@spacebar/schemas";
 
@@ -47,24 +39,16 @@ router.put(
 		});
 
 		if (channel.type !== ChannelType.GROUP_DM) {
-			const recipients = [
-				...(channel.recipients?.map((r) => r.user_id) || []),
-				user_id,
-			].distinct();
+			const recipients = [...new Set([...(channel.recipients?.map((r) => r.user_id) || []), user_id])];
 
-			const new_channel = await Channel.createDMChannel(
-				recipients,
-				req.user_id,
-			);
+			const new_channel = await Channel.createDMChannel(recipients, req.user_id);
 			return res.status(201).json(new_channel);
 		} else {
 			if (channel.recipients?.map((r) => r.user_id).includes(user_id)) {
 				throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
 			}
 
-			channel.recipients?.push(
-				Recipient.create({ channel_id: channel_id, user_id: user_id }),
-			);
+			channel.recipients?.push(Recipient.create({ channel_id: channel_id, user_id: user_id }));
 			await channel.save();
 
 			await emitEvent({
@@ -103,13 +87,7 @@ router.delete(
 			where: { id: channel_id },
 			relations: ["recipients"],
 		});
-		if (
-			!(
-				channel.type === ChannelType.GROUP_DM &&
-				(channel.owner_id === req.user_id || user_id === req.user_id)
-			)
-		)
-			throw DiscordApiErrors.MISSING_PERMISSIONS;
+		if (!(channel.type === ChannelType.GROUP_DM && (channel.owner_id === req.user_id || user_id === req.user_id))) throw DiscordApiErrors.MISSING_PERMISSIONS;
 
 		if (!channel.recipients?.map((r) => r.user_id).includes(user_id)) {
 			throw DiscordApiErrors.INVALID_RECIPIENT; //TODO is this the right error?
