@@ -86,7 +86,7 @@ router.patch(
 						event: "PRESENCE_UPDATE",
 						user_id: user.id,
 						data: {
-							user: user,
+							user: user.toPublicUser(),
 							activities: session.activities,
 							client_status: session?.client_status,
 							status: session.getPublicStatus(),
