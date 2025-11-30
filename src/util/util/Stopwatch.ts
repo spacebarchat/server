@@ -39,7 +39,7 @@ export class Stopwatch {
 	}
 
 	stop(): void {
-		const endTime = process.hrtime.bigint();
+		this.endTime = process.hrtime.bigint();
 	}
 
 	elapsed(): ElapsedTime {
@@ -64,13 +64,13 @@ export class ElapsedTime {
 		return this.timeNanos;
 	}
 	get totalMicroseconds(): number {
-		return Number(this.timeNanos / BigInt(1_000));
+		return Number(this.timeNanos / 1_000n);
 	}
 	get totalMilliseconds(): number {
-		return Number(this.timeNanos / BigInt(1_000_000));
+		return Number(this.timeNanos / 1_000_000n);
 	}
 	get totalSeconds(): number {
-		return Number(this.timeNanos / BigInt(1_000_000_000));
+		return Number(this.timeNanos / 1_000_000_000n);
 	}
 	get totalMinutes(): number {
 		return this.totalSeconds / 60;
@@ -82,16 +82,16 @@ export class ElapsedTime {
 		return this.totalHours / 24;
 	}
 	get nanoseconds(): number {
-		return Number(this.timeNanos % BigInt(1_000));
+		return Number(this.timeNanos % 1_000n);
 	}
 	get microseconds(): number {
-		return Number(this.timeNanos / BigInt(1_000)) % 1000;
+		return Number(this.timeNanos / 1_000n) % 1000;
 	}
 	get milliseconds(): number {
-		return Number(this.timeNanos / BigInt(1_000_000)) % 1000;
+		return Number(this.timeNanos / 1_000_000n) % 1000;
 	}
 	get seconds(): number {
-		return Number(this.timeNanos / BigInt(1_000_000_000)) % 60;
+		return Number(this.timeNanos / 1_000_000_000n) % 60;
 	}
 	get minutes(): number {
 		return this.totalMinutes % 60;
@@ -104,12 +104,9 @@ export class ElapsedTime {
 	}
 }
 
-export function timePromise<T>(
-	fn: () => Promise<T>,
-): Promise<{ result: T; elapsed: ElapsedTime }> {
+export async function timePromise<T>(fn: () => Promise<T>): Promise<{ result: T; elapsed: ElapsedTime }> {
 	const stopwatch = Stopwatch.startNew();
-	return fn().then((result) => {
-		const elapsed = stopwatch.elapsed();
-		return { result, elapsed };
-	});
+	const result = await fn();
+	const elapsed = stopwatch.elapsed();
+	return { result, elapsed };
 }
