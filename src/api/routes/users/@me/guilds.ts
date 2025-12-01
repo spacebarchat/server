@@ -76,27 +76,7 @@ router.delete(
 			throw new HTTPError("You can't leave instance auto join guilds", 400);
 		}
 
-		await Promise.all([
-			Member.removeFromGuild(req.user_id, guild_id),
-			emitEvent({
-				event: "GUILD_DELETE",
-				data: {
-					id: guild_id,
-				},
-				user_id: req.user_id,
-			} as GuildDeleteEvent),
-		]);
-
-		const user = await User.getPublicUser(req.user_id);
-
-		await emitEvent({
-			event: "GUILD_MEMBER_REMOVE",
-			data: {
-				guild_id: guild_id,
-				user: user.toPublicUser(),
-			},
-			guild_id: guild_id,
-		} as GuildMemberRemoveEvent);
+		await Member.removeFromGuild(req.user_id, guild_id);
 
 		return res.sendStatus(204);
 	},
