@@ -42,8 +42,12 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		const { channel_id } = req.params;
+		const channel = await Channel.findOneOrFail({
+			where: { guild_id: req.params.guild_id },
+			select: ["id"],
+		});
 		const {
-			channel_id,
 			content,
 			// include_nsfw, // TODO
 			offset,
@@ -66,7 +70,7 @@ router.get(
 				}); // todo this is wrong
 		}
 
-		const permissions = await getPermission(req.user_id, req.params.guild_id, channel_id as string | undefined);
+		const permissions = await getPermission(req.user_id, channel.guild_id, channel_id as string | undefined);
 		permissions.hasThrow("VIEW_CHANNEL");
 		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json({ messages: [], total_results: 0 });
 
@@ -77,31 +81,18 @@ router.get(
 			take: parsedLimit || 0,
 			where: {
 				guild: {
-					id: req.params.guild_id,
+					id: channel.guild_id,
+				},
+				channel: {
+					id: channel_id,
 				},
 			},
 			relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
 			skip: offset ? Number(offset) : 0,
 		};
 		//@ts-ignore
-		if (channel_id) query.where.channel = { id: channel_id };
-		else {
-			// get all channel IDs that this user can access
-			const channels = await Channel.find({
-				where: { guild_id: req.params.guild_id },
-				select: ["id"],
-			});
-			const ids = [];
+		query.where.channel = { id: channel_id };
 
-			for (const channel of channels) {
-				const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
-				if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
-				ids.push(channel.id);
-			}
-
-			//@ts-ignore
-			query.where.channel = { id: In(ids) };
-		}
 		//@ts-ignore
 		if (author_id) query.where.author = { id: author_id };
 		//@ts-ignore
