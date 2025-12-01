@@ -20,19 +20,16 @@ import { Config }from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
-import fetch, { RequestInit } from "node-fetch-commonjs";
 import { yellow } from "picocolors";
 import probe from "probe-image-size";
 
 export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
-	follow: 1,
 	headers: {
 		"user-agent":
 			"Mozilla/5.0 (compatible; Spacebar/1.0; +https://github.com/spacebarchat/server)",
 	},
 	// size: 1024 * 1024 * 5, 	// grabbed from config later
-	compress: true,
 	method: "GET",
 };
 
@@ -130,10 +127,16 @@ export const getMetaDescriptions = (text: string) => {
 
 const doFetch = async (url: URL) => {
 	try {
-		return await fetch(url, {
+		const res = await fetch(url, {
 			...DEFAULT_FETCH_OPTIONS,
-			size: Config.get().limits.message.maxEmbedDownloadSize,
 		});
+		if (res.headers.get("content-length")) {
+			const contentLength = parseInt(res.headers.get("content-length")!);
+			if (Config.get().limits.message.maxEmbedDownloadSize && contentLength > Config.get().limits.message.maxEmbedDownloadSize) {
+				return null;
+			}
+		}
+		return res;
 	} catch (e) {
 		return null;
 	}

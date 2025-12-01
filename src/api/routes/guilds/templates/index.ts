@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Guild, Member, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import fetch from "node-fetch-commonjs";
 import { HTTPError } from "lambert-server";
 import { GuildTemplateCreateSchema } from "@spacebar/schemas"
 

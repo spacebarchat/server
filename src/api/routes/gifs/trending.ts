@@ -22,9 +22,6 @@ import {
 	parseGifResult,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import fetch from "node-fetch-commonjs";
-import { ProxyAgent } from "proxy-agent";
-import http from "http";
 import { TenorCategoriesResults, TenorTrendingResults } from "@spacebar/schemas"
 
 const router = Router({ mergeParams: true });
@@ -52,13 +49,10 @@ router.get(
 
 		const apiKey = getGifApiKey();
 
-		const agent = new ProxyAgent();
-
 		const [responseSource, trendGifSource] = await Promise.all([
 			fetch(
 				`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`,
 				{
-					agent: agent as http.Agent,
 					method: "get",
 					headers: { "Content-Type": "application/json" },
 				},
@@ -66,7 +60,6 @@ router.get(
 			fetch(
 				`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`,
 				{
-					agent: agent as http.Agent,
 					method: "get",
 					headers: { "Content-Type": "application/json" },
 				},

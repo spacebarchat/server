@@ -50,7 +50,6 @@ import {
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
-import fetch from "node-fetch-commonjs";
 import { ChannelType, Embed, EmbedType, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -206,7 +205,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 		if (opts.avatar_url) {
 			const avatarData = await fetch(opts.avatar_url);
-			const base64 = await avatarData.buffer().then((x) => x.toString("base64"));
+			const base64 = await avatarData.text().then((x) => btoa(x));
 
 			const dataUri = "data:" + avatarData.headers.get("content-type") + ";base64," + base64;
 

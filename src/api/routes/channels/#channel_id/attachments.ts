@@ -25,7 +25,6 @@ import {
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { CloudAttachment } from "@spacebar/util";
-import fetch from "node-fetch-commonjs";
 import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas"
 
 const router: Router = Router({ mergeParams: true });
