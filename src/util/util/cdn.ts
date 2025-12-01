@@ -42,7 +42,7 @@ export async function uploadFile(
 				...form.getHeaders(),
 			},
 			method: "POST",
-			body: form,
+			body: form.getBuffer(),
 		},
 	);
 	const result = (await response.json()) as Attachment;
