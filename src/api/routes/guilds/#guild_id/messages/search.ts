@@ -54,14 +54,10 @@ router.get(
 		} = req.query;
 
 		const parsedLimit = Number(limit) || 50;
-		if (parsedLimit < 1 || parsedLimit > 100)
-			throw new HTTPError("limit must be between 1 and 100", 422);
+		if (parsedLimit < 1 || parsedLimit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
 		if (sort_order) {
-			if (
-				typeof sort_order != "string" ||
-				["desc", "asc"].indexOf(sort_order) == -1
-			)
+			if (typeof sort_order != "string" || ["desc", "asc"].indexOf(sort_order) == -1)
 				throw FieldErrors({
 					sort_order: {
 						message: "Value must be one of ('desc', 'asc').",
@@ -70,20 +66,13 @@ router.get(
 				}); // todo this is wrong
 		}
 
-		const permissions = await getPermission(
-			req.user_id,
-			req.params.guild_id,
-			channel_id as string | undefined,
-		);
+		const permissions = await getPermission(req.user_id, req.params.guild_id, channel_id as string | undefined);
 		permissions.hasThrow("VIEW_CHANNEL");
-		if (!permissions.has("READ_MESSAGE_HISTORY"))
-			return res.json({ messages: [], total_results: 0 });
+		if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json({ messages: [], total_results: 0 });
 
 		const query: FindManyOptions<Message> = {
 			order: {
-				timestamp: sort_order
-					? (sort_order.toUpperCase() as "ASC" | "DESC")
-					: "DESC",
+				timestamp: sort_order ? (sort_order.toUpperCase() as "ASC" | "DESC") : "DESC",
 			},
 			take: parsedLimit || 0,
 			where: {
@@ -91,16 +80,7 @@ router.get(
 					id: req.params.guild_id,
 				},
 			},
-			relations: [
-				"author",
-				"webhook",
-				"application",
-				"mentions",
-				"mention_roles",
-				"mention_channels",
-				"sticker_items",
-				"attachments",
-			],
+			relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
 			skip: offset ? Number(offset) : 0,
 		};
 		//@ts-ignore
@@ -114,16 +94,8 @@ router.get(
 			const ids = [];
 
 			for (const channel of channels) {
-				const perm = await getPermission(
-					req.user_id,
-					req.params.guild_id,
-					channel.id,
-				);
-				if (
-					!perm.has("VIEW_CHANNEL") ||
-					!perm.has("READ_MESSAGE_HISTORY")
-				)
-					continue;
+				const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
+				if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
 				ids.push(channel.id);
 			}
 
@@ -136,6 +108,8 @@ router.get(
 		if (content) query.where.content = Like(`%${content}%`);
 
 		const messages: Message[] = await Message.find(query);
+		delete query.take;
+		const total_results = await Message.count(query);
 
 		const messagesDto = messages.map((x) => [
 			{
@@ -169,7 +143,7 @@ router.get(
 
 		return res.json({
 			messages: messagesDto,
-			total_results: messages.length,
+			total_results,
 		});
 	},
 );

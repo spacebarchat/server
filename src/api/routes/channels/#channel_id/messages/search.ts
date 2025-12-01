@@ -99,6 +99,8 @@ router.get(
 		if (content) query.where.content = Like(`%${content}%`);
 
 		const messages: Message[] = await Message.find(query);
+		delete query.take;
+		const total_results = await Message.count(query);
 
 		const messagesDto = messages.map((x) => [
 			{
@@ -132,7 +134,7 @@ router.get(
 
 		return res.json({
 			messages: messagesDto,
-			total_results: messages.length,
+			total_results,
 		});
 	},
 );
