@@ -31,7 +31,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Member } from "./Member";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection, threadMetadata } from "@spacebar/schemas";
 
 @Entity({
     name: "channels",
@@ -151,6 +151,18 @@ export class Channel extends BaseClass {
 
     @Column({ nullable: true })
     default_thread_rate_limit_per_user?: number = 0;
+
+    @Column({ type: "simple-json", nullable: true })
+    thread_metadata?: threadMetadata;
+
+    @Column({ nullable: true })
+    member_count?: number;
+
+    @Column({ nullable: true })
+    message_count?: number;
+
+    @Column({ nullable: true })
+    total_message_sent?: number;
 
     /** Must be calculated Channel.calculatePosition */
     position: number;
