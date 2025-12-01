@@ -205,7 +205,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		}
 		if (opts.avatar_url) {
 			const avatarData = await fetch(opts.avatar_url);
-			const base64 = await avatarData.text().then((x) => btoa(x));
+			const base64 = await avatarData.arrayBuffer().then((x) => Buffer.from(x).toString("base64"));
 
 			const dataUri = "data:" + avatarData.headers.get("content-type") + ";base64," + base64;
 
