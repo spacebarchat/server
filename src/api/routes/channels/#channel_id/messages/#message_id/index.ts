@@ -35,7 +35,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "../../../../../util";
-import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema } from "@spacebar/schemas";
+import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
@@ -293,6 +293,10 @@ router.delete(
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });
+        if (channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
+            if (channel.message_count !== undefined) channel.message_count--;
+            channel.save(); //Save async, it's fine
+        }
         const message = await Message.findOneOrFail({
             where: { id: message_id },
         });

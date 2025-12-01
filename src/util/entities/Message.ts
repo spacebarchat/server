@@ -244,6 +244,7 @@ export class Message extends BaseClass {
             poll: this.poll ?? undefined,
             content: this.content ?? "",
             pinned: this.pinned,
+            thread: this.thread ? this.thread.toJSON() : this.thread,
         };
     }
 

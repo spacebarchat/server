@@ -17,7 +17,7 @@
 */
 
 import { route, sendMessage } from "@spacebar/api";
-import { Message, Channel, emitEvent, User, MessageUpdateEvent } from "@spacebar/util";
+import { Message, Channel, emitEvent, User, MessageUpdateEvent, Recipient } from "@spacebar/util";
 import { MessageThreadCreationSchema, ChannelType, MessageType } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
@@ -48,6 +48,8 @@ router.post(
             where: { id: channel_id },
         });
         const user = await User.findOneOrFail({ where: { id: req.user_id } });
+        const recipient = Recipient.create({ channel_id: message.id, user });
+
         const thread = await Channel.createChannel(
             {
                 id: message.id,
@@ -61,6 +63,7 @@ router.post(
                 guild_id: channel.guild_id,
                 rate_limit_per_user: body.rate_limit_per_user,
                 type: ChannelType.GUILD_PUBLIC_THREAD,
+                recipients: [],
                 thread_metadata: {
                     archived: false,
                     auto_archive_duration: body.auto_archive_duration || channel.default_auto_archive_duration || 4320,
@@ -72,6 +75,9 @@ router.post(
             void 0,
             { skipPermissionCheck: true, keepId: true, skipEventEmit: true },
         );
+
+        recipient.save();
+
         message.thread = thread;
         message.flags ||= 1 << 5;
         await sendMessage({

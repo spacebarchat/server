@@ -106,6 +106,15 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
     const ephermal = (message.flags & (1 << 6)) !== 0;
+    if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
+        const rep = Channel.getRepository();
+        console.log(channel.id);
+        await rep.increment({ id: channel.id }, "message_count", 1);
+        await rep.increment({ id: channel.id }, "total_message_sent", 1);
+    }
+    if (!ephermal) {
+        channel.last_message_id = message.id;
+    }
 
     if (cloudAttachments && cloudAttachments.length > 0) {
         console.log("[Message] Processing attachments for message", message.id, ":", message.attachments);

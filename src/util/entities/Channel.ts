@@ -533,6 +533,7 @@ export class Channel extends BaseClass {
             user_limit: this.user_limit || undefined,
             rate_limit_per_user: this.rate_limit_per_user || undefined,
             owner_id: this.owner_id || undefined,
+            ...(this.type === ChannelType.GUILD_PUBLIC_THREAD && this.recipients ? { member_ids_preview: this.recipients.map((_) => _.user.id) } : {}),
         };
     }
 }
