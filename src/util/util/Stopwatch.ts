@@ -18,6 +18,8 @@
 
 // Inspired by the dotnet Stopwatch class
 // Provides a simple interface to get elapsed time in high resolution
+import { ElapsedTime } from "./ElapsedTime";
+
 export class Stopwatch {
 	private startTime: bigint;
 	private endTime: bigint | null = null;
@@ -50,57 +52,6 @@ export class Stopwatch {
 		const elapsed = this.elapsed();
 		this.reset();
 		return elapsed;
-	}
-}
-
-export class ElapsedTime {
-	private readonly timeNanos: bigint;
-
-	constructor(timeNanos: bigint) {
-		this.timeNanos = timeNanos;
-	}
-
-	get totalNanoseconds(): bigint {
-		return this.timeNanos;
-	}
-	get totalMicroseconds(): number {
-		return Number(this.timeNanos / 1_000n);
-	}
-	get totalMilliseconds(): number {
-		return Number(this.timeNanos / 1_000_000n);
-	}
-	get totalSeconds(): number {
-		return Number(this.timeNanos / 1_000_000_000n);
-	}
-	get totalMinutes(): number {
-		return this.totalSeconds / 60;
-	}
-	get totalHours(): number {
-		return this.totalMinutes / 60;
-	}
-	get totalDays(): number {
-		return this.totalHours / 24;
-	}
-	get nanoseconds(): number {
-		return Number(this.timeNanos % 1_000n);
-	}
-	get microseconds(): number {
-		return Number(this.timeNanos / 1_000n) % 1000;
-	}
-	get milliseconds(): number {
-		return Number(this.timeNanos / 1_000_000n) % 1000;
-	}
-	get seconds(): number {
-		return Number(this.timeNanos / 1_000_000_000n) % 60;
-	}
-	get minutes(): number {
-		return this.totalMinutes % 60;
-	}
-	get hours(): number {
-		return this.totalHours % 24;
-	}
-	get days(): number {
-		return this.totalDays;
 	}
 }
 
