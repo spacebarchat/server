@@ -52,7 +52,7 @@ export class Message extends BaseClass {
     @RelationId((message: Message) => message.thread)
     thread_id?: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "thread_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })

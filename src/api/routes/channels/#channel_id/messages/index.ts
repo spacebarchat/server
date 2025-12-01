@@ -137,6 +137,7 @@ router.get(
                     sticker_items: true,
                     attachments: true,
                 },
+                thread: true,
             },
         };
 

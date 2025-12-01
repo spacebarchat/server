@@ -6412,6 +6412,29 @@
                     "enabled"
                 ]
             },
+            "MessageThreadCreationSchema": {
+                "type": "object",
+                "properties": {
+                    "auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "location": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
             "VoiceIdentifySchema": {
                 "type": "object",
                 "properties": {
@@ -10134,6 +10157,7 @@
                     16,
                     19,
                     20,
+                    21,
                     41,
                     42,
                     43,
@@ -23231,6 +23255,56 @@
                             "type": "string"
                         },
                         "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/messages/{message_id}/threads/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageThreadCreationSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "message_id"
                     }
                 ],
                 "tags": [

@@ -234,7 +234,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
                 if (opts.message_reference.type != 1) {
                     if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-                    if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
+                    if (opts.message_reference.channel_id !== opts.channel_id && opts.type !== MessageType.THREAD_STARTER_MESSAGE)
+                        throw new HTTPError("You can only reference messages from this channel");
                 }
 
                 message.message_reference = opts.message_reference;
@@ -254,14 +255,22 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     },
                 });
 
-                if (message.referenced_message.channel_id && message.referenced_message.channel_id !== opts.message_reference.channel_id)
+                if (
+                    message.referenced_message.channel_id &&
+                    message.referenced_message.channel_id !== opts.message_reference.channel_id &&
+                    opts.type !== MessageType.THREAD_STARTER_MESSAGE
+                )
                     throw new HTTPError("Referenced message not found in the specified channel", 404);
-                if (message.referenced_message.guild_id && message.referenced_message.guild_id !== opts.message_reference.guild_id)
+                if (
+                    message.referenced_message.guild_id &&
+                    message.referenced_message.guild_id !== opts.message_reference.guild_id &&
+                    opts.type !== MessageType.THREAD_STARTER_MESSAGE
+                )
                     throw new HTTPError("Referenced message not found in the specified channel", 404);
             }
             /** Q: should be checked if the referenced message exists? ANSWER: NO
 			 otherwise backfilling won't work **/
-            message.type = MessageType.REPLY;
+            if (MessageType.THREAD_STARTER_MESSAGE !== message.type) message.type = MessageType.REPLY;
         }
     }
 
@@ -274,7 +283,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         !opts.sticker_ids?.length &&
         !opts.poll &&
         !opts.components?.length &&
-        opts.message_reference?.type != 1
+        opts.message_reference?.type != 1 &&
+        opts.type !== MessageType.THREAD_STARTER_MESSAGE
     ) {
         console.log("[Message] Rejecting empty message:", opts, message);
         throw new HTTPError("Empty messages are not allowed", 50006);

@@ -215,6 +215,7 @@ export class Channel extends BaseClass {
         }
 
         switch (channel.type) {
+            case ChannelType.GUILD_PUBLIC_THREAD:
             case ChannelType.GUILD_TEXT:
             case ChannelType.GUILD_NEWS:
             case ChannelType.GUILD_VOICE:
