@@ -296,6 +296,8 @@ export class Message extends BaseClass {
 		opts.webhook_id = opts.webhook?.id;
 		opts.application_id = opts.application?.id;
 
+		delete opts.member;
+
 		Object.assign(message, {
 			tts: false,
 			embeds: [],
