@@ -19,7 +19,7 @@
 export interface MessageAcknowledgeSchema {
 	manual?: boolean;
 	mention_count?: number;
-	flags?: ReadStateFlags;
+	flags?: ReadStateFlags | 0;
 	last_viewed?: number;
 	token?: string;
 }
