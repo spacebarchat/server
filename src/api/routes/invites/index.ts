@@ -20,7 +20,7 @@ import { getIpAdress, route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { UserFlags } from "@spacebar/schemas*";
+import { UserFlags } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
