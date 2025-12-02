@@ -355,10 +355,8 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 				},
 			];
 			break;
-		case "ping":
-			return res.status(204);
 		default:
-			return res.send(500);
+			return res.status(204).end(); // Yes, discord sends 204 even on invalid event
 	}
 
 	req.body = discordPayload;
