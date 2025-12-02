@@ -1,518 +1,371 @@
 import { getProxyUrl, route } from "@spacebar/api";
-import { capitalize } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
-import { EmbedType, WebhookExecuteSchema } from "@spacebar/schemas"
+import { WebhookExecuteSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
-const parseGitHubWebhook = (
-	req: Request,
-	res: Response,
-	next: NextFunction,
-) => {
+const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => {
 	const eventType = req.headers["x-github-event"] as string;
 	if (!eventType) {
 		throw new HTTPError("Missing X-GitHub-Event header", 400);
 	}
 
-	if (eventType === "ping") {
-		return res.status(200).json({ message: "pong" });
-	}
+	const discordPayload: WebhookExecuteSchema = {
+		username: "Github",
+		avatar_url: "https://github.com/Github.png",
+	};
 
-	const discordPayload = transformGitHubToDiscord(eventType, req.body);
-	if (!discordPayload) {
-		// Unsupported event type
-		return res.status(204).send();
+	switch (eventType) {
+		case "commit_comment":
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] New comment on commit \`${req.body.comment.commit_id.slice(0, 7)}\``,
+					description: req.body.comment.body.length > 500 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+					url: req.body.comment.html_url,
+				},
+			];
+			break;
+		case "create":
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] New ${req.body.ref_type} created: ${req.body.ref}`,
+				},
+			];
+			break;
+		case "delete":
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] ${req.body.ref_type} deleted: ${req.body.ref}`,
+				},
+			];
+			break;
+		case "fork":
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] Fork created: ${req.body.forkee.full_name}`,
+					url: req.body.forkee.html_url,
+				},
+			];
+			break;
+		case "issue_comment":
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					color: "pull_request" in req.body.issue ? 12576191 : 15109472,
+					title: `[${req.body.repository.full_name}] New comment on ${"pull_request" in req.body.issue ? "pull request" : "issue"} #${req.body.issue.number}: ${
+						req.body.issue.title.length > 150 ? `${req.body.issue.title.slice(0, 147)}...` : req.body.issue.title
+					}`,
+					url: req.body.comment.html_url,
+					description: req.body.comment.body.length > 150 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+				},
+			];
+			break;
+		case "issues":
+			if (!["opened", "closed"].includes(req.body.action)) {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] Issue ${req.body.action} #${req.body.issue.number}: ${req.body.issue.title}`,
+					url: req.body.issue.html_url,
+				},
+			];
+
+			if (req.body.action === "opened") {
+				discordPayload.embeds[0].color = 15426592;
+				discordPayload.embeds[0].description = req.body.issue.body.length > 150 ? `${req.body.issue.body.slice(0, 147)}...` : req.body.issue.body;
+			}
+			break;
+		case "member":
+			if (req.body.action !== "added") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] New collaborator added: ${req.body.member.login}`,
+					url: req.body.member.html_url,
+				},
+			];
+			break;
+		case "public":
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] Now open sourced!`,
+				},
+			];
+			break;
+		case "pull_request": // funfact: for some reason, if a PR's title is over 216 chars in length you won't see any actions taken on the PR on discord
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] Pull request ${req.body.action}: #${req.body.number} ${req.body.pull_request.title.length > 216 ? `${req.body.pull_request.title.slice(0, 213)}...` : req.body.pull_request.title}`,
+					url: req.body.pull_request.html_url,
+				},
+			];
+
+			if (req.body.action === "opened") {
+				discordPayload.embeds[0].description = req.body.pull_request.body.length > 500 ? `${req.body.pull_request.body.slice(0, 497)}...` : req.body.pull_request.body;
+				discordPayload.embeds[0].color = 38912;
+			}
+			break;
+		case "pull_request_review": // funfact: for some reason, if a PR's title is over 216 chars in length you won't see any actions taken on the PR on discord
+			if (req.body.action !== "submitted") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] Pull request review submitted: #${req.body.pull_request.number} ${req.body.pull_request.title.length > 216 ? `${req.body.pull_request.title.slice(0, 213)}...` : req.body.pull_request.title}`,
+					description: req.body.review.body.length > 500 ? `${req.body.review.body.slice(0, 497)}...` : req.body.review.body,
+					url: req.body.review.html_url,
+				},
+			];
+			break;
+		case "pull_request_review_comment": // funfact: for some reason, if a PR's title is over 216 chars in length you won't see any actions taken on the PR on discord
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					color: 12576191,
+					title: `[${req.body.repository.full_name}] New review comment on pull request: #${req.body.pull_request.number} ${req.body.pull_request.title.length > 216 ? `${req.body.pull_request.title.slice(0, 213)}...` : req.body.pull_request.title}`,
+					description: req.body.comment.body.length > 500 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+					url: req.body.comment.html_url,
+				},
+			];
+			break;
+		case "push":
+			if (!req.body.ref.startsWith("refs/heads/")) {
+				return;
+			}
+
+			if (req.body.forced) {
+				discordPayload.embeds = [
+					{
+						color: 16525609,
+						author: {
+							name: req.body.sender.login,
+							icon_url: req.body.sender.avatar_url,
+							proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+							url: req.body.sender.html_url,
+						},
+						title: `[${req.body.repository.name}] Branch ${req.body.ref.slice(11)} was force-pushed to \`${req.body.head_commit.id.slice(0, 7)}\``,
+						description: `[Compare changes](${req.body.compare})`,
+					},
+				];
+			} else {
+				discordPayload.embeds = [
+					{
+						color: 7506394,
+						author: {
+							name: req.body.sender.login,
+							icon_url: req.body.sender.avatar_url,
+							proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+							url: req.body.sender.html_url,
+						},
+						title: `[${req.body.repository.name}:${req.body.ref.slice(11)}] ${req.body.commits.length} new commit${req.body.commits.length > 1 ? "s" : ""}`,
+						url: req.body.head_commit.url,
+						description: req.body.commits
+							.slice(0, 5) // Discord only shows 5 first commits
+							.map(
+								(c: { id: string; url: string; message: string; author: { username: string } }) =>
+									`[\`${c.id.slice(0, 7)}\`](${c.url}) ${c.message.length > 46 ? `${c.message.slice(0, 47)}...` : c.message} - ${c.author.username}`,
+							)
+							.join("\n"),
+					},
+				];
+			}
+			break;
+		case "release":
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] New release published: ${req.body.release.tag_name}`,
+					url: req.body.release.html_url,
+				},
+			];
+			break;
+		case "watch":
+			if (req.body.action !== "started") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					title: `[${req.body.repository.full_name}] New star added`,
+					url: req.body.repository.html_url,
+				},
+			];
+			break;
+		case "check_run":
+			if (req.body.action !== "completed") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					color: req.body.check_run.conclusion == "success" ? 38912 : 16525609,
+					title: `[${req.body.repository.name}] ${req.body.check_run.name} ${req.body.check_run.conclusion} on ${req.body.check_run.check_suite.head_branch}`,
+					url: req.body.check_run.html_url,
+				},
+			];
+			break;
+		case "check_suite":
+			if (req.body.action !== "completed") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					color: req.body.check_suite.conclusion == "success" ? 38912 : 16525609,
+					title: `[${req.body.repository.name}] GitHub Actions checks ${req.body.check_suite.conclusion} on ${req.body.check_suite.head_branch}`,
+					url: `https://github.com/${req.body.repository.full_name}/commit/${req.body.check_suite.head_commit.id}`,
+				},
+			];
+			break;
+		case "discussion":
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					color: 15109472,
+					title: `[${req.body.repository.name}] New discussion #${req.body.discussion.number}: ${req.body.discussion.title.length > 150 ? `${req.body.discussion.title.slice(0, 151)}...` : req.body.discussion.title}`,
+					url: req.body.discussion.html_url,
+					description: req.body.discussion.body.length > 500 ? `${req.body.discussion.body.slice(0, 497)}...` : req.body.discussion.body,
+				},
+			];
+			break;
+		case "discussion_comment":
+			if (req.body.action !== "created") {
+				return;
+			}
+
+			discordPayload.embeds = [
+				{
+					author: {
+						name: req.body.sender.login,
+						icon_url: req.body.sender.avatar_url,
+						proxy_icon_url: getProxyUrl(new URL(req.body.sender.avatar_url), 80, 80),
+						url: req.body.sender.html_url,
+					},
+					color: 15109472,
+					title: `[${req.body.comment.repository_url}] New comment on discussion #${req.body.discussion.number}: ${req.body.discussion.title.length > 150 ? `${req.body.discussion.title.slice(0, 151)}...` : req.body.discussion.title}`,
+					url: req.body.comment.html_url,
+					description: req.body.comment.body.length > 500 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+				},
+			];
+			break;
+		case "ping":
+			return res.status(204);
+		default:
+			return res.send(500);
 	}
 
 	req.body = discordPayload;
-	// Set default wait=true for GitHub webhooks so they get a response
-	req.query.wait = req.query.wait || "true";
+	req.query.wait ||= "true";
 
 	next();
 };
-
-function transformGitHubToDiscord(
-	eventType: string,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	payload: any,
-): WebhookExecuteSchema | null {
-	switch (eventType) {
-		case "star":
-			if (payload.action !== "created") {
-				return null;
-			}
-
-			return {
-				username: "GitHub",
-				// TODO: Provide a static avatar for GitHub
-				embeds: [
-					{
-						title: `⭐ New star on ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `${payload.sender?.login} starred the repository`,
-						color: 0xffd700,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "commit_comment":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `💬 Comment on Commit ${payload.comment?.commit_id} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.comment?.body || "No comment",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "create":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `➕ ${capitalize(payload.ref_type)} created in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `A new ${payload.ref_type} named \`${payload.ref}\` was created`,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "delete":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `🗑️ ${payload.ref_type} deleted in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `The ${payload.ref_type} named \`${payload.ref}\` was deleted`,
-						color: 0xf04747,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "fork":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `🍴 Repository forked: ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `${payload.sender?.login} forked the repository`,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "issue_comment":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `💬 Comment on Issue #${payload.issue?.number} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.comment?.body || "No comment",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "issues":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `📝 Issue ${payload.action} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.issue?.title,
-						color:
-							payload.issue?.state === "open"
-								? 0x43b581
-								: 0xf04747,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "member":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `👤 Member ${payload.action} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `${payload.member?.login} was ${payload.action} to the repository`,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "public":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `🌐 Repository ${payload.repository?.full_name} is now public`,
-						type: EmbedType.rich,
-						description: `${payload.repository?.full_name} is now public`,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "pull_request":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `🔀 Pull Request ${payload.action} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.pull_request?.title,
-						color:
-							payload.pull_request?.state === "open"
-								? 0x43b581
-								: 0xf04747,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "pull_request_review":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `📝 Pull Request Review ${payload.action} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.review?.body || "No review body",
-						color:
-							payload.review?.state === "approved"
-								? 0x43b581
-								: payload.review?.state === "changes_requested"
-									? 0xf04747
-									: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "pull_request_review_comment":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `💬 Comment on Pull Request #${payload.pull_request?.number} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.comment?.body || "No comment",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "push": {
-			const commits = payload.commits?.slice(0, 5) || [];
-			if (commits.length === 0) {
-				return null;
-			}
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `📤 Push to ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: `${commits.length} commit${commits.length !== 1 ? "s" : ""} to \`${payload.ref?.replace("refs/heads/", "")}\``,
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// TODO: Improve this by adding `fields` to show recent commits
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		}
-		case "release":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `🚀 Release ${payload.release?.tag_name} ${payload.action} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.release?.name || "No title",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "watch":
-			return null;
-		case "check_run":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `✅ Check Run ${payload.check_run?.name} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description:
-							payload.check_run?.output?.title || "No title",
-						color:
-							payload.check_run?.conclusion === "success"
-								? 0x43b581
-								: payload.check_run?.conclusion === "failure"
-									? 0xf04747
-									: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "check_suite":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `✅ Check Suite ${payload.check_suite?.status} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description:
-							payload.check_suite?.head_branch || "No branch",
-						color:
-							payload.check_suite?.conclusion === "success"
-								? 0x43b581
-								: payload.check_suite?.conclusion === "failure"
-									? 0xf04747
-									: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "discussion":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `💬 Discussion ${payload.discussion?.title} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.discussion?.body || "No body",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		case "discussion_comment":
-			return {
-				username: "GitHub",
-				embeds: [
-					{
-						title: `💬 Comment on Discussion #${payload.discussion?.number} in ${payload.repository?.full_name}`,
-						type: EmbedType.rich,
-						description: payload.comment?.body || "No comment",
-						color: 0x7289da,
-						thumbnail: {
-							url: payload.sender?.avatar_url,
-							proxy_url: getProxyUrl(
-								new URL(payload.sender?.avatar_url),
-								80,
-								80,
-							),
-							width: 80,
-							height: 80,
-						},
-						// @ts-expect-error Validate using string in schema
-						timestamp: new Date().toISOString(),
-					},
-				],
-			};
-		default:
-			// console.debug("Unsupported GitHub event type:", eventType);
-			return null;
-	}
-}
 
 router.post(
 	"/",
@@ -529,14 +382,12 @@ router.post(
 			wait: {
 				type: "boolean",
 				required: false,
-				description:
-					"waits for server confirmation of message send before response, and returns the created message body",
+				description: "waits for server confirmation of message send before response, and returns the created message body",
 			},
 			thread_id: {
 				type: "string",
 				required: false,
-				description:
-					"Send a message to the specified thread within a webhook's channel.",
+				description: "Send a message to the specified thread within a webhook's channel.",
 			},
 		},
 		responses: {
