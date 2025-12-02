@@ -16,19 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import {
-	DiscordApiErrors,
-	emitEvent,
-	getPermission,
-	Guild,
-	Invite,
-	InviteDeleteEvent,
-	PublicInviteRelation,
-	User,
-} from "@spacebar/util";
+import { getIpAdress, route } from "@spacebar/api";
+import { Ban, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { UserFlags } from "@spacebar/schemas*";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -88,17 +80,32 @@ router.post(
 		const { public_flags } = await User.findOneOrFail({
 			where: { id: req.user_id },
 		});
+		const ban = await Ban.findOne({
+			where: [
+				{ guild_id: guild_id, user_id: req.user_id },
+				{ guild_id: guild_id, ip: getIpAdress(req) },
+			],
+		});
 
-		if (
-			features.includes("INTERNAL_EMPLOYEE_ONLY") &&
-			(public_flags & 1) !== 1
-		)
-			throw new HTTPError(
-				"Only intended for the staff of this server.",
-				401,
-			);
-		if (features.includes("INVITES_DISABLED"))
+		if (ban) {
+			console.log(`[Invite] User ${req.user_id} tried to join guild ${guild_id} but is banned by ${ban.user_id === req.user_id ? "User ID" : "IP address"}.`);
+			throw DiscordApiErrors.USER_BANNED;
+		}
+
+		if ((BigInt(public_flags) & UserFlags.FLAGS.QUARANTINED) === UserFlags.FLAGS.QUARANTINED) {
+			console.log(`[Invite] User ${req.user_id} tried to join guild ${guild_id} but is quarantined.`);
+			throw DiscordApiErrors.UNKNOWN_INVITE;
+		}
+
+		if (features.includes("INTERNAL_EMPLOYEE_ONLY") && (public_flags & 1) !== 1) {
+			console.log(`[Invite] User ${req.user_id} tried to join guild ${guild_id} but is not staff.`);
+			throw new HTTPError("Only intended for the staff of this instance.", 401);
+		}
+
+		if (features.includes("INVITES_DISABLED")) {
+			console.log(`[Invite] User ${req.user_id} tried to join guild ${guild_id} but joins are closed.`);
 			throw new HTTPError("Sorry, this guild has joins closed.", 403);
+		}
 
 		const invite = await Invite.joinGuild(req.user_id, invite_code);
 
@@ -127,20 +134,9 @@ router.delete(
 		const invite = await Invite.findOneOrFail({ where: { code: invite_code } });
 		const { guild_id, channel_id } = invite;
 
-		const permission = await getPermission(
-			req.user_id,
-			guild_id,
-			channel_id,
-		);
+		const permission = await getPermission(req.user_id, guild_id, channel_id);
 
-		if (
-			!permission.has("MANAGE_GUILD") &&
-			!permission.has("MANAGE_CHANNELS")
-		)
-			throw new HTTPError(
-				"You missing the MANAGE_GUILD or MANAGE_CHANNELS permission",
-				401,
-			);
+		if (!permission.has("MANAGE_GUILD") && !permission.has("MANAGE_CHANNELS")) throw new HTTPError("You missing the MANAGE_GUILD or MANAGE_CHANNELS permission", 401);
 
 		await Promise.all([
 			Invite.delete({ code: invite_code }),
