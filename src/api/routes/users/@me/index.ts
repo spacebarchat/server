@@ -140,7 +140,7 @@ router.patch(
 		}
 
 		if (body.username) {
-			const check_username = body?.username?.replace(/\s/g, "");
+			const check_username = body?.username?.replace(/\s/g, "").trim();
 			if (!check_username) {
 				throw FieldErrors({
 					username: {
