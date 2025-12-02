@@ -13,8 +13,8 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 	}
 
 	const discordPayload: WebhookExecuteSchema = {
-		username: "Github",
-		avatar_url: "https://github.com/Github.png",
+		username: "GitHub",
+		avatar_url: "https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png",
 	};
 
 	switch (eventType) {
