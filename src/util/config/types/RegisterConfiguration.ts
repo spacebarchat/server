@@ -37,7 +37,8 @@ export class RegisterConfiguration {
 	blockIpDataCoThreatTypes: string[] = ["tor", "icloud_relay", "proxy", "datacenter", "anonymous", "known_attacker", "known_abuser", "threat"]; // matching ipdata's threat.is_* fields as of 2025/11/30, minus bogon
 	blockAsnTypes: string[] = [""];
 	blockAsns: string[] = [""];
-	blockAbuseIpDbAboveScore: number = 0; // 0 to disable
+	blockAbuseIpDbAboveScore: number = 75; // 0 to disable
 	incrementingDiscriminators: boolean = false; // random otherwise
 	defaultRights: string = "875069521787904"; // See `npm run generate:rights`
+	checkIp: boolean = true;
 }

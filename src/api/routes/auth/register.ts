@@ -16,25 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	getIpAdress,
-	route,
-	verifyCaptcha,
-} from "@spacebar/api";
-import {
-	Config,
-	FieldErrors,
-	Invite,
-	User,
-	ValidRegistrationToken,
-	generateToken,
-	IpDataClient
-} from "@spacebar/util";
+import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
+import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
-import { RegisterSchema } from "@spacebar/schemas"
+import { RegisterSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -64,13 +52,9 @@ router.post(
 				});
 				await regToken.remove();
 				regTokenUsed = true;
-				console.log(
-					`[REGISTER] Registration token ${token} used for registration!`,
-				);
+				console.log(`[REGISTER] Registration token ${token} used for registration!`);
 			} else {
-				console.log(
-					`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`,
-				);
+				console.log(`[REGISTER] Invalid registration token ${token} used for registration by ${ip}!`);
 			}
 		}
 
@@ -103,11 +87,7 @@ router.post(
 			});
 		}
 
-		if (
-			!regTokenUsed &&
-			register.requireCaptcha &&
-			security.captcha.enabled
-		) {
+		if (!regTokenUsed && register.requireCaptcha && security.captcha.enabled) {
 			const { sitekey, service } = security.captcha;
 			if (!body.captcha_key) {
 				return res?.status(400).json({
@@ -138,19 +118,54 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t(
-							"auth:register.EMAIL_ALREADY_REGISTERED",
-						),
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
 					},
 				});
 			}
 		}
 
-		if (!regTokenUsed && register.blockProxies) {
-			const ipData = await IpDataClient.getIpInfo(ip);
-			if (ipData && IpDataClient.isProxy(ipData)) {
-				console.log(`proxy ${ip} blocked from registration`);
+		if (!regTokenUsed && register.checkIp) {
+			const blacklist = await AbuseIpDbClient.getBlacklist();
+			if (blacklist) {
+				const entry = blacklist.data.find((e) => e.ipAddress === ip);
+
+				if (entry && entry.abuseConfidenceScore >= register.blockAbuseIpDbAboveScore) {
+					console.log(`[Register] ${ip} blocked from registration: AbuseIPDB score ${entry.abuseConfidenceScore} >= ${register.blockAbuseIpDbAboveScore} (BLACKLIST)`);
+					throw new HTTPError("Your IP is blocked from registration");
+				}
+			}
+
+			const checkIp = await AbuseIpDbClient.checkIpAddress(ip);
+			if (checkIp && checkIp.data.abuseConfidenceScore >= register.blockAbuseIpDbAboveScore) {
+				console.log(`[Register] ${ip} blocked from registration: AbuseIPDB score ${checkIp.data.abuseConfidenceScore} >= ${register.blockAbuseIpDbAboveScore} (CHECK)`);
 				throw new HTTPError("Your IP is blocked from registration");
+			}
+
+			const ipData = await IpDataClient.getIpInfo(ip);
+			if (ipData) {
+				const categories = Object.entries(ipData.threat)
+					.filter(([key, value]) => key.startsWith("is_") && value === true)
+					.map(([key]) => key.replace("is_", ""));
+				const blockedCategories = new Set(categories).intersection(new Set(register.blockIpDataCoThreatTypes));
+				if (blockedCategories.size > 0) {
+					console.log(`[Register] ${ip} blocked from registration: IPData.co threat types ${Array.from(blockedCategories).join(", ")}`);
+					throw new HTTPError("Your IP is blocked from registration");
+				}
+
+				if (register.blockAsnTypes.includes(ipData.asn.type)) {
+					console.log(`[Register] ${ip} blocked from registration: IPData.co ASN type ${ipData.asn.type} is blocked`);
+					throw new HTTPError("Your IP is blocked from registration");
+				}
+
+				if (register.blockAsns.includes(ipData.asn.asn)) {
+					console.log(`[Register] ${ip} blocked from registration: IPData.co ASN ${ipData.asn.name} is blocked`);
+					throw new HTTPError("Your IP is blocked from registration");
+				}
+
+				if (register.blockProxies && IpDataClient.isProxy(ipData)) {
+					console.log(`[Register] ${ip} blocked from registration: IPData.co response matched IpDataClient.isProxy() check`);
+					throw new HTTPError("Your IP is blocked from registration");
+				}
 			}
 		}
 
@@ -176,9 +191,7 @@ router.post(
 				throw FieldErrors({
 					email: {
 						code: "EMAIL_ALREADY_REGISTERED",
-						message: req.t(
-							"auth:register.EMAIL_ALREADY_REGISTERED",
-						),
+						message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
 					},
 				});
 			}
@@ -198,14 +211,9 @@ router.post(
 					message: req.t("common:field.BASE_TYPE_REQUIRED"),
 				},
 			});
-		} else if (
-			register.dateOfBirth.required &&
-			register.dateOfBirth.minimum
-		) {
+		} else if (register.dateOfBirth.required && register.dateOfBirth.minimum) {
 			const minimum = new Date();
-			minimum.setFullYear(
-				minimum.getFullYear() - register.dateOfBirth.minimum,
-			);
+			minimum.setFullYear(minimum.getFullYear() - register.dateOfBirth.minimum);
 
 			let parsedDob;
 			try {
@@ -242,10 +250,7 @@ router.post(
 				throw FieldErrors({
 					password: {
 						code: "PASSWORD_REQUIREMENTS_MIN_LENGTH",
-						message: req.t(
-							"auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH",
-							{ min: min },
-						),
+						message: req.t("auth:register.PASSWORD_REQUIREMENTS_MIN_LENGTH", { min: min }),
 					},
 				});
 			}
@@ -260,12 +265,7 @@ router.post(
 			});
 		}
 
-		if (
-			!regTokenUsed &&
-			!body.invite &&
-			(register.requireInvite ||
-				(register.guestsRequireInvite && !register.email))
-		) {
+		if (!regTokenUsed && !body.invite && (register.requireInvite || (register.guestsRequireInvite && !register.email))) {
 			// require invite to register -> e.g. for organizations to send invites to their employees
 			throw FieldErrors({
 				email: {
@@ -280,19 +280,11 @@ router.post(
 			limits.absoluteRate.register.enabled &&
 			(await User.count({
 				where: {
-					created_at: MoreThan(
-						new Date(
-							Date.now() - limits.absoluteRate.register.window,
-						),
-					),
+					created_at: MoreThan(new Date(Date.now() - limits.absoluteRate.register.window)),
 				},
 			})) >= limits.absoluteRate.register.limit
 		) {
-			console.log(
-				`Global register ratelimit exceeded for ${getIpAdress(req)}, ${
-					req.body.username
-				}, ${req.body.invite || "No invite given"}`,
-			);
+			console.log(`Global register ratelimit exceeded for ${getIpAdress(req)}, ${req.body.username}, ${req.body.invite || "No invite given"}`);
 			throw FieldErrors({
 				email: {
 					code: "TOO_MANY_REGISTRATIONS",
