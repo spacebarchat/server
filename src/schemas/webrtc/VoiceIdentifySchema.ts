@@ -20,6 +20,7 @@ export interface VoiceIdentifySchema {
 	server_id: string;
 	user_id: string;
 	session_id: string;
+	channel_id?: string;
 	token: string;
 	video?: boolean;
 	streams?: {
@@ -27,5 +28,7 @@ export interface VoiceIdentifySchema {
 		rid: string;
 		quality: number;
 	}[];
+	// Discord keeps changing the property name of this, probably will keep changing until Dave is finalized
 	max_secure_frames_version?: number;
+	max_dave_protocol_version?: number;
 }
