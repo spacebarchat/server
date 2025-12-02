@@ -358,7 +358,6 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 		case "ping":
 			return res.status(204);
 		default:
-			console.debug("Unsupported GitHub event type:", eventType);
 			return res.send(500);
 	}
 
