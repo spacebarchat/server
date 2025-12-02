@@ -1,7 +1,7 @@
 import { Config, DateBuilder } from "@spacebar/util";
 import { AbuseIpDbBlacklistResponse, AbuseIpDbCheckResponse } from "./AbuseIpDbSampleResponses";
 
-export default class AbuseIpDbClient {
+export class AbuseIpDbClient {
 	private static ipCheckCache: Map<
 		string,
 		{

@@ -1,7 +1,7 @@
 import { Config, DateBuilder } from "@spacebar/util";
 import { IpDataIpLookupResponse } from "./IpDataSampleResponses";
 
-export default class IpDataClient {
+export class IpDataClient {
 	private static ipInfoCache: Map<
 		string,
 		{
