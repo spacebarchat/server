@@ -309,7 +309,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 
 	if(event === "GUILD_MEMBER_ADD") {
 		if ((data as PublicMember).roles === undefined || (data as PublicMember).roles === null) {
-			console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!");
+			console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!", opts.origin ?? "(Event origin not defined)", data);
 			(data as PublicMember).roles = [];
 		}
 	}
