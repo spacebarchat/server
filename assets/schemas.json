@@ -173,6 +173,73 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "AbuseIpDbBlacklistResponse": {
+        "type": "object",
+        "properties": {
+            "meta": {
+                "type": "object",
+                "properties": {
+                    "generatedAt": {
+                        "type": "string",
+                        "default": "2020-09-24T19:54:11+00:00"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "generatedAt"
+                ]
+            },
+            "data": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "ipAddress": {
+                            "type": "string",
+                            "default": "5.188.10.179"
+                        },
+                        "abuseConfidenceScore": {
+                            "type": "integer",
+                            "default": 100
+                        },
+                        "lastReportedAt": {
+                            "type": "string",
+                            "default": "2020-09-24T19:17:02+00:00"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "abuseConfidenceScore",
+                        "ipAddress",
+                        "lastReportedAt"
+                    ]
+                },
+                "default": [
+                    {
+                        "ipAddress": "5.188.10.179",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                    },
+                    {
+                        "ipAddress": "185.222.209.14",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                    },
+                    {
+                        "ipAddress": "191.96.249.183",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:01+00:00"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "data",
+            "meta"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "InteractionSchema": {
         "type": "object",
         "properties": {
@@ -6763,6 +6830,9 @@
             "session_id": {
                 "type": "string"
             },
+            "channel_id": {
+                "type": "string"
+            },
             "token": {
                 "type": "string"
             },
@@ -6798,6 +6868,9 @@
                 }
             },
             "max_secure_frames_version": {
+                "type": "integer"
+            },
+            "max_dave_protocol_version": {
                 "type": "integer"
             }
         },

@@ -190,6 +190,71 @@
                     "message"
                 ]
             },
+            "AbuseIpDbBlacklistResponse": {
+                "type": "object",
+                "properties": {
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "generatedAt": {
+                                "type": "string",
+                                "default": "2020-09-24T19:54:11+00:00"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "generatedAt"
+                        ]
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ipAddress": {
+                                    "type": "string",
+                                    "default": "5.188.10.179"
+                                },
+                                "abuseConfidenceScore": {
+                                    "type": "integer",
+                                    "default": 100
+                                },
+                                "lastReportedAt": {
+                                    "type": "string",
+                                    "default": "2020-09-24T19:17:02+00:00"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "abuseConfidenceScore",
+                                "ipAddress",
+                                "lastReportedAt"
+                            ]
+                        },
+                        "default": [
+                            {
+                                "ipAddress": "5.188.10.179",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                            },
+                            {
+                                "ipAddress": "185.222.209.14",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                            },
+                            {
+                                "ipAddress": "191.96.249.183",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:01+00:00"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "data",
+                    "meta"
+                ]
+            },
             "InteractionSchema": {
                 "type": "object",
                 "properties": {
@@ -6343,6 +6408,9 @@
                     "session_id": {
                         "type": "string"
                     },
+                    "channel_id": {
+                        "type": "string"
+                    },
                     "token": {
                         "type": "string"
                     },
@@ -6378,6 +6446,9 @@
                         }
                     },
                     "max_secure_frames_version": {
+                        "type": "integer"
+                    },
+                    "max_dave_protocol_version": {
                         "type": "integer"
                     }
                 },
@@ -12508,9 +12579,6 @@
             "name": "interactions"
         },
         {
-            "name": "invites"
-        },
-        {
             "name": "oauth2"
         },
         {
@@ -16093,163 +16161,6 @@
                 },
                 "tags": [
                     "oauth2"
-                ]
-            }
-        },
-        "/invites/{invite_code}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Invite"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "invite_code",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "invite_code"
-                    }
-                ],
-                "tags": [
-                    "invites"
-                ]
-            },
-            "post": {
-                "x-right-required": "USE_MASS_INVITES",
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Invite"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "invite_code",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "invite_code"
-                    }
-                ],
-                "tags": [
-                    "invites"
-                ]
-            },
-            "delete": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Invite"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "invite_code",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "invite_code"
-                    }
-                ],
-                "tags": [
-                    "invites"
                 ]
             }
         },

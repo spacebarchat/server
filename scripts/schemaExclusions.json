@@ -44,7 +44,9 @@
         "LibraryResponse",
         "LibraryLocalResponse",
         "SchemaTraits",
-        "TraitsSchema"
+        "TraitsSchema",
+        "AbuseIpDbCheckResponse",
+        "IpDataIpLookupResponse"
     ],
     "manualRe": [
         ".*\\.Response$",
