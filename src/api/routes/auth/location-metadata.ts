@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { IPAnalysis, getIpAdress, route } from "@spacebar/api";
+import { getIpAdress, route } from "@spacebar/api";
+import { IpDataClient } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
@@ -32,7 +33,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		//TODO
 		//Note: It's most likely related to legal. At the moment Discord hasn't finished this too
-		const country_code = (await IPAnalysis(getIpAdress(req))).country_code;
+		const country_code = (await IpDataClient.getIpInfo(getIpAdress(req)))?.country_code;
 		res.json({
 			consent_required: false,
 			country_code: country_code,

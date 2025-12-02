@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@spacebar/util";
-import { distanceBetweenLocations, IPAnalysis } from "../utility/ipAddress";
+import { Config, IpDataClient } from "@spacebar/util";
+import { distanceBetweenLocations } from "../utility/ipAddress";
 
 export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 	const regions = Config.get().regions;
@@ -27,15 +27,15 @@ export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 	let optimalId = regions.default;
 
 	if (!regions.useDefaultAsOptimal) {
-		const clientIpAnalysis = await IPAnalysis(ipAddress);
+		const clientIpAnalysis = await IpDataClient.getIpInfo(ipAddress);
 
 		let min = Number.POSITIVE_INFINITY;
 
 		for (const ar of availableRegions) {
 			//TODO the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
 			const dist = distanceBetweenLocations(
-				clientIpAnalysis,
-				ar.location || (await IPAnalysis(ar.endpoint)),
+				clientIpAnalysis!,
+				ar.location || (await IpDataClient.getIpInfo(ar.endpoint))!,
 			);
 
 			if (dist < min) {

@@ -17,9 +17,7 @@
 */
 
 import {
-	IPAnalysis,
 	getIpAdress,
-	isProxy,
 	route,
 	verifyCaptcha,
 } from "@spacebar/api";
@@ -30,6 +28,7 @@ import {
 	User,
 	ValidRegistrationToken,
 	generateToken,
+	IpDataClient
 } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
@@ -148,7 +147,8 @@ router.post(
 		}
 
 		if (!regTokenUsed && register.blockProxies) {
-			if (isProxy(await IPAnalysis(ip))) {
+			const ipData = await IpDataClient.getIpInfo(ip);
+			if (ipData && IpDataClient.isProxy(ipData)) {
 				console.log(`proxy ${ip} blocked from registration`);
 				throw new HTTPError("Your IP is blocked from registration");
 			}
