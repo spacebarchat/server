@@ -382,6 +382,7 @@ export class Member extends BaseClassWithoutId {
 					guild_id,
 				},
 				guild_id,
+				origin: "util/entities/Member.ts:377/addToGuild(user_id, guild_id)",
 			} as GuildMemberAddEvent),
 			emitEvent({
 				event: "GUILD_CREATE",

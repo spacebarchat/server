@@ -48,6 +48,7 @@ export interface Event {
 	event: EVENT;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	data?: any;
+	origin?: string;
 }
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server

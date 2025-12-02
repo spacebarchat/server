@@ -28,6 +28,7 @@ import {
 	Relationship,
 	Message,
 	NewUrlUserSignatureData,
+	GuildMemberAddEvent,
 } from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
@@ -35,7 +36,8 @@ import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@spacebar/util";
 import * as console from "node:console";
-import { RelationshipType } from "@spacebar/schemas"
+import { PublicMember, RelationshipType } from "@spacebar/schemas"
+import { bgRedBright } from "picocolors";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -303,6 +305,13 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 		default:
 			break;
+	}
+
+	if(event === "GUILD_MEMBER_ADD") {
+		if ((data as PublicMember).roles === undefined || (data as PublicMember).roles === null) {
+			console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!");
+			(data as PublicMember).roles = [];
+		}
 	}
 
 	await Send(this, {
