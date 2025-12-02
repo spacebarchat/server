@@ -136,7 +136,7 @@ router.post(
 			}
 
 			const checkIp = await AbuseIpDbClient.checkIpAddress(ip);
-			if (checkIp && checkIp.data.abuseConfidenceScore >= register.blockAbuseIpDbAboveScore) {
+			if (checkIp?.data && checkIp.data.abuseConfidenceScore >= register.blockAbuseIpDbAboveScore) {
 				console.log(`[Register] ${ip} blocked from registration: AbuseIPDB score ${checkIp.data.abuseConfidenceScore} >= ${register.blockAbuseIpDbAboveScore} (CHECK)`);
 				throw new HTTPError("Your IP is blocked from registration");
 			}
