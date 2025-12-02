@@ -23,6 +23,7 @@ import { Capabilities } from "./Capabilities";
 import { ZstdCompress } from "zlib";
 import { ZstdDecompress } from "node:zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
+import { QoSPayload } from "../opcodes/Heartbeat";
 
 export interface WebSocket extends WS {
 	version: number;
@@ -48,4 +49,5 @@ export interface WebSocket extends WS {
 	listen_options: ListenEventOpts;
 	capabilities?: Capabilities;
 	large_threshold: number;
+	qos?: QoSPayload;
 }

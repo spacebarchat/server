@@ -28,6 +28,7 @@ import { onGuildSubscriptionsBulk } from "./GuildSubscriptionsBulk";
 import { onStreamCreate } from "./StreamCreate";
 import { onStreamDelete } from "./StreamDelete";
 import { onStreamWatch } from "./StreamWatch";
+import { onGuildSync } from "./GuildSync";
 
 export type OPCodeHandler = (this: WebSocket, data: Payload) => unknown;
 
@@ -42,10 +43,13 @@ export default {
 	8: onRequestGuildMembers,
 	// 9: Invalid Session
 	// 10: Hello
+	12: onGuildSync, // technically deprecated, bt should be less finnicky?
 	// 13: Dm_update
 	14: onLazyRequest,
 	18: onStreamCreate,
 	19: onStreamDelete,
 	20: onStreamWatch,
 	37: onGuildSubscriptionsBulk,
+	40: onHeartbeat, // same as 1, except with extra data
+	41: () => {}, // "Update Time Spent Session ID", just tracking nonsense
 } as { [key: number]: OPCodeHandler };
