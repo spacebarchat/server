@@ -18,7 +18,6 @@
 
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
-	ApiError,
 	Attachment,
 	AutomodRule,
 	AutomodTriggerTypes,
@@ -39,9 +38,9 @@ import {
 	Relationship,
 	Rights,
 	Snowflake,
+	stringGlobToRegexp,
 	uploadFile,
 	User,
-	stringGlobToRegexp,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -49,6 +48,7 @@ import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
 import { URL } from "url";
 import {
+	AcknowledgeDeleteSchema,
 	AutomodCustomWordsRule,
 	AutomodRuleActionType,
 	AutomodRuleEventType,
@@ -57,6 +57,7 @@ import {
 	MessageCreateCloudAttachment,
 	MessageCreateSchema,
 	Reaction,
+	ReadStateType,
 	RelationshipType,
 } from "@spacebar/schemas";
 
@@ -529,6 +530,30 @@ router.post(
 				}),
 			),
 		);
+	},
+);
+
+router.delete(
+	"/ack",
+	route({
+		requestBody: "AcknowledgeDeleteSchema",
+		responses: {
+			204: {},
+		},
+	}),
+	async (req: Request, res: Response) => {
+		const { channel_id } = req.params; // not really a channel id if read_state_type != CHANNEL
+		const body = req.body as AcknowledgeDeleteSchema;
+		if (body.version != 2) return res.status(204).send();
+		// TODO: handle other read state types
+		if (body.read_state_type != ReadStateType.CHANNEL) return res.status(204).send();
+
+		const readState = await ReadState.findOne({where: {channel_id}});
+		if (readState) {
+			await readState.remove();
+		}
+
+		res.status(204).send();
 	},
 );
 

@@ -5243,13 +5243,39 @@
                 "type": "integer"
             },
             "flags": {
-                "type": "integer"
+                "enum": [
+                    1,
+                    2,
+                    4
+                ],
+                "type": "number"
             },
             "last_viewed": {
                 "type": "integer"
             },
             "token": {
                 "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AcknowledgeDeleteSchema": {
+        "type": "object",
+        "properties": {
+            "read_state_type": {
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "type": "number"
+            },
+            "version": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
