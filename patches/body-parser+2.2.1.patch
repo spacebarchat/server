@@ -1,16 +1,16 @@
 diff --git a/node_modules/body-parser/lib/types/json.js b/node_modules/body-parser/lib/types/json.js
-index 078ce71..af121b3 100644
+index 15c54bb..90f8507 100644
 --- a/node_modules/body-parser/lib/types/json.js
 +++ b/node_modules/body-parser/lib/types/json.js
-@@ -17,6 +17,7 @@ var debug = require('debug')('body-parser:json')
- var isFinished = require('on-finished').isFinished
+@@ -15,6 +15,7 @@
+ var debug = require('debug')('body-parser:json')
  var read = require('../read')
- var typeis = require('type-is')
+ var { normalizeOptions } = require('../utils')
 +var JSONbig = require("json-bigint");
- var { getCharset, normalizeOptions } = require('../utils')
  
  /**
-@@ -74,7 +75,7 @@ function json (options) {
+  * Module exports.
+@@ -71,7 +72,7 @@ function json (options) {
  
      try {
        debug('parse json')
@@ -19,7 +19,7 @@ index 078ce71..af121b3 100644
      } catch (e) {
        throw normalizeJsonSyntaxError(e, {
          message: e.message,
-@@ -153,7 +154,7 @@ function createStrictSyntaxError (str, char) {
+@@ -113,7 +114,7 @@ function createStrictSyntaxError (str, char) {
    }
  
    try {
@@ -28,7 +28,7 @@ index 078ce71..af121b3 100644
    } catch (e) {
      return normalizeJsonSyntaxError(e, {
        message: e.message.replace(JSON_SYNTAX_REGEXP, function (placeholder) {
-@@ -199,7 +200,7 @@ function normalizeJsonSyntaxError (error, obj) {
+@@ -159,7 +160,7 @@ function normalizeJsonSyntaxError (error, obj) {
    }
  
    // replace stack before message for Node.js 0.10 and below
