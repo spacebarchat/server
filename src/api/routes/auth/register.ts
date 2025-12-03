@@ -143,6 +143,9 @@ router.post(
 
 			const ipData = await IpDataClient.getIpInfo(ip);
 			if (ipData) {
+				if(!ipData.threat) {
+					console.log("Invalid IPData.co response, missing threat field", ipData);
+				}
 				const categories = Object.entries(ipData.threat)
 					.filter(([key, value]) => key.startsWith("is_") && value === true)
 					.map(([key]) => key.replace("is_", ""));
