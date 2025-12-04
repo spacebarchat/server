@@ -54,7 +54,9 @@ export class Config {
 
 		config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
 
-		return this.set(config);
+		await this.set(config);
+		validateFinalConfig(config);
+		return config;
 	};
 	public static get() {
 		if (!config) {
@@ -169,3 +171,38 @@ const validateConfig = async () => {
 
 	return config;
 };
+
+function validateFinalConfig(config: ConfigValue) {
+	let hasErrors = false;
+	function assertConfig(path: string, condition: (val: any) => boolean, recommendedValue: string) {
+		// _ to separate keys
+		const keys = path.split("_");
+		let obj: any = config;
+
+		for (const key of keys) {
+			if (obj == null || !(key in obj)) {
+				console.warn(`[Config] Missing config value for '${path}'. Recommended value: ${recommendedValue}`);
+				return;
+			}
+			obj = obj[key];
+		}
+
+		if (!condition(obj)) {
+			console.warn(`[Config] Invalid config value for '${path}': ${obj}. Recommended value: ${recommendedValue}`);
+			hasErrors = true;
+		}
+	}
+
+	assertConfig("api_endpointPublic", v => v != null, "A valid public API endpoint URL, ex. \"http://localhost:3001/api/v9\"");
+	assertConfig("cdn_endpointPublic", v => v != null, "A valid public CDN endpoint URL, ex. \"http://localhost:3002/\"");
+	assertConfig("cdn_endpointPrivate", v => v != null, "A valid private CDN endpoint URL, ex. \"http://localhost:3002/\" - must be routable from the API server!");
+	assertConfig("gateway_endpointPublic", v => v != null, "A valid public gateway endpoint URL, ex. \"ws://localhost:3003/\"");
+
+	if (hasErrors) {
+		console.error(
+			"[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration",
+		);
+		console.error("[Config] Hint: if you're just testing with bundle (`npm run start`), you can set all endpoint URLs to [proto]://localhost:3001");
+		process.exit(1);
+	} else console.log("[Config] Configuration validated successfully.");
+}
