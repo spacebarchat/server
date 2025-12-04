@@ -149,9 +149,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 		for (const att of uploadedAttachments) {
 			message.attachments![att.index] = att.attachment;
 		}
-	} else console.log("[Message] No cloud attachments to process for message", message.id, ":", message.attachments);
-
-	console.log("opts:", opts.attachments, "\nmessage:", message.attachments);
+	}
+	// else console.log("[Message] No cloud attachments to process for message", message.id, ":", message.attachments);
 
 	if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
 		throw new HTTPError("Content length over max character limit");
