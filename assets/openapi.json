@@ -1440,10 +1440,7 @@
                         "properties": {
                             "guild_hashes": {},
                             "highest_last_message_id": {
-                                "type": [
-                                    "string",
-                                    "integer"
-                                ]
+                                "type": "integer"
                             },
                             "read_state_version": {
                                 "type": "integer"
@@ -1475,10 +1472,7 @@
                         "properties": {
                             "guildHashes": {},
                             "highestLastMessageId": {
-                                "type": [
-                                    "string",
-                                    "integer"
-                                ]
+                                "type": "integer"
                             },
                             "readStateVersion": {
                                 "type": "integer"
