@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
