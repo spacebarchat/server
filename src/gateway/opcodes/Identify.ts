@@ -542,7 +542,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		merged_members: merged_members,
 		sessions: allSessions,
 
-		resume_gateway_url: Config.get().gateway.endpointClient || Config.get().gateway.endpointPublic || "ws://127.0.0.1:3001",
+		resume_gateway_url: Config.get().gateway.endpointPublic!,
 
 		// lol hack whatever
 		required_action: Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,

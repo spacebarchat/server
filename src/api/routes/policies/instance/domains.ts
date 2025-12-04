@@ -33,20 +33,14 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { cdn, gateway, api } = Config.get();
 
-		const IdentityForm = {
-			cdn:
-				cdn.endpointPublic ||
-				process.env.CDN ||
-				"http://localhost:3001",
-			gateway:
-				gateway.endpointPublic ||
-				process.env.GATEWAY ||
-				"ws://localhost:3001",
-			defaultApiVersion: api.defaultVersion ?? 9,
-			apiEndpoint: api.endpointPublic ?? "http://localhost:3001/api/",
-		};
-
-		res.json(IdentityForm);
+		res.json({
+			admin: Config.get().admin.endpointPublic,
+			api: Config.get().api.endpointPublic?.split("/api")[0] || "", // Transitional, see /.well-known/spacebar/client
+			apiEndpoint: api.endpointPublic,
+			cdn: cdn.endpointPublic,
+			defaultApiVersion: api.defaultVersion,
+			gateway: gateway.endpointPublic,
+		});
 	},
 );
 

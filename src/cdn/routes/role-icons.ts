@@ -61,8 +61,7 @@ router.post(
 			throw new HTTPError("Invalid file type");
 
 		const path = `role-icons/${role_id}/${hash}.png`;
-		const endpoint =
-			Config.get().cdn.endpointPublic || "http://localhost:3001";
+		const endpoint = Config.get().cdn.endpointPublic;
 
 		await storage.set(path, buffer);
 

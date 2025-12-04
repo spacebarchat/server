@@ -158,6 +158,9 @@ export class SpacebarServer extends Server {
 					baseUrl: Config.get().gateway.endpointPublic,
 					encoding: [...(erlpackSupported ? ["etf"] : []), "json"],
 					compression: ["zstd-stream", "zlib-stream", null],
+				},
+				admin: Config.get().admin.endpointPublic === null ? undefined : {
+					baseUrl: Config.get().admin.endpointPublic
 				}
 			});
 		});

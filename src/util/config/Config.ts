@@ -40,6 +40,7 @@ import {
 } from "../config";
 
 export class ConfigValue {
+	admin: EndpointConfiguration = new EndpointConfiguration();
 	gateway: EndpointConfiguration = new EndpointConfiguration();
 	cdn: CdnConfiguration = new CdnConfiguration();
 	api: ApiConfiguration = new ApiConfiguration();
@@ -58,7 +59,6 @@ export class ConfigValue {
 	defaults: DefaultsConfiguration = new DefaultsConfiguration();
 	external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
 	email: EmailConfiguration = new EmailConfiguration();
-	passwordReset: PasswordResetConfiguration =
-		new PasswordResetConfiguration();
+	passwordReset: PasswordResetConfiguration = new PasswordResetConfiguration();
 	user: UserConfiguration = new UserConfiguration();
 }
