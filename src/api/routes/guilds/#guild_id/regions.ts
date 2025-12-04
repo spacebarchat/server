@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, getVoiceRegions, route } from "@spacebar/api";
+import { getVoiceRegions, route } from "@spacebar/api";
 import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
@@ -38,12 +38,7 @@ router.get(
 		const { guild_id } = req.params;
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 		//TODO we should use an enum for guild's features and not hardcoded strings
-		return res.json(
-			await getVoiceRegions(
-				getIpAdress(req),
-				guild.features.includes("VIP_REGIONS"),
-			),
-		);
+		return res.json(await getVoiceRegions(req.ip!, guild.features.includes("VIP_REGIONS")));
 	},
 );
 

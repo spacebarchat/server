@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api";
 import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
@@ -38,7 +38,7 @@ router.post(
 	async (req: Request, res: Response) => {
 		const body = req.body as RegisterSchema;
 		const { register, security, limits } = Config.get();
-		const ip = getIpAdress(req);
+		const ip = req.ip!;
 
 		// Reg tokens
 		// They're a one time use token that bypasses registration limits ( rates, disabled reg, etc )
@@ -143,7 +143,7 @@ router.post(
 
 			const ipData = await IpDataClient.getIpInfo(ip);
 			if (ipData) {
-				if(!ipData.threat) {
+				if (!ipData.threat) {
 					console.log("Invalid IPData.co response, missing threat field", ipData);
 				}
 				const categories = Object.entries(ipData.threat)
@@ -287,7 +287,7 @@ router.post(
 				},
 			})) >= limits.absoluteRate.register.limit
 		) {
-			console.log(`Global register ratelimit exceeded for ${getIpAdress(req)}, ${req.body.username}, ${req.body.invite || "No invite given"}`);
+			console.log(`Global register ratelimit exceeded for ${req.ip}, ${req.body.username}, ${req.body.invite || "No invite given"}`);
 			throw FieldErrors({
 				email: {
 					code: "TOO_MANY_REGISTRATIONS",
