@@ -17,17 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Badge,
-	Config,
-	emitEvent,
-	FieldErrors,
-	handleFile,
-	Member,
-	Relationship,
-	User,
-	UserUpdateEvent,
-} from "@spacebar/util";
+import { Badge, Config, emitEvent, FieldErrors, handleFile, Member, Relationship, User, UserUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 import { PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";
@@ -127,7 +117,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 		premium_type: user.premium_type,
 		profile_themes_experiment_bucket: 4, // TODO: This doesn't make it available, for some reason?
 		user_profile: userProfile,
-		guild_member: guild_member?.toPublicMember(),
+		guild_member: { ...guild_member?.toPublicMember(), user: user.toPublicUser() },
 		guild_member_profile: guild_id && guildMemberProfile,
 		badges: badges.filter((x) => user.badge_ids?.includes(x.id)),
 	});
