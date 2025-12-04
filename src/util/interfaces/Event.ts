@@ -69,6 +69,7 @@ export interface ReadyEventData {
 	v: number;
 	user: UserPrivate;
 	private_channels: ReadyPrivateChannel[]; // this will be empty for bots
+	presences: Presence[];
 	session_id: string; // resuming
 	guilds: IReadyGuildDTO[] | GuildOrUnavailable[]; // depends on capability
 	analytics_token?: string;

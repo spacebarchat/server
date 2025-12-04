@@ -536,6 +536,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 			version: 0, // TODO
 		},
 		private_channels: channels,
+		presences: [], // TODO: Send actual data
 		session_id: this.session_id,
 		country_code: user.settings.locale, // TODO: do ip analysis instead
 		users: Array.from(users),
