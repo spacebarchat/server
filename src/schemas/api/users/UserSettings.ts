@@ -62,10 +62,10 @@ export interface CustomStatus {
 }
 
 export interface GuildFolder {
-	color: number;
+	color?: number;
 	guild_ids: string[];
-	id: number;
-	name: string;
+	id?: number;
+	name?: string;
 }
 
 export interface FriendSourceFlags {

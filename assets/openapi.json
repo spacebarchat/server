@@ -8447,10 +8447,7 @@
                     }
                 },
                 "required": [
-                    "color",
-                    "guild_ids",
-                    "id",
-                    "name"
+                    "guild_ids"
                 ]
             },
             "SecurityKey": {

@@ -8944,10 +8944,7 @@
         },
         "additionalProperties": false,
         "required": [
-            "color",
-            "guild_ids",
-            "id",
-            "name"
+            "guild_ids"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
