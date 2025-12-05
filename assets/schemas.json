@@ -8927,7 +8927,10 @@
         "type": "object",
         "properties": {
             "color": {
-                "type": "integer"
+                "type": [
+                    "null",
+                    "integer"
+                ]
             },
             "guild_ids": {
                 "type": "array",
@@ -8936,10 +8939,16 @@
                 }
             },
             "id": {
-                "type": "integer"
+                "type": [
+                    "null",
+                    "integer"
+                ]
             },
             "name": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,
