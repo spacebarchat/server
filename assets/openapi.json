@@ -8431,7 +8431,8 @@
                 "type": "object",
                 "properties": {
                     "color": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "guild_ids": {
                         "type": "array",
@@ -8440,10 +8441,12 @@
                         }
                     },
                     "id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
