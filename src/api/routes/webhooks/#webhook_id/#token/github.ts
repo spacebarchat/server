@@ -168,7 +168,9 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 			];
 
 			if (req.body.action === "opened") {
-				discordPayload.embeds[0].description = req.body.pull_request.body.length > 500 ? `${req.body.pull_request.body.slice(0, 497)}...` : req.body.pull_request.body;
+				if (req.body.pull_request.body != null) {
+					discordPayload.embeds[0].description = req.body.pull_request.body.length > 500 ? `${req.body.pull_request.body.slice(0, 497)}...` : req.body.pull_request.body;
+				}
 				discordPayload.embeds[0].color = 38912;
 			}
 			break;
