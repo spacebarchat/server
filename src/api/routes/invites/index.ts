@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -83,7 +83,7 @@ router.post(
 		const ban = await Ban.findOne({
 			where: [
 				{ guild_id: guild_id, user_id: req.user_id },
-				{ guild_id: guild_id, ip: getIpAdress(req) },
+				{ guild_id: guild_id, ip: req.ip },
 			],
 		});
 

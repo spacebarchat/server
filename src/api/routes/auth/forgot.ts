@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api";
 import { Config, Email, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ForgotPasswordSchema } from "@spacebar/schemas"
+import { ForgotPasswordSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.post(
@@ -38,10 +38,7 @@ router.post(
 
 		const config = Config.get();
 
-		if (
-			config.passwordReset.requireCaptcha &&
-			config.security.captcha.enabled
-		) {
+		if (config.passwordReset.requireCaptcha && config.security.captcha.enabled) {
 			const { sitekey, service } = config.security.captcha;
 			if (!captcha_key) {
 				return res.status(400).json({
@@ -51,7 +48,7 @@ router.post(
 				});
 			}
 
-			const ip = getIpAdress(req);
+			const ip = req.ip;
 			const verify = await verifyCaptcha(captcha_key, ip);
 			if (!verify.success) {
 				return res.status(400).json({
@@ -71,9 +68,7 @@ router.post(
 
 		if (user && user.email) {
 			Email.sendResetPassword(user, user.email).catch((e) => {
-				console.error(
-					`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`,
-				);
+				console.error(`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`);
 			});
 		}
 	},
