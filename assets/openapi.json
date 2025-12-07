@@ -8767,7 +8767,6 @@
                     "guild",
                     "guild_id",
                     "id",
-                    "ip",
                     "user",
                     "user_id"
                 ]
