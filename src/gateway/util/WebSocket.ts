@@ -33,6 +33,7 @@ export interface WebSocket extends WS {
 	compress?: "zlib-stream" | "zstd-stream";
 	ipAddress?: string;
 	userAgent?: string; // for cdn request signing
+	fingerprint?: string;
 	shard_count?: bigint;
 	shard_id?: bigint;
 	deflate?: Deflate;

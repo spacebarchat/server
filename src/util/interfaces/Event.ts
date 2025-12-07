@@ -219,6 +219,7 @@ export interface GuildBanAddEvent extends Event {
 	data: {
 		guild_id: string;
 		user: User;
+		delete_message_secs?: number
 	};
 }
 

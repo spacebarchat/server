@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { APIBansArray, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas";
+import { APIBansArray, BanCreateSchema, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -198,6 +198,15 @@ router.put(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const banned_user_id = req.params.user_id;
+		const opts = req.body as BanCreateSchema;
+
+		let deleteMessagesMs = opts.delete_message_days
+			? (opts.delete_message_days as number) * 86400000
+			: opts.delete_message_seconds
+				? (opts.delete_message_seconds as number) * 1000
+				: 0;
+
+		if (deleteMessagesMs < 0) deleteMessagesMs = 0;
 
 		if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id)
 			throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
@@ -207,6 +216,7 @@ router.put(
 		const existingBan = await Ban.findOne({
 			where: { guild_id: guild_id, user_id: banned_user_id },
 		});
+
 		// Bans on already banned users are silently ignored
 		if (existingBan) return res.status(204).send();
 
@@ -227,6 +237,7 @@ router.put(
 				data: {
 					guild_id: guild_id,
 					user: banned_user.toPublicUser(),
+					delete_message_secs: Math.floor(deleteMessagesMs / 1000),
 				},
 				guild_id: guild_id,
 			} as GuildBanAddEvent),

@@ -28,6 +28,7 @@ import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
 import { cleanupOnStartup } from "./util/Utils";
+import { randomString } from "@spacebar/api";
 
 export class Server {
 	public ws: ws.Server;
@@ -50,6 +51,10 @@ export class Server {
 		if (server) this.server = server;
 		else {
 			this.server = http.createServer(function (req, res) {
+				if(!req.headers.cookie?.split("; ").find(x => x.startsWith("__sb_sessid="))) {
+					res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None`);
+				}
+
 				res.writeHead(200).end("Online");
 			});
 		}

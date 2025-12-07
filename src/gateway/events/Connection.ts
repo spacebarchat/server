@@ -72,6 +72,13 @@ export async function Connection(
 		);
 	}
 
+	if (request.headers.cookie?.split("; ").find(x => x.startsWith("__sb_sessid="))) {
+		socket.fingerprint = request.headers.cookie
+			.split("; ")
+			.find((x) => x.startsWith("__sb_sessid="))
+			?.split("=")[1];
+	}
+
 	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
 	const session_id = genSessionId();
 	socket.session_id = session_id; //Set the session of the WebSocket object

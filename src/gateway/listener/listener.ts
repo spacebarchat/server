@@ -29,6 +29,7 @@ import {
 	Message,
 	NewUrlUserSignatureData,
 	GuildMemberAddEvent,
+	Ban,
 } from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
@@ -174,6 +175,16 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "GUILD_DELETE":
 			this.events[id]?.();
 			delete this.events[id];
+			if (event === "GUILD_DELETE" && this.ipAddress) {
+				const ban = await Ban.findOne({
+					where: { guild_id: id, user_id: this.user_id },
+				});
+
+				if (ban) {
+					ban.ip = this.ipAddress || undefined;
+					await ban.save();
+				}
+			}
 			break;
 		case "CHANNEL_CREATE":
 			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
