@@ -34,7 +34,24 @@ export const RabbitMQ: {
 			timeout: 1000 * 60,
 		});
 		console.log(`[RabbitMQ] connected`);
+
+		// log connection errors
+		this.connection.on("error", (err) => {
+			console.error("[RabbitMQ] Connection Error:", err);
+		});
+
+		this.connection.on("close", () => {
+			console.error("[RabbitMQ] connection closed");
+			// TODO: Add reconnection logic here if the connection crashes??
+			// will be a pain since we will have to reconstruct entire state
+		});
+
 		this.channel = await this.connection.createChannel();
 		console.log(`[RabbitMQ] channel created`);
+
+		// log channel errors
+		this.channel.on("error", (err) => {
+			console.error("[RabbitMQ] Channel Error:", err);
+		});
 	},
 };
