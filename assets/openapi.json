@@ -30,6 +30,17 @@
             }
         },
         "schemas": {
+            "CreateFingerprintResponse": {
+                "type": "object",
+                "properties": {
+                    "fingerprint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "fingerprint"
+                ]
+            },
             "ApplicationCommandSchema": {
                 "type": "object",
                 "properties": {
@@ -1022,6 +1033,9 @@
                     "available",
                     "id"
                 ]
+            },
+            "InstanceUserDeleteSchema": {
+                "$ref": "#/components/schemas/InstanceUserDeleteSchemaContent"
             },
             "UserSettingsUpdateSchema": {
                 "type": "object",
@@ -3098,6 +3112,9 @@
             "APIPrivateUser": {
                 "type": "object",
                 "properties": {
+                    "email": {
+                        "type": "string"
+                    },
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
@@ -3107,9 +3124,6 @@
                     },
                     "disabled": {
                         "type": "boolean"
-                    },
-                    "email": {
-                        "type": "string"
                     },
                     "verified": {
                         "type": "boolean"
@@ -3225,6 +3239,9 @@
                     "newToken": {
                         "type": "string"
                     },
+                    "email": {
+                        "type": "string"
+                    },
                     "id": {
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
@@ -3234,9 +3251,6 @@
                     },
                     "disabled": {
                         "type": "boolean"
-                    },
-                    "email": {
-                        "type": "string"
                     },
                     "verified": {
                         "type": "boolean"
@@ -4244,10 +4258,10 @@
                 "type": "object",
                 "properties": {
                     "delete_message_seconds": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "delete_message_days": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "reason": {
                         "type": "string"
@@ -6934,17 +6948,6 @@
                 "items": {
                     "$ref": "#/components/schemas/ApplicationCommandCreateSchema"
                 }
-            },
-            "CreateFingerprintResponse": {
-                "type": "object",
-                "properties": {
-                    "fingerprint": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "fingerprint"
-                ]
             },
             "ApplicationCommandOption": {
                 "type": "object",
@@ -10774,6 +10777,14 @@
                     3
                 ]
             },
+            "InstanceUserDeleteSchemaContent": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
             "Classification": {
                 "type": "object",
                 "properties": {
@@ -12137,7 +12148,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@703": {
+                            "__@unscopables@698": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -12266,17 +12277,17 @@
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@670": {
+                                    "__@iterator@696": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@703": {
+                                    "__@unscopables@698": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@703",
+                            "__@unscopables@698",
                             "length"
                         ]
                     },
@@ -15565,6 +15576,16 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InstanceUserDeleteSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "204": {
                         "description": "No description available"

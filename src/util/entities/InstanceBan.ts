@@ -34,18 +34,18 @@ export class InstanceBan extends BaseClass {
 	reason: string;
 
 	@Column({ nullable: true })
-	user_id: string;
+	user_id?: string;
 
 	@Column({ nullable: true })
-	fingerprint: string;
+	fingerprint?: string;
 
 	@Column({ nullable: true })
-	ip_address: string;
+	ip_address?: string;
 
 	// chain of trust type tracking
 
-	@Column()
-	is_from_other_instance_ban: boolean;
+	@Column({ default: false })
+	is_from_other_instance_ban: boolean = false;
 
 	@Column({ nullable: true })
 	@RelationId((instance_ban: InstanceBan) => instance_ban.origin_instance_ban)

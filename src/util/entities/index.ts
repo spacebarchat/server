@@ -36,6 +36,7 @@ export * from "./EmbedCache";
 export * from "./Emoji";
 export * from "./Encryption";
 export * from "./Guild";
+export * from "./InstanceBan";
 export * from "./Invite";
 export * from "./Member";
 export * from "./Message";
