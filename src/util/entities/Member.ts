@@ -185,7 +185,7 @@ export class Member extends BaseClassWithoutId {
 					} as GuildDeleteEvent),
 				]);
 				return;
-			} else throw new Error("The owner cannot be removed of the guild");
+			} else throw new Error("The owner cannot be removed from the guild");
 		}
 		const member = await Member.findOneOrFail({
 			where: { id: user_id, guild_id },
