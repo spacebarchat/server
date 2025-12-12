@@ -243,7 +243,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 							url: req.body.sender.html_url,
 						},
 						title: `[${req.body.repository.name}:${req.body.ref.slice(11)}] ${req.body.commits.length} new commit${req.body.commits.length > 1 ? "s" : ""}`,
-						url: req.body.head_commit.url,
+						url: req.body.commits.length > 1 ? req.body.compare : req.body.head_commit.url,
 						description: req.body.commits
 							.slice(0, 5) // Discord only shows 5 first commits
 							.map(
