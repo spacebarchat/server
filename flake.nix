@@ -54,36 +54,39 @@
               python3
             ];
             installPhase =
-            let
-                revsFile = pkgs.writeText "spacebar-server-rev.json" (builtins.toJSON {
-                  rev = self.sourceInfo.rev or self.sourceInfo.dirtyRev;
-                  shortRev = self.sourceInfo.shortRev or self.sourceInfo.dirtyShortRev;
-                  lastModified = self.sourceInfo.lastModified;
-                });
-            in ''
-              runHook preInstall
-              # set -x
+              let
+                revsFile = pkgs.writeText "spacebar-server-rev.json" (
+                  builtins.toJSON {
+                    rev = self.sourceInfo.rev or self.sourceInfo.dirtyRev;
+                    shortRev = self.sourceInfo.shortRev or self.sourceInfo.dirtyShortRev;
+                    lastModified = self.sourceInfo.lastModified;
+                  }
+                );
+              in
+              ''
+                runHook preInstall
+                # set -x
 
-              # remove packages not needed for production, or at least try to...
-              npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
-              ${./nix/trimNodeModules.sh}
+                # remove packages not needed for production, or at least try to...
+                npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
+                ${./nix/trimNodeModules.sh}
 
-              # Copy outputs
-              echo "Installing package into $out"
-              mkdir -p $out
-              cp -r assets dist node_modules package.json $out/
-              cp ${revsFile} $out/.rev
+                # Copy outputs
+                echo "Installing package into $out"
+                mkdir -p $out
+                cp -r assets dist node_modules package.json $out/
+                cp ${revsFile} $out/.rev
 
-              # Create wrappers for start scripts
-              echo "Creating wrappers for start scripts"
-              for i in dist/**/start.js
-              do
-                makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/$i
-              done
+                # Create wrappers for start scripts
+                echo "Creating wrappers for start scripts"
+                for i in dist/**/start.js
+                do
+                  makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i/dist\//}` --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/$i
+                done
 
-              # set +x
-              runHook postInstall
-            '';
+                # set +x
+                runHook postInstall
+              '';
 
             passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix self);
           };

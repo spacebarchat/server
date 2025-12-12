@@ -7,7 +7,14 @@ self:
   nodes.machine = {
     imports = [ self.nixosModules.default ];
 
-    services.spacebarchat-server.enable = true;
+    services.spacebarchat-server = {
+        enable = true;
+        settings = {
+            api = { endpointPublic = "http://localhost:3001/api/v9/"; };
+            cdn = { endpointPublic = "http://localhost:3001/"; endpointPrivate = "http://localhost:3001/"; };
+            gateway = { endpointPublic = "ws://localhost:3001/"; };
+        };
+    };
   };
 
   testScript = ''
