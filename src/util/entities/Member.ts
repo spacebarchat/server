@@ -167,12 +167,26 @@ export class Member extends BaseClassWithoutId {
 		throw new HTTPError("You are not member of this guild", 403);
 	}
 
-	static async removeFromGuild(user_id: string, guild_id: string) {
+	static async removeFromGuild(user_id: string, guild_id: string, force = false) {
 		const guild = await Guild.findOneOrFail({
 			select: ["owner_id"],
 			where: { id: guild_id },
 		});
-		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
+		if (guild.owner_id === user_id) {
+			if (force) {
+				await Promise.all([
+					Guild.delete({ id: guild_id }), // this will also delete all guild related data
+					emitEvent({
+						event: "GUILD_DELETE",
+						data: {
+							id: guild_id,
+						},
+						guild_id: guild_id,
+					} as GuildDeleteEvent),
+				]);
+				return;
+			} else throw new Error("The owner cannot be removed of the guild");
+		}
 		const member = await Member.findOneOrFail({
 			where: { id: user_id, guild_id },
 			relations: ["user"],

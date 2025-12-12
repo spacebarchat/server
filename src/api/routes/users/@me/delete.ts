@@ -56,7 +56,7 @@ router.post(
 
 		if (correctpass) {
 			const members = await Member.find({ where: { id: req.user_id } });
-			await Promise.all([User.delete({ id: req.user_id }), ...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
+			await Promise.all([User.delete({ id: req.user_id }), ...members.map((member) => Member.removeFromGuild(member.id, member.guild_id, true))]);
 
 			res.sendStatus(204);
 		} else {

@@ -43,7 +43,7 @@ router.post(
 			select: [...PrivateUserProjection, "data"],
 		});
 		const members = await Member.find({ where: { id: req.params.user_id } });
-		await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id)), User.delete({ id: req.params.user_id })]);
+		await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id, true)), User.delete({ id: req.params.user_id })]);
 
 		// TODO: respect intents as USER_DELETE has potential to cause privacy issues
 		await emitEvent({

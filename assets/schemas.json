@@ -12,6 +12,112 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ConnectedAccountCommonOAuthTokenResponse": {
+        "type": "object",
+        "properties": {
+            "access_token": {
+                "type": "string"
+            },
+            "token_type": {
+                "type": "string"
+            },
+            "scope": {
+                "type": "string"
+            },
+            "refresh_token": {
+                "type": "string"
+            },
+            "expires_in": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "access_token",
+            "scope",
+            "token_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationCommandCreateSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "name": {
+                "type": "string"
+            },
+            "name_localizations": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            },
+            "description": {
+                "type": "string"
+            },
+            "description_localizations": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            },
+            "options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationCommandOption"
+                }
+            },
+            "default_member_permissions": {
+                "type": "string"
+            },
+            "dm_permission": {
+                "type": "boolean"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "integration_types": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationIntegrationType"
+                }
+            },
+            "contexts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/InteractionContextType"
+                }
+            },
+            "handler": {
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BulkApplicationCommandCreateSchema": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/ApplicationCommandCreateSchema"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCommandSchema": {
         "type": "object",
         "properties": {
@@ -125,430 +231,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ConnectedAccountCommonOAuthTokenResponse": {
-        "type": "object",
-        "properties": {
-            "access_token": {
-                "type": "string"
-            },
-            "token_type": {
-                "type": "string"
-            },
-            "scope": {
-                "type": "string"
-            },
-            "refresh_token": {
-                "type": "string"
-            },
-            "expires_in": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "access_token",
-            "scope",
-            "token_type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "StoredEmailResponse": {
-        "type": "object",
-        "properties": {
-            "Content-Type": {
-                "type": "string"
-            },
-            "From": {
-                "type": "string"
-            },
-            "Message-Id": {
-                "type": "string"
-            },
-            "Mime-Version": {
-                "type": "string"
-            },
-            "Subject": {
-                "type": "string"
-            },
-            "To": {
-                "type": "string"
-            },
-            "sender": {
-                "type": "string"
-            },
-            "recipients": {
-                "type": "string"
-            },
-            "from": {
-                "type": "string"
-            },
-            "subject": {
-                "type": "string"
-            },
-            "body-html": {
-                "type": "string"
-            },
-            "body-plain": {
-                "type": "string"
-            },
-            "attachments": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "content-type": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "integer"
-                            },
-                            "url": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "content-type",
-                            "name",
-                            "size",
-                            "url"
-                        ]
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "content-id-map": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
-            },
-            "message-headers": {
-                "type": "array",
-                "items": {
-                    "type": "array",
-                    "items": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "minItems": 2,
-                    "maxItems": 2
-                }
-            },
-            "stripped-html": {
-                "type": "string"
-            },
-            "stripped-text": {
-                "type": "string"
-            },
-            "stripped-signature": {
-                "type": "string"
-            },
-            "Content-Transfer-Encoding": {
-                "type": "string"
-            },
-            "X-Mailgun-Tag": {
-                "type": "string"
-            },
-            "X-Mailgun-Template-Name": {
-                "type": "string"
-            },
-            "X-Mailgun-Template-Variables": {
-                "type": "string"
-            },
-            "X-Mailgun-Deliver-By": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "Content-Type",
-            "From",
-            "Message-Id",
-            "Mime-Version",
-            "Subject",
-            "To",
-            "body-html",
-            "body-plain",
-            "message-headers",
-            "recipients",
-            "sender",
-            "stripped-html",
-            "stripped-signature",
-            "stripped-text"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MessagesQueueStatusAPIResponse": {
-        "type": "object",
-        "properties": {
-            "regular": {
-                "type": "object",
-                "properties": {
-                    "is_disabled": {
-                        "type": "boolean"
-                    },
-                    "disabled": {
-                        "type": "object",
-                        "properties": {
-                            "until": {
-                                "type": "string"
-                            },
-                            "reason": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "reason",
-                            "until"
-                        ]
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "disabled",
-                    "is_disabled"
-                ]
-            },
-            "scheduled": {
-                "type": "object",
-                "properties": {
-                    "is_disabled": {
-                        "type": "boolean"
-                    },
-                    "disabled": {
-                        "type": "object",
-                        "properties": {
-                            "until": {
-                                "type": "string"
-                            },
-                            "reason": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "reason",
-                            "until"
-                        ]
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "disabled",
-                    "is_disabled"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "regular",
-            "scheduled"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountSendingLimitResponse": {
-        "type": "object",
-        "properties": {
-            "limit": {
-                "type": "integer"
-            },
-            "current": {
-                "type": "integer"
-            },
-            "period": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "current",
-            "limit",
-            "period"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountSetSendingLimitResponse": {
-        "type": "object",
-        "properties": {
-            "success": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "success"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountDestroyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "message"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ActivateDomainKeyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            },
-            "authority": {
-                "type": "string"
-            },
-            "selector": {
-                "type": "string"
-            },
-            "active": {
-                "type": "boolean"
-            },
-            "status": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "active",
-            "authority",
-            "message",
-            "selector",
-            "status"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DeactivateDomainKeyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            },
-            "authority": {
-                "type": "string"
-            },
-            "selector": {
-                "type": "string"
-            },
-            "active": {
-                "type": "boolean"
-            },
-            "status": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "active",
-            "authority",
-            "message",
-            "selector",
-            "status"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "FieldErrorResponse": {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "integer"
-            },
-            "message": {
-                "type": "string"
-            },
-            "errors": {
-                "$ref": "#/definitions/ErrorList"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "code",
-            "errors",
-            "message"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AbuseIpDbBlacklistResponse": {
-        "type": "object",
-        "properties": {
-            "meta": {
-                "type": "object",
-                "properties": {
-                    "generatedAt": {
-                        "type": "string",
-                        "default": "2020-09-24T19:54:11+00:00"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "generatedAt"
-                ]
-            },
-            "data": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "ipAddress": {
-                            "type": "string",
-                            "default": "5.188.10.179"
-                        },
-                        "abuseConfidenceScore": {
-                            "type": "integer",
-                            "default": 100
-                        },
-                        "lastReportedAt": {
-                            "type": "string",
-                            "default": "2020-09-24T19:17:02+00:00"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "abuseConfidenceScore",
-                        "ipAddress",
-                        "lastReportedAt"
-                    ]
-                },
-                "default": [
-                    {
-                        "ipAddress": "5.188.10.179",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                    },
-                    {
-                        "ipAddress": "185.222.209.14",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                    },
-                    {
-                        "ipAddress": "191.96.249.183",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:01+00:00"
-                    }
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "data",
-            "meta"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "InteractionSchema": {
         "type": "object",
         "properties": {
@@ -605,23 +287,6 @@
         "required": [
             "application_id",
             "channel_id",
-            "data",
-            "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InteractionCallbackSchema": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "$ref": "#/definitions/InteractionCallbackType"
-            },
-            "data": {
-                "$ref": "#/definitions/Message"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
             "data",
             "type"
         ],
@@ -2087,12 +1752,6 @@
             "region": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": [
                     "null",
@@ -2125,6 +1784,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -2978,12 +2643,6 @@
             "id": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": "string"
             },
@@ -3046,6 +2705,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -3260,18 +2925,12 @@
     "APIPrivateUser": {
         "type": "object",
         "properties": {
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
             "flags": {
                 "type": "integer"
-            },
-            "disabled": {
-                "type": "boolean"
             },
             "verified": {
                 "type": "boolean"
@@ -3325,6 +2984,9 @@
             "mfa_enabled": {
                 "type": "boolean"
             },
+            "email": {
+                "type": "string"
+            },
             "phone": {
                 "type": "string"
             },
@@ -3339,6 +3001,9 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3392,18 +3057,12 @@
             "newToken": {
                 "type": "string"
             },
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
             "flags": {
                 "type": "integer"
-            },
-            "disabled": {
-                "type": "boolean"
             },
             "verified": {
                 "type": "boolean"
@@ -3457,6 +3116,9 @@
             "mfa_enabled": {
                 "type": "boolean"
             },
+            "email": {
+                "type": "string"
+            },
             "phone": {
                 "type": "string"
             },
@@ -3471,6 +3133,9 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3798,12 +3463,6 @@
             "region": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": [
                     "null",
@@ -3836,6 +3495,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -6682,6 +6347,15 @@
             "version": {
                 "type": "integer"
             },
+            "guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "flags": {
+                "type": "integer"
+            },
             "message_notifications": {
                 "type": "integer"
             },
@@ -6706,15 +6380,6 @@
             },
             "suppress_roles": {
                 "type": "boolean"
-            },
-            "guild_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "flags": {
-                "type": "integer"
             },
             "mute_scheduled_events": {
                 "type": "boolean"
@@ -7312,83 +6977,109 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ApplicationCommandCreateSchema": {
+    "FieldErrorResponse": {
         "type": "object",
         "properties": {
-            "type": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
+            "code": {
+                "type": "integer"
             },
-            "name": {
+            "message": {
                 "type": "string"
             },
-            "name_localizations": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
-            },
-            "description": {
-                "type": "string"
-            },
-            "description_localizations": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
-            },
-            "options": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ApplicationCommandOption"
-                }
-            },
-            "default_member_permissions": {
-                "type": "string"
-            },
-            "dm_permission": {
-                "type": "boolean"
-            },
-            "nsfw": {
-                "type": "boolean"
-            },
-            "integration_types": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ApplicationIntegrationType"
-                }
-            },
-            "contexts": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/InteractionContextType"
-                }
-            },
-            "handler": {
-                "enum": [
-                    1,
-                    2,
-                    3
-                ],
-                "type": "number"
+            "errors": {
+                "$ref": "#/definitions/ErrorList"
             }
         },
         "additionalProperties": false,
         "required": [
-            "name"
+            "code",
+            "errors",
+            "message"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "BulkApplicationCommandCreateSchema": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/ApplicationCommandCreateSchema"
+    "AbuseIpDbBlacklistResponse": {
+        "type": "object",
+        "properties": {
+            "meta": {
+                "type": "object",
+                "properties": {
+                    "generatedAt": {
+                        "type": "string",
+                        "default": "2020-09-24T19:54:11+00:00"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "generatedAt"
+                ]
+            },
+            "data": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "ipAddress": {
+                            "type": "string",
+                            "default": "5.188.10.179"
+                        },
+                        "abuseConfidenceScore": {
+                            "type": "integer",
+                            "default": 100
+                        },
+                        "lastReportedAt": {
+                            "type": "string",
+                            "default": "2020-09-24T19:17:02+00:00"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "abuseConfidenceScore",
+                        "ipAddress",
+                        "lastReportedAt"
+                    ]
+                },
+                "default": [
+                    {
+                        "ipAddress": "5.188.10.179",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                    },
+                    {
+                        "ipAddress": "185.222.209.14",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                    },
+                    {
+                        "ipAddress": "191.96.249.183",
+                        "abuseConfidenceScore": 100,
+                        "lastReportedAt": "2020-09-24T19:17:01+00:00"
+                    }
+                ]
+            }
         },
+        "additionalProperties": false,
+        "required": [
+            "data",
+            "meta"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InteractionCallbackSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/InteractionCallbackType"
+            },
+            "data": {
+                "$ref": "#/definitions/Message"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "data",
+            "type"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ApplicationCommandOption": {
@@ -7461,22 +7152,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ApplicationCommandIndexPermissions": {
-        "type": "object",
-        "properties": {
-            "user": {
-                "type": "boolean"
-            },
-            "roles": {
-                "$ref": "#/definitions/Record<string,boolean>"
-            },
-            "channels": {
-                "$ref": "#/definitions/Record<string,boolean>"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "ApplicationIntegrationType": {
         "type": "number",
         "enum": [
@@ -7494,8 +7169,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ErrorList": {
+    "ApplicationCommandIndexPermissions": {
         "type": "object",
+        "properties": {
+            "user": {
+                "type": "boolean"
+            },
+            "roles": {
+                "$ref": "#/definitions/Record<string,boolean>"
+            },
+            "channels": {
+                "$ref": "#/definitions/Record<string,boolean>"
+            }
+        },
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -7581,278 +7267,28 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "InteractionCallbackType": {
-        "type": "number",
-        "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "Message": {
+    "InteractionGuild": {
         "type": "object",
         "properties": {
-            "channel_id": {
-                "type": "string"
-            },
-            "channel": {
-                "$ref": "#/definitions/Channel"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "guild": {
-                "$ref": "#/definitions/Guild"
-            },
-            "author_id": {
-                "type": "string"
-            },
-            "author": {
-                "$ref": "#/definitions/User"
-            },
-            "member_id": {
-                "type": "string"
-            },
-            "member": {
-                "$ref": "#/definitions/Member"
-            },
-            "webhook_id": {
-                "type": "string"
-            },
-            "webhook": {
-                "$ref": "#/definitions/Webhook"
-            },
-            "application_id": {
-                "type": "string"
-            },
-            "application": {
-                "$ref": "#/definitions/Application"
-            },
-            "content": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "edited_timestamp": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "tts": {
-                "type": "boolean"
-            },
-            "mention_everyone": {
-                "type": "boolean"
-            },
-            "mentions": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/User"
-                }
-            },
-            "mention_roles": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Role"
-                }
-            },
-            "mention_channels": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Channel"
-                }
-            },
-            "sticker_items": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Sticker"
-                }
-            },
-            "attachments": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Attachment"
-                }
-            },
-            "embeds": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Embed"
-                }
-            },
-            "reactions": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Reaction"
-                }
-            },
-            "nonce": {
-                "type": "string"
-            },
-            "pinned_at": {
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "pinned": {
-                "type": "boolean"
-            },
-            "type": {
-                "$ref": "#/definitions/MessageType"
-            },
-            "activity": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "integer"
-                    },
-                    "party_id": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "party_id",
-                    "type"
-                ]
-            },
-            "flags": {
-                "type": "integer"
-            },
-            "message_reference": {
-                "type": "object",
-                "properties": {
-                    "message_id": {
-                        "type": "string"
-                    },
-                    "channel_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "type": "integer"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "message_id"
-                ]
-            },
-            "referenced_message": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/Message"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "interaction": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/definitions/InteractionType"
-                    },
-                    "name": {
-                        "type": "string"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "id",
-                    "name",
-                    "type"
-                ]
-            },
-            "interaction_metadata": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/definitions/InteractionType"
-                    },
-                    "user_id": {
-                        "type": "string"
-                    },
-                    "authorizing_integration_owners": {
-                        "type": "object",
-                        "properties": {},
-                        "additionalProperties": true
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "command_type": {
-                        "$ref": "#/definitions/ApplicationCommandType"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "authorizing_integration_owners",
-                    "command_type",
-                    "id",
-                    "name",
-                    "type",
-                    "user_id"
-                ]
-            },
-            "components": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ActionRowComponent"
-                }
-            },
-            "poll": {
-                "$ref": "#/definitions/Poll"
-            },
-            "username": {
-                "type": "string"
-            },
-            "avatar": {
-                "type": "string"
-            },
             "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "locale": {
                 "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "channel",
-            "embeds",
-            "flags",
+            "features",
             "id",
-            "mention_channels",
-            "mention_roles",
-            "mentions",
-            "pinned",
-            "reactions",
-            "timestamp",
-            "type"
+            "locale"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -10412,7 +9848,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ReadState": {
+    "Message": {
         "type": "object",
         "properties": {
             "channel_id": {
@@ -10421,30 +9857,233 @@
             "channel": {
                 "$ref": "#/definitions/Channel"
             },
-            "user_id": {
+            "guild_id": {
                 "type": "string"
             },
-            "user": {
+            "guild": {
+                "$ref": "#/definitions/Guild"
+            },
+            "author_id": {
+                "type": "string"
+            },
+            "author": {
                 "$ref": "#/definitions/User"
             },
-            "last_message_id": {
+            "member_id": {
                 "type": "string"
             },
-            "public_ack": {
+            "member": {
+                "$ref": "#/definitions/Member"
+            },
+            "webhook_id": {
                 "type": "string"
             },
-            "notifications_cursor": {
+            "webhook": {
+                "$ref": "#/definitions/Webhook"
+            },
+            "application_id": {
                 "type": "string"
             },
-            "last_pin_timestamp": {
+            "application": {
+                "$ref": "#/definitions/Application"
+            },
+            "content": {
+                "type": "string"
+            },
+            "timestamp": {
                 "type": "string",
                 "format": "date-time"
             },
-            "mention_count": {
+            "edited_timestamp": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "tts": {
+                "type": "boolean"
+            },
+            "mention_everyone": {
+                "type": "boolean"
+            },
+            "mentions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/User"
+                }
+            },
+            "mention_roles": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Role"
+                }
+            },
+            "mention_channels": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Channel"
+                }
+            },
+            "sticker_items": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Sticker"
+                }
+            },
+            "attachments": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Attachment"
+                }
+            },
+            "embeds": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Embed"
+                }
+            },
+            "reactions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Reaction"
+                }
+            },
+            "nonce": {
+                "type": "string"
+            },
+            "pinned_at": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "pinned": {
+                "type": "boolean"
+            },
+            "type": {
+                "$ref": "#/definitions/MessageType"
+            },
+            "activity": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer"
+                    },
+                    "party_id": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "party_id",
+                    "type"
+                ]
+            },
+            "flags": {
                 "type": "integer"
             },
-            "manual": {
-                "type": "boolean"
+            "message_reference": {
+                "type": "object",
+                "properties": {
+                    "message_id": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "message_id"
+                ]
+            },
+            "referenced_message": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Message"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "interaction": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/InteractionType"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "name",
+                    "type"
+                ]
+            },
+            "interaction_metadata": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/definitions/InteractionType"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "authorizing_integration_owners": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "command_type": {
+                        "$ref": "#/definitions/ApplicationCommandType"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "authorizing_integration_owners",
+                    "command_type",
+                    "id",
+                    "name",
+                    "type",
+                    "user_id"
+                ]
+            },
+            "components": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ActionRowComponent"
+                }
+            },
+            "poll": {
+                "$ref": "#/definitions/Poll"
+            },
+            "username": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
             },
             "id": {
                 "type": "string"
@@ -10453,15 +10092,16 @@
         "additionalProperties": false,
         "required": [
             "channel",
-            "channel_id",
+            "embeds",
+            "flags",
             "id",
-            "last_message_id",
-            "manual",
-            "mention_count",
-            "notifications_cursor",
-            "public_ack",
-            "user",
-            "user_id"
+            "mention_channels",
+            "mention_roles",
+            "mentions",
+            "pinned",
+            "reactions",
+            "timestamp",
+            "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -11121,28 +10761,56 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "InteractionGuild": {
+    "ReadState": {
         "type": "object",
         "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+            "channel_id": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
+            "channel": {
+                "$ref": "#/definitions/Channel"
             },
-            "locale": {
+            "user_id": {
+                "type": "string"
+            },
+            "user": {
+                "$ref": "#/definitions/User"
+            },
+            "last_message_id": {
+                "type": "string"
+            },
+            "public_ack": {
+                "type": "string"
+            },
+            "notifications_cursor": {
+                "type": "string"
+            },
+            "last_pin_timestamp": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "mention_count": {
+                "type": "integer"
+            },
+            "manual": {
+                "type": "boolean"
+            },
+            "id": {
                 "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "features",
+            "channel",
+            "channel_id",
             "id",
-            "locale"
+            "last_message_id",
+            "manual",
+            "mention_count",
+            "notifications_cursor",
+            "public_ack",
+            "user",
+            "user_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -12895,7 +12563,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@698": {
+                    "__@unscopables@693": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -13024,17 +12692,17 @@
                             "remove": {
                                 "type": "boolean"
                             },
-                            "__@iterator@696": {
+                            "__@iterator@660": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@693": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@698",
+                    "__@unscopables@693",
                     "length"
                 ]
             },
@@ -13639,6 +13307,29 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ErrorList": {
+        "type": "object",
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InteractionCallbackType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }
