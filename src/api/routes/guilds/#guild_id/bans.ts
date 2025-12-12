@@ -215,7 +215,6 @@ router.put(
 		const ban = Ban.create({
 			user_id: banned_user_id,
 			guild_id: guild_id,
-			ip: req.ip,
 			executor_id: req.user_id,
 			reason: req.body.reason, // || otherwise empty
 		});

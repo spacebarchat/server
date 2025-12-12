@@ -44,8 +44,8 @@ export interface WebSocket extends WS {
 	intents: Intents;
 	sequence: number;
 	permissions: Record<string, Permissions>;
-	events: Record<string, undefined | (() => unknown)>;
-	member_events: Record<string, () => unknown>;
+	events: Record<string, undefined | (() => Promise<unknown>)>;
+	member_events: Record<string, () => Promise<unknown>>;
 	listen_options: ListenEventOpts;
 	capabilities?: Capabilities;
 	large_threshold: number;

@@ -53,8 +53,8 @@ export class Ban extends BaseClass {
 	@ManyToOne(() => User)
 	executor: User;
 
-	@Column()
-	ip: string;
+	@Column({ nullable: true })
+	ip?: string;
 
 	@Column({ nullable: true })
 	reason?: string;

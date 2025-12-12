@@ -8927,7 +8927,10 @@
         "type": "object",
         "properties": {
             "color": {
-                "type": "integer"
+                "type": [
+                    "null",
+                    "integer"
+                ]
             },
             "guild_ids": {
                 "type": "array",
@@ -8936,18 +8939,21 @@
                 }
             },
             "id": {
-                "type": "integer"
+                "type": [
+                    "null",
+                    "integer"
+                ]
             },
             "name": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,
         "required": [
-            "color",
-            "guild_ids",
-            "id",
-            "name"
+            "guild_ids"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -9278,7 +9284,6 @@
             "guild",
             "guild_id",
             "id",
-            "ip",
             "user",
             "user_id"
         ],

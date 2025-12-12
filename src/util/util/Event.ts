@@ -20,30 +20,21 @@ import { Channel } from "amqplib";
 import { RabbitMQ } from "./RabbitMQ";
 import EventEmitter from "events";
 import { EVENT, Event } from "../interfaces";
+import { randomUUID } from "crypto";
 export const events = new EventEmitter();
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-	const id = (payload.guild_id ||
-		payload.channel_id ||
-		payload.user_id) as string;
+	const id = (payload.guild_id || payload.channel_id || payload.user_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 
 	if (RabbitMQ.connection) {
-		const data =
-			typeof payload.data === "object"
-				? JSON.stringify(payload.data)
-				: payload.data; // use rabbitmq for event transmission
+		const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
 		await RabbitMQ.channel?.assertExchange(id, "fanout", {
 			durable: false,
 		});
 
 		// assertQueue isn't needed, because a queue will automatically created if it doesn't exist
-		const successful = RabbitMQ.channel?.publish(
-			id,
-			"",
-			Buffer.from(`${data}`),
-			{ type: payload.event },
-		);
+		const successful = RabbitMQ.channel?.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 		if (!successful) throw new Error("failed to send event");
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
@@ -79,17 +70,10 @@ export interface ProcessEvent {
 	id: string;
 }
 
-export async function listenEvent(
-	event: string,
-	callback: (event: EventOpts) => unknown,
-	opts?: ListenEventOpts,
-) {
+export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts): Promise<() => Promise<void>> {
 	if (RabbitMQ.connection) {
 		const channel = opts?.channel || RabbitMQ.channel;
-		if (!channel)
-			throw new Error(
-				"[Events] An event was sent without an associated channel",
-			);
+		if (!channel) throw new Error("[Events] An event was sent without an associated channel");
 		return await rabbitListen(channel, event, callback, {
 			acknowledge: opts?.acknowledge,
 		});
@@ -101,9 +85,7 @@ export async function listenEvent(
 
 		const listener = (msg: ProcessEvent) => {
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			msg.type === "event" &&
-				msg.id === event &&
-				callback({ ...msg.event, cancel });
+			msg.type === "event" && msg.id === event && callback({ ...msg.event, cancel });
 		};
 
 		// TODO: assert the type is correct?
@@ -124,20 +106,17 @@ export async function listenEvent(
 	}
 }
 
-async function rabbitListen(
-	channel: Channel,
-	id: string,
-	callback: (event: EventOpts) => unknown,
-	opts?: { acknowledge?: boolean },
-) {
+async function rabbitListen(channel: Channel, id: string, callback: (event: EventOpts) => unknown, opts?: { acknowledge?: boolean }): Promise<() => Promise<void>> {
 	await channel.assertExchange(id, "fanout", { durable: false });
 	const q = await channel.assertQueue("", {
 		exclusive: true,
 		autoDelete: true,
 	});
 
+	const consumerTag = randomUUID();
+
 	const cancel = async () => {
-		await channel.cancel(q.queue);
+		await channel.cancel(consumerTag);
 		await channel.unbindQueue(q.queue, id, "");
 	};
 
@@ -163,6 +142,7 @@ async function rabbitListen(
 		},
 		{
 			noAck: !opts?.acknowledge,
+			consumerTag: consumerTag,
 		},
 	);
 

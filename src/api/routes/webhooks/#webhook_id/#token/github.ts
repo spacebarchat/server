@@ -168,7 +168,9 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 			];
 
 			if (req.body.action === "opened") {
-				discordPayload.embeds[0].description = req.body.pull_request.body.length > 500 ? `${req.body.pull_request.body.slice(0, 497)}...` : req.body.pull_request.body;
+				if (req.body.pull_request.body != null) {
+					discordPayload.embeds[0].description = req.body.pull_request.body.length > 500 ? `${req.body.pull_request.body.slice(0, 497)}...` : req.body.pull_request.body;
+				}
 				discordPayload.embeds[0].color = 38912;
 			}
 			break;
@@ -241,7 +243,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 							url: req.body.sender.html_url,
 						},
 						title: `[${req.body.repository.name}:${req.body.ref.slice(11)}] ${req.body.commits.length} new commit${req.body.commits.length > 1 ? "s" : ""}`,
-						url: req.body.head_commit.url,
+						url: req.body.commits.length > 1 ? req.body.compare : req.body.head_commit.url,
 						description: req.body.commits
 							.slice(0, 5) // Discord only shows 5 first commits
 							.map(
