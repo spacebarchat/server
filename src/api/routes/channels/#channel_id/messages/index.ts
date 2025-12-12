@@ -548,7 +548,7 @@ router.delete(
 		// TODO: handle other read state types
 		if (body.read_state_type != ReadStateType.CHANNEL) return res.status(204).send();
 
-		const readState = await ReadState.findOne({where: {channel_id}});
+		const readState = await ReadState.findOne({ where: { channel_id, user_id: req.user_id } });
 		if (readState) {
 			await readState.remove();
 		}
