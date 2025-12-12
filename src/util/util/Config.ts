@@ -194,9 +194,9 @@ function validateFinalConfig(config: ConfigValue) {
 	}
 
 	assertConfig("api_endpointPublic", v => v != null, "A valid public API endpoint URL, ex. \"http://localhost:3001/api/v9\"");
-	assertConfig("cdn_endpointPublic", v => v != null, "A valid public CDN endpoint URL, ex. \"http://localhost:3002/\"");
-	assertConfig("cdn_endpointPrivate", v => v != null, "A valid private CDN endpoint URL, ex. \"http://localhost:3002/\" - must be routable from the API server!");
-	assertConfig("gateway_endpointPublic", v => v != null, "A valid public gateway endpoint URL, ex. \"ws://localhost:3003/\"");
+	assertConfig("cdn_endpointPublic", v => v != null, "A valid public CDN endpoint URL, ex. \"http://localhost:3003/\"");
+	assertConfig("cdn_endpointPrivate", v => v != null, "A valid private CDN endpoint URL, ex. \"http://localhost:3003/\" - must be routable from the API server!");
+	assertConfig("gateway_endpointPublic", v => v != null, "A valid public gateway endpoint URL, ex. \"ws://localhost:3002/\"");
 
 	if (hasErrors) {
 		console.error(
