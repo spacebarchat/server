@@ -31,6 +31,7 @@ import {
 	Stopwatch,
 	User,
 	UserDeleteEvent,
+	UserSettingsProtos,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, InstanceUserDeleteSchema, PrivateUserProjection } from "@spacebar/schemas";
@@ -176,7 +177,9 @@ router.post(
 		);
 
 		const members = await Member.find({ where: { id: req.params.user_id } });
-		await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id)), User.delete({ id: req.params.user_id })]);
+		await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
+		await UserSettingsProtos.delete({ user_id: req.params.user_id });
+		await User.delete({ id: req.params.user_id });
 
 		// TODO: respect intents as USER_DELETE has potential to cause privacy issues
 		await emitEvent({
