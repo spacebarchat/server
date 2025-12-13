@@ -88,6 +88,13 @@ export async function initDatabase(): Promise<DataSource> {
 
 	dbConnection = await DataSourceOptions.initialize();
 
+	if (DatabaseType === "sqlite") {
+		console.log(`[Database] ${yellow("Warning: SQLite is not supported. Forcing sync, this may lead to data loss!")}`);
+		await dbConnection.synchronize();
+		console.log(`[Database] ${green("Connected")}`);
+		return dbConnection;
+	}
+
 	// Crude way of detecting if the migrations table exists.
 	const dbExists = async () => {
 		try {
