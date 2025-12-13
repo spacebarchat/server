@@ -345,7 +345,6 @@ export class User extends BaseClass {
 			.where("Channel.type = :type", { type: ChannelType.DM })
 			.andWhere("rcp.user_id IN (:...user_ids)", { user_ids: [this.id, user_id] })
 			.groupBy("Channel.id")
-			.addGroupBy("rcp.user_id")
 			.having("COUNT(rcp.user_id) = 2")
 			.getMany();
 
@@ -363,13 +362,13 @@ export class User extends BaseClass {
 
 	async getDmChannels() {
 		const qry = await Channel.getRepository()
-			.createQueryBuilder()
-			.leftJoinAndSelect("Channel.recipients", "rcp")
-			.where("Channel.type = :type", { type: ChannelType.DM })
+			.createQueryBuilder("channel")
+			.leftJoinAndSelect("channel.recipients", "rcp")
+			.where("channel.type = :type", { type: ChannelType.DM })
 			.andWhere("rcp.user_id = :user_id", { user_id: this.id })
-			.groupBy("Channel.id")
-			.addGroupBy("rcp.user_id")
-			.having("COUNT(rcp.user_id) = 2")
+			.groupBy("channel.id")
+			.addGroupBy("rcp.id")
+			.having("COUNT(rcp.id) = 2")
 			.getMany();
 
 		return qry;
