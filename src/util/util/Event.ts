@@ -39,6 +39,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 			const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 			if (!successful) throw new Error("failed to send event");
 		} catch (e) {
+			// todo: should we retry publishng the event?
 			console.log("[RabbitMQ] ", e);
 		}
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
