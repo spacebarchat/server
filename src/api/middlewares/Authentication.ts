@@ -70,6 +70,7 @@ declare global {
 			user_bot: boolean;
 			token: { id: string; iat: number };
 			rights: Rights;
+			fingerprint?: string;
 		}
 	}
 }
@@ -77,6 +78,15 @@ declare global {
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
 	if (req.method === "OPTIONS") return res.sendStatus(204);
 	const url = req.url.replace(API_PREFIX, "");
+
+	if (req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid=")))
+		req.fingerprint = req.headers.cookie
+			.split("; ")
+			.find((x) => x.startsWith("__sb_sessid="))!
+			.split("=")[1];
+	// for some reason we need to require here, else the openapi generator fails with "route is not a function"
+	else res.setHeader("Set-Cookie", `__sb_sessid=${req.fingerprint = (await require("../util")).randomString(32)}; Secure; HttpOnly; SameSite=None`);
+
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {
 			if (typeof x !== "string") {
@@ -102,10 +112,14 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 		})
 	)
 		return next();
+
 	if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
 	try {
-		const { decoded, user } = await checkToken(req.headers.authorization);
+		const { decoded, user } = await checkToken(req.headers.authorization, {
+			ipAddress: req.ip,
+			fingerprint: req.fingerprint,
+		});
 
 		req.token = decoded;
 		req.user_id = decoded.id;

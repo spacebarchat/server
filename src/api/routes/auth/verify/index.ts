@@ -75,7 +75,10 @@ router.post(
 		let user;
 
 		try {
-			const userTokenData = await checkToken(token);
+			const userTokenData = await checkToken(token, {
+				fingerprint: req.fingerprint,
+				ipAddress: req.ip
+			});
 			user = userTokenData.user;
 		} catch {
 			throw FieldErrors({

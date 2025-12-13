@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
+import { Column, CreateDateColumn, Entity, FindOptionsWhere, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
@@ -45,6 +45,9 @@ export class InstanceBan extends BaseClass {
 	// chain of trust type tracking
 
 	@Column({ default: false })
+	is_allowlisted: boolean = false;
+
+	@Column({ default: false })
 	is_from_other_instance_ban: boolean = false;
 
 	@Column({ nullable: true })
@@ -54,4 +57,55 @@ export class InstanceBan extends BaseClass {
 	@JoinColumn({ name: "origin_instance_ban_id" })
 	@OneToOne(() => InstanceBan, { nullable: true, onDelete: "SET NULL" })
 	origin_instance_ban?: InstanceBan;
+
+	static async findInstanceBans(opts: { userId?: string; ipAddress?: string; fingerprint?: string; propagateBan?: boolean }) {
+		const optionalChecks: FindOptionsWhere<InstanceBan>[] = [{ user_id: opts.userId }];
+		if (opts?.ipAddress) optionalChecks.push({ ip_address: opts.ipAddress });
+		if (opts?.fingerprint) optionalChecks.push({ fingerprint: opts.fingerprint });
+		const instanceBans = await InstanceBan.find({ where: optionalChecks });
+
+		const banReasons = [];
+		for (const ban of instanceBans) {
+			if (ban.is_allowlisted) continue;
+			if (opts?.fingerprint && ban.fingerprint === opts.fingerprint) banReasons.push("fingerprint");
+			if (opts?.ipAddress && ban.ip_address === opts.ipAddress) banReasons.push("ipAddress");
+			if (opts?.userId && ban.user_id === opts?.userId) banReasons.push("userId");
+		}
+
+		const banViralityPromises: Promise<InstanceBan>[] = [];
+		if (opts.propagateBan && banReasons.length > 0) {
+			if (opts?.ipAddress && !instanceBans.find((b) => b.ip_address === opts.ipAddress))
+				banViralityPromises.push(
+					InstanceBan.create({
+						user_id: opts.userId,
+						ip_address: opts.ipAddress,
+						reason: "Propagated from other instance ban",
+						is_from_other_instance_ban: true,
+						origin_instance_ban: instanceBans[0],
+					}).save(),
+				);
+			if (opts?.fingerprint && !instanceBans.find((b) => b.fingerprint === opts.fingerprint))
+				banViralityPromises.push(
+					InstanceBan.create({
+						user_id: opts.userId,
+						fingerprint: opts.fingerprint,
+						reason: "Propagated from other instance ban",
+						is_from_other_instance_ban: true,
+						origin_instance_ban: instanceBans[0],
+					}).save(),
+				);
+			if (opts?.userId && !instanceBans.find((b) => b.user_id === opts.userId))
+				banViralityPromises.push(
+					InstanceBan.create({
+						user_id: opts.userId,
+						reason: "Propagated from other instance ban",
+						is_from_other_instance_ban: true,
+						origin_instance_ban: instanceBans[0],
+					}).save(),
+				);
+		}
+
+		await Promise.all(banViralityPromises);
+		return banReasons;
+	}
 }

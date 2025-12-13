@@ -24,7 +24,7 @@ export class SecurityConfiguration {
 	twoFactor: TwoFactorConfiguration = new TwoFactorConfiguration();
 	autoUpdate: boolean | number = true;
 	requestSignature: string = crypto.randomBytes(32).toString("base64");
-	jwtSecret: string = crypto.randomBytes(256).toString("base64");
+	jwtSecret: string = crypto.randomBytes(256).toString("base64"); // deprecated
 	// header to get the real user ip address
 	// X-Forwarded-For for nginx/reverse proxies
 	// CF-Connecting-IP for cloudflare
