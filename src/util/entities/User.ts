@@ -345,6 +345,7 @@ export class User extends BaseClass {
 			.where("Channel.type = :type", { type: ChannelType.DM })
 			.andWhere("rcp.user_id IN (:...user_ids)", { user_ids: [this.id, user_id] })
 			.groupBy("Channel.id")
+			.addGroupBy("rcp.user_id")
 			.having("COUNT(rcp.user_id) = 2")
 			.getMany();
 
@@ -367,6 +368,7 @@ export class User extends BaseClass {
 			.where("Channel.type = :type", { type: ChannelType.DM })
 			.andWhere("rcp.user_id = :user_id", { user_id: this.id })
 			.groupBy("Channel.id")
+			.addGroupBy("rcp.user_id")
 			.having("COUNT(rcp.user_id) = 2")
 			.getMany();
 
