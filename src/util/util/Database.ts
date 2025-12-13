@@ -22,6 +22,7 @@ import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ConfigEntity } from "../entities/Config";
 import { Migration } from "../entities/Migration";
+import fs from "fs";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -96,10 +97,12 @@ export async function initDatabase(): Promise<DataSource> {
 			return false;
 		}
 	};
+
 	if (!(await dbExists())) {
 		console.log("[Database] This appears to be a fresh database. Running initial DDL.");
 		const qr = dbConnection.createQueryRunner();
-		await new (require("../migration/postgres-initial").initial0)().up(qr);
+		if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js")))
+			await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
 	}
 
 	console.log("[Database] Applying missing migrations, if any.");
