@@ -23,6 +23,7 @@ export const RabbitMQ: {
 	connection: ChannelModel | null;
 	channel: Channel | null;
 	init: () => Promise<void>;
+	getSafeChannel: () => Promise<Channel>;
 } = {
 	connection: null,
 	channel: null,
@@ -46,6 +47,13 @@ export const RabbitMQ: {
 			// will be a pain since we will have to reconstruct entire state
 		});
 
+		await this.getSafeChannel();
+	},
+	getSafeChannel: async function () {
+		if (!this.connection) return Promise.reject();
+
+		if (this.channel) return this.channel;
+
 		this.channel = await this.connection.createChannel();
 		console.log(`[RabbitMQ] channel created`);
 
@@ -53,5 +61,12 @@ export const RabbitMQ: {
 		this.channel.on("error", (err) => {
 			console.error("[RabbitMQ] Channel Error:", err);
 		});
+
+		this.channel.on("close", () => {
+			console.log("[RabbitMQ] channel closed");
+			this.channel = null;
+		});
+
+		return this.channel;
 	},
 };
