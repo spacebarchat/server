@@ -17,7 +17,21 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, ChannelDeleteEvent, ChannelRecipientRemoveEvent, emitEvent, Emoji, Guild, InstanceBan, Member, Recipient, Sticker, User, UserDeleteEvent } from "@spacebar/util";
+import {
+	Channel,
+	ChannelDeleteEvent,
+	ChannelRecipientRemoveEvent,
+	emitEvent,
+	Emoji,
+	Guild,
+	InstanceBan,
+	Member,
+	Recipient,
+	Sticker,
+	Stopwatch,
+	User,
+	UserDeleteEvent,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, InstanceUserDeleteSchema, PrivateUserProjection } from "@spacebar/schemas";
 import { Not } from "typeorm";
@@ -40,6 +54,7 @@ router.post(
 		},
 	}),
 	async (req: Request, res: Response) => {
+		const sw = Stopwatch.startNew();
 		const body = req.body as InstanceUserDeleteSchema | undefined;
 		const user = await User.findOneOrFail({
 			where: { id: req.params.user_id },
@@ -170,6 +185,7 @@ router.post(
 			data: { user_id: req.params.user_id },
 		} as UserDeleteEvent);
 
+		console.log(`[Instance ban] Deleted user ${user.id} from instance in ${sw.elapsed().toString()} ms`);
 		res.sendStatus(204);
 	},
 );
