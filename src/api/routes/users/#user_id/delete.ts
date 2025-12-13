@@ -185,7 +185,7 @@ router.post(
 			data: { user_id: req.params.user_id },
 		} as UserDeleteEvent);
 
-		console.log(`[Instance ban] Deleted user ${user.id} from instance in ${sw.elapsed().toString()} ms`);
+		console.log(`[Instance ban] Deleted user ${user.id} from instance in ${sw.elapsed().toString()}`);
 		res.sendStatus(204);
 	},
 );
