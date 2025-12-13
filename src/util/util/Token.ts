@@ -104,8 +104,8 @@ export const checkToken = (
 		if (!dec) return reject("Could not parse token");
 		logAuth("Decoded token: " + JSON.stringify(dec));
 
-		if (dec.header.alg == "HS256") {
-			jwt.verify(token, Config.get().security.jwtSecret, JWTOptions, validateUser);
+		if (dec.header.alg == "HS256" && Config.get().security.jwtSecret !== null) {
+			jwt.verify(token, Config.get().security.jwtSecret!, JWTOptions, validateUser);
 		} else if (dec.header.alg == "ES512") {
 			loadOrGenerateKeypair().then((keyPair) => {
 				jwt.verify(token, keyPair.publicKey, { algorithms: ["ES512"] }, validateUser);

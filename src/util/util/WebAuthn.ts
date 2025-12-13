@@ -19,13 +19,14 @@
 import { Fido2Lib } from "fido2-lib";
 import jwt from "jsonwebtoken";
 import { Config } from "./Config";
+import { loadOrGenerateKeypair } from "./Token";
 
 const jwtSignOptions: jwt.SignOptions = {
-	algorithm: "HS256",
+	algorithm: "ES512",
 	expiresIn: "5m",
 };
 const jwtVerifyOptions: jwt.VerifyOptions = {
-	algorithms: ["HS256"],
+	algorithms: ["ES512"],
 };
 
 export const WebAuthn: {
@@ -44,28 +45,32 @@ export async function generateWebAuthnTicket(
 	challenge: string,
 ): Promise<string> {
 	return new Promise((res, rej) => {
-		jwt.sign(
-			{ challenge },
-			Config.get().security.jwtSecret,
-			jwtSignOptions,
-			(err, token) => {
-				if (err || !token) return rej(err || "no token");
-				return res(token);
-			},
+		loadOrGenerateKeypair().then(kp=>
+			jwt.sign(
+				{ challenge },
+				kp.privateKey,
+				jwtSignOptions,
+				(err, token) => {
+					if (err || !token) return rej(err || "no token");
+					return res(token);
+				},
+			)
 		);
 	});
 }
 
 export async function verifyWebAuthnToken(token: string) {
 	return new Promise((res, rej) => {
-		jwt.verify(
-			token,
-			Config.get().security.jwtSecret,
-			jwtVerifyOptions,
-			async (err, decoded) => {
-				if (err) return rej(err);
-				return res(decoded);
-			},
+		loadOrGenerateKeypair().then(kp=>
+			jwt.verify(
+				token,
+				kp.publicKey,
+				jwtVerifyOptions,
+				async (err, decoded) => {
+					if (err) return rej(err);
+					return res(decoded);
+				},
+			)
 		);
 	});
 }
