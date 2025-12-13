@@ -85,7 +85,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
 			.find((x) => x.startsWith("__sb_sessid="))!
 			.split("=")[1];
 	// for some reason we need to require here, else the openapi generator fails with "route is not a function"
-	else res.setHeader("Set-Cookie", `__sb_sessid=${req.fingerprint = (await require("../util")).randomString(32)}; Secure; HttpOnly; SameSite=None`);
+	else res.setHeader("Set-Cookie", `__sb_sessid=${req.fingerprint = (await require("../util")).randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
 
 	if (
 		NO_AUTHORIZATION_ROUTES.some((x) => {

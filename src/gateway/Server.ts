@@ -52,7 +52,7 @@ export class Server {
 		else {
 			this.server = http.createServer(function (req, res) {
 				if(!req.headers.cookie?.split("; ").find(x => x.startsWith("__sb_sessid="))) {
-					res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None`);
+					res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
 				}
 
 				res.writeHead(200).end("Online");
