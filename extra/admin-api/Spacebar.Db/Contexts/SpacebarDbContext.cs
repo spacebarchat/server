@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Spacebar.Db.Models;
+using Stream = Spacebar.Db.Models.Stream;
 
 namespace Spacebar.Db.Contexts;
 

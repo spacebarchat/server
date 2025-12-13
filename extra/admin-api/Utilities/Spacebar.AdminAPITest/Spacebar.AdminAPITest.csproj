@@ -10,9 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="ArcaneLibs">
-        <HintPath>..\..\..\..\..\..\..\.nuget\packages\arcanelibs\1.0.0-preview.20241210-161342\lib\net10.0\ArcaneLibs.dll</HintPath>
-      </Reference>
+      <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
     </ItemGroup>
 
 </Project>

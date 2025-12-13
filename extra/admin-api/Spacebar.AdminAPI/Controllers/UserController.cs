@@ -48,7 +48,7 @@ public class UserController(ILogger<UserController> logger, Configuration config
             Disabled = x.Disabled,
             Deleted = x.Deleted,
             Email = x.Email,
-            Flags = ulong.Parse(x.Flags),
+            Flags = x.Flags,
             PublicFlags = x.PublicFlags,
             Rights = x.Rights,
             ApplicationBotUser = x.ApplicationBotUser == null ? null : new(),

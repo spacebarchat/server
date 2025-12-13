@@ -90,19 +90,19 @@ public partial class User
     public string? Email { get; set; }
 
     [Column("flags")]
-    public long Flags { get; set; }
+    public ulong Flags { get; set; }
 
     [Column("public_flags")]
-    public long PublicFlags { get; set; }
+    public ulong PublicFlags { get; set; }
 
     [Column("purchased_flags")]
-    public long PurchasedFlags { get; set; }
+    public ulong PurchasedFlags { get; set; }
 
     [Column("premium_usage_flags")]
     public int PremiumUsageFlags { get; set; }
 
     [Column("rights")]
-    public long Rights { get; set; }
+    public ulong Rights { get; set; }
 
     [Column("data")]
     public string Data { get; set; } = null!;
