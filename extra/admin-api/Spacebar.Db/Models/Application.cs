@@ -86,12 +86,6 @@ public partial class Application
     [Column("privacy_policy_url", TypeName = "character varying")]
     public string? PrivacyPolicyUrl { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
-
-    [Column("custom_install_url", TypeName = "character varying")]
-    public string? CustomInstallUrl { get; set; }
-
     [Column("owner_id", TypeName = "character varying")]
     public string? OwnerId { get; set; }
 
@@ -100,6 +94,12 @@ public partial class Application
 
     [Column("team_id", TypeName = "character varying")]
     public string? TeamId { get; set; }
+
+    [Column("guild_id", TypeName = "character varying")]
+    public string? GuildId { get; set; }
+
+    [Column("custom_install_url", TypeName = "character varying")]
+    public string? CustomInstallUrl { get; set; }
 
     [ForeignKey("BotUserId")]
     [InverseProperty("ApplicationBotUser")]

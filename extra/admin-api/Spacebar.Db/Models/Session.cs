@@ -20,16 +20,16 @@ public partial class Session
     public string SessionId { get; set; } = null!;
 
     [Column("activities")]
-    public string? Activities { get; set; }
+    public string Activities { get; set; } = null!;
 
     [Column("client_info")]
     public string ClientInfo { get; set; } = null!;
 
-    [Column("client_status")]
-    public string ClientStatus { get; set; } = null!;
-
     [Column("status", TypeName = "character varying")]
     public string Status { get; set; } = null!;
+
+    [Column("client_status")]
+    public string ClientStatus { get; set; } = null!;
 
     [ForeignKey("UserId")]
     [InverseProperty("Sessions")]

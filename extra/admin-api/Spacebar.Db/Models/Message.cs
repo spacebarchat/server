@@ -58,17 +58,11 @@ public partial class Message
     [Column("nonce")]
     public string? Nonce { get; set; }
 
-    [Column("pinned_at", TypeName = "timestamp without time zone")]
-    public DateTime? PinnedAt { get; set; }
-
     [Column("type")]
     public int Type { get; set; }
 
     [Column("activity")]
     public string? Activity { get; set; }
-
-    [Column("flags")]
-    public int Flags { get; set; }
 
     [Column("message_reference")]
     public string? MessageReference { get; set; }
@@ -79,6 +73,12 @@ public partial class Message
     [Column("components")]
     public string? Components { get; set; }
 
+    [Column("message_reference_id", TypeName = "character varying")]
+    public string? MessageReferenceId { get; set; }
+
+    [Column("flags")]
+    public int Flags { get; set; }
+
     [Column("poll")]
     public string? Poll { get; set; }
 
@@ -88,8 +88,11 @@ public partial class Message
     [Column("avatar", TypeName = "character varying")]
     public string? Avatar { get; set; }
 
-    [Column("message_reference_id", TypeName = "character varying")]
-    public string? MessageReferenceId { get; set; }
+    [Column("pinned_at", TypeName = "timestamp without time zone")]
+    public DateTime? PinnedAt { get; set; }
+
+    [Column("interaction_metadata")]
+    public string? InteractionMetadata { get; set; }
 
     [ForeignKey("ApplicationId")]
     [InverseProperty("Messages")]
