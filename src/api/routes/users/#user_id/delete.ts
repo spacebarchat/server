@@ -62,7 +62,8 @@ router.post(
 			select: [...PrivateUserProjection, "data"],
 		});
 
-		await InstanceBan.create({ user_id: user.id, reason: body?.reason ?? "<legacy instance ban API - no reason specified>" }).save();
+		if (!(await InstanceBan.findOne({ where: { user_id: user.id } })))
+			await InstanceBan.create({ user_id: user.id, reason: body?.reason ?? "<legacy instance ban API - no reason specified>" }).save();
 
 		// prevent bugginess with clients - delete all DMs, only having half of the conversation is quite useless anyhow
 		const dmChannels = await user.getDmChannels();
