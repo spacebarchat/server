@@ -364,7 +364,7 @@ export class User extends BaseClass {
 		const qry = await Channel.getRepository()
 			.createQueryBuilder()
 			.leftJoinAndSelect("Channel.recipients", "rcp")
-			.where("Channel.type = :type", { types: ChannelType.DM })
+			.where("Channel.type = :type", { type: ChannelType.DM })
 			.andWhere("rcp.user_id = :user_id", { user_id: this.id })
 			.groupBy("Channel.id")
 			.having("COUNT(rcp.user_id) = 2")
