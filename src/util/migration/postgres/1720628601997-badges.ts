@@ -12,5 +12,6 @@ export class Badges1720628601997 implements MigrationInterface {
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "badge_ids"`);
+		await queryRunner.query(`DROP TABLE "badges"`);
 	}
 }

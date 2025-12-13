@@ -33,12 +33,9 @@ if (!process.env) {
 	config({ quiet: true });
 }
 
-const dbConnectionString =
-	process.env.DATABASE || path.join(process.cwd(), "database.db");
+const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-export const DatabaseType = dbConnectionString.includes("://")
-	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "sqlite";
+export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
 export const DataSourceOptions = new DataSource({
@@ -69,11 +66,7 @@ export async function initDatabase(): Promise<DataSource> {
 	if (dbConnection) return dbConnection;
 
 	if (isSqlite) {
-		console.log(
-			`[Database] ${red(
-				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`,
-			)}`,
-		);
+		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
 	}
 
 	if (!process.env.DB_SYNC) {
@@ -104,25 +97,13 @@ export async function initDatabase(): Promise<DataSource> {
 		}
 	};
 	if (!(await dbExists())) {
-		console.log(
-			"[Database] This appears to be a fresh database. Synchronising.",
-		);
-		await dbConnection.synchronize();
-
-		// On next start, typeorm will try to run all the migrations again from beginning.
-		// Manually insert every current migration to prevent this:
-		await Promise.all(
-			dbConnection.migrations.map((migration) =>
-				Migration.insert({
-					name: migration.name,
-					timestamp: Date.now(),
-				}),
-			),
-		);
-	} else {
-		console.log("[Database] Applying missing migrations, if any.");
-		await dbConnection.runMigrations();
+		console.log("[Database] This appears to be a fresh database. Running initial DDL.");
+		const qr = dbConnection.createQueryRunner();
+		await new (require("../migration/postgres-initial").initial0)().up(qr);
 	}
+
+	console.log("[Database] Applying missing migrations, if any.");
+	await dbConnection.runMigrations();
 
 	console.log(`[Database] ${green("Connected")}`);
 
