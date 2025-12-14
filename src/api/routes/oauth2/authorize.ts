@@ -17,18 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	ApiError,
-	Application,
-	DiscordApiErrors,
-	FieldErrors,
-	Member,
-	Permissions,
-	User,
-	getPermission,
-} from "@spacebar/util";
+import { ApiError, Application, DiscordApiErrors, FieldErrors, Member, Permissions, User, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ApplicationAuthorizeSchema } from "@spacebar/schemas"
+import { ApplicationAuthorizeSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 // TODO: scopes, other oauth types
@@ -84,26 +75,18 @@ router.get(
 				id: req.user_id,
 				bot: false,
 			},
-			select: [
-				"id",
-				"username",
-				"avatar",
-				"discriminator",
-				"public_flags",
-			],
+			select: ["id", "username", "avatar", "discriminator", "public_flags"],
 		});
 
 		const guilds = await Member.find({
 			where: {
-				user: {
-					id: req.user_id,
-				},
+				id: req.user_id,
 			},
 			relations: ["guild", "roles", "user"],
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			// prettier-ignore
-			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "communication_disabled_until", "user.flags"],
+			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "user.flags"],
 		});
 
 		const guildsWithPermissions = guilds.map((x) => {
@@ -112,7 +95,7 @@ router.get(
 					id: user.id,
 					roles: x.roles?.map((x) => x.id) || [],
 					communication_disabled_until: x.communication_disabled_until,
-					flags: x.user.flags
+					flags: x.user.flags,
 				},
 				guild: {
 					roles: x?.roles || [],
@@ -211,18 +194,9 @@ router.post(
 		// TODO: captcha verification
 		// TODO: MFA verification
 
-		const perms = await getPermission(
-			req.user_id,
-			body.guild_id,
-			undefined,
-			{ member_relations: ["user"] },
-		);
+		const perms = await getPermission(req.user_id, body.guild_id, undefined, { member_relations: ["user"] });
 		// getPermission cache won't exist if we're owner
-		if (
-			Object.keys(perms.cache || {}).length > 0 &&
-			perms.cache.member?.user.bot
-		)
-			throw DiscordApiErrors.UNAUTHORIZED;
+		if (Object.keys(perms.cache || {}).length > 0 && perms.cache.member?.user.bot) throw DiscordApiErrors.UNAUTHORIZED;
 		perms.hasThrow("MANAGE_GUILD");
 
 		const app = await Application.findOne({
@@ -235,12 +209,7 @@ router.post(
 		// TODO: use DiscordApiErrors
 		// findOneOrFail throws code 404
 		if (!app) throw new ApiError("Unknown Application", 10002, 404);
-		if (!app.bot)
-			throw new ApiError(
-				"OAuth2 application does not have a bot",
-				50010,
-				400,
-			);
+		if (!app.bot) throw new ApiError("OAuth2 application does not have a bot", 50010, 400);
 
 		await Member.addToGuild(app.id, body.guild_id);
 
