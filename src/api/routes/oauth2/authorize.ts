@@ -86,7 +86,7 @@ router.get(
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
 			// prettier-ignore
-			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "user.flags","user.id"],
+			select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "user.flags"],
 		});
 
 		const guildsWithPermissions = guilds.map((x) => {
