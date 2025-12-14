@@ -1,0 +1,21 @@
+@using ArcaneLibs.Extensions
+@using Spacebar.AdminApi.TestClient.Classes.OpenAPI
+<span title="@Parameter.ToJson()">@Summary</span>
+@if (Parameter.Name != Parameter.Description && !string.IsNullOrWhiteSpace(Parameter.Description)) {
+    <i> - @Parameter.Description</i>
+}
+
+@code {
+
+    private string Summary { get; set; } = "Unbound parameter";
+
+    [Parameter]
+    public required OpenApiPath.OpenApiOperation.OpenApiParameter Parameter {
+        get;
+        set {
+            field = value;
+            Summary = $"{Parameter.Name}{(Parameter.Required ? "*" : "")} ({Parameter.Schema.Type})";
+        }
+    }
+
+}

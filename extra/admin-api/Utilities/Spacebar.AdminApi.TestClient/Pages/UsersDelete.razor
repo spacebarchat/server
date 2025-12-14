@@ -1,0 +1,70 @@
+@page "/Users/Delete/{Id}"
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using System.Text.Json.Nodes
+@using ArcaneLibs.Extensions
+@using Spacebar.AdminApi.Models
+@using Spacebar.AdminApi.TestClient.Services
+@inject Config Config
+<h3>UsersDelete - @Id</h3>
+
+Deleted @ChannelDeleteProgress.Sum(x=>x.Value.Deleted) messages so far!
+@foreach (var (channel, progress) in ChannelDeleteProgress.Where(x=>x.Value.Deleted != x.Value.Total).OrderByDescending(x=>x.Value.Progress)) {
+    <div>@channel: @progress.Total total, @progress.Deleted deleted</div>
+    <progress max="@progress.Total" value="@progress.Deleted"></progress>
+}
+
+@if (Done) {
+    <h1>Done!</h1>
+}
+
+@code {
+
+    [Parameter]
+    public required string Id { get; set; }
+
+    private Dictionary<string, DeleteProgress> ChannelDeleteProgress { get; set; } = new();
+    
+    private bool Done { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var response = await hc.GetAsync(Config.AdminUrl + $"/_spacebar/admin/Users/{Id}/delete?messageDeleteChunkSize=100");
+        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        var content = response.Content.ReadFromJsonAsAsyncEnumerable<AsyncActionResult>();
+        await foreach (var actionResult in content) {
+            Console.WriteLine(actionResult.ToJson(indent: false));
+            switch (actionResult.MessageType) {
+                case "STATS": {
+                    var data = JsonSerializer.Deserialize<JsonObject>(actionResult.Data.ToJson());
+                    ChannelDeleteProgress = data!["messages_per_channel"]!
+                        .Deserialize<Dictionary<string, int>>()!
+                        .ToDictionary(x=>x.Key, x=>new DeleteProgress { Total = x.Value });
+                    break;
+                }
+                case "BULK_DELETED": {
+                    var data = JsonSerializer.Deserialize<JsonObject>(actionResult.Data.ToJson());
+                    ChannelDeleteProgress[data!["channel_id"]!.ToString()].Deleted += data!["deleted"]!.GetValue<int>();
+                    break;
+                }
+                default: {
+                    Console.WriteLine($"Unknown message type: {actionResult.MessageType}");
+                    break;
+                }
+            }
+            
+            StateHasChanged();
+            await Task.Delay(1);
+        }
+
+        Done = true;
+        StateHasChanged();
+    }
+
+    private class DeleteProgress {
+        public int Total { get; set; }
+        public int Deleted { get; set; } = 0;
+        public float Progress => (float)Deleted / Total;
+    }
+}
