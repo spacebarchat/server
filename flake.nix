@@ -12,7 +12,7 @@
       nixpkgs,
       flake-utils,
     }:
-    nixpkgs.lib.mergeAttrs
+    nixpkgs.lib.recursiveUpdate
       (
         let
           hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
