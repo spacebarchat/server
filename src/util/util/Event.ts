@@ -27,10 +27,11 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 	const id = (payload.guild_id || payload.channel_id || payload.user_id) as string;
 	if (!id) return console.error("event doesn't contain any id", payload);
 
-	if (RabbitMQ.connection) {
+	if (RabbitMQ.publishConnection) {
 		const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
-		const channel = await RabbitMQ.getSafeChannel();
 		try {
+			const channel = await RabbitMQ.getPublishChannel();
+
 			await channel.assertExchange(id, "fanout", {
 				durable: false,
 			});
@@ -39,7 +40,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 			const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
 			if (!successful) throw new Error("failed to send event");
 		} catch (e) {
-			// todo: should we retry publishng the event?
+			// todo: should we retry publishing the event?
 			console.log("[RabbitMQ] ", e);
 		}
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
@@ -51,7 +52,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
 export async function initEvent() {
 	await RabbitMQ.init(); // does nothing if rabbitmq is not setup
-	if (RabbitMQ.connection) {
+	if (RabbitMQ.publishConnection && RabbitMQ.consumerConnection) {
 		// empty on purpose?
 	} else {
 		// use event emitter
@@ -77,9 +78,9 @@ export interface ProcessEvent {
 }
 
 export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts): Promise<() => Promise<void>> {
-	if (RabbitMQ.connection) {
-		const rabbitMQChannel = await RabbitMQ.getSafeChannel();
-		const channel = opts?.channel || rabbitMQChannel;
+	if (RabbitMQ.consumerConnection) {
+		const sharedConsumerChannel = await RabbitMQ.getConsumerChannel();
+		const channel = opts?.channel || sharedConsumerChannel;
 		if (!channel) throw new Error("[Events] An event was sent without an associated channel");
 		return await rabbitListen(channel, event, callback, {
 			acknowledge: opts?.acknowledge,
