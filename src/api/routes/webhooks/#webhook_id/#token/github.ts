@@ -154,6 +154,10 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 			];
 			break;
 		case "pull_request": // funfact: for some reason, if a PR's title is over 216 chars in length you won't see any actions taken on the PR on discord
+			if (!["opened", "closed"].includes(req.body.action)) {
+				return;
+			}
+
 			discordPayload.embeds = [
 				{
 					author: {
