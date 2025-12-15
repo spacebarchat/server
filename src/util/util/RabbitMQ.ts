@@ -24,8 +24,12 @@ class RabbitMQUtility {
 	private _sharedPublishChannel: Channel | null;
 	private _consumerConnection: ChannelModel | null; // used for consuming events
 	private _sharedConsumerChannel: Channel | null;
+	private _initialized: boolean = false;
 
 	public async init(): Promise<void> {
+		if (this._initialized) return;
+
+		this._initialized = true;
 		const host = Config.get().rabbitmq.host;
 		if (!host) return;
 		console.log(`[RabbitMQ] connect: ${host}`);
