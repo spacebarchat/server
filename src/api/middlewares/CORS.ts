@@ -23,7 +23,7 @@ import { NextFunction, Request, Response } from "express";
 export function CORS(req: Request, res: Response, next: NextFunction) {
 	res.set("Access-Control-Allow-Credentials", "true");
 	res.set("Access-Control-Allow-Headers", req.header("Access-Control-Request-Headers") || "*");
-	res.set("Access-Control-Allow-Methods", req.header("Access-Control-Request-Methods") || "*");
+	res.set("Access-Control-Allow-Methods", req.header("Access-Control-Request-Method") || "*");
 	res.set("Access-Control-Allow-Origin", req.header("Origin") ?? "*");
 	res.set("Access-Control-Max-Age", "5"); // dont make it too long so we can change it dynamically
 	// TODO: use better CSP
