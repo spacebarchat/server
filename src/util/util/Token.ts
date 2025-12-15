@@ -18,15 +18,12 @@
 
 import jwt, { VerifyOptions } from "jsonwebtoken";
 import { Config } from "./Config";
-import { User } from "../entities";
+import { InstanceBan, User } from "../entities";
 import crypto from "node:crypto";
 import fs from "fs/promises";
 import { existsSync } from "fs";
 // TODO: dont use deprecated APIs lol
-import {
-	FindOptionsRelationByString,
-	FindOptionsSelectByString,
-} from "typeorm";
+import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsSelect, FindOptionsSelectByString, FindOptionsWhere } from "typeorm";
 import * as console from "node:console";
 
 export const JWTOptions: VerifyOptions = { algorithms: ["HS256"] };
@@ -37,7 +34,7 @@ export type UserTokenData = {
 };
 
 function logAuth(text: string) {
-	if(process.env.LOG_AUTH !== "true") return;
+	if (process.env.LOG_AUTH !== "true") return;
 	console.log(`[AUTH] ${text}`);
 }
 
@@ -51,6 +48,8 @@ export const checkToken = (
 	opts?: {
 		select?: FindOptionsSelectByString<User>;
 		relations?: FindOptionsRelationByString;
+		ipAddress?: string;
+		fingerprint?: string;
 	},
 ): Promise<UserTokenData> =>
 	new Promise((resolve, reject) => {
@@ -66,15 +65,7 @@ export const checkToken = (
 
 			const user = await User.findOne({
 				where: { id: decoded.id },
-				select: [
-					...(opts?.select || []),
-					"id",
-					"bot",
-					"disabled",
-					"deleted",
-					"rights",
-					"data",
-				],
+				select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
 				relations: opts?.relations,
 			});
 
@@ -84,10 +75,7 @@ export const checkToken = (
 			}
 
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
-			if (
-				decoded.iat * 1000 <
-				new Date(user.data.valid_tokens_since).setSeconds(0, 0)
-			) {
+			if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0)) {
 				logAuth("validateUser rejected: Token not yet valid");
 				return rejectAndLog(reject, "Invalid Token");
 			}
@@ -96,9 +84,16 @@ export const checkToken = (
 				logAuth("validateUser rejected: User disabled");
 				return rejectAndLog(reject, "User disabled");
 			}
+
 			if (user.deleted) {
 				logAuth("validateUser rejected: User deleted");
 				return rejectAndLog(reject, "User not found");
+			}
+
+			const banReasons = await InstanceBan.findInstanceBans({ userId: user.id, ipAddress: opts?.ipAddress, fingerprint: opts?.fingerprint, propagateBan: true });
+			if (banReasons.length > 0) {
+				logAuth("validateUser rejected: User banned for reasons: " + banReasons.join(", "));
+				return rejectAndLog(reject, "Invalid Token");
 			}
 
 			logAuth("validateUser success: " + JSON.stringify({ decoded, user }));
@@ -109,21 +104,11 @@ export const checkToken = (
 		if (!dec) return reject("Could not parse token");
 		logAuth("Decoded token: " + JSON.stringify(dec));
 
-		if (dec.header.alg == "HS256") {
-			jwt.verify(
-				token,
-				Config.get().security.jwtSecret,
-				JWTOptions,
-				validateUser,
-			);
+		if (dec.header.alg == "HS256" && Config.get().security.jwtSecret !== null) {
+			jwt.verify(token, Config.get().security.jwtSecret!, JWTOptions, validateUser);
 		} else if (dec.header.alg == "ES512") {
 			loadOrGenerateKeypair().then((keyPair) => {
-				jwt.verify(
-					token,
-					keyPair.publicKey,
-					{ algorithms: ["ES512"] },
-					validateUser,
-				);
+				jwt.verify(token, keyPair.publicKey, { algorithms: ["ES512"] }, validateUser);
 			});
 		} else return reject("Invalid token algorithm");
 	});
@@ -152,7 +137,7 @@ let cachedKeypair: {
 	privateKey: crypto.KeyObject;
 	publicKey: crypto.KeyObject;
 	fingerprint: string;
-}
+};
 
 // Get ECDSA keypair from file or generate it
 export async function loadOrGenerateKeypair() {
@@ -176,10 +161,7 @@ export async function loadOrGenerateKeypair() {
 	let publicKey: crypto.KeyObject;
 
 	if (existsSync("jwt.key") && existsSync("jwt.key.pub")) {
-		const [loadedPrivateKey, loadedPublicKey] = await Promise.all([
-			fs.readFile("jwt.key"),
-			fs.readFile("jwt.key.pub"),
-		]);
+		const [loadedPrivateKey, loadedPublicKey] = await Promise.all([fs.readFile("jwt.key"), fs.readFile("jwt.key.pub")]);
 
 		privateKey = crypto.createPrivateKey(loadedPrivateKey);
 		publicKey = crypto.createPublicKey(loadedPublicKey);
@@ -192,14 +174,8 @@ export async function loadOrGenerateKeypair() {
 		publicKey = res.publicKey;
 
 		await Promise.all([
-			fs.writeFile(
-				"jwt.key",
-				privateKey.export({ format: "pem", type: "sec1" }),
-			),
-			fs.writeFile(
-				"jwt.key.pub",
-				publicKey.export({ format: "pem", type: "spki" }),
-			),
+			fs.writeFile("jwt.key", privateKey.export({ format: "pem", type: "sec1" })),
+			fs.writeFile("jwt.key.pub", publicKey.export({ format: "pem", type: "spki" })),
 		]);
 	}
 
@@ -209,5 +185,5 @@ export async function loadOrGenerateKeypair() {
 		.digest("hex");
 
 	lastFsCheck = Date.now();
-	return cachedKeypair = { privateKey, publicKey, fingerprint };
+	return (cachedKeypair = { privateKey, publicKey, fingerprint });
 }

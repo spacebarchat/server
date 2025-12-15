@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251005-232225" />
+        <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.0-preview.20251005-232225" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Spacebar.AdminApi.Models\Spacebar.AdminApi.Models.csproj" />
+      <ProjectReference Include="..\Spacebar.ConfigModel\Spacebar.ConfigModel.csproj" />
+      <ProjectReference Include="..\Spacebar.Db\Spacebar.Db.csproj" />
+      <ProjectReference Include="..\Utilities\Spacebar.RabbitMqUtilities\Spacebar.RabbitMqUtilities.csproj" />
+    </ItemGroup>
+
+</Project>

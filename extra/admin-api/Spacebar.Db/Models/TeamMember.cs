@@ -19,14 +19,14 @@ public partial class TeamMember
     [Column("permissions")]
     public string Permissions { get; set; } = null!;
 
-    [Column("role", TypeName = "character varying")]
-    public string Role { get; set; } = null!;
-
     [Column("team_id", TypeName = "character varying")]
     public string? TeamId { get; set; }
 
     [Column("user_id", TypeName = "character varying")]
     public string? UserId { get; set; }
+
+    [Column("role", TypeName = "character varying")]
+    public string Role { get; set; } = null!;
 
     [ForeignKey("TeamId")]
     [InverseProperty("TeamMembers")]

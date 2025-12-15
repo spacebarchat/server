@@ -27,3 +27,5 @@ bun.lock
 schemas_orig/
 schemas_nested/
 schemas_final/
+
+!/extra/admin-api/Utilities/Spacebar.AdminApi.TestClient/wwwroot/lib/bootstrap/dist/

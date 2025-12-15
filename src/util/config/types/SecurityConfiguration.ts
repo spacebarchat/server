@@ -24,7 +24,7 @@ export class SecurityConfiguration {
 	twoFactor: TwoFactorConfiguration = new TwoFactorConfiguration();
 	autoUpdate: boolean | number = true;
 	requestSignature: string = crypto.randomBytes(32).toString("base64");
-	jwtSecret: string = crypto.randomBytes(256).toString("base64");
+	jwtSecret: string | null = null;
 	// header to get the real user ip address
 	// X-Forwarded-For for nginx/reverse proxies
 	// CF-Connecting-IP for cloudflare
@@ -36,7 +36,7 @@ export class SecurityConfiguration {
 	// https://docs.abuseipdb.com/#api-daily-rate-limits
 	abuseipdbBlacklistRatelimit: number = 5;
 	abuseipdbConfidenceScoreTreshold: number = 50;
-	ipdataApiKey: string | null = "eca677b284b3bac29eb72f5e496aa9047f26543605efe99ff2ce35c9"; // isnt even valid anymore it seems?
+	ipdataApiKey: string | null = null;
 	mfaBackupCodeCount: number = 10;
 	statsWorldReadable: boolean = true;
 	defaultRegistrationTokenExpiration: number = 1000 * 60 * 60 * 24 * 7; //1 week

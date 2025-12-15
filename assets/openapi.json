@@ -1034,6 +1034,9 @@
                     "id"
                 ]
             },
+            "InstanceUserDeleteSchema": {
+                "$ref": "#/components/schemas/InstanceUserDeleteSchemaContent"
+            },
             "UserSettingsUpdateSchema": {
                 "type": "object",
                 "properties": {
@@ -4255,10 +4258,10 @@
                 "type": "object",
                 "properties": {
                     "delete_message_seconds": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "delete_message_days": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "reason": {
                         "type": "string"
@@ -10774,6 +10777,14 @@
                     3
                 ]
             },
+            "InstanceUserDeleteSchemaContent": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string"
+                    }
+                }
+            },
             "Classification": {
                 "type": "object",
                 "properties": {
@@ -15565,6 +15576,16 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InstanceUserDeleteSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "204": {
                         "description": "No description available"

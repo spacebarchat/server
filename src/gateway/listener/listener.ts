@@ -29,6 +29,7 @@ import {
 	Message,
 	NewUrlUserSignatureData,
 	GuildMemberAddEvent,
+	Ban,
 } from "@spacebar/util";
 import { OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
@@ -36,7 +37,7 @@ import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
 import { Recipient } from "@spacebar/util";
 import * as console from "node:console";
-import { PublicMember, RelationshipType } from "@spacebar/schemas"
+import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
 
 // TODO: close connection on Invalidated Token
@@ -46,10 +47,7 @@ import { bgRedBright } from "picocolors";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
-export function handlePresenceUpdate(
-	this: WebSocket,
-	{ event, acknowledge, data }: EventOpts,
-) {
+export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data }: EventOpts) {
 	acknowledge?.();
 	if (event === EVENTEnum.PresenceUpdate) {
 		return Send(this, {
@@ -92,32 +90,24 @@ export async function setupListener(this: WebSocket) {
 	this.listen_options = opts;
 	const consumer = consume.bind(this);
 
+	const handleChannelError = (err: unknown) => {
+		console.error(`[RabbitMQ] [user-${this.user_id}] Channel Error (Handled):`, err);
+	};
+
 	console.log("[RabbitMQ] setupListener: open for ", this.user_id);
 	if (RabbitMQ.connection) {
-		console.log(
-			"[RabbitMQ] setupListener: opts.channel = ",
-			typeof opts.channel,
-			"with channel id",
-			opts.channel?.ch,
-		);
+		console.log("[RabbitMQ] setupListener: opts.channel = ", typeof opts.channel, "with channel id", opts.channel?.ch);
 		opts.channel = await RabbitMQ.connection.createChannel();
+
+		opts.channel.on("error", handleChannelError);
 		opts.channel.queues = {};
-		console.log(
-			"[RabbitMQ] channel created: ",
-			typeof opts.channel,
-			"with channel id",
-			opts.channel?.ch,
-		);
+		console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
 	}
 
 	this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
 
 	relationships.forEach(async (relationship) => {
-		this.events[relationship.to_id] = await listenEvent(
-			relationship.to_id,
-			handlePresenceUpdate.bind(this),
-			opts,
-		);
+		this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
 	});
 
 	dm_channels.forEach(async (channel) => {
@@ -130,33 +120,27 @@ export async function setupListener(this: WebSocket) {
 		this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
 		guild.channels.forEach(async (channel) => {
-			if (
-				permission
-					.overwriteChannel(channel.permission_overwrites ?? [])
-					.has("VIEW_CHANNEL")
-			) {
-				this.events[channel.id] = await listenEvent(
-					channel.id,
-					consumer,
-					opts,
-				);
+			if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
+				this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
 			}
 		});
 	});
 
-	this.once("close", () => {
-		console.log(
-			"[RabbitMQ] setupListener: close for",
-			this.user_id,
-			"=",
-			typeof opts.channel,
-			"with channel id",
-			opts.channel?.ch,
+	this.once("close", async () => {
+		console.log("[RabbitMQ] setupListener: close for", this.user_id, "=", typeof opts.channel, "with channel id", opts.channel?.ch);
+
+		// wait for event consumer cancellation
+		await Promise.all(
+			Object.values(this.events).map((x) => {
+				if (x) return x();
+				else return Promise.resolve();
+			}),
 		);
-		if (opts.channel) opts.channel.close();
-		else {
-			Object.values(this.events).forEach((x) => x?.());
-			Object.values(this.member_events).forEach((x) => x());
+		await Promise.all(Object.values(this.member_events).map((x) => x()));
+
+		if (opts.channel) {
+			await opts.channel.close();
+			opts.channel.off("error", handleChannelError);
 		}
 	});
 }
@@ -180,11 +164,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			break;
 		case "GUILD_MEMBER_ADD":
 			if (this.member_events[data.user.id]) break; // already subscribed
-			this.member_events[data.user.id] = await listenEvent(
-				data.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options,
-			);
+			this.member_events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 			break;
 		case "GUILD_MEMBER_UPDATE":
 			if (!this.member_events[data.user.id]) break;
@@ -195,34 +175,32 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "GUILD_DELETE":
 			this.events[id]?.();
 			delete this.events[id];
+			if (event === "GUILD_DELETE" && this.ipAddress) {
+				const ban = await Ban.findOne({
+					where: { guild_id: id, user_id: this.user_id },
+				});
+
+				if (ban) {
+					ban.ip = this.ipAddress || undefined;
+					await ban.save();
+				}
+			}
 			break;
 		case "CHANNEL_CREATE":
-			if (
-				!permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				return;
 			}
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
 		case "RELATIONSHIP_ADD":
-			this.events[data.user.id] = await listenEvent(
-				data.user.id,
-				handlePresenceUpdate.bind(this),
-				this.listen_options,
-			);
+			this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
 			break;
 		case "GUILD_CREATE":
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
 		case "CHANNEL_UPDATE": {
 			const exists = this.events[id];
-			if (
-				permission
-					.overwriteChannel(data.permission_overwrites)
-					.has("VIEW_CHANNEL")
-			) {
+			if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
 				if (exists) break;
 				this.events[id] = await listenEvent(id, consumer, listenOpts);
 			} else {
@@ -294,20 +272,19 @@ async function consume(this: WebSocket, opts: EventOpts) {
 		case "MESSAGE_UPDATE":
 			// console.log(this.request)
 			if (data["attachments"])
-				data["attachments"] =
-					Message.prototype.withSignedAttachments.call(
-						data,
-						new NewUrlUserSignatureData({
-							ip: this.ipAddress,
-							userAgent: this.userAgent,
-						}),
-					).attachments;
+				data["attachments"] = Message.prototype.withSignedAttachments.call(
+					data,
+					new NewUrlUserSignatureData({
+						ip: this.ipAddress,
+						userAgent: this.userAgent,
+					}),
+				).attachments;
 			break;
 		default:
 			break;
 	}
 
-	if(event === "GUILD_MEMBER_ADD") {
+	if (event === "GUILD_MEMBER_ADD") {
 		if ((data as PublicMember).roles === undefined || (data as PublicMember).roles === null) {
 			console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!", opts.origin ?? "(Event origin not defined)", data);
 			(data as PublicMember).roles = [];

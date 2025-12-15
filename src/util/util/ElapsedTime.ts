@@ -68,4 +68,17 @@ export class ElapsedTime {
 	get days(): number {
 		return this.totalDays;
 	}
+
+	toString(): string {
+		// Format: "DD.HH:MM:SS.mmmuuuNNN", with days being optional
+		const daysPart = Math.floor(this.days) > 0 ? `${Math.floor(this.days)}.` : "";
+		const hoursPart = Math.floor(this.hours).toString().padStart(2, "0");
+		const minutesPart = Math.floor(this.minutes).toString().padStart(2, "0");
+		const secondsPart = Math.floor(this.seconds).toString().padStart(2, "0");
+		const millisecondsPart = Math.floor(this.milliseconds).toString().padStart(3, "0");
+		const microsecondsPart = Math.floor(this.microseconds).toString().padStart(3, "0");
+		const nanosecondsPart = Math.floor(this.nanoseconds).toString().padStart(3, "0");
+
+		return `${daysPart}${hoursPart}:${minutesPart}:${secondsPart}.${millisecondsPart}${microsecondsPart}${nanosecondsPart}`;
+	}
 }

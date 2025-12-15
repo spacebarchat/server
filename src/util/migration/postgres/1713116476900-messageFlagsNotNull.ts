@@ -16,8 +16,16 @@ export class MessageFlagsNotNull1713116476900 implements MigrationInterface {
 		await queryRunner.query("ALTER TABLE messages DROP COLUMN flags_old;");
 	}
 
-	public async down(): Promise<void> {
-		// dont care
-		throw new Error("Migration down is not implemented.");
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(
+			"ALTER TABLE messages RENAME COLUMN flags TO flags_new;",
+		);
+		await queryRunner.query(
+			"ALTER TABLE messages ADD COLUMN flags integer;",
+		);
+		await queryRunner.query(
+			"UPDATE messages SET flags = flags_new;",
+		);
+		await queryRunner.query("ALTER TABLE messages DROP COLUMN flags_new;");
 	}
 }

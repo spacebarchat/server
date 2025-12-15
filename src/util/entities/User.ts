@@ -359,4 +359,18 @@ export class User extends BaseClass {
 
 		return qry[0];
 	}
+
+	async getDmChannels() {
+		const qry = await Channel.getRepository()
+			.createQueryBuilder("channel")
+			.leftJoinAndSelect("channel.recipients", "rcp")
+			.where("channel.type = :type", { type: ChannelType.DM })
+			.andWhere("rcp.user_id = :user_id", { user_id: this.id })
+			.groupBy("channel.id")
+			.addGroupBy("rcp.id")
+			.having("COUNT(rcp.id) = 2")
+			.getMany();
+
+		return qry;
+	}
 }

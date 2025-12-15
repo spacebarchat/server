@@ -55,9 +55,10 @@
     "Node.js.Server.ts.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "24.8.0",
     "javascript.nodejs.core.library.typings.version": "24.7.0",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/migration/postgres",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/schemas/api/users",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -71,7 +72,7 @@
     "npm.build.executor": "Run",
     "npm.start.executor": "Debug",
     "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
-    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "settings.editor.selected.configurable": "com.github.copilot.settings.customInstructions.CopilotInstructionsConfigurable",
     "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
   },
   "keyToStringList": {
@@ -87,11 +88,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
-      <recent name="$PROJECT_DIR$/src/util/entities" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
-      <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
+      <recent name="$PROJECT_DIR$/src/util/entities" />
+      <recent name="$PROJECT_DIR$/src/gateway/opcodes" />
+      <recent name="$PROJECT_DIR$/src/api/routes/users/@me/billing" />
+      <recent name="$PROJECT_DIR$/src/util/util/networking/abuseipdb" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
@@ -161,7 +162,9 @@
       <workItem from="1760044946282" duration="43683000" />
       <workItem from="1760402350251" duration="49898000" />
       <workItem from="1760538864442" duration="1330000" />
-      <workItem from="1764432507485" duration="22274000" />
+      <workItem from="1764432507485" duration="30779000" />
+      <workItem from="1764521899659" duration="22029000" />
+      <workItem from="1765142585081" duration="16912000" />
     </task>
     <servers />
   </component>

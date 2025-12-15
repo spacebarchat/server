@@ -34,7 +34,29 @@ export class guildChannelOrdering1696420827239 implements MigrationInterface {
 		await queryRunner.query(`ALTER TABLE channels DROP COLUMN position`);
 	}
 
-	public async down(): Promise<void> {
-		// don't care actually, sorry.
+	public async down(queryRunner: QueryRunner): Promise<void> {
+		await queryRunner.query(`ALTER TABLE channels ADD position integer NOT NULL DEFAULT 0`);
+
+		const guilds = await queryRunner.query(
+			`SELECT id, channel_ordering FROM guilds`,
+			undefined,
+			true,
+		);
+
+		for (const guild of guilds.records) {
+			const channel_ordering: string[] = JSON.parse(guild.channel_ordering);
+
+			for (let i = 0; i < channel_ordering.length; i++) {
+				const channel_id = channel_ordering[i];
+				await queryRunner.query(
+					`UPDATE channels SET position = $1 WHERE id = $2`,
+					[i, channel_id],
+				);
+			}
+		}
+
+		await queryRunner.query(
+			`ALTER TABLE guilds DROP COLUMN channel_ordering`,
+		);
 	}
 }

@@ -22,6 +22,7 @@ import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ConfigEntity } from "../entities/Config";
 import { Migration } from "../entities/Migration";
+import fs from "fs";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -33,12 +34,9 @@ if (!process.env) {
 	config({ quiet: true });
 }
 
-const dbConnectionString =
-	process.env.DATABASE || path.join(process.cwd(), "database.db");
+const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
-export const DatabaseType = dbConnectionString.includes("://")
-	? dbConnectionString.split(":")[0]?.replace("+srv", "")
-	: "sqlite";
+export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
 export const DataSourceOptions = new DataSource({
@@ -69,11 +67,7 @@ export async function initDatabase(): Promise<DataSource> {
 	if (dbConnection) return dbConnection;
 
 	if (isSqlite) {
-		console.log(
-			`[Database] ${red(
-				`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`,
-			)}`,
-		);
+		console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
 	}
 
 	if (!process.env.DB_SYNC) {
@@ -94,6 +88,13 @@ export async function initDatabase(): Promise<DataSource> {
 
 	dbConnection = await DataSourceOptions.initialize();
 
+	if (DatabaseType === "sqlite") {
+		console.log(`[Database] ${yellow("Warning: SQLite is not supported. Forcing sync, this may lead to data loss!")}`);
+		await dbConnection.synchronize();
+		console.log(`[Database] ${green("Connected")}`);
+		return dbConnection;
+	}
+
 	// Crude way of detecting if the migrations table exists.
 	const dbExists = async () => {
 		try {
@@ -103,26 +104,16 @@ export async function initDatabase(): Promise<DataSource> {
 			return false;
 		}
 	};
-	if (!(await dbExists())) {
-		console.log(
-			"[Database] This appears to be a fresh database. Synchronising.",
-		);
-		await dbConnection.synchronize();
 
-		// On next start, typeorm will try to run all the migrations again from beginning.
-		// Manually insert every current migration to prevent this:
-		await Promise.all(
-			dbConnection.migrations.map((migration) =>
-				Migration.insert({
-					name: migration.name,
-					timestamp: Date.now(),
-				}),
-			),
-		);
-	} else {
-		console.log("[Database] Applying missing migrations, if any.");
-		await dbConnection.runMigrations();
+	if (!(await dbExists())) {
+		console.log("[Database] This appears to be a fresh database. Running initial DDL.");
+		const qr = dbConnection.createQueryRunner();
+		if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js")))
+			await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
 	}
+
+	console.log("[Database] Applying missing migrations, if any.");
+	await dbConnection.runMigrations();
 
 	console.log(`[Database] ${green("Connected")}`);
 

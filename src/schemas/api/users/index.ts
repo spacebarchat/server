@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 export * from "./ConnectedAccount";
+export * from "./InstanceUserDeleteSchema";
 export * from "./Member";
 export * from "./User";
 export * from "./UserSettings";

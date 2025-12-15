@@ -1,0 +1,14 @@
+diff --git a/Spacebar.Db/Contexts/SpacebarDbContext.cs b/Spacebar.Db/Contexts/SpacebarDbContext.cs
+index 0a707c75..7d380b1c 100644
+--- a/Spacebar.Db/Contexts/SpacebarDbContext.cs
++++ b/Spacebar.Db/Contexts/SpacebarDbContext.cs
+@@ -1,7 +1,6 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using Microsoft.EntityFrameworkCore;
++﻿using Microsoft.EntityFrameworkCore;
+ using Spacebar.Db.Models;
++using Stream = Spacebar.Db.Models.Stream;
+ 
+ namespace Spacebar.Db.Contexts;
+ 

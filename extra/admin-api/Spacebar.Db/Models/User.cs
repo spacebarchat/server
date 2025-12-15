@@ -65,9 +65,6 @@ public partial class User
     [Column("mfa_enabled")]
     public bool MfaEnabled { get; set; }
 
-    [Column("webauthn_enabled")]
-    public bool WebauthnEnabled { get; set; }
-
     [Column("totp_secret", TypeName = "character varying")]
     public string? TotpSecret { get; set; }
 
@@ -92,14 +89,14 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags", TypeName = "character varying")]
-    public string Flags { get; set; }
+    [Column("flags")]
+    public ulong Flags { get; set; }
 
     [Column("public_flags")]
     public ulong PublicFlags { get; set; }
 
     [Column("purchased_flags")]
-    public int PurchasedFlags { get; set; }
+    public ulong PurchasedFlags { get; set; }
 
     [Column("premium_usage_flags")]
     public int PremiumUsageFlags { get; set; }
@@ -116,11 +113,14 @@ public partial class User
     [Column("extended_settings")]
     public string ExtendedSettings { get; set; } = null!;
 
-    [Column("badge_ids")]
-    public string? BadgeIds { get; set; }
-
     [Column("settingsIndex")]
     public int? SettingsIndex { get; set; }
+
+    [Column("webauthn_enabled")]
+    public bool WebauthnEnabled { get; set; }
+
+    [Column("badge_ids")]
+    public string? BadgeIds { get; set; }
 
     [InverseProperty("BotUser")]
     public virtual Application? ApplicationBotUser { get; set; }

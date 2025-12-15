@@ -52,9 +52,6 @@ public partial class UserSetting
     [Column("explicit_content_filter")]
     public int? ExplicitContentFilter { get; set; }
 
-    [Column("friend_discovery_flags")]
-    public int? FriendDiscoveryFlags { get; set; }
-
     [Column("friend_source_flags")]
     public string? FriendSourceFlags { get; set; }
 
@@ -108,6 +105,9 @@ public partial class UserSetting
 
     [Column("timezone_offset")]
     public int? TimezoneOffset { get; set; }
+
+    [Column("friend_discovery_flags")]
+    public int? FriendDiscoveryFlags { get; set; }
 
     [Column("view_nsfw_guilds")]
     public bool? ViewNsfwGuilds { get; set; }

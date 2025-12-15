@@ -14,12 +14,12 @@ export class MessagePinnedAt1752383879533 implements MigrationInterface {
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(
-			`ALTER TABLE "messages" DROP COLUMN "pinned_at"`,
-		);
 		await queryRunner.query(`ALTER TABLE "messages" ADD "pinned" boolean`);
 		await queryRunner.query(
 			`UPDATE "messages" SET "pinned" = true WHERE "pinned_at" IS NOT NULL`,
+		);
+		await queryRunner.query(
+			`ALTER TABLE "messages" DROP COLUMN "pinned_at"`,
 		);
 	}
 }

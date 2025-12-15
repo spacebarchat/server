@@ -16,14 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getIpAdress, route, verifyCaptcha } from "@spacebar/api";
-import {
-	checkToken,
-	Config,
-	FieldErrors,
-	generateToken,
-	User,
-} from "@spacebar/util";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { checkToken, Config, FieldErrors, generateToken, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
@@ -67,7 +61,7 @@ router.post(
 				});
 			}
 
-			const ip = getIpAdress(req);
+			const ip = req.ip;
 			const verify = await verifyCaptcha(captcha_key, ip);
 			if (!verify.success) {
 				return res.status(400).json({
@@ -81,7 +75,10 @@ router.post(
 		let user;
 
 		try {
-			const userTokenData = await checkToken(token);
+			const userTokenData = await checkToken(token, {
+				fingerprint: req.fingerprint,
+				ipAddress: req.ip
+			});
 			user = userTokenData.user;
 		} catch {
 			throw FieldErrors({

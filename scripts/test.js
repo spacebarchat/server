@@ -23,10 +23,21 @@
 
 const { spawn } = require("child_process");
 const path = require("path");
+const fs = require("fs");
 
-const server = spawn("node", [
-	path.join(__dirname, "..", "dist", "bundle", "start.js"),
-]);
+const cfgFile = path.join(__dirname, "test_config.json");
+process.env.CONFIG_PATH = cfgFile;
+
+fs.writeFileSync(
+	cfgFile,
+	JSON.stringify({
+		api: { endpointPublic: "http://localhost:3001/api/v9/" },
+		cdn: { endpointPublic: "http://localhost:3001/", endpointPrivate: "http://localhost:3001/" },
+		gateway: { endpointPublic: "ws://localhost:3001/" },
+	}),
+);
+
+const server = spawn("node", [path.join(__dirname, "..", "dist", "bundle", "start.js")]);
 
 server.stdout.on("data", (data) => {
 	process.stdout.write(data);

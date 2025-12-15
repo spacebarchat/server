@@ -23,7 +23,7 @@ public partial class Ban
     public string? ExecutorId { get; set; }
 
     [Column("ip", TypeName = "character varying")]
-    public string Ip { get; set; } = null!;
+    public string? Ip { get; set; }
 
     [Column("reason", TypeName = "character varying")]
     public string? Reason { get; set; }

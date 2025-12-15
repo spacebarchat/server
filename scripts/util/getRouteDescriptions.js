@@ -49,7 +49,7 @@ function proxy(file, apiMethod, apiPathPrefix, apiPath, ...args) {
 	const opts = args.find((x) => x?.prototype?.OPTS_MARKER == true);
 	if (!opts)
 		return console.error(
-			` \x1b[5m${bgRedBright("ERROR")}\x1b[25m ${file.replace(path.resolve(__dirname, "..", "..", "dist"), "/src/")} has route without route() description middleware: ${colorizeMethod(apiMethod)} ${formatPath(apiPath)}`,
+			` \x1b[5m${bgRedBright("ERROR")}\x1b[25m ${file.replace(path.resolve(__dirname, "..", "..", "dist"), "/src")} has route without route() description middleware: ${colorizeMethod(apiMethod)} ${formatPath(apiPath)}`,
 		);
 
 	console.log(`${colorizeMethod(apiMethod).padStart("DELETE".length + 10)} ${formatPath(apiPathPrefix + apiPath)}`);

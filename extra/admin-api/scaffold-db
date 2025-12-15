@@ -19,6 +19,8 @@ rm Class1.cs
 dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -n -f net9.0
 dotnet add package Microsoft.EntityFrameworkCore.Design -n -f net9.0
 
+dotnet restore
+
 dotnet-ef dbcontext scaffold "Host=127.0.0.1; Username=postgres; Database=sb-server-scaffold" \
   Npgsql.EntityFrameworkCore.PostgreSQL \
   -o Models \
@@ -28,6 +30,8 @@ dotnet-ef dbcontext scaffold "Host=127.0.0.1; Username=postgres; Database=sb-ser
   --no-onconfiguring \
   --data-annotations
   
-for patch in db-patches/*.patch; do
-  patch -p3 < $patch
+for patch in ../db-patches/*.patch; do
+  patch -p1 < $patch
 done
+
+echo 'Scaffolded database and applied patches. Dont forget to generate new patches with `git diff --relative Spacebar.Db/path/xyz > db-patches/001-your-patch-name.patch!`'

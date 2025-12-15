@@ -379,13 +379,15 @@ export class Channel extends BaseClass {
 		// TODO Delete attachments from the CDN for messages in the channel
 		await Channel.delete({ id: channel.id });
 
-		const guild = await Guild.findOneOrFail({
-			where: { id: channel.guild_id },
-			select: { channel_ordering: true },
-		});
+		if (channel.guild_id) {
+			const guild = await Guild.findOneOrFail({
+				where: { id: channel.guild_id },
+				select: { channel_ordering: true },
+			});
 
-		const updatedOrdering = guild.channel_ordering.filter((id) => id != channel.id);
-		await Guild.update({ id: channel.guild_id }, { channel_ordering: updatedOrdering });
+			const updatedOrdering = guild.channel_ordering.filter((id) => id != channel.id);
+			await Guild.update({ id: channel.guild_id }, { channel_ordering: updatedOrdering });
+		}
 	}
 
 	static async calculatePosition(channel_id: string, guild_id: string, guild?: Guild) {

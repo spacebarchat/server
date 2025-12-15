@@ -1063,6 +1063,10 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "InstanceUserDeleteSchema": {
+        "$ref": "#/definitions/InstanceUserDeleteSchemaContent",
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserSettingsUpdateSchema": {
         "type": "object",
         "properties": {
@@ -4497,10 +4501,10 @@
         "type": "object",
         "properties": {
             "delete_message_seconds": {
-                "type": "string"
+                "type": "integer"
             },
             "delete_message_days": {
-                "type": "string"
+                "type": "integer"
             },
             "reason": {
                 "type": "string"
@@ -11398,6 +11402,16 @@
             2,
             3
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InstanceUserDeleteSchemaContent": {
+        "type": "object",
+        "properties": {
+            "reason": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "Classification": {
