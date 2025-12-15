@@ -67,6 +67,7 @@ class RabbitMQUtility {
 			// Add reconnection logic after connection crashes
 			// we don't have to reconstruct any previous state since
 			// this connection was used purely for publishing
+			this._sharedPublishChannel = null;
 			await this.createPublishConnection();
 		});
 
