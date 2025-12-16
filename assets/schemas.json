@@ -11409,6 +11409,9 @@
         "properties": {
             "reason": {
                 "type": "string"
+            },
+            "persistInstanceBan": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
