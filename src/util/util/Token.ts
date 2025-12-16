@@ -138,7 +138,7 @@ export const checkToken = (
 				tokenVersion: decoded.ver ?? legacyVersion ?? 2,
 			};
 
-			console.log("User", user.id, "logged in with token version", result.tokenVersion);
+			if (process.env.LOG_TOKEN_VERSION) console.log("User", user.id, "logged in with token version", result.tokenVersion);
 
 			logAuth("validateUser success: " + JSON.stringify(result));
 			return resolve(result);

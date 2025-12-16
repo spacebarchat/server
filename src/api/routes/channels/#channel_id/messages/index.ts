@@ -391,7 +391,6 @@ router.post(
 
 		const embeds = body.embeds || [];
 		if (body.embed) embeds.push(body.embed);
-		console.log("messages/index.ts: attachments:", attachments);
 		const message = await handleMessage({
 			...body,
 			type: 0,
