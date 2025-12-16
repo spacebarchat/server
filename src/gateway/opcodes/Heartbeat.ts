@@ -19,6 +19,8 @@
 import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
+import { Session } from "@spacebar/util*";
+import { FindOptionsWhere } from "typeorm";
 
 interface QoSData {
 	seq: number | null;
@@ -40,5 +42,18 @@ export async function onHeartbeat(this: WebSocket, data: Payload) {
 		this.qos = (data.d as QoSData).qos;
 	}
 
-	await Send(this, { op: 11, d: {} });
+	const newSessionData: Partial<Session> = {
+		last_seen: new Date(),
+	};
+
+	await Promise.all([
+		Send(this, { op: 11, d: {} }),
+		Session.update(
+			{
+				id: this.session_id!,
+				user_id: this.user_id!,
+			} as FindOptionsWhere<Session>,
+			newSessionData,
+		),
+	]);
 }
