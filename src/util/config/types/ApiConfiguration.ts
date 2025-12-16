@@ -16,8 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export class ApiConfiguration {
+import { EndpointConfiguration } from "./EndpointConfiguration";
+
+export class ApiConfiguration extends EndpointConfiguration {
 	defaultVersion: string = "9";
 	activeVersions: string[] = ["6", "7", "8", "9"];
-	endpointPublic: string | null = null;
 }
