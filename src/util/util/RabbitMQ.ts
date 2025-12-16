@@ -20,10 +20,10 @@ import amqp, { Channel, ChannelModel } from "amqplib";
 import { Config } from "./Config";
 
 export class RabbitMQ {
-	public connection: ChannelModel | null = null;
-	public channel: Channel | null = null;
+	public static connection: ChannelModel | null = null;
+	public static channel: Channel | null = null;
 
-	async init() {
+	static async init() {
 		const host = Config.get().rabbitmq.host;
 		if (!host) return;
 		console.log(`[RabbitMQ] connect: ${host}`);
@@ -46,7 +46,7 @@ export class RabbitMQ {
 		await this.getSafeChannel(); // why is this here?
 	}
 
-	async getSafeChannel(): Promise<Channel> {
+	static async getSafeChannel(): Promise<Channel> {
 		if (!this.connection) return Promise.reject();
 		if (this.channel) return this.channel;
 
