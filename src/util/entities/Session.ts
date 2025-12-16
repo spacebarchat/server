@@ -17,19 +17,25 @@
 */
 
 import { User } from "./User";
-import { BaseClass } from "./BaseClass";
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { BaseClass, BaseClassWithoutId } from "./BaseClass";
+import { ClientSession, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { ClientStatus, Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
+import crypto from "crypto";
+import { randomString, randomUpperString } from "@spacebar/api*";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
 @Entity({
 	name: "sessions",
 })
-export class Session extends BaseClass {
-	@Column({ nullable: true })
+export class Session extends BaseClassWithoutId {
+	@PrimaryColumn({ nullable: false })
+	session_id: string = randomUpperString();
+
+	@Column()
 	@RelationId((session: Session) => session.user)
+	@Index({})
 	user_id: string;
 
 	@JoinColumn({ name: "user_id" })
@@ -37,10 +43,6 @@ export class Session extends BaseClass {
 		onDelete: "CASCADE",
 	})
 	user: User;
-
-	//TODO check, should be 32 char long hex string
-	@Column({ nullable: false, select: false })
-	session_id: string;
 
 	@Column({ type: "simple-json", default: "[]" })
 	activities: Activity[];
@@ -50,15 +52,44 @@ export class Session extends BaseClass {
 		client: string;
 		os: string;
 		version: number;
+		location: string;
 	};
 
 	@Column({ type: "simple-json" })
 	client_status: ClientStatus;
 
-	@Column({ nullable: false, type: "varchar" })
+	@Column({ nullable: false, type: String })
 	status: Status; //TODO enum
+
+	@Column({ default: false })
+	is_admin_session: boolean;
+
+	@CreateDateColumn({ type: Date })
+	created_at: Date;
+
+	@Column({ default: 0, type: Date })
+	last_seen: Date;
+
+	@Column({ default: "127.0.0.1", type: String })
+	last_seen_ip: string;
+
+	@Column({ nullable: true, type: String })
+	last_seen_location?: string;
+
 	getPublicStatus() {
 		return this.status === "invisible" ? "offline" : this.status;
+	}
+
+	getDiscordDeviceInfo() {
+		return {
+			id_hash: crypto.createHash("sha256").update(this.session_id).digest("hex"),
+			approx_last_used_time: this.last_seen.toISOString(),
+			client_info: {
+				os: this.client_info.os,
+				client: this.client_info.client,
+				location: this.last_seen_location
+			},
+		};
 	}
 }
 

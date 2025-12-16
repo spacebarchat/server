@@ -18,13 +18,14 @@
 
 import jwt, { VerifyOptions } from "jsonwebtoken";
 import { Config } from "./Config";
-import { InstanceBan, User } from "../entities";
+import { InstanceBan, Session, User } from "../entities";
 import crypto from "node:crypto";
 import fs from "fs/promises";
 import { existsSync } from "fs";
 // TODO: dont use deprecated APIs lol
 import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsSelect, FindOptionsSelectByString, FindOptionsWhere } from "typeorm";
 import * as console from "node:console";
+import { randomUpperString } from "@spacebar/api*";
 
 /// Change history:
 /// 1 - Initial version with HS256
@@ -34,7 +35,7 @@ export const CurrentKeyFormatVersion: number = 3;
 
 export type UserTokenData = {
 	user: User;
-	// Filled in by checkToken
+	session?: Session;
 	tokenVersion: number;
 	decoded: {
 		id: string;
@@ -136,13 +137,25 @@ export const checkToken = (
 		} else return reject("Invalid token algorithm");
 	});
 
-export async function generateToken(id: string) {
+export async function generateToken(id: string, isAdminSession: boolean = false) {
 	const iat = Math.floor(Date.now() / 1000);
 	const keyPair = await loadOrGenerateKeypair();
 
+	let newSession;
+	do {
+		newSession = Session.create({
+			session_id: randomUpperString(10), // readable at a glance
+			user_id: id,
+			is_admin_session: isAdminSession,
+		});
+	} while (await Session.findOne({ where: { session_id: newSession.session_id } }));
+
+	await newSession.save();
+
 	return new Promise((res, rej) => {
+		const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentKeyFormatVersion, did: newSession.session_id } as UserTokenData["decoded"];
 		jwt.sign(
-			{ id, iat, kid: keyPair.fingerprint, ver: CurrentKeyFormatVersion } as UserTokenData["decoded"],
+			payload,
 			keyPair.privateKey,
 			{
 				algorithm: "ES512",
