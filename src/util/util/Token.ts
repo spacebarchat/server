@@ -27,23 +27,21 @@ import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsS
 import * as console from "node:console";
 
 /// Change history:
-/// 0 - Initial version with HS256
-/// 1 - Switched to ES512
-/// 2 - Add version to token payload
-export const CurrentKeyFormatVersion: number = 2;
+/// 1 - Initial version with HS256
+/// 2 - Switched to ES512
+/// 3 - Add version, device id to token payload
+export const CurrentKeyFormatVersion: number = 3;
 
 export type UserTokenData = {
 	user: User;
-	legacyVersion?: number;
+	// Filled in by checkToken
+	tokenVersion: number;
 	decoded: {
 		id: string;
 		iat: number;
 		ver?: number; // token format version
+		did?: string; // device id
 	};
-};
-
-export type ParsedUserTokenData = UserTokenData & {
-	legacyVersion?: number;
 };
 
 function logAuth(text: string) {
@@ -69,7 +67,7 @@ export const checkToken = (
 		token = token.replace("Bot ", ""); // there is no bot distinction in sb
 		token = token.replace("Bearer ", ""); // allow bearer tokens
 
-		let legacyVersion: number;
+		let legacyVersion: number | undefined = undefined;
 
 		const validateUser: jwt.VerifyCallback = async (err, out) => {
 			const decoded = out as UserTokenData["decoded"];
@@ -111,10 +109,14 @@ export const checkToken = (
 				return rejectAndLog(reject, "Invalid Token");
 			}
 
-			const result: ParsedUserTokenData = { decoded, user };
+			const result: UserTokenData = {
+				decoded,
+				user,
+				// v1 can be told apart, v2 cant outside of missing device id and version
+				tokenVersion: decoded.ver ?? legacyVersion ?? 2,
+			};
 
-			if(legacyVersion !== undefined)
-				result.legacyVersion = legacyVersion;
+			console.log("User", user.id, "logged in with token version", result.tokenVersion);
 
 			logAuth("validateUser success: " + JSON.stringify(result));
 			return resolve(result);
@@ -125,10 +127,9 @@ export const checkToken = (
 		logAuth("Decoded token: " + JSON.stringify(dec));
 
 		if (dec.header.alg == "HS256" && Config.get().security.jwtSecret !== null) {
-			legacyVersion = 0;
+			legacyVersion = 1;
 			jwt.verify(token, Config.get().security.jwtSecret!, { algorithms: ["HS256"] }, validateUser);
 		} else if (dec.header.alg == "ES512") {
-			legacyVersion = 1;
 			loadOrGenerateKeypair().then((keyPair) => {
 				jwt.verify(token, keyPair.publicKey, { algorithms: ["ES512"] }, validateUser);
 			});
