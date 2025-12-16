@@ -71,7 +71,12 @@ export const RabbitMQ: {
 			return this.channel;
 		} catch (e) {
 			console.error("[RabbitMQ] Failed to create channel:", e);
-			return Promise.reject(e);
+			console.error("[RabbitMQ] Forcing reconnect!");
+			this.connection = null;
+			this.channel = null;
+			await this.init();
+			return await this.getSafeChannel();
+			// return Promise.reject(e);
 		}
 	},
 };
