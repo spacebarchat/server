@@ -51,6 +51,7 @@ import {
 	Sticker,
 	VoiceState,
 	UserSettingsProtos,
+	IpDataClient,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
@@ -147,6 +148,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.session.client_info.os = (identify.properties?.os || identify.properties?.$os) ?? this.session.client_info.os;
 	this.session.client_status = {};
 	this.session.activities = identify.presence?.activities ?? []; // TODO: validation
+	if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
+		this.session.last_seen_ip = this.ipAddress;
+		const ipInfo = await IpDataClient.getIpInfo(this.ipAddress);
+		if (ipInfo?.ip) this.session.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
+	}
 
 	const createSessionTime = taskSw.getElapsedAndReset();
 

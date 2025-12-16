@@ -16,8 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Session } from "@spacebar/util";
+import { Session, TimeSpan } from "@spacebar/util";
 import { Like } from "typeorm";
+import { setInterval } from "timers";
 
 export async function initInstance() {
 	// TODO: clean up database and delete tombstone data
@@ -37,8 +38,17 @@ export async function initInstance() {
 	// TODO: do no clear sessions for instance cluster
 	// await Session.clear(); // This is now used as part of authentication...
 	// ... but we can still expire temporary sessions for legacy tokens
-	for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().stream()) {
-		console.log("Instance[sessions]:",session);
-	}
-	await Session.delete({ session_id: Like("TEMP_%") });
+	setInterval(
+		async () => {
+			for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().stream()) {
+				// session object has all fields prefixed with `session_`... thanks typeorm
+				if (TimeSpan.fromDates((session.session_created_at as Date).getTime(), new Date().getTime()).totalHours > 1) {
+					console.log(`[API/Instance.ts] Deleting temporary session ${session.session_session_id} created at ${session.session_created_at}`);
+					await Session.delete({ session_id: session.session_session_id });
+				}
+			}
+		},
+		1000 * 60 * 30,
+	);
+	// await Session.delete({ session_id: Like("TEMP_%") });
 }
