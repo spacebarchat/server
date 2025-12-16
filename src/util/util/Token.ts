@@ -26,6 +26,8 @@ import { existsSync } from "fs";
 import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsSelect, FindOptionsSelectByString, FindOptionsWhere } from "typeorm";
 import * as console from "node:console";
 import { randomUpperString } from "@spacebar/api";
+import { IpDataClient } from "./networking";
+import { TimeSpan } from "./Timespan";
 
 /// Change history:
 /// 1 - Initial version with HS256
@@ -63,8 +65,8 @@ export const checkToken = (
 		ipAddress?: string;
 		fingerprint?: string;
 	},
-): Promise<UserTokenData> =>
-	new Promise((resolve, reject) => {
+): Promise<UserTokenData> => {
+	return new Promise((resolve, reject) => {
 		token = token.replace("Bot ", ""); // there is no bot distinction in sb
 		token = token.replace("Bearer ", ""); // allow bearer tokens
 
@@ -77,15 +79,23 @@ export const checkToken = (
 				return rejectAndLog(reject, "Invalid Token meow " + err);
 			}
 
-			const user = await User.findOne({
-				where: { id: decoded.id },
-				select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
-				relations: opts?.relations,
-			});
+			const [user, session] = await Promise.all([
+				User.findOne({
+					where: { id: decoded.id },
+					select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
+					relations: opts?.relations,
+				}),
+				decoded.did ? Session.findOne({ where: { session_id: decoded.did, user_id: decoded.id } }) : undefined,
+			]);
 
 			if (!user) {
 				logAuth("validateUser rejected: User not found");
 				return rejectAndLog(reject, "User not found");
+			}
+
+			if (decoded.did && !session) {
+				logAuth("validateUser rejected: Session not found");
+				return rejectAndLog(reject, "Invalid Token");
 			}
 
 			// we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
@@ -110,8 +120,19 @@ export const checkToken = (
 				return rejectAndLog(reject, "Invalid Token");
 			}
 
+			if (session && TimeSpan.fromDates(session.last_seen.getTime(), new Date().getTime()).totalSeconds >= 15) {
+				session.last_seen = new Date();
+				if (opts?.ipAddress && opts?.ipAddress !== session.last_seen_ip) {
+					session.last_seen_ip = opts.ipAddress;
+					let ipInfo = await IpDataClient.getIpInfo(opts.ipAddress);
+					if (ipInfo?.ip) session.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
+				}
+				await session.save();
+			}
+
 			const result: UserTokenData = {
 				decoded,
+				session: session ?? undefined,
 				user,
 				// v1 can be told apart, v2 cant outside of missing device id and version
 				tokenVersion: decoded.ver ?? legacyVersion ?? 2,
@@ -136,6 +157,7 @@ export const checkToken = (
 			});
 		} else return reject("Invalid token algorithm");
 	});
+};
 
 export async function generateToken(id: string, isAdminSession: boolean = false) {
 	const iat = Math.floor(Date.now() / 1000);

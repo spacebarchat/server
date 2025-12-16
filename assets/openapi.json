@@ -171,6 +171,200 @@
                     "token_type"
                 ]
             },
+            "KeySchema": {
+                "type": "object",
+                "properties": {
+                    "_type": {
+                        "type": [
+                            "string",
+                            "integer",
+                            "object"
+                        ]
+                    },
+                    "_output": {
+                        "type": [
+                            "string",
+                            "integer",
+                            "object"
+                        ]
+                    },
+                    "_input": {},
+                    "_def": {},
+                    "description": {
+                        "type": "string"
+                    },
+                    "~standard": {
+                        "$ref": "#/components/schemas/StandardSchemaV1.Props<any,string|number|symbol>"
+                    },
+                    "spa": {
+                        "description": "Alias of safeParseAsync",
+                        "type": "object",
+                        "additionalProperties": false
+                    }
+                },
+                "required": [
+                    "_def",
+                    "_input",
+                    "_output",
+                    "_type",
+                    "spa",
+                    "~standard"
+                ]
+            },
+            "RouteResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string",
+                        "pattern": "^.*Response$"
+                    },
+                    "headers": {
+                        "$ref": "#/components/schemas/Record<string,string>"
+                    }
+                }
+            },
+            "hcaptchaResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "challenge_ts": {
+                        "type": "string"
+                    },
+                    "hostname": {
+                        "type": "string"
+                    },
+                    "credit": {
+                        "type": "boolean"
+                    },
+                    "error-codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "score": {
+                        "type": "integer"
+                    },
+                    "score_reason": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "challenge_ts",
+                    "credit",
+                    "error-codes",
+                    "hostname",
+                    "score",
+                    "score_reason",
+                    "success"
+                ]
+            },
+            "recaptchaResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "score": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "challenge_ts": {
+                        "type": "string"
+                    },
+                    "hostname": {
+                        "type": "string"
+                    },
+                    "error-codes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "action",
+                    "challenge_ts",
+                    "hostname",
+                    "score",
+                    "success"
+                ]
+            },
+            "AbuseIpDbBlacklistResponse": {
+                "type": "object",
+                "properties": {
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "generatedAt": {
+                                "type": "string",
+                                "default": "2020-09-24T19:54:11+00:00"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "generatedAt"
+                        ]
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ipAddress": {
+                                    "type": "string",
+                                    "default": "5.188.10.179"
+                                },
+                                "abuseConfidenceScore": {
+                                    "type": "integer",
+                                    "default": 100
+                                },
+                                "lastReportedAt": {
+                                    "type": "string",
+                                    "default": "2020-09-24T19:17:02+00:00"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "abuseConfidenceScore",
+                                "ipAddress",
+                                "lastReportedAt"
+                            ]
+                        },
+                        "default": [
+                            {
+                                "ipAddress": "5.188.10.179",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                            },
+                            {
+                                "ipAddress": "185.222.209.14",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
+                            },
+                            {
+                                "ipAddress": "191.96.249.183",
+                                "abuseConfidenceScore": 100,
+                                "lastReportedAt": "2020-09-24T19:17:01+00:00"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "data",
+                    "meta"
+                ]
+            },
             "StoredEmailResponse": {
                 "type": "object",
                 "properties": {
@@ -483,71 +677,6 @@
                     "code",
                     "errors",
                     "message"
-                ]
-            },
-            "AbuseIpDbBlacklistResponse": {
-                "type": "object",
-                "properties": {
-                    "meta": {
-                        "type": "object",
-                        "properties": {
-                            "generatedAt": {
-                                "type": "string",
-                                "default": "2020-09-24T19:54:11+00:00"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "generatedAt"
-                        ]
-                    },
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "ipAddress": {
-                                    "type": "string",
-                                    "default": "5.188.10.179"
-                                },
-                                "abuseConfidenceScore": {
-                                    "type": "integer",
-                                    "default": 100
-                                },
-                                "lastReportedAt": {
-                                    "type": "string",
-                                    "default": "2020-09-24T19:17:02+00:00"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "abuseConfidenceScore",
-                                "ipAddress",
-                                "lastReportedAt"
-                            ]
-                        },
-                        "default": [
-                            {
-                                "ipAddress": "5.188.10.179",
-                                "abuseConfidenceScore": 100,
-                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                            },
-                            {
-                                "ipAddress": "185.222.209.14",
-                                "abuseConfidenceScore": 100,
-                                "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                            },
-                            {
-                                "ipAddress": "191.96.249.183",
-                                "abuseConfidenceScore": 100,
-                                "lastReportedAt": "2020-09-24T19:17:01+00:00"
-                            }
-                        ]
-                    }
-                },
-                "required": [
-                    "data",
-                    "meta"
                 ]
             },
             "InteractionSchema": {
@@ -7805,14 +7934,14 @@
             "Session": {
                 "type": "object",
                 "properties": {
+                    "session_id": {
+                        "type": "string"
+                    },
                     "user_id": {
                         "type": "string"
                     },
                     "user": {
                         "$ref": "#/components/schemas/User"
-                    },
-                    "session_id": {
-                        "type": "string"
                     },
                     "activities": {
                         "type": "array",
@@ -7831,11 +7960,15 @@
                             },
                             "version": {
                                 "type": "integer"
+                            },
+                            "location": {
+                                "type": "string"
                             }
                         },
                         "additionalProperties": false,
                         "required": [
                             "client",
+                            "location",
                             "os",
                             "version"
                         ]
@@ -7846,7 +7979,21 @@
                     "status": {
                         "$ref": "#/components/schemas/Status"
                     },
-                    "id": {
+                    "is_admin_session": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen_ip": {
+                        "type": "string"
+                    },
+                    "last_seen_location": {
                         "type": "string"
                     }
                 },
@@ -7854,7 +8001,10 @@
                     "activities",
                     "client_info",
                     "client_status",
-                    "id",
+                    "created_at",
+                    "is_admin_session",
+                    "last_seen",
+                    "last_seen_ip",
                     "session_id",
                     "status",
                     "user",
