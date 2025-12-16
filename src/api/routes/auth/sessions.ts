@@ -32,7 +32,7 @@ router.get(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { extended = false } = req.params;
+		const { extended = false } = req.query;
 		const sessions = (await Session.find({ where: { user_id: req.user_id, is_admin_session: false } })) as Session[];
 
 		res.json({
