@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ApplicationDetectableResponse } from "@spacebar/schemas*";
+import { ApplicationDetectableResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 const cache = {

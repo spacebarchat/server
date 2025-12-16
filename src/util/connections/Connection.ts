@@ -18,7 +18,7 @@
 
 import crypto from "crypto";
 import { ConnectedAccount } from "../entities";
-import { ConnectedAccountSchema, ConnectionCallbackSchema } from "@spacebar/schemas*";
+import { ConnectedAccountSchema, ConnectionCallbackSchema } from "@spacebar/schemas";
 import { Config, DiscordApiErrors } from "../util";
 
 /**

@@ -19,7 +19,7 @@
 import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
-import { Session } from "@spacebar/util*";
+import { Session } from "@spacebar/util";
 import { FindOptionsWhere } from "typeorm";
 
 interface QoSData {

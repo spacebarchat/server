@@ -43,7 +43,7 @@ export async function initInstance() {
 			for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().stream()) {
 				// session object has all fields prefixed with `session_`... thanks typeorm
 				if (TimeSpan.fromDates((session.session_created_at as Date).getTime(), new Date().getTime()).totalHours > 1) {
-					console.log(`[API/Instance.ts] Deleting temporary session ${session.session_session_id} created at ${session.session_created_at}`);
+					console.log(`[API/Instance.ts] Deleting unused session ${session.session_session_id} created at ${session.session_created_at}`);
 					await Session.delete({ session_id: session.session_session_id });
 				}
 			}
