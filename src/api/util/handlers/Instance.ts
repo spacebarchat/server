@@ -37,4 +37,8 @@ export async function initInstance() {
 	// TODO: do no clear sessions for instance cluster
 	// await Session.clear(); // This is now used as part of authentication...
 	await Session.delete({ session_id: Like("TEMP_%") }); // ...but we can still clear out temporary sessions
+	// async enumerate sessions
+	for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().stream()) {
+		console.log("Instance:",session);
+	}
 }
