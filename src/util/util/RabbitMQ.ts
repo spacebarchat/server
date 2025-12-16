@@ -54,19 +54,24 @@ export const RabbitMQ: {
 
 		if (this.channel) return this.channel;
 
-		this.channel = await this.connection.createChannel();
-		console.log(`[RabbitMQ] channel created`);
+		try {
+			this.channel = await this.connection.createChannel();
+			console.log(`[RabbitMQ] channel created`);
 
-		// log channel errors
-		this.channel.on("error", (err) => {
-			console.error("[RabbitMQ] Channel Error:", err);
-		});
+			// log channel errors
+			this.channel.on("error", (err) => {
+				console.error("[RabbitMQ] Channel Error:", err);
+			});
 
-		this.channel.on("close", () => {
-			console.log("[RabbitMQ] channel closed");
-			this.channel = null;
-		});
+			this.channel.on("close", () => {
+				console.log("[RabbitMQ] channel closed");
+				this.channel = null;
+			});
 
-		return this.channel;
+			return this.channel;
+		} catch (e) {
+			console.error("[RabbitMQ] Failed to create channel:", e);
+			return Promise.reject(e);
+		}
 	},
 };
