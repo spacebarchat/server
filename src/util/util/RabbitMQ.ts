@@ -19,15 +19,11 @@
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { Config } from "./Config";
 
-export const RabbitMQ: {
-	connection: ChannelModel | null;
-	channel: Channel | null;
-	init: () => Promise<void>;
-	getSafeChannel: () => Promise<Channel>;
-} = {
-	connection: null,
-	channel: null,
-	init: async function () {
+export class RabbitMQ {
+	public connection: ChannelModel | null = null;
+	public channel: Channel | null = null;
+
+	async init() {
 		const host = Config.get().rabbitmq.host;
 		if (!host) return;
 		console.log(`[RabbitMQ] connect: ${host}`);
@@ -47,11 +43,11 @@ export const RabbitMQ: {
 			// will be a pain since we will have to reconstruct entire state
 		});
 
-		await this.getSafeChannel();
-	},
-	getSafeChannel: async function () {
-		if (!this.connection) return Promise.reject();
+		await this.getSafeChannel(); // why is this here?
+	}
 
+	async getSafeChannel(): Promise<Channel> {
+		if (!this.connection) return Promise.reject();
 		if (this.channel) return this.channel;
 
 		try {
@@ -68,6 +64,20 @@ export const RabbitMQ: {
 				this.channel = null;
 			});
 
+			this.connection.on("error", (err) => {
+				console.error("[RabbitMQ] connection error, setting channel to null and reconnecting:", err);
+				this.channel = null;
+				this.connection = null;
+				this.init();
+			});
+
+			this.connection.on("close", () => {
+				console.log("[RabbitMQ] connection closed, setting channel to null and reconnecting");
+				this.channel = null;
+				this.connection = null;
+				this.init();
+			});
+
 			return this.channel;
 		} catch (e) {
 			console.error("[RabbitMQ] Failed to create channel:", e);
@@ -78,5 +88,5 @@ export const RabbitMQ: {
 			return await this.getSafeChannel();
 			// return Promise.reject(e);
 		}
-	},
-};
+	}
+}
