@@ -5,7 +5,7 @@
     <scripts>
       <script value="start:cdn" />
     </scripts>
-    <node-interpreter value="/nix/store/dcdc33kdjdhjnzg6rkmd0cx4kpwl8cac-nodejs-20.17.0/bin/node" />
+    <node-interpreter value="project" />
     <package-manager value="npm" />
     <envs />
     <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">

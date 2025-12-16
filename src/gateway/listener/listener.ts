@@ -187,9 +187,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
 			}
 			break;
 		case "CHANNEL_CREATE":
-			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
-				return;
-			}
+			if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
 			this.events[id] = await listenEvent(id, consumer, listenOpts);
 			break;
 		case "RELATIONSHIP_ADD":

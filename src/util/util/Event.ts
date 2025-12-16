@@ -21,7 +21,14 @@ import { RabbitMQ } from "./RabbitMQ";
 import EventEmitter from "events";
 import { EVENT, Event } from "../interfaces";
 import { randomUUID } from "crypto";
+import path from "path";
+import { Socket } from "node:net";
+import { FSWatcher } from "node:fs";
+import { Stopwatch } from "./Stopwatch";
+import { Config } from "./Config";
 export const events = new EventEmitter();
+let unixSocketListener: UnixSocketListener | null = null;
+let unixSocketWriter: UnixSocketWriter | null = null;
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
 	const id = (payload.guild_id || payload.channel_id || payload.user_id) as string;
@@ -42,6 +49,12 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 			// todo: should we retry publishng the event?
 			console.log("[RabbitMQ] ", e);
 		}
+	} else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
+		if (!unixSocketWriter) {
+			unixSocketWriter = new UnixSocketWriter(process.env.EVENT_SOCKET_PATH);
+			await unixSocketWriter.init();
+		}
+		await unixSocketWriter.emit(payload);
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		process.send?.({ type: "event", event: payload, id } as ProcessEvent);
 	} else {
@@ -57,6 +70,14 @@ export async function initEvent() {
 		// use event emitter
 		// use process messages
 	}
+
+	await listenEvent("spacebar", async (event) => {
+		console.log("[Event] Received spacebar event:", event);
+		if ((event.event as string) === "SB_RELOAD_CONFIG") {
+			console.log("[Event] Reloading config due to RELOAD_CONFIG event");
+			await Config.init(true);
+		}
+	});
 }
 
 export interface EventOpts extends Event {
@@ -84,6 +105,12 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 		return await rabbitListen(channel, event, callback, {
 			acknowledge: opts?.acknowledge,
 		});
+	} else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
+		if (!unixSocketListener) {
+			unixSocketListener = new UnixSocketListener(path.join(process.env.EVENT_SOCKET_PATH, `${process.pid}.sock`));
+			await unixSocketListener.init();
+		}
+		return await unixSocketListener.listen(event, callback);
 	} else if (process.env.EVENT_TRANSMISSION === "process") {
 		const cancel = async () => {
 			process.removeListener("message", listener);
@@ -154,4 +181,127 @@ async function rabbitListen(channel: Channel, id: string, callback: (event: Even
 	);
 
 	return cancel;
+}
+
+class UnixSocketListener {
+	eventEmitter: EventEmitter;
+	socketPath: string;
+
+	constructor(socketPath: string) {
+		this.eventEmitter = new EventEmitter();
+		this.socketPath = socketPath;
+	}
+
+	async init() {
+		const net = await import("net");
+		const server = net.createServer((socket) => {
+			socket.on("connect", () => {
+				console.log("[Events] Unix socket client connected");
+			});
+			socket.on("data", (data) => {
+				try {
+					const payload = JSON.parse(data.toString());
+					this.eventEmitter.emit(payload.id, payload.event);
+				} catch (e) {
+					console.error("[Events] Failed to parse unix socket data:", e);
+				}
+			});
+		});
+
+		server.listen(this.socketPath, () => {
+			console.log(`Unix socket server listening on ${this.socketPath}`);
+		});
+
+		const shutdown = () => {
+			console.log("[Events] Closing unix socket server");
+			server.close();
+			process.exit(0);
+		};
+		for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
+			process.on(sig, shutdown);
+		}
+	}
+
+	async listen(event: string, callback: (event: EventOpts) => unknown): Promise<() => Promise<void>> {
+		const listener = (data: any) => {
+			callback({
+				...data,
+				cancel,
+			});
+		};
+
+		this.eventEmitter.addListener(event, listener);
+
+		const cancel = async () => {
+			this.eventEmitter.removeListener(event, listener);
+			this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() - 1);
+		};
+
+		this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() + 1);
+
+		return cancel;
+	}
+}
+
+class UnixSocketWriter {
+	socketPath: string;
+	clients: { [key: string]: Socket } = {};
+	watcher: FSWatcher;
+
+	constructor(socketPath: string) {
+		this.socketPath = socketPath;
+	}
+
+	async init() {
+		const net = await import("net");
+		const fs = await import("fs");
+
+		if (!fs.opendirSync(this.socketPath)) throw new Error("Unix socket path does not exist or is not a directory: " + this.socketPath);
+
+		console.log("[Events] Unix socket writer initializing for", this.socketPath);
+
+		const connect = (file: string) => {
+			const fullPath = path.join(this.socketPath, file);
+			this.clients[fullPath] = net.createConnection(fullPath, () => {
+				console.log("[Events] Unix socket client connected to", fullPath);
+			});
+		};
+
+		// connect to all sockets, now and in the future
+		this.watcher = fs.watch(this.socketPath, {}, (eventType, filename) => {
+			console.log("[Events] Unix socket writer received watch sig", eventType, filename);
+			connect(filename!);
+		});
+
+		// connect to existing sockets if any
+		fs.readdir(this.socketPath, (err, files) => {
+			if (err) return console.error("[Events] Unix socket writer failed to read directory:", err);
+
+			console.log("[Events] Unix socket writer found existing sockets:", files);
+			files.forEach((file) => {
+				connect(file);
+			});
+		});
+	}
+
+	async emit(event: Event) {
+		if (!this.clients) throw new Error("UnixSocketWriter not initialized");
+
+		const tsw = Stopwatch.startNew();
+		const payload = JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event });
+		for (const socket of Object.entries(this.clients)) {
+			if(socket[1].destroyed) {
+				console.log("[Events] Unix socket writer found destroyed socket, removing:", socket[0]);
+				delete this.clients[socket[0]];
+				continue;
+			}
+			try {
+				socket[1].write(payload);
+			} catch (e) {
+				console.error("[Events] Unix socket writer failed to write to socket", socket[0], ":", e);
+			}
+		}
+
+		console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
+	}
 }

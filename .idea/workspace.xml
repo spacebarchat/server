@@ -24,12 +24,19 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/.cache/JetBrains/WebStorm2024.3/javascript/typings/node/20.17.10/node_modules/@types/node/crypto.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/index.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/@types/amqplib/properties.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/jsonwebtoken/index.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/@types/node/events.d.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Server.ts" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/result/node_modules/lambert-server/src/Utils.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/@types/ws/index.d.mts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/@types/ws/index.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/@types/ws/package.json" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/data-source/DataSource.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/driver/types/ReplicationMode.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/query-builder/Brackets.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/query-builder/SelectQueryBuilder.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/query-builder/WhereExpressionBuilder.d.ts" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/node_modules/typeorm/repository/BaseEntity.d.ts" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
@@ -43,56 +50,56 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "NIXITCH_NIXPKGS_CONFIG": "/etc/nix/nixpkgs-config.nix",
-    "NIXITCH_NIX_CONF_DIR": "",
-    "NIXITCH_NIX_OTHER_STORES": "",
-    "NIXITCH_NIX_PATH": "/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source",
-    "NIXITCH_NIX_PROFILES": "/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile",
-    "NIXITCH_NIX_REMOTE": "",
-    "NIXITCH_NIX_USER_PROFILE_DIR": "/nix/var/nix/profiles/per-user/Rory",
-    "Node.js.Server.ts.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "javascript.nodejs.core.library.configured.version": "24.8.0",
-    "javascript.nodejs.core.library.typings.version": "24.7.0",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/schemas/api/users",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_interpreter_path": "node",
-    "nodejs_package_manager_path": "npm",
-    "npm.Start API.executor": "Run",
-    "npm.Start CDN.executor": "Run",
-    "npm.Start Gateway.executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.start.executor": "Debug",
-    "prettierjs.PrettierConfiguration.Package": "/home/Rory/git/spacebar/server-master/node_modules/prettier",
-    "settings.editor.selected.configurable": "com.github.copilot.settings.customInstructions.CopilotInstructionsConfigurable",
-    "ts.external.directory.path": "/home/Rory/git/spacebar/server-master/node_modules/typescript/lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;NIXITCH_NIXPKGS_CONFIG&quot;: &quot;/etc/nix/nixpkgs-config.nix&quot;,
+    &quot;NIXITCH_NIX_CONF_DIR&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_OTHER_STORES&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_PATH&quot;: &quot;/home/Rory/.nix-defexpr/channels:nixpkgs=/nix/store/wb6agba4kfsxpbnb5hzlq58vkjzvbsk6-source&quot;,
+    &quot;NIXITCH_NIX_PROFILES&quot;: &quot;/run/current-system/sw /nix/var/nix/profiles/default /etc/profiles/per-user/Rory /home/Rory/.local/state/nix/profile /nix/profile /home/Rory/.nix-profile&quot;,
+    &quot;NIXITCH_NIX_REMOTE&quot;: &quot;&quot;,
+    &quot;NIXITCH_NIX_USER_PROFILE_DIR&quot;: &quot;/nix/var/nix/profiles/per-user/Rory&quot;,
+    &quot;Node.js.Server.ts.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;24.8.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;24.7.0&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/src/util/migration/postgres&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.Start API.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Start CDN.executor&quot;: &quot;Run&quot;,
+    &quot;npm.Start Gateway.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Debug&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.customInstructions.CopilotInstructionsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ],
-    "GitStage.ChangesTree.GroupingKeys": [
-      "directory",
-      "module",
-      "repository"
+    &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/util/entities" />
       <recent name="$PROJECT_DIR$/src/gateway/opcodes" />
       <recent name="$PROJECT_DIR$/src/api/routes/users/@me/billing" />
-      <recent name="$PROJECT_DIR$/src/util/util/networking/abuseipdb" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
@@ -117,6 +124,7 @@
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
+              <entry key="build" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -165,6 +173,8 @@
       <workItem from="1764432507485" duration="30779000" />
       <workItem from="1764521899659" duration="22029000" />
       <workItem from="1765142585081" duration="16912000" />
+      <workItem from="1765849511651" duration="7921000" />
+      <workItem from="1765861713706" duration="18045000" />
     </task>
     <servers />
   </component>
