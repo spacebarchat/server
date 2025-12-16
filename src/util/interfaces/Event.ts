@@ -132,6 +132,7 @@ export interface ReadyEventData {
 		flags: number;
 	};
 	game_relationships: never[]; // what is this?
+	auth_token?: string; // if enabled in capabilities
 	_trace?: string[]; // trace of the request, used for debugging
 }
 

@@ -33,7 +33,7 @@ import { TimeSpan } from "./Timespan";
 /// 1 - Initial version with HS256
 /// 2 - Switched to ES512
 /// 3 - Add version, device id to token payload
-export const CurrentKeyFormatVersion: number = 3;
+export const CurrentTokenFormatVersion: number = 3;
 
 export type UserTokenData = {
 	user: User;
@@ -159,7 +159,7 @@ export const checkToken = (
 	});
 };
 
-export async function generateToken(id: string, isAdminSession: boolean = false) {
+export async function generateToken(id: string, isAdminSession: boolean = false): Promise<string | undefined> {
 	const iat = Math.floor(Date.now() / 1000);
 	const keyPair = await loadOrGenerateKeypair();
 
@@ -183,7 +183,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
 	await newSession.save();
 
 	return new Promise((res, rej) => {
-		const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentKeyFormatVersion, did: newSession.session_id } as UserTokenData["decoded"];
+		const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentTokenFormatVersion, did: newSession.session_id } as UserTokenData["decoded"];
 		jwt.sign(
 			payload,
 			keyPair.privateKey,

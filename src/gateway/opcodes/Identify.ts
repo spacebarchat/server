@@ -52,6 +52,8 @@ import {
 	VoiceState,
 	UserSettingsProtos,
 	IpDataClient,
+	generateToken,
+	CurrentTokenFormatVersion,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
@@ -586,6 +588,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		},
 		game_relationships: [],
 	};
+
+	if(this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) && tokenData.tokenVersion != CurrentTokenFormatVersion) {
+		d.auth_token = await generateToken(this.user_id);
+	}
 	const buildReadyEventDataTime = taskSw.getElapsedAndReset();
 	const _trace = [
 		gatewayShardName,
