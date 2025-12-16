@@ -25,7 +25,7 @@ import { existsSync } from "fs";
 // TODO: dont use deprecated APIs lol
 import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsSelect, FindOptionsSelectByString, FindOptionsWhere } from "typeorm";
 import * as console from "node:console";
-import { randomUpperString } from "@spacebar/api*";
+import { randomUpperString } from "@spacebar/api";
 
 /// Change history:
 /// 1 - Initial version with HS256
