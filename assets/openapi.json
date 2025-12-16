@@ -7078,6 +7078,103 @@
                     "$ref": "#/components/schemas/ApplicationCommandCreateSchema"
                 }
             },
+            "SessionsLogoutSchema": {
+                "type": "object",
+                "properties": {
+                    "session_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "session_id_hashes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "GetSessionsResponse": {
+                "type": "object",
+                "properties": {
+                    "user_sessions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id_hash": {
+                                    "type": "string"
+                                },
+                                "approx_last_used_time": {
+                                    "type": "string"
+                                },
+                                "client_info": {
+                                    "type": "object",
+                                    "properties": {
+                                        "client": {
+                                            "type": "string"
+                                        },
+                                        "os": {
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        },
+                                        "location": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "client",
+                                        "location",
+                                        "os",
+                                        "version"
+                                    ]
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "status": {
+                                    "type": "string"
+                                },
+                                "activities": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Activity"
+                                        }
+                                    }
+                                },
+                                "client_status": {
+                                    "$ref": "#/components/schemas/ClientStatus"
+                                },
+                                "last_seen": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "last_seen_ip": {
+                                    "type": "string"
+                                },
+                                "last_seen_location": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "approx_last_used_time",
+                                "client_info",
+                                "id_hash"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "user_sessions"
+                ]
+            },
             "ApplicationCommandOption": {
                 "type": "object",
                 "properties": {
@@ -23709,6 +23806,57 @@
                                 }
                             }
                         }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/sessions/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetSessionsResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/sessions/logout": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SessionsLogoutSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No description available"
                     }
                 },
                 "tags": [

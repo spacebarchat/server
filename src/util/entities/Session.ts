@@ -87,8 +87,26 @@ export class Session extends BaseClassWithoutId {
 			client_info: {
 				os: this.client_info.os,
 				client: this.client_info.client,
-				location: this.last_seen_location
+				location: this.last_seen_location,
 			},
+		};
+	}
+
+	getExtendedDeviceInfo() {
+		return {
+			id: this.session_id,
+			id_hash: crypto.createHash("sha256").update(this.session_id).digest("hex"),
+			status: this.status,
+			activities: this.activities,
+			client_status: this.client_status,
+			approx_last_used_time: this.last_seen.toISOString(),
+			client_info: {
+				...this.client_info,
+				location: this.last_seen_location,
+			},
+			last_seen: this.last_seen,
+			last_seen_ip: this.last_seen_ip,
+			last_seen_location: this.last_seen_location,
 		};
 	}
 }
