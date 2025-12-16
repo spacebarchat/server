@@ -124,7 +124,7 @@ export const checkToken = (
 				session.last_seen = new Date();
 				if (opts?.ipAddress && opts?.ipAddress !== session.last_seen_ip) {
 					session.last_seen_ip = opts.ipAddress;
-					let ipInfo = await IpDataClient.getIpInfo(opts.ipAddress);
+					const ipInfo = await IpDataClient.getIpInfo(opts.ipAddress);
 					if (ipInfo?.ip) session.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
 				}
 				await session.save();
@@ -169,6 +169,14 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
 			session_id: randomUpperString(10), // readable at a glance
 			user_id: id,
 			is_admin_session: isAdminSession,
+			client_status: {},
+			status: "online",
+			client_info: {
+				os: "Unknown",
+				client: "Unknown",
+				version: 0,
+				location: "Unknown",
+			},
 		});
 	} while (await Session.findOne({ where: { session_id: newSession.session_id } }));
 

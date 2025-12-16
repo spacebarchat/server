@@ -16,12 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
+import { Intents, ListenEventOpts, Permissions, Session } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
-import { ZstdCompress } from "zlib";
-import { ZstdDecompress } from "node:zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { QoSPayload } from "../opcodes/Heartbeat";
 
@@ -51,4 +49,5 @@ export interface WebSocket extends WS {
 	capabilities?: Capabilities;
 	large_threshold: number;
 	qos?: QoSPayload;
+	session?: Session;
 }

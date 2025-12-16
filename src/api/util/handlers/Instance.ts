@@ -17,6 +17,7 @@
 */
 
 import { Session } from "@spacebar/util";
+import { Like } from "typeorm";
 
 export async function initInstance() {
 	// TODO: clean up database and delete tombstone data
@@ -34,5 +35,6 @@ export async function initInstance() {
 	// }
 
 	// TODO: do no clear sessions for instance cluster
-	await Session.clear();
+	// await Session.clear(); // This is now used as part of authentication...
+	await Session.delete({ session_id: Like("TEMP_%") }); // ...but we can still clear out temporary sessions
 }

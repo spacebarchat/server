@@ -17,8 +17,8 @@
 */
 
 import { User } from "./User";
-import { BaseClass, BaseClassWithoutId } from "./BaseClass";
-import { ClientSession, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
+import { BaseClassWithoutId } from "./BaseClass";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { ClientStatus, Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
 import crypto from "crypto";

@@ -95,15 +95,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	this.large_threshold = identify.large_threshold || 250;
 	const parseAndValidateTime = taskSw.getElapsedAndReset();
 
-	const user = await tryGetUserFromToken(identify.token, {
+	const tokenData = await checkToken(identify.token, {
 		relations: ["relationships", "relationships.to", "settings"],
 		select: [...PrivateUserProjection, "relationships", "rights"],
 	});
+
+	const user = tokenData.user;
 	if (!user) {
 		console.log("[Gateway] Failed to identify user");
 		return this.close(CLOSECODES.Authentication_failed);
 	}
 	this.user_id = user.id;
+	this.session = tokenData.session;
 	const userQueryTime = taskSw.getElapsedAndReset();
 
 	// Check intents
@@ -126,18 +129,25 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	const validateIntentsAndShardingTime = taskSw.getElapsedAndReset();
 
 	// Generate a new gateway session ( id is already made, just save it in db )
-	const session = Session.create({
-		user_id: this.user_id,
-		session_id: this.session_id,
-		status: identify.presence?.status || "online",
-		client_info: {
-			client: identify.properties?.device || identify.properties?.$device,
-			os: identify.properties?.os || identify.properties?.$os,
-			version: 0,
-		},
-		client_status: {},
-		activities: identify.presence?.activities, // TODO: validation
-	});
+	this.session =
+		tokenData.session ??
+		Session.create({
+			user_id: this.user_id,
+			session_id: "TEMP_" + this.session_id,
+		});
+
+	this.session.status = identify.presence?.status || "online";
+	this.session.client_info ??= {
+		os: "Unknown",
+		client: "Unknown",
+		version: 0,
+		location: "Unknown",
+	};
+	this.session.client_info.client = identify.properties?.device ?? identify.properties?.$device ?? this.session.client_info.client;
+	this.session.client_info.os = (identify.properties?.os || identify.properties?.$os) ?? this.session.client_info.os;
+	this.session.client_status = {};
+	this.session.activities = identify.presence?.activities ?? []; // TODO: validation
+
 	const createSessionTime = taskSw.getElapsedAndReset();
 
 	// Get from database:
@@ -152,7 +162,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		{ result: members, elapsed: membersQueryTime },
 		{ result: recipients, elapsed: recipientsQueryTime },
 	] = await Promise.all([
-		timePromise(() => session.save()),
+		timePromise(() => this.session!.save()),
 
 		timePromise(() =>
 			Application.findOne({
@@ -479,7 +489,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	).map((x) => ({
 		// TODO how is active determined?
 		// in our lazy request impl, we just pick the 'most relevant' session
-		active: x.session_id == session.session_id,
+		active: x.session_id == this.session!.session_id,
 		activities: x.activities ?? [],
 		client_info: x.client_info,
 		session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
@@ -501,9 +511,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				user_id: this.user_id,
 				data: {
 					user: user.toPublicUser(),
-					activities: session.activities,
-					client_status: session.client_status,
-					status: session.getPublicStatus(),
+					activities: this.session!.activities,
+					client_status: this.session!.client_status,
+					status: this.session!.getPublicStatus(),
 				},
 			} as PresenceUpdateEvent),
 		),
