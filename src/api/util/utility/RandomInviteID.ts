@@ -24,8 +24,7 @@ import crypto from "crypto";
 
 export function randomString(length = 6) {
 	// Declare all characters
-	const chars =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	// Pick characers randomly
 	let str = "";
@@ -38,8 +37,7 @@ export function randomString(length = 6) {
 
 export function snowflakeBasedInvite() {
 	// Declare all characters
-	const chars =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	const base = BigInt(chars.length);
 	let snowflake = Snowflake.generateWorkerProcess();
 
@@ -52,4 +50,15 @@ export function snowflakeBasedInvite() {
 	}
 
 	return str.substr(3, 8).split("").reverse().join("");
+}
+
+export function randomUpperString(length: number = 10) {
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	let result = "";
+	for (let i = 0; i < length; i++) {
+		result += chars.charAt(Math.floor(Math.random() * chars.length));
+	}
+
+	return result;
 }

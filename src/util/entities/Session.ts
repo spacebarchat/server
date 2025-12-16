@@ -22,7 +22,7 @@ import { ClientSession, Column, CreateDateColumn, Entity, Index, JoinColumn, Man
 import { ClientStatus, Status } from "../interfaces/Status";
 import { Activity } from "../interfaces/Activity";
 import crypto from "crypto";
-import { randomString, randomUpperString } from "@spacebar/api*";
+import { randomUpperString } from "@spacebar/api";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
