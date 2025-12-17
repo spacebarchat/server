@@ -119,14 +119,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     }
     const validateIntentsAndShardingTime = taskSw.getElapsedAndReset();
 
-    // Generate a new gateway session ( id is already made, just save it in db )
-    this.session =
-        tokenData.session ??
-        Session.create({
-            user_id: this.user_id,
-            session_id: this.session_id,
-        });
+    // Generate a new gateway session if needed (id is already made, just save it in db )
+    const { session, isNewSession } = tokenData.session
+        ? { session: tokenData.session, isNewSession: false }
+        : {
+              session: Session.create({
+                  user_id: this.user_id,
+                  session_id: this.session_id,
+              }),
+              isNewSession: true,
+          };
 
+    this.session = session;
     this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
@@ -155,7 +159,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         { result: members, elapsed: membersQueryTime },
         { result: recipients, elapsed: recipientsQueryTime },
     ] = await Promise.all([
-        timePromise(() => this.session!.save()),
+        // avoid a round trip to check if it exists...
+        timePromise(() => (isNewSession ? Session.insert(session) : Session.update({ session_id: session.session_id }, session)) as Promise<unknown>),
         timePromise(() =>
             Session.find({
                 where: { user_id: this.user_id, is_admin_session: false },
@@ -567,6 +572,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         d.auth_token = await generateToken(this.user_id);
     }
     const buildReadyEventDataTime = taskSw.getElapsedAndReset();
+
     const _trace = [
         gatewayShardName,
         {
