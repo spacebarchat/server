@@ -20,21 +20,24 @@ import { arrayOrderBy } from "@spacebar/util";
 
 export class ConfigurationEnvConfiguration {
 	static get schema() {
-		return arrayOrderBy([
-			{ key: "CONFIG_PATH", type: "string", description: "Path to a JSON file containing configuration data" },
-			{ key: "CONFIG_WRITEBACK", type: "boolean", description: "Whether to write back configuration changes to the specified JSON file" },
-			{
-				key: "CONFIG_MODE",
-				type: "string",
-				description:
-					"How to treat the JSON config.<br/>" +
-					"<ul>" +
-					"<li>**`override`**: Apply overrides without saving</li>" +
-					"<li>**`overwrite`**: Apply overrides, saving changes to the database</li>" +
-					"<li>**`single`**: Ignore database config outright</li>" +
-					"</ul>",
-			},
-		], (e) => e.key);
+		return arrayOrderBy(
+			[
+				{ key: "CONFIG_PATH", type: "string", description: "Path to a JSON file containing configuration data" },
+				{ key: "CONFIG_WRITEBACK", type: "boolean", description: "Whether to write back configuration changes to the specified JSON file" },
+				{
+					key: "CONFIG_MODE",
+					type: "string",
+					description:
+						"How to treat the JSON config.<br/>" +
+						"<ul>" +
+						"<li>**`override`**: Apply overrides without saving</li>" +
+						"<li>**`overwrite`**: Apply overrides, saving changes to the database</li>" +
+						"<li>**`single`**: Ignore database config outright</li>" +
+						"</ul>",
+				},
+			],
+			(e) => e.key,
+		);
 	}
 
 	get enabled(): boolean {

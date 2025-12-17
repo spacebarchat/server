@@ -12,16 +12,16 @@ const schema = EnvConfig.schema();
 const keyMap = [
 	{
 		name: "Name",
-		selector: (v: {key: string}) => v.key
+		selector: (v: { key: string }) => v.key,
 	},
 	{
 		name: "Value",
-		selector: (v: {type: string}) => v.type
+		selector: (v: { type: string }) => v.type,
 	},
 	{
 		name: "Description",
-		selector: (v: {description: string}) => v.description
-	}
+		selector: (v: { description: string }) => v.description,
+	},
 ];
 // --- separators
 const startOfLine = dim("| "); // <tr>
@@ -32,7 +32,7 @@ const headSeparator = dim("-");
 const pad = true;
 
 // --- do not touch
-const colWidths: {[key: string]: number} = {};
+const colWidths: { [key: string]: number } = {};
 
 console.log(bgRedBright("Calculating column widths"));
 for (const key of keyMap) {

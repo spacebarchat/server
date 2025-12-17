@@ -79,18 +79,11 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 		console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
 		if (EnvConfig.get().logging.gatewayLogging.logHttp)
-			[
-				"close",
-				"error",
-				"upgrade",
-				"open",
-				"ping",
-				"pong",
-				"unexpected-response",
-				...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : []),
-			].forEach((x) => {
-				socket.on(x, (y) => console.log(x, y));
-			});
+			["close", "error", "upgrade", "open", "ping", "pong", "unexpected-response", ...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : [])].forEach(
+				(x) => {
+					socket.on(x, (y) => console.log(x, y));
+				},
+			);
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore

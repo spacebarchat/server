@@ -728,5 +728,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
 	const setupListenerTime = Date.now();
 
-	console.log(`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`, EnvConfig.get().logging.gatewayLogging.logTraces ? JSON.stringify(d._trace, null, 2) : "");
+	console.log(
+		`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`,
+		EnvConfig.get().logging.gatewayLogging.logTraces ? JSON.stringify(d._trace, null, 2) : "",
+	);
 }

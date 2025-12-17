@@ -36,18 +36,11 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
 		console.log("[WebRTC] new connection", request.url);
 
 		if (EnvConfig.get().logging.gatewayLogging.logHttp) {
-			[
-				"close",
-				"error",
-				"upgrade",
-				"open",
-				"ping",
-				"pong",
-				"unexpected-response",
-				...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : []),
-			].forEach((x) => {
-				socket.on(x, (y) => console.log("[WebRTC]", x, y));
-			});
+			["close", "error", "upgrade", "open", "ping", "pong", "unexpected-response", ...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : [])].forEach(
+				(x) => {
+					socket.on(x, (y) => console.log("[WebRTC]", x, y));
+				},
+			);
 		}
 
 		const { searchParams } = new URL(`http://localhost${request.url}`);

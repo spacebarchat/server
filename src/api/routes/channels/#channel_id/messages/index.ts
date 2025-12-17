@@ -19,7 +19,8 @@
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
 	Attachment,
-	AutomodExecutor, AutomodInvocation,
+	AutomodExecutor,
+	AutomodInvocation,
 	AutomodRule,
 	AutomodTriggerTypes,
 	Channel,
@@ -443,13 +444,15 @@ router.post(
 			// @ts-ignore
 			message.member.roles = message.member.roles.filter((x) => x.id != x.guild_id).map((x) => x.id);
 
-			const automodResult = await AutomodExecutor.executeInvocation(new AutomodInvocation({
-				eventType: AutomodRuleEventType.MESSAGE_SEND,
-				guildId: message.guild_id,
-				payload: message
-			}));
+			const automodResult = await AutomodExecutor.executeInvocation(
+				new AutomodInvocation({
+					eventType: AutomodRuleEventType.MESSAGE_SEND,
+					guildId: message.guild_id,
+					payload: message,
+				}),
+			);
 
-			if(automodResult.blocked) {
+			if (automodResult.blocked) {
 				throw new HTTPError("Unhandled error sending message", 403);
 			}
 		}

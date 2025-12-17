@@ -24,10 +24,7 @@ export async function Send(socket: WebRtcWebSocket, data: VoicePayload) {
 		await fs.mkdir(path.join(dumpPath!, id), {
 			recursive: true,
 		});
-		await fs.writeFile(
-			path.join(dumpPath!, id, `${Date.now()}.out.json`),
-			JSON.stringify(data, null, 2),
-		);
+		await fs.writeFile(path.join(dumpPath!, id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
 	}
 
 	let buffer: Buffer | string;

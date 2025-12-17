@@ -137,8 +137,7 @@ async function patchUserSettings(userId: string, updatedSettings: PreloadedUserS
 		};
 	}
 
-	if (EnvConfig.get().logging.logProtoUpdates.includes("SETTINGS"))
-		console.log(`Updating user settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
+	if (EnvConfig.get().logging.logProtoUpdates.includes("SETTINGS")) console.log(`Updating user settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
 
 	if (!atomic) {
 		settings = PreloadedUserSettings.fromJson(

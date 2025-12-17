@@ -55,7 +55,9 @@ export class AutomodExecutor {
 			result = await this.executeMemberInvocation();
 		} else throw new Error("Unsupported automod invocation type");
 
-		console.log(`[Automod] Executed automod invocation of type ${invocation.eventType} in ${Date.now() - startTime}ms with ${matchingRules.length} matching rules. Result: ${result.blocked ? "blocked" : "allowed"}`);
+		console.log(
+			`[Automod] Executed automod invocation of type ${invocation.eventType} in ${Date.now() - startTime}ms with ${matchingRules.length} matching rules. Result: ${result.blocked ? "blocked" : "allowed"}`,
+		);
 
 		return result;
 	}

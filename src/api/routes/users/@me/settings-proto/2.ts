@@ -137,8 +137,7 @@ async function patchUserSettings(userId: string, updatedSettings: FrecencyUserSe
 		};
 	}
 
-	if (EnvConfig.get().logging.logProtoUpdates.includes("FRECENCY"))
-		console.log(`Updating frecency settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
+	if (EnvConfig.get().logging.logProtoUpdates.includes("FRECENCY")) console.log(`Updating frecency settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
 
 	if (!atomic) {
 		settings = FrecencyUserSettings.fromJson(

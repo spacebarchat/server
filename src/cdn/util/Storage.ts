@@ -33,7 +33,7 @@ export interface Storage {
 
 let storage: Storage;
 
-if (EnvConfig.get().cdn.storageProvider === "file" || !EnvConfig.get().cdn.storageProvider ) {
+if (EnvConfig.get().cdn.storageProvider === "file" || !EnvConfig.get().cdn.storageProvider) {
 	let location = EnvConfig.get().cdn.storageLocation;
 	if (location) {
 		location = path.resolve(location);

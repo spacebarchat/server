@@ -19,7 +19,6 @@ export async function internalExecuteMessageAutomod(context: AutomodMessageInvoc
 		}
 		let triggered = false;
 		// if (rule.trigger_type == AutomodRuleTriggerType.KEYWORD)
-
 	}
 
 	return result;

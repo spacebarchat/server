@@ -32,7 +32,6 @@ export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[
 	return [pass, fail];
 }
 
-
 export function arrayRemove<T>(array: T[], item: T): void {
 	const index = array.indexOf(item);
 	if (index > -1) {

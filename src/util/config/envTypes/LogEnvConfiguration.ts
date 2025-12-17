@@ -30,23 +30,34 @@ interface GatewayLoggingConfigValue {
 
 export class LogEnvConfiguration {
 	static get schema() {
-		return arrayOrderBy([
-			{ key: "LOG_CDN_SIGNATURES", type: "boolean", description: "Log CDN attachment signature checks - very noisy!" },
-			{ key: "LOG_DATABASE_QUERIES", type: "boolean", description: "Enable logging of database queries." },
-			{ key: "LOG_GATEWAY_EVENTS", type: "boolean", description: "Comma-separated list of flags. Any of: `TRACES`, `USER_ID`, `SESSION_ID`, `PAYLOAD`, `HTTP`, `HTTP_MESSAGES`." },
-			{ key: "LOG_WEBRTC_EVENTS", type: "boolean", description: "Comma-separated list of flags. Any of: `TRACES`, `USER_ID`, `SESSION_ID`, `PAYLOAD`, `HTTP`, `HTTP_MESSAGES`." },
-			{ key: "DUMP_GATEWAY_EVENT_PATH", type: "string", description: "Path to dump gateway events." },
-			{ key: "DUMP_WEBRTC_EVENT_PATH", type: "string", description: "Path to dump gateway events." },
-			{ key: "LOG_PROTO_UPDATES", type: "boolean or string", description: "`true`, or a list of proto schemas to log (`SETTINGS`, `FRECENCY`)" },
-			{
-				key: "LOG_REQUESTS",
-				type: "string",
-				description: "Comma-separated list of requests to log by status code. Negated with a leading `-`. Example: `-204` (log everything except 204 No Content)",
-			},
-			{ key: "LOG_AUTHENTICATION", type: "boolean", description: "Log authentication debug messages - very noisy!" },
-			{ key: "LOG_VALIDATION_ERRORS", type: "boolean", description: "Enable logging of validation errors." },
-			{ key: "LOG_IMPORT_ERRORS", type: "boolean", description: "Enable logging of import errors." },
-		], (e) => e.key);
+		return arrayOrderBy(
+			[
+				{ key: "LOG_CDN_SIGNATURES", type: "boolean", description: "Log CDN attachment signature checks - very noisy!" },
+				{ key: "LOG_DATABASE_QUERIES", type: "boolean", description: "Enable logging of database queries." },
+				{
+					key: "LOG_GATEWAY_EVENTS",
+					type: "boolean",
+					description: "Comma-separated list of flags. Any of: `TRACES`, `USER_ID`, `SESSION_ID`, `PAYLOAD`, `HTTP`, `HTTP_MESSAGES`.",
+				},
+				{
+					key: "LOG_WEBRTC_EVENTS",
+					type: "boolean",
+					description: "Comma-separated list of flags. Any of: `TRACES`, `USER_ID`, `SESSION_ID`, `PAYLOAD`, `HTTP`, `HTTP_MESSAGES`.",
+				},
+				{ key: "DUMP_GATEWAY_EVENT_PATH", type: "string", description: "Path to dump gateway events." },
+				{ key: "DUMP_WEBRTC_EVENT_PATH", type: "string", description: "Path to dump gateway events." },
+				{ key: "LOG_PROTO_UPDATES", type: "boolean or string", description: "`true`, or a list of proto schemas to log (`SETTINGS`, `FRECENCY`)" },
+				{
+					key: "LOG_REQUESTS",
+					type: "string",
+					description: "Comma-separated list of requests to log by status code. Negated with a leading `-`. Example: `-204` (log everything except 204 No Content)",
+				},
+				{ key: "LOG_AUTHENTICATION", type: "boolean", description: "Log authentication debug messages - very noisy!" },
+				{ key: "LOG_VALIDATION_ERRORS", type: "boolean", description: "Enable logging of validation errors." },
+				{ key: "LOG_IMPORT_ERRORS", type: "boolean", description: "Enable logging of import errors." },
+			],
+			(e) => e.key,
+		);
 	}
 
 	get gatewayLogging(): GatewayLoggingConfigValue {
@@ -96,9 +107,7 @@ export class LogEnvConfiguration {
 			logTraces: envVal?.includes("TRACES") || logDeprecated("LOG_WEBRTC_TRACES", "LOG_WEBRTC_EVENTS=TRACES") === "true",
 			logUserId: envVal?.includes("USER_ID") ?? false,
 			logSessionId: envVal?.includes("SESSION_ID") ?? false,
-			logPayload:
-				envVal?.includes("PAYLOAD") ||
-				logDeprecated("WRTC_WS_VERBOSE", "LOG_WEBRTC_EVENTS=PAYLOAD") === "true",
+			logPayload: envVal?.includes("PAYLOAD") || logDeprecated("WRTC_WS_VERBOSE", "LOG_WEBRTC_EVENTS=PAYLOAD") === "true",
 			logHttp: envVal?.includes("HTTP") ?? false,
 			logHttpMessages: envVal?.includes("HTTP_MESSAGES") ?? false,
 		};
@@ -111,7 +120,7 @@ export class LogEnvConfiguration {
 	}
 
 	get dumpGatewayEventPath(): string | undefined {
-		if(process.env.DUMP_GATEWAY_EVENT_PATH !== undefined) return process.env.DUMP_GATEWAY_EVENT_PATH;
+		if (process.env.DUMP_GATEWAY_EVENT_PATH !== undefined) return process.env.DUMP_GATEWAY_EVENT_PATH;
 		if (process.env.WS_DUMP !== undefined) {
 			console.warn("[EnvConfig] WS_DUMP is deprecated. Please use DUMP_GATEWAY_EVENT_PATH=./dump instead.");
 			return process.env.WS_DUMP ? "dump" : undefined;
@@ -119,7 +128,7 @@ export class LogEnvConfiguration {
 	}
 
 	get dumpWebrtcEventPath(): string | undefined {
-		if(process.env.DUMP_WEBRTC_EVENT_PATH !== undefined) return process.env.DUMP_WEBRTC_EVENT_PATH;
+		if (process.env.DUMP_WEBRTC_EVENT_PATH !== undefined) return process.env.DUMP_WEBRTC_EVENT_PATH;
 		if (process.env.WRTC_DUMP !== undefined) {
 			console.warn("[EnvConfig] WRTC_DUMP is deprecated. Please use DUMP_WEBRTC_EVENT_PATH=./dump_wrtc instead.");
 			return process.env.WRTC_DUMP ? "dump_wrtc" : undefined;

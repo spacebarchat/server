@@ -27,7 +27,8 @@ export class DatabaseEnvConfiguration {
 			{
 				key: "DB_UNSAFE_SCHEMA_SYNC",
 				type: "boolean",
-				description: "If true, the database schema will be forcibly synchronised. This is unsafe for production environments. **We claim no responsibility for data loss!**",
+				description:
+					"If true, the database schema will be forcibly synchronised. This is unsafe for production environments. **We claim no responsibility for data loss!**",
 			},
 			{
 				key: "DB_DISABLE_JOINS",
@@ -37,7 +38,7 @@ export class DatabaseEnvConfiguration {
 		];
 	}
 
-	get url(): (string | undefined) {
+	get url(): string | undefined {
 		return process.env.DATABASE;
 	}
 
