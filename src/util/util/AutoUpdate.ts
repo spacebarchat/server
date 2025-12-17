@@ -25,26 +25,17 @@ const rl = readline.createInterface({
 	output: process.stdout,
 });
 
-export function enableAutoUpdate(opts: {
-	checkInterval: number | boolean;
-	packageJsonLink: string;
-	path: string;
-	downloadUrl: string;
-	downloadType?: "zip";
-}) {
+export function enableAutoUpdate(opts: { checkInterval: number | boolean; packageJsonLink: string; path: string; downloadUrl: string; downloadType?: "zip" }) {
 	if (!opts.checkInterval) return;
 	const interval = 1000 * 60 * 60 * 24;
-	if (typeof opts.checkInterval === "number")
-		opts.checkInterval = 1000 * interval;
+	if (typeof opts.checkInterval === "number") opts.checkInterval = 1000 * interval;
 
 	const i = setInterval(async () => {
 		const currentVersion = await getCurrentVersion(opts.path);
 		const latestVersion = await getLatestVersion(opts.packageJsonLink);
 		if (currentVersion !== latestVersion) {
 			clearInterval(i);
-			console.log(
-				`[Auto Update] Current version (${currentVersion}) is out of date, updating ...`,
-			);
+			console.log(`[Auto Update] Current version (${currentVersion}) is out of date, updating ...`);
 			await download(opts.downloadUrl, opts.path);
 		}
 	}, interval);
@@ -52,17 +43,14 @@ export function enableAutoUpdate(opts: {
 		const currentVersion = await getCurrentVersion(opts.path);
 		const latestVersion = await getLatestVersion(opts.packageJsonLink);
 		if (currentVersion !== latestVersion) {
-			rl.question(
-				`[Auto Update] Current version (${currentVersion}) is out of date, would you like to update? (Y/n)`,
-				(answer) => {
-					if (answer === "" || answer.toLowerCase() === "y") {
-						console.log(`[Auto update] updating ...`);
-						download(opts.downloadUrl, opts.path);
-					} else {
-						console.log(`[Auto update] aborted`);
-					}
-				},
-			);
+			rl.question(`[Auto Update] Current version (${currentVersion}) is out of date, would you like to update? (Y/n)`, (answer) => {
+				if (answer === "" || answer.toLowerCase() === "y") {
+					console.log(`[Auto update] updating ...`);
+					download(opts.downloadUrl, opts.path);
+				} else {
+					console.log(`[Auto update] aborted`);
+				}
+			});
 		}
 	});
 }

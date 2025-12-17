@@ -34,27 +34,21 @@ export async function uploadFile(
 		filename: file.originalname,
 	});
 
-	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
-		{
-			headers: {
-				signature: Config.get().security.requestSignature,
-				...form.getHeaders(),
-			},
-			method: "POST",
-			body: form.getBuffer(),
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
+			...form.getHeaders(),
 		},
-	);
+		method: "POST",
+		body: form.getBuffer(),
+	});
 	const result = (await response.json()) as Attachment;
 
 	if (response.status !== 200) throw result;
 	return result;
 }
 
-export async function handleFile(
-	path: string,
-	body?: string,
-): Promise<string | undefined> {
+export async function handleFile(path: string, body?: string): Promise<string | undefined> {
 	if (!body || !body.startsWith("data:")) return undefined;
 	try {
 		const mimetype = body.split(":")[1].split(";")[0];
@@ -73,15 +67,12 @@ export async function handleFile(
 }
 
 export async function deleteFile(path: string) {
-	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`,
-		{
-			headers: {
-				signature: Config.get().security.requestSignature,
-			},
-			method: "DELETE",
+	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
 		},
-	);
+		method: "DELETE",
+	});
 	const result = await response.json();
 
 	if (response.status !== 200) throw result;

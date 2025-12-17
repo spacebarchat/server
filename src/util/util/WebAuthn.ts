@@ -41,36 +41,24 @@ export const WebAuthn: {
 	},
 };
 
-export async function generateWebAuthnTicket(
-	challenge: string,
-): Promise<string> {
+export async function generateWebAuthnTicket(challenge: string): Promise<string> {
 	return new Promise((res, rej) => {
-		loadOrGenerateKeypair().then(kp=>
-			jwt.sign(
-				{ challenge },
-				kp.privateKey,
-				jwtSignOptions,
-				(err, token) => {
-					if (err || !token) return rej(err || "no token");
-					return res(token);
-				},
-			)
+		loadOrGenerateKeypair().then((kp) =>
+			jwt.sign({ challenge }, kp.privateKey, jwtSignOptions, (err, token) => {
+				if (err || !token) return rej(err || "no token");
+				return res(token);
+			}),
 		);
 	});
 }
 
 export async function verifyWebAuthnToken(token: string) {
 	return new Promise((res, rej) => {
-		loadOrGenerateKeypair().then(kp=>
-			jwt.verify(
-				token,
-				kp.publicKey,
-				jwtVerifyOptions,
-				async (err, decoded) => {
-					if (err) return rej(err);
-					return res(decoded);
-				},
-			)
+		loadOrGenerateKeypair().then((kp) =>
+			jwt.verify(token, kp.publicKey, jwtVerifyOptions, async (err, decoded) => {
+				if (err) return rej(err);
+				return res(decoded);
+			}),
 		);
 	});
 }
