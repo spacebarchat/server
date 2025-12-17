@@ -1577,6 +1577,9 @@
                             "discriminator": {
                                 "type": "string"
                             },
+                            "global_name": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "string"
                             },
@@ -1671,11 +1674,11 @@
                     "region": {
                         "type": "string"
                     },
-                    "icon": {
+                    "banner": {
                         "type": "string",
                         "nullable": true
                     },
-                    "banner": {
+                    "icon": {
                         "type": "string",
                         "nullable": true
                     },
@@ -1968,6 +1971,12 @@
                                 "username": {
                                     "type": "string"
                                 },
+                                "global_name": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
                                 "discriminator": {
                                     "type": "string"
                                 },
@@ -1989,6 +1998,7 @@
                                 "avatar",
                                 "avatar_url",
                                 "discriminator",
+                                "global_name",
                                 "id",
                                 "status",
                                 "username"
@@ -2501,6 +2511,9 @@
                     "id": {
                         "type": "string"
                     },
+                    "banner": {
+                        "type": "string"
+                    },
                     "icon": {
                         "type": "string"
                     },
@@ -2536,9 +2549,6 @@
                         "items": {
                             "$ref": "#/components/schemas/Role"
                         }
-                    },
-                    "banner": {
-                        "type": "string"
                     },
                     "channels": {
                         "type": "array",
@@ -2711,18 +2721,39 @@
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
                     },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
                     },
                     "avatar": {
                         "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
                     },
                     "banner": {
                         "type": "string"
                     },
                     "bio": {
                         "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -2732,24 +2763,6 @@
                     },
                     "pronouns": {
                         "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -2782,21 +2795,39 @@
                     "flags": {
                         "type": "integer"
                     },
-                    "verified": {
-                        "type": "boolean"
+                    "username": {
+                        "type": "string"
                     },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
                     },
                     "avatar": {
                         "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
                     },
                     "banner": {
                         "type": "string"
                     },
                     "bio": {
                         "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -2807,23 +2838,8 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "bot": {
+                    "verified": {
                         "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -2893,6 +2909,183 @@
                     "$ref": "#/components/schemas/BackupCode"
                 }
             },
+            "PrivateUserResponse": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "nsfw_allowed": {
+                        "type": "boolean"
+                    },
+                    "premium": {
+                        "type": "boolean"
+                    },
+                    "purchased_flags": {
+                        "type": "integer"
+                    },
+                    "premium_usage_flags": {
+                        "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    },
+                    "settings": {
+                        "$ref": "#/components/schemas/UserSettingsSchema"
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "disabled",
+                    "discriminator",
+                    "flags",
+                    "id",
+                    "mfa_enabled",
+                    "nsfw_allowed",
+                    "premium",
+                    "premium_since",
+                    "premium_type",
+                    "premium_usage_flags",
+                    "public_flags",
+                    "purchased_flags",
+                    "username",
+                    "verified"
+                ]
+            },
+            "PublicUserResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
+                    "badge_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "bio",
+                    "bot",
+                    "discriminator",
+                    "id",
+                    "premium_since",
+                    "premium_type",
+                    "public_flags",
+                    "username"
+                ]
+            },
             "UserUpdateResponse": {
                 "type": "object",
                 "properties": {
@@ -2909,21 +3102,39 @@
                     "flags": {
                         "type": "integer"
                     },
-                    "verified": {
-                        "type": "boolean"
+                    "username": {
+                        "type": "string"
                     },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
                     },
                     "avatar": {
                         "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
                     },
                     "banner": {
                         "type": "string"
                     },
                     "bio": {
                         "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -2934,23 +3145,8 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "bot": {
+                    "verified": {
                         "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -3098,6 +3294,10 @@
                     "autoCreateBotUsers": {
                         "type": "boolean",
                         "default": false
+                    },
+                    "uniqueUsernames": {
+                        "type": "boolean",
+                        "default": false
                     }
                 },
                 "required": [
@@ -3110,7 +3310,8 @@
                     "instanceId",
                     "instanceName",
                     "serverName",
-                    "tosPage"
+                    "tosPage",
+                    "uniqueUsernames"
                 ]
             },
             "APIChannelArray": {
@@ -3140,6 +3341,27 @@
                     "guild_id": {
                         "type": "string"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "mute": {
                         "type": "boolean"
                     },
@@ -3155,27 +3377,6 @@
                     },
                     "pending": {
                         "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "communication_disabled_until": {
                         "anyOf": [
@@ -3281,11 +3482,11 @@
                     "region": {
                         "type": "string"
                     },
-                    "icon": {
+                    "banner": {
                         "type": "string",
                         "nullable": true
                     },
-                    "banner": {
+                    "icon": {
                         "type": "string",
                         "nullable": true
                     },
@@ -3592,6 +3793,9 @@
                             "type": "string"
                         },
                         "username": {
+                            "type": "string"
+                        },
+                        "global_name": {
                             "type": "string"
                         },
                         "discriminator": {
@@ -5957,6 +6161,17 @@
                     "files"
                 ]
             },
+            "UniqueUsernameAttemptSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "username"
+                ]
+            },
             "UserDeleteSchema": {
                 "type": "object",
                 "properties": {
@@ -6028,7 +6243,8 @@
                 "type": "object",
                 "properties": {
                     "username": {
-                        "minLength": 2,
+                        "minLength": 1,
+                        "maxLength": 100,
                         "type": "string"
                     },
                     "avatar": {
@@ -6036,6 +6252,7 @@
                         "nullable": true
                     },
                     "bio": {
+                        "maxLength": 1024,
                         "type": "string"
                     },
                     "accent_color": {
@@ -6046,27 +6263,23 @@
                         "nullable": true
                     },
                     "password": {
-                        "minLength": 1,
-                        "maxLength": 72,
                         "type": "string"
                     },
                     "new_password": {
-                        "minLength": 1,
-                        "maxLength": 72,
                         "type": "string"
                     },
                     "code": {
-                        "minLength": 6,
-                        "maxLength": 6,
                         "type": "string"
                     },
                     "email": {
-                        "format": "email",
                         "type": "string"
                     },
                     "discriminator": {
                         "minLength": 4,
                         "maxLength": 4,
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string"
                     }
                 }
@@ -6808,6 +7021,17 @@
                     "user_sessions"
                 ]
             },
+            "UniqueUsernameAttemptResponse": {
+                "type": "object",
+                "properties": {
+                    "taken": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "taken"
+                ]
+            },
             "ApplicationCommandOption": {
                 "type": "object",
                 "properties": {
@@ -7460,6 +7684,12 @@
                     "username": {
                         "type": "string"
                     },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "legacy_username": {
+                        "type": "string"
+                    },
                     "discriminator": {
                         "type": "string"
                     },
@@ -7627,6 +7857,9 @@
                             "type": "string"
                         }
                     },
+                    "tag": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -7658,6 +7891,7 @@
                     "security_keys",
                     "sessions",
                     "system",
+                    "tag",
                     "username",
                     "verified",
                     "webauthn_enabled"
@@ -10611,6 +10845,27 @@
                     "guild_id": {
                         "type": "string"
                     },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
+                        "type": "string"
+                    },
                     "mute": {
                         "type": "boolean"
                     },
@@ -10626,27 +10881,6 @@
                     },
                     "pending": {
                         "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "communication_disabled_until": {
                         "anyOf": [
@@ -10690,18 +10924,39 @@
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
                     },
-                    "premium_since": {
-                        "type": "string",
-                        "format": "date-time"
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
                     },
                     "avatar": {
                         "type": "string"
+                    },
+                    "accent_color": {
+                        "type": "integer"
                     },
                     "banner": {
                         "type": "string"
                     },
                     "bio": {
                         "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "premium_since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -10711,24 +10966,6 @@
                     },
                     "pronouns": {
                         "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    },
-                    "accent_color": {
-                        "type": "integer"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "premium_type": {
-                        "type": "integer"
                     },
                     "badge_ids": {
                         "type": "array",
@@ -12442,38 +12679,31 @@
             "MinimalPublicUserDTO": {
                 "type": "object",
                 "properties": {
-                    "avatar": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "global_name": {
                         "type": "string",
+                        "default": null,
                         "nullable": true
                     },
                     "discriminator": {
                         "type": "string"
                     },
-                    "id": {
-                        "type": "string"
-                    },
                     "public_flags": {
                         "type": "integer"
                     },
-                    "username": {
-                        "type": "string"
-                    },
-                    "badge_ids": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
                     }
                 },
                 "required": [
                     "discriminator",
+                    "global_name",
                     "id",
                     "public_flags",
                     "username"
@@ -12539,6 +12769,10 @@
                         "type": "integer",
                         "default": 1048576
                     },
+                    "minUsername": {
+                        "type": "integer",
+                        "default": 2
+                    },
                     "maxUsername": {
                         "type": "integer",
                         "default": 32
@@ -12556,7 +12790,8 @@
                     "maxBio",
                     "maxFriends",
                     "maxGuilds",
-                    "maxUsername"
+                    "maxUsername",
+                    "minUsername"
                 ]
             },
             "GuildLimits": {
@@ -12810,6 +13045,9 @@
             "UserProfile": {
                 "type": "object",
                 "properties": {
+                    "accent_color": {
+                        "type": "integer"
+                    },
                     "banner": {
                         "type": "string"
                     },
@@ -12824,9 +13062,6 @@
                     },
                     "pronouns": {
                         "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer"
                     }
                 },
                 "required": [
@@ -13028,6 +13263,9 @@
         },
         {
             "name": "track"
+        },
+        {
+            "name": "unique-username"
         },
         {
             "name": "updates"
@@ -14154,6 +14392,121 @@
                         "description": "user_id"
                     }
                 ],
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Claims a unique username for the user. Returns the updated user object on success. Fires a User Update Gateway event.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo-suggestions/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Returns a suggested unique username string based on the current user's username.",
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "users"
+                ]
+            }
+        },
+        "/users/@me/pomelo-attempt/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Checks whether a unique username is available for the user to claim.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UniqueUsernameAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
                 "tags": [
                     "users"
                 ]
@@ -15785,6 +16138,86 @@
                 },
                 "tags": [
                     "updates"
+                ]
+            }
+        },
+        "/unique-username/username-suggestions-unauthed/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Returns a suggested unique username string based on the current user's username.",
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "global_name",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "tags": [
+                    "unique-username"
+                ]
+            }
+        },
+        "/unique-username/username-attempt-unauthed/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Checks whether a unique username is available for the user to claim.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UniqueUsernameAttemptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UniqueUsernameAttemptResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "unique-username"
                 ]
             }
         },
@@ -24975,38 +25408,6 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
-                ]
-            }
-        },
-        "/auth/forgot/": {
-            "post": {
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ForgotPasswordSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "204": {
-                        "description": "No description available"
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "auth"
                 ]
             }
         },

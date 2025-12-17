@@ -130,6 +130,7 @@ async function getWidgetJsonData(guild_id: string) {
             return {
                 id: x.id,
                 username: x.user.username,
+				global_name: x.user.global_name,
                 discriminator: x.user.discriminator,
                 avatar: null,
                 status: "online", // TODO

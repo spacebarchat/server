@@ -75,7 +75,7 @@ router.get(
                 id: req.user_id,
                 bot: false,
             },
-            select: { id: true, username: true, avatar: true, discriminator: true, public_flags: true, global_name: true, public_flags: true },
+            select: { id: true, username: true, avatar: true, discriminator: true, public_flags: true, global_name: true },
         });
 
         const guilds = await Member.find({
