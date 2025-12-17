@@ -32,10 +32,7 @@ function colorizeMethod(method) {
 }
 
 function formatPath(path) {
-	return path
-		.replace(/:(\w+)/g, underline(":$1"))
-		.replace(/#(\w+)/g, underline("#$1"))
-		;
+	return path.replace(/:(\w+)/g, underline(":$1")).replace(/#(\w+)/g, underline("#$1"));
 }
 
 /**
@@ -58,12 +55,7 @@ function proxy(file, apiMethod, apiPathPrefix, apiPath, ...args) {
 }
 
 express.Router = () => {
-	return Object.fromEntries(
-		methods.map((method) => [
-			method,
-			proxy.bind(null, currentFile, method, currentPath),
-		]),
-	);
+	return Object.fromEntries(methods.map((method) => [method, proxy.bind(null, currentFile, method, currentPath)]));
 };
 
 RouteUtility.route = (opts) => {
@@ -82,8 +74,7 @@ module.exports = function getRouteDescriptions() {
 		currentPath = file.replace(root.slice(0, -1), "");
 		currentPath = currentPath.split(".").slice(0, -1).join("."); // truncate .js/.ts file extension of path
 		currentPath = currentPath.replaceAll("#", ":").replaceAll("\\", "/"); // replace # with : for path parameters and windows paths with slashes
-		if (currentPath.endsWith("/index"))
-			currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
+		if (currentPath.endsWith("/index")) currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
 
 		try {
 			require(file);
