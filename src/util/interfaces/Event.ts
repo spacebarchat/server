@@ -562,17 +562,24 @@ export interface RelationshipRemoveEvent extends Event {
 	data: Omit<PublicRelationship, "nickname">;
 }
 
+export interface GatewaySessionClientInfo {
+	version: number;
+	os: string;
+	client: string;
+};
+
+export interface GatewaySession {
+	session_id: string;
+	activities: Activity[];
+	hidden_activities: Activity[];
+	client_info: GatewaySessionClientInfo;
+	status: Status;
+	active?: boolean; // How is this even defined?
+}
+
 export interface SessionsReplace extends Event {
 	event: "SESSIONS_REPLACE";
-	data: {
-		activities: Activity[];
-		client_info: {
-			version: number;
-			os: string;
-			client: string;
-		};
-		status: Status;
-	}[];
+	data: GatewaySession[];
 }
 
 export interface GuildMemberListUpdate extends Event {

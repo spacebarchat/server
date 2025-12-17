@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,13 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import crypto from "crypto";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { ClientStatus, Status } from "../interfaces/Status";
-import { Activity } from "../interfaces/Activity";
-import crypto from "crypto";
+import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, Status } from "../interfaces";
 import { randomUpperString } from "@spacebar/api";
+import { IpDataIpLookupResponse } from "../util/networking/ipdata/IpDataSampleResponses";
+import { DateBuilder, TimeSpan } from "../util";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
@@ -47,12 +48,12 @@ export class Session extends BaseClassWithoutId {
 	@Column({ type: "simple-json", default: "[]" })
 	activities: Activity[];
 
-	@Column({ type: "simple-json", select: false })
+	@Column({ type: "simple-json"})
 	client_info: {
-		client: string;
-		os: string;
-		version: number;
-		location: string;
+		platform?: string;
+		os?: string;
+		version?: number;
+		location?: string;
 	};
 
 	@Column({ type: "simple-json" })
@@ -67,14 +68,20 @@ export class Session extends BaseClassWithoutId {
 	@CreateDateColumn({ type: Date })
 	created_at: Date;
 
-	@Column({ default: 0, type: Date })
-	last_seen: Date;
+	@Column({ nullable: true, type: Date })
+	last_seen?: Date;
 
-	@Column({ default: "127.0.0.1", type: String })
-	last_seen_ip: string;
+	@Column({ nullable: true, type: String })
+	last_seen_ip?: string;
 
 	@Column({ nullable: true, type: String })
 	last_seen_location?: string;
+
+	@Column({ nullable: true, type: "simple-json" })
+	last_seen_location_info?: ExtendedLocationInfo;
+
+	@Column({ nullable: true, type: String })
+	session_nickname?: string;
 
 	getPublicStatus() {
 		return this.status === "invisible" ? "offline" : this.status;
@@ -83,10 +90,10 @@ export class Session extends BaseClassWithoutId {
 	getDiscordDeviceInfo() {
 		return {
 			id_hash: crypto.createHash("sha256").update(this.session_id).digest("hex"),
-			approx_last_used_time: this.last_seen.toISOString(),
+			approx_last_used_time: (this.last_seen ?? new Date(0)).toISOString(),
 			client_info: {
 				os: this.client_info?.os,
-				client: this.client_info?.client,
+				platform: this.client_info?.platform + (this.client_info?.version ? ` ${this.client_info?.version}` : "") + (this.session_nickname ? ` (${this.session_nickname})` : ""),
 				location: this.last_seen_location,
 			},
 		};
@@ -99,7 +106,7 @@ export class Session extends BaseClassWithoutId {
 			status: this.status,
 			activities: this.activities,
 			client_status: this.client_status,
-			approx_last_used_time: this.last_seen.toISOString(),
+			approx_last_used_time: (this.last_seen ?? new Date(0)).toISOString(),
 			client_info: {
 				...this.client_info ?? {},
 				location: this.last_seen_location,
@@ -107,8 +114,46 @@ export class Session extends BaseClassWithoutId {
 			last_seen: this.last_seen,
 			last_seen_ip: this.last_seen_ip,
 			last_seen_location: this.last_seen_location,
+			last_seen_location_info: this.last_seen_location_info,
 		};
 	}
+
+	toPrivateGatewayDeviceInfo(): GatewaySession {
+		// TODO: ... or has `show_current_game` privacy setting enabled - except spotify (always visible)
+		const hasPrivateActivities = this.status == "offline" || this.status == "invisible";
+		const inactiveTreshold = new DateBuilder(new Date(0)).addMinutes(5).buildTimestamp();
+
+		return {
+			session_id: this.session_id,
+			client_info: {
+				client: this.client_info?.platform ?? "",
+				os: this.client_info?.os ?? "",
+				version: this.client_info?.version ?? 0,
+			} as GatewaySessionClientInfo,
+			status: this.status,
+			activities: hasPrivateActivities ? [] : this.activities,
+			hidden_activities: hasPrivateActivities ? this.activities : [],
+			active: TimeSpan.fromDates(this.last_seen?.getTime() ?? 0, new Date().getTime()).totalMillis < inactiveTreshold,
+		}
+	}
+}
+
+export interface ExtendedLocationInfo {
+	is_eu: boolean,
+	city: string,
+	region: string,
+	region_code: string,
+	country_name: string,
+	country_code: string,
+	continent_name: string,
+	continent_code: string,
+	latitude: number,
+	longitude: number,
+	postal: string,
+	calling_code: string,
+	flag: string,
+	emoji_flag: string,
+	emoji_unicode: string,
 }
 
 export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];

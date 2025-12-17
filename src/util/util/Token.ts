@@ -120,7 +120,7 @@ export const checkToken = (
 				return rejectAndLog(reject, "Invalid Token");
 			}
 
-			if (session && TimeSpan.fromDates(session.last_seen.getTime(), new Date().getTime()).totalSeconds >= 15) {
+			if (session && TimeSpan.fromDates(session.last_seen?.getTime() ?? 0, new Date().getTime()).totalSeconds >= 15) {
 				session.last_seen = new Date();
 				if (opts?.ipAddress && opts?.ipAddress !== session.last_seen_ip) {
 					session.last_seen_ip = opts.ipAddress;
@@ -171,12 +171,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
 			is_admin_session: isAdminSession,
 			client_status: {},
 			status: "online",
-			client_info: {
-				os: "Unknown",
-				client: "Unknown",
-				version: 0,
-				location: "Unknown",
-			},
+			client_info: { },
 		});
 	} while (await Session.findOne({ where: { session_id: newSession.session_id } }));
 

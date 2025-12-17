@@ -63,12 +63,11 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 	if (this.user_id) {
 		const sessions = await Session.find({
 			where: { user_id: this.user_id },
-			select: PrivateSessionProjection,
 		});
 		await emitEvent({
 			event: "SESSIONS_REPLACE",
 			user_id: this.user_id,
-			data: sessions,
+			data: sessions.map(x=>x.toPrivateGatewayDeviceInfo()),
 		} as SessionsReplace);
 		const session = sessions[0] || {
 			activities: [],

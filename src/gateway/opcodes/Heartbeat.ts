@@ -51,7 +51,7 @@ export async function onHeartbeat(this: WebSocket, data: Payload) {
 		Session.update(
 			{
 				session_id: this.session_id!,
-				user_id: this.user_id!,
+				user_id: this.user_id
 			} as FindOptionsWhere<Session>,
 			newSessionData,
 		),

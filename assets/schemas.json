@@ -7559,8 +7559,26 @@
                 "items": {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "id_hash": {
                             "type": "string"
+                        },
+                        "status": {
+                            "type": "string"
+                        },
+                        "activities": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Activity"
+                                }
+                            }
+                        },
+                        "client_status": {
+                            "$ref": "#/definitions/ClientStatus"
                         },
                         "approx_last_used_time": {
                             "type": "string"
@@ -7589,24 +7607,6 @@
                                 "version"
                             ]
                         },
-                        "id": {
-                            "type": "string"
-                        },
-                        "status": {
-                            "type": "string"
-                        },
-                        "activities": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/Activity"
-                                }
-                            }
-                        },
-                        "client_status": {
-                            "$ref": "#/definitions/ClientStatus"
-                        },
                         "last_seen": {
                             "type": "string",
                             "format": "date-time"
@@ -7620,9 +7620,13 @@
                     },
                     "additionalProperties": false,
                     "required": [
+                        "activities",
                         "approx_last_used_time",
                         "client_info",
-                        "id_hash"
+                        "client_status",
+                        "id",
+                        "id_hash",
+                        "status"
                     ]
                 }
             }
@@ -8537,7 +8541,7 @@
             "client_info": {
                 "type": "object",
                 "properties": {
-                    "client": {
+                    "platform": {
                         "type": "string"
                     },
                     "os": {
@@ -8550,13 +8554,7 @@
                         "type": "string"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "client",
-                    "location",
-                    "os",
-                    "version"
-                ]
+                "additionalProperties": false
             },
             "client_status": {
                 "$ref": "#/definitions/ClientStatus"
@@ -8580,6 +8578,12 @@
             },
             "last_seen_location": {
                 "type": "string"
+            },
+            "last_seen_location_info": {
+                "$ref": "#/definitions/ExtendedLocationInfo"
+            },
+            "session_nickname": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
@@ -8589,8 +8593,6 @@
             "client_status",
             "created_at",
             "is_admin_session",
-            "last_seen",
-            "last_seen_ip",
             "session_id",
             "status",
             "user",
@@ -8791,6 +8793,75 @@
             "online"
         ],
         "type": "string",
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ExtendedLocationInfo": {
+        "type": "object",
+        "properties": {
+            "is_eu": {
+                "type": "boolean"
+            },
+            "city": {
+                "type": "string"
+            },
+            "region": {
+                "type": "string"
+            },
+            "region_code": {
+                "type": "string"
+            },
+            "country_name": {
+                "type": "string"
+            },
+            "country_code": {
+                "type": "string"
+            },
+            "continent_name": {
+                "type": "string"
+            },
+            "continent_code": {
+                "type": "string"
+            },
+            "latitude": {
+                "type": "integer"
+            },
+            "longitude": {
+                "type": "integer"
+            },
+            "postal": {
+                "type": "string"
+            },
+            "calling_code": {
+                "type": "string"
+            },
+            "flag": {
+                "type": "string"
+            },
+            "emoji_flag": {
+                "type": "string"
+            },
+            "emoji_unicode": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "calling_code",
+            "city",
+            "continent_code",
+            "continent_name",
+            "country_code",
+            "country_name",
+            "emoji_flag",
+            "emoji_unicode",
+            "flag",
+            "is_eu",
+            "latitude",
+            "longitude",
+            "postal",
+            "region",
+            "region_code"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "Relationship": {

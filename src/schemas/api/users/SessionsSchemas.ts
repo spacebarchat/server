@@ -21,23 +21,13 @@ import { ClientStatus } from "@spacebar/util";
 
 export type SessionsLogoutSchema = { session_ids?: Snowflake[]; session_id_hashes?: string[] };
 export type GetSessionsResponse = { user_sessions: DeviceInfo[]; };
-/*return {
-			id: this.session_id,
-			id_hash: crypto.createHash("sha256").update(this.session_id).digest("hex"),
-			status: this.status,
-			activities: this.activities,
-			client_status: this.client_status,
-			approx_last_used_time: this.last_seen.toISOString(),
-			client_info: {
-				...this.client_info,
-				location: this.last_seen_location,
-			},
-			last_seen: this.last_seen,
-			last_seen_ip: this.last_seen_ip,
-			last_seen_location: this.last_seen_location,
-		};*/
+
 export type DeviceInfo = {
+	id: string;
 	id_hash: string;
+	status: string;
+	activities: ActivitySchema["activities"][];
+	client_status: ClientStatus;
 	approx_last_used_time: string;
 	client_info: {
 		client: string;
@@ -45,10 +35,6 @@ export type DeviceInfo = {
 		version: number;
 		location: string;
 	};
-	id?: string;
-	status?: string;
-	activities?: ActivitySchema["activities"][];
-	client_status?: ClientStatus;
 	last_seen?: Date;
 	last_seen_ip?: string;
 	last_seen_location?: string;
