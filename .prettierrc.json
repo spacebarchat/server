@@ -6,7 +6,7 @@
 	"bracketSameLine": false,
 	"bracketSpacing": true,
 	"quoteProps": "as-needed",
-	"useTabs": true,
+	"useTabs": false,
 	"singleQuote": false,
 	"endOfLine": "auto",
 	"printWidth": 180

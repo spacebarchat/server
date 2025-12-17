@@ -1,3 +1,4 @@
 {
-	"*.{j,t}s": ["eslint", "prettier --write"]
+	"*.{j,t}s": ["eslint", "prettier --write"],
+    "src/schemas/{*,**/*}.ts": ["eslint", "prettier --write", "tsc -b -v", "node scripts/schema.js", "node scripts/openapi.js" ]
 }
