@@ -86,16 +86,21 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     this.large_threshold = identify.large_threshold || 250;
     const parseAndValidateTime = taskSw.getElapsedAndReset();
 
-    const tokenData = await checkToken(identify.token, {
-        relations: ["relationships", "relationships.to", "settings"],
-        select: [...PrivateUserProjection, "relationships", "rights"],
-    });
+    const { result: tokenData, elapsed: checkTokenTime } = await timePromise(() =>
+        checkToken(identify.token, {
+            relations: ["relationships", "relationships.to", "settings"],
+            select: [...PrivateUserProjection, "relationships", "rights"],
+        }),
+    );
+
+    taskSw.reset(); // don't include checkToken time...
 
     const user = tokenData.user;
     if (!user) {
         console.log("[Gateway] Failed to identify user");
         return this.close(CLOSECODES.Authentication_failed);
     }
+
     this.user_id = user.id;
     this.session = tokenData.session;
     const userQueryTime = taskSw.getElapsedAndReset();
@@ -582,6 +587,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     ] as TraceRoot;
     const times = {
         parseAndValidateTime,
+        checkTokenTime,
         userQueryTime,
         validateIntentsAndShardingTime,
         createSessionTime,
