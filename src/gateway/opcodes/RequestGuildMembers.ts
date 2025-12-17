@@ -16,18 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	getDatabase,
-	getPermission,
-	GuildMembersChunkEvent,
-	Member,
-	Presence,
-	Session,
-} from "@spacebar/util";
+import { getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In } from "typeorm";
-import { RequestGuildMembersSchema } from "@spacebar/schemas"
+import { RequestGuildMembersSchema } from "@spacebar/schemas";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const startTime = Date.now();
@@ -39,11 +32,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
 	check.call(this, RequestGuildMembersSchema, d);
 
-	const {
-		presences,
-		nonce,
-		query: requestQuery,
-	} = d as RequestGuildMembersSchema;
+	const { presences, nonce, query: requestQuery } = d as RequestGuildMembersSchema;
 	let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;
 
 	// some discord libraries send empty string as query when they meant to send undefined, which was leading to errors being thrown in this handler
@@ -63,8 +52,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	}
 
 	// TODO: Configurable limit?
-	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100))
-		limit = 100;
+	if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100)) limit = 100;
 
 	const permissions = await getPermission(this.user_id, guild_id);
 	permissions.hasThrow("VIEW_CHANNEL");
@@ -107,10 +95,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 			.leftJoinAndSelect("member.roles", "role")
 			.leftJoinAndSelect("member.user", "user")
 			.leftJoinAndSelect("user.sessions", "session")
-			.andWhere(
-				"',' || member.roles || ',' NOT LIKE :everyoneRoleIdList",
-				{ everyoneRoleIdList: "%," + guild_id + ",%" },
-			)
+			.andWhere("',' || member.roles || ',' NOT LIKE :everyoneRoleIdList", { everyoneRoleIdList: "%," + guild_id + ",%" })
 			.addOrderBy("user.username", "ASC")
 			.limit(memberFind.take);
 
@@ -145,10 +130,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 	const chunkCount = Math.ceil(members.length / 1000);
 
 	let notFound: string[] = [];
-	if (user_ids && user_ids.length > 0)
-		notFound = user_ids.filter(
-			(id) => !members.some((member) => member.id == id),
-		);
+	if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
 
 	const chunks: GuildMembersChunkEvent["data"][] = [];
 	while (members.length > 0) {
@@ -202,7 +184,5 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 		});
 	});
 
-	console.log(
-		`[Gateway] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`,
-	);
+	console.log(`[Gateway] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`);
 }

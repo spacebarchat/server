@@ -1,20 +1,8 @@
-import {
-	genVoiceToken,
-	parseStreamKey,
-	Payload,
-	WebSocket,
-} from "@spacebar/gateway";
-import {
-	Config,
-	emitEvent,
-	Stream,
-	StreamCreateEvent,
-	StreamServerUpdateEvent,
-	StreamSession,
-} from "@spacebar/util";
+import { genVoiceToken, parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
+import { Config, emitEvent, Stream, StreamCreateEvent, StreamServerUpdateEvent, StreamSession } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { Not } from "typeorm";
-import { StreamWatchSchema } from "@spacebar/schemas"
+import { StreamWatchSchema } from "@spacebar/schemas";
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
 	const startTime = Date.now();
@@ -45,13 +33,10 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 
 	if (!stream) return this.close(4000, "Invalid stream key");
 
-	if (type === "guild" && stream.channel.guild_id != guildId)
-		return this.close(4000, "Invalid stream key");
+	if (type === "guild" && stream.channel.guild_id != guildId) return this.close(4000, "Invalid stream key");
 
 	const regions = Config.get().regions;
-	const guildRegion = regions.available.find(
-		(r) => r.endpoint === stream.endpoint,
-	);
+	const guildRegion = regions.available.find((r) => r.endpoint === stream.endpoint);
 
 	if (!guildRegion) return this.close(4000, "Unknown region");
 
@@ -97,7 +82,5 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 		user_id: this.user_id,
 	} as StreamServerUpdateEvent);
 
-	console.log(
-		`[Gateway] STREAM_WATCH for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`,
-	);
+	console.log(`[Gateway] STREAM_WATCH for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`);
 }

@@ -17,29 +17,15 @@
 */
 
 import { CLOSECODES } from "@spacebar/gateway";
-import {
-	StreamSession,
-	VoiceState,
-} from "@spacebar/util";
-import {
-	validateSchema,
-	VoiceIdentifySchema,
-} from "@spacebar/schemas";
-import {
-	generateSsrc,
-	mediaServer,
-	Send,
-	VoiceOPCodes,
-	VoicePayload,
-	WebRtcWebSocket,
-} from "@spacebar/webrtc";
+import { StreamSession, VoiceState } from "@spacebar/util";
+import { validateSchema, VoiceIdentifySchema } from "@spacebar/schemas";
+import { generateSsrc, mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 import { SSRCs } from "@spacebarchat/spacebar-webrtc-types";
 import { subscribeToProducers } from "./Video";
 
 export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	clearTimeout(this.readyTimeout);
-	const { server_id, user_id, session_id, token, streams, video } =
-		validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
+	const { server_id, user_id, session_id, token, streams, video } = validateSchema("VoiceIdentifySchema", data.d) as VoiceIdentifySchema;
 
 	// server_id can be one of the following: a unique id for a GO Live stream, a channel id for a DM voice call, or a guild id for a guild voice channel
 	// not sure if there's a way to determine whether a snowflake is a channel id or a guild id without checking if it exists in db
@@ -92,12 +78,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 	this.type = type;
 
 	const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
-	this.webRtcClient = await mediaServer.join(
-		voiceRoomId,
-		this.user_id,
-		this,
-		type!,
-	);
+	this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
 
 	this.on("close", () => {
 		// ice-lite media server relies on this to know when the peer went away

@@ -16,13 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 import { Stream } from "@spacebar/util";
-import {
-	mediaServer,
-	Send,
-	VoiceOPCodes,
-	VoicePayload,
-	WebRtcWebSocket,
-} from "@spacebar/webrtc";
+import { mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 import type { WebRtcClient } from "@spacebarchat/spacebar-webrtc-types";
 import { validateSchema, VoiceVideoSchema } from "@spacebar/schemas";
 
@@ -60,9 +54,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 			try {
 				await Promise.race([
 					new Promise<void>((resolve, reject) => {
-						this.webRtcClient?.emitter.once("connected", () =>
-							resolve(),
-						);
+						this.webRtcClient?.emitter.once("connected", () => resolve());
 					}),
 					new Promise<void>((resolve, reject) => {
 						// Reject after 3 seconds if still not connected
@@ -93,28 +85,19 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 	if (wantsToProduceAudio) {
 		// check if we are already producing audio, if not, publish a new audio track for it
 		if (!this.webRtcClient!.isProducingAudio()) {
-			console.log(
-				`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`,
-			);
+			console.log(`[${this.user_id}] publishing new audio track ssrc:${d.audio_ssrc}`);
 			await this.webRtcClient.publishTrack("audio", {
 				audio_ssrc: d.audio_ssrc,
 			});
 		}
 
 		// now check that all clients have subscribed to our audio
-		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-			voiceRoomId,
-		)) {
+		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId)) {
 			if (client.user_id === this.user_id) continue;
 
 			if (!client.isSubscribedToTrack(this.user_id, "audio")) {
-				console.log(
-					`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`,
-				);
-				await client.subscribeToTrack(
-					this.webRtcClient.user_id,
-					"audio",
-				);
+				console.log(`[${client.user_id}] subscribing to audio track ssrcs: ${d.audio_ssrc}`);
+				await client.subscribeToTrack(this.webRtcClient.user_id, "audio");
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -125,9 +108,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 		this.webRtcClient!.videoStream = { ...stream, type: "video" }; // client sends "screen" on go live but expects "video" on response
 		// check if we are already publishing video, if not, publish a new video track for it
 		if (!this.webRtcClient!.isProducingVideo()) {
-			console.log(
-				`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`,
-			);
+			console.log(`[${this.user_id}] publishing new video track ssrc:${d.video_ssrc}`);
 			await this.webRtcClient.publishTrack("video", {
 				video_ssrc: d.video_ssrc,
 				rtx_ssrc: d.rtx_ssrc,
@@ -135,19 +116,12 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 		}
 
 		// now check that all clients have subscribed to our video track
-		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-			voiceRoomId,
-		)) {
+		for (const client of mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId)) {
 			if (client.user_id === this.user_id) continue;
 
 			if (!client.isSubscribedToTrack(this.user_id, "video")) {
-				console.log(
-					`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`,
-				);
-				await client.subscribeToTrack(
-					this.webRtcClient.user_id,
-					"video",
-				);
+				console.log(`[${client.user_id}] subscribing to video track ssrc: ${d.video_ssrc}`);
+				await client.subscribeToTrack(this.webRtcClient.user_id, "video");
 
 				clientsThatNeedUpdate.add(client);
 			}
@@ -163,9 +137,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 				d: {
 					user_id: this.user_id,
 					// can never send audio ssrc as 0, it will mess up client state for some reason. send server generated ssrc as backup
-					audio_ssrc:
-						ssrcs.audio_ssrc ??
-						this.webRtcClient!.getIncomingStreamSSRCs().audio_ssrc,
+					audio_ssrc: ssrcs.audio_ssrc ?? this.webRtcClient!.getIncomingStreamSSRCs().audio_ssrc,
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: d.streams?.map((x) => ({
@@ -181,14 +153,10 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
 }
 
 // check if we are not subscribed to producers in this server, if not, subscribe
-export async function subscribeToProducers(
-	this: WebRtcWebSocket,
-): Promise<void> {
+export async function subscribeToProducers(this: WebRtcWebSocket): Promise<void> {
 	if (!this.webRtcClient || !this.webRtcClient.webrtcConnected) return;
 
-	const clients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(
-		this.webRtcClient.voiceRoomId,
-	);
+	const clients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(this.webRtcClient.voiceRoomId);
 
 	await Promise.all(
 		Array.from(clients).map(async (client) => {
@@ -196,42 +164,26 @@ export async function subscribeToProducers(
 
 			if (client.user_id === this.user_id) return; // cannot subscribe to self
 
-			if (
-				client.isProducingAudio() &&
-				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "audio")
-			) {
-				await this.webRtcClient!.subscribeToTrack(
-					client.user_id,
-					"audio",
-				);
+			if (client.isProducingAudio() && !this.webRtcClient!.isSubscribedToTrack(client.user_id, "audio")) {
+				await this.webRtcClient!.subscribeToTrack(client.user_id, "audio");
 				needsUpdate = true;
 			}
 
-			if (
-				client.isProducingVideo() &&
-				!this.webRtcClient!.isSubscribedToTrack(client.user_id, "video")
-			) {
-				await this.webRtcClient!.subscribeToTrack(
-					client.user_id,
-					"video",
-				);
+			if (client.isProducingVideo() && !this.webRtcClient!.isSubscribedToTrack(client.user_id, "video")) {
+				await this.webRtcClient!.subscribeToTrack(client.user_id, "video");
 				needsUpdate = true;
 			}
 
 			if (!needsUpdate) return;
 
-			const ssrcs = this.webRtcClient!.getOutgoingStreamSSRCsForUser(
-				client.user_id,
-			);
+			const ssrcs = this.webRtcClient!.getOutgoingStreamSSRCsForUser(client.user_id);
 
 			await Send(this, {
 				op: VoiceOPCodes.VIDEO,
 				d: {
 					user_id: client.user_id,
 					// can never send audio ssrc as 0, it will mess up client state for some reason. send server generated ssrc as backup
-					audio_ssrc:
-						ssrcs.audio_ssrc ??
-						client.getIncomingStreamSSRCs().audio_ssrc,
+					audio_ssrc: ssrcs.audio_ssrc ?? client.getIncomingStreamSSRCs().audio_ssrc,
 					video_ssrc: ssrcs.video_ssrc ?? 0,
 					rtx_ssrc: ssrcs.rtx_ssrc ?? 0,
 					streams: [

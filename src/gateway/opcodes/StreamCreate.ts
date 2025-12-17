@@ -1,9 +1,4 @@
-import {
-	genVoiceToken,
-	Payload,
-	WebSocket,
-	generateStreamKey,
-} from "@spacebar/gateway";
+import { genVoiceToken, Payload, WebSocket, generateStreamKey } from "@spacebar/gateway";
 import {
 	Channel,
 	Config,
@@ -18,7 +13,7 @@ import {
 	VoiceStateUpdateEvent,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { StreamCreateSchema } from "@spacebar/schemas"
+import { StreamCreateSchema } from "@spacebar/schemas";
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
 	const startTime = Date.now();
@@ -47,17 +42,11 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 		where: { id: body.channel_id },
 	});
 
-	if (
-		!channel ||
-		(body.type === "guild" && channel.guild_id != body.guild_id)
-	)
-		return this.close(4000, "invalid channel");
+	if (!channel || (body.type === "guild" && channel.guild_id != body.guild_id)) return this.close(4000, "invalid channel");
 
 	// TODO: actually apply preferred_region from the event payload
 	const regions = Config.get().regions;
-	const guildRegion = regions.available.filter(
-		(r) => r.id === regions.default,
-	)[0];
+	const guildRegion = regions.available.filter((r) => r.id === regions.default)[0];
 
 	// first make sure theres no other streams for this user that somehow didnt get cleared
 	await Stream.delete({
@@ -85,12 +74,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 
 	await streamSession.save();
 
-	const streamKey = generateStreamKey(
-		body.type,
-		body.guild_id,
-		body.channel_id,
-		this.user_id,
-	);
+	const streamKey = generateStreamKey(body.type, body.guild_id, body.channel_id, this.user_id);
 
 	await emitEvent({
 		event: "STREAM_CREATE",
@@ -125,9 +109,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 		channel_id: voiceState.channel_id,
 	} as VoiceStateUpdateEvent);
 
-	console.log(
-		`[Gateway] STREAM_CREATE for user ${this.user_id} in channel ${body.channel_id} with stream key ${streamKey} in ${Date.now() - startTime}ms`,
-	);
+	console.log(`[Gateway] STREAM_CREATE for user ${this.user_id} in channel ${body.channel_id} with stream key ${streamKey} in ${Date.now() - startTime}ms`);
 }
 
 //stream key:

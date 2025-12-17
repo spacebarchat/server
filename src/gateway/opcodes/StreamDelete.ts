@@ -1,13 +1,7 @@
 import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
-import {
-	emitEvent,
-	Stream,
-	StreamDeleteEvent,
-	VoiceState,
-	VoiceStateUpdateEvent,
-} from "@spacebar/util";
+import { emitEvent, Stream, StreamDeleteEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { StreamDeleteSchema } from "@spacebar/schemas"
+import { StreamDeleteSchema } from "@spacebar/schemas";
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
 	const startTime = Date.now();
@@ -75,7 +69,5 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 		channel_id: channelId,
 	} as StreamDeleteEvent);
 
-	console.log(
-		`[Gateway] STREAM_DELETE for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`,
-	);
+	console.log(`[Gateway] STREAM_DELETE for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`);
 }
