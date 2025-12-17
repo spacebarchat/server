@@ -59,4 +59,3 @@ export class AuditLog extends BaseClass {
 	@Column({ nullable: true })
 	reason?: string;
 }
-
