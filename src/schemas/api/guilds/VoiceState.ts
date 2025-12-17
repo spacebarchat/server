@@ -17,8 +17,6 @@ export enum PublicVoiceStateEnum {
 
 export type PublicVoiceStateKeys = keyof typeof PublicVoiceStateEnum;
 
-export const PublicVoiceStateProjection = Object.values(
-		PublicVoiceStateEnum,
-).filter((x) => typeof x === "string") as PublicVoiceStateKeys[];
+export const PublicVoiceStateProjection = Object.values(PublicVoiceStateEnum).filter((x) => typeof x === "string") as PublicVoiceStateKeys[];
 
 export type PublicVoiceState = Pick<VoiceState, PublicVoiceStateKeys>;

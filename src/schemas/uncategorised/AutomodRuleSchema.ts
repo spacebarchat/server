@@ -45,11 +45,7 @@ export interface AutomodRuleSchema {
 	name: string;
 	position: number;
 	trigger_type: number; //AutomodTriggerTypes
-	trigger_metadata:
-		| AutomodMentionSpamRuleSchema
-		| AutomodSuspectedSpamRuleSchema
-		| AutomodCommonlyFlaggedWordsRuleSchema
-		| AutomodCustomWordsRuleSchema;
+	trigger_metadata: AutomodMentionSpamRuleSchema | AutomodSuspectedSpamRuleSchema | AutomodCommonlyFlaggedWordsRuleSchema | AutomodCustomWordsRuleSchema;
 }
 
 export interface AutomodRuleSchemaWithId extends AutomodRuleSchema {

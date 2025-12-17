@@ -16,11 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed } from "@spacebar/schemas"
-import {
-	MessageCreateAttachment,
-	PollCreationSchema,
-} from "./MessageCreateSchema";
+import { Embed } from "@spacebar/schemas";
+import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
 	content?: string;

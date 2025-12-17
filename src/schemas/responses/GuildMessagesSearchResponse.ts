@@ -16,10 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Attachment,
-	Role,
-} from "../../util/entities";
+import { Attachment, Role } from "../../util/entities";
 import { ActionRowComponent, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {

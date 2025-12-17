@@ -17,7 +17,7 @@
 */
 
 import { Emoji, Role, Sticker } from "../../util/entities";
-import { GuildCreateResponse } from "@spacebar/schemas"
+import { GuildCreateResponse } from "@spacebar/schemas";
 
 export interface MemberJoinGuildResponse {
 	guild: GuildCreateResponse;

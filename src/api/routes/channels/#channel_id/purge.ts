@@ -17,14 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	Message,
-	MessageDeleteBulkEvent,
-	emitEvent,
-	getPermission,
-	getRights,
-} from "@spacebar/util";
+import { Channel, Message, MessageDeleteBulkEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
@@ -56,17 +49,12 @@ router.post(
 			where: { id: channel_id },
 		});
 
-		if (!channel.guild_id)
-			throw new HTTPError("Can't purge dm channels", 400);
+		if (!channel.guild_id) throw new HTTPError("Can't purge dm channels", 400);
 		isTextChannel(channel.type);
 
 		const rights = await getRights(req.user_id);
 		if (!rights.has("MANAGE_MESSAGES")) {
-			const permissions = await getPermission(
-				req.user_id,
-				channel.guild_id,
-				channel_id,
-			);
+			const permissions = await getPermission(req.user_id, channel.guild_id, channel_id);
 			permissions.hasThrow("MANAGE_MESSAGES");
 			permissions.hasThrow("MANAGE_CHANNELS");
 		}
@@ -83,21 +71,10 @@ router.post(
 			where: {
 				channel_id,
 				id: Between(after, before), // the right way around
-				author_id: rights.has("SELF_DELETE_MESSAGES")
-					? undefined
-					: Not(req.user_id),
+				author_id: rights.has("SELF_DELETE_MESSAGES") ? undefined : Not(req.user_id),
 				// if you lack the right of self-deletion, you can't delete your own messages, even in purges
 			},
-			relations: [
-				"author",
-				"webhook",
-				"application",
-				"mentions",
-				"mention_roles",
-				"mention_channels",
-				"sticker_items",
-				"attachments",
-			],
+			relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
 		};
 
 		const messages = await Message.find(query);

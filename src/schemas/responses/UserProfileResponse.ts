@@ -16,33 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Badge,
-	Member,
-	User,
-} from "@spacebar/util";
-import {
-	PublicConnectedAccount,
-	PublicMember,
-	PublicUser,
-} from "@spacebar/schemas";
+import { Badge, Member, User } from "@spacebar/util";
+import { PublicConnectedAccount, PublicMember, PublicUser } from "@spacebar/schemas";
 
 export type MutualGuild = {
 	id: string;
 	nick?: string;
 };
 
-export type PublicMemberProfile = Pick<
-	Member,
-	"banner" | "bio" | "guild_id"
-> & {
+export type PublicMemberProfile = Pick<Member, "banner" | "bio" | "guild_id"> & {
 	accent_color: null; // TODO
 };
 
-export type UserProfile = Pick<
-	User,
-	"bio" | "accent_color" | "banner" | "pronouns" | "theme_colors"
->;
+export type UserProfile = Pick<User, "bio" | "accent_color" | "banner" | "pronouns" | "theme_colors">;
 
 export interface UserProfileResponse {
 	user: PublicUser;

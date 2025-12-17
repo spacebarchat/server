@@ -132,7 +132,7 @@ export interface Classification {
 
 export enum GuildMemberType {
 	OWNER = 1,
-	MEMBER = 2
+	MEMBER = 2,
 }
 
 export interface GuildMetadata {

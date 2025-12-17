@@ -24,12 +24,7 @@ export interface MessageComponent {
 
 export interface ActionRowComponent extends MessageComponent {
 	type: MessageComponentType.ActionRow;
-	components: (
-		| ButtonComponent
-		| StringSelectMenuComponent
-		| SelectMenuComponent
-		| TextInputComponent
-		)[];
+	components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
 }
 
 export interface ButtonComponent extends MessageComponent {

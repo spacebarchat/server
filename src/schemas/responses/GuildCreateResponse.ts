@@ -17,7 +17,7 @@
 */
 
 import { GuildWelcomeScreen } from "@spacebar/util";
-import { GuildUpdateSchema } from "@spacebar/schemas"
+import { GuildUpdateSchema } from "@spacebar/schemas";
 
 export interface GuildCreateResponse extends Omit<GuildUpdateSchema, "name"> {
 	id: string;

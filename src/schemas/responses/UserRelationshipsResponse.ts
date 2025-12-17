@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PublicUser, RelationshipType } from "@spacebar/schemas"
+import { PublicUser, RelationshipType } from "@spacebar/schemas";
 
 export interface UserRelationshipsResponse {
 	id: string;

@@ -171,7 +171,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
 			is_admin_session: isAdminSession,
 			client_status: {},
 			status: "online",
-			client_info: { },
+			client_info: {},
 		});
 	} while (await Session.findOne({ where: { session_id: newSession.session_id } }));
 

@@ -62,33 +62,35 @@ export enum AutomodRuleActionType {
 	BLOCK_MESSAGE = 1,
 	SEND_ALERT_MESSAGE = 2,
 	TIMEOUT_USER = 3,
-	QUARANTINE_USER = 4
+	QUARANTINE_USER = 4,
 }
 
-export type AutomodAction = {
-	type: AutomodRuleActionType.BLOCK_MESSAGE;
-	metadata: {
-		custom_message?: string;
-	}
-} | {
-	type: AutomodRuleActionType.SEND_ALERT_MESSAGE;
-	metadata: {
-		channel_id: Snowflake;
-	};
-} | {
-	type: AutomodRuleActionType.TIMEOUT_USER;
-	metadata: {
-		duration_seconds: number;
-	};
-} | {
-	type: AutomodRuleActionType.QUARANTINE_USER;
-	metadata: {
-		duration_seconds: number;
-	};
-};
+export type AutomodAction =
+	| {
+			type: AutomodRuleActionType.BLOCK_MESSAGE;
+			metadata: {
+				custom_message?: string;
+			};
+	  }
+	| {
+			type: AutomodRuleActionType.SEND_ALERT_MESSAGE;
+			metadata: {
+				channel_id: Snowflake;
+			};
+	  }
+	| {
+			type: AutomodRuleActionType.TIMEOUT_USER;
+			metadata: {
+				duration_seconds: number;
+			};
+	  }
+	| {
+			type: AutomodRuleActionType.QUARANTINE_USER;
+			metadata: {
+				duration_seconds: number;
+			};
+	  };
 
 // TODO
 // eslint-disable-next-line
-export interface AutomodRuleActionMetadata {
-
-}
+export interface AutomodRuleActionMetadata {}

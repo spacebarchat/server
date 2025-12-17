@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Config, Message } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { PreloadMessagesRequestSchema, PreloadMessagesResponseSchema } from "@spacebar/schemas"
+import { PreloadMessagesRequestSchema, PreloadMessagesResponseSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.post(

@@ -16,6 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PartialMessage } from "@spacebar/schemas"
+import { PartialMessage } from "@spacebar/schemas";
 
 export type DmMessagesResponseSchema = PartialMessage[];

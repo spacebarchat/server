@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PartialEmoji } from "@spacebar/schemas"
+import { PartialEmoji } from "@spacebar/schemas";
 
 export interface Poll {
 	question: PollMedia;

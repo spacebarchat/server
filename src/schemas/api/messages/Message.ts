@@ -46,7 +46,6 @@ export enum MessageType {
 	UNHANDLED = 255,
 }
 
-
 /**
  * https://docs.discord.food/resources/message#partial-message-structure
  */

@@ -26,7 +26,7 @@ export interface GuildProfileResponse {
 	brand_color_primary: string;
 	banner_hash: string | null;
 	game_application_ids: string[];
-	game_activity: {[id: string]: GameActivity};
+	game_activity: { [id: string]: GameActivity };
 	tag: string | null;
 	badge: GuildBadgeType;
 	badge_color_primary: string;
@@ -57,7 +57,7 @@ export interface GuildTrait {
 export enum GuildVisibilityLevel {
 	PUBLIC = 1,
 	RESTRICTED = 2,
-	PUBLIC_WITH_RECRUITMENT = 3
+	PUBLIC_WITH_RECRUITMENT = 3,
 }
 
 export enum GuildBadgeType {
@@ -93,4 +93,3 @@ export enum GuildBadgeType {
 	MONEY_BAG = 29,
 	DOLLAR_SIGN = 30,
 }
-
