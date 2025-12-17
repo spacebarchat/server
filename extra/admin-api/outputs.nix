@@ -10,7 +10,7 @@ let
       date = builtins.substring 0 8 self.sourceInfo.lastModifiedDate;
       time = builtins.substring 8 6 self.sourceInfo.lastModifiedDate;
     in
-    "preview.${date}-${time}"; #+${rev}";
+    "preview.${date}-${time}"; # +${rev}";
 in
 flake-utils.lib.eachSystem flake-utils.lib.allSystems (
   system:
@@ -88,29 +88,29 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-AdminApi-Models
             proj.Spacebar-Db
           ];
-          
+
         };
-#            Spacebar-AdminApi-TestClient = makeNupkg {
-#              name = "Spacebar.AdminApi.TestClient";
-#              projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
-#              nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
-#              projectReferences = [
-#                proj.Spacebar-AdminApi-Models
-#              ];
-##              runtimeId = "browser-wasm";
-##              useAppHost = false;
-#            };
+        #            Spacebar-AdminApi-TestClient = makeNupkg {
+        #              name = "Spacebar.AdminApi.TestClient";
+        #              projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
+        #              nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
+        #              projectReferences = [
+        #                proj.Spacebar-AdminApi-Models
+        #              ];
+        ##              runtimeId = "browser-wasm";
+        ##              useAppHost = false;
+        #            };
       };
 
-    #        containers.docker = pkgs.dockerTools.buildLayeredImage {
-    #          name = "spacebar-server-ts";
-    #          tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.default.version;
-    #          contents = [ self.packages.${system}.default ];
-    #          config = {
-    #            Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
-    #            Expose = [ "3001" ];
-    #          };
-    #        };
+    containers.admin-api = pkgs.dockerTools.buildLayeredImage {
+      name = "spacebar-server-ts-admin-api";
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+      contents = [ self.packages.${system}.Spacebar-AdminApi ];
+      config = {
+        Cmd = [ "${self.outputs.packages.${system}.Spacebar-AdminApi}/bin/Spacebar.AdminApi" ];
+        Expose = [ "3001" ];
+      };
+    };
   }
 )
 // {
@@ -122,7 +122,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
     pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
       x86_64-linux = {
         #            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
-        #            docker-image = self.containers.x86_64-linux.docker;
+        docker-image = self.containers.x86_64-linux.admin-api;
       };
     };
 }
