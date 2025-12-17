@@ -17,16 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	ChannelDeleteEvent,
-	ChannelUpdateEvent,
-	Recipient,
-	emitEvent,
-	handleFile,
-} from "@spacebar/util";
+import { Channel, ChannelDeleteEvent, ChannelUpdateEvent, Recipient, emitEvent, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ChannelModifySchema, ChannelType } from "@spacebar/schemas"
+import { ChannelModifySchema, ChannelType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 // TODO: delete channel
@@ -51,11 +44,7 @@ router.get(
 		});
 		if (!channel.guild_id) return res.send(channel);
 
-		channel.position = await Channel.calculatePosition(
-			channel_id,
-			channel.guild_id,
-			channel.guild,
-		);
+		channel.position = await Channel.calculatePosition(channel_id, channel.guild_id, channel.guild);
 		return res.send(channel);
 	},
 );
@@ -145,11 +134,7 @@ router.patch(
 	async (req: Request, res: Response) => {
 		const payload = req.body as ChannelModifySchema;
 		const { channel_id } = req.params;
-		if (payload.icon)
-			payload.icon = await handleFile(
-				`/channel-icons/${channel_id}`,
-				payload.icon,
-			);
+		if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
 		const channel = await Channel.findOneOrFail({
 			where: { id: channel_id },

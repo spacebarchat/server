@@ -17,17 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	generateToken,
-	SecurityKey,
-	User,
-	verifyWebAuthnToken,
-	WebAuthn,
-} from "@spacebar/util";
+import { generateToken, SecurityKey, User, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
-import { WebAuthnTotpSchema } from "@spacebar/schemas"
+import { WebAuthnTotpSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 function toArrayBuffer(buf: Buffer) {
@@ -65,46 +59,31 @@ router.post(
 		});
 
 		const ret = await verifyWebAuthnToken(ticket);
-		if (!ret)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+		if (!ret) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
 		await User.update({ id: user.id }, { totp_last_ticket: "" });
 
 		const clientAttestationResponse = JSON.parse(code);
 
-		if (!clientAttestationResponse.rawId)
-			throw new HTTPError("Missing rawId", 400);
+		if (!clientAttestationResponse.rawId) throw new HTTPError("Missing rawId", 400);
 
-		clientAttestationResponse.rawId = toArrayBuffer(
-			Buffer.from(clientAttestationResponse.rawId, "base64url"),
-		);
+		clientAttestationResponse.rawId = toArrayBuffer(Buffer.from(clientAttestationResponse.rawId, "base64url"));
 
 		const securityKey = await SecurityKey.findOneOrFail({
 			where: {
-				key_id: Buffer.from(
-					clientAttestationResponse.rawId,
-					"base64url",
-				).toString("base64"),
+				key_id: Buffer.from(clientAttestationResponse.rawId, "base64url").toString("base64"),
 			},
 		});
 
-		const assertionExpectations: ExpectedAssertionResult = JSON.parse(
-			Buffer.from(
-				clientAttestationResponse.response.clientDataJSON,
-				"base64",
-			).toString(),
-		);
+		const assertionExpectations: ExpectedAssertionResult = JSON.parse(Buffer.from(clientAttestationResponse.response.clientDataJSON, "base64").toString());
 
-		const authnResult = await WebAuthn.fido2.assertionResult(
-			clientAttestationResponse,
-			{
-				...assertionExpectations,
-				factor: "second",
-				publicKey: securityKey.public_key,
-				prevCounter: securityKey.counter,
-				userHandle: securityKey.key_id,
-			},
-		);
+		const authnResult = await WebAuthn.fido2.assertionResult(clientAttestationResponse, {
+			...assertionExpectations,
+			factor: "second",
+			publicKey: securityKey.public_key,
+			prevCounter: securityKey.counter,
+			userHandle: securityKey.key_id,
+		});
 
 		const counter = authnResult.authnrData.get("counter");
 

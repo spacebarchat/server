@@ -17,16 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	ChannelPinsUpdateEvent,
-	Config,
-	DiscordApiErrors,
-	emitEvent,
-	Message,
-	MessageCreateEvent,
-	MessageUpdateEvent,
-	User,
-} from "@spacebar/util";
+import { ChannelPinsUpdateEvent, Config, DiscordApiErrors, emitEvent, Message, MessageCreateEvent, MessageUpdateEvent, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { IsNull, Not } from "typeorm";
 
@@ -61,8 +52,7 @@ router.put(
 		});
 
 		const { maxPins } = Config.get().limits.channel;
-		if (pinned_count >= maxPins)
-			throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
+		if (pinned_count >= maxPins) throw DiscordApiErrors.MAXIMUM_PINS.withParams(maxPins);
 
 		message.pinned_at = new Date();
 

@@ -17,16 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Application,
-	DiscordApiErrors,
-	Guild,
-	handleFile,
-} from "@spacebar/util";
+import { Application, DiscordApiErrors, Guild, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
-import { ApplicationModifySchema } from "@spacebar/schemas"
+import { ApplicationModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -75,16 +70,10 @@ router.patch(
 		});
 
 		if (body.icon) {
-			body.icon = await handleFile(
-				`/app-icons/${app.id}`,
-				body.icon as string,
-			);
+			body.icon = await handleFile(`/app-icons/${app.id}`, body.icon as string);
 		}
 		if (body.cover_image) {
-			body.cover_image = await handleFile(
-				`/app-icons/${app.id}`,
-				body.cover_image as string,
-			);
+			body.cover_image = await handleFile(`/app-icons/${app.id}`, body.cover_image as string);
 		}
 
 		if (body.guild_id) {
@@ -92,11 +81,7 @@ router.patch(
 				where: { id: body.guild_id },
 				select: ["owner_id"],
 			});
-			if (guild.owner_id != req.user_id)
-				throw new HTTPError(
-					"You must be the owner of the guild to link it to an application",
-					400,
-				);
+			if (guild.owner_id != req.user_id) throw new HTTPError("You must be the owner of the guild to link it to an application", 400);
 		}
 
 		if (app.bot) {

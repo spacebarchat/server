@@ -17,16 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	checkToken,
-	Email,
-	FieldErrors,
-	generateToken,
-	User,
-} from "@spacebar/util";
+import { checkToken, Email, FieldErrors, generateToken, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { PasswordResetSchema } from "@spacebar/schemas"
+import { PasswordResetSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -52,7 +46,7 @@ router.post(
 			const userTokenData = await checkToken(token, {
 				select: ["email"],
 				fingerprint: req.fingerprint,
-				ipAddress: req.ip
+				ipAddress: req.ip,
 			});
 			user = userTokenData.user;
 		} catch {

@@ -17,18 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Application,
-	DiscordApiErrors,
-	User,
-	createAppBotUser,
-	generateToken,
-	handleFile,
-} from "@spacebar/util";
+import { Application, DiscordApiErrors, User, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
-import { BotModifySchema } from "@spacebar/schemas"
+import { BotModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -50,8 +43,7 @@ router.post(
 			relations: ["owner"],
 		});
 
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
 		const user = await createAppBotUser(app, req);
 
@@ -77,8 +69,7 @@ router.post(
 		const bot = await User.findOneOrFail({ where: { id: req.params.application_id } });
 		const owner = await User.findOneOrFail({ where: { id: req.user_id } });
 
-		if (owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
 		if (
 			owner.totp_secret &&
@@ -120,14 +111,9 @@ router.patch(
 
 		if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
 
-		if (app.owner.id != req.user_id)
-			throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+		if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-		if (body.avatar)
-			body.avatar = await handleFile(
-				`/avatars/${app.id}`,
-				body.avatar as string,
-			);
+		if (body.avatar) body.avatar = await handleFile(`/avatars/${app.id}`, body.avatar as string);
 
 		app.bot.assign(body);
 

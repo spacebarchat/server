@@ -23,8 +23,8 @@ import { ApplicationDetectableResponse } from "@spacebar/schemas";
 const router: Router = Router({ mergeParams: true });
 const cache = {
 	data: {},
-	expires: 0
-}
+	expires: 0,
+};
 
 router.get(
 	"/",

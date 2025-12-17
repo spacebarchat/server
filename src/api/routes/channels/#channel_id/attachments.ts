@@ -17,15 +17,10 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import {
-	Channel,
-	Config,
-	Permissions,
-	User,
-} from "@spacebar/util";
+import { Channel, Config, Permissions, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { CloudAttachment } from "@spacebar/util";
-import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas"
+import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -91,14 +86,16 @@ router.post(
 			}),
 		);
 
-		res.send({attachments: attachments.map(a => {
-			return {
-				id: a.userAttachmentId,
-				upload_filename: a.uploadFilename,
-				upload_url: `${cdnUrl}/attachments/${a.uploadFilename}`,
-				original_content_type: a.userOriginalContentType
-			}
-			})} as UploadAttachmentResponseSchema);
+		res.send({
+			attachments: attachments.map((a) => {
+				return {
+					id: a.userAttachmentId,
+					upload_filename: a.uploadFilename,
+					upload_url: `${cdnUrl}/attachments/${a.uploadFilename}`,
+					original_content_type: a.userOriginalContentType,
+				};
+			}),
+		} as UploadAttachmentResponseSchema);
 	},
 );
 
@@ -122,15 +119,12 @@ router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
 		});
 	}
 
-	const response = await fetch(
-		`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}/attachments/${att.uploadFilename}`,
-		{
-			headers: {
-				signature: Config.get().security.requestSignature
-			},
-			method: "DELETE",
+	const response = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${att.uploadFilename}`, {
+		headers: {
+			signature: Config.get().security.requestSignature,
 		},
-	);
+		method: "DELETE",
+	});
 
 	await att.remove();
 	return res.status(response.status).send(response.body);
