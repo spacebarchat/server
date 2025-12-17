@@ -96,7 +96,11 @@ router.patch(
         const permission = await getPermission(req.user_id, guild_id);
 
         if ("nick" in body) {
-            permission.hasThrow("MANAGE_NICKNAMES");
+            if (member_id != req.user_id) {
+                permission.hasThrow("MANAGE_NICKNAMES");
+            } else {
+                permission.hasThrow("CHANGE_NICKNAME");
+            }
 
             if (!body.nick) {
                 delete body.nick;
@@ -106,7 +110,7 @@ router.patch(
             }
         }
 
-        if (("bio" in body || "avatar" in body) && req.params.member_id != "@me") {
+        if (("bio" in body || "avatar" in body) && member_id != req.user_id) {
             const rights = await getRights(req.user_id);
             rights.hasThrow("MANAGE_USERS");
         }
