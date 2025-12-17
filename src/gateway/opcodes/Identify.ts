@@ -52,6 +52,7 @@ import {
     UserSettingsProtos,
     generateToken,
     CurrentTokenFormatVersion,
+    Relationship,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In } from "typeorm";
@@ -88,8 +89,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const { result: tokenData, elapsed: checkTokenTime } = await timePromise(() =>
         checkToken(identify.token, {
-            relations: ["relationships", "relationships.to", "settings"],
-            select: [...PrivateUserProjection, "relationships", "rights"],
+            // relations: ["relationships", "relationships.to", "settings"],
+            // select: [...PrivateUserProjection, "relationships", "rights"],
+            select: [...PrivateUserProjection, "rights"],
         }),
     );
 
@@ -159,6 +161,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const [
         { elapsed: sessionSaveTime },
         { result: sessions, elapsed: sessionQueryTime },
+        { result: relationships, elapsed: relationshipQueryTime },
+        { result: settings, elapsed: settingsQueryTime },
+        { result: settingsProtos, elapsed: settingsProtosQueryTime },
         { result: application, elapsed: applicationQueryTime },
         { result: read_states, elapsed: read_statesQueryTime },
         { result: members, elapsed: membersQueryTime },
@@ -169,6 +174,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() =>
             Session.find({
                 where: { user_id: this.user_id, is_admin_session: false },
+            }),
+        ),
+        timePromise(() =>
+            Relationship.find({
+                where: { from_id: this.user_id },
+                relations: ["to"],
+            }),
+        ),
+        timePromise(() => UserSettings.getOrDefault(this.user_id)),
+        timePromise(() =>
+            UserSettingsProtos.findOne({
+                where: { user_id: this.user_id },
             }),
         ),
         timePromise(() =>
@@ -246,6 +263,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ),
     ]);
 
+    const userMetaQueryTime = taskSw.getElapsedAndReset();
+
     const { result: memberGuilds, elapsed: queryGuildsTime } = await timePromise(() =>
         Promise.all(
             members.map((m) =>
@@ -265,18 +284,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     // select relations
     const [
-        { result: settingsProtos, elapsed: settingsProtosQueryTime },
         { result: memberGuildChannels, elapsed: queryGuildChannelsTime },
         { result: memberGuildEmojis, elapsed: queryGuildEmojisTime },
         { result: memberGuildRoles, elapsed: queryGuildRolesTime },
         { result: memberGuildStickers, elapsed: queryGuildStickersTime },
         { result: memberGuildVoiceStates, elapsed: queryGuildVoiceStatesTime },
     ] = await Promise.all([
-        timePromise(() =>
-            UserSettingsProtos.findOne({
-                where: { user_id: this.user_id },
-            }),
-        ),
         timePromise(() =>
             Channel.find({
                 where: { guild_id: In(guildIds) },
@@ -591,6 +604,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         userQueryTime,
         validateIntentsAndShardingTime,
         createSessionTime,
+        userMetaQueryTime,
         totalQueryTime,
         createUserSettingsTime,
         mergedMembersTime,
@@ -608,7 +622,28 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         if (value) {
             const val = { micros: value.totalMicroseconds } as { micros: number; calls: TraceNode[] };
             _trace![1].calls.push(key, val);
-            if (key === "totalQueryTime") {
+            if (key === "userMetaQueryTime") {
+                val.calls = [];
+                for (const [subkey, subvalue] of Object.entries({
+                    sessionSaveTime,
+                    sessionQueryTime,
+                    relationshipQueryTime,
+                    settingsQueryTime,
+                    settingsProtosQueryTime,
+                    applicationQueryTime,
+                    read_statesQueryTime,
+                    membersQueryTime,
+                    recipientsQueryTime,
+                })) {
+                    if (subvalue) {
+                        val.calls.push(subkey, {
+                            micros: subvalue.totalMicroseconds,
+                        } as TraceNode);
+                    }
+                }
+
+                val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace);
+            } else if (key === "totalQueryTime") {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
                     sessionSaveTime,
