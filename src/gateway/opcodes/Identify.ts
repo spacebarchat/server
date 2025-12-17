@@ -28,7 +28,6 @@ import {
     MemberPrivateProjection,
     OPCodes,
     PresenceUpdateEvent,
-    PrivateSessionProjection,
     ReadState,
     ReadyEventData,
     ReadyGuildDTO,
@@ -51,7 +50,6 @@ import {
     Sticker,
     VoiceState,
     UserSettingsProtos,
-    IpDataClient,
     generateToken,
     CurrentTokenFormatVersion,
 } from "@spacebar/util";
@@ -490,15 +488,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             where: { user_id: this.user_id, is_admin_session: false },
         })
     ).map((x) => x.toPrivateGatewayDeviceInfo());
-    // ).map((x) => ({
-    // 	// TODO how is active determined?
-    // 	// in our lazy request impl, we just pick the 'most relevant' session
-    // 	active: x.session_id == this.session!.session_id,
-    // 	activities: x.activities ?? [],
-    // 	client_info: x.client_info,
-    // 	session_id: x.session_id, // TODO: discord.com sends 'all', what is that???
-    // 	status: x.status,
-    // }));
+
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
     const [{ elapsed: emitSessionsReplaceTime }, { elapsed: emitPresenceUpdateTime }] = await Promise.all([
@@ -524,7 +514,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     ]);
 
     // Build READY
-
     read_states.forEach((x) => {
         x.id = x.channel_id;
     });
@@ -622,6 +611,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
                     sessionSaveTime,
+                    settingsProtosQueryTime,
                     applicationQueryTime,
                     read_statesQueryTime,
                     membersQueryTime,
@@ -657,8 +647,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         d,
     });
 
-    const readyTime = Date.now();
-
     // If we're a bot user, send GUILD_CREATE for each unavailable guild
     // TODO: check if bot has permission to view some of these based on intents (i.e. GUILD_MEMBERS, GUILD_PRESENCES, GUILD_VOICE_STATES)
     await Promise.all(
@@ -684,8 +672,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             })?.catch((e) => console.error(`[Gateway] error when sending bot guilds`, e));
         }),
     );
-
-    const pendingGuildsTime = Date.now();
 
     const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => {
         return {
@@ -714,14 +700,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         },
     });
 
-    const readySupplementalTime = Date.now();
-
     //TODO send GUILD_MEMBER_LIST_UPDATE
     //TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
-
     await setupListener.call(this);
-
-    const setupListenerTime = Date.now();
-
     console.log(`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`, process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "");
 }
