@@ -644,19 +644,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                         } as TraceNode);
                     }
                 }
-
-                val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace);
             } else if (key === "totalQueryTime") {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
-                    sessionSaveTime,
-                    sessionQueryTime,
-                    settingsProtosQueryTime,
-                    applicationQueryTime,
-                    read_statesQueryTime,
-                    membersQueryTime,
-                    recipientsQueryTime,
-                    queryGuildsTime,
                     queryGuildChannelsTime,
                     queryGuildEmojisTime,
                     queryGuildRolesTime,
