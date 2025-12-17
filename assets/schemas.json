@@ -2132,6 +2132,9 @@
                     "discriminator": {
                         "type": "string"
                     },
+                    "global_name": {
+                        "type": "string"
+                    },
                     "id": {
                         "type": "string"
                     },
@@ -2228,6 +2231,12 @@
             "region": {
                 "type": "string"
             },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
             "features": {
                 "type": "array",
                 "items": {
@@ -2235,12 +2244,6 @@
                 }
             },
             "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner": {
                 "type": [
                     "null",
                     "string"
@@ -2548,6 +2551,12 @@
                         "username": {
                             "type": "string"
                         },
+                        "global_name": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
                         "discriminator": {
                             "type": "string"
                         },
@@ -2569,6 +2578,7 @@
                         "avatar",
                         "avatar_url",
                         "discriminator",
+                        "global_name",
                         "id",
                         "status",
                         "username"
@@ -3119,6 +3129,9 @@
             "id": {
                 "type": "string"
             },
+            "banner": {
+                "type": "string"
+            },
             "features": {
                 "type": "array",
                 "items": {
@@ -3160,9 +3173,6 @@
                 "items": {
                     "$ref": "#/definitions/Role"
                 }
-            },
-            "banner": {
-                "type": "string"
             },
             "channels": {
                 "type": "array",
@@ -3338,18 +3348,39 @@
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
+            "username": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
             },
             "avatar": {
                 "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
             },
             "banner": {
                 "type": "string"
             },
             "bio": {
                 "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
             },
             "theme_colors": {
                 "type": "array",
@@ -3359,24 +3390,6 @@
             },
             "pronouns": {
                 "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "public_flags": {
-                "type": "integer"
-            },
-            "accent_color": {
-                "type": "integer"
-            },
-            "bot": {
-                "type": "boolean"
-            },
-            "premium_type": {
-                "type": "integer"
             },
             "badge_ids": {
                 "type": "array",
@@ -3411,24 +3424,39 @@
             "flags": {
                 "type": "integer"
             },
-            "disabled": {
-                "type": "boolean"
+            "username": {
+                "type": "string"
             },
-            "verified": {
-                "type": "boolean"
+            "global_name": {
+                "type": "string"
             },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
             },
             "avatar": {
                 "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
             },
             "banner": {
                 "type": "string"
             },
             "bio": {
                 "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
             },
             "theme_colors": {
                 "type": "array",
@@ -3439,23 +3467,11 @@
             "pronouns": {
                 "type": "string"
             },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "public_flags": {
-                "type": "integer"
-            },
-            "accent_color": {
-                "type": "integer"
-            },
-            "bot": {
+            "disabled": {
                 "type": "boolean"
             },
-            "premium_type": {
-                "type": "integer"
+            "verified": {
+                "type": "boolean"
             },
             "badge_ids": {
                 "type": "array",
@@ -3527,6 +3543,187 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PrivateUserResponse": {
+        "type": "object",
+        "properties": {
+            "email": {
+                "type": "string"
+            },
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "username": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "disabled": {
+                "type": "boolean"
+            },
+            "verified": {
+                "type": "boolean"
+            },
+            "badge_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "mfa_enabled": {
+                "type": "boolean"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "nsfw_allowed": {
+                "type": "boolean"
+            },
+            "premium": {
+                "type": "boolean"
+            },
+            "purchased_flags": {
+                "type": "integer"
+            },
+            "premium_usage_flags": {
+                "type": "integer"
+            },
+            "settings": {
+                "$ref": "#/definitions/UserSettingsSchema"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "bio",
+            "bot",
+            "disabled",
+            "discriminator",
+            "flags",
+            "id",
+            "mfa_enabled",
+            "nsfw_allowed",
+            "premium",
+            "premium_since",
+            "premium_type",
+            "premium_usage_flags",
+            "public_flags",
+            "purchased_flags",
+            "username",
+            "verified"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicUserResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "badge_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "bio",
+            "bot",
+            "discriminator",
+            "id",
+            "premium_since",
+            "premium_type",
+            "public_flags",
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserUpdateResponse": {
         "type": "object",
         "properties": {
@@ -3543,24 +3740,39 @@
             "flags": {
                 "type": "integer"
             },
-            "disabled": {
-                "type": "boolean"
+            "username": {
+                "type": "string"
             },
-            "verified": {
-                "type": "boolean"
+            "global_name": {
+                "type": "string"
             },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
             },
             "avatar": {
                 "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
             },
             "banner": {
                 "type": "string"
             },
             "bio": {
                 "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
             },
             "theme_colors": {
                 "type": "array",
@@ -3571,23 +3783,11 @@
             "pronouns": {
                 "type": "string"
             },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "public_flags": {
-                "type": "integer"
-            },
-            "accent_color": {
-                "type": "integer"
-            },
-            "bot": {
+            "disabled": {
                 "type": "boolean"
             },
-            "premium_type": {
-                "type": "integer"
+            "verified": {
+                "type": "boolean"
             },
             "badge_ids": {
                 "type": "array",
@@ -3750,6 +3950,10 @@
             "autoCreateBotUsers": {
                 "type": "boolean",
                 "default": false
+            },
+            "uniqueUsernames": {
+                "type": "boolean",
+                "default": false
             }
         },
         "additionalProperties": false,
@@ -3762,7 +3966,8 @@
             "instanceDescription",
             "instanceId",
             "instanceName",
-            "tosPage"
+            "tosPage",
+            "uniqueUsernames"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -3797,6 +4002,27 @@
             "guild_id": {
                 "type": "string"
             },
+            "avatar": {
+                "type": "string"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "premium_since": {
+                "type": "integer"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "pronouns": {
+                "type": "string"
+            },
             "mute": {
                 "type": "boolean"
             },
@@ -3812,27 +4038,6 @@
             },
             "pending": {
                 "type": "boolean"
-            },
-            "premium_since": {
-                "type": "integer"
-            },
-            "avatar": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "bio": {
-                "type": "string"
-            },
-            "theme_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
-            },
-            "pronouns": {
-                "type": "string"
             },
             "communication_disabled_until": {
                 "anyOf": [
@@ -3939,6 +4144,12 @@
             "region": {
                 "type": "string"
             },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
             "features": {
                 "type": "array",
                 "items": {
@@ -3946,12 +4157,6 @@
                 }
             },
             "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner": {
                 "type": [
                     "null",
                     "string"
@@ -4281,6 +4486,9 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                },
+                "global_name": {
                     "type": "string"
                 },
                 "discriminator": {
@@ -6808,6 +7016,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UniqueUsernameAttemptSchema": {
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserDeleteSchema": {
         "type": "object",
         "properties": {
@@ -6928,6 +7149,9 @@
             "discriminator": {
                 "minLength": 4,
                 "maxLength": 4,
+                "type": "string"
+            },
+            "global_name": {
                 "type": "string"
             }
         },
@@ -7647,6 +7871,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UniqueUsernameAttemptResponse": {
+        "type": "object",
+        "properties": {
+            "taken": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "taken"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCommandOption": {
         "type": "object",
         "properties": {
@@ -8320,6 +8557,12 @@
             "username": {
                 "type": "string"
             },
+            "global_name": {
+                "type": "string"
+            },
+            "legacy_username": {
+                "type": "string"
+            },
             "discriminator": {
                 "type": "string"
             },
@@ -8487,6 +8730,9 @@
                     "type": "string"
                 }
             },
+            "tag": {
+                "type": "string"
+            },
             "id": {
                 "type": "string"
             }
@@ -8519,6 +8765,7 @@
             "security_keys",
             "sessions",
             "system",
+            "tag",
             "username",
             "verified",
             "webauthn_enabled"
@@ -11495,6 +11742,27 @@
             "guild_id": {
                 "type": "string"
             },
+            "avatar": {
+                "type": "string"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "premium_since": {
+                "type": "integer"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "pronouns": {
+                "type": "string"
+            },
             "mute": {
                 "type": "boolean"
             },
@@ -11510,27 +11778,6 @@
             },
             "pending": {
                 "type": "boolean"
-            },
-            "premium_since": {
-                "type": "integer"
-            },
-            "avatar": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "bio": {
-                "type": "string"
-            },
-            "theme_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
-            },
-            "pronouns": {
-                "type": "string"
             },
             "communication_disabled_until": {
                 "anyOf": [
@@ -11575,18 +11822,39 @@
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
-            "premium_since": {
-                "type": "string",
-                "format": "date-time"
+            "username": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
             },
             "avatar": {
                 "type": "string"
+            },
+            "accent_color": {
+                "type": "integer"
             },
             "banner": {
                 "type": "string"
             },
             "bio": {
                 "type": "string"
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "premium_since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_type": {
+                "type": "integer"
             },
             "theme_colors": {
                 "type": "array",
@@ -11596,24 +11864,6 @@
             },
             "pronouns": {
                 "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "public_flags": {
-                "type": "integer"
-            },
-            "accent_color": {
-                "type": "integer"
-            },
-            "bot": {
-                "type": "boolean"
-            },
-            "premium_type": {
-                "type": "integer"
             },
             "badge_ids": {
                 "type": "array",
@@ -13488,41 +13738,36 @@
     "MinimalPublicUserDTO": {
         "type": "object",
         "properties": {
-            "avatar": {
+            "id": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "global_name": {
                 "type": [
                     "null",
                     "string"
-                ]
+                ],
+                "default": null
             },
             "discriminator": {
-                "type": "string"
-            },
-            "id": {
                 "type": "string"
             },
             "public_flags": {
                 "type": "integer"
             },
-            "username": {
-                "type": "string"
-            },
-            "badge_ids": {
-                "anyOf": [
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "type": "null"
-                    }
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
                 ]
             }
         },
         "additionalProperties": false,
         "required": [
             "discriminator",
+            "global_name",
             "id",
             "public_flags",
             "username"
@@ -13593,6 +13838,10 @@
                 "type": "integer",
                 "default": 1048576
             },
+            "minUsername": {
+                "type": "integer",
+                "default": 2
+            },
             "maxUsername": {
                 "type": "integer",
                 "default": 32
@@ -13611,7 +13860,8 @@
             "maxBio",
             "maxFriends",
             "maxGuilds",
-            "maxUsername"
+            "maxUsername",
+            "minUsername"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -13886,6 +14136,9 @@
     "UserProfile": {
         "type": "object",
         "properties": {
+            "accent_color": {
+                "type": "integer"
+            },
             "banner": {
                 "type": "string"
             },
@@ -13900,9 +14153,6 @@
             },
             "pronouns": {
                 "type": "string"
-            },
-            "accent_color": {
-                "type": "integer"
             }
         },
         "additionalProperties": false,
