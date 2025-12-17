@@ -17,10 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, User, emitEvent } from "@spacebar/util";
+import { Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { PublicUserProjection, RelationshipType } from "@spacebar/schemas";
+import { PublicUserProjection, RelationshipType, RelationshipPatchSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -75,6 +75,44 @@ router.put(
             }),
             req.body.type ?? RelationshipType.friends,
         );
+    },
+);
+
+router.patch(
+    "/:user_id",
+    route({
+        requestBody: "RelationshipPatchSchema",
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as RelationshipPatchSchema;
+        const rel = await Relationship.findOneOrFail({
+            where: {
+                from_id: req.user_id,
+                to_id: req.params.user_id,
+            },
+        });
+        rel.nickname = body.nickname;
+        await Promise.all([
+            emitEvent({
+                event: "RELATIONSHIP_UPDATE",
+                data: {
+                    ...rel.toPublicRelationship(),
+                    should_notify: true,
+                },
+                user_id: req.user_id,
+            } as RelationshipUpdateEvent),
+            rel.save(),
+        ]);
+        res.send(204);
     },
 );
 

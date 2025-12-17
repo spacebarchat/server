@@ -61,6 +61,7 @@ export interface PublicRelationship {
     id: string;
     user: PublicUser;
     type: RelationshipType;
+    nickname?: string;
 }
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
@@ -556,6 +557,13 @@ export interface RelationshipAddEvent extends Event {
         user: PublicUser;
     };
 }
+export interface RelationshipUpdateEvent extends Event {
+    event: "RELATIONSHIP_UPDATE";
+    data: PublicRelationship & {
+        should_notify?: boolean;
+        user: PublicUser;
+    };
+}
 
 export interface RelationshipRemoveEvent extends Event {
     event: "RELATIONSHIP_REMOVE";
@@ -764,6 +772,7 @@ export type EVENT =
     | "MESSAGE_ACK"
     | "RELATIONSHIP_ADD"
     | "RELATIONSHIP_REMOVE"
+    | "RELATIONSHIP_UPDATE"
     | "SESSIONS_REPLACE"
     | "USER_SETTINGS_PROTO_UPDATE"
     | CUSTOMEVENTS;
