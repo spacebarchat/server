@@ -23,6 +23,7 @@ export default [
 			"**/COPYING",
 			"**/scripts/",
 			"**/assets",
+			"**/extra/",
 		],
 	},
 	...compat.extends(
