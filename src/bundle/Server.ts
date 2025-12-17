@@ -28,11 +28,11 @@ import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
-import { Config, initDatabase } from "@spacebar/util";
+import { Config, EnvConfig, initDatabase } from "@spacebar/util";
 
 const app = express();
 const server = http.createServer();
-const port = Number(process.env.PORT) || 3001;
+const port = EnvConfig.get().port || 3001;
 const wrtcWsPort = Number(process.env.WRTC_WS_PORT) || 3004;
 const production = process.env.NODE_ENV == "development" ? false : true;
 server.on("request", app);
@@ -41,41 +41,41 @@ const api = new Api.SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
 const gateway = new Gateway.Server({ server, port, production });
 const webrtc = new Webrtc.Server({
-    server: undefined,
-    port: wrtcWsPort,
-    production,
+	server: undefined,
+	port: wrtcWsPort,
+	production,
 });
 
 process.on("SIGTERM", async () => {
-    console.log("Shutting down due to SIGTERM");
-    await gateway.stop();
-    await cdn.stop();
-    await api.stop();
-    await webrtc.stop();
-    server.close();
+	console.log("Shutting down due to SIGTERM");
+	await gateway.stop();
+	await cdn.stop();
+	await api.stop();
+	await webrtc.stop();
+	server.close();
 });
 
 async function main() {
-    await initDatabase();
-    await Config.init();
+	await initDatabase();
+	await Config.init();
 
-    const logRequests = process.env["LOG_REQUESTS"] != undefined;
-    if (logRequests) {
-        app.use(
-            morgan("combined", {
-                skip: (req, res) => {
-                    let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
-                    if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
-                    return skip;
-                },
-            }),
-        );
-    }
+	const logRequests = EnvConfig.get().logging.logRequests != "";
+	if (logRequests) {
+		app.use(
+			morgan("combined", {
+				skip: (req, res) => {
+					let skip = !(EnvConfig.get().logging.logRequests.includes(res.statusCode.toString()) ?? false);
+					if (EnvConfig.get().logging.logRequests.charAt(0) == "-") skip = !skip;
+					return skip;
+				},
+			}),
+		);
+	}
 
-    await new Promise((resolve) => server.listen({ port }, () => resolve(undefined)));
-    await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
+	await new Promise((resolve) => server.listen({ port }, () => resolve(undefined)));
+	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 
-    console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
+	console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }
 
 main().catch(console.error);

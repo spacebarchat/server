@@ -17,26 +17,48 @@
 */
 
 declare global {
-    interface Array<T> {
-        /**
-         * @deprecated never use, idk why but I can't get rid of this without errors
-         */
-        remove(h: T): never;
-    }
+	interface Array<T> {
+		/**
+		 * @deprecated never use, idk why but I can't get rid of this without errors
+		 */
+		remove(h: T): never;
+	}
 }
 /* https://stackoverflow.com/a/50636286 */
 export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
-    const pass: T[] = [],
-        fail: T[] = [];
-    array.forEach((e) => (filter(e) ? pass : fail).push(e));
-    return [pass, fail];
+	const pass: T[] = [],
+		fail: T[] = [];
+	array.forEach((e) => (filter(e) ? pass : fail).push(e));
+	return [pass, fail];
 }
 
 export function arrayRemove<T>(array: T[], item: T): void {
-    const index = array.indexOf(item);
-    if (index > -1) {
-        array.splice(index, 1);
-    }
+	const index = array.indexOf(item);
+	if (index > -1) {
+		array.splice(index, 1);
+	}
 }
 
-// register extensions
+export type Comparable = number | string | bigint | Date | { valueOf(): number | string | bigint };
+
+export function arrayOrderBy<T>(array: T[], keySelector: (elem: T) => Comparable): T[] {
+	return array.slice().sort((a, b) => {
+		const keyA = keySelector(a);
+		const keyB = keySelector(b);
+
+		if (keyA < keyB) return -1;
+		if (keyA > keyB) return 1;
+		return 0;
+	});
+}
+
+export function arrayOrderByDescending<T>(array: T[], keySelector: (elem: T) => Comparable): T[] {
+	return array.slice().sort((a, b) => {
+		const keyA = keySelector(a);
+		const keyB = keySelector(b);
+
+		if (keyA > keyB) return -1;
+		if (keyA < keyB) return 1;
+		return 0;
+	});
+}

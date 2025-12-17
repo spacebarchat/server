@@ -16,73 +16,83 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@spacebar/gateway";
+import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
 import fs from "fs/promises";
 import path from "path";
 
-import { ErlpackType, JSONReplacer } from "@spacebar/util";
+import { EnvConfig, ErlpackType, JSONReplacer } from "@spacebar/util";
 let erlpack: ErlpackType | null = null;
 try {
-    erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
+	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-    console.log("Failed to import @yukikaze-bot/erlpack: ", e);
+	console.log("[Gateway] Failed to import @yukikaze-bot/erlpack:", EnvConfig.get().logging.logImportErrors ? e : "is it installed?");
 }
 
 // don't care
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const recurseJsonReplace = (json: any) => {
-    for (const key in json) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!json.hasOwnProperty(key)) continue;
+	for (const key in json) {
+		// eslint-disable-next-line no-prototype-builtins
+		if (!json.hasOwnProperty(key)) continue;
 
-        json[key] = JSONReplacer.call(json, key, json[key]);
+		json[key] = JSONReplacer.call(json, key, json[key]);
 
-        if (typeof json[key] == "object" && json[key] !== null) json[key] = recurseJsonReplace(json[key]);
-    }
-    return json;
+		if (typeof json[key] == "object" && json[key] !== null) json[key] = recurseJsonReplace(json[key]);
+	}
+	return json;
 };
 
 export async function Send(socket: WebSocket, data: Payload) {
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+	const logging = EnvConfig.get().logging.gatewayLogging;
+	if (logging.enabled) {
+		const opcodeName = OPCODES[data.op];
 
-    if (process.env.WS_DUMP) {
-        const id = socket.session_id || "unknown";
+		let message = `[Gateway] ~> ${socket.logUserRef} ${opcodeName}(${data.op})`;
+		if (data.t !== undefined) message += ` ${data.t}`;
+		if (data.s !== undefined) message += ` Seq=${data.s}`;
+		if (logging.logPayload) message += ` ${JSON.stringify(data.d)}`;
+		console.log(message);
+	}
 
-        await fs.mkdir(path.join("dump", id), {
-            recursive: true,
-        });
-        await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
-    }
+	const dumpPath = EnvConfig.get().logging.dumpGatewayEventPath;
+	if (dumpPath) {
+		const id = socket.session_id || "unknown";
 
-    let buffer: Buffer | string;
-    if (socket.encoding === "etf" && erlpack) {
-        // Erlpack doesn't like Date objects, encodes them as {}
-        data = recurseJsonReplace(data);
-        buffer = erlpack.pack(data);
-    }
-    // TODO: encode circular object
-    else if (socket.encoding === "json") buffer = JSON.stringify(data, JSONReplacer);
-    else return;
+		await fs.mkdir(path.join(dumpPath!, id), {
+			recursive: true,
+		});
+		await fs.writeFile(path.join(dumpPath!, id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+	}
 
-    // TODO: compression
-    if (socket.compress === "zlib-stream") {
-        buffer = socket.deflate!.process(buffer) as Buffer;
-    } else if (socket.compress === "zstd-stream") {
-        if (typeof buffer === "string") buffer = Buffer.from(buffer as string);
+	let buffer: Buffer | string;
+	if (socket.encoding === "etf" && erlpack) {
+		// Erlpack doesn't like Date objects, encodes them as {}
+		data = recurseJsonReplace(data);
+		buffer = erlpack.pack(data);
+	}
+	// TODO: encode circular object
+	else if (socket.encoding === "json") buffer = JSON.stringify(data, JSONReplacer);
+	else return;
 
-        buffer = (await socket.zstdEncoder!.encode(buffer as Buffer)) as Buffer;
-    }
+	// TODO: compression
+	if (socket.compress === "zlib-stream") {
+		buffer = socket.deflate!.process(buffer) as Buffer;
+	} else if (socket.compress === "zstd-stream") {
+		if (typeof buffer === "string") buffer = Buffer.from(buffer as string);
 
-    return new Promise((res, rej) => {
-        if (socket.readyState !== 1) {
-            // return rej("socket not open");
-            socket.close();
-            return;
-        }
+		buffer = (await socket.zstdEncoder!.encode(buffer as Buffer)) as Buffer;
+	}
 
-        socket.send(buffer, (err) => {
-            if (err) return rej(err);
-            return res(null);
-        });
-    });
+	return new Promise((res, rej) => {
+		if (socket.readyState !== 1) {
+			// return rej("socket not open");
+			socket.close();
+			return;
+		}
+
+		socket.send(buffer, (err) => {
+			if (err) return rej(err);
+			return res(null);
+		});
+	});
 }
