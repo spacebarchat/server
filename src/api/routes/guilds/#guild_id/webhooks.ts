@@ -24,8 +24,7 @@ const router = Router({ mergeParams: true });
 router.get(
 	"/",
 	route({
-		description:
-			"Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission.",
+		description: "Returns a list of guild webhook objects. Requires the MANAGE_WEBHOOKS permission.",
 		permission: "MANAGE_WEBHOOKS",
 		responses: {
 			200: {
@@ -37,27 +36,14 @@ router.get(
 		const { guild_id } = req.params;
 		const webhooks = await Webhook.find({
 			where: { guild_id },
-			relations: [
-				"user",
-				"channel",
-				"source_channel",
-				"guild",
-				"source_guild",
-				"application",
-			],
+			relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
 		});
 
-		const instanceUrl =
-			Config.get().api.endpointPublic || "http://localhost:3001";
+		const instanceUrl = Config.get().api.endpointPublic;
 		return res.json(
 			webhooks.map((webhook) => ({
 				...webhook,
-				url:
-					instanceUrl +
-					"/webhooks/" +
-					webhook.id +
-					"/" +
-					webhook.token,
+				url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
 			})),
 		);
 	},

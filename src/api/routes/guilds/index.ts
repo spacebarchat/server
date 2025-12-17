@@ -17,15 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Config,
-	DiscordApiErrors,
-	Guild,
-	Member,
-	getRights,
-} from "@spacebar/util";
+import { Config, DiscordApiErrors, Guild, Member, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { GuildCreateSchema } from "@spacebar/schemas"
+import { GuildCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

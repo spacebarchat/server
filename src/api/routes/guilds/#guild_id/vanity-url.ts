@@ -17,11 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	Guild,
-	Invite,
-} from "@spacebar/util";
+import { Channel, Guild, Invite } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelType, VanityUrlSchema } from "@spacebar/schemas";
@@ -63,9 +59,7 @@ router.get(
 			});
 			if (!invite || invite.length == 0) return res.json({ code: null });
 
-			return res.json(
-				invite.map((x) => ({ code: x.code, uses: x.uses })),
-			);
+			return res.json(invite.map((x) => ({ code: x.code, uses: x.uses })));
 		}
 	},
 );
@@ -93,11 +87,9 @@ router.patch(
 		const code = body.code?.replace(InviteRegex, "");
 
 		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-		if (!guild.features.includes("VANITY_URL"))
-			throw new HTTPError("Your guild doesn't support vanity urls");
+		if (!guild.features.includes("VANITY_URL")) throw new HTTPError("Your guild doesn't support vanity urls");
 
-		if (!code || code.length === 0)
-			throw new HTTPError("Code cannot be null or empty");
+		if (!code || code.length === 0) throw new HTTPError("Code cannot be null or empty");
 
 		const invite = await Invite.findOne({ where: { code } });
 		if (invite) throw new HTTPError("Invite already exists");

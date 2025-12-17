@@ -17,13 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	getGifApiKey,
-	parseGifResult,
-} from "@spacebar/util";
+import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import http from "http";
-import { TenorGif, TenorMediaTypes } from "@spacebar/schemas"
+import { TenorGif, TenorMediaTypes } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -39,9 +36,7 @@ router.get(
 			media_format: {
 				type: "string",
 				description: "Media format",
-				values: Object.keys(TenorMediaTypes).filter((key) =>
-					isNaN(Number(key)),
-				),
+				values: Object.keys(TenorMediaTypes).filter((key) => isNaN(Number(key))),
 			},
 			locale: {
 				type: "string",
@@ -60,13 +55,10 @@ router.get(
 
 		const apiKey = getGifApiKey();
 
-		const response = await fetch(
-			`https://g.tenor.com/v1/search?q=${q}&media_format=${media_format}&locale=${locale}&key=${apiKey}`,
-			{
-				method: "get",
-				headers: { "Content-Type": "application/json" },
-			},
-		);
+		const response = await fetch(`https://g.tenor.com/v1/search?q=${q}&media_format=${media_format}&locale=${locale}&key=${apiKey}`, {
+			method: "get",
+			headers: { "Content-Type": "application/json" },
+		});
 
 		const { results } = (await response.json()) as { results: TenorGif[] };
 

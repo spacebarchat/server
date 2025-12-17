@@ -17,12 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	getGifApiKey,
-	parseGifResult,
-} from "@spacebar/util";
+import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorCategoriesResults, TenorTrendingResults } from "@spacebar/schemas"
+import { TenorCategoriesResults, TenorTrendingResults } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -50,26 +47,18 @@ router.get(
 		const apiKey = getGifApiKey();
 
 		const [responseSource, trendGifSource] = await Promise.all([
-			fetch(
-				`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`,
-				{
-					method: "get",
-					headers: { "Content-Type": "application/json" },
-				},
-			),
-			fetch(
-				`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`,
-				{
-					method: "get",
-					headers: { "Content-Type": "application/json" },
-				},
-			),
+			fetch(`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`, {
+				method: "get",
+				headers: { "Content-Type": "application/json" },
+			}),
+			fetch(`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`, {
+				method: "get",
+				headers: { "Content-Type": "application/json" },
+			}),
 		]);
 
-		const { tags } =
-			(await responseSource.json()) as TenorCategoriesResults;
-		const { results } =
-			(await trendGifSource.json()) as TenorTrendingResults;
+		const { tags } = (await responseSource.json()) as TenorCategoriesResults;
+		const { results } = (await trendGifSource.json()) as TenorTrendingResults;
 
 		res.json({
 			categories: tags.map((x) => ({

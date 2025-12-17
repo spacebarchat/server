@@ -17,13 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	FieldErrors,
-} from "@spacebar/util";
+import { FieldErrors } from "@spacebar/util";
 import emailProviders from "email-providers/all.json";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { EmailDomainLookupResponse, EmailDomainLookupSchema, EmailDomainLookupVerifyCodeSchema } from "@spacebar/schemas"
+import { EmailDomainLookupResponse, EmailDomainLookupSchema, EmailDomainLookupVerifyCodeSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -48,8 +46,7 @@ router.post(
 		if (emailProviders.includes(tld.toLowerCase())) {
 			throw FieldErrors({
 				name: {
-					message:
-						"That looks like a personal email address. Please use your official student email.",
+					message: "That looks like a personal email address. Please use your official student email.",
 					code: "EMAIL_IS_UNOFFICIAL",
 				},
 			});
@@ -84,8 +81,7 @@ router.post(
 		if (emailProviders.includes(tld.toLowerCase())) {
 			throw FieldErrors({
 				name: {
-					message:
-						"That looks like a personal email address. Please use your official student email.",
+					message: "That looks like a personal email address. Please use your official student email.",
 					code: "EMAIL_IS_UNOFFICIAL",
 				},
 			});
