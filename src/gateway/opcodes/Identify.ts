@@ -161,14 +161,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// * the bot application, if it exists
 	const [
 		{ elapsed: sessionSaveTime },
-		{ elapsed: ipInfoUpdateTime },
 		{ result: application, elapsed: applicationQueryTime },
 		{ result: read_states, elapsed: read_statesQueryTime },
 		{ result: members, elapsed: membersQueryTime },
 		{ result: recipients, elapsed: recipientsQueryTime },
 	] = await Promise.all([
 		timePromise(() => this.session!.save()),
-		updateIpInfoPromise ? updateIpInfoPromise : { elapsed: new ElapsedTime(0n) },
 
 		timePromise(() =>
 			Application.findOne({
