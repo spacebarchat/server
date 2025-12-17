@@ -30,32 +30,21 @@ import { fileTypeFromBuffer } from "file-type";
 // TODO: delete old icons
 
 const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
-const STATIC_MIME_TYPES = [
-	"image/png",
-	"image/jpeg",
-	"image/webp",
-	"image/svg+xml",
-	"image/svg",
-];
+const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 const router = Router({ mergeParams: true });
 
 router.post("/", multer.single("file"), async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature)
-		throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 	if (!req.file) throw new HTTPError("Missing file");
 	const { buffer, size } = req.file;
 	const { guild_id, user_id } = req.params;
 
-	let hash = crypto
-		.createHash("md5")
-		.update(Snowflake.generate())
-		.digest("hex");
+	let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
 	const type = await fileTypeFromBuffer(buffer);
-	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime))
-		throw new HTTPError("Invalid file type");
+	if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
 	if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
 
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;
@@ -104,8 +93,7 @@ router.get("/:hash", async (req: Request, res: Response) => {
 });
 
 router.delete("/:id", async (req: Request, res: Response) => {
-	if (req.headers.signature !== Config.get().security.requestSignature)
-		throw new HTTPError("Invalid request signature");
+	if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 	const { guild_id, user_id, id } = req.params;
 	const path = `guilds/${guild_id}/users/${user_id}/avatars/${id}`;
 

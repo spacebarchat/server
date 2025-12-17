@@ -19,62 +19,48 @@
 import { route } from "@spacebar/api";
 import { ConnectedAccount, DiscordApiErrors, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ConnectionUpdateSchema } from "@spacebar/schemas"
+import { ConnectionUpdateSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 // TODO: connection update schema
-router.patch(
-	"/",
-	route({ requestBody: "ConnectionUpdateSchema" }),
-	async (req: Request, res: Response) => {
-		const { connection_name, connection_id } = req.params;
-		const body = req.body as ConnectionUpdateSchema;
+router.patch("/", route({ requestBody: "ConnectionUpdateSchema" }), async (req: Request, res: Response) => {
+	const { connection_name, connection_id } = req.params;
+	const body = req.body as ConnectionUpdateSchema;
 
-		const connection = await ConnectedAccount.findOne({
-			where: {
-				user_id: req.user_id,
-				external_id: connection_id,
-				type: connection_name,
-			},
-			select: [
-				"external_id",
-				"type",
-				"name",
-				"verified",
-				"visibility",
-				"show_activity",
-				"revoked",
-				"friend_sync",
-				"integrations",
-			],
-		});
+	const connection = await ConnectedAccount.findOne({
+		where: {
+			user_id: req.user_id,
+			external_id: connection_id,
+			type: connection_name,
+		},
+		select: ["external_id", "type", "name", "verified", "visibility", "show_activity", "revoked", "friend_sync", "integrations"],
+	});
 
-		if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
-		// TODO: do we need to do anything if the connection is revoked?
+	if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
+	// TODO: do we need to do anything if the connection is revoked?
 
-		if (typeof body.visibility === "boolean")
-			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
-			body.visibility = body.visibility ? 1 : 0;
-		if (typeof body.show_activity === "boolean")
-			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
-			body.show_activity = body.show_activity ? 1 : 0;
-		if (typeof body.metadata_visibility === "boolean")
-			//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
-			body.metadata_visibility = body.metadata_visibility ? 1 : 0;
+	if (typeof body.visibility === "boolean")
+		//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+		body.visibility = body.visibility ? 1 : 0;
+	if (typeof body.show_activity === "boolean")
+		//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+		body.show_activity = body.show_activity ? 1 : 0;
+	if (typeof body.metadata_visibility === "boolean")
+		//@ts-expect-error For some reason the client sends this as a boolean, even tho docs say its a number?
+		body.metadata_visibility = body.metadata_visibility ? 1 : 0;
 
-		connection.assign(req.body);
+	connection.assign(req.body);
 
-		await ConnectedAccount.update(
-			{
-				user_id: req.user_id,
-				external_id: connection_id,
-				type: connection_name,
-			},
-			connection,
-		);
-		res.json(connection.toJSON());
-	},
-);
+	await ConnectedAccount.update(
+		{
+			user_id: req.user_id,
+			external_id: connection_id,
+			type: connection_name,
+		},
+		connection,
+	);
+	res.json(connection.toJSON());
+});
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
 	const { connection_name, connection_id } = req.params;

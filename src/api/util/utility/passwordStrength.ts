@@ -35,8 +35,7 @@ const reSYMBOLS = /[A-Za-z0-9]/g;
  * Returns: 0 > pw > 1
  */
 export function checkPassword(password: string): number {
-	const { minLength, minNumbers, minUpperCase, minSymbols } =
-		Config.get().register.password;
+	const { minLength, minNumbers, minUpperCase, minSymbols } = Config.get().register.password;
 	let strength = 0;
 
 	// checks for total password len
@@ -60,10 +59,7 @@ export function checkPassword(password: string): number {
 	}
 
 	// checks if password only consists of numbers or only consists of chars
-	if (
-		password.length == password.match(reNUMBER)?.length ||
-		password.length === password.match(reUPPERCASELETTER)?.length
-	) {
+	if (password.length == password.match(reNUMBER)?.length || password.length === password.match(reUPPERCASELETTER)?.length) {
 		strength = 0;
 	}
 
@@ -76,8 +72,6 @@ export function checkPassword(password: string): number {
 	const entropies = Object.values(entropyMap);
 
 	entropies.map((x) => x / entropyMap.length);
-	strength +=
-		entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) /
-		Math.log2(password.length);
+	strength += entropies.reduceRight((a: number, x: number) => a - x * Math.log2(x)) / Math.log2(password.length);
 	return strength;
 }

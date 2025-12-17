@@ -16,26 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	DiscordApiErrors,
-	EVENT,
-	FieldErrors,
-	PermissionResolvable,
-	Permissions,
-	RightResolvable,
-	Rights,
-	SpacebarApiErrors,
-	getPermission,
-	getRights,
-} from "@spacebar/util";
+import { DiscordApiErrors, EVENT, FieldErrors, PermissionResolvable, Permissions, RightResolvable, Rights, SpacebarApiErrors, getPermission, getRights } from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
-import { ajv } from "@spacebar/schemas"
+import { ajv } from "@spacebar/schemas";
 
 const ignoredRequestSchemas = [
 	// skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
-	"SettingsProtoUpdateJsonSchema"
-]
+	"SettingsProtoUpdateJsonSchema",
+];
 
 declare global {
 	// TODO: fix this
@@ -94,27 +83,18 @@ export function route(opts: RouteOptions) {
 			throw e;
 		}
 
-		if (!validate)
-			throw new Error(`Body schema ${opts.requestBody} not found`);
+		if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
 	}
 
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (opts.permission) {
-			req.permission = await getPermission(
-				req.user_id,
-				req.params.guild_id,
-				req.params.channel_id,
-			);
+			req.permission = await getPermission(req.user_id, req.params.guild_id, req.params.channel_id);
 
-			const requiredPerms = Array.isArray(opts.permission)
-				? opts.permission
-				: [opts.permission];
+			const requiredPerms = Array.isArray(opts.permission) ? opts.permission : [opts.permission];
 			requiredPerms.forEach((perm) => {
 				// bitfield comparison: check if user lacks certain permission
 				if (!req.permission!.has(new Permissions(perm))) {
-					throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
-						perm as string,
-					);
+					throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(perm as string);
 				}
 			});
 		}
@@ -124,20 +104,14 @@ export function route(opts: RouteOptions) {
 			req.rights = await getRights(req.user_id);
 
 			if (!req.rights || !req.rights.has(required)) {
-				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(
-					opts.right as string,
-				);
+				throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
 			}
 		}
-
 
 		if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
 			const valid = validate(req.body);
 			if (!valid) {
-				const fields: Record<
-					string,
-					{ code?: string; message: string }
-				> = {};
+				const fields: Record<string, { code?: string; message: string }> = {};
 				validate.errors?.forEach(
 					(x) =>
 						(fields[x.instancePath.slice(1)] = {
@@ -145,11 +119,7 @@ export function route(opts: RouteOptions) {
 							message: x.message || "",
 						}),
 				);
-				if (process.env.LOG_VALIDATION_ERRORS)
-					console.log(
-						`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`,
-						validate?.errors,
-					);
+				if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
 				throw FieldErrors(fields, validate.errors!);
 			}
 		}

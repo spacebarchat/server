@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config }from "@spacebar/util";
+import { Config } from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
@@ -26,18 +26,13 @@ import probe from "probe-image-size";
 export const DEFAULT_FETCH_OPTIONS: RequestInit = {
 	redirect: "follow",
 	headers: {
-		"user-agent":
-			"Mozilla/5.0 (compatible; Spacebar/1.0; +https://github.com/spacebarchat/server)",
+		"user-agent": "Mozilla/5.0 (compatible; Spacebar/1.0; +https://github.com/spacebarchat/server)",
 	},
 	// size: 1024 * 1024 * 5, 	// grabbed from config later
 	method: "GET",
 };
 
-const makeEmbedImage = (
-	url: string | undefined,
-	width: number | undefined,
-	height: number | undefined,
-): Required<EmbedImage> | undefined => {
+const makeEmbedImage = (url: string | undefined, width: number | undefined, height: number | undefined): Required<EmbedImage> | undefined => {
 	if (!url || !width || !height) return undefined;
 	return {
 		url,
@@ -49,13 +44,8 @@ const makeEmbedImage = (
 
 let hasWarnedAboutImagor = false;
 
-export const getProxyUrl = (
-	url: URL,
-	width: number,
-	height: number,
-): string => {
-	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } =
-		Config.get().cdn;
+export const getProxyUrl = (url: URL, width: number, height: number): string => {
+	const { resizeWidthMax, resizeHeightMax, imagorServerUrl } = Config.get().cdn;
 	const secret = Config.get().security.requestSignature;
 	width = Math.min(width || 500, resizeWidthMax || width);
 	height = Math.min(height || 500, resizeHeightMax || width);
@@ -64,24 +54,14 @@ export const getProxyUrl = (
 	if (imagorServerUrl) {
 		const path = `${width}x${height}/${url.host}${url.pathname}`;
 
-		const hash = crypto
-			.createHmac("sha1", secret)
-			.update(path)
-			.digest("base64")
-			.replace(/\+/g, "-")
-			.replace(/\//g, "_");
+		const hash = crypto.createHmac("sha1", secret).update(path).digest("base64").replace(/\+/g, "-").replace(/\//g, "_");
 
 		return `${imagorServerUrl}/${hash}/${path}`;
 	}
 
 	if (!hasWarnedAboutImagor) {
 		hasWarnedAboutImagor = true;
-		console.log(
-			"[Embeds]",
-			yellow(
-				"Imagor has not been set up correctly. https://docs.spacebar.chat/setup/server/configuration/imagor/",
-			),
-		);
+		console.log("[Embeds]", yellow("Imagor has not been set up correctly. https://docs.spacebar.chat/setup/server/configuration/imagor/"));
 	}
 
 	return url.toString();
@@ -161,11 +141,7 @@ const genericImageHandler = async (url: URL): Promise<Embed | null> => {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
-		image = makeEmbedImage(
-			metas.image || metas.image_fallback,
-			metas.width,
-			metas.height,
-		);
+		image = makeEmbedImage(metas.image || metas.image_fallback, metas.width, metas.height);
 	}
 
 	if (!image) return null;
@@ -186,8 +162,7 @@ export const EmbedHandlers: {
 			...DEFAULT_FETCH_OPTIONS,
 			method: "HEAD",
 		});
-		if (type.headers.get("content-type")?.indexOf("image") !== -1)
-			return await genericImageHandler(url);
+		if (type.headers.get("content-type")?.indexOf("image") !== -1) return await genericImageHandler(url);
 
 		const response = await doFetch(url);
 		if (!response) return null;
@@ -300,9 +275,7 @@ export const EmbedHandlers: {
 		const text = json.data.text;
 		const created_at = new Date(json.data.created_at);
 		const metrics = json.data.public_metrics;
-		const media = json.includes.media?.filter(
-			(x: { type: string }) => x.type == "photo",
-		);
+		const media = json.includes.media?.filter((x: { type: string }) => x.type == "photo");
 
 		const embed: Embed = {
 			type: EmbedType.rich,
@@ -311,11 +284,7 @@ export const EmbedHandlers: {
 			author: {
 				url: `https://twitter.com/${author.username}`,
 				name: `${author.name} (@${author.username})`,
-				proxy_icon_url: getProxyUrl(
-					new URL(author.profile_image_url),
-					400,
-					400,
-				),
+				proxy_icon_url: getProxyUrl(new URL(author.profile_image_url), 400, 400),
 				icon_url: author.profile_image_url,
 			},
 			timestamp: created_at,
@@ -334,15 +303,8 @@ export const EmbedHandlers: {
 			color: 1942002,
 			footer: {
 				text: "Twitter",
-				proxy_icon_url: getProxyUrl(
-					new URL(
-						"https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
-					),
-					192,
-					192,
-				),
-				icon_url:
-					"https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
+				proxy_icon_url: getProxyUrl(new URL("https://abs.twimg.com/icons/apple-touch-icon-192x192.png"), 192, 192),
+				icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
 			},
 			// Discord doesn't send this?
 			// provider: {
@@ -356,11 +318,7 @@ export const EmbedHandlers: {
 				width: media[0].width,
 				height: media[0].height,
 				url: media[0].url,
-				proxy_url: getProxyUrl(
-					new URL(media[0].url),
-					media[0].width,
-					media[0].height,
-				),
+				proxy_url: getProxyUrl(new URL(media[0].url), media[0].width, media[0].height),
 			};
 			media.shift();
 		}
@@ -413,11 +371,7 @@ export const EmbedHandlers: {
 			type: EmbedType.image,
 			title: metas.title,
 			description: metas.description,
-			image: makeEmbedImage(
-				metas.image || metas.image_fallback,
-				metas.width,
-				metas.height,
-			),
+			image: makeEmbedImage(metas.image || metas.image_fallback, metas.width, metas.height),
 			provider: {
 				url: "https://pixiv.net",
 				name: "Pixiv",
@@ -429,17 +383,9 @@ export const EmbedHandlers: {
 		const response = await doFetch(url);
 		if (!response) return null;
 		const metas = getMetaDescriptions(await response.text());
-		const numReviews = metas.$("#review_summary_num_reviews").val() as
-			| string
-			| undefined;
-		const price = metas
-			.$(".game_purchase_price.price")
-			.data("price-final") as number | undefined;
-		const releaseDate = metas
-			.$(".release_date")
-			.find("div.date")
-			.text()
-			.trim();
+		const numReviews = metas.$("#review_summary_num_reviews").val() as string | undefined;
+		const price = metas.$(".game_purchase_price.price").data("price-final") as number | undefined;
+		const releaseDate = metas.$(".release_date").find("div.date").text().trim();
 		const isReleased = new Date(releaseDate) < new Date();
 
 		const fields: Embed["fields"] = [];
@@ -477,9 +423,7 @@ export const EmbedHandlers: {
 				width: 460,
 				height: 215,
 				url: metas.image,
-				proxy_url: metas.image
-					? getProxyUrl(new URL(metas.image), 460, 215)
-					: undefined,
+				proxy_url: metas.image ? getProxyUrl(new URL(metas.image), 460, 215) : undefined,
 			},
 			provider: {
 				url: "https://store.steampowered.com",
@@ -510,19 +454,11 @@ export const EmbedHandlers: {
 		const metas = getMetaDescriptions(await response.text());
 
 		return {
-			video: makeEmbedImage(
-				metas.youtube_embed,
-				metas.width,
-				metas.height,
-			),
+			video: makeEmbedImage(metas.youtube_embed, metas.width, metas.height),
 			url: url.href,
 			type: metas.youtube_embed ? EmbedType.video : EmbedType.link,
 			title: metas.title,
-			thumbnail: makeEmbedImage(
-				metas.image || metas.image_fallback,
-				metas.width,
-				metas.height,
-			),
+			thumbnail: makeEmbedImage(metas.image || metas.image_fallback, metas.width, metas.height),
 			provider: {
 				url: "https://www.youtube.com",
 				name: "YouTube",
