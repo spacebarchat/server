@@ -17,14 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	ChannelUpdateEvent,
-	Guild,
-	emitEvent,
-} from "@spacebar/util";
+import { Channel, ChannelUpdateEvent, Guild, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ChannelModifySchema, ChannelReorderSchema } from "@spacebar/schemas"
+import { ChannelModifySchema, ChannelReorderSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
@@ -41,11 +36,7 @@ router.get(
 		const channels = await Channel.find({ where: { guild_id } });
 
 		for await (const channel of channels) {
-			channel.position = await Channel.calculatePosition(
-				channel.id,
-				guild_id,
-				channel.guild,
-			);
+			channel.position = await Channel.calculatePosition(channel.id, guild_id, channel.guild);
 		}
 		channels.sort((a, b) => a.position - b.position);
 
@@ -75,15 +66,8 @@ router.post(
 		const { guild_id } = req.params;
 		const body = req.body as ChannelModifySchema;
 
-		const channel = await Channel.createChannel(
-			{ ...body, guild_id },
-			req.user_id,
-		);
-		channel.position = await Channel.calculatePosition(
-			channel.id,
-			guild_id,
-			channel.guild,
-		);
+		const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
+		channel.position = await Channel.calculatePosition(channel.id, guild_id, channel.guild);
 
 		res.status(201).json(channel);
 	},
@@ -115,27 +99,13 @@ router.patch(
 		});
 
 		body = body.sort((a, b) => {
-			const apos =
-				a.position ||
-				(a.parent_id
-					? guild.channel_ordering.findIndex(
-							(_) => _ === a.parent_id,
-						) + 1
-					: 0);
-			const bpos =
-				b.position ||
-				(b.parent_id
-					? guild.channel_ordering.findIndex(
-							(_) => _ === b.parent_id,
-						) + 1
-					: 0);
+			const apos = a.position || (a.parent_id ? guild.channel_ordering.findIndex((_) => _ === a.parent_id) + 1 : 0);
+			const bpos = b.position || (b.parent_id ? guild.channel_ordering.findIndex((_) => _ === b.parent_id) + 1 : 0);
 			return apos - bpos;
 		});
 
 		// The channels not listed for this query
-		const notMentioned = guild.channel_ordering.filter(
-			(x) => !body.find((c) => c.id == x),
-		);
+		const notMentioned = guild.channel_ordering.filter((x) => !body.find((c) => c.id == x));
 
 		const withParents = body.filter((x) => x.parent_id !== undefined);
 		const withPositions = body.filter((x) => x.position !== undefined);
@@ -173,11 +143,7 @@ router.patch(
 					: null,
 			]);
 
-			if (opt.lock_permissions && parent)
-				await Channel.update(
-					{ id: channel.id },
-					{ permission_overwrites: parent.permission_overwrites },
-				);
+			if (opt.lock_permissions && parent) await Channel.update({ id: channel.id }, { permission_overwrites: parent.permission_overwrites });
 			if (parent && opt.position === undefined) {
 				const parentPos = notMentioned.indexOf(parent.id);
 				notMentioned.splice(parentPos + 1, 0, channel.id);
@@ -195,10 +161,7 @@ router.patch(
 			} as ChannelUpdateEvent);
 		}
 
-		await Guild.update(
-			{ id: guild_id },
-			{ channel_ordering: notMentioned },
-		);
+		await Guild.update({ id: guild_id }, { channel_ordering: notMentioned });
 
 		return res.sendStatus(204);
 	},

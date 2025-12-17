@@ -21,9 +21,7 @@ import { distanceBetweenLocations } from "../utility/ipAddress";
 
 export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 	const regions = Config.get().regions;
-	const availableRegions = regions.available.filter((ar) =>
-		vip ? true : !ar.vip,
-	);
+	const availableRegions = regions.available.filter((ar) => (vip ? true : !ar.vip));
 	let optimalId = regions.default;
 
 	if (!regions.useDefaultAsOptimal) {
@@ -33,10 +31,7 @@ export async function getVoiceRegions(ipAddress: string, vip: boolean) {
 
 		for (const ar of availableRegions) {
 			//TODO the endpoint location should be saved in the database if not already present to prevent IPAnalysis call
-			const dist = distanceBetweenLocations(
-				clientIpAnalysis!,
-				ar.location || (await IpDataClient.getIpInfo(ar.endpoint))!,
-			);
+			const dist = distanceBetweenLocations(clientIpAnalysis!, ar.location || (await IpDataClient.getIpInfo(ar.endpoint))!);
 
 			if (dist < min) {
 				min = dist;

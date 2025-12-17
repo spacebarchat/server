@@ -16,15 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	DateOfBirthConfiguration,
-	PasswordConfiguration,
-	RegistrationEmailConfiguration,
-} from ".";
+import { DateOfBirthConfiguration, PasswordConfiguration, RegistrationEmailConfiguration } from ".";
 
 export class RegisterConfiguration {
-	email: RegistrationEmailConfiguration =
-		new RegistrationEmailConfiguration();
+	email: RegistrationEmailConfiguration = new RegistrationEmailConfiguration();
 	dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
 	password: PasswordConfiguration = new PasswordConfiguration();
 	disabled: boolean = false;

@@ -64,28 +64,16 @@ async function main() {
 		app.use(
 			morgan("combined", {
 				skip: (req, res) => {
-					let skip = !(
-						process.env["LOG_REQUESTS"]?.includes(
-							res.statusCode.toString(),
-						) ?? false
-					);
-					if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
-						skip = !skip;
+					let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+					if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 					return skip;
 				},
 			}),
 		);
 	}
 
-	await new Promise((resolve) =>
-		server.listen({ port }, () => resolve(undefined)),
-	);
-	await Promise.all([
-		api.start(),
-		cdn.start(),
-		gateway.start(),
-		webrtc.start(),
-	]);
+	await new Promise((resolve) => server.listen({ port }, () => resolve(undefined)));
+	await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 
 	console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }

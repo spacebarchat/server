@@ -22,12 +22,8 @@ import { green, red } from "picocolors";
 export let mediaServer: SignalingDelegate;
 
 export const WRTC_PUBLIC_IP = process.env.WRTC_PUBLIC_IP ?? "127.0.0.1";
-export const WRTC_PORT_MIN = process.env.WRTC_PORT_MIN
-	? parseInt(process.env.WRTC_PORT_MIN)
-	: 2000;
-export const WRTC_PORT_MAX = process.env.WRTC_PORT_MAX
-	? parseInt(process.env.WRTC_PORT_MAX)
-	: 65000;
+export const WRTC_PORT_MIN = process.env.WRTC_PORT_MIN ? parseInt(process.env.WRTC_PORT_MIN) : 2000;
+export const WRTC_PORT_MAX = process.env.WRTC_PORT_MAX ? parseInt(process.env.WRTC_PORT_MAX) : 65000;
 
 const selectedWrtcLibrary = process.env.WRTC_LIBRARY;
 
@@ -47,21 +43,16 @@ class NoConfiguredLibraryError implements Error {
 export const loadWebRtcLibrary = async () => {
 	try {
 		//mediaServer = require('medooze-spacebar-wrtc');
-		if (!selectedWrtcLibrary)
-			throw new NoConfiguredLibraryError("No library configured in .env");
+		if (!selectedWrtcLibrary) throw new NoConfiguredLibraryError("No library configured in .env");
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		mediaServer = new // @ts-ignore
 		(await import(selectedWrtcLibrary)).default();
 
-		console.log(
-			`[WebRTC] ${green(`Succesfully loaded ${selectedWrtcLibrary}`)}`,
-		);
+		console.log(`[WebRTC] ${green(`Succesfully loaded ${selectedWrtcLibrary}`)}`);
 		return Promise.resolve();
 	} catch (error) {
-		console.log(
-			`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : ""}`)}`,
-		);
+		console.log(`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : ""}`)}`);
 
 		return Promise.reject();
 	}

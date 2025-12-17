@@ -17,17 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	emitEvent,
-	GuildRoleDeleteEvent,
-	GuildRoleUpdateEvent,
-	handleFile,
-	Member,
-	Role,
-} from "@spacebar/util";
+import { emitEvent, GuildRoleDeleteEvent, GuildRoleUpdateEvent, handleFile, Member, Role } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { RoleModifySchema } from "@spacebar/schemas"
+import { RoleModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -75,8 +68,7 @@ router.delete(
 	}),
 	async (req: Request, res: Response) => {
 		const { guild_id, role_id } = req.params;
-		if (role_id === guild_id)
-			throw new HTTPError("You can't delete the @everyone role");
+		if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
 		await Promise.all([
 			Role.delete({
@@ -123,11 +115,7 @@ router.patch(
 		const { role_id, guild_id } = req.params;
 		const body = req.body as RoleModifySchema;
 
-		if (body.icon && body.icon.length)
-			body.icon = await handleFile(
-				`/role-icons/${role_id}`,
-				body.icon as string,
-			);
+		if (body.icon && body.icon.length) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
 		else body.icon = undefined;
 
 		const role = await Role.findOneOrFail({
@@ -135,10 +123,7 @@ router.patch(
 		});
 		role.assign({
 			...body,
-			permissions: String(
-				(req.permission?.bitfield || 0n) &
-					BigInt(body.permissions || "0"),
-			),
+			permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
 		});
 
 		await Promise.all([

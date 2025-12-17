@@ -1,18 +1,10 @@
 import { route } from "@spacebar/api";
-import {
-	Config,
-	DiscordApiErrors,
-	emitEvent,
-	handleFile,
-	ValidateName,
-	Webhook,
-	WebhooksUpdateEvent,
-} from "@spacebar/util";
+import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, Webhook, WebhooksUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
-import { WebhookUpdateSchema } from "@spacebar/schemas"
+import { WebhookUpdateSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
@@ -32,14 +24,7 @@ router.get(
 			where: {
 				id: webhook_id,
 			},
-			relations: [
-				"user",
-				"channel",
-				"source_channel",
-				"guild",
-				"source_guild",
-				"application",
-			],
+			relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
 		});
 
 		if (!webhook) {
@@ -50,8 +35,7 @@ router.get(
 			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 		}
 
-		const instanceUrl =
-			Config.get().api.endpointPublic || "http://localhost:3001";
+		const instanceUrl = Config.get().api.endpointPublic || "http://localhost:3001";
 		return res.json({
 			...webhook,
 			url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
@@ -87,14 +71,12 @@ router.post(
 			wait: {
 				type: "boolean",
 				required: false,
-				description:
-					"waits for server confirmation of message send before response, and returns the created message body",
+				description: "waits for server confirmation of message send before response, and returns the created message body",
 			},
 			thread_id: {
 				type: "string",
 				required: false,
-				description:
-					"Send a message to the specified thread within a webhook's channel.",
+				description: "Send a message to the specified thread within a webhook's channel.",
 			},
 		},
 		responses: {
@@ -173,24 +155,13 @@ router.patch(
 
 		const webhook = await Webhook.findOneOrFail({
 			where: { id: webhook_id },
-			relations: [
-				"user",
-				"channel",
-				"source_channel",
-				"guild",
-				"source_guild",
-				"application",
-			],
+			relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
 		});
 		const channel_id = webhook.channel_id;
 		if (!body.name && !body.avatar) {
 			throw new HTTPError("Empty webhook updates are not allowed", 50006);
 		}
-		if (body.avatar)
-			body.avatar = await handleFile(
-				`/avatars/${webhook_id}`,
-				body.avatar as string,
-			);
+		if (body.avatar) body.avatar = await handleFile(`/avatars/${webhook_id}`, body.avatar as string);
 
 		if (body.name) {
 			ValidateName(body.name);
