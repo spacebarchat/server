@@ -28,7 +28,7 @@ router.post(
     "/",
     route({
         requestBody: "GreetRequestSchema",
-        permission: "MANAGE_CHANNELS",
+        permission: "SEND_MESSAGES",
         responses: {
             200: {
                 body: "Message",
@@ -100,7 +100,7 @@ router.post(
             channel.save(),
         ]);
 
-        res.send(channel);
+        res.send(message);
     },
 );
 
