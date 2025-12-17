@@ -16,27 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface UserModifySchema {
-	/**
-	 * @minLength 1
-	 * @maxLength 100
-	 */
-	username?: string;
-	avatar?: string | null;
-	/**
-	 * @maxLength 1024
-	 */
-	bio?: string;
-	accent_color?: number;
-	banner?: string | null;
-	password?: string;
-	new_password?: string;
-	code?: string;
-	email?: string;
-	/**
-	 * @minLength 4
-	 * @maxLength 4
-	 */
-	discriminator?: string;
-	global_name?: string;
+export class UserConfiguration {
+    blockedContains: string[] = ["discord", "clyde", "spacebar"];
+    blockedEquals: string[] = ["everyone", "here"];
 }

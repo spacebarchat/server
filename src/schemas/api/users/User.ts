@@ -57,6 +57,7 @@ interface UserEntityPleaseRewriteThankYou {
     fingerprints: string[];
     settings?: UserSettingsSchema;
     badge_ids?: string[];
+    global_name?: string;
 }
 
 export interface PartialUser {
@@ -109,6 +110,7 @@ export interface PrimaryGuild {
 
 export enum PublicUserEnum {
     username,
+    global_name,
     discriminator,
     id,
     public_flags,
