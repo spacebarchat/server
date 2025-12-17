@@ -15,7 +15,6 @@
     nixpkgs.lib.recursiveUpdate
       (
         let
-          hashesFile = builtins.fromJSON (builtins.readFile ./hashes.json);
           rVersion =
             let
               rev = self.sourceInfo.shortRev or self.sourceInfo.dirtyShortRev;
@@ -49,12 +48,15 @@
                 };
 
                 src = ./.;
-                npmDepsHash = hashesFile.npmDepsHash;
+                npmDeps = pkgs.importNpmLock { npmRoot = ./.; };
+                npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+
                 npmBuildScript = "build:src";
                 makeCacheWritable = true;
                 nativeBuildInputs = with pkgs; [
-                  python3
+                  (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
                 ];
+
                 installPhase =
                   let
                     revsFile = pkgs.writeText "spacebar-server-rev.json" (
@@ -91,35 +93,6 @@
                   '';
 
                 passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix self);
-              };
-
-              update-nix-hashes = pkgs.writeShellApplication {
-                name = "update-nix";
-                runtimeInputs = with pkgs; [
-                  prefetch-npm-deps
-                  nix
-                  jq
-                ];
-                text = ''
-                  rm -rf node_modules
-                  ${pkgs.nodejs_24}/bin/npm install --save --no-audit --no-fund --prefer-offline
-                  DEPS_HASH=$(prefetch-npm-deps package-lock.json)
-                  TMPFILE=$(mktemp)
-                  jq '.npmDepsHash = "'"$DEPS_HASH"'"' hashes.json > "$TMPFILE"
-                  mv -- "$TMPFILE" hashes.json
-                '';
-              };
-
-              update-nix-flake = pkgs.writeShellApplication {
-                name = "update-nix";
-                runtimeInputs = with pkgs; [
-                  prefetch-npm-deps
-                  nix
-                  jq
-                ];
-                text = ''
-                  nix flake update --extra-experimental-features 'nix-command flakes'
-                '';
               };
             };
 

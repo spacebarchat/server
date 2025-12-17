@@ -19,11 +19,8 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Configure Cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
-      - name: Update Hash
-        run: nix run .#update-nix
+      - name: Update Nix Flake
+        run: nix flake update --extra-experimental-features 'nix-command flakes'
 
       - name: Set up Git Config
         run: |
