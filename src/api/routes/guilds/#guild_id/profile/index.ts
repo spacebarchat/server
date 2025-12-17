@@ -17,15 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	emitEvent,
-	GuildMemberUpdateEvent,
-	handleFile,
-	Member,
-	OrmUtils,
-} from "@spacebar/util";
+import { emitEvent, GuildMemberUpdateEvent, handleFile, Member, OrmUtils } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { MemberChangeProfileSchema } from "@spacebar/schemas"
+import { MemberChangeProfileSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -56,11 +50,7 @@ router.patch(
 			relations: ["roles", "user"],
 		});
 
-		if (body.banner)
-			body.banner = await handleFile(
-				`/guilds/${guild_id}/users/${req.user_id}/avatars`,
-				body.banner as string,
-			);
+		if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);
 
 		member = await OrmUtils.mergeDeep(member, body);
 

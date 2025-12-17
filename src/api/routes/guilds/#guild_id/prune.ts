@@ -23,12 +23,7 @@ import { IsNull, LessThan } from "typeorm";
 const router = Router({ mergeParams: true });
 
 //Returns all inactive members, respecting role hierarchy
-const inactiveMembers = async (
-	guild_id: string,
-	user_id: string,
-	days: number,
-	roles: string[] = [],
-) => {
+const inactiveMembers = async (guild_id: string, user_id: string, days: number, roles: string[] = []) => {
 	const date = new Date();
 	date.setDate(date.getDate() - days);
 	//Snowflake should have `generateFromTime` method? Or similar?
@@ -54,10 +49,7 @@ const inactiveMembers = async (
 	if (!members.length) return [];
 
 	//I'm sure I can do this in the above db query ( and it would probably be better to do so ), but oh well.
-	if (roles.length && members.length)
-		members = members.filter((user) =>
-			user.roles?.some((role) => roles.includes(role.id)),
-		);
+	if (roles.length && members.length) members = members.filter((user) => user.roles?.some((role) => roles.includes(role.id)));
 
 	const me = await Member.findOneOrFail({
 		where: { id: user_id, guild_id },
@@ -95,12 +87,7 @@ router.get(
 		let roles = req.query.include_roles;
 		if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
-		const members = await inactiveMembers(
-			req.params.guild_id,
-			req.user_id,
-			days,
-			roles as string[],
-		);
+		const members = await inactiveMembers(req.params.guild_id, req.user_id, days, roles as string[]);
 
 		res.send({ pruned: members.length });
 	},
@@ -127,16 +114,9 @@ router.post(
 		if (typeof roles === "string") roles = [roles];
 
 		const { guild_id } = req.params;
-		const members = await inactiveMembers(
-			guild_id,
-			req.user_id,
-			days,
-			roles as string[],
-		);
+		const members = await inactiveMembers(guild_id, req.user_id, days, roles as string[]);
 
-		await Promise.all(
-			members.map((x) => Member.removeFromGuild(x.id, guild_id)),
-		);
+		await Promise.all(members.map((x) => Member.removeFromGuild(x.id, guild_id)));
 
 		res.send({ purged: members.length });
 	},

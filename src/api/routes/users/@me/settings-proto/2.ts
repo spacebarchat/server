@@ -18,14 +18,10 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import {
-	emitEvent,
-	OrmUtils,
-	UserSettingsProtos,
-} from "@spacebar/util";
+import { emitEvent, OrmUtils, UserSettingsProtos } from "@spacebar/util";
 import { FrecencyUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas"
+import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -41,8 +37,7 @@ router.get(
 		query: {
 			atomic: {
 				type: "boolean",
-				description:
-					"Whether to try to apply the settings update atomically (default false)",
+				description: "Whether to try to apply the settings update atomically (default false)",
 			},
 		},
 	}),
@@ -50,9 +45,7 @@ router.get(
 		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
-			settings: FrecencyUserSettings.toBase64(
-				userSettings.frecencySettings!,
-			),
+			settings: FrecencyUserSettings.toBase64(userSettings.frecencySettings!),
 		} as SettingsProtoResponse);
 	},
 );
@@ -68,17 +61,11 @@ router.patch(
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { settings, required_data_version } =
-			req.body as SettingsProtoUpdateSchema;
+		const { settings, required_data_version } = req.body as SettingsProtoUpdateSchema;
 		const { atomic } = req.query;
 		const updatedSettings = FrecencyUserSettings.fromBase64(settings);
 
-		const resultObj = await patchUserSettings(
-			req.user_id,
-			updatedSettings,
-			required_data_version,
-			atomic == "true",
-		);
+		const resultObj = await patchUserSettings(req.user_id, updatedSettings, required_data_version, atomic == "true");
 
 		res.json({
 			settings: FrecencyUserSettings.toBase64(resultObj.settings),
@@ -102,9 +89,7 @@ router.get(
 		const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
 
 		res.json({
-			settings: FrecencyUserSettings.toJson(
-				userSettings.frecencySettings!,
-			),
+			settings: FrecencyUserSettings.toJson(userSettings.frecencySettings!),
 		} as SettingsProtoJsonResponse);
 	},
 );
@@ -121,23 +106,16 @@ router.patch(
 		query: {
 			atomic: {
 				type: "boolean",
-				description:
-					"Whether to try to apply the settings update atomically (default false)",
+				description: "Whether to try to apply the settings update atomically (default false)",
 			},
 		},
 	}),
 	async (req: Request, res: Response) => {
-		const { settings, required_data_version } =
-			req.body as SettingsProtoUpdateJsonSchema;
+		const { settings, required_data_version } = req.body as SettingsProtoUpdateJsonSchema;
 		const { atomic } = req.query;
 		const updatedSettings = FrecencyUserSettings.fromJson(settings);
 
-		const resultObj = await patchUserSettings(
-			req.user_id,
-			updatedSettings,
-			required_data_version,
-			atomic == "true",
-		);
+		const resultObj = await patchUserSettings(req.user_id, updatedSettings, required_data_version, atomic == "true");
 
 		res.json({
 			settings: FrecencyUserSettings.toJson(resultObj.settings),
@@ -148,20 +126,11 @@ router.patch(
 
 //#endregion
 
-async function patchUserSettings(
-	userId: string,
-	updatedSettings: FrecencyUserSettings,
-	required_data_version: number | undefined,
-	atomic: boolean = false,
-) {
+async function patchUserSettings(userId: string, updatedSettings: FrecencyUserSettings, required_data_version: number | undefined, atomic: boolean = false) {
 	const userSettings = await UserSettingsProtos.getOrDefault(userId);
 	let settings = userSettings.frecencySettings!;
 
-	if (
-		required_data_version &&
-		settings.versions &&
-		settings.versions.dataVersion > required_data_version
-	) {
+	if (required_data_version && settings.versions && settings.versions.dataVersion > required_data_version) {
 		return {
 			settings: settings,
 			out_of_date: true,
@@ -169,24 +138,15 @@ async function patchUserSettings(
 	}
 
 	if ((process.env.LOG_PROTO_UPDATES || process.env.LOG_PROTO_FRECENCY_UPDATES) && process.env.LOG_PROTO_FRECENCY_UPDATES !== "false")
-		console.log(
-			`Updating frecency settings for user ${userId} with atomic=${atomic}:`,
-			updatedSettings,
-		);
+		console.log(`Updating frecency settings for user ${userId} with atomic=${atomic}:`, updatedSettings);
 
 	if (!atomic) {
 		settings = FrecencyUserSettings.fromJson(
-			Object.assign(
-				FrecencyUserSettings.toJson(settings) as object,
-				FrecencyUserSettings.toJson(updatedSettings) as object,
-			) as JsonValue,
+			Object.assign(FrecencyUserSettings.toJson(settings) as object, FrecencyUserSettings.toJson(updatedSettings) as object) as JsonValue,
 		);
 	} else {
 		settings = FrecencyUserSettings.fromJson(
-			OrmUtils.mergeDeep(
-				FrecencyUserSettings.toJson(settings) as object,
-				FrecencyUserSettings.toJson(updatedSettings) as object,
-			) as JsonValue,
+			OrmUtils.mergeDeep(FrecencyUserSettings.toJson(settings) as object, FrecencyUserSettings.toJson(updatedSettings) as object) as JsonValue,
 		);
 	}
 
@@ -204,14 +164,14 @@ async function patchUserSettings(
 		data: {
 			settings: {
 				proto: FrecencyUserSettings.toBase64(settings),
-				type: 2
+				type: 2,
 			},
 			json_settings: {
 				proto: FrecencyUserSettings.toJson(settings),
-				type: "frecency_settings"
+				type: "frecency_settings",
 			},
 			partial: false, // Unsure how this should behave
-		}
+		},
 	});
 	// This should also send a USER_SETTINGS_UPDATE event, but that isn't sent
 	// when using the USER_SETTINGS_PROTOS capability, so we ignore it for now.

@@ -17,16 +17,12 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	User,
-	generateMfaBackupCodes,
-	generateToken,
-} from "@spacebar/util";
+import { User, generateMfaBackupCodes, generateToken } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
-import { TotpEnableSchema } from "@spacebar/schemas"
+import { TotpEnableSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -61,21 +57,15 @@ router.post(
 			}
 		}
 
-		if (!body.secret)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_SECRET"), 60005);
+		if (!body.secret) throw new HTTPError(req.t("auth:login.INVALID_TOTP_SECRET"), 60005);
 
-		if (!body.code)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+		if (!body.code) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-		if (verifyToken(body.secret, body.code)?.delta != 0)
-			throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+		if (verifyToken(body.secret, body.code)?.delta != 0) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
 		const backup_codes = generateMfaBackupCodes(req.user_id);
 		await Promise.all(backup_codes.map((x) => x.save()));
-		await User.update(
-			{ id: req.user_id },
-			{ mfa_enabled: true, totp_secret: body.secret },
-		);
+		await User.update({ id: req.user_id }, { mfa_enabled: true, totp_secret: body.secret });
 
 		res.send({
 			token: await generateToken(user.id),

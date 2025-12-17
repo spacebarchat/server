@@ -18,12 +18,7 @@
 
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import {
-	closeDatabase,
-	Config,
-	initDatabase,
-	initEvent,
-} from "@spacebar/util";
+import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
 import ws from "ws";
 import { Connection } from "./events/Connection";
 import http from "http";
@@ -36,22 +31,14 @@ export class Server {
 	public server: http.Server;
 	public production: boolean;
 
-	constructor({
-		port,
-		server,
-		production,
-	}: {
-		port: number;
-		server?: http.Server;
-		production?: boolean;
-	}) {
+	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
 		this.port = port;
 		this.production = production || false;
 
 		if (server) this.server = server;
 		else {
 			this.server = http.createServer(function (req, res) {
-				if(!req.headers.cookie?.split("; ").find(x => x.startsWith("__sb_sessid="))) {
+				if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
 					res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
 				}
 

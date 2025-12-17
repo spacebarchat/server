@@ -17,19 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Config,
-	DiscordApiErrors,
-	Emoji,
-	GuildEmojisUpdateEvent,
-	Member,
-	Snowflake,
-	User,
-	emitEvent,
-	handleFile,
-} from "@spacebar/util";
+import { Config, DiscordApiErrors, Emoji, GuildEmojisUpdateEvent, Member, Snowflake, User, emitEvent, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas"
+import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -115,10 +105,7 @@ router.post(
 		});
 		const { maxEmojis } = Config.get().limits.guild;
 
-		if (emoji_count >= maxEmojis)
-			throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(
-				maxEmojis,
-			);
+		if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
 		if (body.require_colons == null) body.require_colons = true;
 
 		const user = await User.findOneOrFail({ where: { id: req.user_id } });
@@ -132,10 +119,7 @@ router.post(
 			require_colons: body.require_colons ?? undefined, // schema allows nulls, db does not
 			user: user,
 			managed: false,
-			animated:
-				mimeType == "image/gif" ||
-				mimeType == "image/apng" ||
-				mimeType == "video/webm",
+			animated: mimeType == "image/gif" || mimeType == "image/apng" || mimeType == "video/webm",
 			available: true,
 			roles: [],
 		}).save();

@@ -17,15 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	BackupCode,
-	User,
-	generateToken,
-} from "@spacebar/util";
+import { BackupCode, User, generateToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
-import { TotpDisableSchema } from "@spacebar/schemas"
+import { TotpDisableSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -53,11 +49,7 @@ router.post(
 		const backup = await BackupCode.findOne({ where: { code: body.code } });
 		if (!backup) {
 			const ret = verifyToken(user.totp_secret || "", body.code);
-			if (!ret || ret.delta != 0)
-				throw new HTTPError(
-					req.t("auth:login.INVALID_TOTP_CODE"),
-					60008,
-				);
+			if (!ret || ret.delta != 0) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 		}
 
 		await User.update(

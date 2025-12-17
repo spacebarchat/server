@@ -17,14 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	BackupCode,
-	DiscordApiErrors,
-	User,
-	generateMfaBackupCodes,
-} from "@spacebar/util";
+import { BackupCode, DiscordApiErrors, User, generateMfaBackupCodes } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { CodesVerificationSchema } from "@spacebar/schemas"
+import { CodesVerificationSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -52,15 +47,11 @@ router.post(
 		// Once that's done, this route can verify `key`
 
 		// const user = await User.findOneOrFail({ where: { id: req.user_id } });
-		if ((await User.count({ where: { id: req.user_id } })) === 0)
-			throw DiscordApiErrors.UNKNOWN_USER;
+		if ((await User.count({ where: { id: req.user_id } })) === 0) throw DiscordApiErrors.UNKNOWN_USER;
 
 		let codes: BackupCode[];
 		if (regenerate) {
-			await BackupCode.update(
-				{ user: { id: req.user_id } },
-				{ expired: true },
-			);
+			await BackupCode.update({ user: { id: req.user_id } }, { expired: true });
 
 			codes = generateMfaBackupCodes(req.user_id);
 			await Promise.all(codes.map((x) => x.save()));

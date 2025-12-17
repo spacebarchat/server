@@ -17,31 +17,19 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	DiscordApiErrors,
-	FieldErrors,
-	generateWebAuthnTicket,
-	SecurityKey,
-	User,
-	verifyWebAuthnToken,
-	WebAuthn,
-} from "@spacebar/util";
+import { DiscordApiErrors, FieldErrors, generateWebAuthnTicket, SecurityKey, User, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";
 import { HTTPError } from "lambert-server";
-import { CreateWebAuthnCredentialSchema, GenerateWebAuthnCredentialsSchema, WebAuthnPostSchema } from "@spacebar/schemas"
+import { CreateWebAuthnCredentialSchema, GenerateWebAuthnCredentialsSchema, WebAuthnPostSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
-const isGenerateSchema = (
-	body: WebAuthnPostSchema,
-): body is GenerateWebAuthnCredentialsSchema => {
+const isGenerateSchema = (body: WebAuthnPostSchema): body is GenerateWebAuthnCredentialsSchema => {
 	return "password" in body;
 };
 
-const isCreateSchema = (
-	body: WebAuthnPostSchema,
-): body is CreateWebAuthnCredentialSchema => {
+const isCreateSchema = (body: WebAuthnPostSchema): body is CreateWebAuthnCredentialSchema => {
 	return "credential" in body;
 };
 
@@ -92,24 +80,13 @@ router.post(
 			where: {
 				id: req.user_id,
 			},
-			select: [
-				"data",
-				"id",
-				"disabled",
-				"deleted",
-				"totp_secret",
-				"mfa_enabled",
-				"username",
-			],
+			select: ["data", "id", "disabled", "deleted", "totp_secret", "mfa_enabled", "username"],
 			relations: ["settings"],
 		});
 
 		if (isGenerateSchema(req.body)) {
 			const { password } = req.body;
-			const same_password = await bcrypt.compare(
-				password,
-				user.data.hash || "",
-			);
+			const same_password = await bcrypt.compare(password, user.data.hash || "");
 			if (!same_password) {
 				throw FieldErrors({
 					password: {
@@ -119,14 +96,11 @@ router.post(
 				});
 			}
 
-			const registrationOptions =
-				await WebAuthn.fido2.attestationOptions();
+			const registrationOptions = await WebAuthn.fido2.attestationOptions();
 			const challenge = JSON.stringify({
 				publicKey: {
 					...registrationOptions,
-					challenge: Buffer.from(
-						registrationOptions.challenge,
-					).toString("base64"),
+					challenge: Buffer.from(registrationOptions.challenge).toString("base64"),
 					user: {
 						id: user.id,
 						name: user.username,
@@ -149,35 +123,20 @@ router.post(
 
 			const clientAttestationResponse = JSON.parse(credential);
 
-			if (!clientAttestationResponse.rawId)
-				throw new HTTPError("Missing rawId", 400);
+			if (!clientAttestationResponse.rawId) throw new HTTPError("Missing rawId", 400);
 
-			const rawIdBuffer = Buffer.from(
-				clientAttestationResponse.rawId,
-				"base64",
-			);
+			const rawIdBuffer = Buffer.from(clientAttestationResponse.rawId, "base64");
 			clientAttestationResponse.rawId = toArrayBuffer(rawIdBuffer);
 
-			const attestationExpectations: ExpectedAttestationResult =
-				JSON.parse(
-					Buffer.from(
-						clientAttestationResponse.response.clientDataJSON,
-						"base64",
-					).toString(),
-				);
+			const attestationExpectations: ExpectedAttestationResult = JSON.parse(Buffer.from(clientAttestationResponse.response.clientDataJSON, "base64").toString());
 
-			const regResult = await WebAuthn.fido2.attestationResult(
-				clientAttestationResponse,
-				{
-					...attestationExpectations,
-					factor: "second",
-				},
-			);
+			const regResult = await WebAuthn.fido2.attestationResult(clientAttestationResponse, {
+				...attestationExpectations,
+				factor: "second",
+			});
 
 			const authnrData = regResult.authnrData;
-			const keyId = Buffer.from(authnrData.get("credId")).toString(
-				"base64",
-			);
+			const keyId = Buffer.from(authnrData.get("credId")).toString("base64");
 			const counter = authnrData.get("counter");
 			const publicKey = authnrData.get("credentialPublicKeyPem");
 
@@ -189,10 +148,7 @@ router.post(
 				key_id: keyId,
 			});
 
-			await Promise.all([
-				securityKey.save(),
-				User.update({ id: req.user_id }, { webauthn_enabled: true }),
-			]);
+			await Promise.all([securityKey.save(), User.update({ id: req.user_id }, { webauthn_enabled: true })]);
 
 			return res.json({
 				name,

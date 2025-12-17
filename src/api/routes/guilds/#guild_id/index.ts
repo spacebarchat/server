@@ -17,22 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-	Channel,
-	DiscordApiErrors,
-	Guild,
-	GuildUpdateEvent,
-	Member,
-	Permissions,
-	SpacebarApiErrors,
-	emitEvent,
-	getPermission,
-	getRights,
-	handleFile,
-} from "@spacebar/util";
+import { Channel, DiscordApiErrors, Guild, GuildUpdateEvent, Member, Permissions, SpacebarApiErrors, emitEvent, getPermission, getRights, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { GuildUpdateSchema } from "@spacebar/schemas"
+import { GuildUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -54,15 +42,8 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 
-		const [guild, member] = await Promise.all([
-			Guild.findOneOrFail({ where: { id: guild_id } }),
-			Member.findOne({ where: { guild_id: guild_id, id: req.user_id } }),
-		]);
-		if (!member)
-			throw new HTTPError(
-				"You are not a member of the guild you are trying to access",
-				401,
-			);
+		const [guild, member] = await Promise.all([Guild.findOneOrFail({ where: { id: guild_id } }), Member.findOne({ where: { guild_id: guild_id, id: req.user_id } })]);
+		if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
 
 		return res.send({
 			...guild,
@@ -98,10 +79,7 @@ router.patch(
 		const rights = await getRights(req.user_id);
 		const permission = await getPermission(req.user_id, guild_id);
 
-		if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD"))
-			throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(
-				"MANAGE_GUILDS",
-			);
+		if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD")) throw DiscordApiErrors.MISSING_PERMISSIONS.withParams("MANAGE_GUILDS");
 
 		const guild = await Guild.findOneOrFail({
 			where: { id: guild_id },
@@ -118,47 +96,25 @@ router.patch(
 
 		// TODO: guild update check image
 
-		if (body.icon && body.icon != guild.icon)
-			body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
+		if (body.icon && body.icon != guild.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
 
-		if (body.banner && body.banner !== guild.banner)
-			body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
+		if (body.banner && body.banner !== guild.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
 
-		if (body.splash && body.splash !== guild.splash)
-			body.splash = await handleFile(
-				`/splashes/${guild_id}`,
-				body.splash,
-			);
+		if (body.splash && body.splash !== guild.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
-		if (
-			body.discovery_splash &&
-			body.discovery_splash !== guild.discovery_splash
-		)
-			body.discovery_splash = await handleFile(
-				`/discovery-splashes/${guild_id}`,
-				body.discovery_splash,
-			);
+		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
+			body.discovery_splash = await handleFile(`/discovery-splashes/${guild_id}`, body.discovery_splash);
 
 		if (body.features) {
-			const diff = guild.features
-				.filter((x) => !body.features?.includes(x))
-				.concat(
-					body.features.filter((x) => !guild.features.includes(x)),
-				);
+			const diff = guild.features.filter((x) => !body.features?.includes(x)).concat(body.features.filter((x) => !guild.features.includes(x)));
 
 			// TODO move these
-			const MUTABLE_FEATURES = [
-				"COMMUNITY",
-				"INVITES_DISABLED",
-				"DISCOVERABLE",
-			];
+			const MUTABLE_FEATURES = ["COMMUNITY", "INVITES_DISABLED", "DISCOVERABLE"];
 
 			for (const feature of diff) {
 				if (MUTABLE_FEATURES.includes(feature)) continue;
 
-				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(
-					feature,
-				);
+				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
 			}
 
 			// for some reason, they don't update in the assign.
