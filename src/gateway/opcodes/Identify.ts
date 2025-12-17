@@ -66,16 +66,6 @@ function logAuth(message: string) {
     console.log(`[Gateway/Auth] ${message}`);
 }
 
-const tryGetUserFromToken = async (...args: Parameters<typeof checkToken>) => {
-    logAuth("Checking token");
-    try {
-        return (await checkToken(...args)).user;
-    } catch (e) {
-        console.log("[Gateway] Error when identifying: ", e);
-        return null;
-    }
-};
-
 export async function onIdentify(this: WebSocket, data: Payload) {
     const totalSw = Stopwatch.startNew();
     const taskSw = Stopwatch.startNew();
