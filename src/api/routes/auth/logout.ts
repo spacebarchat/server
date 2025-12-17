@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { Session } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 export default router;
@@ -31,16 +32,17 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		if (req.body.provider != null || req.body.voip_provider != null) {
-			console.log(
-				`[LOGOUT]: provider or voip provider not null!`,
-				req.body,
-			);
+			console.log(`[LOGOUT]: provider or voip provider not null!`, req.body);
 		} else {
 			delete req.body.provider;
 			delete req.body.voip_provider;
-			if (Object.keys(req.body).length != 0)
-				console.log(`[LOGOUT]: Extra fields sent in logout!`, req.body);
+			if (Object.keys(req.body).length != 0) console.log(`[LOGOUT]: Extra fields sent in logout!`, req.body);
 		}
+
+		if (req.token.did) {
+			await Session.delete({ user_id: req.user_id, session_id: req.token.did });
+		}
+
 		res.status(204).send();
 	},
 );
