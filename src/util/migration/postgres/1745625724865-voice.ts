@@ -25,18 +25,10 @@ export class Voice1745625724865 implements MigrationInterface {
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(
-			`ALTER TABLE "stream_sessions" DROP CONSTRAINT "FK_13ae5c29aff4d0890c54179511a"`,
-		);
-		await queryRunner.query(
-			`ALTER TABLE "stream_sessions" DROP CONSTRAINT "FK_8b5a028a34dae9ee54af37c9c32"`,
-		);
-		await queryRunner.query(
-			`ALTER TABLE "streams" DROP CONSTRAINT "FK_5101f0cded27ff0aae78fc4eed7"`,
-		);
-		await queryRunner.query(
-			`ALTER TABLE "streams" DROP CONSTRAINT "FK_1b566f9b54d1cda271da53ac82f"`,
-		);
+		await queryRunner.query(`ALTER TABLE "stream_sessions" DROP CONSTRAINT "FK_13ae5c29aff4d0890c54179511a"`);
+		await queryRunner.query(`ALTER TABLE "stream_sessions" DROP CONSTRAINT "FK_8b5a028a34dae9ee54af37c9c32"`);
+		await queryRunner.query(`ALTER TABLE "streams" DROP CONSTRAINT "FK_5101f0cded27ff0aae78fc4eed7"`);
+		await queryRunner.query(`ALTER TABLE "streams" DROP CONSTRAINT "FK_1b566f9b54d1cda271da53ac82f"`);
 		await queryRunner.query(`DROP TABLE "stream_sessions"`);
 		await queryRunner.query(`DROP TABLE "streams"`);
 	}

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class WebhookMessageProperties1721298824927
-	implements MigrationInterface
-{
+export class WebhookMessageProperties1721298824927 implements MigrationInterface {
 	name = "WebhookMessageProperties1721298824927";
 
 	public async up(queryRunner: QueryRunner): Promise<void> {

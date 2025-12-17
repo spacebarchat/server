@@ -4,22 +4,14 @@ export class MessagePinnedAt1752383879533 implements MigrationInterface {
 	name = "MessagePinnedAt1752383879533";
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(
-			`ALTER TABLE "messages" ADD "pinned_at" TIMESTAMP`,
-		);
-		await queryRunner.query(
-			`UPDATE "messages" SET "pinned_at" = NOW() WHERE "pinned" = true`,
-		);
+		await queryRunner.query(`ALTER TABLE "messages" ADD "pinned_at" TIMESTAMP`);
+		await queryRunner.query(`UPDATE "messages" SET "pinned_at" = NOW() WHERE "pinned" = true`);
 		await queryRunner.query(`ALTER TABLE "messages" DROP COLUMN "pinned"`);
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`ALTER TABLE "messages" ADD "pinned" boolean`);
-		await queryRunner.query(
-			`UPDATE "messages" SET "pinned" = true WHERE "pinned_at" IS NOT NULL`,
-		);
-		await queryRunner.query(
-			`ALTER TABLE "messages" DROP COLUMN "pinned_at"`,
-		);
+		await queryRunner.query(`UPDATE "messages" SET "pinned" = true WHERE "pinned_at" IS NOT NULL`);
+		await queryRunner.query(`ALTER TABLE "messages" DROP COLUMN "pinned_at"`);
 	}
 }
