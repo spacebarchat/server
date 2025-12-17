@@ -17,6 +17,8 @@ if [ -n "$(find "flake.lock" -mtime +7 -print)" ]; then
   else
     echo "You do not appear to have nix installed. Skipping update of nix dependencies."
   fi
+else
+  echo "Nix flake lock was updated less than 7 days ago. Skipping update."
 fi
 
 npx -y lint-staged
