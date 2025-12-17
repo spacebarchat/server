@@ -96,14 +96,33 @@
               };
             };
 
-            containers.docker = pkgs.dockerTools.buildLayeredImage {
-              name = "spacebar-server-ts";
-              tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.default.version;
-              contents = [ self.packages.${system}.default ];
-              config = {
-                Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
-                Expose = [ "3001" ];
-              };
+            containers = {
+              docker = {
+                default = pkgs.dockerTools.buildLayeredImage {
+                  name = "spacebar-server-ts";
+                  tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.default.version;
+                  contents = [ self.packages.${system}.default ];
+                  config = {
+                    Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
+                    Expose = [ "3001" ];
+                  };
+                };
+              }
+              // lib.genAttrs [ "api" "cdn" "gateway" ] (
+                mod:
+                pkgs.dockerTools.buildLayeredImage {
+                  name = "spacebar-server-ts-${mod}";
+                  tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.default.version;
+                  contents = [
+                    self.packages.${system}.default
+                  ];
+                  config = {
+                    Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-${mod}" ];
+                    Expose = [ "3001" ];
+                  };
+
+                }
+              );
             };
 
             devShells.default = pkgs.mkShell {
@@ -121,12 +140,18 @@
           checks =
             let
               pkgs = import nixpkgs { system = "x86_64-linux"; };
+              lib = pkgs.lib;
             in
-            pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
+            lib.recursiveUpdate (lib.attrsets.unionOfDisjoint { } self.packages) {
               x86_64-linux = {
                 spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
-                docker-image = self.containers.x86_64-linux.docker;
-              };
+              }
+              // (lib.listToAttrs (
+                lib.mapAttrsToList (name: container: {
+                  name = "docker-${name}";
+                  value = container;
+                }) self.containers.x86_64-linux.docker
+              ));
             };
         }
       )

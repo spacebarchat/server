@@ -122,7 +122,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
     pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
       x86_64-linux = {
         #            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
-        docker-image = self.containers.x86_64-linux.admin-api;
+        docker-admin-api = self.containers.x86_64-linux.admin-api;
       };
     };
 }
