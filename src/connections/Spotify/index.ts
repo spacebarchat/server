@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	ConnectionLoader,
-	DiscordApiErrors,
-	RefreshableConnection,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
 import { SpotifySettings } from "./SpotifySettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
 	display_name: string;
@@ -49,12 +43,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 	public readonly authorizeUrl = "https://accounts.spotify.com/authorize";
 	public readonly tokenUrl = "https://accounts.spotify.com/api/token";
 	public readonly userInfoUrl = "https://api.spotify.com/v1/me";
-	public readonly scopes = [
-		"user-read-private",
-		"user-read-playback-state",
-		"user-modify-playback-state",
-		"user-read-currently-playing",
-	];
+	public readonly scopes = ["user-read-private", "user-read-playback-state", "user-modify-playback-state", "user-read-currently-playing"];
 	settings: SpotifySettings = new SpotifySettings();
 
 	init(): void {
@@ -64,16 +53,9 @@ export default class SpotifyConnection extends RefreshableConnection {
 		 */
 		this.refreshEnabled = false;
 
-		this.settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -92,10 +74,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -104,11 +83,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId as string}:${this.settings.clientSecret as string}`).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
@@ -125,11 +100,8 @@ export default class SpotifyConnection extends RefreshableConnection {
 			});
 	}
 
-	async refreshToken(
-		connectedAccount: ConnectedAccount,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		if (!connectedAccount.token_data?.refresh_token)
-			throw new Error("No refresh token available.");
+	async refreshToken(connectedAccount: ConnectedAccount): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token) throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 		const url = this.getTokenUrl();
 
@@ -137,11 +109,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId as string}:${this.settings.clientSecret as string}`).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
@@ -177,9 +145,7 @@ export default class SpotifyConnection extends RefreshableConnection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

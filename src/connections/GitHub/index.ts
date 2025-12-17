@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	Connection,
-	ConnectionLoader,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
 import { GitHubSettings } from "./GitHubSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface UserResponse {
 	login: string;
@@ -42,16 +36,9 @@ export default class GitHubConnection extends Connection {
 	settings: GitHubSettings = new GitHubSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<GitHubSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<GitHubSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -68,18 +55,12 @@ export default class GitHubConnection extends Connection {
 	getTokenUrl(code: string): string {
 		const url = new URL(this.tokenUrl);
 		url.searchParams.append("client_id", this.settings.clientId as string);
-		url.searchParams.append(
-			"client_secret",
-			this.settings.clientSecret as string,
-		);
+		url.searchParams.append("client_secret", this.settings.clientSecret as string);
 		url.searchParams.append("code", code);
 		return url.toString();
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl(code);
@@ -111,9 +92,7 @@ export default class GitHubConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

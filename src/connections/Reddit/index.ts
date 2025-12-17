@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	Connection,
-	ConnectionLoader,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
 import { RedditSettings } from "./RedditSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
 	verified: boolean;
@@ -54,16 +48,9 @@ export default class RedditConnection extends Connection {
 	settings: RedditSettings = new RedditSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<RedditSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<RedditSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -82,10 +69,7 @@ export default class RedditConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -93,9 +77,7 @@ export default class RedditConnection extends Connection {
 		return wretch(url.toString())
 			.headers({
 				Accept: "application/json",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId}:${this.settings.clientSecret}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId}:${this.settings.clientSecret}`).toString("base64")}`,
 				"Content-Type": "application/x-www-form-urlencoded",
 			})
 			.body(
@@ -127,9 +109,7 @@ export default class RedditConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

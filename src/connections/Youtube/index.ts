@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	Connection,
-	ConnectionLoader,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
 import { YoutubeSettings } from "./YoutubeSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface YouTubeConnectionChannelListResult {
 	items: {
@@ -51,27 +45,16 @@ interface YouTubeConnectionChannelListResult {
 
 export default class YoutubeConnection extends Connection {
 	public readonly id = "youtube";
-	public readonly authorizeUrl =
-		"https://accounts.google.com/o/oauth2/v2/auth";
+	public readonly authorizeUrl = "https://accounts.google.com/o/oauth2/v2/auth";
 	public readonly tokenUrl = "https://oauth2.googleapis.com/token";
-	public readonly userInfoUrl =
-		"https://www.googleapis.com/youtube/v3/channels?mine=true&part=snippet";
-	public readonly scopes = [
-		"https://www.googleapis.com/auth/youtube.readonly",
-	];
+	public readonly userInfoUrl = "https://www.googleapis.com/youtube/v3/channels?mine=true&part=snippet";
+	public readonly scopes = ["https://www.googleapis.com/auth/youtube.readonly"];
 	settings: YoutubeSettings = new YoutubeSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<YoutubeSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<YoutubeSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -90,10 +73,7 @@ export default class YoutubeConnection extends Connection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -134,9 +114,7 @@ export default class YoutubeConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

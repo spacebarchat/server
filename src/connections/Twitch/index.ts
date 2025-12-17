@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	ConnectionLoader,
-	DiscordApiErrors,
-	RefreshableConnection,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
 import { TwitchSettings } from "./TwitchSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface TwitchConnectionUserResponse {
 	data: {
@@ -47,24 +41,13 @@ export default class TwitchConnection extends RefreshableConnection {
 	public readonly authorizeUrl = "https://id.twitch.tv/oauth2/authorize";
 	public readonly tokenUrl = "https://id.twitch.tv/oauth2/token";
 	public readonly userInfoUrl = "https://api.twitch.tv/helix/users";
-	public readonly scopes = [
-		"channel_subscriptions",
-		"channel_check_subscription",
-		"channel:read:subscriptions",
-	];
+	public readonly scopes = ["channel_subscriptions", "channel_check_subscription", "channel:read:subscriptions"];
 	settings: TwitchSettings = new TwitchSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<TwitchSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<TwitchSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -83,10 +66,7 @@ export default class TwitchConnection extends RefreshableConnection {
 		return this.tokenUrl;
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -113,11 +93,8 @@ export default class TwitchConnection extends RefreshableConnection {
 			});
 	}
 
-	async refreshToken(
-		connectedAccount: ConnectedAccount,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-		if (!connectedAccount.token_data?.refresh_token)
-			throw new Error("No refresh token available.");
+	async refreshToken(connectedAccount: ConnectedAccount): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+		if (!connectedAccount.token_data?.refresh_token) throw new Error("No refresh token available.");
 		const refresh_token = connectedAccount.token_data.refresh_token;
 
 		const url = this.getTokenUrl();
@@ -164,9 +141,7 @@ export default class TwitchConnection extends RefreshableConnection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

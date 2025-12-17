@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	Connection,
-	ConnectionLoader,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
 import { FacebookSettings } from "./FacebookSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface FacebookErrorResponse {
 	error: {
@@ -43,25 +37,16 @@ interface UserResponse {
 
 export default class FacebookConnection extends Connection {
 	public readonly id = "facebook";
-	public readonly authorizeUrl =
-		"https://www.facebook.com/v14.0/dialog/oauth";
-	public readonly tokenUrl =
-		"https://graph.facebook.com/v14.0/oauth/access_token";
+	public readonly authorizeUrl = "https://www.facebook.com/v14.0/dialog/oauth";
+	public readonly tokenUrl = "https://graph.facebook.com/v14.0/oauth/access_token";
 	public readonly userInfoUrl = "https://graph.facebook.com/v14.0/me";
 	public readonly scopes = ["public_profile"];
 	settings: FacebookSettings = new FacebookSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<FacebookSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<FacebookSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -80,19 +65,13 @@ export default class FacebookConnection extends Connection {
 	getTokenUrl(code: string): string {
 		const url = new URL(this.tokenUrl);
 		url.searchParams.append("client_id", this.settings.clientId as string);
-		url.searchParams.append(
-			"client_secret",
-			this.settings.clientSecret as string,
-		);
+		url.searchParams.append("client_secret", this.settings.clientSecret as string);
 		url.searchParams.append("code", code);
 		url.searchParams.append("redirect_uri", this.getRedirectUri());
 		return url.toString();
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl(code);
@@ -124,9 +103,7 @@ export default class FacebookConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 

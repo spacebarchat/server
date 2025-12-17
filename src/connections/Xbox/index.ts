@@ -16,16 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	ConnectedAccount,
-	ConnectedAccountCommonOAuthTokenResponse,
-	Connection,
-	ConnectionLoader,
-	DiscordApiErrors,
-} from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
 import { XboxSettings } from "./XboxSettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas"
+import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface XboxUserResponse {
 	IssueInstant: string;
@@ -51,27 +45,17 @@ interface XboxUserResponse {
 
 export default class XboxConnection extends Connection {
 	public readonly id = "xbox";
-	public readonly authorizeUrl =
-		"https://login.live.com/oauth20_authorize.srf";
+	public readonly authorizeUrl = "https://login.live.com/oauth20_authorize.srf";
 	public readonly tokenUrl = "https://login.live.com/oauth20_token.srf";
-	public readonly userInfoUrl =
-		"https://xsts.auth.xboxlive.com/xsts/authorize";
-	public readonly userAuthUrl =
-		"https://user.auth.xboxlive.com/user/authenticate";
+	public readonly userInfoUrl = "https://xsts.auth.xboxlive.com/xsts/authorize";
+	public readonly userAuthUrl = "https://user.auth.xboxlive.com/user/authenticate";
 	public readonly scopes = ["Xboxlive.signin", "Xboxlive.offline_access"];
 	settings: XboxSettings = new XboxSettings();
 
 	init(): void {
-		this.settings = ConnectionLoader.getConnectionConfig<XboxSettings>(
-			this.id,
-			this.settings,
-		);
+		this.settings = ConnectionLoader.getConnectionConfig<XboxSettings>(this.id, this.settings);
 
-		if (
-			this.settings.enabled &&
-			(!this.settings.clientId || !this.settings.clientSecret)
-		)
-			throw new Error(`Invalid settings for connection ${this.id}`);
+		if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
 	}
 
 	getAuthorizationUrl(userId: string): string {
@@ -117,10 +101,7 @@ export default class XboxConnection extends Connection {
 			});
 	}
 
-	async exchangeCode(
-		state: string,
-		code: string,
-	): Promise<ConnectedAccountCommonOAuthTokenResponse> {
+	async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
 		this.validateState(state);
 
 		const url = this.getTokenUrl();
@@ -129,11 +110,7 @@ export default class XboxConnection extends Connection {
 			.headers({
 				Accept: "application/json",
 				"Content-Type": "application/x-www-form-urlencoded",
-				Authorization: `Basic ${Buffer.from(
-					`${this.settings.clientId as string}:${
-						this.settings.clientSecret as string
-					}`,
-				).toString("base64")}`,
+				Authorization: `Basic ${Buffer.from(`${this.settings.clientId as string}:${this.settings.clientSecret as string}`).toString("base64")}`,
 			})
 			.body(
 				new URLSearchParams({
@@ -179,9 +156,7 @@ export default class XboxConnection extends Connection {
 			});
 	}
 
-	async handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null> {
+	async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
 		const { state, code } = params;
 		if (!code) throw new Error("No code provided");
 
@@ -190,10 +165,7 @@ export default class XboxConnection extends Connection {
 		const userToken = await this.getUserToken(tokenData.access_token);
 		const userInfo = await this.getUser(userToken);
 
-		const exists = await this.hasConnection(
-			userId,
-			userInfo.DisplayClaims.xui[0].xid,
-		);
+		const exists = await this.hasConnection(userId, userInfo.DisplayClaims.xui[0].xid);
 
 		if (exists) return null;
 
