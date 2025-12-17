@@ -314,7 +314,7 @@ export class Message extends BaseClass {
 			const arr = options.where instanceof Array ? options.where : [options.where];
 			for (const thing of arr) {
 				if (!("flags" in thing)) {
-					thing.flags = Not(Raw((alias) => `${alias} & ${MessageFlags.FLAGS.PRIVATE_ROUTE} = ${MessageFlags.FLAGS.PRIVATE_ROUTE}`));
+					thing.flags = Not(Raw((alias) => `${alias} & ${MessageFlags.FLAGS.EPHEMERAL} = ${MessageFlags.FLAGS.EPHEMERAL}`));
 				}
 			}
 		}

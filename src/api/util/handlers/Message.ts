@@ -47,6 +47,7 @@ import {
 	ReadState,
 	Member,
 	Session,
+	MessageFlags,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
@@ -538,12 +539,12 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
-	const ephermal = (message.flags & (1 << 6)) !== 0;
+	const ephemeral = (message.flags & (MessageFlags.FLAGS.EPHEMERAL)) !== 0;
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({
 			event: "MESSAGE_CREATE",
-			...(ephermal ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
+			...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
 			data: message.toJSON(),
 		} as MessageCreateEvent),
 	]);
