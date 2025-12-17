@@ -13,6 +13,7 @@ if [ -n "$(find "flake.lock" -mtime +7 -print)" ]; then
       exit $?
     else
        nix flake update --extra-experimental-features 'nix-command flakes'
+       git add flake.lock
     fi
   else
     echo "You do not appear to have nix installed. Skipping update of nix dependencies."
