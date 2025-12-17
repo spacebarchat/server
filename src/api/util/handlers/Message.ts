@@ -539,7 +539,7 @@ export async function postHandleMessage(message: Message) {
 export async function sendMessage(opts: MessageOptions) {
 	const message = await handleMessage({ ...opts, timestamp: new Date() });
 
-	const ephemeral = (message.flags & (MessageFlags.FLAGS.EPHEMERAL)) !== 0;
+	const ephemeral = (message.flags & Number(MessageFlags.FLAGS.EPHEMERAL)) !== 0;
 	await Promise.all([
 		Message.insert(message),
 		emitEvent({
