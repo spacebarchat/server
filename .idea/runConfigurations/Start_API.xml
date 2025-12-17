@@ -5,7 +5,7 @@
     <scripts>
       <script value="start:api" />
     </scripts>
-    <node-interpreter value="/run/current-system/sw/bin/node" />
+    <node-interpreter value="project" />
     <package-manager value="npm" />
     <envs />
     <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">

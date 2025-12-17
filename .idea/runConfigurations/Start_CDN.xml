@@ -17,7 +17,7 @@
         <package-json value="$PROJECT_DIR$/package.json" />
         <command value="run" />
         <scripts>
-          <script value="build" />
+          <script value="build:src" />
         </scripts>
         <node-interpreter value="project" />
         <envs />

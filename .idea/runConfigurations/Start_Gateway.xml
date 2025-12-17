@@ -5,7 +5,7 @@
     <scripts>
       <script value="start:gateway" />
     </scripts>
-    <node-interpreter value="/run/current-system/sw/bin/node" />
+    <node-interpreter value="project" />
     <package-manager value="npm" />
     <envs />
     <EXTENSION ID="com.fapiko.jetbrains.plugins.better_direnv.runconfigs.NodeRunConfiguration">
@@ -17,7 +17,7 @@
         <package-json value="$PROJECT_DIR$/package.json" />
         <command value="run" />
         <scripts>
-          <script value="build" />
+          <script value="build:src" />
         </scripts>
         <node-interpreter value="project" />
         <envs />
