@@ -502,8 +502,8 @@ export async function postHandleMessage(message: Message) {
 		}
 
 		// bit gross, but whatever!
-		const endpointPublic = Config.get().cdn.endpointPublic || "http://127.0.0.1"; // lol
-		const handler = url.hostname === new URL(endpointPublic).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
+		const endpointPublic = Config.get().cdn.endpointPublic; // lol
+		const handler = url.hostname === new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
 		try {
 			let res = await handler(url);
