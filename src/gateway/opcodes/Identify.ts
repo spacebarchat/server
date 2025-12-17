@@ -136,7 +136,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		tokenData.session ??
 		Session.create({
 			user_id: this.user_id,
-			session_id: "TEMP_" + this.session_id,
+			session_id = this.session_id,
 		});
 
 	this.session.status = identify.presence?.status || "online";

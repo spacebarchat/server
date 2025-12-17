@@ -80,7 +80,7 @@ export async function Connection(
 	}
 
 	//Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
-	const session_id = genSessionId();
+	const session_id = "TEMP_" + genSessionId();
 	socket.session_id = session_id; //Set the session of the WebSocket object
 
 	try {
