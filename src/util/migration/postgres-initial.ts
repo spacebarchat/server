@@ -1,4 +1,3 @@
-// @prettier-ignore
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2025 Spacebar and Spacebar Contributors

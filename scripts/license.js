@@ -34,12 +34,7 @@ const addToDir = (dir) => {
 		const commentStrings = languageCommentStrings[fileType];
 		if (!commentStrings) continue;
 
-		const preamble =
-			commentStrings[0] +
-			"\n" +
-			SPACEBAR_LICENSE_PREAMBLE +
-			"\n" +
-			commentStrings[1];
+		const preamble = commentStrings[0] + "\n" + SPACEBAR_LICENSE_PREAMBLE + "\n" + commentStrings[1];
 
 		if (file.startsWith(preamble)) {
 			continue;

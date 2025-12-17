@@ -50,12 +50,12 @@ if (fs.existsSync(path.join(targetDir, "index.js")) || fs.existsSync(path.join(t
 	process.exit(1);
 }
 
-const dirs = fs.readdirSync(targetDir).filter(f => fs.statSync(path.join(targetDir, f)).isDirectory());
+const dirs = fs.readdirSync(targetDir).filter((f) => fs.statSync(path.join(targetDir, f)).isDirectory());
 for (const dir of dirs) {
 	content += `export * from "./${dir}";\n`;
 }
 
-const files = fs.readdirSync(targetDir).filter(f => f.endsWith(".js") || f.endsWith(".ts"));
+const files = fs.readdirSync(targetDir).filter((f) => f.endsWith(".js") || f.endsWith(".ts"));
 for (const file of files) {
 	const filePath = path.join(targetDir, file);
 	const stat = fs.statSync(filePath);

@@ -9,5 +9,5 @@
 	"useTabs": true,
 	"singleQuote": false,
 	"endOfLine": "auto",
-    "printWidth": 180
+	"printWidth": 180
 }
