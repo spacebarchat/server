@@ -70,6 +70,7 @@ router.post(
 		for (const session of sessions) {
 			await session.remove();
 		}
+		res.status(204).send();
 	},
 );
 export default router;
