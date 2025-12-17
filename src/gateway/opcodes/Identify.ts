@@ -149,27 +149,30 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     // * the bot application, if it exists
     const [
         { elapsed: sessionSaveTime },
+        { result: sessions, elapsed: sessionQueryTime },
         { result: application, elapsed: applicationQueryTime },
         { result: read_states, elapsed: read_statesQueryTime },
         { result: members, elapsed: membersQueryTime },
         { result: recipients, elapsed: recipientsQueryTime },
     ] = await Promise.all([
         timePromise(() => this.session!.save()),
-
+        timePromise(() =>
+            Session.find({
+                where: { user_id: this.user_id, is_admin_session: false },
+            }),
+        ),
         timePromise(() =>
             Application.findOne({
                 where: { id: this.user_id },
                 select: ["id", "flags"],
             }),
         ),
-
         timePromise(() =>
             ReadState.find({
                 where: { user_id: this.user_id },
                 select: ["id", "channel_id", "last_message_id", "last_pin_timestamp", "mention_count"],
             }),
         ),
-
         timePromise(() =>
             Member.find({
                 where: { id: this.user_id },
@@ -204,7 +207,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 ],
             }),
         ),
-
         timePromise(() =>
             Recipient.find({
                 where: { user_id: this.user_id, closed: false },
@@ -244,7 +246,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                             .getMetadata(Guild)
                             .columns.map((x) => [x.propertyName, true]),
                     ),
-                    // relations: ["channels", "emojis", "roles", "stickers", "voice_states"],
                 }),
             ),
         ),
@@ -473,12 +474,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
     // Send SESSIONS_REPLACE and PRESENCE_UPDATE
-    const allSessions = (
-        await Session.find({
-            where: { user_id: this.user_id, is_admin_session: false },
-        })
-    ).map((x) => x.toPrivateGatewayDeviceInfo());
-
+    const allSessions = sessions
+        .filter((x) => x.session_id !== this.session_id)
+        .concat(this.session!)
+        .map((x) => x.toPrivateGatewayDeviceInfo());
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
     const [{ elapsed: emitSessionsReplaceTime }, { elapsed: emitPresenceUpdateTime }] = await Promise.all([
@@ -601,6 +600,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
                     sessionSaveTime,
+                    sessionQueryTime,
                     settingsProtosQueryTime,
                     applicationQueryTime,
                     read_statesQueryTime,
