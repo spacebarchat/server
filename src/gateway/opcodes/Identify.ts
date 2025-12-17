@@ -263,6 +263,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ),
     ]);
 
+    user.relationships = relationships;
+    user.settings = settings;
+
     const userMetaQueryTime = taskSw.getElapsedAndReset();
 
     const { result: memberGuilds, elapsed: queryGuildsTime } = await timePromise(() =>
