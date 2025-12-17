@@ -324,6 +324,8 @@ class UnixSocketWriter {
             }
         }
 
-        console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
+        if (tsw.elapsed().totalMilliseconds > 5)
+            // else it's too noisy
+            console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
     }
 }
