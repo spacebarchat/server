@@ -16,14 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { arrayOrderBy } from "@spacebar/util";
+
 export class WebRtcEnvConfiguration {
 	static get schema() {
-		return [
+		return arrayOrderBy([
 			{ key: "WRTC_PUBLIC_IP", type: "string", description: "Public IP of the server running the media server" },
 			{ key: "WRTC_PORT_MIN", type: "number", description: "Minimum port for WebRTC media server" },
 			{ key: "WRTC_PORT_MAX", type: "number", description: "Maximum port for WebRTC media server" },
 			{ key: "WRTC_LIBRARY", type: "string", description: "WebRTC library to use. One of `@spacebarchat/medooze-webrtc` (voice+video) or `@spacebarchat/mediasoup-webrtc` (voice only)" },
-		].orderBy((e) => e.key);
+		], (e) => e.key);
 	}
 
 	get publicIp(): string {

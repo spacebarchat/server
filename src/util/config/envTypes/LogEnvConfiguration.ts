@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { arrayOrderBy } from "@spacebar/util";
+
 interface GatewayLoggingConfigValue {
 	enabled: boolean;
 	logTraces: boolean;
@@ -28,7 +30,7 @@ interface GatewayLoggingConfigValue {
 
 export class LogEnvConfiguration {
 	static get schema() {
-		return [
+		return arrayOrderBy([
 			{ key: "LOG_CDN_SIGNATURES", type: "boolean", description: "Log CDN attachment signature checks - very noisy!" },
 			{ key: "LOG_DATABASE_QUERIES", type: "boolean", description: "Enable logging of database queries." },
 			{ key: "LOG_GATEWAY_EVENTS", type: "boolean", description: "Comma-separated list of flags. Any of: `TRACES`, `USER_ID`, `SESSION_ID`, `PAYLOAD`, `HTTP`, `HTTP_MESSAGES`." },
@@ -44,7 +46,7 @@ export class LogEnvConfiguration {
 			{ key: "LOG_AUTHENTICATION", type: "boolean", description: "Log authentication debug messages - very noisy!" },
 			{ key: "LOG_VALIDATION_ERRORS", type: "boolean", description: "Enable logging of validation errors." },
 			{ key: "LOG_IMPORT_ERRORS", type: "boolean", description: "Enable logging of import errors." },
-		].orderBy((e) => e.key);
+		], (e) => e.key);
 	}
 
 	get gatewayLogging(): GatewayLoggingConfigValue {

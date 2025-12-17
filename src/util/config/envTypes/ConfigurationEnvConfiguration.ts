@@ -16,9 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { arrayOrderBy } from "@spacebar/util";
+
 export class ConfigurationEnvConfiguration {
 	static get schema() {
-		return [
+		return arrayOrderBy([
 			{ key: "CONFIG_PATH", type: "string", description: "Path to a JSON file containing configuration data" },
 			{ key: "CONFIG_WRITEBACK", type: "boolean", description: "Whether to write back configuration changes to the specified JSON file" },
 			{
@@ -32,7 +34,7 @@ export class ConfigurationEnvConfiguration {
 					"<li>**`single`**: Ignore database config outright</li>" +
 					"</ul>",
 			},
-		].orderBy((e) => e.key);
+		], (e) => e.key);
 	}
 
 	get enabled(): boolean {
