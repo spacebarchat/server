@@ -9,5 +9,4 @@ flake.lock
 extra/admin-api
 discord-response-samples
 src/util/migration/postgres-initial.ts
-scripts/stagingMigrat
 temp
