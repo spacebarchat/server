@@ -94,7 +94,7 @@ router.post(
                         event: "GUILD_BAN_ADD",
                         data: {
                             guild_id: guild_id,
-                            user: banned_user.toPublicUser(),
+                            user: banned_user,
                         },
                         guild_id: guild_id,
                     } as GuildBanAddEvent),

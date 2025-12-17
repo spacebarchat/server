@@ -378,7 +378,7 @@ export class Member extends BaseClassWithoutId {
                 event: "GUILD_MEMBER_ADD",
                 data: {
                     ...member,
-                    user: user.toPublicUser(),
+                    user: user,
                     guild_id,
                 },
                 guild_id,

@@ -29,7 +29,10 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 
     const { guild_id, with_mutual_guilds, with_mutual_friends, with_mutual_friends_count } = req.query;
 
-    const user = await User.getPublicUser(req.params.user_id, {
+    const user = await User.findOneOrFail({
+        where: {
+            id: req.params.id,
+        },
         relations: ["connected_accounts"],
     });
 

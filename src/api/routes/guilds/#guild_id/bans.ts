@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { APIBansArray, BanCreateSchema, BanRegistrySchema, GuildBansResponse } from "@spacebar/schemas";
+import { APIBansArray, BanCreateSchema, BanRegistrySchema, GuildBansResponse, PublicUser } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -43,7 +43,7 @@ router.get(
         const { guild_id } = req.params;
 
         let bans = await Ban.find({ where: { guild_id: guild_id } });
-        const promisesToAwait: Promise<User>[] = [];
+        const promisesToAwait: Promise<PublicUser>[] = [];
         const bansObj: APIBansArray = [];
 
         bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
@@ -236,7 +236,7 @@ router.put(
                 event: "GUILD_BAN_ADD",
                 data: {
                     guild_id: guild_id,
-                    user: banned_user.toPublicUser(),
+                    user: banned_user,
                     delete_message_secs: Math.floor(deleteMessagesMs / 1000),
                 },
                 guild_id: guild_id,
