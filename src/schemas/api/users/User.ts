@@ -56,7 +56,6 @@ interface UserEntityPleaseRewriteThankYou {
     connected_accounts: ConnectedAccountSchema[];
     fingerprints: string[];
     settings?: UserSettingsSchema;
-    extended_settings: string;
     badge_ids?: string[];
 }
 

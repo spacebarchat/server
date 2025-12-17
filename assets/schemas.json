@@ -8465,10 +8465,6 @@
             "settings": {
                 "$ref": "#/definitions/UserSettings"
             },
-            "extended_settings": {
-                "type": "string",
-                "default": "{}"
-            },
             "security_keys": {
                 "type": "array",
                 "items": {
@@ -8496,7 +8492,6 @@
             "desktop",
             "disabled",
             "discriminator",
-            "extended_settings",
             "fingerprints",
             "flags",
             "id",

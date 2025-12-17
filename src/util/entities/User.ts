@@ -162,10 +162,6 @@ export class User extends BaseClass {
     @JoinColumn()
     settings?: UserSettings;
 
-    // workaround to prevent fossord-unaware clients from deleting settings not used by them
-    @Column({ type: "simple-json", select: false })
-    extended_settings: string = "{}";
-
     @OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
     security_keys: SecurityKey[];
 
@@ -297,7 +293,6 @@ export class User extends BaseClass {
                 hash: password,
                 valid_tokens_since: new Date(),
             },
-            extended_settings: "{}",
             settings: settings,
 
             premium_since: Config.get().defaults.user.premium ? new Date() : undefined,

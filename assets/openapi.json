@@ -7979,10 +7979,6 @@
                     "settings": {
                         "$ref": "#/components/schemas/UserSettings"
                     },
-                    "extended_settings": {
-                        "type": "string",
-                        "default": "{}"
-                    },
                     "security_keys": {
                         "type": "array",
                         "items": {
@@ -8009,7 +8005,6 @@
                     "desktop",
                     "disabled",
                     "discriminator",
-                    "extended_settings",
                     "fingerprints",
                     "flags",
                     "id",
@@ -23588,7 +23583,7 @@
         },
         "/channels/{channel_id}/greet/": {
             "post": {
-                "x-permission-required": "MANAGE_CHANNELS",
+                "x-permission-required": "SEND_MESSAGES",
                 "security": [
                     {
                         "bearer": []
