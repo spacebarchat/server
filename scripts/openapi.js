@@ -243,7 +243,16 @@ async function main() {
 
 	fs.writeFileSync(openapiPath, JSON.stringify(specification, null, 4).replaceAll("#/definitions", "#/components/schemas").replaceAll("bigint", "number"));
 	console.log("Wrote OpenAPI specification to", openapiPath);
-	console.log("Specification contains", Object.keys(specification.paths).length, "paths and", Object.keys(specification.components.schemas).length, "schemas in", Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds), "ms.");
+	const elapsedMs = Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds);
+	console.log(
+		"Specification contains",
+		Object.keys(specification.paths).length,
+		"paths and",
+		Object.keys(specification.components.schemas).length,
+		"schemas in",
+		elapsedMs,
+		"ms.",
+	);
 }
 
 main();

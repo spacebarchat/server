@@ -237,7 +237,9 @@ async function main() {
 		mergeDefs(name, part);
 
 		const elapsed = schemaSw.getElapsedAndReset();
-		process.stdout.write("Done in " + yellowBright(elapsed.totalMilliseconds + "." + elapsed.microseconds) + " ms, " + yellowBright(JSON.stringify(part).length) + " bytes (unformatted) ");
+		process.stdout.write(
+			"Done in " + yellowBright(elapsed.totalMilliseconds + "." + elapsed.microseconds) + " ms, " + yellowBright(JSON.stringify(part).length) + " bytes (unformatted) ",
+		);
 		if (elapsed.totalMilliseconds >= 20) console.log(bgRedBright("\x1b[5m[SLOW]\x1b[25m"));
 		else console.log();
 
@@ -307,7 +309,8 @@ async function main() {
 
 	fs.writeFileSync(schemaPath, JSON.stringify(definitions, null, 4));
 	fs.writeFileSync(__dirname + "/schemaExclusions.json", JSON.stringify(exclusionList, null, 4));
-	console.log("\nSuccessfully wrote", Object.keys(definitions).length, "schemas to", schemaPath, "in", Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds), "ms,", fs.statSync(schemaPath).size, "bytes.");
+	const elapsedMs = Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds);
+	console.log("\nSuccessfully wrote", Object.keys(definitions).length, "schemas to", schemaPath, "in", elapsedMs, "ms,", fs.statSync(schemaPath).size, "bytes.");
 }
 
 function deleteOneOfKindUndefinedRecursive(obj, path) {
