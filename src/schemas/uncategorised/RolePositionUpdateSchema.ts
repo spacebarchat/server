@@ -17,6 +17,6 @@
 */
 
 export type RolePositionUpdateSchema = {
-	id: string;
-	position: number;
+    id: string;
+    position: number;
 }[];

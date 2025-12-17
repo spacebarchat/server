@@ -19,7 +19,7 @@
 import { WebSocket } from "@spacebar/gateway";
 
 export async function onClose(this: WebSocket, code: number, reason: string) {
-	console.log("[WebRTC] closed", code, reason.toString());
+    console.log("[WebRTC] closed", code, reason.toString());
 
-	this.removeAllListeners();
+    this.removeAllListeners();
 }

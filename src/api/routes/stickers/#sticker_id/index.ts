@@ -22,19 +22,19 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "Sticker",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { sticker_id } = req.params;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "Sticker",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { sticker_id } = req.params;
 
-		res.json(await Sticker.find({ where: { id: sticker_id } }));
-	},
+        res.json(await Sticker.find({ where: { id: sticker_id } }));
+    },
 );
 
 export default router;

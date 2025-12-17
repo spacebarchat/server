@@ -17,6 +17,6 @@
 */
 
 export interface GuildTemplateCreateSchema {
-	name: string;
-	avatar?: string | null;
+    name: string;
+    avatar?: string | null;
 }

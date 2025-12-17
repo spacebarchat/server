@@ -16,6 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 export interface WebAuthnCreateResponse {
-	name: string;
-	id: string;
+    name: string;
+    id: string;
 }

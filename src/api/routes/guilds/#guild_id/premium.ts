@@ -21,8 +21,8 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.get("/subscriptions", route({}), async (req: Request, res: Response) => {
-	// TODO:
-	res.json([]);
+    // TODO:
+    res.json([]);
 });
 
 export default router;

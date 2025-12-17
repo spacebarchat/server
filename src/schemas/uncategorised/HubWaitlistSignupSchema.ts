@@ -17,6 +17,6 @@
 */
 
 export interface HubWaitlistSignupSchema {
-	email: string;
-	school: string;
+    email: string;
+    school: string;
 }

@@ -19,13 +19,13 @@
 import { Snowflake } from "@spacebar/util";
 
 export class GeneralConfiguration {
-	instanceName: string = "Spacebar Instance";
-	instanceDescription: string | null = "This is a Spacebar instance made in the pre-release days";
-	frontPage: string | null = null;
-	tosPage: string | null = null;
-	correspondenceEmail: string | null = null;
-	correspondenceUserID: string | null = null;
-	image: string | null = null;
-	instanceId: string = Snowflake.generate();
-	autoCreateBotUsers: boolean = false;
+    instanceName: string = "Spacebar Instance";
+    instanceDescription: string | null = "This is a Spacebar instance made in the pre-release days";
+    frontPage: string | null = null;
+    tosPage: string | null = null;
+    correspondenceEmail: string | null = null;
+    correspondenceUserID: string | null = null;
+    image: string | null = null;
+    instanceId: string = Snowflake.generate();
+    autoCreateBotUsers: boolean = false;
 }

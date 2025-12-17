@@ -17,7 +17,7 @@
 */
 
 export interface WebhookUpdateSchema {
-	name?: string;
-	avatar?: string;
-	channel_id?: string;
+    name?: string;
+    avatar?: string;
+    channel_id?: string;
 }

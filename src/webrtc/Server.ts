@@ -25,62 +25,62 @@ import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBL
 import { green, yellow } from "picocolors";
 
 export class Server {
-	public ws: ws.Server;
-	public port: number;
-	public server: http.Server;
-	public production: boolean;
+    public ws: ws.Server;
+    public port: number;
+    public server: http.Server;
+    public production: boolean;
 
-	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
-		this.port = port;
-		this.production = production || false;
+    constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
+        this.port = port;
+        this.production = production || false;
 
-		if (server) this.server = server;
-		else {
-			this.server = http.createServer(function (req, res) {
-				res.writeHead(200).end("Online");
-			});
-		}
+        if (server) this.server = server;
+        else {
+            this.server = http.createServer(function (req, res) {
+                res.writeHead(200).end("Online");
+            });
+        }
 
-		// this.server.on("upgrade", (request, socket, head) => {
-		// 	if (!request.url?.includes("voice")) return;
-		// 	this.ws.handleUpgrade(request, socket, head, (socket) => {
-		// 		// @ts-ignore
-		// 		socket.server = this;
-		// 		this.ws.emit("connection", socket, request);
-		// 	});
-		// });
+        // this.server.on("upgrade", (request, socket, head) => {
+        // 	if (!request.url?.includes("voice")) return;
+        // 	this.ws.handleUpgrade(request, socket, head, (socket) => {
+        // 		// @ts-ignore
+        // 		socket.server = this;
+        // 		this.ws.emit("connection", socket, request);
+        // 	});
+        // });
 
-		this.ws = new ws.Server({
-			maxPayload: 1024 * 1024 * 100,
-			server: this.server,
-		});
-		this.ws.on("connection", Connection);
-		this.ws.on("error", console.error);
-	}
+        this.ws = new ws.Server({
+            maxPayload: 1024 * 1024 * 100,
+            server: this.server,
+        });
+        this.ws.on("connection", Connection);
+        this.ws.on("error", console.error);
+    }
 
-	async start(): Promise<void> {
-		await initDatabase();
-		await Config.init();
-		await initEvent();
+    async start(): Promise<void> {
+        await initDatabase();
+        await Config.init();
+        await initEvent();
 
-		// try to load webrtc library, if failed just don't start webrtc endpoint
-		try {
-			await loadWebRtcLibrary();
-		} catch (e) {
-			console.log(`[WebRTC] ${yellow("WEBRTC disabled")}`);
-			return;
-		}
+        // try to load webrtc library, if failed just don't start webrtc endpoint
+        try {
+            await loadWebRtcLibrary();
+        } catch (e) {
+            console.log(`[WebRTC] ${yellow("WEBRTC disabled")}`);
+            return;
+        }
 
-		await mediaServer.start(WRTC_PUBLIC_IP, WRTC_PORT_MIN, WRTC_PORT_MAX);
-		if (!this.server.listening) {
-			this.server.listen(this.port);
-			console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
-		}
-	}
+        await mediaServer.start(WRTC_PUBLIC_IP, WRTC_PORT_MIN, WRTC_PORT_MAX);
+        if (!this.server.listening) {
+            this.server.listen(this.port);
+            console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
+        }
+    }
 
-	async stop() {
-		closeDatabase();
-		this.server.close();
-		mediaServer?.stop();
-	}
+    async stop() {
+        closeDatabase();
+        this.server.close();
+        mediaServer?.stop();
+    }
 }

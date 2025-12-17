@@ -19,31 +19,31 @@
 import { PartialUser, Snowflake } from "@spacebar/schemas";
 
 export enum MessageType {
-	DEFAULT = 0,
-	RECIPIENT_ADD = 1,
-	RECIPIENT_REMOVE = 2,
-	CALL = 3,
-	CHANNEL_NAME_CHANGE = 4,
-	CHANNEL_ICON_CHANGE = 5,
-	CHANNEL_PINNED_MESSAGE = 6,
-	GUILD_MEMBER_JOIN = 7,
-	USER_PREMIUM_GUILD_SUBSCRIPTION = 8,
-	USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1 = 9,
-	USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10,
-	USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11,
-	CHANNEL_FOLLOW_ADD = 12,
-	ACTION = 13, // /me messages
-	GUILD_DISCOVERY_DISQUALIFIED = 14,
-	GUILD_DISCOVERY_REQUALIFIED = 15,
-	ENCRYPTED = 16,
-	REPLY = 19,
-	APPLICATION_COMMAND = 20, // application command or self command invocation
-	ROUTE_ADDED = 41, // custom message routing: new route affecting that channel
-	ROUTE_DISABLED = 42, // custom message routing: given route no longer affecting that channel
-	SELF_COMMAND_SCRIPT = 43, // self command scripts
-	ENCRYPTION = 50,
-	CUSTOM_START = 63,
-	UNHANDLED = 255,
+    DEFAULT = 0,
+    RECIPIENT_ADD = 1,
+    RECIPIENT_REMOVE = 2,
+    CALL = 3,
+    CHANNEL_NAME_CHANGE = 4,
+    CHANNEL_ICON_CHANGE = 5,
+    CHANNEL_PINNED_MESSAGE = 6,
+    GUILD_MEMBER_JOIN = 7,
+    USER_PREMIUM_GUILD_SUBSCRIPTION = 8,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1 = 9,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10,
+    USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11,
+    CHANNEL_FOLLOW_ADD = 12,
+    ACTION = 13, // /me messages
+    GUILD_DISCOVERY_DISQUALIFIED = 14,
+    GUILD_DISCOVERY_REQUALIFIED = 15,
+    ENCRYPTED = 16,
+    REPLY = 19,
+    APPLICATION_COMMAND = 20, // application command or self command invocation
+    ROUTE_ADDED = 41, // custom message routing: new route affecting that channel
+    ROUTE_DISABLED = 42, // custom message routing: given route no longer affecting that channel
+    SELF_COMMAND_SCRIPT = 43, // self command scripts
+    ENCRYPTION = 50,
+    CUSTOM_START = 63,
+    UNHANDLED = 255,
 }
 
 /**
@@ -64,33 +64,33 @@ export type PartialMessage = Pick<Message, "id">
  */
 
 export interface PartialMessage {
-	id: Snowflake;
-	channel_id: string;
-	type: MessageType;
-	content: string;
-	author: PartialUser;
-	flags?: number;
-	application_id?: string;
-	// channel?: Channel; // TODO: ephemeral DM channels
-	// recipient_id?: string; // TODO: ephemeral DM channels
+    id: Snowflake;
+    channel_id: string;
+    type: MessageType;
+    content: string;
+    author: PartialUser;
+    flags?: number;
+    application_id?: string;
+    // channel?: Channel; // TODO: ephemeral DM channels
+    // recipient_id?: string; // TODO: ephemeral DM channels
 }
 
 export interface Reaction {
-	count: number;
-	//// not saved in the database // me: boolean; // whether the current user reacted using this emoji
-	emoji: PartialEmoji;
-	user_ids: Snowflake[];
+    count: number;
+    //// not saved in the database // me: boolean; // whether the current user reacted using this emoji
+    emoji: PartialEmoji;
+    user_ids: Snowflake[];
 }
 
 export interface PartialEmoji {
-	id?: string;
-	name: string;
-	animated?: boolean;
+    id?: string;
+    name: string;
+    animated?: boolean;
 }
 
 export interface AllowedMentions {
-	parse?: ("users" | "roles" | "everyone")[];
-	roles?: Snowflake[];
-	users?: Snowflake[];
-	replied_user?: boolean;
+    parse?: ("users" | "roles" | "everyone")[];
+    roles?: Snowflake[];
+    users?: Snowflake[];
+    replied_user?: boolean;
 }

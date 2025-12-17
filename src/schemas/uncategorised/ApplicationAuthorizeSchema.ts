@@ -17,13 +17,13 @@
 */
 
 export interface ApplicationAuthorizeSchema {
-	authorize: boolean;
-	guild_id: string;
-	permissions: string;
-	captcha_key?: string;
-	/**
-	 * @minLength 6
-	 * @maxLength 6
-	 */
-	code?: string; // 2fa code
+    authorize: boolean;
+    guild_id: string;
+    permissions: string;
+    captcha_key?: string;
+    /**
+     * @minLength 6
+     * @maxLength 6
+     */
+    code?: string; // 2fa code
 }

@@ -25,62 +25,62 @@ const router: Router = Router({ mergeParams: true });
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget-settings
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "GuildWidgetSettingsResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "GuildWidgetSettingsResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+        const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
-		return res.json({
-			enabled: guild.widget_enabled || false,
-			channel_id: guild.widget_channel_id || null,
-		});
-	},
+        return res.json({
+            enabled: guild.widget_enabled || false,
+            channel_id: guild.widget_channel_id || null,
+        });
+    },
 );
 
 // https://discord.com/developers/docs/resources/guild#modify-guild-widget
 router.patch(
-	"/",
-	route({
-		requestBody: "WidgetModifySchema",
-		permission: "MANAGE_GUILD",
-		responses: {
-			200: {
-				body: "WidgetModifySchema",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const body = req.body as WidgetModifySchema;
-		const { guild_id } = req.params;
+    "/",
+    route({
+        requestBody: "WidgetModifySchema",
+        permission: "MANAGE_GUILD",
+        responses: {
+            200: {
+                body: "WidgetModifySchema",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as WidgetModifySchema;
+        const { guild_id } = req.params;
 
-		await Guild.update(
-			{ id: guild_id },
-			{
-				widget_enabled: body.enabled,
-				widget_channel_id: body.channel_id,
-			},
-		);
-		// Widget invite for the widget_channel_id gets created as part of the /guilds/{guild.id}/widget.json request
+        await Guild.update(
+            { id: guild_id },
+            {
+                widget_enabled: body.enabled,
+                widget_channel_id: body.channel_id,
+            },
+        );
+        // Widget invite for the widget_channel_id gets created as part of the /guilds/{guild.id}/widget.json request
 
-		return res.json(body);
-	},
+        return res.json(body);
+    },
 );
 
 export default router;

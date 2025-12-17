@@ -22,8 +22,8 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.post("/", route({}), (req: Request, res: Response) => {
-	// TODO:
-	res.sendStatus(204);
+    // TODO:
+    res.sendStatus(204);
 });
 
 export default router;

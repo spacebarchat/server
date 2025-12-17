@@ -17,26 +17,26 @@
 */
 
 declare global {
-	interface Array<T> {
-		/**
-		 * @deprecated never use, idk why but I can't get rid of this without errors
-		 */
-		remove(h: T): never;
-	}
+    interface Array<T> {
+        /**
+         * @deprecated never use, idk why but I can't get rid of this without errors
+         */
+        remove(h: T): never;
+    }
 }
 /* https://stackoverflow.com/a/50636286 */
 export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
-	const pass: T[] = [],
-		fail: T[] = [];
-	array.forEach((e) => (filter(e) ? pass : fail).push(e));
-	return [pass, fail];
+    const pass: T[] = [],
+        fail: T[] = [];
+    array.forEach((e) => (filter(e) ? pass : fail).push(e));
+    return [pass, fail];
 }
 
 export function arrayRemove<T>(array: T[], item: T): void {
-	const index = array.indexOf(item);
-	if (index > -1) {
-		array.splice(index, 1);
-	}
+    const index = array.indexOf(item);
+    if (index > -1) {
+        array.splice(index, 1);
+    }
 }
 
 // register extensions

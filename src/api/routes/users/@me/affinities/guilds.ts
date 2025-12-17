@@ -22,8 +22,8 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
-	res.status(200).send({ guild_affinities: [] });
+    // TODO:
+    res.status(200).send({ guild_affinities: [] });
 });
 
 export default router;

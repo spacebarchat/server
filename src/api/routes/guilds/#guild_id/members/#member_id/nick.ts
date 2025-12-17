@@ -23,38 +23,38 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.patch(
-	"/",
-	route({
-		requestBody: "MemberNickChangeSchema",
-		responses: {
-			200: {
-				body: "APIPublicMember",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
-		const member_id = req.params.member_id === "@me" ? ((permissionString = "CHANGE_NICKNAME"), req.user_id) : req.params.member_id;
+    "/",
+    route({
+        requestBody: "MemberNickChangeSchema",
+        responses: {
+            200: {
+                body: "APIPublicMember",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
+        let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
+        const member_id = req.params.member_id === "@me" ? ((permissionString = "CHANGE_NICKNAME"), req.user_id) : req.params.member_id;
 
-		const perms = await getPermission(req.user_id, guild_id);
-		perms.hasThrow(permissionString);
+        const perms = await getPermission(req.user_id, guild_id);
+        perms.hasThrow(permissionString);
 
-		await Member.changeNickname(member_id, guild_id, req.body.nick);
+        await Member.changeNickname(member_id, guild_id, req.body.nick);
 
-		const member = await Member.findOne({
-			where: { id: member_id, guild_id },
-			relations: ["roles"],
-		});
+        const member = await Member.findOne({
+            where: { id: member_id, guild_id },
+            relations: ["roles"],
+        });
 
-		res.send(member?.toPublicMember());
-	},
+        res.send(member?.toPublicMember());
+    },
 );
 
 export default router;

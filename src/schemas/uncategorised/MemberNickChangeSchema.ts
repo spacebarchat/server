@@ -17,5 +17,5 @@
 */
 
 export interface MemberNickChangeSchema {
-	nick: string;
+    nick: string;
 }

@@ -24,30 +24,30 @@ import { PublicUserProjection } from "@spacebar/schemas";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "Application",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const app = await Application.findOneOrFail({
-			where: { id: req.params.id }, // ...huh? there's no ID in the path...
-			relations: ["bot", "owner"],
-			select: {
-				owner: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
-			},
-		});
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "Application",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const app = await Application.findOneOrFail({
+            where: { id: req.params.id }, // ...huh? there's no ID in the path...
+            relations: ["bot", "owner"],
+            select: {
+                owner: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+            },
+        });
 
-		if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
+        if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
 
-		res.json({
-			...app,
-			owner: app.owner.toPublicUser(),
-			install_params: app.install_params !== null ? app.install_params : undefined,
-		});
-	},
+        res.json({
+            ...app,
+            owner: app.owner.toPublicUser(),
+            install_params: app.install_params !== null ? app.install_params : undefined,
+        });
+    },
 );
 export default router;

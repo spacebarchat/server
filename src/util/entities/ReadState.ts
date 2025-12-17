@@ -26,49 +26,49 @@ import { User } from "./User";
 // public read receipt ≥ notification cursor ≥ private fully read marker
 
 @Entity({
-	name: "read_states",
+    name: "read_states",
 })
 @Index(["channel_id", "user_id"], { unique: true })
 export class ReadState extends BaseClass {
-	@Column()
-	@RelationId((read_state: ReadState) => read_state.channel)
-	channel_id: string;
+    @Column()
+    @RelationId((read_state: ReadState) => read_state.channel)
+    channel_id: string;
 
-	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
-	})
-	channel: Channel;
+    @JoinColumn({ name: "channel_id" })
+    @ManyToOne(() => Channel, {
+        onDelete: "CASCADE",
+    })
+    channel: Channel;
 
-	@Column()
-	@RelationId((read_state: ReadState) => read_state.user)
-	user_id: string;
+    @Column()
+    @RelationId((read_state: ReadState) => read_state.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 
-	// fully read marker
-	@Column({ nullable: true })
-	last_message_id: string;
+    // fully read marker
+    @Column({ nullable: true })
+    last_message_id: string;
 
-	// public read receipt
-	@Column({ nullable: true })
-	public_ack: string;
+    // public read receipt
+    @Column({ nullable: true })
+    public_ack: string;
 
-	// notification cursor / private read receipt
-	@Column({ nullable: true })
-	notifications_cursor: string;
+    // notification cursor / private read receipt
+    @Column({ nullable: true })
+    notifications_cursor: string;
 
-	@Column({ nullable: true })
-	last_pin_timestamp?: Date;
+    @Column({ nullable: true })
+    last_pin_timestamp?: Date;
 
-	@Column({ nullable: true })
-	mention_count: number;
+    @Column({ nullable: true })
+    mention_count: number;
 
-	// @Column({ nullable: true })
-	// TODO: derive this from (last_message_id=notifications_cursor=public_ack)=true
-	manual: boolean;
+    // @Column({ nullable: true })
+    // TODO: derive this from (last_message_id=notifications_cursor=public_ack)=true
+    manual: boolean;
 }

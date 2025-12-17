@@ -19,6 +19,6 @@
 import { User, Webhook } from "../../util/entities";
 
 export interface WebhookCreateResponse {
-	user: User;
-	hook: Webhook;
+    user: User;
+    hook: Webhook;
 }

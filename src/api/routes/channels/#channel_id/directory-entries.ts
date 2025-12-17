@@ -22,20 +22,20 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "HubDirectoryEntriesResponse",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		res.json([] as HubDirectoryEntriesResponse);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "HubDirectoryEntriesResponse",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        res.json([] as HubDirectoryEntriesResponse);
+    },
 );
 
 export default router;

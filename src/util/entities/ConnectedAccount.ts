@@ -22,62 +22,62 @@ import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 @Entity({
-	name: "connected_accounts",
+    name: "connected_accounts",
 })
 export class ConnectedAccount extends BaseClass {
-	@Column()
-	external_id: string;
+    @Column()
+    external_id: string;
 
-	@Column({ nullable: true })
-	@RelationId((account: ConnectedAccount) => account.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((account: ConnectedAccount) => account.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 
-	@Column({ select: false })
-	friend_sync?: boolean = false;
+    @Column({ select: false })
+    friend_sync?: boolean = false;
 
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 
-	@Column({ select: false })
-	revoked?: boolean = false;
+    @Column({ select: false })
+    revoked?: boolean = false;
 
-	@Column({ select: false })
-	show_activity?: number = 0;
+    @Column({ select: false })
+    show_activity?: number = 0;
 
-	@Column()
-	type: string;
+    @Column()
+    type: string;
 
-	@Column()
-	verified?: boolean = true;
+    @Column()
+    verified?: boolean = true;
 
-	@Column({ select: false })
-	visibility?: number = 0;
+    @Column({ select: false })
+    visibility?: number = 0;
 
-	@Column({ type: "simple-array" })
-	integrations?: string[] = [];
+    @Column({ type: "simple-array" })
+    integrations?: string[] = [];
 
-	@Column({ type: "simple-json", name: "metadata", nullable: true })
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	metadata_?: any;
+    @Column({ type: "simple-json", name: "metadata", nullable: true })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    metadata_?: any;
 
-	@Column()
-	metadata_visibility?: number = 0;
+    @Column()
+    metadata_visibility?: number = 0;
 
-	@Column()
-	two_way_link?: boolean = false;
+    @Column()
+    two_way_link?: boolean = false;
 
-	@Column({ select: false, nullable: true, type: "simple-json" })
-	token_data?: ConnectedAccountTokenData | null;
+    @Column({ select: false, nullable: true, type: "simple-json" })
+    token_data?: ConnectedAccountTokenData | null;
 
-	async revoke() {
-		this.revoked = true;
-		this.token_data = null;
-		await this.save();
-	}
+    async revoke() {
+        this.revoked = true;
+        this.token_data = null;
+        await this.save();
+    }
 }

@@ -23,21 +23,21 @@ import { CollectiblesShopResponse } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "CollectiblesShopResponse",
-			},
-			204: {},
-		},
-	}),
-	(req: Request, res: Response) => {
-		res.send({
-			shop_blocks: [],
-			categories: [],
-		} as CollectiblesShopResponse);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "CollectiblesShopResponse",
+            },
+            204: {},
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.send({
+            shop_blocks: [],
+            categories: [],
+        } as CollectiblesShopResponse);
+    },
 );
 
 export default router;

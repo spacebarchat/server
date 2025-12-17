@@ -23,18 +23,18 @@ import { CollectiblesCategoriesResponse } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "CollectiblesCategoriesResponse",
-			},
-			204: {},
-		},
-	}),
-	(req: Request, res: Response) => {
-		res.send([] as CollectiblesCategoriesResponse);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "CollectiblesCategoriesResponse",
+            },
+            204: {},
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.send([] as CollectiblesCategoriesResponse);
+    },
 );
 
 export default router;

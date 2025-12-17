@@ -24,30 +24,30 @@ import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { QoSPayload } from "../opcodes/Heartbeat";
 
 export interface WebSocket extends WS {
-	version: number;
-	user_id: string;
-	session_id: string;
-	encoding: "etf" | "json";
-	compress?: "zlib-stream" | "zstd-stream";
-	ipAddress?: string;
-	userAgent?: string; // for cdn request signing
-	fingerprint?: string;
-	shard_count?: bigint;
-	shard_id?: bigint;
-	deflate?: Deflate;
-	inflate?: Inflate;
-	zstdEncoder?: Encoder;
-	zstdDecoder?: Decoder;
-	heartbeatTimeout: NodeJS.Timeout;
-	readyTimeout: NodeJS.Timeout;
-	intents: Intents;
-	sequence: number;
-	permissions: Record<string, Permissions>;
-	events: Record<string, undefined | (() => Promise<unknown>)>;
-	member_events: Record<string, () => Promise<unknown>>;
-	listen_options: ListenEventOpts;
-	capabilities?: Capabilities;
-	large_threshold: number;
-	qos?: QoSPayload;
-	session?: Session;
+    version: number;
+    user_id: string;
+    session_id: string;
+    encoding: "etf" | "json";
+    compress?: "zlib-stream" | "zstd-stream";
+    ipAddress?: string;
+    userAgent?: string; // for cdn request signing
+    fingerprint?: string;
+    shard_count?: bigint;
+    shard_id?: bigint;
+    deflate?: Deflate;
+    inflate?: Inflate;
+    zstdEncoder?: Encoder;
+    zstdDecoder?: Decoder;
+    heartbeatTimeout: NodeJS.Timeout;
+    readyTimeout: NodeJS.Timeout;
+    intents: Intents;
+    sequence: number;
+    permissions: Record<string, Permissions>;
+    events: Record<string, undefined | (() => Promise<unknown>)>;
+    member_events: Record<string, () => Promise<unknown>>;
+    listen_options: ListenEventOpts;
+    capabilities?: Capabilities;
+    large_threshold: number;
+    qos?: QoSPayload;
+    session?: Session;
 }

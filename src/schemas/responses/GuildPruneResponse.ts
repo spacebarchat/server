@@ -17,9 +17,9 @@
 */
 
 export interface GuildPruneResponse {
-	pruned: number;
+    pruned: number;
 }
 
 export interface GuildPurgeResponse {
-	purged: number;
+    purged: number;
 }

@@ -22,35 +22,35 @@ import { User } from "./User";
 import { TeamMemberRole, TeamMemberState } from "@spacebar/schemas";
 
 @Entity({
-	name: "team_members",
+    name: "team_members",
 })
 export class TeamMember extends BaseClass {
-	@Column({ type: "int" })
-	membership_state: TeamMemberState;
+    @Column({ type: "int" })
+    membership_state: TeamMemberState;
 
-	@Column({ type: "simple-array" })
-	permissions: string[];
+    @Column({ type: "simple-array" })
+    permissions: string[];
 
-	@Column()
-	role: TeamMemberRole;
+    @Column()
+    role: TeamMemberRole;
 
-	@Column({ nullable: true })
-	@RelationId((member: TeamMember) => member.team)
-	team_id: string;
+    @Column({ nullable: true })
+    @RelationId((member: TeamMember) => member.team)
+    team_id: string;
 
-	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
-		onDelete: "CASCADE",
-	})
-	team: import("./Team").Team;
+    @JoinColumn({ name: "team_id" })
+    @ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
+        onDelete: "CASCADE",
+    })
+    team: import("./Team").Team;
 
-	@Column({ nullable: true })
-	@RelationId((member: TeamMember) => member.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((member: TeamMember) => member.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 }

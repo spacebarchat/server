@@ -21,12 +21,12 @@ import { Entity, Column } from "typeorm";
 import { Embed } from "@spacebar/schemas";
 
 @Entity({
-	name: "embed_cache",
+    name: "embed_cache",
 })
 export class EmbedCache extends BaseClass {
-	@Column()
-	url: string;
+    @Column()
+    url: string;
 
-	@Column({ type: "simple-json" })
-	embed: Embed;
+    @Column({ type: "simple-json" })
+    embed: Embed;
 }

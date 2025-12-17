@@ -17,6 +17,6 @@
 */
 
 export interface RelationshipPostSchema {
-	discriminator: string;
-	username: string;
+    discriminator: string;
+    username: string;
 }

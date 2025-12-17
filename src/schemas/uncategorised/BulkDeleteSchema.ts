@@ -17,5 +17,5 @@
 */
 
 export interface BulkDeleteSchema {
-	messages: string[];
+    messages: string[];
 }

@@ -24,26 +24,26 @@ const router = Router({ mergeParams: true });
 
 // Unsure what this endpoint does, it seems to only affect the visual style of the shop tab in home
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "CollectiblesMarketingResponse",
-			},
-			204: {},
-			401: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		res.send({
-			marketings: {},
-		} as CollectiblesMarketingResponse);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "CollectiblesMarketingResponse",
+            },
+            204: {},
+            401: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        res.send({
+            marketings: {},
+        } as CollectiblesMarketingResponse);
+    },
 );
 
 export default router;

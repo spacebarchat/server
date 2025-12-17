@@ -24,62 +24,62 @@ import { HTTPError } from "lambert-server";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "APIGuildArray",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const members = await Member.find({
-			relations: ["guild"],
-			where: { id: req.user_id },
-		});
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "APIGuildArray",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const members = await Member.find({
+            relations: ["guild"],
+            where: { id: req.user_id },
+        });
 
-		let guild = members.map((x) => x.guild);
+        let guild = members.map((x) => x.guild);
 
-		if ("with_counts" in req.query && req.query.with_counts == "true") {
-			guild = []; // TODO: Load guilds with user role permissions number
-		}
+        if ("with_counts" in req.query && req.query.with_counts == "true") {
+            guild = []; // TODO: Load guilds with user role permissions number
+        }
 
-		res.json(guild);
-	},
+        res.json(guild);
+    },
 );
 
 // user send to leave a certain guild
 router.delete(
-	"/:guild_id",
-	route({
-		responses: {
-			204: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { autoJoin } = Config.get().guild;
-		const { guild_id } = req.params;
-		const guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			select: ["owner_id"],
-		});
+    "/:guild_id",
+    route({
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { autoJoin } = Config.get().guild;
+        const { guild_id } = req.params;
+        const guild = await Guild.findOneOrFail({
+            where: { id: guild_id },
+            select: ["owner_id"],
+        });
 
-		if (!guild) throw new HTTPError("Guild doesn't exist", 404);
-		if (guild.owner_id === req.user_id) throw new HTTPError("You can't leave your own guild", 400);
-		if (autoJoin.enabled && autoJoin.guilds.includes(guild_id) && !autoJoin.canLeave) {
-			throw new HTTPError("You can't leave instance auto join guilds", 400);
-		}
+        if (!guild) throw new HTTPError("Guild doesn't exist", 404);
+        if (guild.owner_id === req.user_id) throw new HTTPError("You can't leave your own guild", 400);
+        if (autoJoin.enabled && autoJoin.guilds.includes(guild_id) && !autoJoin.canLeave) {
+            throw new HTTPError("You can't leave instance auto join guilds", 400);
+        }
 
-		await Member.removeFromGuild(req.user_id, guild_id);
+        await Member.removeFromGuild(req.user_id, guild_id);
 
-		return res.sendStatus(204);
-	},
+        return res.sendStatus(204);
+    },
 );
 
 export default router;

@@ -17,12 +17,12 @@
 */
 
 export interface RelationshipPutSchema {
-	type?: RelationshipType;
+    type?: RelationshipType;
 }
 
 export enum RelationshipType {
-	outgoing = 4,
-	incoming = 3,
-	blocked = 2,
-	friends = 1,
+    outgoing = 4,
+    incoming = 3,
+    blocked = 2,
+    friends = 1,
 }

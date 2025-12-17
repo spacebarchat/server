@@ -20,8 +20,8 @@ import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, Send } from "../util";
 
 export async function onHeartbeat(this: WebRtcWebSocket, data: VoicePayload) {
-	setHeartbeat(this);
-	if (isNaN(data.d)) return this.close(CLOSECODES.Decode_error);
+    setHeartbeat(this);
+    if (isNaN(data.d)) return this.close(CLOSECODES.Decode_error);
 
-	await Send(this, { op: VoiceOPCodes.HEARTBEAT_ACK, d: data.d });
+    await Send(this, { op: VoiceOPCodes.HEARTBEAT_ACK, d: data.d });
 }

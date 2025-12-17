@@ -27,104 +27,104 @@ import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionC
 const router = Router({ mergeParams: true });
 
 router.post("/", route({}), async (req: Request, res: Response) => {
-	const body = req.body as InteractionSchema;
+    const body = req.body as InteractionSchema;
 
-	const interactionId = Snowflake.generate();
-	const interactionToken = randomBytes(24).toString("base64url");
+    const interactionId = Snowflake.generate();
+    const interactionToken = randomBytes(24).toString("base64url");
 
-	emitEvent({
-		event: "INTERACTION_CREATE",
-		user_id: req.user_id,
-		data: {
-			id: interactionId,
-			nonce: body.nonce,
-		},
-	} as InteractionCreateEvent);
+    emitEvent({
+        event: "INTERACTION_CREATE",
+        user_id: req.user_id,
+        data: {
+            id: interactionId,
+            nonce: body.nonce,
+        },
+    } as InteractionCreateEvent);
 
-	const user = await User.findOneOrFail({ where: { id: req.user_id } });
+    const user = await User.findOneOrFail({ where: { id: req.user_id } });
 
-	const interactionData: Partial<InteractionCreateSchema> = {
-		id: interactionId,
-		application_id: body.application_id,
-		channel_id: body.channel_id,
-		type: body.type,
-		token: interactionToken,
-		version: 1,
-		entitlements: [],
-		authorizing_integration_owners: { "0": req.user_id },
-		attachment_size_limit: Config.get().cdn.maxAttachmentSize,
-	};
+    const interactionData: Partial<InteractionCreateSchema> = {
+        id: interactionId,
+        application_id: body.application_id,
+        channel_id: body.channel_id,
+        type: body.type,
+        token: interactionToken,
+        version: 1,
+        entitlements: [],
+        authorizing_integration_owners: { "0": req.user_id },
+        attachment_size_limit: Config.get().cdn.maxAttachmentSize,
+    };
 
-	if (body.type === InteractionType.ApplicationCommand || body.type === InteractionType.MessageComponent || body.type === InteractionType.ModalSubmit) {
-		interactionData.data = body.data;
-	}
+    if (body.type === InteractionType.ApplicationCommand || body.type === InteractionType.MessageComponent || body.type === InteractionType.ModalSubmit) {
+        interactionData.data = body.data;
+    }
 
-	if (body.type != InteractionType.Ping) {
-		interactionData.locale = user?.settings?.locale;
-	}
+    if (body.type != InteractionType.Ping) {
+        interactionData.locale = user?.settings?.locale;
+    }
 
-	if (body.guild_id) {
-		interactionData.context = 0;
-		interactionData.guild_id = body.guild_id;
-		interactionData.app_permissions = (await getPermission(body.application_id, body.guild_id, body.channel_id)).bitfield.toString();
+    if (body.guild_id) {
+        interactionData.context = 0;
+        interactionData.guild_id = body.guild_id;
+        interactionData.app_permissions = (await getPermission(body.application_id, body.guild_id, body.channel_id)).bitfield.toString();
 
-		const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
-		const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: ["user"] });
+        const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
+        const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: ["user"] });
 
-		interactionData.guild = {
-			id: guild.id,
-			features: guild.features,
-			locale: guild.preferred_locale!,
-		};
+        interactionData.guild = {
+            id: guild.id,
+            features: guild.features,
+            locale: guild.preferred_locale!,
+        };
 
-		interactionData.guild_locale = guild.preferred_locale;
-		interactionData.member = member.toPublicMember();
-	} else {
-		interactionData.user = user.toPublicUser();
-		interactionData.app_permissions = (await getPermission(body.application_id, "", body.channel_id)).bitfield.toString();
+        interactionData.guild_locale = guild.preferred_locale;
+        interactionData.member = member.toPublicMember();
+    } else {
+        interactionData.user = user.toPublicUser();
+        interactionData.app_permissions = (await getPermission(body.application_id, "", body.channel_id)).bitfield.toString();
 
-		if (body.channel_id === body.application_id) {
-			interactionData.context = 1;
-		} else {
-			interactionData.context = 2;
-		}
-	}
+        if (body.channel_id === body.application_id) {
+            interactionData.context = 1;
+        } else {
+            interactionData.context = 2;
+        }
+    }
 
-	if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
-		interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id, flags: undefined }, relations: ["author"] });
-	}
+    if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
+        interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id, flags: undefined }, relations: ["author"] });
+    }
 
-	emitEvent({
-		event: "INTERACTION_CREATE",
-		user_id: body.application_id,
-		data: interactionData,
-	} as InteractionCreateEvent);
+    emitEvent({
+        event: "INTERACTION_CREATE",
+        user_id: body.application_id,
+        data: interactionData,
+    } as InteractionCreateEvent);
 
-	const interactionTimeout = setTimeout(() => {
-		emitEvent({
-			event: "INTERACTION_FAILURE",
-			user_id: req.user_id,
-			data: {
-				id: interactionId,
-				nonce: body.nonce,
-				reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
-			},
-		} as InteractionFailureEvent);
-	}, 3000);
+    const interactionTimeout = setTimeout(() => {
+        emitEvent({
+            event: "INTERACTION_FAILURE",
+            user_id: req.user_id,
+            data: {
+                id: interactionId,
+                nonce: body.nonce,
+                reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+            },
+        } as InteractionFailureEvent);
+    }, 3000);
 
-	pendingInteractions.set(interactionId, {
-		timeout: interactionTimeout,
-		nonce: body.nonce,
-		applicationId: body.application_id,
-		userId: req.user_id,
-		guildId: body.guild_id,
-		channelId: body.channel_id,
-		type: body.type,
-		commandType: body.data.type,
-		commandName: body.data.name,
-	});
+    pendingInteractions.set(interactionId, {
+        timeout: interactionTimeout,
+        nonce: body.nonce,
+        applicationId: body.application_id,
+        userId: req.user_id,
+        guildId: body.guild_id,
+        channelId: body.channel_id,
+        type: body.type,
+        commandType: body.data.type,
+        commandName: body.data.name,
+    });
 
-	res.sendStatus(204);
+    res.sendStatus(204);
 });
 
 export default router;

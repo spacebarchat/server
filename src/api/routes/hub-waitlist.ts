@@ -22,28 +22,28 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.post(
-	"/signup",
-	route({
-		requestBody: "HubWaitlistSignupSchema",
-		responses: {
-			200: {
-				body: "HubWaitlistSignupResponse",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { email, school } = req.body as HubWaitlistSignupSchema;
+    "/signup",
+    route({
+        requestBody: "HubWaitlistSignupSchema",
+        responses: {
+            200: {
+                body: "HubWaitlistSignupResponse",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { email, school } = req.body as HubWaitlistSignupSchema;
 
-		res.json({
-			email,
-			email_domain: email.split("@")[1],
-			school,
-			user_id: req.user_id,
-		} as HubWaitlistSignupResponse);
-	},
+        res.json({
+            email,
+            email_domain: email.split("@")[1],
+            school,
+            user_id: req.user_id,
+        } as HubWaitlistSignupResponse);
+    },
 );
 
 export default router;

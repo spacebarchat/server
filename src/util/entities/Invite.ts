@@ -26,95 +26,95 @@ import { User } from "./User";
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
 @Entity({
-	name: "invites",
+    name: "invites",
 })
 export class Invite extends BaseClassWithoutId {
-	@PrimaryIdColumn()
-	code: string;
+    @PrimaryIdColumn()
+    code: string;
 
-	@Column()
-	temporary: boolean;
+    @Column()
+    temporary: boolean;
 
-	@Column()
-	uses: number;
+    @Column()
+    uses: number;
 
-	@Column()
-	max_uses: number;
+    @Column()
+    max_uses: number;
 
-	@Column()
-	max_age: number;
+    @Column()
+    max_age: number;
 
-	@Column()
-	created_at: Date;
+    @Column()
+    created_at: Date;
 
-	@Column({ nullable: true })
-	expires_at?: Date;
+    @Column({ nullable: true })
+    expires_at?: Date;
 
-	@Column({ nullable: true })
-	@RelationId((invite: Invite) => invite.guild)
-	guild_id: string;
+    @Column({ nullable: true })
+    @RelationId((invite: Invite) => invite.guild)
+    guild_id: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild) => guild.invites, {
-		onDelete: "CASCADE",
-	})
-	guild: Guild;
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild, (guild) => guild.invites, {
+        onDelete: "CASCADE",
+    })
+    guild: Guild;
 
-	@Column({ nullable: true })
-	@RelationId((invite: Invite) => invite.channel)
-	channel_id: string;
+    @Column({ nullable: true })
+    @RelationId((invite: Invite) => invite.channel)
+    channel_id: string;
 
-	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
-	})
-	channel: Channel;
+    @JoinColumn({ name: "channel_id" })
+    @ManyToOne(() => Channel, {
+        onDelete: "CASCADE",
+    })
+    channel: Channel;
 
-	@Column({ nullable: true })
-	@RelationId((invite: Invite) => invite.inviter)
-	inviter_id?: string;
+    @Column({ nullable: true })
+    @RelationId((invite: Invite) => invite.inviter)
+    inviter_id?: string;
 
-	@JoinColumn({ name: "inviter_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	inviter: User;
+    @JoinColumn({ name: "inviter_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    inviter: User;
 
-	@Column({ nullable: true })
-	@RelationId((invite: Invite) => invite.target_user)
-	target_user_id: string;
+    @Column({ nullable: true })
+    @RelationId((invite: Invite) => invite.target_user)
+    target_user_id: string;
 
-	@JoinColumn({ name: "target_user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	target_user?: string; // could be used for "User specific invites" https://github.com/spacebarchat/server/issues/326
+    @JoinColumn({ name: "target_user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    target_user?: string; // could be used for "User specific invites" https://github.com/spacebarchat/server/issues/326
 
-	@Column({ nullable: true })
-	target_user_type?: number;
+    @Column({ nullable: true })
+    target_user_type?: number;
 
-	@Column({ nullable: true })
-	vanity_url?: boolean;
+    @Column({ nullable: true })
+    vanity_url?: boolean;
 
-	@Column()
-	flags: number;
+    @Column()
+    flags: number;
 
-	isExpired() {
-		if (this.max_age !== 0 && this.expires_at && this.expires_at < new Date()) return true;
-		if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
-		return false;
-	}
+    isExpired() {
+        if (this.max_age !== 0 && this.expires_at && this.expires_at < new Date()) return true;
+        if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
+        return false;
+    }
 
-	static async joinGuild(user_id: string, code: string) {
-		const invite = await Invite.findOneOrFail({ where: { code } });
-		if (invite.isExpired()) {
-			await Invite.delete({ code });
-			throw new Error("Invite is expired");
-		}
-		if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
-		else await invite.save();
+    static async joinGuild(user_id: string, code: string) {
+        const invite = await Invite.findOneOrFail({ where: { code } });
+        if (invite.isExpired()) {
+            await Invite.delete({ code });
+            throw new Error("Invite is expired");
+        }
+        if (invite.uses++ >= invite.max_uses && invite.max_uses !== 0) await Invite.delete({ code });
+        else await invite.save();
 
-		await Member.addToGuild(user_id, invite.guild_id);
-		return invite;
-	}
+        await Member.addToGuild(user_id, invite.guild_id);
+        return invite;
+    }
 }

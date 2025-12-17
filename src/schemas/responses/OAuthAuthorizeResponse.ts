@@ -17,5 +17,5 @@
 */
 
 export interface OAuthAuthorizeResponse {
-	location: string;
+    location: string;
 }

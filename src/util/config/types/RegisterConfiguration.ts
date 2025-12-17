@@ -19,21 +19,21 @@
 import { DateOfBirthConfiguration, PasswordConfiguration, RegistrationEmailConfiguration } from ".";
 
 export class RegisterConfiguration {
-	email: RegistrationEmailConfiguration = new RegistrationEmailConfiguration();
-	dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
-	password: PasswordConfiguration = new PasswordConfiguration();
-	disabled: boolean = false;
-	requireCaptcha: boolean = true;
-	requireInvite: boolean = false;
-	guestsRequireInvite: boolean = true;
-	allowNewRegistration: boolean = true;
-	allowMultipleAccounts: boolean = true;
-	blockProxies: boolean = true;
-	blockIpDataCoThreatTypes: string[] = ["tor", "icloud_relay", "proxy", "datacenter", "anonymous", "known_attacker", "known_abuser", "threat"]; // matching ipdata's threat.is_* fields as of 2025/11/30, minus bogon
-	blockAsnTypes: string[] = [""];
-	blockAsns: string[] = [""];
-	blockAbuseIpDbAboveScore: number = 75; // 0 to disable
-	incrementingDiscriminators: boolean = false; // random otherwise
-	defaultRights: string = "875069521787904"; // See `npm run generate:rights`
-	checkIp: boolean = true;
+    email: RegistrationEmailConfiguration = new RegistrationEmailConfiguration();
+    dateOfBirth: DateOfBirthConfiguration = new DateOfBirthConfiguration();
+    password: PasswordConfiguration = new PasswordConfiguration();
+    disabled: boolean = false;
+    requireCaptcha: boolean = true;
+    requireInvite: boolean = false;
+    guestsRequireInvite: boolean = true;
+    allowNewRegistration: boolean = true;
+    allowMultipleAccounts: boolean = true;
+    blockProxies: boolean = true;
+    blockIpDataCoThreatTypes: string[] = ["tor", "icloud_relay", "proxy", "datacenter", "anonymous", "known_attacker", "known_abuser", "threat"]; // matching ipdata's threat.is_* fields as of 2025/11/30, minus bogon
+    blockAsnTypes: string[] = [""];
+    blockAsns: string[] = [""];
+    blockAbuseIpDbAboveScore: number = 75; // 0 to disable
+    incrementingDiscriminators: boolean = false; // random otherwise
+    defaultRights: string = "875069521787904"; // See `npm run generate:rights`
+    checkIp: boolean = true;
 }

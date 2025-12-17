@@ -29,44 +29,44 @@ const router = Router({ mergeParams: true });
 // TODO: check for GUILD_MEMBERS intent
 
 router.get(
-	"/",
-	route({
-		query: {
-			limit: {
-				type: "number",
-				description: "max number of members to return (1-1000). default 1",
-			},
-			after: {
-				type: "string",
-			},
-		},
-		responses: {
-			200: {
-				body: "APIMemberArray",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		const limit = Number(req.query.limit) || 1;
-		if (limit > 1000 || limit < 1) throw new HTTPError("Limit must be between 1 and 1000");
-		const after = `${req.query.after}`;
-		const query = after ? { id: MoreThan(after) } : {};
+    "/",
+    route({
+        query: {
+            limit: {
+                type: "number",
+                description: "max number of members to return (1-1000). default 1",
+            },
+            after: {
+                type: "string",
+            },
+        },
+        responses: {
+            200: {
+                body: "APIMemberArray",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
+        const limit = Number(req.query.limit) || 1;
+        if (limit > 1000 || limit < 1) throw new HTTPError("Limit must be between 1 and 1000");
+        const after = `${req.query.after}`;
+        const query = after ? { id: MoreThan(after) } : {};
 
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
+        await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-		const members = await Member.find({
-			where: { guild_id, ...query },
-			select: PublicMemberProjection,
-			take: limit,
-			order: { id: "ASC" },
-		});
+        const members = await Member.find({
+            where: { guild_id, ...query },
+            select: PublicMemberProjection,
+            take: limit,
+            order: { id: "ASC" },
+        });
 
-		return res.json(members);
-	},
+        return res.json(members);
+    },
 );
 
 export default router;

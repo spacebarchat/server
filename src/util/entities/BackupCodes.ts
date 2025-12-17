@@ -23,34 +23,34 @@ import crypto from "crypto";
 import { Config } from "../util";
 
 @Entity({
-	name: "backup_codes",
+    name: "backup_codes",
 })
 export class BackupCode extends BaseClass {
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    user: User;
 
-	@Column()
-	code: string;
+    @Column()
+    code: string;
 
-	@Column()
-	consumed: boolean;
+    @Column()
+    consumed: boolean;
 
-	@Column()
-	expired: boolean;
+    @Column()
+    expired: boolean;
 }
 
 export function generateMfaBackupCodes(user_id: string) {
-	const backup_codes: BackupCode[] = [];
-	for (let i = 0; i < Config.get().security.mfaBackupCodeCount; i++) {
-		const code = BackupCode.create({
-			user: { id: user_id },
-			code: crypto.randomBytes(4).toString("hex"), // 8 characters
-			consumed: false,
-			expired: false,
-		});
-		backup_codes.push(code);
-	}
+    const backup_codes: BackupCode[] = [];
+    for (let i = 0; i < Config.get().security.mfaBackupCodeCount; i++) {
+        const code = BackupCode.create({
+            user: { id: user_id },
+            code: crypto.randomBytes(4).toString("hex"), // 8 characters
+            consumed: false,
+            expired: false,
+        });
+        backup_codes.push(code);
+    }
 
-	return backup_codes;
+    return backup_codes;
 }

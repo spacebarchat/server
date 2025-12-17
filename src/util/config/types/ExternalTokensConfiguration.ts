@@ -17,5 +17,5 @@
 */
 
 export class ExternalTokensConfiguration {
-	twitter: string | null = null;
+    twitter: string | null = null;
 }

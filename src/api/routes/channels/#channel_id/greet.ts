@@ -25,83 +25,83 @@ import { GreetRequestSchema, MessageType } from "@spacebar/schemas";
 const router: Router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		requestBody: "GreetRequestSchema",
-		permission: "MANAGE_CHANNELS",
-		responses: {
-			200: {
-				body: "Message",
-			},
-			404: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const payload = req.body as GreetRequestSchema;
-		const { channel_id } = req.params;
+    "/",
+    route({
+        requestBody: "GreetRequestSchema",
+        permission: "MANAGE_CHANNELS",
+        responses: {
+            200: {
+                body: "Message",
+            },
+            404: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const payload = req.body as GreetRequestSchema;
+        const { channel_id } = req.params;
 
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
 
-		const targetMessage = await Message.findOneOrFail({
-			where: {
-				id: payload.message_reference?.message_id,
-				channel_id: payload.message_reference?.channel_id,
-				guild_id: payload.message_reference?.guild_id,
-			},
-		});
+        const targetMessage = await Message.findOneOrFail({
+            where: {
+                id: payload.message_reference?.message_id,
+                channel_id: payload.message_reference?.channel_id,
+                guild_id: payload.message_reference?.guild_id,
+            },
+        });
 
-		if (!channel.isDm() && targetMessage.type != MessageType.GUILD_MEMBER_JOIN)
-			return res.status(400).json({
-				code: 400, // TODO: what's the actual error code?
-				message: "Cannot send greet message referencing this message.",
-			});
+        if (!channel.isDm() && targetMessage.type != MessageType.GUILD_MEMBER_JOIN)
+            return res.status(400).json({
+                code: 400, // TODO: what's the actual error code?
+                message: "Cannot send greet message referencing this message.",
+            });
 
-		if (!(await channel.getUserPermissions({ user_id: req.user_id })).has(Permissions.FLAGS.SEND_MESSAGES)) {
-			return res.status(403).json({
-				code: 403,
-				message: "Missing Permissions: SEND_MESSAGES",
-			});
-		}
+        if (!(await channel.getUserPermissions({ user_id: req.user_id })).has(Permissions.FLAGS.SEND_MESSAGES)) {
+            return res.status(403).json({
+                code: 403,
+                message: "Missing Permissions: SEND_MESSAGES",
+            });
+        }
 
-		const specCompliant = true; // incase we want to allow clients to add more than one sticker to pick
-		if (specCompliant && payload.sticker_ids.length != 1)
-			return res.status(400).json({
-				code: 400,
-				message: "Must include exactly one sticker.",
-			});
+        const specCompliant = true; // incase we want to allow clients to add more than one sticker to pick
+        if (specCompliant && payload.sticker_ids.length != 1)
+            return res.status(400).json({
+                code: 400,
+                message: "Must include exactly one sticker.",
+            });
 
-		const stickers = await Sticker.find({ where: { id: In(payload.sticker_ids) } });
+        const stickers = await Sticker.find({ where: { id: In(payload.sticker_ids) } });
 
-		const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
+        const randomSticker = stickers[Math.floor(Math.random() * stickers.length)];
 
-		const message = Message.create({
-			channel_id: channel_id,
-			author_id: req.user_id,
-			type: MessageType.REPLY,
-			message_reference: { ...payload.message_reference, type: 0 },
-			referenced_message: targetMessage,
-			sticker_items: randomSticker ? [{ id: randomSticker.id, name: randomSticker.name, format_type: randomSticker.format_type }] : [],
-		});
+        const message = Message.create({
+            channel_id: channel_id,
+            author_id: req.user_id,
+            type: MessageType.REPLY,
+            message_reference: { ...payload.message_reference, type: 0 },
+            referenced_message: targetMessage,
+            sticker_items: randomSticker ? [{ id: randomSticker.id, name: randomSticker.name, format_type: randomSticker.format_type }] : [],
+        });
 
-		channel.last_message_id = message.id;
+        channel.last_message_id = message.id;
 
-		await Promise.all([
-			message.save(),
-			emitEvent({
-				event: "MESSAGE_CREATE",
-				data: message,
-				channel_id,
-			} as MessageCreateEvent),
-			channel.save(),
-		]);
+        await Promise.all([
+            message.save(),
+            emitEvent({
+                event: "MESSAGE_CREATE",
+                data: message,
+                channel_id,
+            } as MessageCreateEvent),
+            channel.save(),
+        ]);
 
-		res.send(channel);
-	},
+        res.send(channel);
+    },
 );
 
 export default router;

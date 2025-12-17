@@ -26,88 +26,88 @@ import { isTextChannel, WebhookCreateSchema, WebhookType } from "@spacebar/schem
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		description: "Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission.",
-		permission: "MANAGE_WEBHOOKS",
-		responses: {
-			200: {
-				body: "APIWebhookArray",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { channel_id } = req.params;
-		const webhooks = await Webhook.find({
-			where: { channel_id },
-			relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
-		});
+    "/",
+    route({
+        description: "Returns a list of channel webhook objects. Requires the MANAGE_WEBHOOKS permission.",
+        permission: "MANAGE_WEBHOOKS",
+        responses: {
+            200: {
+                body: "APIWebhookArray",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params;
+        const webhooks = await Webhook.find({
+            where: { channel_id },
+            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+        });
 
-		return res.json(
-			webhooks.map((webhook) => ({
-				...webhook,
-				url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
-			})),
-		);
-	},
+        return res.json(
+            webhooks.map((webhook) => ({
+                ...webhook,
+                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+            })),
+        );
+    },
 );
 
 // TODO: use Image Data Type for avatar instead of String
 router.post(
-	"/",
-	route({
-		requestBody: "WebhookCreateSchema",
-		permission: "MANAGE_WEBHOOKS",
-		responses: {
-			200: {
-				body: "WebhookCreateResponse",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const channel_id = req.params.channel_id;
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
+    "/",
+    route({
+        requestBody: "WebhookCreateSchema",
+        permission: "MANAGE_WEBHOOKS",
+        responses: {
+            200: {
+                body: "WebhookCreateResponse",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const channel_id = req.params.channel_id;
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
 
-		isTextChannel(channel.type);
-		if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
+        isTextChannel(channel.type);
+        if (!channel.guild_id) throw new HTTPError("Not a guild channel", 400);
 
-		const webhook_count = await Webhook.count({ where: { channel_id } });
-		const { maxWebhooks } = Config.get().limits.channel;
-		if (maxWebhooks && webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
+        const webhook_count = await Webhook.count({ where: { channel_id } });
+        const { maxWebhooks } = Config.get().limits.channel;
+        if (maxWebhooks && webhook_count > maxWebhooks) throw DiscordApiErrors.MAXIMUM_WEBHOOKS.withParams(maxWebhooks);
 
-		let { avatar, name } = req.body as WebhookCreateSchema;
-		name = trimSpecial(name);
+        let { avatar, name } = req.body as WebhookCreateSchema;
+        name = trimSpecial(name);
 
-		// TODO: move this
-		if (name) {
-			ValidateName(name);
-		}
+        // TODO: move this
+        if (name) {
+            ValidateName(name);
+        }
 
-		if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
+        if (avatar) avatar = await handleFile(`/avatars/${channel_id}`, avatar);
 
-		const hook = await Webhook.create({
-			type: WebhookType.Incoming,
-			name,
-			avatar,
-			guild_id: channel.guild_id,
-			channel_id: channel.id,
-			user_id: req.user_id,
-			token: crypto.randomBytes(24).toString("base64url"),
-		}).save();
+        const hook = await Webhook.create({
+            type: WebhookType.Incoming,
+            name,
+            avatar,
+            guild_id: channel.guild_id,
+            channel_id: channel.id,
+            user_id: req.user_id,
+            token: crypto.randomBytes(24).toString("base64url"),
+        }).save();
 
-		const user = await User.getPublicUser(req.user_id);
+        const user = await User.getPublicUser(req.user_id);
 
-		return res.json({
-			...hook,
-			user: user,
-		});
-	},
+        return res.json({
+            ...hook,
+            user: user,
+        });
+    },
 );
 
 export default router;

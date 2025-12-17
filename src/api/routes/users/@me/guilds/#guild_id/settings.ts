@@ -25,54 +25,54 @@ const router = Router({ mergeParams: true });
 
 // GET doesn't exist on discord.com
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const user = await Member.findOneOrFail({
-			where: { id: req.user_id, guild_id: req.params.guild_id },
-			select: ["settings"],
-		});
-		return res.json(user.settings);
-	},
+    "/",
+    route({
+        responses: {
+            200: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const user = await Member.findOneOrFail({
+            where: { id: req.user_id, guild_id: req.params.guild_id },
+            select: ["settings"],
+        });
+        return res.json(user.settings);
+    },
 );
 
 router.patch(
-	"/",
-	route({
-		requestBody: "UserGuildSettingsSchema",
-		responses: {
-			200: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const body = req.body as UserGuildSettingsSchema;
+    "/",
+    route({
+        requestBody: "UserGuildSettingsSchema",
+        responses: {
+            200: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as UserGuildSettingsSchema;
 
-		if (body.channel_overrides) {
-			for (const channel in body.channel_overrides) {
-				Channel.findOneOrFail({ where: { id: channel } });
-			}
-		}
+        if (body.channel_overrides) {
+            for (const channel in body.channel_overrides) {
+                Channel.findOneOrFail({ where: { id: channel } });
+            }
+        }
 
-		const user = await Member.findOneOrFail({
-			where: { id: req.user_id, guild_id: req.params.guild_id },
-			select: ["settings"],
-		});
-		OrmUtils.mergeDeep(user.settings || {}, body);
-		Member.update({ id: req.user_id, guild_id: req.params.guild_id }, user);
+        const user = await Member.findOneOrFail({
+            where: { id: req.user_id, guild_id: req.params.guild_id },
+            select: ["settings"],
+        });
+        OrmUtils.mergeDeep(user.settings || {}, body);
+        Member.update({ id: req.user_id, guild_id: req.params.guild_id }, user);
 
-		res.json(user.settings);
-	},
+        res.json(user.settings);
+    },
 );
 
 export default router;

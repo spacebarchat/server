@@ -24,40 +24,40 @@ import { TenorGif, TenorMediaTypes } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		query: {
-			media_format: {
-				type: "string",
-				description: "Media format",
-				values: Object.keys(TenorMediaTypes).filter((key) => isNaN(Number(key))),
-			},
-			locale: {
-				type: "string",
-				description: "Locale",
-			},
-		},
-		responses: {
-			200: {
-				body: "TenorGifsResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		// TODO: Custom providers
-		const { media_format, locale } = req.query;
+    "/",
+    route({
+        query: {
+            media_format: {
+                type: "string",
+                description: "Media format",
+                values: Object.keys(TenorMediaTypes).filter((key) => isNaN(Number(key))),
+            },
+            locale: {
+                type: "string",
+                description: "Locale",
+            },
+        },
+        responses: {
+            200: {
+                body: "TenorGifsResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        // TODO: Custom providers
+        const { media_format, locale } = req.query;
 
-		const apiKey = getGifApiKey();
+        const apiKey = getGifApiKey();
 
-		const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${media_format}&locale=${locale}&key=${apiKey}`, {
-			method: "get",
-			headers: { "Content-Type": "application/json" },
-		});
+        const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${media_format}&locale=${locale}&key=${apiKey}`, {
+            method: "get",
+            headers: { "Content-Type": "application/json" },
+        });
 
-		const { results } = (await response.json()) as { results: TenorGif[] };
+        const { results } = (await response.json()) as { results: TenorGif[] };
 
-		res.json(results.map(parseGifResult)).status(200);
-	},
+        res.json(results.map(parseGifResult)).status(200);
+    },
 );
 
 export default router;

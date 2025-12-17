@@ -23,37 +23,37 @@ import { Session } from "@spacebar/util";
 import { FindOptionsWhere } from "typeorm";
 
 interface QoSData {
-	seq: number | null;
-	qos: QoSPayload;
+    seq: number | null;
+    qos: QoSPayload;
 }
 
 export interface QoSPayload {
-	ver: number;
-	active: boolean;
-	reasons: string[];
+    ver: number;
+    active: boolean;
+    reasons: string[];
 }
 
 export async function onHeartbeat(this: WebSocket, data: Payload) {
-	// TODO: validate payload
+    // TODO: validate payload
 
-	setHeartbeat(this);
+    setHeartbeat(this);
 
-	if (data.op === OPCODES.SetQoS) {
-		this.qos = (data.d as QoSData).qos;
-	}
+    if (data.op === OPCODES.SetQoS) {
+        this.qos = (data.d as QoSData).qos;
+    }
 
-	const newSessionData: Partial<Session> = {
-		last_seen: new Date(),
-	};
+    const newSessionData: Partial<Session> = {
+        last_seen: new Date(),
+    };
 
-	await Promise.all([
-		Send(this, { op: 11, d: {} }),
-		Session.update(
-			{
-				session_id: this.session_id!,
-				user_id: this.user_id,
-			} as FindOptionsWhere<Session>,
-			newSessionData,
-		),
-	]);
+    await Promise.all([
+        Send(this, { op: 11, d: {} }),
+        Session.update(
+            {
+                session_id: this.session_id!,
+                user_id: this.user_id,
+            } as FindOptionsWhere<Session>,
+            newSessionData,
+        ),
+    ]);
 }

@@ -23,19 +23,19 @@ import { Request, Response, Router } from "express";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "APIPublicUser",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { user_id } = req.params;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "APIPublicUser",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { user_id } = req.params;
 
-		res.json(await User.getPublicUser(user_id));
-	},
+        res.json(await User.getPublicUser(user_id));
+    },
 );
 
 export default router;

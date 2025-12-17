@@ -24,36 +24,36 @@ import { AccountStandingResponse, AccountStandingState, AppealEligibility } from
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "AccountStandingResponse",
-			},
-			401: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const user = await User.findOneOrFail({
-			where: { id: req.user_id },
-			select: ["data"],
-		});
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "AccountStandingResponse",
+            },
+            401: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const user = await User.findOneOrFail({
+            where: { id: req.user_id },
+            select: ["data"],
+        });
 
-		res.send({
-			classifications: [],
-			guild_classifications: [],
-			account_standing: {
-				state: AccountStandingState.ALL_GOOD,
-			},
-			is_dsa_eligible: true,
-			username: user.username,
-			discriminator: user.discriminator,
-			is_appeal_eligible: true,
-			appeal_eligibility: [AppealEligibility.DSA_ELIGIBLE, AppealEligibility.IN_APP_ELIGIBLE, AppealEligibility.AGE_VERIFY_ELIGIBLE],
-		} as AccountStandingResponse);
-	},
+        res.send({
+            classifications: [],
+            guild_classifications: [],
+            account_standing: {
+                state: AccountStandingState.ALL_GOOD,
+            },
+            is_dsa_eligible: true,
+            username: user.username,
+            discriminator: user.discriminator,
+            is_appeal_eligible: true,
+            appeal_eligibility: [AppealEligibility.DSA_ELIGIBLE, AppealEligibility.IN_APP_ELIGIBLE, AppealEligibility.AGE_VERIFY_ELIGIBLE],
+        } as AccountStandingResponse);
+    },
 );
 
 export default router;

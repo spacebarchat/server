@@ -17,12 +17,12 @@
 */
 
 export interface UploadAttachmentResponseSchema {
-	attachments: UploadAttachmentResponse[];
+    attachments: UploadAttachmentResponse[];
 }
 
 export interface UploadAttachmentResponse {
-	id?: string;
-	upload_url: string;
-	upload_filename: string;
-	original_content_type?: string;
+    id?: string;
+    upload_url: string;
+    upload_filename: string;
+    original_content_type?: string;
 }

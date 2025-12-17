@@ -23,16 +23,16 @@ import { route } from "@spacebar/api";
 const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const { guild_id } = req.params;
-	await Member.IsInGuildOrFail(req.user_id, guild_id);
+    const { guild_id } = req.params;
+    await Member.IsInGuildOrFail(req.user_id, guild_id);
 
-	const role_ids = await Role.find({ where: { guild_id }, select: ["id"] });
-	const counts: { [id: string]: number } = {};
-	for (const { id } of role_ids) {
-		counts[id] = await Member.count({ where: { roles: { id }, guild_id } });
-	}
+    const role_ids = await Role.find({ where: { guild_id }, select: ["id"] });
+    const counts: { [id: string]: number } = {};
+    for (const { id } of role_ids) {
+        counts[id] = await Member.count({ where: { roles: { id }, guild_id } });
+    }
 
-	return res.json(counts);
+    return res.json(counts);
 });
 
 export default router;

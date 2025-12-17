@@ -23,20 +23,20 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "GatewayResponse",
-			},
-		},
-	}),
-	(req: Request, res: Response) => {
-		const { endpointPublic } = Config.get().gateway;
-		res.json({
-			url: endpointPublic,
-		});
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "GatewayResponse",
+            },
+        },
+    }),
+    (req: Request, res: Response) => {
+        const { endpointPublic } = Config.get().gateway;
+        res.json({
+            url: endpointPublic,
+        });
+    },
 );
 
 export default router;

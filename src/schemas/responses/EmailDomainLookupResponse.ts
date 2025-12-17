@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 export interface HubGuild {
-	icon: string;
-	id: string;
-	name: string;
+    icon: string;
+    id: string;
+    name: string;
 }
 
 export interface EmailDomainLookupResponse {
-	guilds_info: HubGuild[];
-	has_matching_guild: boolean;
+    guilds_info: HubGuild[];
+    has_matching_guild: boolean;
 }

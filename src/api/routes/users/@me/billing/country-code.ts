@@ -22,8 +22,8 @@ import { route } from "@spacebar/api";
 const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
-	res.json({ country_code: "US" }).status(200);
+    //TODO
+    res.json({ country_code: "US" }).status(200);
 });
 
 export default router;

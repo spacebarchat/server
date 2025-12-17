@@ -25,66 +25,66 @@ import { ApplicationCommandSchema, ApplicationCommandType } from "@spacebar/sche
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	const members = await Member.find({ where: { guild_id: req.params.guild_id, user: { bot: true } } });
-	const applications: Application[] = [];
+    const members = await Member.find({ where: { guild_id: req.params.guild_id, user: { bot: true } } });
+    const applications: Application[] = [];
 
-	for (const member of members) {
-		const app = await Application.findOne({ where: { id: member.id } });
-		if (app) applications.push(app);
-	}
+    for (const member of members) {
+        const app = await Application.findOne({ where: { id: member.id } });
+        if (app) applications.push(app);
+    }
 
-	const applicationsSendable = [];
+    const applicationsSendable = [];
 
-	for (const application of applications) {
-		applicationsSendable.push({
-			bot_id: application.bot?.id,
-			description: application.description,
-			flags: application.flags,
-			icon: application.icon,
-			id: application.id,
-			name: application.name,
-		});
-	}
+    for (const application of applications) {
+        applicationsSendable.push({
+            bot_id: application.bot?.id,
+            description: application.description,
+            flags: application.flags,
+            icon: application.icon,
+            id: application.id,
+            name: application.name,
+        });
+    }
 
-	const applicationCommands: ApplicationCommand[][] = [];
+    const applicationCommands: ApplicationCommand[][] = [];
 
-	for (const application of applications) {
-		applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: IsNull() } }));
-		applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
-	}
+    for (const application of applications) {
+        applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: IsNull() } }));
+        applicationCommands.push(await ApplicationCommand.find({ where: { application_id: application.id, guild_id: req.params.guild_id } }));
+    }
 
-	const applicationCommandsSendable: ApplicationCommandSchema[] = [];
+    const applicationCommandsSendable: ApplicationCommandSchema[] = [];
 
-	for (const command of applicationCommands.flat()) {
-		applicationCommandsSendable.push({
-			id: command.id,
-			type: command.type,
-			application_id: command.application_id,
-			guild_id: command.guild_id,
-			name: command.name,
-			name_localizations: command.name_localizations,
-			// name_localized: // TODO: make this work
-			description: command.description,
-			description_localizations: command.description_localizations,
-			// description_localized: // TODO: make this work
-			options: command.type === ApplicationCommandType.CHAT_INPUT ? command.options : undefined,
-			default_member_permissions: command.default_member_permissions,
-			dm_permission: command.dm_permission,
-			permissions: command.permissions,
-			nsfw: command.nsfw,
-			integration_types: command.integration_types,
-			global_popularity_rank: command.global_popularity_rank,
-			contexts: command.contexts,
-			version: command.version,
-			handler: command.handler,
-		});
-	}
+    for (const command of applicationCommands.flat()) {
+        applicationCommandsSendable.push({
+            id: command.id,
+            type: command.type,
+            application_id: command.application_id,
+            guild_id: command.guild_id,
+            name: command.name,
+            name_localizations: command.name_localizations,
+            // name_localized: // TODO: make this work
+            description: command.description,
+            description_localizations: command.description_localizations,
+            // description_localized: // TODO: make this work
+            options: command.type === ApplicationCommandType.CHAT_INPUT ? command.options : undefined,
+            default_member_permissions: command.default_member_permissions,
+            dm_permission: command.dm_permission,
+            permissions: command.permissions,
+            nsfw: command.nsfw,
+            integration_types: command.integration_types,
+            global_popularity_rank: command.global_popularity_rank,
+            contexts: command.contexts,
+            version: command.version,
+            handler: command.handler,
+        });
+    }
 
-	res.send({
-		applications: applicationsSendable,
-		application_commands: applicationCommandsSendable,
-		version: Snowflake.generate(),
-	});
+    res.send({
+        applications: applicationsSendable,
+        application_commands: applicationCommandsSendable,
+        version: Snowflake.generate(),
+    });
 });
 
 export default router;

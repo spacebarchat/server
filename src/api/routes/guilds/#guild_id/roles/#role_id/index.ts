@@ -25,121 +25,121 @@ import { RoleModifySchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "Role",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id, role_id } = req.params;
-		await Member.IsInGuildOrFail(req.user_id, guild_id);
-		const role = await Role.findOneOrFail({
-			where: { guild_id, id: role_id },
-		});
-		return res.json(role);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "Role",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id, role_id } = req.params;
+        await Member.IsInGuildOrFail(req.user_id, guild_id);
+        const role = await Role.findOneOrFail({
+            where: { guild_id, id: role_id },
+        });
+        return res.json(role);
+    },
 );
 
 router.delete(
-	"/",
-	route({
-		permission: "MANAGE_ROLES",
-		responses: {
-			204: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id, role_id } = req.params;
-		if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
+    "/",
+    route({
+        permission: "MANAGE_ROLES",
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id, role_id } = req.params;
+        if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
-		await Promise.all([
-			Role.delete({
-				id: role_id,
-				guild_id: guild_id,
-			}),
-			emitEvent({
-				event: "GUILD_ROLE_DELETE",
-				guild_id,
-				data: {
-					guild_id,
-					role_id,
-				},
-			} as GuildRoleDeleteEvent),
-		]);
+        await Promise.all([
+            Role.delete({
+                id: role_id,
+                guild_id: guild_id,
+            }),
+            emitEvent({
+                event: "GUILD_ROLE_DELETE",
+                guild_id,
+                data: {
+                    guild_id,
+                    role_id,
+                },
+            } as GuildRoleDeleteEvent),
+        ]);
 
-		res.sendStatus(204);
-	},
+        res.sendStatus(204);
+    },
 );
 
 // TODO: check role hierarchy
 
 router.patch(
-	"/",
-	route({
-		requestBody: "RoleModifySchema",
-		permission: "MANAGE_ROLES",
-		responses: {
-			200: {
-				body: "Role",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { role_id, guild_id } = req.params;
-		const body = req.body as RoleModifySchema;
+    "/",
+    route({
+        requestBody: "RoleModifySchema",
+        permission: "MANAGE_ROLES",
+        responses: {
+            200: {
+                body: "Role",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { role_id, guild_id } = req.params;
+        const body = req.body as RoleModifySchema;
 
-		if (body.icon && body.icon.length) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
-		else body.icon = undefined;
+        if (body.icon && body.icon.length) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);
+        else body.icon = undefined;
 
-		const role = await Role.findOneOrFail({
-			where: { id: role_id, guild: { id: guild_id } },
-		});
-		role.assign({
-			...body,
-			permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
-		});
+        const role = await Role.findOneOrFail({
+            where: { id: role_id, guild: { id: guild_id } },
+        });
+        role.assign({
+            ...body,
+            permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
+        });
 
-		await Promise.all([
-			role.save(),
-			emitEvent({
-				event: "GUILD_ROLE_UPDATE",
-				guild_id,
-				data: {
-					guild_id,
-					role,
-				},
-			} as GuildRoleUpdateEvent),
-		]);
+        await Promise.all([
+            role.save(),
+            emitEvent({
+                event: "GUILD_ROLE_UPDATE",
+                guild_id,
+                data: {
+                    guild_id,
+                    role,
+                },
+            } as GuildRoleUpdateEvent),
+        ]);
 
-		res.json(role);
-	},
+        res.json(role);
+    },
 );
 
 export default router;

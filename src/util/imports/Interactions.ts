@@ -20,15 +20,15 @@ import { ApplicationCommandType } from "@spacebar/schemas";
 import { InteractionType, Snowflake } from "@spacebar/util";
 
 interface PendingInteraction {
-	timeout: NodeJS.Timeout;
-	applicationId: string;
-	userId: string;
-	channelId?: string;
-	guildId?: string;
-	nonce?: string;
-	type: InteractionType;
-	commandType: ApplicationCommandType;
-	commandName: string;
+    timeout: NodeJS.Timeout;
+    applicationId: string;
+    userId: string;
+    channelId?: string;
+    guildId?: string;
+    nonce?: string;
+    type: InteractionType;
+    commandType: ApplicationCommandType;
+    commandName: string;
 }
 
 export const pendingInteractions = new Map<Snowflake, PendingInteraction>();

@@ -17,5 +17,5 @@
 */
 
 export interface TeamCreateSchema {
-	name: string;
+    name: string;
 }

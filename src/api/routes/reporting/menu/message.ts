@@ -22,19 +22,19 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "ReportingMenuResponse",
-			},
-			204: {},
-		},
-	}),
-	(req: Request, res: Response) => {
-		// TODO: implement
-		//res.send([] as ReportingMenuResponseSchema);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "ReportingMenuResponse",
+            },
+            204: {},
+        },
+    }),
+    (req: Request, res: Response) => {
+        // TODO: implement
+        //res.send([] as ReportingMenuResponseSchema);
+    },
 );
 
 export default router;

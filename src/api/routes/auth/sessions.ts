@@ -23,54 +23,54 @@ import { SessionsLogoutSchema } from "../../../schemas/api/users/SessionsSchemas
 import { In } from "typeorm";
 const router = Router({ mergeParams: true });
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "GetSessionsResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { extended = false } = req.query;
-		const sessions = (await Session.find({ where: { user_id: req.user_id, is_admin_session: false } })) as Session[];
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "GetSessionsResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { extended = false } = req.query;
+        const sessions = (await Session.find({ where: { user_id: req.user_id, is_admin_session: false } })) as Session[];
 
-		res.json({
-			user_sessions: sessions.map((session) => (extended ? session.getExtendedDeviceInfo() : session.getDiscordDeviceInfo())),
-		});
-	},
+        res.json({
+            user_sessions: sessions.map((session) => (extended ? session.getExtendedDeviceInfo() : session.getDiscordDeviceInfo())),
+        });
+    },
 );
 
 router.post(
-	"/logout",
-	route({
-		requestBody: "SessionsLogoutSchema",
-		responses: {
-			204: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const body = req.body as SessionsLogoutSchema;
+    "/logout",
+    route({
+        requestBody: "SessionsLogoutSchema",
+        responses: {
+            204: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as SessionsLogoutSchema;
 
-		let sessions: Session[] = [];
-		if ("session_ids" in body) {
-			sessions = (await Session.find({ where: { user_id: req.user_id, session_id: In(body.session_ids!) } })) as Session[];
-		}
+        let sessions: Session[] = [];
+        if ("session_ids" in body) {
+            sessions = (await Session.find({ where: { user_id: req.user_id, session_id: In(body.session_ids!) } })) as Session[];
+        }
 
-		if ("session_id_hashes" in body) {
-			const allSessions = (await Session.find({ where: { user_id: req.user_id } })) as Session[];
-			const hashSet = new Set(body.session_id_hashes);
-			const matchingSessions = allSessions.filter((session) => {
-				const hash = createHash("sha256").update(session.session_id).digest("hex");
-				return hashSet.has(hash);
-			});
-			sessions.push(...matchingSessions);
-		}
+        if ("session_id_hashes" in body) {
+            const allSessions = (await Session.find({ where: { user_id: req.user_id } })) as Session[];
+            const hashSet = new Set(body.session_id_hashes);
+            const matchingSessions = allSessions.filter((session) => {
+                const hash = createHash("sha256").update(session.session_id).digest("hex");
+                return hashSet.has(hash);
+            });
+            sessions.push(...matchingSessions);
+        }
 
-		for (const session of sessions) {
-			await session.remove();
-		}
-		res.status(204).send();
-	},
+        for (const session of sessions) {
+            await session.remove();
+        }
+        res.status(204).send();
+    },
 );
 export default router;

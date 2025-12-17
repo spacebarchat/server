@@ -22,26 +22,26 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "InstanceDomainsResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { cdn, gateway, api } = Config.get();
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "InstanceDomainsResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { cdn, gateway, api } = Config.get();
 
-		res.json({
-			admin: Config.get().admin.endpointPublic,
-			api: Config.get().api.endpointPublic?.split("/api")[0] || "", // Transitional, see /.well-known/spacebar/client
-			apiEndpoint: api.endpointPublic,
-			cdn: cdn.endpointPublic,
-			defaultApiVersion: api.defaultVersion,
-			gateway: gateway.endpointPublic,
-		});
-	},
+        res.json({
+            admin: Config.get().admin.endpointPublic,
+            api: Config.get().api.endpointPublic?.split("/api")[0] || "", // Transitional, see /.well-known/spacebar/client
+            apiEndpoint: api.endpointPublic,
+            cdn: cdn.endpointPublic,
+            defaultApiVersion: api.defaultVersion,
+            gateway: gateway.endpointPublic,
+        });
+    },
 );
 
 export default router;

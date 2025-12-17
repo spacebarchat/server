@@ -17,6 +17,6 @@
 */
 
 export interface DmChannelCreateSchema {
-	name?: string;
-	recipients: string[];
+    name?: string;
+    recipients: string[];
 }

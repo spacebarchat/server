@@ -19,6 +19,6 @@
 import { Guild } from "../../util/entities";
 
 export interface GuildRecommendationsResponse {
-	recommended_guilds: Guild[];
-	load_id: string;
+    recommended_guilds: Guild[];
+    load_id: string;
 }

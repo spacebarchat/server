@@ -19,15 +19,15 @@
 import { BackupCode, UserSettings } from "../../util/entities";
 
 export interface TokenResponse {
-	token: string;
-	settings: UserSettings;
+    token: string;
+    settings: UserSettings;
 }
 
 export interface TokenOnlyResponse {
-	token: string;
+    token: string;
 }
 
 export interface TokenWithBackupCodesResponse {
-	token: string;
-	backup_codes: BackupCode[];
+    token: string;
+    backup_codes: BackupCode[];
 }

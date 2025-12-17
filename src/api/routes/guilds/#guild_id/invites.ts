@@ -23,33 +23,33 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		permission: "MANAGE_GUILD",
-		responses: {
-			200: {
-				body: "APIInviteArray",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        permission: "MANAGE_GUILD",
+        responses: {
+            200: {
+                body: "APIInviteArray",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const invites = await Invite.find({
-			where: { guild_id },
-			relations: PublicInviteRelation,
-		});
+        const invites = await Invite.find({
+            where: { guild_id },
+            relations: PublicInviteRelation,
+        });
 
-		await Promise.all(
-			invites
-				.filter((i) => i.isExpired())
-				.map(async (i) => {
-					await Invite.delete({ code: i.code });
-				}),
-		);
+        await Promise.all(
+            invites
+                .filter((i) => i.isExpired())
+                .map(async (i) => {
+                    await Invite.delete({ code: i.code });
+                }),
+        );
 
-		return res.json(invites.filter((i) => !i.isExpired()));
-	},
+        return res.json(invites.filter((i) => !i.isExpired()));
+    },
 );
 
 export default router;

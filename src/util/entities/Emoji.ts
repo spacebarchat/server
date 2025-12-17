@@ -22,44 +22,44 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 
 @Entity({
-	name: "emojis",
+    name: "emojis",
 })
 export class Emoji extends BaseClass {
-	@Column()
-	animated: boolean;
+    @Column()
+    animated: boolean;
 
-	@Column()
-	available: boolean; // whether this emoji can be used, may be false due to various reasons
+    @Column()
+    available: boolean; // whether this emoji can be used, may be false due to various reasons
 
-	@Column()
-	guild_id: string;
+    @Column()
+    guild_id: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild) => guild.emojis, {
-		onDelete: "CASCADE",
-	})
-	guild: Guild;
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild, (guild) => guild.emojis, {
+        onDelete: "CASCADE",
+    })
+    guild: Guild;
 
-	@Column({ nullable: true })
-	@RelationId((emoji: Emoji) => emoji.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((emoji: Emoji) => emoji.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User)
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User)
+    user: User;
 
-	@Column()
-	managed: boolean;
+    @Column()
+    managed: boolean;
 
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 
-	@Column()
-	require_colons: boolean;
+    @Column()
+    require_colons: boolean;
 
-	@Column({ type: "simple-array" })
-	roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
+    @Column({ type: "simple-array" })
+    roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
 
-	@Column({ type: "simple-array", nullable: true })
-	groups: string[]; // user groups this emoji is whitelisted to (Spacebar extension)
+    @Column({ type: "simple-array", nullable: true })
+    groups: string[]; // user groups this emoji is whitelisted to (Spacebar extension)
 }

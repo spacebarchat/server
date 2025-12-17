@@ -21,31 +21,31 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
 const errorMessages: { [key: string]: [string, number] } = {
-	"entity.too.large": ["Request body too large", 413],
-	"entity.parse.failed": ["Invalid JSON body", 400],
-	"entity.verify.failed": ["Entity verification failed", 403],
-	"request.aborted": ["Request aborted", 400],
-	"request.size.invalid": ["Request size did not match content length", 400],
-	"stream.encoding.set": ["Stream encoding should not be set", 500],
-	"stream.not.readable": ["Stream is not readable", 500],
-	"parameters.too.many": ["Too many parameters", 413],
-	"charset.unsupported": ["Unsupported charset", 415],
-	"encoding.unsupported": ["Unsupported content encoding", 415],
+    "entity.too.large": ["Request body too large", 413],
+    "entity.parse.failed": ["Invalid JSON body", 400],
+    "entity.verify.failed": ["Entity verification failed", 403],
+    "request.aborted": ["Request aborted", 400],
+    "request.size.invalid": ["Request size did not match content length", 400],
+    "stream.encoding.set": ["Stream encoding should not be set", 500],
+    "stream.not.readable": ["Stream is not readable", 500],
+    "parameters.too.many": ["Too many parameters", 413],
+    "charset.unsupported": ["Unsupported charset", 415],
+    "encoding.unsupported": ["Unsupported content encoding", 415],
 };
 
 export function BodyParser(opts?: OptionsJson) {
-	const jsonParser = bodyParser.json(opts);
+    const jsonParser = bodyParser.json(opts);
 
-	return (req: Request, res: Response, next: NextFunction) => {
-		if (!req.headers["content-type"]) req.headers["content-type"] = "application/json";
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (!req.headers["content-type"]) req.headers["content-type"] = "application/json";
 
-		jsonParser(req, res, (err) => {
-			if (err) {
-				const [message, status] = errorMessages[err.type] || ["Invalid Body", 400];
-				const errorMessage = message.includes("charset") || message.includes("encoding") ? `${message} "${err.charset || err.encoding}"` : message;
-				return next(new HTTPError(errorMessage, status));
-			}
-			next();
-		});
-	};
+        jsonParser(req, res, (err) => {
+            if (err) {
+                const [message, status] = errorMessages[err.type] || ["Invalid Body", 400];
+                const errorMessage = message.includes("charset") || message.includes("encoding") ? `${message} "${err.charset || err.encoding}"` : message;
+                return next(new HTTPError(errorMessage, status));
+            }
+            next();
+        });
+    };
 }

@@ -19,26 +19,26 @@
 import { Emoji } from "@spacebar/util";
 
 export interface EmojiSourceResponse {
-	type: "GUILD" | "APPLICATION";
-	guild?: EmojiGuild | null;
-	application?: EmojiApplication | null;
+    type: "GUILD" | "APPLICATION";
+    guild?: EmojiGuild | null;
+    application?: EmojiApplication | null;
 }
 
 // keep in sync with
 export interface EmojiGuild {
-	id: string;
-	name: string;
-	icon?: string | null;
-	description?: string | null;
-	features: string[];
-	emojis: Emoji[];
-	premium_tier: number;
-	premium_subscription_count?: number;
-	approximate_member_count?: number;
-	approximate_presence_count?: number;
+    id: string;
+    name: string;
+    icon?: string | null;
+    description?: string | null;
+    features: string[];
+    emojis: Emoji[];
+    premium_tier: number;
+    premium_subscription_count?: number;
+    approximate_member_count?: number;
+    approximate_presence_count?: number;
 }
 
 export interface EmojiApplication {
-	id: string;
-	name: string;
+    id: string;
+    name: string;
 }

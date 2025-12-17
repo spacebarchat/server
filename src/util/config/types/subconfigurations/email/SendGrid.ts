@@ -17,5 +17,5 @@
 */
 
 export class SendGridConfiguration {
-	apiKey: string | null = null;
+    apiKey: string | null = null;
 }

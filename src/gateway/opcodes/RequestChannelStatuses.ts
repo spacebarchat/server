@@ -19,17 +19,17 @@
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 
 export async function onRequestChannelStatuses(this: WebSocket, { d }: Payload) {
-	const startTime = Date.now();
-	// Schema validation can only accept either string or array, so transforming it here to support both
-	if (!d.guild_id) throw new Error('"guild_id" is required');
+    const startTime = Date.now();
+    // Schema validation can only accept either string or array, so transforming it here to support both
+    if (!d.guild_id) throw new Error('"guild_id" is required');
 
-	// TODO: implement
-	await Send(this, {
-		op: OPCODES.Dispatch,
-		t: "CHANNEL_STATUSES",
-		d: {
-			guild_id: d.guild_id,
-			channels: [],
-		},
-	});
+    // TODO: implement
+    await Send(this, {
+        op: OPCODES.Dispatch,
+        t: "CHANNEL_STATUSES",
+        d: {
+            guild_id: d.guild_id,
+            channels: [],
+        },
+    });
 }

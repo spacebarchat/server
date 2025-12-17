@@ -22,18 +22,18 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "APIGeneralConfiguration",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { general } = Config.get();
-		res.json(general);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "APIGeneralConfiguration",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { general } = Config.get();
+        res.json(general);
+    },
 );
 
 export default router;

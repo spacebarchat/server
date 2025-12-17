@@ -23,21 +23,21 @@ import { Request, Response, Router } from "express";
 const router: Router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "APIStickerPackArray",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const sticker_packs = await StickerPack.find({
-			relations: ["stickers"],
-		});
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "APIStickerPackArray",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const sticker_packs = await StickerPack.find({
+            relations: ["stickers"],
+        });
 
-		res.json({ sticker_packs });
-	},
+        res.json({ sticker_packs });
+    },
 );
 
 export default router;

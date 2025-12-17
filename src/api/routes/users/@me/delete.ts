@@ -25,44 +25,44 @@ import { HTTPError } from "lambert-server";
 const router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		responses: {
-			204: {},
-			401: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const user = await User.findOneOrFail({
-			where: { id: req.user_id },
-			select: ["data"],
-		}); //User object
-		let correctpass = true;
+    "/",
+    route({
+        responses: {
+            204: {},
+            401: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const user = await User.findOneOrFail({
+            where: { id: req.user_id },
+            select: ["data"],
+        }); //User object
+        let correctpass = true;
 
-		if (user.data.hash) {
-			// guest accounts can delete accounts without password
-			correctpass = await bcrypt.compare(req.body.password, user.data.hash);
-			if (!correctpass) {
-				throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
-			}
-		}
+        if (user.data.hash) {
+            // guest accounts can delete accounts without password
+            correctpass = await bcrypt.compare(req.body.password, user.data.hash);
+            if (!correctpass) {
+                throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
+            }
+        }
 
-		// TODO: decrement guild member count
+        // TODO: decrement guild member count
 
-		if (correctpass) {
-			const members = await Member.find({ where: { id: req.user_id } });
-			await Promise.all([User.delete({ id: req.user_id }), ...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
+        if (correctpass) {
+            const members = await Member.find({ where: { id: req.user_id } });
+            await Promise.all([User.delete({ id: req.user_id }), ...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
 
-			res.sendStatus(204);
-		} else {
-			res.sendStatus(401);
-		}
-	},
+            res.sendStatus(204);
+        } else {
+            res.sendStatus(401);
+        }
+    },
 );
 
 export default router;

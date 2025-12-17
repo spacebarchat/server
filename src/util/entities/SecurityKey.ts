@@ -21,28 +21,28 @@ import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 @Entity({
-	name: "security_keys",
+    name: "security_keys",
 })
 export class SecurityKey extends BaseClass {
-	@Column({ nullable: true })
-	@RelationId((key: SecurityKey) => key.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((key: SecurityKey) => key.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 
-	@Column()
-	key_id: string;
+    @Column()
+    key_id: string;
 
-	@Column()
-	public_key: string;
+    @Column()
+    public_key: string;
 
-	@Column()
-	counter: number;
+    @Column()
+    counter: number;
 
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 }

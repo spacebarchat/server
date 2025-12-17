@@ -24,43 +24,43 @@ import { GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			"200": {
-				body: "GuildProfileResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-		const profileResponse: GuildProfileResponse = {
-			id: guild_id,
-			name: guild.name,
-			icon_hash: guild.icon ?? null,
-			member_count: guild.member_count!,
-			online_count: guild.member_count!,
-			description: guild.description ?? "A Spacebar guild",
-			brand_color_primary: "#FF00FF",
-			banner_hash: null,
-			game_application_ids: [], // We don't track this
-			game_activity: {}, // We don't track this
-			tag: guild.name.substring(0, 4).toUpperCase(), // TODO: allow custom tags
-			badge: 0,
-			badge_color_primary: "#FF00FF",
-			badge_color_secondary: "#00FFFF",
-			badge_hash: "",
-			traits: [],
-			features: guild.features ?? [],
-			visibility: GuildVisibilityLevel.PUBLIC,
-			custom_banner_hash: guild.banner ?? null,
-			premium_subscription_count: guild.premium_subscription_count ?? 0,
-			premium_tier: guild.premium_tier ?? 0,
-		};
+    "/",
+    route({
+        responses: {
+            "200": {
+                body: "GuildProfileResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
+        const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+        const profileResponse: GuildProfileResponse = {
+            id: guild_id,
+            name: guild.name,
+            icon_hash: guild.icon ?? null,
+            member_count: guild.member_count!,
+            online_count: guild.member_count!,
+            description: guild.description ?? "A Spacebar guild",
+            brand_color_primary: "#FF00FF",
+            banner_hash: null,
+            game_application_ids: [], // We don't track this
+            game_activity: {}, // We don't track this
+            tag: guild.name.substring(0, 4).toUpperCase(), // TODO: allow custom tags
+            badge: 0,
+            badge_color_primary: "#FF00FF",
+            badge_color_secondary: "#00FFFF",
+            badge_hash: "",
+            traits: [],
+            features: guild.features ?? [],
+            visibility: GuildVisibilityLevel.PUBLIC,
+            custom_banner_hash: guild.banner ?? null,
+            premium_subscription_count: guild.premium_subscription_count ?? 0,
+            premium_tier: guild.premium_tier ?? 0,
+        };
 
-		res.send(profileResponse);
-	},
+        res.send(profileResponse);
+    },
 );
 
 export default router;

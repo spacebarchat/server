@@ -17,5 +17,5 @@
 */
 
 export interface GatewayResponse {
-	url: string;
+    url: string;
 }

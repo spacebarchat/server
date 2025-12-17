@@ -23,47 +23,47 @@ import { Request, Response, Router } from "express";
 const router: Router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		permission: "SEND_MESSAGES",
-		responses: {
-			204: {},
-			404: {},
-			403: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { channel_id } = req.params;
-		const user_id = req.user_id;
-		const timestamp = Math.floor(Date.now() / 1000);
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
-		const member = await Member.findOne({
-			where: { id: user_id, guild_id: channel.guild_id },
-			relations: ["roles", "user"],
-		});
-		await emitEvent({
-			event: "TYPING_START",
-			channel_id: channel_id,
-			data: {
-				...(member
-					? {
-							member: {
-								...member.toPublicMember(),
-								roles: member?.roles?.map((x) => x.id),
-							},
-						}
-					: null),
-				channel_id,
-				timestamp,
-				user_id,
-				guild_id: channel.guild_id,
-			},
-		} as TypingStartEvent);
+    "/",
+    route({
+        permission: "SEND_MESSAGES",
+        responses: {
+            204: {},
+            404: {},
+            403: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params;
+        const user_id = req.user_id;
+        const timestamp = Math.floor(Date.now() / 1000);
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
+        const member = await Member.findOne({
+            where: { id: user_id, guild_id: channel.guild_id },
+            relations: ["roles", "user"],
+        });
+        await emitEvent({
+            event: "TYPING_START",
+            channel_id: channel_id,
+            data: {
+                ...(member
+                    ? {
+                          member: {
+                              ...member.toPublicMember(),
+                              roles: member?.roles?.map((x) => x.id),
+                          },
+                      }
+                    : null),
+                channel_id,
+                timestamp,
+                user_id,
+                guild_id: channel.guild_id,
+            },
+        } as TypingStartEvent);
 
-		res.sendStatus(204);
-	},
+        res.sendStatus(204);
+    },
 );
 
 export default router;

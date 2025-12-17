@@ -23,66 +23,66 @@ import path from "path";
 import { ErlpackType, JSONReplacer } from "@spacebar/util";
 let erlpack: ErlpackType | null = null;
 try {
-	erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
+    erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
 } catch (e) {
-	console.log("Failed to import @yukikaze-bot/erlpack: ", e);
+    console.log("Failed to import @yukikaze-bot/erlpack: ", e);
 }
 
 // don't care
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const recurseJsonReplace = (json: any) => {
-	for (const key in json) {
-		// eslint-disable-next-line no-prototype-builtins
-		if (!json.hasOwnProperty(key)) continue;
+    for (const key in json) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!json.hasOwnProperty(key)) continue;
 
-		json[key] = JSONReplacer.call(json, key, json[key]);
+        json[key] = JSONReplacer.call(json, key, json[key]);
 
-		if (typeof json[key] == "object" && json[key] !== null) json[key] = recurseJsonReplace(json[key]);
-	}
-	return json;
+        if (typeof json[key] == "object" && json[key] !== null) json[key] = recurseJsonReplace(json[key]);
+    }
+    return json;
 };
 
 export async function Send(socket: WebSocket, data: Payload) {
-	if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+    if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
 
-	if (process.env.WS_DUMP) {
-		const id = socket.session_id || "unknown";
+    if (process.env.WS_DUMP) {
+        const id = socket.session_id || "unknown";
 
-		await fs.mkdir(path.join("dump", id), {
-			recursive: true,
-		});
-		await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
-	}
+        await fs.mkdir(path.join("dump", id), {
+            recursive: true,
+        });
+        await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+    }
 
-	let buffer: Buffer | string;
-	if (socket.encoding === "etf" && erlpack) {
-		// Erlpack doesn't like Date objects, encodes them as {}
-		data = recurseJsonReplace(data);
-		buffer = erlpack.pack(data);
-	}
-	// TODO: encode circular object
-	else if (socket.encoding === "json") buffer = JSON.stringify(data, JSONReplacer);
-	else return;
+    let buffer: Buffer | string;
+    if (socket.encoding === "etf" && erlpack) {
+        // Erlpack doesn't like Date objects, encodes them as {}
+        data = recurseJsonReplace(data);
+        buffer = erlpack.pack(data);
+    }
+    // TODO: encode circular object
+    else if (socket.encoding === "json") buffer = JSON.stringify(data, JSONReplacer);
+    else return;
 
-	// TODO: compression
-	if (socket.compress === "zlib-stream") {
-		buffer = socket.deflate!.process(buffer) as Buffer;
-	} else if (socket.compress === "zstd-stream") {
-		if (typeof buffer === "string") buffer = Buffer.from(buffer as string);
+    // TODO: compression
+    if (socket.compress === "zlib-stream") {
+        buffer = socket.deflate!.process(buffer) as Buffer;
+    } else if (socket.compress === "zstd-stream") {
+        if (typeof buffer === "string") buffer = Buffer.from(buffer as string);
 
-		buffer = (await socket.zstdEncoder!.encode(buffer as Buffer)) as Buffer;
-	}
+        buffer = (await socket.zstdEncoder!.encode(buffer as Buffer)) as Buffer;
+    }
 
-	return new Promise((res, rej) => {
-		if (socket.readyState !== 1) {
-			// return rej("socket not open");
-			socket.close();
-			return;
-		}
+    return new Promise((res, rej) => {
+        if (socket.readyState !== 1) {
+            // return rej("socket not open");
+            socket.close();
+            return;
+        }
 
-		socket.send(buffer, (err) => {
-			if (err) return rej(err);
-			return res(null);
-		});
-	});
+        socket.send(buffer, (err) => {
+            if (err) return rej(err);
+            return res(null);
+        });
+    });
 }

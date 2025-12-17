@@ -17,5 +17,5 @@
 */
 
 export type StringStringDictionary = {
-	[key: string]: string;
+    [key: string]: string;
 };

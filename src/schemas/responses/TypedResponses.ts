@@ -36,7 +36,7 @@ export type APIDMChannelArray = DmChannelDTO[];
 export type APIBackupCodeArray = BackupCode[];
 
 export interface UserUpdateResponse extends APIPrivateUser {
-	newToken?: string;
+    newToken?: string;
 }
 
 export type ApplicationDetectableResponse = unknown[];
@@ -67,7 +67,7 @@ export type APIMemberArray = Member[];
 export type APIPublicMember = PublicMember;
 
 export interface APIGuildWithJoinedAt extends GuildCreateResponse {
-	joined_at: string;
+    joined_at: string;
 }
 
 export type APIRoleArray = Role[];
@@ -83,8 +83,8 @@ export type APILimitsConfiguration = LimitsConfiguration;
 export type APIStickerPackArray = StickerPack[];
 
 export type APIConnectionsConfiguration = Record<
-	string,
-	{
-		enabled: boolean;
-	}
+    string,
+    {
+        enabled: boolean;
+    }
 >;

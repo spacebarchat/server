@@ -22,8 +22,8 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	// TODO:
-	res.status(200).send({ user_affinities: [], inverse_user_affinities: [] });
+    // TODO:
+    res.status(200).send({ user_affinities: [], inverse_user_affinities: [] });
 });
 
 export default router;

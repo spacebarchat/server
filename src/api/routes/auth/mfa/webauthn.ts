@@ -25,77 +25,77 @@ import { WebAuthnTotpSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 function toArrayBuffer(buf: Buffer) {
-	const ab = new ArrayBuffer(buf.length);
-	const view = new Uint8Array(ab);
-	for (let i = 0; i < buf.length; ++i) {
-		view[i] = buf[i];
-	}
-	return ab;
+    const ab = new ArrayBuffer(buf.length);
+    const view = new Uint8Array(ab);
+    for (let i = 0; i < buf.length; ++i) {
+        view[i] = buf[i];
+    }
+    return ab;
 }
 
 router.post(
-	"/",
-	route({
-		requestBody: "WebAuthnTotpSchema",
-		responses: {
-			200: { body: "TokenResponse" },
-			400: { body: "APIErrorResponse" },
-		},
-	}),
-	async (req: Request, res: Response) => {
-		if (!WebAuthn.fido2) {
-			// TODO: I did this for typescript and I can't use !
-			throw new Error("WebAuthn not enabled");
-		}
+    "/",
+    route({
+        requestBody: "WebAuthnTotpSchema",
+        responses: {
+            200: { body: "TokenResponse" },
+            400: { body: "APIErrorResponse" },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        if (!WebAuthn.fido2) {
+            // TODO: I did this for typescript and I can't use !
+            throw new Error("WebAuthn not enabled");
+        }
 
-		const { code, ticket } = req.body as WebAuthnTotpSchema;
+        const { code, ticket } = req.body as WebAuthnTotpSchema;
 
-		const user = await User.findOneOrFail({
-			where: {
-				totp_last_ticket: ticket,
-			},
-			select: ["id"],
-			relations: ["settings"],
-		});
+        const user = await User.findOneOrFail({
+            where: {
+                totp_last_ticket: ticket,
+            },
+            select: ["id"],
+            relations: ["settings"],
+        });
 
-		const ret = await verifyWebAuthnToken(ticket);
-		if (!ret) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        const ret = await verifyWebAuthnToken(ticket);
+        if (!ret) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-		await User.update({ id: user.id }, { totp_last_ticket: "" });
+        await User.update({ id: user.id }, { totp_last_ticket: "" });
 
-		const clientAttestationResponse = JSON.parse(code);
+        const clientAttestationResponse = JSON.parse(code);
 
-		if (!clientAttestationResponse.rawId) throw new HTTPError("Missing rawId", 400);
+        if (!clientAttestationResponse.rawId) throw new HTTPError("Missing rawId", 400);
 
-		clientAttestationResponse.rawId = toArrayBuffer(Buffer.from(clientAttestationResponse.rawId, "base64url"));
+        clientAttestationResponse.rawId = toArrayBuffer(Buffer.from(clientAttestationResponse.rawId, "base64url"));
 
-		const securityKey = await SecurityKey.findOneOrFail({
-			where: {
-				key_id: Buffer.from(clientAttestationResponse.rawId, "base64url").toString("base64"),
-			},
-		});
+        const securityKey = await SecurityKey.findOneOrFail({
+            where: {
+                key_id: Buffer.from(clientAttestationResponse.rawId, "base64url").toString("base64"),
+            },
+        });
 
-		const assertionExpectations: ExpectedAssertionResult = JSON.parse(Buffer.from(clientAttestationResponse.response.clientDataJSON, "base64").toString());
+        const assertionExpectations: ExpectedAssertionResult = JSON.parse(Buffer.from(clientAttestationResponse.response.clientDataJSON, "base64").toString());
 
-		const authnResult = await WebAuthn.fido2.assertionResult(clientAttestationResponse, {
-			...assertionExpectations,
-			factor: "second",
-			publicKey: securityKey.public_key,
-			prevCounter: securityKey.counter,
-			userHandle: securityKey.key_id,
-		});
+        const authnResult = await WebAuthn.fido2.assertionResult(clientAttestationResponse, {
+            ...assertionExpectations,
+            factor: "second",
+            publicKey: securityKey.public_key,
+            prevCounter: securityKey.counter,
+            userHandle: securityKey.key_id,
+        });
 
-		const counter = authnResult.authnrData.get("counter");
+        const counter = authnResult.authnrData.get("counter");
 
-		securityKey.counter = counter;
+        securityKey.counter = counter;
 
-		await securityKey.save();
+        await securityKey.save();
 
-		return res.json({
-			token: await generateToken(user.id),
-			user_settings: user.settings,
-		});
-	},
+        return res.json({
+            token: await generateToken(user.id),
+            user_settings: user.settings,
+        });
+    },
 );
 
 export default router;

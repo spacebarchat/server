@@ -7,6 +7,6 @@
 // @fc-license-skip
 
 export type ErlpackType = {
-	pack: (data: any) => Buffer;
-	unpack: <T = any>(data: Buffer) => T;
+    pack: (data: any) => Buffer;
+    unpack: <T = any>(data: Buffer) => T;
 };

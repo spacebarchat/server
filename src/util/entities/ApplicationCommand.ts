@@ -19,70 +19,70 @@
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import {
-	ApplicationCommandHandlerType,
-	ApplicationCommandOption,
-	ApplicationCommandIndexPermissions,
-	ApplicationCommandType,
-	Snowflake,
-	ApplicationIntegrationType,
-	InteractionContextType,
+    ApplicationCommandHandlerType,
+    ApplicationCommandOption,
+    ApplicationCommandIndexPermissions,
+    ApplicationCommandType,
+    Snowflake,
+    ApplicationIntegrationType,
+    InteractionContextType,
 } from "@spacebar/schemas";
 
 @Entity({
-	name: "application_commands",
+    name: "application_commands",
 })
 export class ApplicationCommand extends BaseClass {
-	@Column({ default: ApplicationCommandType.CHAT_INPUT })
-	type?: ApplicationCommandType;
+    @Column({ default: ApplicationCommandType.CHAT_INPUT })
+    type?: ApplicationCommandType;
 
-	@Column()
-	application_id: Snowflake;
+    @Column()
+    application_id: Snowflake;
 
-	@Column({ nullable: true })
-	guild_id?: Snowflake;
+    @Column({ nullable: true })
+    guild_id?: Snowflake;
 
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 
-	@Column({ nullable: true, type: "simple-json" })
-	name_localizations?: Record<string, string>;
+    @Column({ nullable: true, type: "simple-json" })
+    name_localizations?: Record<string, string>;
 
-	@Column()
-	description: string;
+    @Column()
+    description: string;
 
-	@Column({ nullable: true, type: "simple-json" })
-	description_localizations?: Record<string, string>;
+    @Column({ nullable: true, type: "simple-json" })
+    description_localizations?: Record<string, string>;
 
-	@Column({ type: "simple-json", default: "[]" })
-	options: ApplicationCommandOption[];
+    @Column({ type: "simple-json", default: "[]" })
+    options: ApplicationCommandOption[];
 
-	@Column({ nullable: true, type: String })
-	default_member_permissions: string | null;
+    @Column({ nullable: true, type: String })
+    default_member_permissions: string | null;
 
-	/*
-	 * @deprecated
-	 */
-	@Column({ default: true })
-	dm_permission?: boolean;
+    /*
+     * @deprecated
+     */
+    @Column({ default: true })
+    dm_permission?: boolean;
 
-	@Column({ nullable: true, type: "simple-json" })
-	permissions?: ApplicationCommandIndexPermissions;
+    @Column({ nullable: true, type: "simple-json" })
+    permissions?: ApplicationCommandIndexPermissions;
 
-	@Column({ default: false })
-	nsfw?: boolean;
+    @Column({ default: false })
+    nsfw?: boolean;
 
-	@Column({ nullable: true, type: "simple-json" })
-	integration_types?: ApplicationIntegrationType[];
+    @Column({ nullable: true, type: "simple-json" })
+    integration_types?: ApplicationIntegrationType[];
 
-	@Column({ default: 0 })
-	global_popularity_rank?: number;
+    @Column({ default: 0 })
+    global_popularity_rank?: number;
 
-	@Column({ nullable: true, type: "simple-json" })
-	contexts?: InteractionContextType[];
+    @Column({ nullable: true, type: "simple-json" })
+    contexts?: InteractionContextType[];
 
-	@Column({ default: 0 })
-	version: Snowflake;
+    @Column({ default: 0 })
+    version: Snowflake;
 
-	@Column({ default: 0 })
-	handler?: ApplicationCommandHandlerType;
+    @Column({ default: 0 })
+    handler?: ApplicationCommandHandlerType;
 }

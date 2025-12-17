@@ -17,12 +17,12 @@
 */
 
 export interface GuildBansResponse {
-	reason: string | null;
-	user: {
-		username: string;
-		discriminator: string;
-		id: string;
-		avatar: string | null;
-		public_flags: number;
-	};
+    reason: string | null;
+    user: {
+        username: string;
+        discriminator: string;
+        id: string;
+        avatar: string | null;
+        public_flags: number;
+    };
 }

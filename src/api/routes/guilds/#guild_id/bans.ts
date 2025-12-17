@@ -27,267 +27,267 @@ const router: Router = Router({ mergeParams: true });
 /* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
 
 router.get(
-	"/",
-	route({
-		permission: "BAN_MEMBERS",
-		responses: {
-			200: {
-				body: "APIBansArray",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        permission: "BAN_MEMBERS",
+        responses: {
+            200: {
+                body: "APIBansArray",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		let bans = await Ban.find({ where: { guild_id: guild_id } });
-		const promisesToAwait: Promise<User>[] = [];
-		const bansObj: APIBansArray = [];
+        let bans = await Ban.find({ where: { guild_id: guild_id } });
+        const promisesToAwait: Promise<User>[] = [];
+        const bansObj: APIBansArray = [];
 
-		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
+        bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
-		bans.forEach((ban) => {
-			promisesToAwait.push(User.getPublicUser(ban.user_id));
-		});
+        bans.forEach((ban) => {
+            promisesToAwait.push(User.getPublicUser(ban.user_id));
+        });
 
-		const bannedUsers = await Promise.all(promisesToAwait);
+        const bannedUsers = await Promise.all(promisesToAwait);
 
-		bans.forEach((ban, index) => {
-			const user = bannedUsers[index];
-			bansObj.push({
-				reason: ban.reason ?? null,
-				user: {
-					username: user.username,
-					discriminator: user.discriminator,
-					id: user.id,
-					avatar: user.avatar ?? null,
-					public_flags: user.public_flags,
-				},
-			});
-		});
+        bans.forEach((ban, index) => {
+            const user = bannedUsers[index];
+            bansObj.push({
+                reason: ban.reason ?? null,
+                user: {
+                    username: user.username,
+                    discriminator: user.discriminator,
+                    id: user.id,
+                    avatar: user.avatar ?? null,
+                    public_flags: user.public_flags,
+                },
+            });
+        });
 
-		return res.json(bansObj);
-	},
+        return res.json(bansObj);
+    },
 );
 
 router.get(
-	"/search",
-	route({
-		permission: "BAN_MEMBERS",
-		query: {
-			query: {
-				type: "string",
-				description: "Query to match username(s) and display name(s) against (1-32 characters)",
-				required: true,
-			},
-			limit: {
-				type: "number",
-				description: "Max number of members to return (1-10, default 10)",
-				required: false,
-			},
-		},
-		responses: {
-			200: {
-				body: "APIBansArray",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/search",
+    route({
+        permission: "BAN_MEMBERS",
+        query: {
+            query: {
+                type: "string",
+                description: "Query to match username(s) and display name(s) against (1-32 characters)",
+                required: true,
+            },
+            limit: {
+                type: "number",
+                description: "Max number of members to return (1-10, default 10)",
+                required: false,
+            },
+        },
+        responses: {
+            200: {
+                body: "APIBansArray",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const limit = Number(req.query.limit) || 10;
-		if (limit > 10 || limit < 1) throw new HTTPError("Limit must be between 1 and 10");
+        const limit = Number(req.query.limit) || 10;
+        if (limit > 10 || limit < 1) throw new HTTPError("Limit must be between 1 and 10");
 
-		const query = String(req.query.query);
-		if (!query || query.trim().length === 0 || query.length > 32) {
-			throw new HTTPError("The query must be between 1 and 32 characters in length");
-		}
+        const query = String(req.query.query);
+        if (!query || query.trim().length === 0 || query.length > 32) {
+            throw new HTTPError("The query must be between 1 and 32 characters in length");
+        }
 
-		let bans = await Ban.createQueryBuilder("ban")
-			.leftJoinAndSelect("ban.user", "user")
-			.where("ban.guild_id = :guildId", { guildId: guild_id })
-			.andWhere("user.username LIKE :userName", {
-				userName: `%${query}%`,
-			})
-			.limit(limit)
-			.getMany();
+        let bans = await Ban.createQueryBuilder("ban")
+            .leftJoinAndSelect("ban.user", "user")
+            .where("ban.guild_id = :guildId", { guildId: guild_id })
+            .andWhere("user.username LIKE :userName", {
+                userName: `%${query}%`,
+            })
+            .limit(limit)
+            .getMany();
 
-		bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
+        bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
-		const bansObj: APIBansArray = bans.map((ban) => {
-			const user = ban.user;
-			return {
-				reason: ban.reason ?? null,
-				user: {
-					username: user.username,
-					discriminator: user.discriminator,
-					id: user.id,
-					avatar: user.avatar ?? null,
-					public_flags: user.public_flags,
-				},
-			};
-		});
+        const bansObj: APIBansArray = bans.map((ban) => {
+            const user = ban.user;
+            return {
+                reason: ban.reason ?? null,
+                user: {
+                    username: user.username,
+                    discriminator: user.discriminator,
+                    id: user.id,
+                    avatar: user.avatar ?? null,
+                    public_flags: user.public_flags,
+                },
+            };
+        });
 
-		return res.json(bansObj);
-	},
+        return res.json(bansObj);
+    },
 );
 
 router.get(
-	"/:user_id",
-	route({
-		permission: "BAN_MEMBERS",
-		responses: {
-			200: {
-				body: "GuildBansResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id, user_id } = req.params;
+    "/:user_id",
+    route({
+        permission: "BAN_MEMBERS",
+        responses: {
+            200: {
+                body: "GuildBansResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id, user_id } = req.params;
 
-		const ban = (await Ban.findOneOrFail({
-			where: { guild_id: guild_id, user_id: user_id },
-		})) as BanRegistrySchema;
+        const ban = (await Ban.findOneOrFail({
+            where: { guild_id: guild_id, user_id: user_id },
+        })) as BanRegistrySchema;
 
-		if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
-		// pretend self-bans don't exist to prevent victim chasing
+        if (ban.user_id === ban.executor_id) throw DiscordApiErrors.UNKNOWN_BAN;
+        // pretend self-bans don't exist to prevent victim chasing
 
-		const user = await User.getPublicUser(ban.user_id);
+        const user = await User.getPublicUser(ban.user_id);
 
-		const banInfo: GuildBansResponse = {
-			user: {
-				username: user.username,
-				discriminator: user.discriminator,
-				id: user.id,
-				avatar: user.avatar ?? null,
-				public_flags: user.public_flags,
-			},
-			reason: ban.reason ?? null,
-		};
+        const banInfo: GuildBansResponse = {
+            user: {
+                username: user.username,
+                discriminator: user.discriminator,
+                id: user.id,
+                avatar: user.avatar ?? null,
+                public_flags: user.public_flags,
+            },
+            reason: ban.reason ?? null,
+        };
 
-		return res.json(banInfo);
-	},
+        return res.json(banInfo);
+    },
 );
 
 router.put(
-	"/:user_id",
-	route({
-		requestBody: "BanCreateSchema",
-		permission: "BAN_MEMBERS",
-		responses: {
-			204: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		const banned_user_id = req.params.user_id;
-		const opts = req.body as BanCreateSchema;
+    "/:user_id",
+    route({
+        requestBody: "BanCreateSchema",
+        permission: "BAN_MEMBERS",
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
+        const banned_user_id = req.params.user_id;
+        const opts = req.body as BanCreateSchema;
 
-		let deleteMessagesMs = opts.delete_message_days
-			? (opts.delete_message_days as number) * 86400000
-			: opts.delete_message_seconds
-				? (opts.delete_message_seconds as number) * 1000
-				: 0;
+        let deleteMessagesMs = opts.delete_message_days
+            ? (opts.delete_message_days as number) * 86400000
+            : opts.delete_message_seconds
+              ? (opts.delete_message_seconds as number) * 1000
+              : 0;
 
-		if (deleteMessagesMs < 0) deleteMessagesMs = 0;
+        if (deleteMessagesMs < 0) deleteMessagesMs = 0;
 
-		if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id)
-			throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
+        if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id)
+            throw new HTTPError("You are the guild owner, hence can't ban yourself", 403);
 
-		if (req.permission?.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
+        if (req.permission?.cache.guild?.owner_id === banned_user_id) throw new HTTPError("You can't ban the owner", 400);
 
-		const existingBan = await Ban.findOne({
-			where: { guild_id: guild_id, user_id: banned_user_id },
-		});
+        const existingBan = await Ban.findOne({
+            where: { guild_id: guild_id, user_id: banned_user_id },
+        });
 
-		// Bans on already banned users are silently ignored
-		if (existingBan) return res.status(204).send();
+        // Bans on already banned users are silently ignored
+        if (existingBan) return res.status(204).send();
 
-		const banned_user = await User.getPublicUser(banned_user_id);
+        const banned_user = await User.getPublicUser(banned_user_id);
 
-		const ban = Ban.create({
-			user_id: banned_user_id,
-			guild_id: guild_id,
-			executor_id: req.user_id,
-			reason: req.body.reason, // || otherwise empty
-		});
+        const ban = Ban.create({
+            user_id: banned_user_id,
+            guild_id: guild_id,
+            executor_id: req.user_id,
+            reason: req.body.reason, // || otherwise empty
+        });
 
-		await Promise.all([
-			Member.removeFromGuild(banned_user_id, guild_id),
-			ban.save(),
-			emitEvent({
-				event: "GUILD_BAN_ADD",
-				data: {
-					guild_id: guild_id,
-					user: banned_user.toPublicUser(),
-					delete_message_secs: Math.floor(deleteMessagesMs / 1000),
-				},
-				guild_id: guild_id,
-			} as GuildBanAddEvent),
-		]);
+        await Promise.all([
+            Member.removeFromGuild(banned_user_id, guild_id),
+            ban.save(),
+            emitEvent({
+                event: "GUILD_BAN_ADD",
+                data: {
+                    guild_id: guild_id,
+                    user: banned_user.toPublicUser(),
+                    delete_message_secs: Math.floor(deleteMessagesMs / 1000),
+                },
+                guild_id: guild_id,
+            } as GuildBanAddEvent),
+        ]);
 
-		return res.status(204).send();
-	},
+        return res.status(204).send();
+    },
 );
 
 router.delete(
-	"/:user_id",
-	route({
-		permission: "BAN_MEMBERS",
-		responses: {
-			204: {},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id, user_id } = req.params;
+    "/:user_id",
+    route({
+        permission: "BAN_MEMBERS",
+        responses: {
+            204: {},
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id, user_id } = req.params;
 
-		await Ban.findOneOrFail({
-			where: { guild_id: guild_id, user_id: user_id },
-		});
+        await Ban.findOneOrFail({
+            where: { guild_id: guild_id, user_id: user_id },
+        });
 
-		const banned_user = await User.getPublicUser(user_id);
+        const banned_user = await User.getPublicUser(user_id);
 
-		await Promise.all([
-			Ban.delete({
-				user_id: user_id,
-				guild_id,
-			}),
+        await Promise.all([
+            Ban.delete({
+                user_id: user_id,
+                guild_id,
+            }),
 
-			emitEvent({
-				event: "GUILD_BAN_REMOVE",
-				data: {
-					guild_id,
-					user: banned_user,
-				},
-				guild_id,
-			} as GuildBanRemoveEvent),
-		]);
+            emitEvent({
+                event: "GUILD_BAN_REMOVE",
+                data: {
+                    guild_id,
+                    user: banned_user,
+                },
+                guild_id,
+            } as GuildBanRemoveEvent),
+        ]);
 
-		return res.status(204).send();
-	},
+        return res.status(204).send();
+    },
 );
 
 export default router;

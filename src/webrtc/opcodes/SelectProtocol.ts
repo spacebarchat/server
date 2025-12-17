@@ -19,22 +19,22 @@ import { SelectProtocolSchema, validateSchema } from "@spacebar/schemas";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, mediaServer, Send } from "@spacebar/webrtc";
 
 export async function onSelectProtocol(this: WebRtcWebSocket, payload: VoicePayload) {
-	if (!this.webRtcClient) return;
+    if (!this.webRtcClient) return;
 
-	const data = validateSchema("SelectProtocolSchema", payload.d) as SelectProtocolSchema;
+    const data = validateSchema("SelectProtocolSchema", payload.d) as SelectProtocolSchema;
 
-	// UDP protocol not currently supported. Maybe in the future?
-	if (data.protocol !== "webrtc") return this.close(4000, "only webrtc protocol supported currently");
+    // UDP protocol not currently supported. Maybe in the future?
+    if (data.protocol !== "webrtc") return this.close(4000, "only webrtc protocol supported currently");
 
-	const response = await mediaServer.onOffer(this.webRtcClient, data.sdp!, data.codecs ?? []);
+    const response = await mediaServer.onOffer(this.webRtcClient, data.sdp!, data.codecs ?? []);
 
-	await Send(this, {
-		op: VoiceOPCodes.SESSION_DESCRIPTION,
-		d: {
-			video_codec: response.selectedVideoCodec,
-			sdp: response.sdp,
-			media_session_id: this.session_id,
-			audio_codec: "opus",
-		},
-	});
+    await Send(this, {
+        op: VoiceOPCodes.SESSION_DESCRIPTION,
+        d: {
+            video_codec: response.selectedVideoCodec,
+            sdp: response.sdp,
+            media_session_id: this.session_id,
+            audio_codec: "opus",
+        },
+    });
 }

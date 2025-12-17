@@ -25,80 +25,80 @@ import { User } from "./User";
 import { WebhookType } from "@spacebar/schemas";
 
 @Entity({
-	name: "webhooks",
+    name: "webhooks",
 })
 export class Webhook extends BaseClass {
-	@Column({ type: "int" })
-	type: WebhookType;
+    @Column({ type: "int" })
+    type: WebhookType;
 
-	@Column({ nullable: true })
-	name: string;
+    @Column({ nullable: true })
+    name: string;
 
-	@Column({ nullable: true })
-	avatar: string;
+    @Column({ nullable: true })
+    avatar: string;
 
-	@Column({ nullable: true })
-	token?: string;
+    @Column({ nullable: true })
+    token?: string;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.guild)
-	guild_id?: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.guild)
+    guild_id?: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
-	})
-	guild?: Guild;
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild, {
+        onDelete: "CASCADE",
+    })
+    guild?: Guild;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.channel)
-	channel_id: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.channel)
+    channel_id: string;
 
-	@JoinColumn({ name: "channel_id" })
-	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
-	})
-	channel: Channel;
+    @JoinColumn({ name: "channel_id" })
+    @ManyToOne(() => Channel, {
+        onDelete: "CASCADE",
+    })
+    channel: Channel;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.application)
-	application_id: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.application)
+    application_id: string;
 
-	@JoinColumn({ name: "application_id" })
-	@ManyToOne(() => Application, {
-		onDelete: "CASCADE",
-	})
-	application: Application;
+    @JoinColumn({ name: "application_id" })
+    @ManyToOne(() => Application, {
+        onDelete: "CASCADE",
+    })
+    application: Application;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.guild)
-	source_guild_id?: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.guild)
+    source_guild_id?: string;
 
-	@JoinColumn({ name: "source_guild_id" })
-	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
-	})
-	source_guild?: Guild;
+    @JoinColumn({ name: "source_guild_id" })
+    @ManyToOne(() => Guild, {
+        onDelete: "CASCADE",
+    })
+    source_guild?: Guild;
 
-	@Column({ nullable: true })
-	@RelationId((webhook: Webhook) => webhook.channel)
-	source_channel_id: string;
+    @Column({ nullable: true })
+    @RelationId((webhook: Webhook) => webhook.channel)
+    source_channel_id: string;
 
-	@JoinColumn({ name: "source_channel_id" })
-	@ManyToOne(() => Channel, {
-		onDelete: "CASCADE",
-	})
-	source_channel: Channel;
+    @JoinColumn({ name: "source_channel_id" })
+    @ManyToOne(() => Channel, {
+        onDelete: "CASCADE",
+    })
+    source_channel: Channel;
 
-	url: string;
+    url: string;
 }

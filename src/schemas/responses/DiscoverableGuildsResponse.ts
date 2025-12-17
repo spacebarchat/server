@@ -19,8 +19,8 @@
 import { Guild } from "../../util/entities";
 
 export interface DiscoverableGuildsResponse {
-	total: number;
-	guilds: Guild[];
-	offset: number;
-	limit: number;
+    total: number;
+    guilds: Guild[];
+    offset: number;
+    limit: number;
 }

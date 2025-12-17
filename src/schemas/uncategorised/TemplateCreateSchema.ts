@@ -17,6 +17,6 @@
 */
 
 export interface TemplateCreateSchema {
-	name: string;
-	description?: string;
+    name: string;
+    description?: string;
 }

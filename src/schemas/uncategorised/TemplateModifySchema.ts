@@ -17,6 +17,6 @@
 */
 
 export interface TemplateModifySchema {
-	name: string;
-	description?: string;
+    name: string;
+    description?: string;
 }

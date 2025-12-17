@@ -21,18 +21,18 @@ import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
 @Entity({
-	name: "notes",
+    name: "notes",
 })
 @Unique(["owner", "target"])
 export class Note extends BaseClass {
-	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	owner: User;
+    @JoinColumn({ name: "owner_id" })
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    owner: User;
 
-	@JoinColumn({ name: "target_id" })
-	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	target: User;
+    @JoinColumn({ name: "target_id" })
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    target: User;
 
-	@Column()
-	content: string;
+    @Column()
+    content: string;
 }

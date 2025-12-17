@@ -20,27 +20,27 @@ import { Attachment, Role } from "../../util/entities";
 import { ActionRowComponent, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {
-	id: string;
-	type: MessageType;
-	content?: string;
-	channel_id: string;
-	author: PublicUser;
-	attachments: Attachment[];
-	embeds: Embed[];
-	mentions: PublicUser[];
-	mention_roles: Role[];
-	pinned: boolean;
-	mention_everyone?: boolean;
-	tts: boolean;
-	timestamp: string;
-	edited_timestamp: string | null;
-	flags: number;
-	components: ActionRowComponent[];
-	poll: Poll;
-	hit: true;
+    id: string;
+    type: MessageType;
+    content?: string;
+    channel_id: string;
+    author: PublicUser;
+    attachments: Attachment[];
+    embeds: Embed[];
+    mentions: PublicUser[];
+    mention_roles: Role[];
+    pinned: boolean;
+    mention_everyone?: boolean;
+    tts: boolean;
+    timestamp: string;
+    edited_timestamp: string | null;
+    flags: number;
+    components: ActionRowComponent[];
+    poll: Poll;
+    hit: true;
 }
 
 export interface GuildMessagesSearchResponse {
-	messages: GuildMessagesSearchMessage[];
-	total_results: number;
+    messages: GuildMessagesSearchMessage[];
+    total_results: number;
 }

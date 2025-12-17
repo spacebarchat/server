@@ -34,188 +34,188 @@ TODO: different for methods (GET/POST)
 */
 
 type RateLimit = {
-	id: "global" | "error" | string;
-	executor_id: string;
-	hits: number;
-	blocked: boolean;
-	expires_at: Date;
+    id: "global" | "error" | string;
+    executor_id: string;
+    hits: number;
+    blocked: boolean;
+    expires_at: Date;
 };
 
 const Cache = new Map<string, RateLimit>();
 const EventRateLimit = "RATELIMIT";
 
 export default function rateLimit(opts: {
-	bucket?: string;
-	window: number;
-	count: number;
-	bot?: number;
-	webhook?: number;
-	oauth?: number;
-	GET?: number;
-	MODIFY?: number;
-	error?: boolean;
-	success?: boolean;
-	onlyIp?: boolean;
+    bucket?: string;
+    window: number;
+    count: number;
+    bot?: number;
+    webhook?: number;
+    oauth?: number;
+    GET?: number;
+    MODIFY?: number;
+    error?: boolean;
+    success?: boolean;
+    onlyIp?: boolean;
 }) {
-	return async (req: Request, res: Response, next: NextFunction) => {
-		// exempt user? if so, immediately short circuit
-		if (req.user_id) {
-			const rights = await getRights(req.user_id);
-			if (rights.has("BYPASS_RATE_LIMITS")) return next();
-		}
+    return async (req: Request, res: Response, next: NextFunction) => {
+        // exempt user? if so, immediately short circuit
+        if (req.user_id) {
+            const rights = await getRights(req.user_id);
+            if (rights.has("BYPASS_RATE_LIMITS")) return next();
+        }
 
-		const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
-		let executor_id = req.ip || "127.0.0.1";
-		if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
+        const bucket_id = opts.bucket || req.originalUrl.replace(API_PREFIX_TRAILING_SLASH, "");
+        let executor_id = req.ip || "127.0.0.1";
+        if (!opts.onlyIp && req.user_id) executor_id = req.user_id;
 
-		let max_hits = opts.count;
-		if (opts.bot && req.user_bot) max_hits = opts.bot;
-		if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
-		else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
+        let max_hits = opts.count;
+        if (opts.bot && req.user_bot) max_hits = opts.bot;
+        if (opts.GET && ["GET", "OPTIONS", "HEAD"].includes(req.method)) max_hits = opts.GET;
+        else if (opts.MODIFY && ["POST", "DELETE", "PATCH", "PUT"].includes(req.method)) max_hits = opts.MODIFY;
 
-		const offender = Cache.get(executor_id + bucket_id);
+        const offender = Cache.get(executor_id + bucket_id);
 
-		res.set("X-RateLimit-Limit", `${max_hits}`)
-			.set("X-RateLimit-Remaining", `${max_hits - (offender?.hits || 0)}`)
-			.set("X-RateLimit-Bucket", `${bucket_id}`)
-			// assuming we aren't blocked, a new window will start after this request
-			.set("X-RateLimit-Reset", `${Date.now() + opts.window}`)
-			.set("X-RateLimit-Reset-After", `${opts.window}`);
+        res.set("X-RateLimit-Limit", `${max_hits}`)
+            .set("X-RateLimit-Remaining", `${max_hits - (offender?.hits || 0)}`)
+            .set("X-RateLimit-Bucket", `${bucket_id}`)
+            // assuming we aren't blocked, a new window will start after this request
+            .set("X-RateLimit-Reset", `${Date.now() + opts.window}`)
+            .set("X-RateLimit-Reset-After", `${opts.window}`);
 
-		if (offender) {
-			let reset = offender.expires_at.getTime();
-			let resetAfterMs = reset - Date.now();
-			let resetAfterSec = Math.ceil(resetAfterMs / 1000);
+        if (offender) {
+            let reset = offender.expires_at.getTime();
+            let resetAfterMs = reset - Date.now();
+            let resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
-			if (resetAfterMs <= 0) {
-				offender.hits = 0;
-				offender.expires_at = new Date(Date.now() + opts.window * 1000);
-				offender.blocked = false;
+            if (resetAfterMs <= 0) {
+                offender.hits = 0;
+                offender.expires_at = new Date(Date.now() + opts.window * 1000);
+                offender.blocked = false;
 
-				Cache.delete(executor_id + bucket_id);
-			}
+                Cache.delete(executor_id + bucket_id);
+            }
 
-			res.set("X-RateLimit-Reset", `${reset}`);
-			res.set("X-RateLimit-Reset-After", `${Math.max(0, Math.ceil(resetAfterSec))}`);
+            res.set("X-RateLimit-Reset", `${reset}`);
+            res.set("X-RateLimit-Reset-After", `${Math.max(0, Math.ceil(resetAfterSec))}`);
 
-			if (offender.blocked) {
-				const global = bucket_id === "global";
-				// each block violation pushes the expiry one full window further
-				reset += opts.window * 1000;
-				offender.expires_at = new Date(offender.expires_at.getTime() + opts.window * 1000);
-				resetAfterMs = reset - Date.now();
-				resetAfterSec = Math.ceil(resetAfterMs / 1000);
+            if (offender.blocked) {
+                const global = bucket_id === "global";
+                // each block violation pushes the expiry one full window further
+                reset += opts.window * 1000;
+                offender.expires_at = new Date(offender.expires_at.getTime() + opts.window * 1000);
+                resetAfterMs = reset - Date.now();
+                resetAfterSec = Math.ceil(resetAfterMs / 1000);
 
-				console.log(`blocked bucket: ${bucket_id} ${executor_id}`, {
-					resetAfterMs,
-				});
+                console.log(`blocked bucket: ${bucket_id} ${executor_id}`, {
+                    resetAfterMs,
+                });
 
-				if (global) res.set("X-RateLimit-Global", "true");
+                if (global) res.set("X-RateLimit-Global", "true");
 
-				return (
-					res
-						.status(429)
-						.set("X-RateLimit-Remaining", "0")
-						.set("Retry-After", `${Math.max(0, Math.ceil(resetAfterSec))}`)
-						// TODO: error rate limit message translation
-						.send({
-							message: "You are being rate limited.",
-							retry_after: resetAfterSec,
-							global,
-						})
-				);
-			}
-		}
+                return (
+                    res
+                        .status(429)
+                        .set("X-RateLimit-Remaining", "0")
+                        .set("Retry-After", `${Math.max(0, Math.ceil(resetAfterSec))}`)
+                        // TODO: error rate limit message translation
+                        .send({
+                            message: "You are being rate limited.",
+                            retry_after: resetAfterSec,
+                            global,
+                        })
+                );
+            }
+        }
 
-		next();
-		const hitRouteOpts = {
-			bucket_id,
-			executor_id,
-			max_hits,
-			window: opts.window,
-		};
+        next();
+        const hitRouteOpts = {
+            bucket_id,
+            executor_id,
+            max_hits,
+            window: opts.window,
+        };
 
-		if (opts.error || opts.success) {
-			res.once("finish", () => {
-				// check if error and increment error rate limit
-				if (res.statusCode >= 400 && opts.error) {
-					return hitRoute(hitRouteOpts);
-				} else if (res.statusCode >= 200 && res.statusCode < 300 && opts.success) {
-					return hitRoute(hitRouteOpts);
-				}
-			});
-		} else {
-			return hitRoute(hitRouteOpts);
-		}
-	};
+        if (opts.error || opts.success) {
+            res.once("finish", () => {
+                // check if error and increment error rate limit
+                if (res.statusCode >= 400 && opts.error) {
+                    return hitRoute(hitRouteOpts);
+                } else if (res.statusCode >= 200 && res.statusCode < 300 && opts.success) {
+                    return hitRoute(hitRouteOpts);
+                }
+            });
+        } else {
+            return hitRoute(hitRouteOpts);
+        }
+    };
 }
 
 export async function initRateLimits(app: Router) {
-	const { routes, global, ip, error, enabled } = Config.get().limits.rate;
-	if (!enabled) return;
-	console.log("Enabling rate limits...");
-	await listenEvent(EventRateLimit, (event) => {
-		Cache.set(event.channel_id as string, event.data);
-		event.acknowledge?.();
-	});
-	// await RateLimit.delete({ expires_at: LessThan(new Date().toISOString()) }); // cleans up if not already deleted, morethan -> older date
-	// const limits = await RateLimit.find({ blocked: true });
-	// limits.forEach((limit) => {
-	// 	Cache.set(limit.executor_id, limit);
-	// });
+    const { routes, global, ip, error, enabled } = Config.get().limits.rate;
+    if (!enabled) return;
+    console.log("Enabling rate limits...");
+    await listenEvent(EventRateLimit, (event) => {
+        Cache.set(event.channel_id as string, event.data);
+        event.acknowledge?.();
+    });
+    // await RateLimit.delete({ expires_at: LessThan(new Date().toISOString()) }); // cleans up if not already deleted, morethan -> older date
+    // const limits = await RateLimit.find({ blocked: true });
+    // limits.forEach((limit) => {
+    // 	Cache.set(limit.executor_id, limit);
+    // });
 
-	setInterval(() => {
-		Cache.forEach((x, key) => {
-			if (new Date() > x.expires_at) {
-				Cache.delete(key);
-				// RateLimit.delete({ executor_id: key });
-			}
-		});
-	}, 1000 * 60);
+    setInterval(() => {
+        Cache.forEach((x, key) => {
+            if (new Date() > x.expires_at) {
+                Cache.delete(key);
+                // RateLimit.delete({ executor_id: key });
+            }
+        });
+    }, 1000 * 60);
 
-	app.use(
-		rateLimit({
-			bucket: "global",
-			onlyIp: true,
-			...ip,
-		}),
-	);
-	app.use(rateLimit({ bucket: "global", ...global }));
-	app.use(
-		rateLimit({
-			bucket: "error",
-			error: true,
-			onlyIp: true,
-			...error,
-		}),
-	);
-	app.use("/guilds/:guild_id", rateLimit(routes.guild));
-	app.use("/webhooks/:webhook_id", rateLimit(routes.webhook));
-	app.use("/channels/:channel_id", rateLimit(routes.channel));
-	app.use("/auth/login", rateLimit(routes.auth.login));
-	app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
+    app.use(
+        rateLimit({
+            bucket: "global",
+            onlyIp: true,
+            ...ip,
+        }),
+    );
+    app.use(rateLimit({ bucket: "global", ...global }));
+    app.use(
+        rateLimit({
+            bucket: "error",
+            error: true,
+            onlyIp: true,
+            ...error,
+        }),
+    );
+    app.use("/guilds/:guild_id", rateLimit(routes.guild));
+    app.use("/webhooks/:webhook_id", rateLimit(routes.webhook));
+    app.use("/channels/:channel_id", rateLimit(routes.channel));
+    app.use("/auth/login", rateLimit(routes.auth.login));
+    app.use("/auth/register", rateLimit({ onlyIp: true, success: true, ...routes.auth.register }));
 }
 
 async function hitRoute(opts: { executor_id: string; bucket_id: string; max_hits: number; window: number }) {
-	const id = opts.executor_id + opts.bucket_id;
-	let limit = Cache.get(id);
-	if (!limit) {
-		limit = {
-			id: opts.bucket_id,
-			executor_id: opts.executor_id,
-			expires_at: new Date(Date.now() + opts.window * 1000),
-			hits: 0,
-			blocked: false,
-		};
-		Cache.set(id, limit);
-	}
+    const id = opts.executor_id + opts.bucket_id;
+    let limit = Cache.get(id);
+    if (!limit) {
+        limit = {
+            id: opts.bucket_id,
+            executor_id: opts.executor_id,
+            expires_at: new Date(Date.now() + opts.window * 1000),
+            hits: 0,
+            blocked: false,
+        };
+        Cache.set(id, limit);
+    }
 
-	limit.hits++;
-	if (limit.hits >= opts.max_hits) {
-		limit.blocked = true;
-	}
+    limit.hits++;
+    if (limit.hits >= opts.max_hits) {
+        limit.blocked = true;
+    }
 
-	/*
+    /*
 	let ratelimit = await RateLimit.findOne({ where: { id: opts.bucket_id, executor_id: opts.executor_id } });
 	if (!ratelimit) {
 		ratelimit = new RateLimit({

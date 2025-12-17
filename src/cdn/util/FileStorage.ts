@@ -25,52 +25,52 @@ import ExifTransformer from "exif-be-gone";
 // TODO: split stored files into separate folders named after cloned route
 
 function getPath(path: string) {
-	// STORAGE_LOCATION has a default value in start.ts
-	const root = process.env.STORAGE_LOCATION || "../";
-	const filename = join(root, path);
+    // STORAGE_LOCATION has a default value in start.ts
+    const root = process.env.STORAGE_LOCATION || "../";
+    const filename = join(root, path);
 
-	if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
-	return filename;
+    if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+    return filename;
 }
 
 export class FileStorage implements Storage {
-	async get(path: string): Promise<Buffer | null> {
-		path = getPath(path);
-		try {
-			return fs.readFileSync(path);
-		} catch (error) {
-			try {
-				const files = fs.readdirSync(path);
-				if (!files.length) return null;
-				return fs.readFileSync(join(path, files[0]));
-			} catch (error) {
-				return null;
-			}
-		}
-	}
+    async get(path: string): Promise<Buffer | null> {
+        path = getPath(path);
+        try {
+            return fs.readFileSync(path);
+        } catch (error) {
+            try {
+                const files = fs.readdirSync(path);
+                if (!files.length) return null;
+                return fs.readFileSync(join(path, files[0]));
+            } catch (error) {
+                return null;
+            }
+        }
+    }
 
-	async clone(path: string, newPath: string) {
-		path = getPath(path);
-		newPath = getPath(newPath);
+    async clone(path: string, newPath: string) {
+        path = getPath(path);
+        newPath = getPath(newPath);
 
-		if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
+        if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
 
-		// use reflink if possible, in order to not duplicate files at the block layer...
-		fs.copyFileSync(path, newPath, fs.constants.COPYFILE_FICLONE);
-	}
+        // use reflink if possible, in order to not duplicate files at the block layer...
+        fs.copyFileSync(path, newPath, fs.constants.COPYFILE_FICLONE);
+    }
 
-	async set(path: string, value: Buffer) {
-		path = getPath(path);
-		if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
+    async set(path: string, value: Buffer) {
+        path = getPath(path);
+        if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
 
-		const ret = Readable.from(value);
-		const cleaned_file = fs.createWriteStream(path);
+        const ret = Readable.from(value);
+        const cleaned_file = fs.createWriteStream(path);
 
-		ret.pipe(new ExifTransformer()).pipe(cleaned_file);
-	}
+        ret.pipe(new ExifTransformer()).pipe(cleaned_file);
+    }
 
-	async delete(path: string) {
-		//TODO we should delete the parent directory if empty
-		fs.unlinkSync(getPath(path));
-	}
+    async delete(path: string) {
+        //TODO we should delete the parent directory if empty
+        fs.unlinkSync(getPath(path));
+    }
 }

@@ -17,19 +17,19 @@
 */
 
 import {
-	Attachment,
-	Channel,
-	Message,
-	MessageCreateEvent,
-	MessageDeleteEvent,
-	MessageUpdateEvent,
-	Snowflake,
-	SpacebarApiErrors,
-	emitEvent,
-	getPermission,
-	getRights,
-	uploadFile,
-	NewUrlUserSignatureData,
+    Attachment,
+    Channel,
+    Message,
+    MessageCreateEvent,
+    MessageDeleteEvent,
+    MessageUpdateEvent,
+    Snowflake,
+    SpacebarApiErrors,
+    emitEvent,
+    getPermission,
+    getRights,
+    uploadFile,
+    NewUrlUserSignatureData,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -41,285 +41,285 @@ const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
 
 const messageUpload = multer({
-	limits: {
-		fileSize: 1024 * 1024 * 100,
-		fields: 10,
-		files: 1,
-	},
-	storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 1024 * 1024 * 100,
+        fields: 10,
+        files: 1,
+    },
+    storage: multer.memoryStorage(),
 }); // max upload 50 mb
 
 router.patch(
-	"/",
-	route({
-		requestBody: "MessageEditSchema",
-		permission: "SEND_MESSAGES",
-		right: "SEND_MESSAGES",
-		responses: {
-			200: {
-				body: "Message",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { message_id, channel_id } = req.params;
-		let body = req.body as MessageEditSchema;
+    "/",
+    route({
+        requestBody: "MessageEditSchema",
+        permission: "SEND_MESSAGES",
+        right: "SEND_MESSAGES",
+        responses: {
+            200: {
+                body: "Message",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { message_id, channel_id } = req.params;
+        let body = req.body as MessageEditSchema;
 
-		const message = await Message.findOneOrFail({
-			where: { id: message_id, channel_id },
-			relations: ["attachments"],
-		});
+        const message = await Message.findOneOrFail({
+            where: { id: message_id, channel_id },
+            relations: ["attachments"],
+        });
 
-		const permissions = await getPermission(req.user_id, undefined, channel_id);
+        const permissions = await getPermission(req.user_id, undefined, channel_id);
 
-		const rights = await getRights(req.user_id);
+        const rights = await getRights(req.user_id);
 
-		if (req.user_id !== message.author_id) {
-			if (!rights.has("MANAGE_MESSAGES")) {
-				permissions.hasThrow("MANAGE_MESSAGES");
-				body = { flags: body.flags };
-				// guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
-			}
-		} else rights.hasThrow("SELF_EDIT_MESSAGES");
+        if (req.user_id !== message.author_id) {
+            if (!rights.has("MANAGE_MESSAGES")) {
+                permissions.hasThrow("MANAGE_MESSAGES");
+                body = { flags: body.flags };
+                // guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
+            }
+        } else rights.hasThrow("SELF_EDIT_MESSAGES");
 
-		// no longer necessary, somehow resolved by updating the type of `attachments`...?
-		// //@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
-		const new_message = await handleMessage({
-			...message,
-			// TODO: should message_reference be overridable?
-			message_reference: message.message_reference,
-			...body,
-			author_id: message.author_id,
-			channel_id,
-			id: message_id,
-			edited_timestamp: new Date(),
-		});
+        // no longer necessary, somehow resolved by updating the type of `attachments`...?
+        // //@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
+        const new_message = await handleMessage({
+            ...message,
+            // TODO: should message_reference be overridable?
+            message_reference: message.message_reference,
+            ...body,
+            author_id: message.author_id,
+            channel_id,
+            id: message_id,
+            edited_timestamp: new Date(),
+        });
 
-		await Promise.all([
-			new_message.save(),
-			await emitEvent({
-				event: "MESSAGE_UPDATE",
-				channel_id,
-				data: {
-					...new_message.toJSON(),
-					nonce: undefined,
-					member: new_message.member?.toPublicMember(),
-				},
-			} as MessageUpdateEvent),
-		]);
+        await Promise.all([
+            new_message.save(),
+            await emitEvent({
+                event: "MESSAGE_UPDATE",
+                channel_id,
+                data: {
+                    ...new_message.toJSON(),
+                    nonce: undefined,
+                    member: new_message.member?.toPublicMember(),
+                },
+            } as MessageUpdateEvent),
+        ]);
 
-		postHandleMessage(new_message);
+        postHandleMessage(new_message);
 
-		// TODO: a DTO?
-		return res.json({
-			...new_message.toJSON(),
-			id: new_message.id,
-			type: new_message.type,
-			channel_id: new_message.channel_id,
-			member: new_message.member?.toPublicMember(),
-			author: new_message.author?.toPublicUser(),
-			attachments: new_message.attachments,
-			embeds: new_message.embeds,
-			mentions: new_message.embeds,
-			mention_roles: new_message.mention_roles,
-			mention_everyone: new_message.mention_everyone,
-			pinned: new_message.pinned,
-			timestamp: new_message.timestamp,
-			edited_timestamp: new_message.edited_timestamp,
+        // TODO: a DTO?
+        return res.json({
+            ...new_message.toJSON(),
+            id: new_message.id,
+            type: new_message.type,
+            channel_id: new_message.channel_id,
+            member: new_message.member?.toPublicMember(),
+            author: new_message.author?.toPublicUser(),
+            attachments: new_message.attachments,
+            embeds: new_message.embeds,
+            mentions: new_message.embeds,
+            mention_roles: new_message.mention_roles,
+            mention_everyone: new_message.mention_everyone,
+            pinned: new_message.pinned,
+            timestamp: new_message.timestamp,
+            edited_timestamp: new_message.edited_timestamp,
 
-			// these are not in the Discord.com response
-			mention_channels: new_message.mention_channels,
-		});
-	},
+            // these are not in the Discord.com response
+            mention_channels: new_message.mention_channels,
+        });
+    },
 );
 
 // Backfill message with specific timestamp
 router.put(
-	"/",
-	messageUpload.single("file"),
-	async (req, res, next) => {
-		if (req.body.payload_json) {
-			req.body = JSON.parse(req.body.payload_json);
-		}
+    "/",
+    messageUpload.single("file"),
+    async (req, res, next) => {
+        if (req.body.payload_json) {
+            req.body = JSON.parse(req.body.payload_json);
+        }
 
-		next();
-	},
-	route({
-		requestBody: "MessageCreateSchema",
-		permission: "SEND_MESSAGES",
-		right: "SEND_BACKDATED_EVENTS",
-		responses: {
-			200: {
-				body: "Message",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { channel_id, message_id } = req.params;
-		const body = req.body as MessageCreateSchema;
-		const attachments: (MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
+        next();
+    },
+    route({
+        requestBody: "MessageCreateSchema",
+        permission: "SEND_MESSAGES",
+        right: "SEND_BACKDATED_EVENTS",
+        responses: {
+            200: {
+                body: "Message",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id, message_id } = req.params;
+        const body = req.body as MessageCreateSchema;
+        const attachments: (MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
-		const rights = await getRights(req.user_id);
-		rights.hasThrow("SEND_MESSAGES");
+        const rights = await getRights(req.user_id);
+        rights.hasThrow("SEND_MESSAGES");
 
-		// regex to check if message contains anything other than numerals ( also no decimals )
-		if (!message_id.match(/^\+?\d+$/)) {
-			throw new HTTPError("Message IDs must be positive integers", 400);
-		}
+        // regex to check if message contains anything other than numerals ( also no decimals )
+        if (!message_id.match(/^\+?\d+$/)) {
+            throw new HTTPError("Message IDs must be positive integers", 400);
+        }
 
-		const snowflake = Snowflake.deconstruct(message_id);
-		if (Date.now() < snowflake.timestamp) {
-			// message is in the future
-			throw SpacebarApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
-		}
+        const snowflake = Snowflake.deconstruct(message_id);
+        if (Date.now() < snowflake.timestamp) {
+            // message is in the future
+            throw SpacebarApiErrors.CANNOT_BACKFILL_TO_THE_FUTURE;
+        }
 
-		const exists = await Message.findOne({
-			where: { id: message_id, channel_id: channel_id },
-		});
-		if (exists) {
-			throw SpacebarApiErrors.CANNOT_REPLACE_BY_BACKFILL;
-		}
+        const exists = await Message.findOne({
+            where: { id: message_id, channel_id: channel_id },
+        });
+        if (exists) {
+            throw SpacebarApiErrors.CANNOT_REPLACE_BY_BACKFILL;
+        }
 
-		if (req.file) {
-			try {
-				const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
-				attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
-			} catch (error) {
-				return res.status(400).json(error);
-			}
-		}
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-			relations: ["recipients", "recipients.user"],
-		});
+        if (req.file) {
+            try {
+                const file = await uploadFile(`/attachments/${req.params.channel_id}`, req.file);
+                attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+            } catch (error) {
+                return res.status(400).json(error);
+            }
+        }
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+            relations: ["recipients", "recipients.user"],
+        });
 
-		const embeds = body.embeds || [];
-		if (body.embed) embeds.push(body.embed);
-		const message = await handleMessage({
-			...body,
-			type: 0,
-			pinned: false,
-			author_id: req.user_id,
-			id: message_id,
-			embeds,
-			channel_id,
-			attachments,
-			edited_timestamp: undefined,
-			timestamp: new Date(snowflake.timestamp),
-		});
+        const embeds = body.embeds || [];
+        if (body.embed) embeds.push(body.embed);
+        const message = await handleMessage({
+            ...body,
+            type: 0,
+            pinned: false,
+            author_id: req.user_id,
+            id: message_id,
+            embeds,
+            channel_id,
+            attachments,
+            edited_timestamp: undefined,
+            timestamp: new Date(snowflake.timestamp),
+        });
 
-		//Fix for the client bug
-		delete message.member;
+        //Fix for the client bug
+        delete message.member;
 
-		await Promise.all([
-			message.save(),
-			emitEvent({
-				event: "MESSAGE_CREATE",
-				channel_id: channel_id,
-				data: message,
-			} as MessageCreateEvent),
-			channel.save(),
-		]);
+        await Promise.all([
+            message.save(),
+            emitEvent({
+                event: "MESSAGE_CREATE",
+                channel_id: channel_id,
+                data: message,
+            } as MessageCreateEvent),
+            channel.save(),
+        ]);
 
-		// no await as it shouldnt block the message send function and silently catch error
-		postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
+        // no await as it shouldnt block the message send function and silently catch error
+        postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
 
-		return res.json(
-			message.withSignedAttachments(
-				new NewUrlUserSignatureData({
-					ip: req.ip,
-					userAgent: req.headers["user-agent"] as string,
-				}),
-			),
-		);
-	},
+        return res.json(
+            message.withSignedAttachments(
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            ),
+        );
+    },
 );
 
 router.get(
-	"/",
-	route({
-		permission: "VIEW_CHANNEL",
-		responses: {
-			200: {
-				body: "Message",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { message_id, channel_id } = req.params;
+    "/",
+    route({
+        permission: "VIEW_CHANNEL",
+        responses: {
+            200: {
+                body: "Message",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { message_id, channel_id } = req.params;
 
-		const message = await Message.findOneOrFail({
-			where: { id: message_id, channel_id },
-			relations: ["attachments"],
-		});
+        const message = await Message.findOneOrFail({
+            where: { id: message_id, channel_id },
+            relations: ["attachments"],
+        });
 
-		const permissions = await getPermission(req.user_id, undefined, channel_id);
+        const permissions = await getPermission(req.user_id, undefined, channel_id);
 
-		if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
+        if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
 
-		return res.json(message);
-	},
+        return res.json(message);
+    },
 );
 
 router.delete(
-	"/",
-	route({
-		responses: {
-			204: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { message_id, channel_id } = req.params;
+    "/",
+    route({
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { message_id, channel_id } = req.params;
 
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
-		const message = await Message.findOneOrFail({
-			where: { id: message_id },
-		});
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
+        const message = await Message.findOneOrFail({
+            where: { id: message_id },
+        });
 
-		const rights = await getRights(req.user_id);
+        const rights = await getRights(req.user_id);
 
-		if (message.author_id !== req.user_id) {
-			if (!rights.has("MANAGE_MESSAGES")) {
-				const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
-				permission.hasThrow("MANAGE_MESSAGES");
-			}
-		} else rights.hasThrow("SELF_DELETE_MESSAGES");
+        if (message.author_id !== req.user_id) {
+            if (!rights.has("MANAGE_MESSAGES")) {
+                const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
+                permission.hasThrow("MANAGE_MESSAGES");
+            }
+        } else rights.hasThrow("SELF_DELETE_MESSAGES");
 
-		await Message.delete({ id: message_id });
+        await Message.delete({ id: message_id });
 
-		await emitEvent({
-			event: "MESSAGE_DELETE",
-			channel_id,
-			data: {
-				id: message_id,
-				channel_id,
-				guild_id: channel.guild_id,
-			},
-		} as MessageDeleteEvent);
+        await emitEvent({
+            event: "MESSAGE_DELETE",
+            channel_id,
+            data: {
+                id: message_id,
+                channel_id,
+                guild_id: channel.guild_id,
+            },
+        } as MessageDeleteEvent);
 
-		res.sendStatus(204);
-	},
+        res.sendStatus(204);
+    },
 );
 
 export default router;

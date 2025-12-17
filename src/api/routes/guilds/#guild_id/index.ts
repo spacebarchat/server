@@ -25,188 +25,188 @@ import { GuildUpdateSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			"200": {
-				body: "APIGuildWithJoinedAt",
-			},
-			401: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        responses: {
+            "200": {
+                body: "APIGuildWithJoinedAt",
+            },
+            401: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const [guild, member] = await Promise.all([Guild.findOneOrFail({ where: { id: guild_id } }), Member.findOne({ where: { guild_id: guild_id, id: req.user_id } })]);
-		if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
+        const [guild, member] = await Promise.all([Guild.findOneOrFail({ where: { id: guild_id } }), Member.findOne({ where: { guild_id: guild_id, id: req.user_id } })]);
+        if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
 
-		return res.send({
-			...guild,
-			joined_at: member?.joined_at,
-		});
-	},
+        return res.send({
+            ...guild,
+            joined_at: member?.joined_at,
+        });
+    },
 );
 
 router.patch(
-	"/",
-	route({
-		requestBody: "GuildUpdateSchema",
-		permission: "MANAGE_GUILD",
-		responses: {
-			200: {
-				body: "GuildCreateResponse",
-			},
-			401: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const body = req.body as GuildUpdateSchema;
-		const { guild_id } = req.params;
+    "/",
+    route({
+        requestBody: "GuildUpdateSchema",
+        permission: "MANAGE_GUILD",
+        responses: {
+            200: {
+                body: "GuildCreateResponse",
+            },
+            401: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as GuildUpdateSchema;
+        const { guild_id } = req.params;
 
-		const rights = await getRights(req.user_id);
-		const permission = await getPermission(req.user_id, guild_id);
+        const rights = await getRights(req.user_id);
+        const permission = await getPermission(req.user_id, guild_id);
 
-		if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD")) throw DiscordApiErrors.MISSING_PERMISSIONS.withParams("MANAGE_GUILDS");
+        if (!rights.has("MANAGE_GUILDS") && !permission.has("MANAGE_GUILD")) throw DiscordApiErrors.MISSING_PERMISSIONS.withParams("MANAGE_GUILDS");
 
-		const guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			relations: ["emojis", "roles", "stickers"],
-		});
+        const guild = await Guild.findOneOrFail({
+            where: { id: guild_id },
+            relations: ["emojis", "roles", "stickers"],
+        });
 
-		// trying to `select` this fails
-		guild.channel_ordering = (
-			await Guild.findOneOrFail({
-				where: { id: guild_id },
-				select: { channel_ordering: true },
-			})
-		).channel_ordering;
+        // trying to `select` this fails
+        guild.channel_ordering = (
+            await Guild.findOneOrFail({
+                where: { id: guild_id },
+                select: { channel_ordering: true },
+            })
+        ).channel_ordering;
 
-		// TODO: guild update check image
+        // TODO: guild update check image
 
-		if (body.icon && body.icon != guild.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
+        if (body.icon && body.icon != guild.icon) body.icon = await handleFile(`/icons/${guild_id}`, body.icon);
 
-		if (body.banner && body.banner !== guild.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
+        if (body.banner && body.banner !== guild.banner) body.banner = await handleFile(`/banners/${guild_id}`, body.banner);
 
-		if (body.splash && body.splash !== guild.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
+        if (body.splash && body.splash !== guild.splash) body.splash = await handleFile(`/splashes/${guild_id}`, body.splash);
 
-		if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
-			body.discovery_splash = await handleFile(`/discovery-splashes/${guild_id}`, body.discovery_splash);
+        if (body.discovery_splash && body.discovery_splash !== guild.discovery_splash)
+            body.discovery_splash = await handleFile(`/discovery-splashes/${guild_id}`, body.discovery_splash);
 
-		if (body.features) {
-			const diff = guild.features.filter((x) => !body.features?.includes(x)).concat(body.features.filter((x) => !guild.features.includes(x)));
+        if (body.features) {
+            const diff = guild.features.filter((x) => !body.features?.includes(x)).concat(body.features.filter((x) => !guild.features.includes(x)));
 
-			// TODO move these
-			const MUTABLE_FEATURES = ["COMMUNITY", "INVITES_DISABLED", "DISCOVERABLE"];
+            // TODO move these
+            const MUTABLE_FEATURES = ["COMMUNITY", "INVITES_DISABLED", "DISCOVERABLE"];
 
-			for (const feature of diff) {
-				if (MUTABLE_FEATURES.includes(feature)) continue;
+            for (const feature of diff) {
+                if (MUTABLE_FEATURES.includes(feature)) continue;
 
-				throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
-			}
+                throw SpacebarApiErrors.FEATURE_IS_IMMUTABLE.withParams(feature);
+            }
 
-			// for some reason, they don't update in the assign.
-			guild.features = body.features;
-		}
+            // for some reason, they don't update in the assign.
+            guild.features = body.features;
+        }
 
-		// TODO: check if body ids are valid
-		guild.assign(body);
+        // TODO: check if body ids are valid
+        guild.assign(body);
 
-		if (body.public_updates_channel_id == "1") {
-			// create an updates channel for them
-			const channel = await Channel.createChannel(
-				{
-					name: "moderator-only",
-					guild_id: guild.id,
-					position: 0,
-					type: 0,
-					permission_overwrites: [
-						// remove SEND_MESSAGES from @everyone
-						{
-							id: guild.id,
-							allow: "0",
-							deny: Permissions.FLAGS.VIEW_CHANNEL.toString(),
-							type: 0,
-						},
-					],
-				},
-				undefined,
-				{ skipPermissionCheck: true },
-			);
+        if (body.public_updates_channel_id == "1") {
+            // create an updates channel for them
+            const channel = await Channel.createChannel(
+                {
+                    name: "moderator-only",
+                    guild_id: guild.id,
+                    position: 0,
+                    type: 0,
+                    permission_overwrites: [
+                        // remove SEND_MESSAGES from @everyone
+                        {
+                            id: guild.id,
+                            allow: "0",
+                            deny: Permissions.FLAGS.VIEW_CHANNEL.toString(),
+                            type: 0,
+                        },
+                    ],
+                },
+                undefined,
+                { skipPermissionCheck: true },
+            );
 
-			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
+            await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
-			guild.public_updates_channel_id = channel.id;
-		} else if (body.public_updates_channel_id != undefined) {
-			// ensure channel exists in this guild
-			await Channel.findOneOrFail({
-				where: { guild_id, id: body.public_updates_channel_id },
-				select: { id: true },
-			});
-		}
+            guild.public_updates_channel_id = channel.id;
+        } else if (body.public_updates_channel_id != undefined) {
+            // ensure channel exists in this guild
+            await Channel.findOneOrFail({
+                where: { guild_id, id: body.public_updates_channel_id },
+                select: { id: true },
+            });
+        }
 
-		if (body.rules_channel_id == "1") {
-			// create a rules for them
-			const channel = await Channel.createChannel(
-				{
-					name: "rules",
-					guild_id: guild.id,
-					position: 0,
-					type: 0,
-					permission_overwrites: [
-						// remove SEND_MESSAGES from @everyone
-						{
-							id: guild.id,
-							allow: "0",
-							deny: Permissions.FLAGS.SEND_MESSAGES.toString(),
-							type: 0,
-						},
-					],
-				},
-				undefined,
-				{ skipPermissionCheck: true },
-			);
+        if (body.rules_channel_id == "1") {
+            // create a rules for them
+            const channel = await Channel.createChannel(
+                {
+                    name: "rules",
+                    guild_id: guild.id,
+                    position: 0,
+                    type: 0,
+                    permission_overwrites: [
+                        // remove SEND_MESSAGES from @everyone
+                        {
+                            id: guild.id,
+                            allow: "0",
+                            deny: Permissions.FLAGS.SEND_MESSAGES.toString(),
+                            type: 0,
+                        },
+                    ],
+                },
+                undefined,
+                { skipPermissionCheck: true },
+            );
 
-			await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
+            await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
-			guild.rules_channel_id = channel.id;
-		} else if (body.rules_channel_id != undefined) {
-			// ensure channel exists in this guild
-			await Channel.findOneOrFail({
-				where: { guild_id, id: body.rules_channel_id },
-				select: { id: true },
-			});
-		}
+            guild.rules_channel_id = channel.id;
+        } else if (body.rules_channel_id != undefined) {
+            // ensure channel exists in this guild
+            await Channel.findOneOrFail({
+                where: { guild_id, id: body.rules_channel_id },
+                select: { id: true },
+            });
+        }
 
-		const data = guild.toJSON();
-		// TODO: guild hashes
-		// TODO: fix vanity_url_code, template_id
-		// delete data.vanity_url_code;
-		delete data.template_id;
+        const data = guild.toJSON();
+        // TODO: guild hashes
+        // TODO: fix vanity_url_code, template_id
+        // delete data.vanity_url_code;
+        delete data.template_id;
 
-		await Promise.all([
-			guild.save(),
-			emitEvent({
-				event: "GUILD_UPDATE",
-				data,
-				guild_id,
-			} as GuildUpdateEvent),
-		]);
+        await Promise.all([
+            guild.save(),
+            emitEvent({
+                event: "GUILD_UPDATE",
+                data,
+                guild_id,
+            } as GuildUpdateEvent),
+        ]);
 
-		return res.json(data);
-	},
+        return res.json(data);
+    },
 );
 
 export default router;

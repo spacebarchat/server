@@ -24,17 +24,17 @@ import { fileTypeFromBuffer } from "file-type";
 const router = Router({ mergeParams: true });
 
 router.get("/:badge_id", async (req: Request, res: Response) => {
-	const { badge_id } = req.params;
-	const path = `badge-icons/${badge_id}`;
+    const { badge_id } = req.params;
+    const path = `badge-icons/${badge_id}`;
 
-	const file = await storage.get(path);
-	if (!file) throw new HTTPError("not found", 404);
-	const type = await fileTypeFromBuffer(file);
+    const file = await storage.get(path);
+    if (!file) throw new HTTPError("not found", 404);
+    const type = await fileTypeFromBuffer(file);
 
-	res.set("Content-Type", type?.mime);
-	res.set("Cache-Control", "public, max-age=31536000, must-revalidate");
+    res.set("Content-Type", type?.mime);
+    res.set("Cache-Control", "public, max-age=31536000, must-revalidate");
 
-	return res.send(file);
+    return res.send(file);
 });
 
 export default router;

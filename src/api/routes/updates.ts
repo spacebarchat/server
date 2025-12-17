@@ -23,46 +23,46 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "UpdatesResponse",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const platform = req.query.platform;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "UpdatesResponse",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const platform = req.query.platform;
 
-		if (!platform)
-			throw FieldErrors({
-				platform: {
-					code: "BASE_TYPE_REQUIRED",
-					message: req.t("common:field.BASE_TYPE_REQUIRED"),
-				},
-			});
+        if (!platform)
+            throw FieldErrors({
+                platform: {
+                    code: "BASE_TYPE_REQUIRED",
+                    message: req.t("common:field.BASE_TYPE_REQUIRED"),
+                },
+            });
 
-		const release = await ClientRelease.findOneOrFail({
-			where: {
-				enabled: true,
-				platform: platform as string,
-			},
-			order: { pub_date: "DESC" },
-		});
+        const release = await ClientRelease.findOneOrFail({
+            where: {
+                enabled: true,
+                platform: platform as string,
+            },
+            order: { pub_date: "DESC" },
+        });
 
-		res.json({
-			name: release.name,
-			pub_date: release.pub_date,
-			url: release.url,
-			notes: release.notes,
-		});
-	},
+        res.json({
+            name: release.name,
+            pub_date: release.pub_date,
+            url: release.url,
+            notes: release.notes,
+        });
+    },
 );
 
 export default router;

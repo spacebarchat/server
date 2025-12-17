@@ -22,32 +22,32 @@ import OPCodeHandlers from "../opcodes";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
 
 const PayloadSchema = {
-	op: Number,
-	$d: new Tuple(Object, Number), // or number for heartbeat sequence
-	$s: Number,
-	$t: String,
+    op: Number,
+    $d: new Tuple(Object, Number), // or number for heartbeat sequence
+    $s: Number,
+    $t: String,
 };
 
 export async function onMessage(this: WebRtcWebSocket, buffer: Buffer) {
-	try {
-		const data: VoicePayload = JSON.parse(buffer.toString());
-		if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id) return this.close(CLOSECODES.Not_authenticated);
+    try {
+        const data: VoicePayload = JSON.parse(buffer.toString());
+        if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id) return this.close(CLOSECODES.Not_authenticated);
 
-		const OPCodeHandler = OPCodeHandlers[data.op];
-		if (!OPCodeHandler) {
-			console.error("[WebRTC] Unknown opcode " + VoiceOPCodes[data.op]);
-			// TODO: if all opcodes are implemented comment this out:
-			// this.close(CloseCodes.Unknown_opcode);
-			return;
-		}
+        const OPCodeHandler = OPCodeHandlers[data.op];
+        if (!OPCodeHandler) {
+            console.error("[WebRTC] Unknown opcode " + VoiceOPCodes[data.op]);
+            // TODO: if all opcodes are implemented comment this out:
+            // this.close(CloseCodes.Unknown_opcode);
+            return;
+        }
 
-		if (![VoiceOPCodes.HEARTBEAT, VoiceOPCodes.SPEAKING].includes(data.op as VoiceOPCodes)) {
-			console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
-		}
+        if (![VoiceOPCodes.HEARTBEAT, VoiceOPCodes.SPEAKING].includes(data.op as VoiceOPCodes)) {
+            console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
+        }
 
-		return await OPCodeHandler.call(this, data);
-	} catch (error) {
-		console.error("[WebRTC] error", error);
-		// if (!this.CLOSED && this.CLOSING) return this.close(CloseCodes.Unknown_error);
-	}
+        return await OPCodeHandler.call(this, data);
+    } catch (error) {
+        console.error("[WebRTC] error", error);
+        // if (!this.CLOSED && this.CLOSING) return this.close(CloseCodes.Unknown_error);
+    }
 }

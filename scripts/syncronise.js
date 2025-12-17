@@ -30,9 +30,9 @@ require("dotenv").config({ quiet: true });
 const { initDatabase } = require("..");
 
 (async () => {
-	const db = await initDatabase();
-	console.log("synchronising");
-	await db.synchronize();
-	console.log("done");
-	db.destroy();
+    const db = await initDatabase();
+    console.log("synchronising");
+    await db.synchronize();
+    console.log("done");
+    db.destroy();
 })();

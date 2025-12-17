@@ -24,47 +24,47 @@ import { MemberChangeProfileSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.patch(
-	"/:member_id",
-	route({
-		requestBody: "MemberChangeProfileSchema",
-		responses: {
-			200: {
-				body: "Member",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
-		// const member_id =
-		// 	req.params.member_id === "@me" ? req.user_id : req.params.member_id;
-		const body = req.body as MemberChangeProfileSchema;
+    "/:member_id",
+    route({
+        requestBody: "MemberChangeProfileSchema",
+        responses: {
+            200: {
+                body: "Member",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
+        // const member_id =
+        // 	req.params.member_id === "@me" ? req.user_id : req.params.member_id;
+        const body = req.body as MemberChangeProfileSchema;
 
-		let member = await Member.findOneOrFail({
-			where: { id: req.user_id, guild_id },
-			relations: ["roles", "user"],
-		});
+        let member = await Member.findOneOrFail({
+            where: { id: req.user_id, guild_id },
+            relations: ["roles", "user"],
+        });
 
-		if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);
+        if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);
 
-		member = await OrmUtils.mergeDeep(member, body);
+        member = await OrmUtils.mergeDeep(member, body);
 
-		await member.save();
+        await member.save();
 
-		// do not use promise.all as we have to first write to db before emitting the event to catch errors
-		await emitEvent({
-			event: "GUILD_MEMBER_UPDATE",
-			guild_id,
-			data: { ...member, roles: member.roles.map((x) => x.id) },
-		} as GuildMemberUpdateEvent);
+        // do not use promise.all as we have to first write to db before emitting the event to catch errors
+        await emitEvent({
+            event: "GUILD_MEMBER_UPDATE",
+            guild_id,
+            data: { ...member, roles: member.roles.map((x) => x.id) },
+        } as GuildMemberUpdateEvent);
 
-		res.json(member);
-	},
+        res.json(member);
+    },
 );
 
 export default router;

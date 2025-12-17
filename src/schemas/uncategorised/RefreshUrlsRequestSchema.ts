@@ -17,5 +17,5 @@
 */
 
 export interface RefreshUrlsRequestSchema {
-	attachment_urls: string[];
+    attachment_urls: string[];
 }

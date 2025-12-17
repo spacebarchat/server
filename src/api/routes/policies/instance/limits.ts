@@ -22,18 +22,18 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "APILimitsConfiguration",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { limits } = Config.get();
-		res.json(limits);
-	},
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "APILimitsConfiguration",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { limits } = Config.get();
+        res.json(limits);
+    },
 );
 
 export default router;

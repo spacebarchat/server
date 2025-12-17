@@ -26,23 +26,23 @@ import { Router } from "express";
 const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "assets");
 
 export async function initTranslation(router: Router) {
-	const languages = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "locales"));
-	const namespaces = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "locales", "en"));
-	const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
+    const languages = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "locales"));
+    const namespaces = fs.readdirSync(path.join(ASSET_FOLDER_PATH, "locales", "en"));
+    const ns = namespaces.filter((x) => x.endsWith(".json")).map((x) => x.slice(0, x.length - 5));
 
-	await i18next
-		.use(i18nextBackend)
-		.use(i18nextMiddleware.LanguageDetector)
-		.init({
-			preload: languages,
-			// debug: true,
-			fallbackLng: "en",
-			ns,
-			backend: {
-				loadPath: path.join(ASSET_FOLDER_PATH, "locales") + "/{{lng}}/{{ns}}.json",
-			},
-			load: "all",
-		});
+    await i18next
+        .use(i18nextBackend)
+        .use(i18nextMiddleware.LanguageDetector)
+        .init({
+            preload: languages,
+            // debug: true,
+            fallbackLng: "en",
+            ns,
+            backend: {
+                loadPath: path.join(ASSET_FOLDER_PATH, "locales") + "/{{lng}}/{{ns}}.json",
+            },
+            load: "all",
+        });
 
-	router.use(i18nextMiddleware.handle(i18next, {}));
+    router.use(i18nextMiddleware.handle(i18next, {}));
 }

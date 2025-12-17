@@ -41,29 +41,29 @@ let content = `/*
 // node scripts/genIndex.js /path/to/dir
 const targetDir = process.argv[2];
 if (!targetDir) {
-	console.error("Please provide a target directory.");
-	process.exit(1);
+    console.error("Please provide a target directory.");
+    process.exit(1);
 }
 
 if (fs.existsSync(path.join(targetDir, "index.js")) || fs.existsSync(path.join(targetDir, "index.ts"))) {
-	console.error("index.js or index.ts already exists in the target directory.");
-	process.exit(1);
+    console.error("index.js or index.ts already exists in the target directory.");
+    process.exit(1);
 }
 
 const dirs = fs.readdirSync(targetDir).filter((f) => fs.statSync(path.join(targetDir, f)).isDirectory());
 for (const dir of dirs) {
-	content += `export * from "./${dir}";\n`;
+    content += `export * from "./${dir}";\n`;
 }
 
 const files = fs.readdirSync(targetDir).filter((f) => f.endsWith(".js") || f.endsWith(".ts"));
 for (const file of files) {
-	const filePath = path.join(targetDir, file);
-	const stat = fs.statSync(filePath);
-	if (stat.isFile()) {
-		const ext = path.extname(file);
-		const base = path.basename(file, ext);
-		content += `export * from "./${base}";\n`;
-	}
+    const filePath = path.join(targetDir, file);
+    const stat = fs.statSync(filePath);
+    if (stat.isFile()) {
+        const ext = path.extname(file);
+        const base = path.basename(file, ext);
+        content += `export * from "./${base}";\n`;
+    }
 }
 
 fs.writeFileSync(path.join(targetDir, "index.ts"), content);

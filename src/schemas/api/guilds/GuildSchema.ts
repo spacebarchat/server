@@ -19,6 +19,6 @@
 import { Snowflake } from "@spacebar/schemas";
 
 export interface GuildAvailableSchema {
-	id: Snowflake;
-	available: boolean;
+    id: Snowflake;
+    available: boolean;
 }

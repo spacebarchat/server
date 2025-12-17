@@ -1,3 +1,3 @@
 export interface UserNoteUpdateSchema {
-	note: string;
+    note: string;
 }

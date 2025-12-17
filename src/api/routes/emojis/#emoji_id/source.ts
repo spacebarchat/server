@@ -24,63 +24,63 @@ import { APIErrorResponse, EmojiGuild, EmojiSourceResponse } from "@spacebar/sch
 const router = Router({ mergeParams: true });
 
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "EmojiSourceResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { emoji_id } = req.params;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "EmojiSourceResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { emoji_id } = req.params;
 
-		const emoji = await Emoji.findOne({ where: { id: emoji_id } });
-		if (!emoji) {
-			res.status(404).json({
-				code: DiscordApiErrors.UNKNOWN_EMOJI.code,
-				message: `No emoji with ID ${emoji_id} appear to exist. Are you sure you didn't mistype it?`,
-				errors: {},
-			} as APIErrorResponse);
-			return;
-		}
+        const emoji = await Emoji.findOne({ where: { id: emoji_id } });
+        if (!emoji) {
+            res.status(404).json({
+                code: DiscordApiErrors.UNKNOWN_EMOJI.code,
+                message: `No emoji with ID ${emoji_id} appear to exist. Are you sure you didn't mistype it?`,
+                errors: {},
+            } as APIErrorResponse);
+            return;
+        }
 
-		// TODO: emojis can be owned by applications these days, account for this when we get there?
-		res.json({
-			type: "GUILD",
-			guild: {
-				...(await Guild.findOne({
-					where: {
-						id: emoji.guild_id,
-					},
-					select: {
-						id: true,
-						name: true,
-						icon: true,
-						description: true,
-						features: true,
-						emojis: true,
-						premium_tier: true,
-						premium_subscription_count: true,
-					},
-				})),
-				approximate_member_count: await Member.countBy({
-					guild_id: emoji.guild_id,
-				}),
-				approximate_presence_count: await Member.countBy({
-					guild_id: emoji.guild_id,
-					user: {
-						sessions: {
-							status: "online",
-						},
-					},
-				}),
-			} as EmojiGuild,
-		} as EmojiSourceResponse);
-	},
+        // TODO: emojis can be owned by applications these days, account for this when we get there?
+        res.json({
+            type: "GUILD",
+            guild: {
+                ...(await Guild.findOne({
+                    where: {
+                        id: emoji.guild_id,
+                    },
+                    select: {
+                        id: true,
+                        name: true,
+                        icon: true,
+                        description: true,
+                        features: true,
+                        emojis: true,
+                        premium_tier: true,
+                        premium_subscription_count: true,
+                    },
+                })),
+                approximate_member_count: await Member.countBy({
+                    guild_id: emoji.guild_id,
+                }),
+                approximate_presence_count: await Member.countBy({
+                    guild_id: emoji.guild_id,
+                    user: {
+                        sessions: {
+                            status: "online",
+                        },
+                    },
+                }),
+            } as EmojiGuild,
+        } as EmojiSourceResponse);
+    },
 );
 
 export default router;

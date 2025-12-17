@@ -26,132 +26,132 @@ const router: Router = Router({ mergeParams: true });
 // TODO: Get channel
 
 router.get(
-	"/",
-	route({
-		permission: "VIEW_CHANNEL",
-		responses: {
-			200: {
-				body: "Channel",
-			},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { channel_id } = req.params;
+    "/",
+    route({
+        permission: "VIEW_CHANNEL",
+        responses: {
+            200: {
+                body: "Channel",
+            },
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params;
 
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
-		if (!channel.guild_id) return res.send(channel);
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
+        if (!channel.guild_id) return res.send(channel);
 
-		channel.position = await Channel.calculatePosition(channel_id, channel.guild_id, channel.guild);
-		return res.send(channel);
-	},
+        channel.position = await Channel.calculatePosition(channel_id, channel.guild_id, channel.guild);
+        return res.send(channel);
+    },
 );
 
 router.delete(
-	"/",
-	route({
-		permission: "MANAGE_CHANNELS",
-		responses: {
-			200: {
-				body: "Channel",
-			},
-			404: {},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { channel_id } = req.params;
+    "/",
+    route({
+        permission: "MANAGE_CHANNELS",
+        responses: {
+            200: {
+                body: "Channel",
+            },
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params;
 
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-			relations: ["recipients"],
-		});
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+            relations: ["recipients"],
+        });
 
-		if (channel.type === ChannelType.DM) {
-			const recipient = await Recipient.findOneOrFail({
-				where: { channel_id: channel_id, user_id: req.user_id },
-			});
-			recipient.closed = true;
-			await Promise.all([
-				recipient.save(),
-				emitEvent({
-					event: "CHANNEL_DELETE",
-					data: channel,
-					user_id: req.user_id,
-				} as ChannelDeleteEvent),
-			]);
-		} else if (channel.type === ChannelType.GROUP_DM) {
-			await Channel.removeRecipientFromChannel(channel, req.user_id);
-		} else {
-			if (channel.type == ChannelType.GUILD_CATEGORY) {
-				const channels = await Channel.find({
-					where: { parent_id: channel_id },
-				});
-				for await (const c of channels) {
-					c.parent_id = null;
+        if (channel.type === ChannelType.DM) {
+            const recipient = await Recipient.findOneOrFail({
+                where: { channel_id: channel_id, user_id: req.user_id },
+            });
+            recipient.closed = true;
+            await Promise.all([
+                recipient.save(),
+                emitEvent({
+                    event: "CHANNEL_DELETE",
+                    data: channel,
+                    user_id: req.user_id,
+                } as ChannelDeleteEvent),
+            ]);
+        } else if (channel.type === ChannelType.GROUP_DM) {
+            await Channel.removeRecipientFromChannel(channel, req.user_id);
+        } else {
+            if (channel.type == ChannelType.GUILD_CATEGORY) {
+                const channels = await Channel.find({
+                    where: { parent_id: channel_id },
+                });
+                for await (const c of channels) {
+                    c.parent_id = null;
 
-					await Promise.all([
-						c.save(),
-						emitEvent({
-							event: "CHANNEL_UPDATE",
-							data: c,
-							channel_id: c.id,
-						} as ChannelUpdateEvent),
-					]);
-				}
-			}
+                    await Promise.all([
+                        c.save(),
+                        emitEvent({
+                            event: "CHANNEL_UPDATE",
+                            data: c,
+                            channel_id: c.id,
+                        } as ChannelUpdateEvent),
+                    ]);
+                }
+            }
 
-			await Promise.all([
-				Channel.deleteChannel(channel),
-				emitEvent({
-					event: "CHANNEL_DELETE",
-					data: channel,
-					channel_id,
-				} as ChannelDeleteEvent),
-			]);
-		}
+            await Promise.all([
+                Channel.deleteChannel(channel),
+                emitEvent({
+                    event: "CHANNEL_DELETE",
+                    data: channel,
+                    channel_id,
+                } as ChannelDeleteEvent),
+            ]);
+        }
 
-		res.send(channel);
-	},
+        res.send(channel);
+    },
 );
 
 router.patch(
-	"/",
-	route({
-		requestBody: "ChannelModifySchema",
-		permission: "MANAGE_CHANNELS",
-		responses: {
-			200: {
-				body: "Channel",
-			},
-			404: {},
-			400: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const payload = req.body as ChannelModifySchema;
-		const { channel_id } = req.params;
-		if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
+    "/",
+    route({
+        requestBody: "ChannelModifySchema",
+        permission: "MANAGE_CHANNELS",
+        responses: {
+            200: {
+                body: "Channel",
+            },
+            404: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const payload = req.body as ChannelModifySchema;
+        const { channel_id } = req.params;
+        if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
-		const channel = await Channel.findOneOrFail({
-			where: { id: channel_id },
-		});
-		channel.assign(payload);
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+        });
+        channel.assign(payload);
 
-		await Promise.all([
-			channel.save(),
-			emitEvent({
-				event: "CHANNEL_UPDATE",
-				data: channel,
-				channel_id,
-			} as ChannelUpdateEvent),
-		]);
+        await Promise.all([
+            channel.save(),
+            emitEvent({
+                event: "CHANNEL_UPDATE",
+                data: channel,
+                channel_id,
+            } as ChannelUpdateEvent),
+        ]);
 
-		res.send(channel);
-	},
+        res.send(channel);
+    },
 );
 
 export default router;

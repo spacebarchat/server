@@ -22,79 +22,79 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 async function getToken(user: User) {
-	const token = await generateToken(user.id);
+    const token = await generateToken(user.id);
 
-	// Notice this will have a different token structure, than discord
-	// Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
-	// https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
+    // Notice this will have a different token structure, than discord
+    // Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
+    // https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
-	return { token };
+    return { token };
 }
 
 // TODO: the response interface also returns settings, but this route doesn't actually return that.
 router.post(
-	"/",
-	route({
-		requestBody: "VerifyEmailSchema",
-		responses: {
-			200: {
-				body: "TokenResponse",
-			},
-			400: {
-				body: "APIErrorOrCaptchaResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { captcha_key, token } = req.body;
+    "/",
+    route({
+        requestBody: "VerifyEmailSchema",
+        responses: {
+            200: {
+                body: "TokenResponse",
+            },
+            400: {
+                body: "APIErrorOrCaptchaResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { captcha_key, token } = req.body;
 
-		const config = Config.get();
+        const config = Config.get();
 
-		if (config.register.requireCaptcha && config.security.captcha.enabled) {
-			const { sitekey, service } = config.security.captcha;
+        if (config.register.requireCaptcha && config.security.captcha.enabled) {
+            const { sitekey, service } = config.security.captcha;
 
-			if (!captcha_key) {
-				return res.status(400).json({
-					captcha_key: ["captcha-required"],
-					captcha_sitekey: sitekey,
-					captcha_service: service,
-				});
-			}
+            if (!captcha_key) {
+                return res.status(400).json({
+                    captcha_key: ["captcha-required"],
+                    captcha_sitekey: sitekey,
+                    captcha_service: service,
+                });
+            }
 
-			const ip = req.ip;
-			const verify = await verifyCaptcha(captcha_key, ip);
-			if (!verify.success) {
-				return res.status(400).json({
-					captcha_key: verify["error-codes"],
-					captcha_sitekey: sitekey,
-					captcha_service: service,
-				});
-			}
-		}
+            const ip = req.ip;
+            const verify = await verifyCaptcha(captcha_key, ip);
+            if (!verify.success) {
+                return res.status(400).json({
+                    captcha_key: verify["error-codes"],
+                    captcha_sitekey: sitekey,
+                    captcha_service: service,
+                });
+            }
+        }
 
-		let user;
+        let user;
 
-		try {
-			const userTokenData = await checkToken(token, {
-				fingerprint: req.fingerprint,
-				ipAddress: req.ip,
-			});
-			user = userTokenData.user;
-		} catch {
-			throw FieldErrors({
-				token: {
-					message: req.t("auth:password_reset.INVALID_TOKEN"),
-					code: "INVALID_TOKEN",
-				},
-			});
-		}
+        try {
+            const userTokenData = await checkToken(token, {
+                fingerprint: req.fingerprint,
+                ipAddress: req.ip,
+            });
+            user = userTokenData.user;
+        } catch {
+            throw FieldErrors({
+                token: {
+                    message: req.t("auth:password_reset.INVALID_TOKEN"),
+                    code: "INVALID_TOKEN",
+                },
+            });
+        }
 
-		if (user.verified) return res.json(await getToken(user));
+        if (user.verified) return res.json(await getToken(user));
 
-		await User.update({ id: user.id }, { verified: true });
+        await User.update({ id: user.id }, { verified: true });
 
-		return res.json(await getToken(user));
-	},
+        return res.json(await getToken(user));
+    },
 );
 
 export default router;

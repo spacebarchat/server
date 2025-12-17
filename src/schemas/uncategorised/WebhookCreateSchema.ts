@@ -17,9 +17,9 @@
 */
 
 export interface WebhookCreateSchema {
-	/**
-	 * @maxLength 80
-	 */
-	name: string;
-	avatar?: string;
+    /**
+     * @maxLength 80
+     */
+    name: string;
+    avatar?: string;
 }

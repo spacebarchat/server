@@ -24,5 +24,5 @@ const extension = Symbol.for("ts-node.register.instance") in process ? "ts" : "j
 const DEFAULT_FILTER = new RegExp("^([^.].*)(?<!\\.d).(" + extension + ")$");
 
 export function registerRoutes(server: Server, root: string) {
-	return traverseDirectory({ dirname: root, recursive: true, filter: DEFAULT_FILTER }, server.registerRoute.bind(server, root));
+    return traverseDirectory({ dirname: root, recursive: true, filter: DEFAULT_FILTER }, server.registerRoute.bind(server, root));
 }

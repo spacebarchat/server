@@ -25,93 +25,93 @@ import { Config } from "@spacebar/util";
 const router: Router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		requestBody: "BulkBanSchema",
-		permission: ["BAN_MEMBERS", "MANAGE_GUILD"],
-		responses: {
-			200: {
-				body: "Ban",
-			},
-			400: {
-				body: "APIErrorResponse",
-			},
-			403: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        requestBody: "BulkBanSchema",
+        permission: ["BAN_MEMBERS", "MANAGE_GUILD"],
+        responses: {
+            200: {
+                body: "Ban",
+            },
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const userIds: Array<string> = req.body.user_ids;
-		if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
+        const userIds: Array<string> = req.body.user_ids;
+        if (!userIds) throw new HTTPError("The user_ids array is missing", 400);
 
-		if (userIds.length > Config.get().limits.guild.maxBulkBanUsers) throw new HTTPError("The user_ids array must be between 1 and 200 in length", 400);
+        if (userIds.length > Config.get().limits.guild.maxBulkBanUsers) throw new HTTPError("The user_ids array must be between 1 and 200 in length", 400);
 
-		const banned_users = [];
-		const failed_users = [];
-		for await (const banned_user_id of userIds) {
-			if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id) {
-				failed_users.push(banned_user_id);
-				continue;
-			}
+        const banned_users = [];
+        const failed_users = [];
+        for await (const banned_user_id of userIds) {
+            if (req.user_id === banned_user_id && banned_user_id === req.permission?.cache.guild?.owner_id) {
+                failed_users.push(banned_user_id);
+                continue;
+            }
 
-			if (req.permission?.cache.guild?.owner_id === banned_user_id) {
-				failed_users.push(banned_user_id);
-				continue;
-			}
+            if (req.permission?.cache.guild?.owner_id === banned_user_id) {
+                failed_users.push(banned_user_id);
+                continue;
+            }
 
-			const existingBan = await Ban.findOne({
-				where: { guild_id: guild_id, user_id: banned_user_id },
-			});
-			if (existingBan) {
-				failed_users.push(banned_user_id);
-				continue;
-			}
+            const existingBan = await Ban.findOne({
+                where: { guild_id: guild_id, user_id: banned_user_id },
+            });
+            if (existingBan) {
+                failed_users.push(banned_user_id);
+                continue;
+            }
 
-			let banned_user;
-			try {
-				banned_user = await User.getPublicUser(banned_user_id);
-			} catch {
-				failed_users.push(banned_user_id);
-				continue;
-			}
+            let banned_user;
+            try {
+                banned_user = await User.getPublicUser(banned_user_id);
+            } catch {
+                failed_users.push(banned_user_id);
+                continue;
+            }
 
-			const ban = Ban.create({
-				user_id: banned_user_id,
-				guild_id: guild_id,
-				ip: req.ip,
-				executor_id: req.user_id,
-				reason: req.body.reason, // || otherwise empty
-			});
+            const ban = Ban.create({
+                user_id: banned_user_id,
+                guild_id: guild_id,
+                ip: req.ip,
+                executor_id: req.user_id,
+                reason: req.body.reason, // || otherwise empty
+            });
 
-			try {
-				await Promise.all([
-					Member.removeFromGuild(banned_user_id, guild_id),
-					ban.save(),
-					emitEvent({
-						event: "GUILD_BAN_ADD",
-						data: {
-							guild_id: guild_id,
-							user: banned_user.toPublicUser(),
-						},
-						guild_id: guild_id,
-					} as GuildBanAddEvent),
-				]);
-				banned_users.push(banned_user_id);
-			} catch {
-				failed_users.push(banned_user_id);
-				continue;
-			}
-		}
+            try {
+                await Promise.all([
+                    Member.removeFromGuild(banned_user_id, guild_id),
+                    ban.save(),
+                    emitEvent({
+                        event: "GUILD_BAN_ADD",
+                        data: {
+                            guild_id: guild_id,
+                            user: banned_user.toPublicUser(),
+                        },
+                        guild_id: guild_id,
+                    } as GuildBanAddEvent),
+                ]);
+                banned_users.push(banned_user_id);
+            } catch {
+                failed_users.push(banned_user_id);
+                continue;
+            }
+        }
 
-		if (banned_users.length === 0 && failed_users.length > 0) throw DiscordApiErrors.BULK_BAN_FAILED;
-		return res.json({
-			banned_users: banned_users,
-			failed_users: failed_users,
-		});
-	},
+        if (banned_users.length === 0 && failed_users.length > 0) throw DiscordApiErrors.BULK_BAN_FAILED;
+        return res.json({
+            banned_users: banned_users,
+            failed_users: failed_users,
+        });
+    },
 );
 
 export default router;

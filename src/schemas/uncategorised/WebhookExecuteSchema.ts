@@ -20,37 +20,37 @@ import { Embed } from "@spacebar/schemas";
 import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
-	content?: string;
-	username?: string;
-	avatar_url?: string;
-	tts?: boolean;
-	embeds?: Embed[];
-	allowed_mentions?: {
-		parse?: string[];
-		roles?: string[];
-		users?: string[];
-		replied_user?: boolean;
-	};
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	components?: any[];
-	file?: { filename: string };
-	payload_json?: string;
-	/**
+    content?: string;
+    username?: string;
+    avatar_url?: string;
+    tts?: boolean;
+    embeds?: Embed[];
+    allowed_mentions?: {
+        parse?: string[];
+        roles?: string[];
+        users?: string[];
+        replied_user?: boolean;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    components?: any[];
+    file?: { filename: string };
+    payload_json?: string;
+    /**
 	TODO: we should create an interface for attachments
 	TODO: OpenWAAO<-->attachment-style metadata conversion
 	**/
-	attachments?: MessageCreateAttachment[];
-	flags?: number;
-	thread_name?: string;
-	applied_tags?: string[];
-	message_reference?: {
-		message_id: string;
-		channel_id?: string;
-		guild_id?: string;
-		fail_if_not_exists?: boolean;
-	};
-	sticker_ids?: string[];
-	nonce?: string;
-	enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
-	poll?: PollCreationSchema;
+    attachments?: MessageCreateAttachment[];
+    flags?: number;
+    thread_name?: string;
+    applied_tags?: string[];
+    message_reference?: {
+        message_id: string;
+        channel_id?: string;
+        guild_id?: string;
+        fail_if_not_exists?: boolean;
+    };
+    sticker_ids?: string[];
+    nonce?: string;
+    enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
+    poll?: PollCreationSchema;
 }

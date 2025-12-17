@@ -26,59 +26,59 @@ import { cleanupOnStartup } from "./util/Utils";
 import { randomString } from "@spacebar/api";
 
 export class Server {
-	public ws: ws.Server;
-	public port: number;
-	public server: http.Server;
-	public production: boolean;
+    public ws: ws.Server;
+    public port: number;
+    public server: http.Server;
+    public production: boolean;
 
-	constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
-		this.port = port;
-		this.production = production || false;
+    constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
+        this.port = port;
+        this.production = production || false;
 
-		if (server) this.server = server;
-		else {
-			this.server = http.createServer(function (req, res) {
-				if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
-					res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
-				}
+        if (server) this.server = server;
+        else {
+            this.server = http.createServer(function (req, res) {
+                if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
+                    res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
+                }
 
-				res.writeHead(200).end("Online");
-			});
-		}
+                res.writeHead(200).end("Online");
+            });
+        }
 
-		this.server.on("upgrade", (request, socket, head) => {
-			this.ws.handleUpgrade(request, socket, head, (socket) => {
-				this.ws.emit("connection", socket, request);
-			});
-		});
+        this.server.on("upgrade", (request, socket, head) => {
+            this.ws.handleUpgrade(request, socket, head, (socket) => {
+                this.ws.emit("connection", socket, request);
+            });
+        });
 
-		this.ws = new ws.Server({
-			maxPayload: 4096,
-			noServer: true,
-		});
-		this.ws.on("connection", Connection);
-		this.ws.on("error", console.error);
-	}
+        this.ws = new ws.Server({
+            maxPayload: 4096,
+            noServer: true,
+        });
+        this.ws.on("connection", Connection);
+        this.ws.on("error", console.error);
+    }
 
-	async start(): Promise<void> {
-		await initDatabase();
-		await Config.init();
-		await initEvent();
-		// temporary fix
-		await cleanupOnStartup();
+    async start(): Promise<void> {
+        await initDatabase();
+        await Config.init();
+        await initEvent();
+        // temporary fix
+        await cleanupOnStartup();
 
-		if (!this.server.listening) {
-			this.server.listen(this.port);
-			console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
-		}
-	}
+        if (!this.server.listening) {
+            this.server.listen(this.port);
+            console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+        }
+    }
 
-	async stop() {
-		this.ws.clients.forEach((x) => x.close());
-		this.ws.close(() => {
-			this.server.close(() => {
-				closeDatabase();
-			});
-		});
-	}
+    async stop() {
+        this.ws.clients.forEach((x) => x.close());
+        this.ws.close(() => {
+            this.server.close(() => {
+                closeDatabase();
+            });
+        });
+    }
 }

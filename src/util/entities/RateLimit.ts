@@ -20,18 +20,18 @@ import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
 @Entity({
-	name: "rate_limits",
+    name: "rate_limits",
 })
 export class RateLimit extends BaseClass {
-	@Column() // no relation as it also
-	executor_id: string;
+    @Column() // no relation as it also
+    executor_id: string;
 
-	@Column()
-	hits: number;
+    @Column()
+    hits: number;
 
-	@Column()
-	blocked: boolean;
+    @Column()
+    blocked: boolean;
 
-	@Column()
-	expires_at: Date;
+    @Column()
+    expires_at: Date;
 }

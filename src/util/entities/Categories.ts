@@ -34,24 +34,24 @@ import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 // Also populate discord default categories
 
 @Entity({
-	name: "categories",
+    name: "categories",
 })
 export class Categories extends BaseClassWithoutId {
-	// Not using snowflake
+    // Not using snowflake
 
-	@PrimaryIdColumn()
-	id: number;
+    @PrimaryIdColumn()
+    id: number;
 
-	@Column({ nullable: true })
-	name: string;
+    @Column({ nullable: true })
+    name: string;
 
-	@Column({ type: "simple-json" })
-	localizations: string;
+    @Column({ type: "simple-json" })
+    localizations: string;
 
-	// Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)
-	@Column({ nullable: true })
-	is_primary: boolean;
+    // Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)
+    @Column({ nullable: true })
+    is_primary: boolean;
 
-	@Column({ nullable: true })
-	icon?: string;
+    @Column({ nullable: true })
+    icon?: string;
 }

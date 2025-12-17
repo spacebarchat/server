@@ -22,42 +22,42 @@ import { User } from "./User";
 import { RelationshipType } from "@spacebar/schemas";
 
 @Entity({
-	name: "relationships",
+    name: "relationships",
 })
 @Index(["from_id", "to_id"], { unique: true })
 export class Relationship extends BaseClass {
-	@Column({})
-	@RelationId((relationship: Relationship) => relationship.from)
-	from_id: string;
+    @Column({})
+    @RelationId((relationship: Relationship) => relationship.from)
+    from_id: string;
 
-	@JoinColumn({ name: "from_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	from: User;
+    @JoinColumn({ name: "from_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    from: User;
 
-	@Column({})
-	@RelationId((relationship: Relationship) => relationship.to)
-	to_id: string;
+    @Column({})
+    @RelationId((relationship: Relationship) => relationship.to)
+    to_id: string;
 
-	@JoinColumn({ name: "to_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	to: User;
+    @JoinColumn({ name: "to_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    to: User;
 
-	@Column({ nullable: true })
-	nickname?: string;
+    @Column({ nullable: true })
+    nickname?: string;
 
-	@Column({ type: "int" })
-	type: RelationshipType;
+    @Column({ type: "int" })
+    type: RelationshipType;
 
-	toPublicRelationship() {
-		return {
-			id: this.to?.id || this.to_id,
-			type: this.type,
-			nickname: this.nickname,
-			user: this.to?.toPublicUser(),
-		};
-	}
+    toPublicRelationship() {
+        return {
+            id: this.to?.id || this.to_id,
+            type: this.type,
+            nickname: this.nickname,
+            user: this.to?.toPublicUser(),
+        };
+    }
 }

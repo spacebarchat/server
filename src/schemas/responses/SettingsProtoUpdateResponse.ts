@@ -19,19 +19,19 @@
 import { JsonValue } from "@protobuf-ts/runtime";
 
 export interface SettingsProtoResponse {
-	settings: string;
+    settings: string;
 }
 
 export interface SettingsProtoUpdateResponse extends SettingsProtoResponse {
-	out_of_date?: boolean;
+    out_of_date?: boolean;
 }
 
 export interface SettingsProtoJsonResponse {
-	settings: JsonValue;
+    settings: JsonValue;
 }
 
 export interface SettingsProtoUpdateJsonResponse extends SettingsProtoJsonResponse {
-	out_of_date?: boolean;
+    out_of_date?: boolean;
 }
 
 // TODO: these dont work with schemas validation

@@ -23,16 +23,16 @@ const router = Router({ mergeParams: true });
 
 // screw off, telemetry requests
 router.post(
-	"/",
-	route({
-		responses: {
-			204: {},
-		},
-	}),
-	(req: Request, res: Response) => {
-		// TODO:
-		res.sendStatus(204);
-	},
+    "/",
+    route({
+        responses: {
+            204: {},
+        },
+    }),
+    (req: Request, res: Response) => {
+        // TODO:
+        res.sendStatus(204);
+    },
 );
 
 export default router;

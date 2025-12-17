@@ -19,6 +19,6 @@
 import { Guild } from "../../util/entities";
 
 export interface EmailDomainLookupVerifyCodeResponse {
-	guild: Guild;
-	joined: boolean;
+    guild: Guild;
+    joined: boolean;
 }

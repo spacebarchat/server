@@ -18,4 +18,4 @@
 
 export * from "./VoiceIdentifySchema";
 export * from "./VoiceVideoSchema";
-export * from "./Region"
+export * from "./Region";

@@ -20,8 +20,8 @@ import { Emoji, Role, Sticker } from "../../util/entities";
 import { GuildCreateResponse } from "@spacebar/schemas";
 
 export interface MemberJoinGuildResponse {
-	guild: GuildCreateResponse;
-	emojis: Emoji[];
-	roles: Role[];
-	stickers: Sticker[];
+    guild: GuildCreateResponse;
+    emojis: Emoji[];
+    roles: Role[];
+    stickers: Sticker[];
 }

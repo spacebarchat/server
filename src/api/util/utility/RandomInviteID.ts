@@ -23,42 +23,42 @@ import crypto from "crypto";
 // And why is this even here? Just use cryto.randomBytes?
 
 export function randomString(length = 6) {
-	// Declare all characters
-	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    // Declare all characters
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-	// Pick characers randomly
-	let str = "";
-	for (let i = 0; i < length; i++) {
-		str += chars.charAt(Math.floor(crypto.randomInt(chars.length)));
-	}
+    // Pick characers randomly
+    let str = "";
+    for (let i = 0; i < length; i++) {
+        str += chars.charAt(Math.floor(crypto.randomInt(chars.length)));
+    }
 
-	return str;
+    return str;
 }
 
 export function snowflakeBasedInvite() {
-	// Declare all characters
-	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	const base = BigInt(chars.length);
-	let snowflake = Snowflake.generateWorkerProcess();
+    // Declare all characters
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const base = BigInt(chars.length);
+    let snowflake = Snowflake.generateWorkerProcess();
 
-	// snowflakes hold ~10.75 characters worth of entropy;
-	// safe to generate a 8-char invite out of them
-	const str = "";
-	for (let i = 0; i < 10; i++) {
-		str.concat(chars.charAt(Number(snowflake % base)));
-		snowflake = snowflake / base;
-	}
+    // snowflakes hold ~10.75 characters worth of entropy;
+    // safe to generate a 8-char invite out of them
+    const str = "";
+    for (let i = 0; i < 10; i++) {
+        str.concat(chars.charAt(Number(snowflake % base)));
+        snowflake = snowflake / base;
+    }
 
-	return str.substr(3, 8).split("").reverse().join("");
+    return str.substr(3, 8).split("").reverse().join("");
 }
 
 export function randomUpperString(length: number = 10) {
-	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	let result = "";
-	for (let i = 0; i < length; i++) {
-		result += chars.charAt(Math.floor(Math.random() * chars.length));
-	}
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
 
-	return result;
+    return result;
 }

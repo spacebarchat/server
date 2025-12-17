@@ -3,8 +3,8 @@ import { MessageComponentType } from "../messages";
 import { ApplicationCommandType } from "./ApplicationCommandSchema";
 
 export interface SendableMessageComponentDataSchema {
-	component_type?: MessageComponentType;
-	type?: ApplicationCommandType;
-	custom_id: string;
-	values?: Snowflake[] | string[];
+    component_type?: MessageComponentType;
+    type?: ApplicationCommandType;
+    custom_id: string;
+    values?: Snowflake[] | string[];
 }

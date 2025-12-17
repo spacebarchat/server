@@ -1,7 +1,7 @@
 export interface StreamWatchSchema {
-	stream_key: string;
+    stream_key: string;
 }
 
 export const StreamWatchSchema = {
-	stream_key: String,
+    stream_key: String,
 };

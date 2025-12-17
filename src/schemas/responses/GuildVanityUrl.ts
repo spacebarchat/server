@@ -17,16 +17,16 @@
 */
 
 export interface GuildVanityUrl {
-	code: string;
-	uses: number;
+    code: string;
+    uses: number;
 }
 
 export interface GuildVanityUrlNoInvite {
-	code: null;
+    code: null;
 }
 
 export type GuildVanityUrlResponse = GuildVanityUrl | GuildVanityUrl[] | GuildVanityUrlNoInvite;
 
 export interface GuildVanityUrlCreateResponse {
-	code: string;
+    code: string;
 }

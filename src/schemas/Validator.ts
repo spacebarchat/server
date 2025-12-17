@@ -40,24 +40,24 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }).rep
 // }
 
 export const ajv = new Ajv({
-	allErrors: true,
-	parseDate: true,
-	allowDate: true,
-	schemas: schemas,
-	coerceTypes: true,
-	messages: true,
-	strict: true,
-	strictRequired: true,
-	allowUnionTypes: true,
+    allErrors: true,
+    parseDate: true,
+    allowDate: true,
+    schemas: schemas,
+    coerceTypes: true,
+    messages: true,
+    strict: true,
+    strictRequired: true,
+    allowUnionTypes: true,
 });
 
 addFormats(ajv);
 
 export function validateSchema<G extends object>(schema: string, data: G): G {
-	const valid = ajv.validate(schema, data);
-	if (!valid) {
-		console.log("[Validator] Validation error in ", schema);
-		throw ajv.errors;
-	}
-	return data;
+    const valid = ajv.validate(schema, data);
+    if (!valid) {
+        console.log("[Validator] Validation error in ", schema);
+        throw ajv.errors;
+    }
+    return data;
 }

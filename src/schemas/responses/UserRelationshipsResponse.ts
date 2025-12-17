@@ -19,8 +19,8 @@
 import { PublicUser, RelationshipType } from "@spacebar/schemas";
 
 export interface UserRelationshipsResponse {
-	id: string;
-	type: RelationshipType;
-	nickname: null;
-	user: PublicUser;
+    id: string;
+    type: RelationshipType;
+    nickname: null;
+    user: PublicUser;
 }

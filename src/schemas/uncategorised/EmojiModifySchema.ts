@@ -17,6 +17,6 @@
 */
 
 export interface EmojiModifySchema {
-	name?: string;
-	roles?: string[];
+    name?: string;
+    roles?: string[];
 }

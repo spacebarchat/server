@@ -17,5 +17,5 @@
 */
 
 export class MetricsConfiguration {
-	timeout: number = 30000;
+    timeout: number = 30000;
 }

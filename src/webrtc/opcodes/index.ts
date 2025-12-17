@@ -27,10 +27,10 @@ import { onVideo } from "./Video";
 export type OPCodeHandler = (this: WebRtcWebSocket, data: VoicePayload) => Promise<void>;
 
 export default {
-	[VoiceOPCodes.HEARTBEAT]: onHeartbeat,
-	[VoiceOPCodes.IDENTIFY]: onIdentify,
-	[VoiceOPCodes.VOICE_BACKEND_VERSION]: onBackendVersion,
-	[VoiceOPCodes.VIDEO]: onVideo,
-	[VoiceOPCodes.SPEAKING]: onSpeaking,
-	[VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,
+    [VoiceOPCodes.HEARTBEAT]: onHeartbeat,
+    [VoiceOPCodes.IDENTIFY]: onIdentify,
+    [VoiceOPCodes.VOICE_BACKEND_VERSION]: onBackendVersion,
+    [VoiceOPCodes.VIDEO]: onVideo,
+    [VoiceOPCodes.SPEAKING]: onSpeaking,
+    [VoiceOPCodes.SELECT_PROTOCOL]: onSelectProtocol,
 } as { [key: number]: OPCodeHandler };

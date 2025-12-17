@@ -32,88 +32,88 @@ const router: Router = Router({ mergeParams: true });
 // https://discord.com/developers/docs/resources/guild#get-guild-widget
 // TODO: Cache the response for a guild for 5 minutes regardless of response
 router.get(
-	"/",
-	route({
-		responses: {
-			200: {
-				body: "GuildWidgetJsonResponse",
-			},
-			404: {
-				body: "APIErrorResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { guild_id } = req.params;
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "GuildWidgetJsonResponse",
+            },
+            404: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { guild_id } = req.params;
 
-		const guild = await Guild.findOneOrFail({
-			where: { id: guild_id },
-			select: {
-				channel_ordering: true,
-				widget_channel_id: true,
-				widget_enabled: true,
-				presence_count: true,
-				name: true,
-			},
-		});
-		if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
+        const guild = await Guild.findOneOrFail({
+            where: { id: guild_id },
+            select: {
+                channel_ordering: true,
+                widget_channel_id: true,
+                widget_enabled: true,
+                presence_count: true,
+                name: true,
+            },
+        });
+        if (!guild.widget_enabled) throw DiscordApiErrors.EMBED_DISABLED;
 
-		// Fetch existing widget invite for widget channel
-		let invite = await Invite.findOne({
-			where: { channel_id: guild.widget_channel_id },
-		});
+        // Fetch existing widget invite for widget channel
+        let invite = await Invite.findOne({
+            where: { channel_id: guild.widget_channel_id },
+        });
 
-		if (guild.widget_channel_id && !invite) {
-			// Create invite for channel if none exists
-			// TODO: Refactor invite create code to a shared function
-			const max_age = 86400; // 24 hours
-			const expires_at = new Date(max_age * 1000 + Date.now());
+        if (guild.widget_channel_id && !invite) {
+            // Create invite for channel if none exists
+            // TODO: Refactor invite create code to a shared function
+            const max_age = 86400; // 24 hours
+            const expires_at = new Date(max_age * 1000 + Date.now());
 
-			invite = await Invite.create({
-				code: randomString(),
-				temporary: false,
-				uses: 0,
-				max_uses: 0,
-				max_age: max_age,
-				expires_at,
-				created_at: new Date(),
-				guild_id,
-				channel_id: guild.widget_channel_id,
-				flags: 0,
-			}).save();
-		}
+            invite = await Invite.create({
+                code: randomString(),
+                temporary: false,
+                uses: 0,
+                max_uses: 0,
+                max_age: max_age,
+                expires_at,
+                created_at: new Date(),
+                guild_id,
+                channel_id: guild.widget_channel_id,
+                flags: 0,
+            }).save();
+        }
 
-		// Fetch voice channels, and the @everyone permissions object
-		const channels: { id: string; name: string; position: number }[] = [];
+        // Fetch voice channels, and the @everyone permissions object
+        const channels: { id: string; name: string; position: number }[] = [];
 
-		(await Channel.getOrderedChannels(guild.id, guild)).filter((doc) => {
-			// Only return channels where @everyone has the CONNECT permission
-			if (doc.permission_overwrites === undefined || Permissions.channelPermission(doc.permission_overwrites, Permissions.FLAGS.CONNECT) === Permissions.FLAGS.CONNECT) {
-				channels.push({
-					id: doc.id,
-					name: doc.name ?? "Unknown channel",
-					position: doc.position ?? 0,
-				});
-			}
-		});
+        (await Channel.getOrderedChannels(guild.id, guild)).filter((doc) => {
+            // Only return channels where @everyone has the CONNECT permission
+            if (doc.permission_overwrites === undefined || Permissions.channelPermission(doc.permission_overwrites, Permissions.FLAGS.CONNECT) === Permissions.FLAGS.CONNECT) {
+                channels.push({
+                    id: doc.id,
+                    name: doc.name ?? "Unknown channel",
+                    position: doc.position ?? 0,
+                });
+            }
+        });
 
-		// Fetch members
-		// TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
-		const members = await Member.find({ where: { guild_id: guild_id } });
+        // Fetch members
+        // TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
+        const members = await Member.find({ where: { guild_id: guild_id } });
 
-		// Construct object to respond with
-		const data = {
-			id: guild_id,
-			name: guild.name,
-			instant_invite: invite?.code,
-			channels: channels,
-			members: members,
-			presence_count: guild.presence_count,
-		};
+        // Construct object to respond with
+        const data = {
+            id: guild_id,
+            name: guild.name,
+            instant_invite: invite?.code,
+            channels: channels,
+            members: members,
+            presence_count: guild.presence_count,
+        };
 
-		res.set("Cache-Control", "public, max-age=300");
-		return res.json(data);
-	},
+        res.set("Cache-Control", "public, max-age=300");
+        return res.json(data);
+    },
 );
 
 export default router;

@@ -17,6 +17,6 @@
 */
 
 export class UserConfiguration {
-	blockedContains: string[] = ["discord", "clyde", "spacebar"];
-	blockedEquals: string[] = ["everyone", "here"];
+    blockedContains: string[] = ["discord", "clyde", "spacebar"];
+    blockedEquals: string[] = ["everyone", "here"];
 }

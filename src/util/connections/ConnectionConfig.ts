@@ -24,70 +24,70 @@ let config: any;
 let pairs: ConnectionConfigEntity[];
 
 export const ConnectionConfig = {
-	init: async function init() {
-		if (config) return config;
-		console.log("[Connections] Loading configuration...");
-		pairs = await ConnectionConfigEntity.find();
-		config = pairsToConfig(pairs);
+    init: async function init() {
+        if (config) return config;
+        console.log("[Connections] Loading configuration...");
+        pairs = await ConnectionConfigEntity.find();
+        config = pairsToConfig(pairs);
 
-		return this.set(config);
-	},
-	get: function get() {
-		if (!config) {
-			return {};
-		}
-		return config;
-	},
-	set: function set(val: Partial<any>) {
-		if (!config || !val) return;
-		config = OrmUtils.mergeDeep(config, val);
+        return this.set(config);
+    },
+    get: function get() {
+        if (!config) {
+            return {};
+        }
+        return config;
+    },
+    set: function set(val: Partial<any>) {
+        if (!config || !val) return;
+        config = OrmUtils.mergeDeep(config, val);
 
-		// return applyConfig(config);
-		return applyConfig(val);
-	},
+        // return applyConfig(config);
+        return applyConfig(val);
+    },
 };
 
 function applyConfig(val: any) {
-	async function apply(obj: any, key = ""): Promise<any> {
-		if (typeof obj === "object" && obj !== null && !(obj instanceof Date)) return Promise.all(Object.keys(obj).map((k) => apply(obj[k], key ? `${key}_${k}` : k)));
+    async function apply(obj: any, key = ""): Promise<any> {
+        if (typeof obj === "object" && obj !== null && !(obj instanceof Date)) return Promise.all(Object.keys(obj).map((k) => apply(obj[k], key ? `${key}_${k}` : k)));
 
-		let pair = pairs.find((x) => x.key === key);
-		if (!pair) pair = new ConnectionConfigEntity();
+        let pair = pairs.find((x) => x.key === key);
+        if (!pair) pair = new ConnectionConfigEntity();
 
-		pair.key = key;
+        pair.key = key;
 
-		if (pair.value !== obj) {
-			pair.value = obj;
-			if (!pair.key || pair.key == null) {
-				console.log(`[Connections] WARN: Empty config key`);
-				console.log(pair);
-			} else return pair.save();
-		}
-	}
+        if (pair.value !== obj) {
+            pair.value = obj;
+            if (!pair.key || pair.key == null) {
+                console.log(`[Connections] WARN: Empty config key`);
+                console.log(pair);
+            } else return pair.save();
+        }
+    }
 
-	return apply(val);
+    return apply(val);
 }
 
 function pairsToConfig(pairs: ConnectionConfigEntity[]) {
-	const value: any = {};
+    const value: any = {};
 
-	pairs.forEach((p) => {
-		const keys = p.key.split("_");
-		let obj = value;
-		let prev = "";
-		let prevObj = obj;
-		let i = 0;
+    pairs.forEach((p) => {
+        const keys = p.key.split("_");
+        let obj = value;
+        let prev = "";
+        let prevObj = obj;
+        let i = 0;
 
-		for (const key of keys) {
-			if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
-			if (i++ === keys.length - 1) obj[key] = p.value;
-			else if (!obj[key]) obj[key] = {};
+        for (const key of keys) {
+            if (!isNaN(Number(key)) && !prevObj[prev]?.length) prevObj[prev] = obj = [];
+            if (i++ === keys.length - 1) obj[key] = p.value;
+            else if (!obj[key]) obj[key] = {};
 
-			prev = key;
-			prevObj = obj;
-			obj = obj[key];
-		}
-	});
+            prev = key;
+            prevObj = obj;
+            obj = obj[key];
+        }
+    });
 
-	return value;
+    return value;
 }

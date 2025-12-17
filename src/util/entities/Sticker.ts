@@ -23,53 +23,53 @@ import { User } from "./User";
 import { StickerFormatType, StickerType } from "@spacebar/schemas";
 
 @Entity({
-	name: "stickers",
+    name: "stickers",
 })
 export class Sticker extends BaseClass {
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 
-	@Column({ nullable: true })
-	description?: string;
+    @Column({ nullable: true })
+    description?: string;
 
-	@Column({ nullable: true })
-	available?: boolean;
+    @Column({ nullable: true })
+    available?: boolean;
 
-	@Column({ nullable: true })
-	tags?: string;
+    @Column({ nullable: true })
+    tags?: string;
 
-	@Column({ nullable: true })
-	@RelationId((sticker: Sticker) => sticker.pack)
-	pack_id?: string;
+    @Column({ nullable: true })
+    @RelationId((sticker: Sticker) => sticker.pack)
+    pack_id?: string;
 
-	@JoinColumn({ name: "pack_id" })
-	@ManyToOne(() => require("./StickerPack").StickerPack, {
-		onDelete: "CASCADE",
-		nullable: true,
-	})
-	pack: import("./StickerPack").StickerPack;
+    @JoinColumn({ name: "pack_id" })
+    @ManyToOne(() => require("./StickerPack").StickerPack, {
+        onDelete: "CASCADE",
+        nullable: true,
+    })
+    pack: import("./StickerPack").StickerPack;
 
-	@Column({ nullable: true })
-	guild_id?: string;
+    @Column({ nullable: true })
+    guild_id?: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, (guild) => guild.stickers, {
-		onDelete: "CASCADE",
-	})
-	guild?: Guild;
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild, (guild) => guild.stickers, {
+        onDelete: "CASCADE",
+    })
+    guild?: Guild;
 
-	@Column({ nullable: true })
-	user_id?: string;
+    @Column({ nullable: true })
+    user_id?: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user?: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user?: User;
 
-	@Column({ type: "int" })
-	type: StickerType;
+    @Column({ type: "int" })
+    type: StickerType;
 
-	@Column({ type: "int" })
-	format_type: StickerFormatType;
+    @Column({ type: "int" })
+    format_type: StickerFormatType;
 }

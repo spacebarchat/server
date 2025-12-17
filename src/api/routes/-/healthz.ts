@@ -23,9 +23,9 @@ import { getDatabase } from "@spacebar/util";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), (req: Request, res: Response) => {
-	if (!getDatabase()) return res.sendStatus(503);
+    if (!getDatabase()) return res.sendStatus(503);
 
-	return res.sendStatus(200);
+    return res.sendStatus(200);
 });
 
 export default router;

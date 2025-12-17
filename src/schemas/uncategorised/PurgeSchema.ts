@@ -17,6 +17,6 @@
 */
 
 export interface PurgeSchema {
-	before: string;
-	after: string;
+    before: string;
+    after: string;
 }

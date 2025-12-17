@@ -22,16 +22,16 @@ import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		responses: {
-			204: {},
-		},
-	}),
-	(req: Request, res: Response) => {
-		// TODO:
-		res.sendStatus(204);
-	},
+    "/",
+    route({
+        responses: {
+            204: {},
+        },
+    }),
+    (req: Request, res: Response) => {
+        // TODO:
+        res.sendStatus(204);
+    },
 );
 
 export default router;

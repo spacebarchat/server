@@ -19,13 +19,13 @@
 import { Guild } from "../../util/entities";
 
 export interface HubDirectoryEntry {
-	author_id: string;
-	created_at: string;
-	description: string;
-	directory_channel_id: string;
-	guild: Guild;
-	primary_category_id: number;
-	type: number; // TODO: not exactly sure what this is, channel type?
+    author_id: string;
+    created_at: string;
+    description: string;
+    directory_channel_id: string;
+    guild: Guild;
+    primary_category_id: number;
+    type: number; // TODO: not exactly sure what this is, channel type?
 }
 
 export type HubDirectoryEntriesResponse = HubDirectoryEntry[];

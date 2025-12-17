@@ -17,6 +17,6 @@
 */
 
 export class LoginConfiguration {
-	requireCaptcha: boolean = false;
-	requireVerification: boolean = false;
+    requireCaptcha: boolean = false;
+    requireVerification: boolean = false;
 }

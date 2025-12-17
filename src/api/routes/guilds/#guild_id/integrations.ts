@@ -22,6 +22,6 @@ const router = Router({ mergeParams: true });
 
 //TODO: implement integrations list
 router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json([]);
+    res.json([]);
 });
 export default router;

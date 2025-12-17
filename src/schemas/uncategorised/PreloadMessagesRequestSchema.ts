@@ -17,5 +17,5 @@
 */
 
 export interface PreloadMessagesRequestSchema {
-	channels: string[];
+    channels: string[];
 }

@@ -31,424 +31,424 @@ import { User } from "./User";
 import { PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
-	"id",
-	"guild",
-	"guild_id",
-	"deaf",
-	"joined_at",
-	"last_message_id",
-	"mute",
-	"nick",
-	"pending",
-	"premium_since",
-	"roles",
-	"settings",
-	"user",
-	"avatar",
-	"banner",
-	"bio",
-	"theme_colors",
-	"pronouns",
-	"communication_disabled_until",
+    "id",
+    "guild",
+    "guild_id",
+    "deaf",
+    "joined_at",
+    "last_message_id",
+    "mute",
+    "nick",
+    "pending",
+    "premium_since",
+    "roles",
+    "settings",
+    "user",
+    "avatar",
+    "banner",
+    "bio",
+    "theme_colors",
+    "pronouns",
+    "communication_disabled_until",
 ];
 
 @Entity({
-	name: "members",
+    name: "members",
 })
 @Index(["id", "guild_id"], { unique: true })
 export class Member extends BaseClassWithoutId {
-	@PrimaryGeneratedColumn()
-	index: string;
+    @PrimaryGeneratedColumn()
+    index: string;
 
-	@Column()
-	@RelationId((member: Member) => member.user)
-	id: string;
+    @Column()
+    @RelationId((member: Member) => member.user)
+    id: string;
 
-	@JoinColumn({ name: "id" })
-	@ManyToOne(() => User, {
-		onDelete: "CASCADE",
-	})
-	user: User;
+    @JoinColumn({ name: "id" })
+    @ManyToOne(() => User, {
+        onDelete: "CASCADE",
+    })
+    user: User;
 
-	@Column()
-	@RelationId((member: Member) => member.guild)
-	guild_id: string;
+    @Column()
+    @RelationId((member: Member) => member.guild)
+    guild_id: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild, {
-		onDelete: "CASCADE",
-	})
-	guild: Guild;
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild, {
+        onDelete: "CASCADE",
+    })
+    guild: Guild;
 
-	@Column({ nullable: true })
-	nick?: string;
+    @Column({ nullable: true })
+    nick?: string;
 
-	@JoinTable({
-		name: "member_roles",
-		joinColumn: { name: "index", referencedColumnName: "index" },
-		inverseJoinColumn: {
-			name: "role_id",
-			referencedColumnName: "id",
-		},
-	})
-	@ManyToMany(() => Role, { cascade: true })
-	roles: Role[];
+    @JoinTable({
+        name: "member_roles",
+        joinColumn: { name: "index", referencedColumnName: "index" },
+        inverseJoinColumn: {
+            name: "role_id",
+            referencedColumnName: "id",
+        },
+    })
+    @ManyToMany(() => Role, { cascade: true })
+    roles: Role[];
 
-	@Column()
-	joined_at: Date;
+    @Column()
+    joined_at: Date;
 
-	@Column({ type: "bigint", nullable: true })
-	premium_since?: number;
+    @Column({ type: "bigint", nullable: true })
+    premium_since?: number;
 
-	@Column()
-	deaf: boolean;
+    @Column()
+    deaf: boolean;
 
-	@Column()
-	mute: boolean;
+    @Column()
+    mute: boolean;
 
-	@Column()
-	pending: boolean;
+    @Column()
+    pending: boolean;
 
-	@Column({ type: "simple-json", select: false })
-	settings: UserGuildSettings;
+    @Column({ type: "simple-json", select: false })
+    settings: UserGuildSettings;
 
-	@Column({ nullable: true })
-	last_message_id?: string;
+    @Column({ nullable: true })
+    last_message_id?: string;
 
-	/**
+    /**
 	@JoinColumn({ name: "id" })
 	@ManyToOne(() => User, {
 		onDelete: "DO NOTHING",
 	// do not auto-kick force-joined members just because their joiners left the server
 	}) **/
-	@Column({ nullable: true })
-	joined_by: string;
+    @Column({ nullable: true })
+    joined_by: string;
 
-	@Column({ nullable: true })
-	avatar?: string;
+    @Column({ nullable: true })
+    avatar?: string;
 
-	@Column({ nullable: true })
-	banner: string;
+    @Column({ nullable: true })
+    banner: string;
 
-	@Column()
-	bio: string;
+    @Column()
+    bio: string;
 
-	@Column({ nullable: true, type: "simple-array" })
-	theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
+    @Column({ nullable: true, type: "simple-array" })
+    theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
 
-	@Column({ nullable: true })
-	pronouns?: string;
+    @Column({ nullable: true })
+    pronouns?: string;
 
-	@Column({ nullable: true, type: Date })
-	communication_disabled_until: Date | null;
+    @Column({ nullable: true, type: Date })
+    communication_disabled_until: Date | null;
 
-	// TODO: add this when we have proper read receipts
-	// @Column({ type: "simple-json" })
-	// read_state: ReadState;
+    // TODO: add this when we have proper read receipts
+    // @Column({ type: "simple-json" })
+    // read_state: ReadState;
 
-	@BeforeUpdate()
-	@BeforeInsert()
-	validate() {
-		if (this.nick) {
-			this.nick = this.nick.split("\n").join("");
-			this.nick = this.nick.split("\t").join("");
-		}
-		if (this.nick === "") this.nick = undefined;
-		if (this.pronouns === "") this.pronouns = undefined;
-	}
+    @BeforeUpdate()
+    @BeforeInsert()
+    validate() {
+        if (this.nick) {
+            this.nick = this.nick.split("\n").join("");
+            this.nick = this.nick.split("\t").join("");
+        }
+        if (this.nick === "") this.nick = undefined;
+        if (this.pronouns === "") this.pronouns = undefined;
+    }
 
-	static async IsInGuildOrFail(user_id: string, guild_id: string) {
-		if (
-			await Member.count({
-				where: { id: user_id, guild: { id: guild_id } },
-			})
-		)
-			return true;
-		throw new HTTPError("You are not member of this guild", 403);
-	}
+    static async IsInGuildOrFail(user_id: string, guild_id: string) {
+        if (
+            await Member.count({
+                where: { id: user_id, guild: { id: guild_id } },
+            })
+        )
+            return true;
+        throw new HTTPError("You are not member of this guild", 403);
+    }
 
-	static async removeFromGuild(user_id: string, guild_id: string) {
-		const guild = await Guild.findOneOrFail({
-			select: ["owner_id"],
-			where: { id: guild_id },
-		});
-		if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
-		const member = await Member.findOneOrFail({
-			where: { id: user_id, guild_id },
-			relations: ["user"],
-		});
+    static async removeFromGuild(user_id: string, guild_id: string) {
+        const guild = await Guild.findOneOrFail({
+            select: ["owner_id"],
+            where: { id: guild_id },
+        });
+        if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
+        const member = await Member.findOneOrFail({
+            where: { id: user_id, guild_id },
+            relations: ["user"],
+        });
 
-		// use promise all to execute all promises at the same time -> save time
-		return Promise.all([
-			Member.delete({
-				id: user_id,
-				guild_id,
-			}),
-			Guild.decrement({ id: guild_id }, "member_count", 1),
+        // use promise all to execute all promises at the same time -> save time
+        return Promise.all([
+            Member.delete({
+                id: user_id,
+                guild_id,
+            }),
+            Guild.decrement({ id: guild_id }, "member_count", 1),
 
-			emitEvent({
-				event: "GUILD_DELETE",
-				data: {
-					id: guild_id,
-				},
-				user_id: user_id,
-			} as GuildDeleteEvent),
-			emitEvent({
-				event: "GUILD_MEMBER_REMOVE",
-				data: { guild_id, user: member.user.toPublicUser() },
-				guild_id,
-			} as GuildMemberRemoveEvent),
-		]);
-	}
+            emitEvent({
+                event: "GUILD_DELETE",
+                data: {
+                    id: guild_id,
+                },
+                user_id: user_id,
+            } as GuildDeleteEvent),
+            emitEvent({
+                event: "GUILD_MEMBER_REMOVE",
+                data: { guild_id, user: member.user.toPublicUser() },
+                guild_id,
+            } as GuildMemberRemoveEvent),
+        ]);
+    }
 
-	static async addRole(user_id: string, guild_id: string, role_id: string) {
-		const [member] = await Promise.all([
-			Member.findOneOrFail({
-				where: { id: user_id, guild_id },
-				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: {
-					index: true,
-					roles: {
-						id: true,
-					},
-				},
-			}),
-			Role.findOneOrFail({
-				where: { id: role_id, guild_id },
-				select: ["id"],
-			}),
-		]);
-		member.roles.push(Role.create({ id: role_id }));
+    static async addRole(user_id: string, guild_id: string, role_id: string) {
+        const [member] = await Promise.all([
+            Member.findOneOrFail({
+                where: { id: user_id, guild_id },
+                relations: ["user", "roles"], // we don't want to load  the role objects just the ids
+                select: {
+                    index: true,
+                    roles: {
+                        id: true,
+                    },
+                },
+            }),
+            Role.findOneOrFail({
+                where: { id: role_id, guild_id },
+                select: ["id"],
+            }),
+        ]);
+        member.roles.push(Role.create({ id: role_id }));
 
-		await Promise.all([
-			member.save(),
-			emitEvent({
-				event: "GUILD_MEMBER_UPDATE",
-				data: {
-					guild_id,
-					user: member.user,
-					roles: member.roles.map((x) => x.id),
-				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
-		]);
-	}
+        await Promise.all([
+            member.save(),
+            emitEvent({
+                event: "GUILD_MEMBER_UPDATE",
+                data: {
+                    guild_id,
+                    user: member.user,
+                    roles: member.roles.map((x) => x.id),
+                },
+                guild_id,
+            } as GuildMemberUpdateEvent),
+        ]);
+    }
 
-	static async removeRole(user_id: string, guild_id: string, role_id: string) {
-		const [member] = await Promise.all([
-			Member.findOneOrFail({
-				where: { id: user_id, guild_id },
-				relations: ["user", "roles"], // we don't want to load  the role objects just the ids
-				select: {
-					index: true,
-					roles: {
-						id: true,
-					},
-				},
-			}),
-			Role.findOneOrFail({ where: { id: role_id, guild_id } }),
-		]);
-		member.roles = member.roles.filter((x) => x.id !== role_id);
+    static async removeRole(user_id: string, guild_id: string, role_id: string) {
+        const [member] = await Promise.all([
+            Member.findOneOrFail({
+                where: { id: user_id, guild_id },
+                relations: ["user", "roles"], // we don't want to load  the role objects just the ids
+                select: {
+                    index: true,
+                    roles: {
+                        id: true,
+                    },
+                },
+            }),
+            Role.findOneOrFail({ where: { id: role_id, guild_id } }),
+        ]);
+        member.roles = member.roles.filter((x) => x.id !== role_id);
 
-		await Promise.all([
-			member.save(),
-			emitEvent({
-				event: "GUILD_MEMBER_UPDATE",
-				data: {
-					guild_id,
-					user: member.user,
-					roles: member.roles.map((x) => x.id),
-				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
-		]);
-	}
+        await Promise.all([
+            member.save(),
+            emitEvent({
+                event: "GUILD_MEMBER_UPDATE",
+                data: {
+                    guild_id,
+                    user: member.user,
+                    roles: member.roles.map((x) => x.id),
+                },
+                guild_id,
+            } as GuildMemberUpdateEvent),
+        ]);
+    }
 
-	static async changeNickname(user_id: string, guild_id: string, nickname: string) {
-		const member = await Member.findOneOrFail({
-			where: {
-				id: user_id,
-				guild_id,
-			},
-			relations: ["user"],
-		});
+    static async changeNickname(user_id: string, guild_id: string, nickname: string) {
+        const member = await Member.findOneOrFail({
+            where: {
+                id: user_id,
+                guild_id,
+            },
+            relations: ["user"],
+        });
 
-		// @ts-expect-error Member nickname is nullable
-		member.nick = nickname || null;
+        // @ts-expect-error Member nickname is nullable
+        member.nick = nickname || null;
 
-		await Promise.all([
-			member.save(),
+        await Promise.all([
+            member.save(),
 
-			emitEvent({
-				event: "GUILD_MEMBER_UPDATE",
-				data: {
-					guild_id,
-					user: member.user,
-					nick: nickname || null,
-				},
-				guild_id,
-			} as GuildMemberUpdateEvent),
-		]);
-	}
+            emitEvent({
+                event: "GUILD_MEMBER_UPDATE",
+                data: {
+                    guild_id,
+                    user: member.user,
+                    nick: nickname || null,
+                },
+                guild_id,
+            } as GuildMemberUpdateEvent),
+        ]);
+    }
 
-	static async addToGuild(user_id: string, guild_id: string) {
-		const user = await User.getPublicUser(user_id);
-		const isBanned = await Ban.count({ where: { guild_id, user_id } });
-		if (isBanned) {
-			throw DiscordApiErrors.USER_BANNED;
-		}
-		const { maxGuilds } = Config.get().limits.user;
-		const guild_count = await Member.count({ where: { id: user_id } });
-		if (guild_count >= maxGuilds) {
-			throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
-		}
+    static async addToGuild(user_id: string, guild_id: string) {
+        const user = await User.getPublicUser(user_id);
+        const isBanned = await Ban.count({ where: { guild_id, user_id } });
+        if (isBanned) {
+            throw DiscordApiErrors.USER_BANNED;
+        }
+        const { maxGuilds } = Config.get().limits.user;
+        const guild_count = await Member.count({ where: { id: user_id } });
+        if (guild_count >= maxGuilds) {
+            throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
+        }
 
-		const guild = await Guild.findOneOrFail({
-			where: {
-				id: guild_id,
-			},
-			relations: PublicGuildRelations,
-			relationLoadStrategy: "query",
-		});
+        const guild = await Guild.findOneOrFail({
+            where: {
+                id: guild_id,
+            },
+            relations: PublicGuildRelations,
+            relationLoadStrategy: "query",
+        });
 
-		for await (const channel of guild.channels) {
-			channel.position = await Channel.calculatePosition(channel.id, guild_id);
-		}
+        for await (const channel of guild.channels) {
+            channel.position = await Channel.calculatePosition(channel.id, guild_id);
+        }
 
-		const memberCount = await Member.count({ where: { guild_id } });
+        const memberCount = await Member.count({ where: { guild_id } });
 
-		const memberPreview = (
-			await Member.find({
-				where: {
-					guild_id,
-					user: {
-						sessions: {
-							status: Not("invisible" as const), // lol typescript?
-						},
-					},
-				},
-				relations: ["user", "roles"],
-				take: 10,
-			})
-		).map((member) => member.toPublicMember());
+        const memberPreview = (
+            await Member.find({
+                where: {
+                    guild_id,
+                    user: {
+                        sessions: {
+                            status: Not("invisible" as const), // lol typescript?
+                        },
+                    },
+                },
+                relations: ["user", "roles"],
+                take: 10,
+            })
+        ).map((member) => member.toPublicMember());
 
-		if (
-			await Member.count({
-				where: { id: user.id, guild: { id: guild_id } },
-			})
-		)
-			throw new HTTPError("You are already a member of this guild", 400);
+        if (
+            await Member.count({
+                where: { id: user.id, guild: { id: guild_id } },
+            })
+        )
+            throw new HTTPError("You are already a member of this guild", 400);
 
-		const member = {
-			id: user_id,
-			guild_id,
-			nick: undefined,
-			roles: [guild_id], // @everyone role
-			joined_at: new Date(),
-			deaf: false,
-			mute: false,
-			pending: false,
-			bio: "",
-		};
+        const member = {
+            id: user_id,
+            guild_id,
+            nick: undefined,
+            roles: [guild_id], // @everyone role
+            joined_at: new Date(),
+            deaf: false,
+            mute: false,
+            pending: false,
+            bio: "",
+        };
 
-		await Promise.all([
-			Member.create({
-				...member,
-				roles: [Role.create({ id: guild_id })],
-				// read_state: {},
-				settings: {
-					guild_id: null,
-					mute_config: null,
-					mute_scheduled_events: false,
-					flags: 0,
-					hide_muted_channels: false,
-					notify_highlights: 0,
-					channel_overrides: {},
-					message_notifications: guild.default_message_notifications,
-					mobile_push: true,
-					muted: false,
-					suppress_everyone: false,
-					suppress_roles: false,
-					version: 0,
-				},
-				// Member.save is needed because else the roles relations wouldn't be updated
-			}).save(),
-			Guild.increment({ id: guild_id }, "member_count", 1),
-			emitEvent({
-				event: "GUILD_MEMBER_ADD",
-				data: {
-					...member,
-					user: user.toPublicUser(),
-					guild_id,
-				},
-				guild_id,
-				origin: "util/entities/Member.ts:377/addToGuild(user_id, guild_id)",
-			} as GuildMemberAddEvent),
-			emitEvent({
-				event: "GUILD_CREATE",
-				data: {
-					...new ReadyGuildDTO(guild).toJSON(),
-					members: [...memberPreview, { ...member, user }],
-					member_count: memberCount + 1,
-					guild_hashes: {},
-					guild_scheduled_events: [],
-					joined_at: member.joined_at,
-					presences: [],
-					stage_instances: [],
-					threads: [],
-					embedded_activities: [],
-					voice_states: guild.voice_states,
-				},
-				user_id,
-			} as GuildCreateEvent),
-		]);
+        await Promise.all([
+            Member.create({
+                ...member,
+                roles: [Role.create({ id: guild_id })],
+                // read_state: {},
+                settings: {
+                    guild_id: null,
+                    mute_config: null,
+                    mute_scheduled_events: false,
+                    flags: 0,
+                    hide_muted_channels: false,
+                    notify_highlights: 0,
+                    channel_overrides: {},
+                    message_notifications: guild.default_message_notifications,
+                    mobile_push: true,
+                    muted: false,
+                    suppress_everyone: false,
+                    suppress_roles: false,
+                    version: 0,
+                },
+                // Member.save is needed because else the roles relations wouldn't be updated
+            }).save(),
+            Guild.increment({ id: guild_id }, "member_count", 1),
+            emitEvent({
+                event: "GUILD_MEMBER_ADD",
+                data: {
+                    ...member,
+                    user: user.toPublicUser(),
+                    guild_id,
+                },
+                guild_id,
+                origin: "util/entities/Member.ts:377/addToGuild(user_id, guild_id)",
+            } as GuildMemberAddEvent),
+            emitEvent({
+                event: "GUILD_CREATE",
+                data: {
+                    ...new ReadyGuildDTO(guild).toJSON(),
+                    members: [...memberPreview, { ...member, user }],
+                    member_count: memberCount + 1,
+                    guild_hashes: {},
+                    guild_scheduled_events: [],
+                    joined_at: member.joined_at,
+                    presences: [],
+                    stage_instances: [],
+                    threads: [],
+                    embedded_activities: [],
+                    voice_states: guild.voice_states,
+                },
+                user_id,
+            } as GuildCreateEvent),
+        ]);
 
-		if (guild.system_channel_id) {
-			const channel = await Channel.findOneOrFail({
-				where: { id: guild.system_channel_id },
-			});
-			// Send a welcome message
-			const message = Message.create({
-				type: 7,
-				guild_id: guild.id,
-				channel_id: guild.system_channel_id,
-				author: user,
-				timestamp: new Date(),
-				reactions: [],
-				attachments: [],
-				embeds: [],
-				sticker_items: [],
-				edited_timestamp: undefined,
-				mentions: [],
-				mention_channels: [],
-				mention_roles: [],
-				mention_everyone: false,
-			});
+        if (guild.system_channel_id) {
+            const channel = await Channel.findOneOrFail({
+                where: { id: guild.system_channel_id },
+            });
+            // Send a welcome message
+            const message = Message.create({
+                type: 7,
+                guild_id: guild.id,
+                channel_id: guild.system_channel_id,
+                author: user,
+                timestamp: new Date(),
+                reactions: [],
+                attachments: [],
+                embeds: [],
+                sticker_items: [],
+                edited_timestamp: undefined,
+                mentions: [],
+                mention_channels: [],
+                mention_roles: [],
+                mention_everyone: false,
+            });
 
-			channel.last_message_id = message.id;
+            channel.last_message_id = message.id;
 
-			await Promise.all([
-				message.save(),
-				emitEvent({
-					event: "MESSAGE_CREATE",
-					channel_id: message.channel_id,
-					data: message,
-				} as MessageCreateEvent),
-				channel.save(),
-			]);
-		}
-	}
+            await Promise.all([
+                message.save(),
+                emitEvent({
+                    event: "MESSAGE_CREATE",
+                    channel_id: message.channel_id,
+                    data: message,
+                } as MessageCreateEvent),
+                channel.save(),
+            ]);
+        }
+    }
 
-	toPublicMember() {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const member: any = {};
-		PublicMemberProjection.forEach((x) => {
-			member[x] = this[x];
-		});
+    toPublicMember() {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const member: any = {};
+        PublicMemberProjection.forEach((x) => {
+            member[x] = this[x];
+        });
 
-		if (this.roles) member.roles = this.roles.map((x: Role) => x.id);
-		if (this.user) member.user = this.user.toPublicUser();
+        if (this.roles) member.roles = this.roles.map((x: Role) => x.id);
+        if (this.user) member.user = this.user.toPublicUser();
 
-		return member as PublicMember;
-	}
+        return member as PublicMember;
+    }
 }

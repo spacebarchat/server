@@ -19,16 +19,16 @@
 import { Region } from "@spacebar/schemas";
 
 export class RegionConfiguration {
-	default: string = "spacebar";
-	useDefaultAsOptimal: boolean = true;
-	available: Region[] = [
-		{
-			id: "spacebar",
-			name: "spacebar",
-			endpoint: "127.0.0.1:3004",
-			vip: false,
-			custom: false,
-			deprecated: false,
-		},
-	];
+    default: string = "spacebar";
+    useDefaultAsOptimal: boolean = true;
+    available: Region[] = [
+        {
+            id: "spacebar",
+            name: "spacebar",
+            endpoint: "127.0.0.1:3004",
+            vip: false,
+            custom: false,
+            deprecated: false,
+        },
+    ];
 }

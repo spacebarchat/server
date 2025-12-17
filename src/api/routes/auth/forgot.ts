@@ -23,55 +23,55 @@ import { ForgotPasswordSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.post(
-	"/",
-	route({
-		requestBody: "ForgotPasswordSchema",
-		responses: {
-			204: {},
-			400: {
-				body: "APIErrorOrCaptchaResponse",
-			},
-		},
-	}),
-	async (req: Request, res: Response) => {
-		const { login, captcha_key } = req.body as ForgotPasswordSchema;
+    "/",
+    route({
+        requestBody: "ForgotPasswordSchema",
+        responses: {
+            204: {},
+            400: {
+                body: "APIErrorOrCaptchaResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { login, captcha_key } = req.body as ForgotPasswordSchema;
 
-		const config = Config.get();
+        const config = Config.get();
 
-		if (config.passwordReset.requireCaptcha && config.security.captcha.enabled) {
-			const { sitekey, service } = config.security.captcha;
-			if (!captcha_key) {
-				return res.status(400).json({
-					captcha_key: ["captcha-required"],
-					captcha_sitekey: sitekey,
-					captcha_service: service,
-				});
-			}
+        if (config.passwordReset.requireCaptcha && config.security.captcha.enabled) {
+            const { sitekey, service } = config.security.captcha;
+            if (!captcha_key) {
+                return res.status(400).json({
+                    captcha_key: ["captcha-required"],
+                    captcha_sitekey: sitekey,
+                    captcha_service: service,
+                });
+            }
 
-			const ip = req.ip;
-			const verify = await verifyCaptcha(captcha_key, ip);
-			if (!verify.success) {
-				return res.status(400).json({
-					captcha_key: verify["error-codes"],
-					captcha_sitekey: sitekey,
-					captcha_service: service,
-				});
-			}
-		}
+            const ip = req.ip;
+            const verify = await verifyCaptcha(captcha_key, ip);
+            if (!verify.success) {
+                return res.status(400).json({
+                    captcha_key: verify["error-codes"],
+                    captcha_sitekey: sitekey,
+                    captcha_service: service,
+                });
+            }
+        }
 
-		res.sendStatus(204);
+        res.sendStatus(204);
 
-		const user = await User.findOne({
-			where: [{ phone: login }, { email: login }],
-			select: ["username", "id", "email"],
-		}).catch(() => {});
+        const user = await User.findOne({
+            where: [{ phone: login }, { email: login }],
+            select: ["username", "id", "email"],
+        }).catch(() => {});
 
-		if (user && user.email) {
-			Email.sendResetPassword(user, user.email).catch((e) => {
-				console.error(`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`);
-			});
-		}
-	},
+        if (user && user.email) {
+            Email.sendResetPassword(user, user.email).catch((e) => {
+                console.error(`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`);
+            });
+        }
+    },
 );
 
 export default router;

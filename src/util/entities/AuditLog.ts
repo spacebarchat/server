@@ -22,40 +22,40 @@ import { User } from "./User";
 import { AuditLogChange, AuditLogEvents } from "@spacebar/schemas";
 
 @Entity({
-	name: "audit_logs",
+    name: "audit_logs",
 })
 export class AuditLog extends BaseClass {
-	@JoinColumn({ name: "target_id" })
-	@ManyToOne(() => User)
-	target?: User;
+    @JoinColumn({ name: "target_id" })
+    @ManyToOne(() => User)
+    target?: User;
 
-	@Column({ nullable: true })
-	@RelationId((auditlog: AuditLog) => auditlog.user)
-	user_id: string;
+    @Column({ nullable: true })
+    @RelationId((auditlog: AuditLog) => auditlog.user)
+    user_id: string;
 
-	@JoinColumn({ name: "user_id" })
-	@ManyToOne(() => User, (user: User) => user.id)
-	user: User;
+    @JoinColumn({ name: "user_id" })
+    @ManyToOne(() => User, (user: User) => user.id)
+    user: User;
 
-	@Column({ type: "int" })
-	action_type: AuditLogEvents;
+    @Column({ type: "int" })
+    action_type: AuditLogEvents;
 
-	@Column({ type: "simple-json", nullable: true })
-	options?: {
-		delete_member_days?: string;
-		members_removed?: string;
-		channel_id?: string;
-		messaged_id?: string;
-		count?: string;
-		id?: string;
-		type?: string;
-		role_name?: string;
-	};
+    @Column({ type: "simple-json", nullable: true })
+    options?: {
+        delete_member_days?: string;
+        members_removed?: string;
+        channel_id?: string;
+        messaged_id?: string;
+        count?: string;
+        id?: string;
+        type?: string;
+        role_name?: string;
+    };
 
-	@Column()
-	@Column({ type: "simple-json" })
-	changes: AuditLogChange[];
+    @Column()
+    @Column({ type: "simple-json" })
+    changes: AuditLogChange[];
 
-	@Column({ nullable: true })
-	reason?: string;
+    @Column({ nullable: true })
+    reason?: string;
 }

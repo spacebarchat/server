@@ -19,5 +19,5 @@
 import { KafkaBroker } from ".";
 
 export class KafkaConfiguration {
-	brokers: KafkaBroker[] | null = null;
+    brokers: KafkaBroker[] | null = null;
 }

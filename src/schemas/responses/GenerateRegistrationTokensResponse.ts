@@ -17,5 +17,5 @@
 */
 
 export interface GenerateRegistrationTokensResponse {
-	tokens: string[];
+    tokens: string[];
 }

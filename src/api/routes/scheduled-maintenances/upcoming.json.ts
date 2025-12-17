@@ -21,10 +21,10 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	res.json({
-		page: {},
-		scheduled_maintenances: {},
-	});
+    res.json({
+        page: {},
+        scheduled_maintenances: {},
+    });
 });
 
 export default router;

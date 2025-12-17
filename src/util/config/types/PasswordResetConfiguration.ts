@@ -17,5 +17,5 @@
 */
 
 export class PasswordResetConfiguration {
-	requireCaptcha: boolean = false;
+    requireCaptcha: boolean = false;
 }

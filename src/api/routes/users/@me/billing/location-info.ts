@@ -22,9 +22,9 @@ import { route } from "@spacebar/api";
 const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-	//TODO
-	// TODO: subdivision_code (optional)
-	res.json({ country_code: "US" }).status(200);
+    //TODO
+    // TODO: subdivision_code (optional)
+    res.json({ country_code: "US" }).status(200);
 });
 
 export default router;

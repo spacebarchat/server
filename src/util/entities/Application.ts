@@ -23,116 +23,116 @@ import { User } from "./User";
 import { Guild } from "./Guild";
 
 @Entity({
-	name: "applications",
+    name: "applications",
 })
 export class Application extends BaseClass {
-	@Column()
-	name: string;
+    @Column()
+    name: string;
 
-	@Column({ nullable: true })
-	icon?: string;
+    @Column({ nullable: true })
+    icon?: string;
 
-	@Column({ nullable: true })
-	description: string;
+    @Column({ nullable: true })
+    description: string;
 
-	@Column({ nullable: true })
-	summary: string = "";
+    @Column({ nullable: true })
+    summary: string = "";
 
-	@Column({ type: "simple-json", nullable: true })
-	type?: object; // TODO: this type is bad
+    @Column({ type: "simple-json", nullable: true })
+    type?: object; // TODO: this type is bad
 
-	@Column()
-	hook: boolean = true;
+    @Column()
+    hook: boolean = true;
 
-	@Column()
-	bot_public?: boolean = true;
+    @Column()
+    bot_public?: boolean = true;
 
-	@Column()
-	bot_require_code_grant?: boolean = false;
+    @Column()
+    bot_require_code_grant?: boolean = false;
 
-	@Column()
-	verify_key: string;
+    @Column()
+    verify_key: string;
 
-	@JoinColumn({ name: "owner_id" })
-	@ManyToOne(() => User, { onDelete: "CASCADE" })
-	owner: User;
+    @JoinColumn({ name: "owner_id" })
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    owner: User;
 
-	// TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
-	@Column()
-	flags: number = 0;
+    // TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
+    @Column()
+    flags: number = 0;
 
-	@Column({ type: "simple-array", nullable: true })
-	redirect_uris: string[] = [];
+    @Column({ type: "simple-array", nullable: true })
+    redirect_uris: string[] = [];
 
-	@Column({ nullable: true })
-	rpc_application_state: number = 0;
+    @Column({ nullable: true })
+    rpc_application_state: number = 0;
 
-	@Column({ nullable: true })
-	store_application_state: number = 1;
+    @Column({ nullable: true })
+    store_application_state: number = 1;
 
-	@Column({ nullable: true })
-	verification_state: number = 1;
+    @Column({ nullable: true })
+    verification_state: number = 1;
 
-	@Column({ nullable: true })
-	interactions_endpoint_url?: string;
+    @Column({ nullable: true })
+    interactions_endpoint_url?: string;
 
-	@Column({ nullable: true })
-	integration_public: boolean = true;
+    @Column({ nullable: true })
+    integration_public: boolean = true;
 
-	@Column({ nullable: true })
-	integration_require_code_grant: boolean = false;
+    @Column({ nullable: true })
+    integration_require_code_grant: boolean = false;
 
-	@Column({ nullable: true })
-	discoverability_state: number = 1;
+    @Column({ nullable: true })
+    discoverability_state: number = 1;
 
-	@Column({ nullable: true })
-	discovery_eligibility_flags: number = 2240;
+    @Column({ nullable: true })
+    discovery_eligibility_flags: number = 2240;
 
-	@JoinColumn({ name: "bot_user_id" })
-	@OneToOne(() => User, { onDelete: "CASCADE" })
-	bot?: User;
+    @JoinColumn({ name: "bot_user_id" })
+    @OneToOne(() => User, { onDelete: "CASCADE" })
+    bot?: User;
 
-	@Column({ type: "simple-array", nullable: true })
-	tags?: string[];
+    @Column({ type: "simple-array", nullable: true })
+    tags?: string[];
 
-	@Column({ nullable: true })
-	cover_image?: string; // the application's default rich presence invite cover image hash
+    @Column({ nullable: true })
+    cover_image?: string; // the application's default rich presence invite cover image hash
 
-	@Column({ type: "simple-json", nullable: true })
-	install_params?: { scopes: string[]; permissions: string };
+    @Column({ type: "simple-json", nullable: true })
+    install_params?: { scopes: string[]; permissions: string };
 
-	@Column({ nullable: true })
-	terms_of_service_url?: string;
+    @Column({ nullable: true })
+    terms_of_service_url?: string;
 
-	@Column({ nullable: true })
-	privacy_policy_url?: string;
+    @Column({ nullable: true })
+    privacy_policy_url?: string;
 
-	@Column({ nullable: true })
-	@RelationId((application: Application) => application.guild)
-	guild_id?: string;
+    @Column({ nullable: true })
+    @RelationId((application: Application) => application.guild)
+    guild_id?: string;
 
-	@JoinColumn({ name: "guild_id" })
-	@ManyToOne(() => Guild)
-	guild?: Guild; // guild to which the app is linked, e.g. a developer support server
+    @JoinColumn({ name: "guild_id" })
+    @ManyToOne(() => Guild)
+    guild?: Guild; // guild to which the app is linked, e.g. a developer support server
 
-	@Column({ nullable: true })
-	custom_install_url?: string;
+    @Column({ nullable: true })
+    custom_install_url?: string;
 
-	//just for us
+    //just for us
 
-	//@Column({ type: "simple-array", nullable: true })
-	//rpc_origins?: string[];
+    //@Column({ type: "simple-array", nullable: true })
+    //rpc_origins?: string[];
 
-	//@Column({ nullable: true })
-	//primary_sku_id?: string; // if this application is a game sold, this field will be the id of the "Game SKU" that is created,
+    //@Column({ nullable: true })
+    //primary_sku_id?: string; // if this application is a game sold, this field will be the id of the "Game SKU" that is created,
 
-	//@Column({ nullable: true })
-	//slug?: string; // if this application is a game sold, this field will be the URL slug that links to the store page
+    //@Column({ nullable: true })
+    //slug?: string; // if this application is a game sold, this field will be the URL slug that links to the store page
 
-	@JoinColumn({ name: "team_id" })
-	@ManyToOne(() => Team, {
-		onDelete: "CASCADE",
-		nullable: true,
-	})
-	team?: Team;
+    @JoinColumn({ name: "team_id" })
+    @ManyToOne(() => Team, {
+        onDelete: "CASCADE",
+        nullable: true,
+    })
+    team?: Team;
 }
