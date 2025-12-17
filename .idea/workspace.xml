@@ -124,7 +124,7 @@
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
-              <entry key="build" value="STOPPED" />
+              <entry key="build" value="FAILED" />
             </map>
           </value>
         </entry>

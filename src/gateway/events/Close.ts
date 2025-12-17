@@ -67,7 +67,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 		await emitEvent({
 			event: "SESSIONS_REPLACE",
 			user_id: this.user_id,
-			data: sessions.map(x=>x.toPrivateGatewayDeviceInfo()),
+			data: sessions.map((x) => x.toPrivateGatewayDeviceInfo()),
 		} as SessionsReplace);
 		const session = sessions[0] || {
 			activities: [],

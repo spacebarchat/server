@@ -3,6 +3,7 @@ dist
 node_modules
 .github
 .vscode
+.idea
 hashes.json
 flake.lock
 extra/admin-api

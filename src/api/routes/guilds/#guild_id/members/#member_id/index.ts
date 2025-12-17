@@ -130,7 +130,7 @@ router.patch(
 
 		if ("communication_disabled_until" in body) {
 			permission.hasThrow("MODERATE_MEMBERS");
-			member.communication_disabled_until = body.communication_disabled_until == null ? null : new Date(body.communication_disabled_until) ;
+			member.communication_disabled_until = body.communication_disabled_until == null ? null : new Date(body.communication_disabled_until);
 		}
 
 		await member.save();

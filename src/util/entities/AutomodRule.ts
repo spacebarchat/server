@@ -58,7 +58,7 @@ export class AutomodRule extends BaseClass {
 		nullable: true,
 	})
 	trigger_metadata?: // this is null for "Block suspected spam content"
-	| AutomodRuleTriggerMetadata;
+	AutomodRuleTriggerMetadata;
 
 	@Column({
 		type: "simple-json",

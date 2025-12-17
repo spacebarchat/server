@@ -29,7 +29,7 @@ export async function onRequestChannelStatuses(this: WebSocket, { d }: Payload) 
 		t: "CHANNEL_STATUSES",
 		d: {
 			guild_id: d.guild_id,
-			channels: []
+			channels: [],
 		},
 	});
 }
