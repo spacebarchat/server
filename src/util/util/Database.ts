@@ -108,8 +108,7 @@ export async function initDatabase(): Promise<DataSource> {
 	if (!(await dbExists())) {
 		console.log("[Database] This appears to be a fresh database. Running initial DDL.");
 		const qr = dbConnection.createQueryRunner();
-		if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js")))
-			await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
+		if (fs.existsSync(path.join(__dirname, "..", "migration", DatabaseType, "initial0.js"))) await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
 	}
 
 	console.log("[Database] Applying missing migrations, if any.");

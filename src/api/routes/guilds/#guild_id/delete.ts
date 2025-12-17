@@ -45,8 +45,7 @@ router.post(
 			where: { id: guild_id },
 			select: ["owner_id"],
 		});
-		if (guild.owner_id !== req.user_id)
-			throw new HTTPError("You are not the owner of this guild", 401);
+		if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);
 
 		await Promise.all([
 			Guild.delete({ id: guild_id }), // this will also delete all guild related data

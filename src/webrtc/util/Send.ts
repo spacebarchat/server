@@ -3,8 +3,7 @@ import { VoicePayload } from "./Constants";
 import { WebRtcWebSocket } from "./WebRtcWebSocket";
 
 export function Send(socket: WebRtcWebSocket, data: VoicePayload) {
-	if (process.env.WRTC_WS_VERBOSE)
-		console.log(`[WebRTC] Outgoing message: ${JSON.stringify(data)}`);
+	if (process.env.WRTC_WS_VERBOSE) console.log(`[WebRTC] Outgoing message: ${JSON.stringify(data)}`);
 
 	let buffer: Buffer | string;
 

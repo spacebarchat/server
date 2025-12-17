@@ -41,8 +41,7 @@ router.delete(
 		});
 
 		// disable webauthn if there are no keys left
-		if (keys === 0)
-			await User.update({ id: req.user_id }, { webauthn_enabled: false });
+		if (keys === 0) await User.update({ id: req.user_id }, { webauthn_enabled: false });
 
 		res.sendStatus(204);
 	},
