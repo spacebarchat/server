@@ -130,7 +130,7 @@ export const Email: {
 	generateLink: async function (type, id) {
 		const token = (await generateToken(id)) as string;
 		// puyodead1: this is set to api endpoint because the verification page is on the server since no clients have one, and not all 3rd party clients will have one
-		const instanceUrl = Config.get().api.endpointPublic?.replace("/api", "") || "http://localhost:3001";
+		const instanceUrl = Config.get().api.endpointPublic?.replace("/api", "");
 		const dashedType = type.replace(/([A-Z])/g, "-$1").toLowerCase();
 		const link = `${instanceUrl}/${dashedType}#token=${token}`;
 		return link;

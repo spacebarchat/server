@@ -43,11 +43,10 @@ router.get(
 			relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
 		});
 
-		const instanceUrl = Config.get().api.endpointPublic || "http://localhost:3001";
 		return res.json(
 			webhooks.map((webhook) => ({
 				...webhook,
-				url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+				url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
 			})),
 		);
 	},

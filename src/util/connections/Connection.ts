@@ -42,8 +42,7 @@ export abstract class Connection {
 	 * @returns redirect_uri for this connection
 	 */
 	getRedirectUri() {
-		const endpointPublic = Config.get().general.frontPage ?? "http://localhost:3001";
-		return `${endpointPublic}/connections/${this.id}/callback`;
+		return `${Config.get().general.frontPage}/connections/${this.id}/callback`;
 	}
 
 	/**

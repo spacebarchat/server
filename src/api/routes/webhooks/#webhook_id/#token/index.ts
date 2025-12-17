@@ -35,10 +35,9 @@ router.get(
 			throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 		}
 
-		const instanceUrl = Config.get().api.endpointPublic || "http://localhost:3001";
 		return res.json({
 			...webhook,
-			url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+			url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
 		});
 	},
 );

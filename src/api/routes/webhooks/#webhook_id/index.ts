@@ -29,10 +29,9 @@ router.get(
 			if (!permission.has("MANAGE_WEBHOOKS")) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
 		} else if (webhook.user_id != req.user_id) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
 
-		const instanceUrl = Config.get().api.endpointPublic || "http://localhost:3001";
 		return res.json({
 			...webhook,
-			url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+			url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
 		});
 	},
 );

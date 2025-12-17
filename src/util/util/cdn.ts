@@ -34,7 +34,7 @@ export async function uploadFile(
 		filename: file.originalname,
 	});
 
-	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+	const response = await fetch(`${Config.get().cdn.endpointPrivate}${path}`, {
 		headers: {
 			signature: Config.get().security.requestSignature,
 			...form.getHeaders(),
@@ -67,7 +67,7 @@ export async function handleFile(path: string, body?: string): Promise<string | 
 }
 
 export async function deleteFile(path: string) {
-	const response = await fetch(`${Config.get().cdn.endpointPrivate || "http://localhost:3001"}${path}`, {
+	const response = await fetch(`${Config.get().cdn.endpointPrivate}${path}`, {
 		headers: {
 			signature: Config.get().security.requestSignature,
 		},
