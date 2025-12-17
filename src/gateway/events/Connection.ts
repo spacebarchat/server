@@ -42,37 +42,22 @@ try {
 // TODO: specify rate limit in config
 // TODO: check msg max size
 
-export async function Connection(
-	this: WS.Server,
-	socket: WebSocket,
-	request: IncomingMessage,
-) {
+export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
 	const forwardedFor = Config.get().security.forwardedFor;
-	const ipAddress = forwardedFor
-		? (request.headers[forwardedFor.toLowerCase()] as string)
-		: request.socket.remoteAddress;
+	const ipAddress = forwardedFor ? (request.headers[forwardedFor.toLowerCase()] as string) : request.socket.remoteAddress;
 
 	socket.ipAddress = ipAddress;
 	socket.userAgent = request.headers["user-agent"] as string;
 
 	if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
-		return socket.close(
-			CLOSECODES.Decode_error,
-			"Gateway connection rejected: IP address is required.",
-		);
+		return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: IP address is required.");
 	}
 
-	if (
-		!socket.userAgent &&
-		Config.get().security.cdnSignatureIncludeUserAgent
-	) {
-		return socket.close(
-			CLOSECODES.Decode_error,
-			"Gateway connection rejected: User-Agent header is required.",
-		);
+	if (!socket.userAgent && Config.get().security.cdnSignatureIncludeUserAgent) {
+		return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: User-Agent header is required.");
 	}
 
-	if (request.headers.cookie?.split("; ").find(x => x.startsWith("__sb_sessid="))) {
+	if (request.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
 		socket.fingerprint = request.headers.cookie
 			.split("; ")
 			.find((x) => x.startsWith("__sb_sessid="))
@@ -91,9 +76,7 @@ export async function Connection(
 
 		socket.on("error", (err) => console.error("[Gateway]", err));
 
-		console.log(
-			`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`,
-		);
+		console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
 		if (process.env.WS_LOGEVENTS)
 			[
@@ -112,15 +95,12 @@ export async function Connection(
 		const { searchParams } = new URL(`http://localhost${request.url}`);
 		// @ts-ignore
 		socket.encoding = searchParams.get("encoding") || "json";
-		if (!["json", "etf"].includes(socket.encoding))
-			return socket.close(CLOSECODES.Decode_error);
+		if (!["json", "etf"].includes(socket.encoding)) return socket.close(CLOSECODES.Decode_error);
 
-		if (socket.encoding === "etf" && !erlpack)
-			throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
+		if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
 
 		socket.version = Number(searchParams.get("version")) || 8;
-		if (socket.version != 8)
-			return socket.close(CLOSECODES.Invalid_API_version);
+		if (socket.version != 8) return socket.close(CLOSECODES.Invalid_API_version);
 
 		// @ts-ignore
 		socket.compress = searchParams.get("compress") || "";
