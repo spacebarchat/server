@@ -441,61 +441,6 @@ router.post(
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			message.member.roles = message.member.roles.filter((x) => x.id != x.guild_id).map((x) => x.id);
-
-			if (message.content)
-				try {
-					const matchingRules = await AutomodRule.find({
-						where: { guild_id: message.guild_id, enabled: true, event_type: AutomodRuleEventType.MESSAGE_SEND },
-						order: { position: "ASC" },
-					});
-					for (const rule of matchingRules) {
-						if (rule.exempt_channels.includes(channel_id)) continue;
-						if (message.member.roles.some((x) => rule.exempt_roles.includes(x.id))) continue;
-
-						if (rule.trigger_type == AutomodTriggerTypes.CUSTOM_WORDS) {
-							const triggerMeta = rule.trigger_metadata as AutomodCustomWordsRule;
-							const regexes = triggerMeta.regex_patterns.map((x) => new RegExp(x, "i")).concat(triggerMeta.keyword_filter.map((k) => stringGlobToRegexp(k, "i")));
-							const allowedRegexes = triggerMeta.allow_list.map((k) => stringGlobToRegexp(k, "i"));
-
-							const matches = regexes
-								.map((r) => message.content!.match(r))
-								.filter((x) => x !== null && x.length > 0)
-								.filter((x) => !allowedRegexes.some((ar) => ar.test(x![0])));
-
-							if (matches.length > 0) {
-								console.log("Automod triggered by message:", message.id, "matches:", matches);
-								if (rule.actions.some((x) => x.type == AutomodRuleActionType.SEND_ALERT_MESSAGE && x.metadata.channel_id)) {
-									const alertActions = rule.actions.filter((x) => x.type == AutomodRuleActionType.SEND_ALERT_MESSAGE);
-									for (const action of alertActions) {
-										const alertChannel = await Channel.findOne({ where: { id: action.metadata.channel_id } });
-										if (!alertChannel) continue;
-										const msg = await Message.createWithDefaults({
-											content: `Automod Alert: Message ${message.id} by <@${message.author_id}> in <#${channel.id}> triggered automod rule "${rule.name}".\nMatched terms: ${matches
-												.map((x) => `\`${x![0]}\``)
-												.join(", ")}`,
-											author: message.author,
-											channel_id: alertChannel.id,
-											guild_id: message.guild_id,
-											member_id: message.member_id,
-											author_id: message.author_id,
-										});
-
-										await message.save();
-										// await Promise.all([
-										await emitEvent({
-											event: "MESSAGE_CREATE",
-											channel_id: msg.channel_id,
-											data: msg.toJSON(),
-										} as MessageCreateEvent);
-										// ]);
-									}
-								}
-							}
-						}
-					}
-				} catch (e) {
-					console.log("[Automod] failed to process message:", e);
-				}
 		}
 
 		let read_state = await ReadState.findOne({

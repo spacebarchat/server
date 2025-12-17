@@ -3,18 +3,20 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Check if nix is available
-if [ -x "$(/usr/bin/env which nix-shell 2>/dev/null)" ]; then
-  # Check if we haven't re-executed ourselves yet
-  if [ ! "$HOOK_NIX_SHELL" ]; then
-    echo "Nix is available, updating nix flake..."
-    export HOOK_NIX_SHELL=1
-    nix-shell $0
-    exit $?
+if [ -n "$(find "flake.lock" -mtime +7 -print)" ]; then
+  if [ -x "$(/usr/bin/env which nix-shell 2>/dev/null)" ]; then
+    # Check if we haven't re-executed ourselves yet
+    if [ ! "$HOOK_NIX_SHELL" ]; then
+      echo "Nix is available, updating nix flake..."
+      export HOOK_NIX_SHELL=1
+      nix-shell $0
+      exit $?
+    else
+       nix flake update --extra-experimental-features 'nix-command flakes'
+    fi
   else
-    nix flake update --extra-experimental-features 'nix-command flakes'
+    echo "You do not appear to have nix installed. Skipping update of nix dependencies."
   fi
-else
-  echo "You do not appear to have nix installed. Skipping update of nix dependencies."
 fi
 
 npx -y lint-staged
