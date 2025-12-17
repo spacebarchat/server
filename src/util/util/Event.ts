@@ -198,13 +198,27 @@ class UnixSocketListener {
 			socket.on("connect", () => {
 				console.log("[Events] Unix socket client connected");
 			});
-			socket.on("data", (data) => {
-				try {
-					const payload = JSON.parse(data.toString());
-					this.eventEmitter.emit(payload.id, payload.event);
-				} catch (e) {
-					console.error("[Events] Failed to parse unix socket data:", e);
+			let buffer = Buffer.alloc(0);
+			socket.on("data", (data: Buffer) => {
+				buffer = Buffer.concat([buffer, data]);
+				while (buffer.length >= 4) {
+					const msgLen = buffer.readUInt32BE(0);
+					if (buffer.length < 4 + msgLen) break;
+					const msgBuf = buffer.slice(4, 4 + msgLen);
+					buffer = buffer.slice(4 + msgLen);
+					try {
+						const payload = JSON.parse(msgBuf.toString());
+						this.eventEmitter.emit(payload.id, payload.event);
+					} catch (e) {
+						console.error("[Events] Failed to parse unix socket data:", e);
+					}
 				}
+			});
+			socket.on("error", (err) => {
+				console.error("[Events] Unix socket error:", err);
+			});
+			socket.on("close", () => {
+				console.log("[Events] Unix socket client disconnected");
 			});
 		});
 
@@ -223,7 +237,7 @@ class UnixSocketListener {
 	}
 
 	async listen(event: string, callback: (event: EventOpts) => unknown): Promise<() => Promise<void>> {
-		const listener = (data: any) => {
+		const listener = (data: Event) => {
 			callback({
 				...data,
 				cancel,
@@ -265,6 +279,10 @@ class UnixSocketWriter {
 			this.clients[fullPath] = net.createConnection(fullPath, () => {
 				console.log("[Events] Unix socket client connected to", fullPath);
 			});
+
+			this.clients[fullPath].on("error", (err) => {
+				console.error("[Events] Unix socket client error on", fullPath, ":", err);
+			});
 		};
 
 		// connect to all sockets, now and in the future
@@ -288,15 +306,19 @@ class UnixSocketWriter {
 		if (!this.clients) throw new Error("UnixSocketWriter not initialized");
 
 		const tsw = Stopwatch.startNew();
-		const payload = JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event });
+		const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event }));
+		const lenBuf = Buffer.alloc(4);
+		lenBuf.writeUInt32BE(payloadBuf.length, 0);
+		const framed = Buffer.concat([lenBuf, payloadBuf]);
 		for (const socket of Object.entries(this.clients)) {
-			if(socket[1].destroyed) {
+			if (socket[1].destroyed) {
 				console.log("[Events] Unix socket writer found destroyed socket, removing:", socket[0]);
 				delete this.clients[socket[0]];
 				continue;
 			}
+
 			try {
-				socket[1].write(payload);
+				socket[1].write(framed);
 			} catch (e) {
 				console.error("[Events] Unix socket writer failed to write to socket", socket[0], ":", e);
 			}
