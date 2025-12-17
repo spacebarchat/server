@@ -16,20 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	Channel,
-	Emoji,
-	Guild,
-	Role,
-	Sticker,
-} from "../entities";
+import { Channel, Emoji, Guild, Role, Sticker } from "../entities";
 import { ChannelOverride, ChannelType, PublicMember, PublicUser, UserGuildSettings } from "@spacebar/schemas";
 
 // TODO: this is not the best place for this type
-export type ReadyUserGuildSettingsEntries = Omit<
-	UserGuildSettings,
-	"channel_overrides"
-> & {
+export type ReadyUserGuildSettingsEntries = Omit<UserGuildSettings, "channel_overrides"> & {
 	channel_overrides: (ChannelOverride & { channel_id: string })[];
 };
 
@@ -43,13 +34,9 @@ export interface ReadyPrivateChannel {
 	type: ChannelType.DM | ChannelType.GROUP_DM;
 }
 
-export type GuildOrUnavailable =
-	| { id: string; unavailable: boolean }
-	| (Guild & { joined_at?: Date; unavailable: undefined });
+export type GuildOrUnavailable = { id: string; unavailable: boolean } | (Guild & { joined_at?: Date; unavailable: undefined });
 
-const guildIsAvailable = (
-	guild: GuildOrUnavailable,
-): guild is Guild & { joined_at: Date; unavailable: false } => {
+const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false } => {
 	return guild.unavailable != true;
 };
 

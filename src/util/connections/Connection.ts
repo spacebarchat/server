@@ -42,8 +42,7 @@ export abstract class Connection {
 	 * @returns redirect_uri for this connection
 	 */
 	getRedirectUri() {
-		const endpointPublic =
-			Config.get().general.frontPage ?? "http://localhost:3001";
+		const endpointPublic = Config.get().general.frontPage ?? "http://localhost:3001";
 		return `${endpointPublic}/connections/${this.id}/callback`;
 	}
 
@@ -51,9 +50,7 @@ export abstract class Connection {
 	 * Processes the callback
 	 * @param args Callback arguments
 	 */
-	abstract handleCallback(
-		params: ConnectionCallbackSchema,
-	): Promise<ConnectedAccount | null>;
+	abstract handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null>;
 
 	/**
 	 * Gets a user id from state
@@ -91,9 +88,7 @@ export abstract class Connection {
 	 * @param data connected account data
 	 * @returns the new connected account
 	 */
-	async createConnection(
-		data: ConnectedAccountSchema,
-	): Promise<ConnectedAccount> {
+	async createConnection(data: ConnectedAccountSchema): Promise<ConnectedAccount> {
 		const ca = ConnectedAccount.create({ ...data });
 		await ca.save();
 		return ca;

@@ -19,15 +19,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { User } from "./User";
-import {
-	FrecencyUserSettings,
-	PreloadedUserSettings,
-
-
-
-
-
-} from "discord-protos";
+import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
 
 @Entity({
 	name: "user_settings_protos",
@@ -71,17 +63,9 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 	bigintReviver(_key: string, value: unknown): unknown {
 		if (typeof value === "string" && /^\d+n$/.test(value)) {
 			return BigInt((value as string).slice(0, -1));
-		} else if (
-			typeof value === "object" &&
-			value !== null &&
-			"__type" in value
-		) {
+		} else if (typeof value === "object" && value !== null && "__type" in value) {
 			if (value.__type === "Uint8Array" && "data" in value) {
-				return new Uint8Array(
-					(value.data as string)
-						.match(/.{1,2}/g)!
-						.map((byte: string) => parseInt(byte, 16)),
-				);
+				return new Uint8Array((value.data as string).match(/.{1,2}/g)!.map((byte: string) => parseInt(byte, 16)));
 			}
 		}
 		return value;
@@ -89,9 +73,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 
 	get userSettings(): PreloadedUserSettings | undefined {
 		if (!this._userSettings) return undefined;
-		return PreloadedUserSettings.fromJson(
-			JSON.parse(this._userSettings, this.bigintReviver),
-		);
+		return PreloadedUserSettings.fromJson(JSON.parse(this._userSettings, this.bigintReviver));
 	}
 
 	set userSettings(value: PreloadedUserSettings | undefined) {
@@ -105,9 +87,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 
 	get frecencySettings(): FrecencyUserSettings | undefined {
 		if (!this._frecencySettings) return undefined;
-		return FrecencyUserSettings.fromJson(
-			JSON.parse(this._frecencySettings, this.bigintReviver),
-		);
+		return FrecencyUserSettings.fromJson(JSON.parse(this._frecencySettings, this.bigintReviver));
 	}
 
 	set frecencySettings(value: FrecencyUserSettings | undefined) {

@@ -30,11 +30,7 @@ export class DmChannelDTO {
 	recipients: MinimalPublicUserDTO[];
 	type: number;
 
-	static async from(
-		channel: Channel,
-		excluded_recipients: string[] = [],
-		origin_channel_id?: string,
-	) {
+	static async from(channel: Channel, excluded_recipients: string[] = [], origin_channel_id?: string) {
 		const obj = new DmChannelDTO();
 		obj.icon = channel.icon || null;
 		obj.id = channel.id;
@@ -61,9 +57,7 @@ export class DmChannelDTO {
 	excludedRecipients(excluded_recipients: string[]): DmChannelDTO {
 		return {
 			...this,
-			recipients: this.recipients.filter(
-				(r) => !excluded_recipients.includes(r.id),
-			),
+			recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id)),
 		};
 	}
 }

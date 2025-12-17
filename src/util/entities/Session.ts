@@ -48,7 +48,7 @@ export class Session extends BaseClassWithoutId {
 	@Column({ type: "simple-json", default: "[]" })
 	activities: Activity[];
 
-	@Column({ type: "simple-json"})
+	@Column({ type: "simple-json" })
 	client_info: {
 		platform?: string;
 		os?: string;
@@ -93,7 +93,8 @@ export class Session extends BaseClassWithoutId {
 			approx_last_used_time: (this.last_seen ?? new Date(0)).toISOString(),
 			client_info: {
 				os: this.client_info?.os,
-				platform: this.client_info?.platform + (this.client_info?.version ? ` ${this.client_info?.version}` : "") + (this.session_nickname ? ` (${this.session_nickname})` : ""),
+				platform:
+					this.client_info?.platform + (this.client_info?.version ? ` ${this.client_info?.version}` : "") + (this.session_nickname ? ` (${this.session_nickname})` : ""),
 				location: this.last_seen_location,
 			},
 		};
@@ -108,7 +109,7 @@ export class Session extends BaseClassWithoutId {
 			client_status: this.client_status,
 			approx_last_used_time: (this.last_seen ?? new Date(0)).toISOString(),
 			client_info: {
-				...this.client_info ?? {},
+				...(this.client_info ?? {}),
 				location: this.last_seen_location,
 			},
 			last_seen: this.last_seen,
@@ -134,7 +135,7 @@ export class Session extends BaseClassWithoutId {
 			activities: hasPrivateActivities ? [] : this.activities,
 			hidden_activities: hasPrivateActivities ? this.activities : [],
 			active: TimeSpan.fromDates(this.last_seen?.getTime() ?? 0, new Date().getTime()).totalMillis < inactiveTreshold,
-		}
+		};
 	}
 
 	async updateIpInfo() {
@@ -163,21 +164,21 @@ export class Session extends BaseClassWithoutId {
 }
 
 export interface ExtendedLocationInfo {
-	is_eu: boolean,
-	city: string,
-	region: string,
-	region_code: string,
-	country_name: string,
-	country_code: string,
-	continent_name: string,
-	continent_code: string,
-	latitude: number,
-	longitude: number,
-	postal: string,
-	calling_code: string,
-	flag: string,
-	emoji_flag: string,
-	emoji_unicode: string,
+	is_eu: boolean;
+	city: string;
+	region: string;
+	region_code: string;
+	country_name: string;
+	country_code: string;
+	continent_name: string;
+	continent_code: string;
+	latitude: number;
+	longitude: number;
+	postal: string;
+	calling_code: string;
+	flag: string;
+	emoji_flag: string;
+	emoji_unicode: string;
 }
 
 export const PrivateSessionProjection: (keyof Session)[] = ["user_id", "session_id", "activities", "client_info", "status"];
