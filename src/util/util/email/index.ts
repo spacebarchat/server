@@ -27,14 +27,7 @@ import { SMTPEmailClient } from "./clients/SMTPEmailClient";
 import { MailGunEmailClient } from "./clients/MailGunEmailClient";
 import { MailJetEmailClient } from "./clients/MailJetEmailClient";
 
-const ASSET_FOLDER_PATH = path.join(
-	__dirname,
-	"..",
-	"..",
-	"..",
-	"..",
-	"assets",
-);
+const ASSET_FOLDER_PATH = path.join(__dirname, "..", "..", "..", "..", "assets");
 
 export enum MailTypes {
 	verifyEmail = "verifyEmail",
@@ -45,21 +38,11 @@ export enum MailTypes {
 export const Email: {
 	transporter: IEmailClient | null;
 	init: () => Promise<void>;
-	generateLink: (
-		type: Omit<MailTypes, "changePassword">,
-		id: string,
-	) => Promise<string>;
-	sendMail: (
-		type: MailTypes,
-		user: User,
-		email: string,
-	) => Promise<void>;
+	generateLink: (type: Omit<MailTypes, "changePassword">, id: string) => Promise<string>;
+	sendMail: (type: MailTypes, user: User, email: string) => Promise<void>;
 	sendVerifyEmail: (user: User, email: string) => Promise<void>;
 	sendResetPassword: (user: User, email: string) => Promise<void>;
-	sendPasswordChanged: (
-		user: User,
-		email: string,
-	) => Promise<void>;
+	sendPasswordChanged: (user: User, email: string) => Promise<void>;
 	doReplacements: (
 		template: string,
 		user: User,
@@ -95,8 +78,7 @@ export const Email: {
 				return;
 		}
 
-		if (!this.transporter)
-			return console.error(`[Email] Invalid provider: ${provider}`);
+		if (!this.transporter) return console.error(`[Email] Invalid provider: ${provider}`);
 		console.log(`[Email] Initializing ${provider} transport...`);
 		await this.transporter.init();
 		console.log(`[Email] ${provider} transport initialized.`);
@@ -148,9 +130,7 @@ export const Email: {
 	generateLink: async function (type, id) {
 		const token = (await generateToken(id)) as string;
 		// puyodead1: this is set to api endpoint because the verification page is on the server since no clients have one, and not all 3rd party clients will have one
-		const instanceUrl =
-			Config.get().api.endpointPublic?.replace("/api", "") ||
-			"http://localhost:3001";
+		const instanceUrl = Config.get().api.endpointPublic?.replace("/api", "") || "http://localhost:3001";
 		const dashedType = type.replace(/([A-Z])/g, "-$1").toLowerCase();
 		const link = `${instanceUrl}/${dashedType}#token=${token}`;
 		return link;
@@ -178,51 +158,30 @@ export const Email: {
 			changePassword: "password_changed.txt",
 		};
 
-		const htmlTemplate = await fs.readFile(
-			path.join(
-				ASSET_FOLDER_PATH,
-				"email_templates",
-				htmlTemplateNames[type],
-			),
-			{ encoding: "utf-8" },
-		);
+		const htmlTemplate = await fs.readFile(path.join(ASSET_FOLDER_PATH, "email_templates", htmlTemplateNames[type]), { encoding: "utf-8" });
 
-		const textTemplate = await fs.readFile(
-			path.join(
-				ASSET_FOLDER_PATH,
-				"email_templates",
-				textTemplateNames[type],
-			),
-			{ encoding: "utf-8" },
-		);
+		const textTemplate = await fs.readFile(path.join(ASSET_FOLDER_PATH, "email_templates", textTemplateNames[type]), { encoding: "utf-8" });
 
 		// replace email template placeholders
 		const html = this.doReplacements(
 			htmlTemplate,
 			user,
 			// password change emails don't have links
-			type != MailTypes.changePassword
-				? await this.generateLink(type, user.id)
-				: undefined,
+			type != MailTypes.changePassword ? await this.generateLink(type, user.id) : undefined,
 		);
 
 		const text = this.doReplacements(
 			textTemplate,
 			user,
 			// password change emails don't have links
-			type != MailTypes.changePassword
-				? await this.generateLink(type, user.id)
-				: undefined,
+			type != MailTypes.changePassword ? await this.generateLink(type, user.id) : undefined,
 		);
 
 		// extract the title from the email template to use as the email subject
 		const subject = html.match(/<title>(.*)<\/title>/)?.[1] || "";
 
 		const message: IEmail = {
-			from:
-				Config.get().email.senderAddress ||
-				Config.get().general.correspondenceEmail ||
-				"noreply@localhost",
+			from: Config.get().email.senderAddress || Config.get().general.correspondenceEmail || "noreply@localhost",
 			to: email,
 			subject,
 			text,

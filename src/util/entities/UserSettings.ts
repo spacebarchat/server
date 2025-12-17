@@ -18,7 +18,7 @@
 
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
-import { CustomStatus, FriendSourceFlags, GuildFolder } from "@spacebar/schemas"
+import { CustomStatus, FriendSourceFlags, GuildFolder } from "@spacebar/schemas";
 
 @Entity({
 	name: "user_settings",
@@ -128,9 +128,7 @@ export class UserSettings extends BaseClassWithoutId {
 
 	public static async getOrDefault(userId: string) {
 		// raw sql query
-		const userSettingsIndex = (
-			await this.getRepository().query("SELECT \"settingsIndex\" FROM users WHERE id = $1", [userId])
-		)[0]?.settingsIndex as string | null;
+		const userSettingsIndex = (await this.getRepository().query('SELECT "settingsIndex" FROM users WHERE id = $1', [userId]))[0]?.settingsIndex as string | null;
 
 		console.log(`[INFO/UserSettings] Fetched settings index for user ${userId}:`, userSettingsIndex);
 

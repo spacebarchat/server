@@ -25,9 +25,7 @@ export interface IEmail {
 }
 export interface IEmailClient {
 	init: () => Promise<void>;
-	sendMail: (
-		email: IEmail,
-	) => Promise<void>;
+	sendMail: (email: IEmail) => Promise<void>;
 }
 
 export class BaseEmailClient implements IEmailClient {

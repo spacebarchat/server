@@ -34,8 +34,7 @@ router.get(
 		query: {
 			limit: {
 				type: "number",
-				description:
-					"max number of members to return (1-1000). default 1",
+				description: "max number of members to return (1-1000). default 1",
 			},
 			after: {
 				type: "string",
@@ -53,8 +52,7 @@ router.get(
 	async (req: Request, res: Response) => {
 		const { guild_id } = req.params;
 		const limit = Number(req.query.limit) || 1;
-		if (limit > 1000 || limit < 1)
-			throw new HTTPError("Limit must be between 1 and 1000");
+		if (limit > 1000 || limit < 1) throw new HTTPError("Limit must be between 1 and 1000");
 		const after = `${req.query.after}`;
 		const query = after ? { id: MoreThan(after) } : {};
 
