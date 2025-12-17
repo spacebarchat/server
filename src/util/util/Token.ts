@@ -122,12 +122,12 @@ export const checkToken = (
 
 			if (session && TimeSpan.fromDates(session.last_seen?.getTime() ?? 0, new Date().getTime()).totalSeconds >= 15) {
 				session.last_seen = new Date();
+				let updateIpInfoPromise;
 				if (opts?.ipAddress && opts?.ipAddress !== session.last_seen_ip) {
 					session.last_seen_ip = opts.ipAddress;
-					const ipInfo = await IpDataClient.getIpInfo(opts.ipAddress);
-					if (ipInfo?.ip) session.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
+					updateIpInfoPromise = session.updateIpInfo();
 				}
-				await session.save();
+				await Promise.all([session.save(), updateIpInfoPromise]);
 			}
 
 			const result: UserTokenData = {

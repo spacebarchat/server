@@ -140,34 +140,16 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 		});
 
 	this.session.status = identify.presence?.status || "online";
+	this.session.last_seen = new Date();
 	this.session.client_info ??= {};
 	this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
 	this.session.client_info.os = identify.properties?.os || identify.properties?.$os;
 	this.session.client_status = {};
 	this.session.activities = identify.presence?.activities ?? []; // TODO: validation
+
 	if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
 		this.session.last_seen_ip = this.ipAddress;
-		const ipInfo = await IpDataClient.getIpInfo(this.ipAddress);
-		if (ipInfo?.ip) {
-			this.session.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
-			this.session.last_seen_location_info = {
-				is_eu: ipInfo.is_eu,
-				city: ipInfo.city,
-				region: ipInfo.region,
-				region_code: ipInfo.region_code,
-				country_name: ipInfo.country_name,
-				country_code: ipInfo.country_code,
-				continent_name: ipInfo.continent_name,
-				continent_code: ipInfo.continent_code,
-				latitude: ipInfo.latitude,
-				longitude: ipInfo.longitude,
-				postal: ipInfo.postal,
-				calling_code: ipInfo.calling_code,
-				flag: ipInfo.flag,
-				emoji_flag: ipInfo.emoji_flag,
-				emoji_unicode: ipInfo.emoji_unicode,
-			};
-		}
+		await this.session.updateIpInfo();
 	}
 
 	const createSessionTime = taskSw.getElapsedAndReset();
@@ -179,12 +161,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// * the bot application, if it exists
 	const [
 		{ elapsed: sessionSaveTime },
+		{ elapsed: ipInfoUpdateTime },
 		{ result: application, elapsed: applicationQueryTime },
 		{ result: read_states, elapsed: read_statesQueryTime },
 		{ result: members, elapsed: membersQueryTime },
 		{ result: recipients, elapsed: recipientsQueryTime },
 	] = await Promise.all([
 		timePromise(() => this.session!.save()),
+		updateIpInfoPromise ? updateIpInfoPromise : { elapsed: new ElapsedTime(0n) },
 
 		timePromise(() =>
 			Application.findOne({
@@ -505,9 +489,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 	// Send SESSIONS_REPLACE and PRESENCE_UPDATE
 	const allSessions = (
 		await Session.find({
-			where: { user_id: this.user_id }
+			where: { user_id: this.user_id, is_admin_session: false },
 		})
-	).map(x=>x.toPrivateGatewayDeviceInfo());
+	).map((x) => x.toPrivateGatewayDeviceInfo());
 	// ).map((x) => ({
 	// 	// TODO how is active determined?
 	// 	// in our lazy request impl, we just pick the 'most relevant' session

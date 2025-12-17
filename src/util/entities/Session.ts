@@ -23,7 +23,7 @@ import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, Primary
 import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, Status } from "../interfaces";
 import { randomUpperString } from "@spacebar/api";
 import { IpDataIpLookupResponse } from "../util/networking/ipdata/IpDataSampleResponses";
-import { DateBuilder, TimeSpan } from "../util";
+import { DateBuilder, IpDataClient, TimeSpan } from "../util";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
 
@@ -134,6 +134,30 @@ export class Session extends BaseClassWithoutId {
 			activities: hasPrivateActivities ? [] : this.activities,
 			hidden_activities: hasPrivateActivities ? this.activities : [],
 			active: TimeSpan.fromDates(this.last_seen?.getTime() ?? 0, new Date().getTime()).totalMillis < inactiveTreshold,
+		}
+	}
+
+	async updateIpInfo() {
+		const ipInfo = await IpDataClient.getIpInfo(this.last_seen_ip!);
+		if (ipInfo?.ip) {
+			this.last_seen_location = `${ipInfo.emoji_flag} ${ipInfo.postal} ${ipInfo.city}, ${ipInfo.region}, ${ipInfo.country_name}`;
+			this.last_seen_location_info = {
+				is_eu: ipInfo.is_eu,
+				city: ipInfo.city,
+				region: ipInfo.region,
+				region_code: ipInfo.region_code,
+				country_name: ipInfo.country_name,
+				country_code: ipInfo.country_code,
+				continent_name: ipInfo.continent_name,
+				continent_code: ipInfo.continent_code,
+				latitude: ipInfo.latitude,
+				longitude: ipInfo.longitude,
+				postal: ipInfo.postal,
+				calling_code: ipInfo.calling_code,
+				flag: ipInfo.flag,
+				emoji_flag: ipInfo.emoji_flag,
+				emoji_unicode: ipInfo.emoji_unicode,
+			};
 		}
 	}
 }
