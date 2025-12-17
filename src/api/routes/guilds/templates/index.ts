@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Guild, Member, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { GuildTemplateCreateSchema } from "@spacebar/schemas"
+import { GuildTemplateCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -57,7 +57,7 @@ router.post("/:template_code", route({ requestBody: "GuildTemplateCreateSchema" 
 	const guild_count = await Member.count({ where: { id: req.user_id } });
 	if (guild_count >= maxGuilds) throw DiscordApiErrors.MAXIMUM_GUILDS.withParams(maxGuilds);
 
-	const template = await getTemplate(template_code) as Template;
+	const template = (await getTemplate(template_code)) as Template;
 
 	const guild = await Guild.createGuild({
 		...template.serialized_source_guild,

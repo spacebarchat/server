@@ -220,7 +220,7 @@ export interface GuildBanAddEvent extends Event {
 	data: {
 		guild_id: string;
 		user: User;
-		delete_message_secs?: number
+		delete_message_secs?: number;
 	};
 }
 
@@ -566,7 +566,7 @@ export interface GatewaySessionClientInfo {
 	version: number;
 	os: string;
 	client: string;
-};
+}
 
 export interface GatewaySession {
 	session_id: string;

@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/schemas"
+import { GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -56,7 +56,7 @@ router.get(
 			visibility: GuildVisibilityLevel.PUBLIC,
 			custom_banner_hash: guild.banner ?? null,
 			premium_subscription_count: guild.premium_subscription_count ?? 0,
-			premium_tier: guild.premium_tier ?? 0
+			premium_tier: guild.premium_tier ?? 0,
 		};
 
 		res.send(profileResponse);

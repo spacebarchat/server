@@ -91,7 +91,7 @@ export class TimeSpan {
 	}
 
 	get years() {
-		return Math.floor((this.totalMillis / 1000 / 60 / 60 / 24 / 365.25)); // Average days in a year
+		return Math.floor(this.totalMillis / 1000 / 60 / 60 / 24 / 365.25); // Average days in a year
 	}
 
 	toString(includeWeeks = true, includeMillis = true) {
