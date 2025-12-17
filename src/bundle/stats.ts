@@ -32,25 +32,18 @@ export function initStats() {
 	console.log(`[System] ${os.platform()} ${os.release()} ${os.arch()}`);
 	if (os.platform() == "linux") {
 		try {
-			const osReleaseLines = readFileSync(
-				"/etc/os-release",
-				"utf8",
-			).split("\n");
+			const osReleaseLines = readFileSync("/etc/os-release", "utf8").split("\n");
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			//@ts-ignore
-			const osRelease: any = {};
+			const osRelease: { [key: string]: string } = {};
 			for (const line of osReleaseLines) {
 				if (!line) continue;
 				const [key, value] = line.match(/(.*?)="?([^"]*)"?/)!.slice(1);
 				osRelease[key] = value;
 			}
-			console.log(
-				`[System]\x1b[${osRelease.ANSI_COLOR}m ${osRelease.NAME ?? "Unknown"} ${osRelease.VERSION ?? "Unknown"} (${osRelease.BUILD_ID ?? "No build ID"})\x1b[0m`,
-			);
+			console.log(`[System]\x1b[${osRelease.ANSI_COLOR}m ${osRelease.NAME ?? "Unknown"} ${osRelease.VERSION ?? "Unknown"} (${osRelease.BUILD_ID ?? "No build ID"})\x1b[0m`);
 		} catch (e) {
-			console.log(
-				"[System] Unknown Linux distribution (missing /etc/os-release)",
-			);
+			console.log("[System] Unknown Linux distribution (missing /etc/os-release)");
 			console.log(e);
 		}
 	}

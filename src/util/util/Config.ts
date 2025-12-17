@@ -21,6 +21,7 @@ import fs from "fs/promises";
 import { OrmUtils } from "..";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities/Config";
+import { JsonValue } from "@protobuf-ts/runtime";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -174,10 +175,10 @@ const validateConfig = async () => {
 
 function validateFinalConfig(config: ConfigValue) {
 	let hasErrors = false;
-	function assertConfig(path: string, condition: (val: any) => boolean, recommendedValue: string) {
+	function assertConfig(path: string, condition: (val: JsonValue) => boolean, recommendedValue: string) {
 		// _ to separate keys
 		const keys = path.split("_");
-		let obj: any = config;
+		let obj: never = config as never;
 
 		for (const key of keys) {
 			if (obj == null || !(key in obj)) {

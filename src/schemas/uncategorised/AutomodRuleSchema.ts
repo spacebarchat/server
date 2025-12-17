@@ -21,7 +21,8 @@ export interface AutomodMentionSpamRuleSchema {
 	mention_raid_protection_enabled: boolean;
 }
 
-export interface AutomodSuspectedSpamRuleSchema {}
+// export interface AutomodSuspectedSpamRuleSchema {}
+export type AutomodSuspectedSpamRuleSchema = Record<string, never>; // hack to represent an empty object
 
 export interface AutomodCommonlyFlaggedWordsRuleSchema {
 	allow_list: [string];

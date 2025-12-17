@@ -9,6 +9,7 @@ import http from "http";
 import chalk from "chalk";
 
 declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			server: Server;
@@ -21,7 +22,7 @@ export type ServerOptions = {
 	host: string;
 	production: boolean;
 	serverInitLogging: boolean;
-	errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
+	// errorHandler?: { (err: Error, req: Request, res: Response, next: NextFunction): any };
 	jsonBody: boolean;
 	server: http.Server;
 	app: Application;
@@ -48,7 +49,7 @@ export class Server {
 		if (!opts.host) opts.host = "0.0.0.0";
 		if (opts.production == null) opts.production = false;
 		if (opts.serverInitLogging == null) opts.serverInitLogging = true;
-		if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
+		// if (opts.errorHandler == null) opts.errorHandler = this.errorHandler;
 		if (opts.jsonBody == null) opts.jsonBody = true;
 		if (opts.server) this.http = opts.server;
 
@@ -98,7 +99,7 @@ export class Server {
 			await new Promise<void>((res) => {
 				this.http = server.listen(this.options.port, () => res());
 			});
-			if (this.options.serverInitLogging) this.log("info", `[Server] started on ${this.options.host}:${this.options.port}`);
+			if (this.options.serverInitLogging) console.log(`[Server] started on ${this.options.host}:${this.options.port}`);
 		}
 	}
 
@@ -109,39 +110,12 @@ export class Server {
 		});
 		if (this.options.jsonBody) this.app.use(bodyParser.json());
 		const result = await traverseDirectory({ dirname: root, recursive: true }, this.registerRoute.bind(this, root));
-		if (this.options.errorHandler) this.app.use(this.options.errorHandler);
+		// if (this.options.errorHandler) this.app.use(this.options.errorHandler);
 		// if (this.options.production) this.secureExpress();
 		return result;
 	}
 
-	log(l: "info" | "error" | "warn" | "verbose", ...args: any[]) {
-		// @ts-ignore
-		if (!console[l]) l = "verbose";
-
-		const level = l === "verbose" ? "log" : l;
-
-		var color: "red" | "yellow" | "blue" | "reset";
-
-		switch (level) {
-			case "error":
-				color = "red";
-				break;
-			case "warn":
-				color = "yellow";
-				break;
-			case "info":
-				color = "blue";
-			case "log":
-			default:
-				color = "reset";
-		}
-
-		if (this.options.production && l === "verbose") return;
-
-		console[level](chalk[color](`[${new Date().toTimeString().split(" ")[0]}]`), ...args);
-	}
-
-	registerRoute(root: string, file: string): any {
+	registerRoute(root: string, file: string): Router | undefined {
 		if (root.endsWith("/") || root.endsWith("\\")) root = root.slice(0, -1); // removes slash at the end of the root dir
 		let path = file.replace(root, ""); // remove root from path and
 		path = path.split(".").slice(0, -1).join("."); // trancate .js/.ts file extension of path
@@ -155,10 +129,10 @@ export class Server {
 			if (router.default) router = router.default;
 			if (!router || router?.prototype?.constructor?.name !== "router") throw `File doesn't export any default router`;
 
-			if (this.options.errorHandler) router.use(this.options.errorHandler);
+			// if (this.options.errorHandler) router.use(this.options.errorHandler);
 			this.app.use(path, <Router>router);
 
-			if (this.options.serverInitLogging) this.log("verbose", `[Server] Route ${path} registered`);
+			if (this.options.serverInitLogging) console.log(`[Server] Route ${path} registered`);
 
 			return router;
 		} catch (error) {

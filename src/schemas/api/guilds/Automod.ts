@@ -86,6 +86,9 @@ export type AutomodAction = {
 		duration_seconds: number;
 	};
 };
+
+// TODO
+// eslint-disable-next-line
 export interface AutomodRuleActionMetadata {
 
 }

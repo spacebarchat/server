@@ -4,20 +4,10 @@ import { HTTPError } from ".";
 const OPTIONAL_PREFIX = "$";
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-export function check(schema: any) {
-	return (req: Request, res: Response, next: NextFunction) => {
-		try {
-			const result = instanceOf(schema, req.body, { path: "body" });
-			if (result === true) return next();
-			throw result;
-		} catch (error) {
-			next(new HTTPError((error as any).toString(), 400));
-		}
-	};
-}
-
 export class Tuple {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public types: any[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	constructor(...types: any[]) {
 		this.types = types;
 	}
@@ -30,6 +20,7 @@ export class Email {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function instanceOf(type: any, value: any, { path = "", optional = false }: { path?: string; optional?: boolean } = {}): boolean {
 	if (!type) return true; // no type was specified
 

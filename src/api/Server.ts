@@ -89,7 +89,7 @@ export class SpacebarServer extends Server {
 		await initRateLimits(api);
 		await initTranslation(api);
 
-		this.routes = await registerRoutes(this, path.join(__dirname, "routes", "/"));
+		this.routes = (await registerRoutes(this, path.join(__dirname, "routes", "/"))).filter((r) => !!r);
 
 		// 404 is not an error in express, so this should not be an error middleware
 		// this is a fine place to put the 404 handler because its after we register the routes
@@ -127,14 +127,14 @@ export class SpacebarServer extends Server {
 		});
 
 		// current well-known location
-		app.get("/.well-known/spacebar", (req,res)=>{
+		app.get("/.well-known/spacebar", (req, res) => {
 			res.json({
-				api: Config.get().api.endpointPublic
+				api: Config.get().api.endpointPublic,
 			});
 		});
 
 		// new well-known location
-		app.get("/.well-known/spacebar/client", (req,res)=>{
+		app.get("/.well-known/spacebar/client", (req, res) => {
 			let erlpackSupported = false;
 			try {
 				require("@yukikaze-bot/erlpack");
@@ -148,20 +148,23 @@ export class SpacebarServer extends Server {
 					baseUrl: Config.get().api.endpointPublic?.split("/api")[0] || "", // TODO: migrate database values to not include /api/v9
 					apiVersions: {
 						default: Config.get().api.defaultVersion,
-						active: Config.get().api.activeVersions
-					}
+						active: Config.get().api.activeVersions,
+					},
 				},
 				cdn: {
-					baseUrl: Config.get().cdn.endpointPublic
+					baseUrl: Config.get().cdn.endpointPublic,
 				},
 				gateway: {
 					baseUrl: Config.get().gateway.endpointPublic,
 					encoding: [...(erlpackSupported ? ["etf"] : []), "json"],
 					compression: ["zstd-stream", "zlib-stream", null],
 				},
-				admin: Config.get().admin.endpointPublic === null ? undefined : {
-					baseUrl: Config.get().admin.endpointPublic
-				}
+				admin:
+					Config.get().admin.endpointPublic === null
+						? undefined
+						: {
+								baseUrl: Config.get().admin.endpointPublic,
+							},
 			});
 		});
 

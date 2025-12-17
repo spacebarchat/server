@@ -53,7 +53,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 	// @Column({nullable: true, type: "simple-json"})
 	// testSettings: {};
 
-	bigintReplacer(_key: string, value: any): any {
+	bigintReplacer(_key: string, value: unknown): unknown {
 		if (typeof value === "bigint") {
 			return (value as bigint).toString();
 		} else if (value instanceof Uint8Array) {
@@ -68,7 +68,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 		}
 	}
 
-	bigintReviver(_key: string, value: any): any {
+	bigintReviver(_key: string, value: unknown): unknown {
 		if (typeof value === "string" && /^\d+n$/.test(value)) {
 			return BigInt((value as string).slice(0, -1));
 		} else if (
@@ -78,7 +78,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
 		) {
 			if (value.__type === "Uint8Array" && "data" in value) {
 				return new Uint8Array(
-					value.data
+					(value.data as string)
 						.match(/.{1,2}/g)!
 						.map((byte: string) => parseInt(byte, 16)),
 				);

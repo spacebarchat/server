@@ -52,7 +52,7 @@ function logAuth(text: string) {
 	console.log(`[AUTH] ${text}`);
 }
 
-function rejectAndLog(rejectFunction: (reason?: any) => void, reason: any) {
+function rejectAndLog(rejectFunction: (reason?: string) => void, reason: string) {
 	console.error(reason);
 	rejectFunction(reason);
 }

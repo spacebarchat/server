@@ -8,7 +8,7 @@ export interface traverseDirectoryOptions {
 }
 
 const DEFAULT_EXCLUDE_DIR = /^\./;
-const DEFAULT_FILTER = /^([^\.].*)(?<!\.d)\.(ts|js)$/;
+const DEFAULT_FILTER = /^([^.].*)(?<!\.d)\.(ts|js)$/;
 
 export async function traverseDirectory<T>(
 	options: traverseDirectoryOptions,

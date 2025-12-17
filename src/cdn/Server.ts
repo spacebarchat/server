@@ -17,12 +17,7 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import {
-	Attachment,
-	Config,
-	initDatabase,
-	registerRoutes,
-} from "@spacebar/util";
+import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import avatarsRoute from "./routes/avatars";
@@ -50,13 +45,8 @@ export class CDNServer extends Server {
 			this.app.use(
 				morgan("combined", {
 					skip: (req, res) => {
-						let skip = !(
-							process.env["LOG_REQUESTS"]?.includes(
-								res.statusCode.toString(),
-							) ?? false
-						);
-						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-")
-							skip = !skip;
+						let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+						if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
 						return skip;
 					},
 				}),
@@ -74,52 +64,46 @@ export class CDNServer extends Server {
 		await registerRoutes(this, path.join(__dirname, "routes/"));
 
 		this.app.use("/icons/", avatarsRoute);
-		this.log("verbose", "[Server] Route /icons registered");
+		console.log("[Server] Route /icons registered");
 
 		this.app.use("/role-icons/", iconsRoute);
-		this.log("verbose", "[Server] Route /role-icons registered");
+		console.log("[Server] Route /role-icons registered");
 
 		this.app.use("/emojis/", avatarsRoute);
-		this.log("verbose", "[Server] Route /emojis registered");
+		console.log("[Server] Route /emojis registered");
 
 		this.app.use("/stickers/", avatarsRoute);
-		this.log("verbose", "[Server] Route /stickers registered");
+		console.log("[Server] Route /stickers registered");
 
 		this.app.use("/banners/", avatarsRoute);
-		this.log("verbose", "[Server] Route /banners registered");
+		console.log("[Server] Route /banners registered");
 
 		this.app.use("/splashes/", avatarsRoute);
-		this.log("verbose", "[Server] Route /splashes registered");
+		console.log("[Server] Route /splashes registered");
 
 		this.app.use("/discovery-splashes/", avatarsRoute);
-		this.log("verbose", "[Server] Route /discovery-splashes registered");
+		console.log("[Server] Route /discovery-splashes registered");
 
 		this.app.use("/app-icons/", avatarsRoute);
-		this.log("verbose", "[Server] Route /app-icons registered");
+		console.log("[Server] Route /app-icons registered");
 
 		this.app.use("/app-assets/", avatarsRoute);
-		this.log("verbose", "[Server] Route /app-assets registered");
+		console.log("[Server] Route /app-assets registered");
 
 		this.app.use("/discover-splashes/", avatarsRoute);
-		this.log("verbose", "[Server] Route /discover-splashes registered");
+		console.log("[Server] Route /discover-splashes registered");
 
 		this.app.use("/team-icons/", avatarsRoute);
-		this.log("verbose", "[Server] Route /team-icons registered");
+		console.log("[Server] Route /team-icons registered");
 
 		this.app.use("/channel-icons/", avatarsRoute);
-		this.log("verbose", "[Server] Route /channel-icons registered");
+		console.log("[Server] Route /channel-icons registered");
 
-		this.app.use(
-			"/guilds/:guild_id/users/:user_id/avatars",
-			guildProfilesRoute,
-		);
-		this.log("verbose", "[Server] Route /guilds/avatars registered");
+		this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
+		console.log("[Server] Route /guilds/avatars registered");
 
-		this.app.use(
-			"/guilds/:guild_id/users/:user_id/banners",
-			guildProfilesRoute,
-		);
-		this.log("verbose", "[Server] Route /guilds/banners registered");
+		this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
+		console.log("[Server] Route /guilds/banners registered");
 
 		return super.start();
 	}
@@ -129,24 +113,21 @@ export class CDNServer extends Server {
 	}
 
 	async cleanupSignaturesInDb() {
-		this.log("verbose", "[CDN] Cleaning up signatures in database");
+		console.log("[CDN] Cleaning up signatures in database");
 		const attachmentsToFix = await Attachment.find({
 			where: { url: Like("%?ex=%") },
 		});
 		if (attachmentsToFix.length === 0) {
-			this.log("verbose", "[CDN] No attachments to fix");
+			console.log("[CDN] No attachments to fix");
 			return;
 		}
 
-		this.log(
-			"verbose",
-			`[CDN] Found ${attachmentsToFix.length} attachments to fix`,
-		);
+		console.log("[CDN] Found", attachmentsToFix.length, " attachments to fix");
 		for (const attachment of attachmentsToFix) {
 			attachment.url = attachment.url.split("?ex=")[0];
 			attachment.proxy_url = attachment.proxy_url?.split("?ex=")[0];
 			await attachment.save();
-			this.log("verbose", `[CDN] Fixed attachment ${attachment.id}`);
+			console.log(`[CDN] Fixed attachment ${attachment.id}`);
 		}
 	}
 }
