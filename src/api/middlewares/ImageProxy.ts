@@ -40,12 +40,7 @@ export async function ImageProxy(req: Request, res: Response) {
 	const path = req.originalUrl.split("/").slice(2);
 
 	// src/api/util/utility/EmbedHandlers.ts getProxyUrl
-	const hash = crypto
-		.createHmac("sha1", Config.get().security.requestSignature)
-		.update(path.slice(1).join("/"))
-		.digest("base64")
-		.replace(/\+/g, "-")
-		.replace(/\//g, "_");
+	const hash = crypto.createHmac("sha1", Config.get().security.requestSignature).update(path.slice(1).join("/")).digest("base64").replace(/\+/g, "-").replace(/\//g, "_");
 
 	try {
 		if (!crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(path[0]))) throw new Error("Invalid signature");
