@@ -24,10 +24,7 @@ import { onSelectProtocol } from "./SelectProtocol";
 import { onSpeaking } from "./Speaking";
 import { onVideo } from "./Video";
 
-export type OPCodeHandler = (
-	this: WebRtcWebSocket,
-	data: VoicePayload,
-) => Promise<void>;
+export type OPCodeHandler = (this: WebRtcWebSocket, data: VoicePayload) => Promise<void>;
 
 export default {
 	[VoiceOPCodes.HEARTBEAT]: onHeartbeat,

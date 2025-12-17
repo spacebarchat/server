@@ -46,10 +46,7 @@ export async function verifyCaptcha(response: string, ip?: string) {
 	const { security } = Config.get();
 	const { service, secret, sitekey } = security.captcha;
 
-	if (!service || !secret || !sitekey)
-		throw new Error(
-			"CAPTCHA is not configured correctly. https://docs.spacebar.chat/setup/server/security/captcha/",
-		);
+	if (!service || !secret || !sitekey) throw new Error("CAPTCHA is not configured correctly. https://docs.spacebar.chat/setup/server/security/captcha/");
 
 	const res = await fetch(verifyEndpoints[service], {
 		method: "POST",

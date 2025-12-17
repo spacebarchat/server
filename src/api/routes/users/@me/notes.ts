@@ -79,10 +79,7 @@ router.put(
 					},
 				})
 			) {
-				Note.update(
-					{ owner: { id: owner.id }, target: { id: target.id } },
-					{ owner, target, content: note },
-				);
+				Note.update({ owner: { id: owner.id }, target: { id: target.id } }, { owner, target, content: note });
 			} else {
 				Note.insert({
 					id: Snowflake.generate(),
