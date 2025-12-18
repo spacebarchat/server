@@ -23,13 +23,4 @@ export class IpDataClient {
         });
         return await resp;
     }
-
-    //TODO add function that support both ip and domain names
-    static isProxy(data: IpDataIpLookupResponse) {
-        if (!data || !data.asn || !data.threat) return false;
-        if (data.asn.type !== "isp") return true;
-        if (Object.values(data.threat).some((x) => x)) return true;
-
-        return false;
-    }
 }

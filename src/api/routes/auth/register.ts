@@ -164,11 +164,6 @@ router.post(
                     console.log(`[Register] ${ip} blocked from registration: IPData.co ASN ${ipData.asn.name} is blocked`);
                     throw new HTTPError("Your IP is blocked from registration");
                 }
-
-                if (register.blockProxies && IpDataClient.isProxy(ipData)) {
-                    console.log(`[Register] ${ip} blocked from registration: IPData.co response matched IpDataClient.isProxy() check`);
-                    throw new HTTPError("Your IP is blocked from registration");
-                }
             }
         }
 
