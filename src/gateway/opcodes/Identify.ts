@@ -375,7 +375,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         if (typeof call !== "string") mergeMemberGuildsTrace.micros += (call as { micros: number }).micros;
     }
 
-    const totalQueryTime = taskSw.getElapsedAndReset();
+    const guildRelationQueryTime = taskSw.getElapsedAndReset();
 
     // We forgot to migrate user settings from the JSON column of `users`
     // to the `user_settings` table theyre in now,
@@ -608,7 +608,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         validateIntentsAndShardingTime,
         createSessionTime,
         userMetaQueryTime,
-        totalQueryTime,
+        queryGuildsTime,
+        guildRelationQueryTime,
         createUserSettingsTime,
         mergedMembersTime,
         generateGuildsListTime,
@@ -644,7 +645,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                         } as TraceNode);
                     }
                 }
-            } else if (key === "totalQueryTime") {
+            } else if (key === "guildRelationQueryTime") {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
                     queryGuildChannelsTime,
