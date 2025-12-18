@@ -332,6 +332,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                 const mention_roles: string[] = [];
                 const mentions: string[] = [];
 
+                // TODO: mention_roles and mentions arrays - not needed it seems, but discord still returns that
+
                 message.message_snapshots = [
                     {
                         message: {
