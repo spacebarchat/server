@@ -5460,6 +5460,9 @@
                             },
                             "fail_if_not_exists": {
                                 "type": "boolean"
+                            },
+                            "type": {
+                                "type": "integer"
                             }
                         },
                         "additionalProperties": false,
@@ -5750,6 +5753,9 @@
                             },
                             "fail_if_not_exists": {
                                 "type": "boolean"
+                            },
+                            "type": {
+                                "type": "integer"
                             }
                         },
                         "additionalProperties": false,
@@ -7615,6 +7621,12 @@
                     "avatar": {
                         "type": "string"
                     },
+                    "message_snapshots": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MessageSnapshot"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -7627,6 +7639,7 @@
                     "mention_channels",
                     "mention_roles",
                     "mentions",
+                    "message_snapshots",
                     "pinned",
                     "reactions",
                     "timestamp",
@@ -10833,6 +10846,122 @@
                     "count",
                     "id",
                     "me_voted"
+                ]
+            },
+            "MessageSnapshot": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "edited_timestamp": {
+                                "anyOf": [
+                                    {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ]
+                            },
+                            "mentions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "mention_roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "attachments": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Attachment"
+                                }
+                            },
+                            "embeds": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Embed"
+                                }
+                            },
+                            "type": {
+                                "$ref": "#/components/schemas/MessageType"
+                            },
+                            "flags": {
+                                "type": "integer"
+                            },
+                            "components": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/MessageComponent"
+                                }
+                            },
+                            "resolved": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "additionalProperties": true
+                                }
+                            },
+                            "sticker_items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Sticker"
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "content",
+                            "embeds",
+                            "flags",
+                            "mention_roles",
+                            "mentions",
+                            "timestamp",
+                            "type"
+                        ]
+                    }
+                },
+                "required": [
+                    "message"
+                ]
+            },
+            "MessageComponent": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "MessageComponentType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
                 ]
             },
             "InteractionGuild": {

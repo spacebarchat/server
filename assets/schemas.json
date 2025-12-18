@@ -5807,6 +5807,9 @@
                     },
                     "fail_if_not_exists": {
                         "type": "boolean"
+                    },
+                    "type": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
@@ -6103,6 +6106,9 @@
                     },
                     "fail_if_not_exists": {
                         "type": "boolean"
+                    },
+                    "type": {
+                        "type": "integer"
                     }
                 },
                 "additionalProperties": false,
@@ -8092,6 +8098,12 @@
             "avatar": {
                 "type": "string"
             },
+            "message_snapshots": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/MessageSnapshot"
+                }
+            },
             "id": {
                 "type": "string"
             }
@@ -8105,6 +8117,7 @@
             "mention_channels",
             "mention_roles",
             "mentions",
+            "message_snapshots",
             "pinned",
             "reactions",
             "timestamp",
@@ -11457,6 +11470,127 @@
             "count",
             "id",
             "me_voted"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageSnapshot": {
+        "type": "object",
+        "properties": {
+            "message": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "edited_timestamp": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "mentions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "mention_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Attachment"
+                        }
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Embed"
+                        }
+                    },
+                    "type": {
+                        "$ref": "#/definitions/MessageType"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/MessageComponent"
+                        }
+                    },
+                    "resolved": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "sticker_items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Sticker"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "content",
+                    "embeds",
+                    "flags",
+                    "mention_roles",
+                    "mentions",
+                    "timestamp",
+                    "type"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "message"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponent": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
