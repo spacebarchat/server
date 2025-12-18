@@ -94,7 +94,6 @@ export async function setupListener(this: WebSocket) {
         console.error(`[RabbitMQ] [user-${this.user_id}] Channel Error (Handled):`, err);
     };
 
-    console.log("[RabbitMQ] setupListener: open for ", this.user_id);
     if (RabbitMQ.connection) {
         console.log("[RabbitMQ] setupListener: opts.channel = ", typeof opts.channel, "with channel id", opts.channel?.ch);
         opts.channel = await RabbitMQ.connection.createChannel();
@@ -127,7 +126,7 @@ export async function setupListener(this: WebSocket) {
     });
 
     this.once("close", async () => {
-        console.log("[RabbitMQ] setupListener: close for", this.user_id, "=", typeof opts.channel, "with channel id", opts.channel?.ch);
+        // console.log("[Events] setupListener: close for", this.user_id, "=", typeof opts.channel, "with channel id", opts.channel?.ch);
 
         // wait for event consumer cancellation
         await Promise.all(
