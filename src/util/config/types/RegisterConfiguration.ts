@@ -28,7 +28,6 @@ export class RegisterConfiguration {
     guestsRequireInvite: boolean = true;
     allowNewRegistration: boolean = true;
     allowMultipleAccounts: boolean = true;
-    blockProxies: boolean = true;
     blockIpDataCoThreatTypes: string[] = ["tor", "icloud_relay", "proxy", "datacenter", "anonymous", "known_attacker", "known_abuser", "threat"]; // matching ipdata's threat.is_* fields as of 2025/11/30, minus bogon
     blockAsnTypes: string[] = [""];
     blockAsns: string[] = [""];
