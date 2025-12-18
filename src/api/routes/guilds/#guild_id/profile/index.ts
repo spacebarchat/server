@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { emitEvent, GuildMemberUpdateEvent, handleFile, Member, OrmUtils } from "@spacebar/util";
+import { emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile, Member, OrmUtils, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { MemberChangeProfileSchema } from "@spacebar/schemas";
 
@@ -41,16 +41,31 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params;
-        // const member_id =
-        // 	req.params.member_id === "@me" ? req.user_id : req.params.member_id;
+        let { member_id } = req.params;
         const body = req.body as MemberChangeProfileSchema;
+        if (member_id === "@me") member_id = req.user_id;
+
+        const permission = await getPermission(req.user_id, guild_id);
+
+        if (req.user_id === member_id) {
+            if (body.nick) {
+                permission.hasThrow(Permissions.FLAGS.CHANGE_NICKNAME);
+            }
+        } else {
+            if (Object.keys(body).length !== 1 || !body.nick) {
+                const rights = await getRights(req.user_id);
+                rights.hasThrow("MANAGE_USERS");
+            } else {
+                permission.hasThrow(Permissions.FLAGS.MANAGE_NICKNAMES);
+            }
+        }
 
         let member = await Member.findOneOrFail({
-            where: { id: req.user_id, guild_id },
+            where: { id: member_id, guild_id },
             relations: ["roles", "user"],
         });
 
-        if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);
+        if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.banner as string);
 
         member = await OrmUtils.mergeDeep(member, body);
 
