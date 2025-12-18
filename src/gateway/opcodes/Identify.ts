@@ -53,9 +53,10 @@ import {
     generateToken,
     CurrentTokenFormatVersion,
     Relationship,
+    timeFunction,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { In } from "typeorm";
+import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
 
@@ -173,7 +174,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() => (isNewSession ? Session.insert(session) : Session.update({ session_id: session.session_id }, session)) as Promise<unknown>),
         timePromise(() =>
             Session.find({
-                where: { user_id: this.user_id, is_admin_session: false },
+                where: { user_id: this.user_id, is_admin_session: false, session_id: Not(this.session_id) },
             }),
         ),
         timePromise(() =>
@@ -500,10 +501,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
     // Send SESSIONS_REPLACE and PRESENCE_UPDATE
-    const allSessions = sessions
-        .filter((x) => x.session_id !== this.session_id)
-        .concat(this.session!)
-        .map((x) => x.toPrivateGatewayDeviceInfo());
+    const allSessions = sessions.concat(this.session!).map((x) => x.toPrivateGatewayDeviceInfo());
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
     const [{ elapsed: emitSessionsReplaceTime }, { elapsed: emitPresenceUpdateTime }] = await Promise.all([
@@ -528,71 +526,106 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ),
     ]);
 
+    taskSw.reset();
     // Build READY
-    read_states.forEach((x) => {
-        x.id = x.channel_id;
-    });
-    const remapReadStateIdsTime = taskSw.getElapsedAndReset();
 
-    const d: ReadyEventData = {
-        v: 9,
-        application: application ? { id: application.id, flags: application.flags } : undefined,
-        user: user.toPrivateUser(["rights"]),
-        user_settings: user.settings,
-        user_settings_proto: settingsProtos?.userSettings ? PreloadedUserSettings.toBase64(settingsProtos.userSettings) : undefined,
-        user_settings_proto_json: settingsProtos?.userSettings ? PreloadedUserSettings.toJson(settingsProtos.userSettings) : undefined,
-        guilds: this.capabilities.has(Capabilities.FLAGS.CLIENT_STATE_V2) ? guilds.map((x) => new ReadyGuildDTO(x).toJSON()) : guilds,
-        relationships: user.relationships.map((x) => x.toPublicRelationship()),
-        read_state: {
-            entries: read_states,
-            partial: false,
-            version: 0, // TODO
-        },
-        user_guild_settings: {
-            entries: user_guild_settings_entries,
-            partial: false,
-            version: 0, // TODO
-        },
-        private_channels: channels,
-        presences: [], // TODO: Send actual data
-        session_id: this.session_id,
-        country_code: user.settings.locale, // TODO: do ip analysis instead
-        users: Array.from(users),
-        merged_members: merged_members,
-        sessions: allSessions,
-
-        resume_gateway_url: Config.get().gateway.endpointPublic!,
-
-        // lol hack whatever
-        required_action: Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,
-
-        consents: {
-            personalization: {
-                consented: false, // TODO
-            },
-        },
-        experiments: [],
-        guild_join_requests: [],
-        connected_accounts: [],
-        guild_experiments: [],
-        geo_ordered_rtc_regions: [],
-        api_code_version: 1,
-        friend_suggestion_count: 0,
-        analytics_token: "",
-        tutorial: null,
-        session_type: "normal", // TODO
-        auth_session_id_hash: this.session.getDiscordDeviceInfo().id_hash,
-        notification_settings: {
-            // ????
-            flags: 0,
-        },
-        game_relationships: [],
+    // const remapReadStateIdsTime = taskSw.getElapsedAndReset();
+    const buildReadyTrace: TraceNode = {
+        micros: 0,
+        calls: [],
     };
+    const { elapsed: remapReadStateIdsTime } = timeFunction(() =>
+        read_states.forEach((x) => {
+            x.id = x.channel_id;
+        }),
+    );
+    buildReadyTrace.calls!.push("remapReadStateIds", { micros: remapReadStateIdsTime.totalMicroseconds });
+
+    const { result: user_settings_proto, elapsed: serialiseUserSettingsProtoTime } = timeFunction(() =>
+        settingsProtos?.userSettings ? PreloadedUserSettings.toBase64(settingsProtos.userSettings) : undefined,
+    );
+    buildReadyTrace.calls!.push("serializeUserSettingsProto", { micros: serialiseUserSettingsProtoTime.totalMicroseconds });
+
+    const { result: user_settings_proto_json, elapsed: serialiseUserSettingsProtoJsonTime } = timeFunction(() =>
+        settingsProtos?.userSettings ? PreloadedUserSettings.toJson(settingsProtos.userSettings) : undefined,
+    );
+    buildReadyTrace.calls!.push("serializeUserSettingsProtoJson", { micros: serialiseUserSettingsProtoJsonTime.totalMicroseconds });
+
+    const { result: remappedGuilds, elapsed: remapGuildsTime } = timeFunction(() =>
+        this.capabilities!.has(Capabilities.FLAGS.CLIENT_STATE_V2) ? guilds.map((x) => new ReadyGuildDTO(x).toJSON()) : guilds,
+    );
+    buildReadyTrace.calls!.push(this.capabilities!.has(Capabilities.FLAGS.CLIENT_STATE_V2) ? "remapGuilds" : "[NoOP] remapGuilds", { micros: remapGuildsTime.totalMicroseconds });
+
+    const { result: remappedRelationships, elapsed: remapRelationshipsTime } = timeFunction(() => user.relationships.map((x) => x.toPublicRelationship()));
+    buildReadyTrace.calls!.push("remapRelationships", { micros: remapRelationshipsTime.totalMicroseconds });
+
+    buildReadyTrace.micros = buildReadyTrace.calls!.reduce((a, b) => {
+        if (typeof b === "string") return a;
+        return a + (b as { micros: number }).micros;
+    }, 0);
+
+    // const d: ReadyEventData = {
+    const { result: d, elapsed: buildReadyEventDataTime } = timeFunction<ReadyEventData>(() => {
+        return {
+            v: 9,
+            application: application ? { id: application.id, flags: application.flags } : undefined,
+            user: user.toPrivateUser(["rights"]),
+            user_settings: user.settings,
+            user_settings_proto,
+            user_settings_proto_json,
+            guilds: remappedGuilds,
+            relationships: remappedRelationships,
+            read_state: {
+                entries: read_states,
+                partial: false,
+                version: 0, // TODO
+            },
+            user_guild_settings: {
+                entries: user_guild_settings_entries,
+                partial: false,
+                version: 0, // TODO
+            },
+            private_channels: channels,
+            presences: [], // TODO: Send actual data
+            session_id: this.session_id,
+            country_code: user.settings!.locale, // TODO: do ip analysis instead
+            users: Array.from(users),
+            merged_members: merged_members,
+            sessions: allSessions,
+
+            resume_gateway_url: Config.get().gateway.endpointPublic!,
+
+            // lol hack whatever
+            required_action: Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,
+
+            consents: {
+                personalization: {
+                    consented: false, // TODO
+                },
+            },
+            experiments: [],
+            guild_join_requests: [],
+            connected_accounts: [],
+            guild_experiments: [],
+            geo_ordered_rtc_regions: [],
+            api_code_version: 1,
+            friend_suggestion_count: 0,
+            analytics_token: "",
+            tutorial: null,
+            session_type: "normal", // TODO
+            auth_session_id_hash: this.session!.getDiscordDeviceInfo().id_hash,
+            notification_settings: {
+                // ????
+                flags: 0,
+            },
+            game_relationships: [],
+        } as ReadyEventData;
+    });
 
     if (this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) && tokenData.tokenVersion != CurrentTokenFormatVersion) {
         d.auth_token = await generateToken(this.user_id);
     }
-    const buildReadyEventDataTime = taskSw.getElapsedAndReset();
+    // const buildReadyEventDataTime = taskSw.getElapsedAndReset();
 
     const _trace = [
         gatewayShardName,
@@ -662,6 +695,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 }
 
                 val.calls.push("mergeMemberGuildsTrace", mergeMemberGuildsTrace);
+            } else if (key === "buildReadyEventDataTime") {
+                val.calls = ["readyDataSerializationTime", buildReadyTrace];
+                val.micros += buildReadyTrace.micros;
             }
         }
     }
