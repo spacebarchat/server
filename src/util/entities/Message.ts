@@ -202,8 +202,8 @@ export class Message extends BaseClass {
     @Column({ nullable: true })
     avatar?: string;
 
-	@Column({ default: "[]", type: "simple-json" })
-	message_snapshots: MessageSnapshot[];
+    @Column({ default: "[]", type: "simple-json" })
+    message_snapshots: MessageSnapshot[];
 
     toJSON(): Message {
         return {

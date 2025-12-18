@@ -97,19 +97,19 @@ export interface AllowedMentions {
 }
 
 export interface MessageSnapshot {
-	message: {
-		content: string;
-		timestamp: Date;
-		edited_timestamp?: Date | null;
-		mentions: Snowflake[];
-		mention_roles: Snowflake[];
-		attachments?: Attachment[];
-		embeds: Embed[];
-		type: MessageType;
-		flags: number;
-		components?: MessageComponent[];
-		resolved?: object[];
-		sticker_items?: Sticker[];
-		// soundboard_sounds?: object[]; // TODO: when soundboard is done
-	}
+    message: {
+        content: string;
+        timestamp: Date;
+        edited_timestamp?: Date | null;
+        mentions: Snowflake[];
+        mention_roles: Snowflake[];
+        attachments?: Attachment[];
+        embeds: Embed[];
+        type: MessageType;
+        flags: number;
+        components?: MessageComponent[];
+        resolved?: object[];
+        sticker_items?: Sticker[];
+        // soundboard_sounds?: object[]; // TODO: when soundboard is done
+    };
 }
