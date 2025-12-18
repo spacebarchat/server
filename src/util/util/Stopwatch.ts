@@ -61,3 +61,10 @@ export async function timePromise<T>(fn: () => Promise<T>): Promise<{ result: T;
     const elapsed = stopwatch.elapsed();
     return { result, elapsed };
 }
+
+export function timeFunction<T>(fn: () => T): { result: T; elapsed: ElapsedTime } {
+    const stopwatch = Stopwatch.startNew();
+    const result = fn();
+    const elapsed = stopwatch.elapsed();
+    return { result, elapsed };
+}
