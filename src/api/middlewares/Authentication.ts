@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { checkToken, Rights } from "@spacebar/util";
+import { checkToken, Rights, Session, User, UserTokenData } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 
@@ -68,7 +68,10 @@ declare global {
         interface Request {
             user_id: string;
             user_bot: boolean;
+            tokenData: UserTokenData;
             token: { id: string; iat: number; ver?: number; did?: string };
+            user: User;
+            session?: Session;
             rights: Rights;
             fingerprint?: string;
         }
@@ -116,14 +119,16 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
     if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
     try {
-        const { decoded, user, session, tokenVersion } = await checkToken(req.headers.authorization, {
+        const { decoded, user, session, tokenVersion } = (req.tokenData = await checkToken(req.headers.authorization, {
             ipAddress: req.ip,
             fingerprint: req.fingerprint,
-        });
+        }));
 
         req.token = decoded;
         req.user_id = decoded.id;
         req.user_bot = user.bot;
+        req.user = user;
+        req.session = session;
         req.rights = new Rights(Number(user.rights));
         return next();
     } catch (error) {

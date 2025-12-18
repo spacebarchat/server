@@ -71,14 +71,12 @@ router.post(
         if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
 
         const { invite_code } = req.params;
+        const { public_flags } = req.user;
         const { guild_id } = await Invite.findOneOrFail({
             where: { code: invite_code },
         });
         const { features } = await Guild.findOneOrFail({
             where: { id: guild_id },
-        });
-        const { public_flags } = await User.findOneOrFail({
-            where: { id: req.user_id },
         });
         const ban = await Ban.findOne({
             where: [

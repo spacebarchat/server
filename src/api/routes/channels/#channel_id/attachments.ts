@@ -42,7 +42,7 @@ router.post(
         const payload = req.body as UploadAttachmentRequestSchema;
         const { channel_id } = req.params;
 
-        const user = await User.findOneOrFail({ where: { id: req.user_id } });
+        const user = req.user;
         const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
 
         if (!(await channel.getUserPermissions({ user_id: req.user_id })).has(Permissions.FLAGS.ATTACH_FILES)) {
@@ -102,7 +102,7 @@ router.post(
 router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
     const { channel_id, cloud_attachment_url } = req.params;
 
-    const user = await User.findOneOrFail({ where: { id: req.user_id } });
+    const user = req.user;
     const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
     const att = await CloudAttachment.findOneOrFail({ where: { uploadFilename: decodeURI(cloud_attachment_url) } });
     if (att.userId !== user.id) {

@@ -53,20 +53,18 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as ApplicationCreateSchema;
-        const user = await User.findOneOrFail({ where: { id: req.user_id } });
 
         const app = Application.create({
             name: trimSpecial(body.name),
             description: "",
             bot_public: true,
-            owner: user,
+            owner: req.user,
             verify_key: "IMPLEMENTME",
             flags: 0,
         });
 
         // april 14, 2023: discord made bot users be automatically added to all new apps
-        const { autoCreateBotUsers } = Config.get().general;
-        if (autoCreateBotUsers) {
+        if (Config.get().general.autoCreateBotUsers) {
             await createAppBotUser(app, req);
         } else await app.save();
 

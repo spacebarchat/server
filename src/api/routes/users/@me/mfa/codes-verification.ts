@@ -46,7 +46,7 @@ router.post(
         // TODO: We don't have email/etc etc, so can't send a verification code.
         // Once that's done, this route can verify `key`
 
-        // const user = await User.findOneOrFail({ where: { id: req.user_id } });
+        // const user = req.user;
         if ((await User.count({ where: { id: req.user_id } })) === 0) throw DiscordApiErrors.UNKNOWN_USER;
 
         let codes: BackupCode[];

@@ -39,9 +39,7 @@ router.post(
             if (Object.keys(req.body).length != 0) console.log(`[LOGOUT]: Extra fields sent in logout!`, req.body);
         }
 
-        if (req.token.did) {
-            await Session.delete({ user_id: req.user_id, session_id: req.token.did });
-        }
+        if (req.session) await Session.remove(req.session);
 
         res.status(204).send();
     },

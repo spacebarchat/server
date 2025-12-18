@@ -43,9 +43,7 @@ router.get(
         const before = req.query.before !== undefined ? String(req.query.before as string) : undefined;
         const guild_id = req.query.guild_id !== undefined ? req.query.guild_id : undefined;
 
-        const user = await User.findOneOrFail({
-            where: { id: req.user_id },
-        });
+        const user = req.user;
 
         const memberships = await Member.find({
             where: { id: req.user_id, ...(guild_id === undefined ? {} : { guild_id: String(guild_id) }) },

@@ -108,7 +108,7 @@ router.post(
         if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
         if (body.require_colons == null) body.require_colons = true;
 
-        const user = await User.findOneOrFail({ where: { id: req.user_id } });
+        const user = req.user;
         await handleFile(`/emojis/${id}`, body.image);
 
         const mimeType = body.image.split(":")[1].split(";")[0];

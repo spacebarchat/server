@@ -65,7 +65,7 @@ router.put(
     }),
     async (req: Request, res: Response) => {
         const { user_id } = req.params;
-        const owner = await User.findOneOrFail({ where: { id: req.user_id } });
+        const owner = req.user;
         const target = await User.findOneOrFail({ where: { id: user_id } }); //if noted user does not exist throw
         const { note } = req.body;
 

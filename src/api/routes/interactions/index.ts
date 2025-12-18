@@ -41,7 +41,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         },
     } as InteractionCreateEvent);
 
-    const user = await User.findOneOrFail({ where: { id: req.user_id } });
+    const user = req.user;
 
     const interactionData: Partial<InteractionCreateSchema> = {
         id: interactionId,
