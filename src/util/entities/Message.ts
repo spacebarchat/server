@@ -29,7 +29,7 @@ import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
-import { ActionRowComponent, ApplicationCommandType, Embed, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
+import { ActionRowComponent, ApplicationCommandType, Embed, MessageSnapshot, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 
 @Entity({
@@ -201,6 +201,9 @@ export class Message extends BaseClass {
 
     @Column({ nullable: true })
     avatar?: string;
+
+    @Column({ default: "[]", type: "simple-json" })
+    message_snapshots: MessageSnapshot[];
 
     toJSON(): Message {
         return {

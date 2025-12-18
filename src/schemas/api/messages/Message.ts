@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PartialUser, Snowflake } from "@spacebar/schemas";
+import { Attachment, Sticker } from "@spacebar/util";
+import { Embed, MessageComponent, PartialUser, Snowflake } from "@spacebar/schemas";
 
 export enum MessageType {
     DEFAULT = 0,
@@ -93,4 +94,22 @@ export interface AllowedMentions {
     roles?: Snowflake[];
     users?: Snowflake[];
     replied_user?: boolean;
+}
+
+export interface MessageSnapshot {
+    message: {
+        content: string;
+        timestamp: Date;
+        edited_timestamp?: Date | null;
+        mentions: Snowflake[];
+        mention_roles: Snowflake[];
+        attachments?: Attachment[];
+        embeds: Embed[];
+        type: MessageType;
+        flags: number;
+        components?: MessageComponent[];
+        resolved?: object[];
+        sticker_items?: Sticker[];
+        // soundboard_sounds?: object[]; // TODO: when soundboard is done
+    };
 }

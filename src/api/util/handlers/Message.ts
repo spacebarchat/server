@@ -232,7 +232,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                 if (!opts.message_reference.guild_id) opts.message_reference.guild_id = channel.guild_id;
                 if (!opts.message_reference.channel_id) opts.message_reference.channel_id = opts.channel_id;
 
-                if (!guild.features.includes("CROSS_CHANNEL_REPLIES")) {
+                if (opts.message_reference.type != 1) {
                     if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
                     if (opts.message_reference.channel_id !== opts.channel_id) throw new HTTPError("You can only reference messages from this channel");
                 }
@@ -257,7 +257,16 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
 
     // TODO: stickers/activity
-    if (!allow_empty && !opts.content && !opts.embeds?.length && !opts.attachments?.length && !opts.sticker_ids?.length && !opts.poll && !opts.components?.length) {
+    if (
+        !allow_empty &&
+        !opts.content &&
+        !opts.embeds?.length &&
+        !opts.attachments?.length &&
+        !opts.sticker_ids?.length &&
+        !opts.poll &&
+        !opts.components?.length &&
+        opts.message_reference?.type != 1
+    ) {
         console.log("[Message] Rejecting empty message:", opts, message);
         throw new HTTPError("Empty messages are not allowed", 50006);
     }
@@ -313,6 +322,35 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     id: referencedMessage.author_id,
                 }),
             );
+        }
+
+        // FORWARD
+        if (message.message_reference.type === 1) {
+            message.type = MessageType.DEFAULT;
+
+            if (message.referenced_message) {
+                const mention_roles: string[] = [];
+                const mentions: string[] = [];
+
+                // TODO: mention_roles and mentions arrays - not needed it seems, but discord still returns that
+
+                message.message_snapshots = [
+                    {
+                        message: {
+                            attachments: message.referenced_message.attachments,
+                            components: message.referenced_message.components,
+                            content: message.referenced_message.content!,
+                            edited_timestamp: message.referenced_message.edited_timestamp,
+                            embeds: message.referenced_message.embeds,
+                            flags: message.referenced_message.flags,
+                            mention_roles,
+                            mentions,
+                            timestamp: message.referenced_message.timestamp,
+                            type: message.referenced_message.type,
+                        },
+                    },
+                ];
+            }
         }
     }
 
