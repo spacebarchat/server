@@ -119,7 +119,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             if (req.body.action === "opened") {
                 discordPayload.embeds[0].color = 15426592;
-                discordPayload.embeds[0].description = req.body.issue.body.length > 150 ? `${req.body.issue.body.slice(0, 147)}...` : req.body.issue.body;
+                discordPayload.embeds[0].description = req.body.issue.body.length > 501 ? `${req.body.issue.body.slice(0, 497)}...` : req.body.issue.body;
             }
             break;
         case "member":
