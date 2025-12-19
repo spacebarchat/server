@@ -252,7 +252,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
                             .slice(0, 5) // Discord only shows 5 first commits
                             .map(
                                 (c: { id: string; url: string; message: string; author: { username: string } }) =>
-                                    `[\`${c.id.slice(0, 7)}\`](${c.url}) ${c.message.split("\n")[0].length > 46 ? `${c.message.slice(0, 47)}...` : c.message.split("\n")[0]} - ${c.author.username}`,
+                                    `[\`${c.id.slice(0, 7)}\`](${c.url}) ${c.message.split("\n")[0].length > 50 ? `${c.message.slice(0, 47)}...` : c.message.split("\n")[0]} - ${c.author.username}`,
                             )
                             .join("\n"),
                     },
