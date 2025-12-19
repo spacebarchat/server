@@ -10,3 +10,4 @@ extra/admin-api
 discord-response-samples
 src/util/migration/postgres-initial.ts
 temp
+scripts/schemaExclusions.json
