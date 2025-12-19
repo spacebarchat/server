@@ -132,6 +132,9 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
         req.rights = new Rights(Number(user.rights));
         return next();
     } catch (error) {
+        if (error instanceof HTTPError) {
+            return next(error);
+        }
         return next(new HTTPError(error!.toString(), 400));
     }
 }

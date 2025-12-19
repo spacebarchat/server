@@ -23,11 +23,10 @@ import crypto from "node:crypto";
 import fs from "fs/promises";
 import { existsSync } from "fs";
 // TODO: dont use deprecated APIs lol
-import { FindManyOptions, FindOptions, FindOptionsRelationByString, FindOptionsSelect, FindOptionsSelectByString, FindOptionsWhere } from "typeorm";
-import * as console from "node:console";
+import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
 import { randomUpperString } from "@spacebar/api";
-import { IpDataClient } from "./networking";
 import { TimeSpan } from "./Timespan";
+import { HTTPError } from "lambert-server";
 
 /// Change history:
 /// 1 - Initial version with HS256
@@ -52,9 +51,9 @@ function logAuth(text: string) {
     console.log(`[AUTH] ${text}`);
 }
 
-function rejectAndLog(rejectFunction: (reason?: string) => void, reason: string) {
+function rejectAndLog(rejectFunction: (reason?: unknown) => void, httpCode: number | undefined, reason: string) {
     console.error(reason);
-    rejectFunction(reason);
+    rejectFunction(new HTTPError(reason, httpCode ?? 400));
 }
 
 export const checkToken = (
@@ -76,7 +75,7 @@ export const checkToken = (
             const decoded = out as UserTokenData["decoded"];
             if (err || !decoded) {
                 logAuth("validateUser rejected: " + err);
-                return rejectAndLog(reject, "Invalid Token meow " + err);
+                return rejectAndLog(reject, 401, "Invalid Token meow " + err);
             }
 
             const [user, session] = await Promise.all([
@@ -90,34 +89,34 @@ export const checkToken = (
 
             if (!user) {
                 logAuth("validateUser rejected: User not found");
-                return rejectAndLog(reject, "User not found");
+                return rejectAndLog(reject, 401, "User not found");
             }
 
             if (decoded.did && !session) {
                 logAuth("validateUser rejected: Session not found");
-                return rejectAndLog(reject, "Invalid Token");
+                return rejectAndLog(reject, 401, "Invalid Token");
             }
 
             // we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
             if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0)) {
                 logAuth("validateUser rejected: Token not yet valid");
-                return rejectAndLog(reject, "Invalid Token");
+                return rejectAndLog(reject, 401, "Invalid Token");
             }
 
             if (user.disabled) {
                 logAuth("validateUser rejected: User disabled");
-                return rejectAndLog(reject, "User disabled");
+                return rejectAndLog(reject, 401, "User disabled");
             }
 
             if (user.deleted) {
                 logAuth("validateUser rejected: User deleted");
-                return rejectAndLog(reject, "User not found");
+                return rejectAndLog(reject, 401, "User not found");
             }
 
             const banReasons = await InstanceBan.findInstanceBans({ userId: user.id, ipAddress: opts?.ipAddress, fingerprint: opts?.fingerprint, propagateBan: true });
             if (banReasons.length > 0) {
                 logAuth("validateUser rejected: User banned for reasons: " + banReasons.join(", "));
-                return rejectAndLog(reject, "Invalid Token");
+                return rejectAndLog(reject, 418, "Invalid Token");
             }
 
             if (session && TimeSpan.fromDates(session.last_seen?.getTime() ?? 0, new Date().getTime()).totalSeconds >= 15) {
@@ -145,7 +144,7 @@ export const checkToken = (
         };
 
         const dec = jwt.decode(token, { complete: true });
-        if (!dec) return reject("Could not parse token");
+        if (!dec) return rejectAndLog(reject, 500, "Failed to decode token");
         logAuth("Decoded token: " + JSON.stringify(dec));
 
         if (dec.header.alg == "HS256" && Config.get().security.jwtSecret !== null) {
@@ -155,7 +154,7 @@ export const checkToken = (
             loadOrGenerateKeypair().then((keyPair) => {
                 jwt.verify(token, keyPair.publicKey, { algorithms: ["ES512"] }, validateUser);
             });
-        } else return reject("Invalid token algorithm");
+        } else return rejectAndLog(reject, 400, "Unsupported token algorithm: " + dec.header.alg);
     });
 };
 
