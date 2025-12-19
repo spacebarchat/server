@@ -35,7 +35,7 @@ router.put(
         const { channel_id, user_id } = req.params;
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["recipients"],
+            relations: { recipients: true },
         });
 
         if (channel.type !== ChannelType.GROUP_DM) {
@@ -85,7 +85,7 @@ router.delete(
         const { channel_id, user_id } = req.params;
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["recipients"],
+            relations: { recipients: true },
         });
         if (!(channel.type === ChannelType.GROUP_DM && (channel.owner_id === req.user_id || user_id === req.user_id))) throw DiscordApiErrors.MISSING_PERMISSIONS;
 

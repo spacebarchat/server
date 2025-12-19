@@ -28,7 +28,7 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
 
     const stream = await Stream.findOne({
         where: { channel_id: channelId, owner_id: userId },
-        relations: ["channel"],
+        relations: { channel: true },
     });
 
     if (!stream) return this.close(4000, "Invalid stream key");

@@ -118,25 +118,26 @@ router.get(
             order: { timestamp: "DESC" },
             take: limit,
             where: { channel_id },
-            relations: [
-                "author",
-                "webhook",
-                "application",
-                "mentions",
-                "mention_roles",
-                "mention_channels",
-                "sticker_items",
-                "attachments",
-                "referenced_message",
-                "referenced_message.author",
-                "referenced_message.webhook",
-                "referenced_message.application",
-                "referenced_message.mentions",
-                "referenced_message.mention_roles",
-                "referenced_message.mention_channels",
-                "referenced_message.sticker_items",
-                "referenced_message.attachments",
-            ],
+            relations: {
+                author: true,
+                webhook: true,
+                application: true,
+                mentions: true,
+                mention_roles: true,
+                mention_channels: true,
+                sticker_items: true,
+                attachments: true,
+                referenced_message: {
+                    author: true,
+                    webhook: true,
+                    application: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                    sticker_items: true,
+                    attachments: true,
+                },
+            },
         };
 
         let messages: Message[];
@@ -265,7 +266,10 @@ router.get(
                     if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
                     if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
 
-                    msg.referenced_message = await Message.findOne({ where: whereOptions, relations: ["author", "mentions", "mention_roles", "mention_channels"] });
+                    msg.referenced_message = await Message.findOne({
+                        where: whereOptions,
+                        relations: { author: true, mentions: true, mention_roles: true, mention_channels: true },
+                    });
                 }),
         );
 
@@ -323,7 +327,7 @@ router.post(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["recipients", "recipients.user"],
+            relations: { recipients: { user: true } },
         });
         if (!channel.isWritable()) {
             throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
@@ -434,7 +438,7 @@ router.post(
             if (!message.member) {
                 message.member = await Member.findOneOrFail({
                     where: { id: req.user_id, guild_id: message.guild_id },
-                    relations: ["roles"],
+                    relations: { roles: true },
                 });
             }
 

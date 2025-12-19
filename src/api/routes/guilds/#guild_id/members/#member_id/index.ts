@@ -44,7 +44,7 @@ router.get(
 
         const member = await Member.findOneOrFail({
             where: { id: member_id, guild_id },
-            relations: ["roles", "user"],
+            relations: { roles: true, user: true },
             select: {
                 index: true,
                 // only grab public member props
@@ -91,7 +91,7 @@ router.patch(
 
         const member = await Member.findOneOrFail({
             where: { id: member_id, guild_id },
-            relations: ["roles", "user"],
+            relations: { roles: true, user: true },
         });
         const permission = await getPermission(req.user_id, guild_id);
 

@@ -67,7 +67,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         where: {
             guild_id,
         },
-        relations: ["user", "roles"],
+        relations: { user: true, roles: true },
     };
     if (limit) memberFind.take = Math.abs(Number(limit || 100));
 

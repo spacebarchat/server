@@ -61,7 +61,7 @@ const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
-        relations: ["recipients"],
+        relations: { recipients: true },
     });
     if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 
@@ -242,7 +242,16 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     where: {
                         id: opts.message_reference.message_id,
                     },
-                    relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
+                    relations: {
+                        author: true,
+                        webhook: true,
+                        application: true,
+                        mentions: true,
+                        mention_roles: true,
+                        mention_channels: true,
+                        sticker_items: true,
+                        attachments: true,
+                    },
                 });
 
                 if (message.referenced_message.channel_id && message.referenced_message.channel_id !== opts.message_reference.channel_id)

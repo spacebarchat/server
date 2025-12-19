@@ -38,11 +38,11 @@ router.get(
 
         const requested_relations = await User.findOneOrFail({
             where: { id: req.params.user_id },
-            relations: ["relationships"],
+            relations: { relationships: true },
         });
         const self_relations = await User.findOneOrFail({
             where: { id: req.user_id },
-            relations: ["relationships"],
+            relations: { relationships: true },
         });
 
         for (const rmem of requested_relations.relationships) {

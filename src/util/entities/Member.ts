@@ -175,7 +175,7 @@ export class Member extends BaseClassWithoutId {
         if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
         const member = await Member.findOneOrFail({
             where: { id: user_id, guild_id },
-            relations: ["user"],
+            relations: { user: true },
         });
 
         // use promise all to execute all promises at the same time -> save time
@@ -205,7 +205,7 @@ export class Member extends BaseClassWithoutId {
         const [member] = await Promise.all([
             Member.findOneOrFail({
                 where: { id: user_id, guild_id },
-                relations: ["user", "roles"], // we don't want to load  the role objects just the ids
+                relations: { user: true, roles: true }, // we don't want to load  the role objects just the ids
                 select: {
                     index: true,
                     roles: {
@@ -238,7 +238,7 @@ export class Member extends BaseClassWithoutId {
         const [member] = await Promise.all([
             Member.findOneOrFail({
                 where: { id: user_id, guild_id },
-                relations: ["user", "roles"], // we don't want to load  the role objects just the ids
+                relations: { user: true, roles: true }, // we don't want to load  the role objects just the ids
                 select: {
                     index: true,
                     roles: {
@@ -270,7 +270,7 @@ export class Member extends BaseClassWithoutId {
                 id: user_id,
                 guild_id,
             },
-            relations: ["user"],
+            relations: { user: true },
         });
 
         // @ts-expect-error Member nickname is nullable
@@ -327,7 +327,7 @@ export class Member extends BaseClassWithoutId {
                         },
                     },
                 },
-                relations: ["user", "roles"],
+                relations: { user: true, roles: true },
                 take: 10,
             })
         ).map((member) => member.toPublicMember());

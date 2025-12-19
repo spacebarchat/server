@@ -86,7 +86,7 @@ router.post(
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
             select: TemplateGuildProjection,
-            relations: ["roles", "channels"],
+            relations: { roles: true, channels: true },
         });
         const exists = await Template.findOne({
             where: { id: guild_id },

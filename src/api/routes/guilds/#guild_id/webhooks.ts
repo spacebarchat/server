@@ -36,7 +36,7 @@ router.get(
         const { guild_id } = req.params;
         const webhooks = await Webhook.find({
             where: { guild_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         const instanceUrl = Config.get().api.endpointPublic;

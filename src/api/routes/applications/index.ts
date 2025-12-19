@@ -35,7 +35,7 @@ router.get(
     async (req: Request, res: Response) => {
         const results = await Application.find({
             where: { owner: { id: req.user_id } },
-            relations: ["owner", "bot"],
+            relations: { owner: true, bot: true },
         });
         res.json(results).status(200);
     },

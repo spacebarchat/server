@@ -32,7 +32,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
     if (body.guild_id) {
         voiceState.member = await Member.findOneOrFail({
             where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
-            relations: ["user", "roles"],
+            relations: { user: true, roles: true },
         });
     }
 

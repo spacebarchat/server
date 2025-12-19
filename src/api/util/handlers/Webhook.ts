@@ -14,7 +14,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
         where: {
             id: webhook_id,
         },
-        relations: ["channel", "guild", "application"],
+        relations: { channel: true, guild: true, application: true },
     });
 
     if (!webhook) {

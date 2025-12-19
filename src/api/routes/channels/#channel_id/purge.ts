@@ -74,7 +74,7 @@ router.post(
                 author_id: rights.has("SELF_DELETE_MESSAGES") ? undefined : Not(req.user_id),
                 // if you lack the right of self-deletion, you can't delete your own messages, even in purges
             },
-            relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
+            relations: { author: true, webhook: true, application: true, mentions: true, mention_roles: true, mention_channels: true, sticker_items: true, attachments: true },
         };
 
         const messages = await Message.find(query);

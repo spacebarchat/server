@@ -68,7 +68,7 @@ router.post(
         const user = await User.findOneOrFail({
             where: [{ phone: login }, { email: login }],
             select: { data: true, id: true, disabled: true, deleted: true, totp_secret: true, mfa_enabled: true, webauthn_enabled: true, security_keys: true, verified: true },
-            relations: ["security_keys", "settings"],
+            relations: { security_keys: true, settings: true },
         }).catch(() => {
             throw FieldErrors({
                 login: {

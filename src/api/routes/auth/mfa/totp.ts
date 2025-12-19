@@ -46,7 +46,7 @@ router.post(
                 totp_last_ticket: ticket,
             },
             select: { id: true, totp_secret: true },
-            relations: ["settings"],
+            relations: { settings: true },
         });
 
         const backup = await BackupCode.findOne({

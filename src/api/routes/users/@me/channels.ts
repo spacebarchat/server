@@ -35,7 +35,7 @@ router.get(
     async (req: Request, res: Response) => {
         const recipients = await Recipient.find({
             where: { user_id: req.user_id, closed: false },
-            relations: ["channel", "channel.recipients"],
+            relations: { channel: { recipients: true } },
         });
         res.json(await Promise.all(recipients.map((r) => DmChannelDTO.from(r.channel, [req.user_id]))));
     },

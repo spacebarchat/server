@@ -81,7 +81,7 @@ router.post(
         //leave all group channels
         const groupChannels = await Channel.find({
             where: { type: ChannelType.GROUP_DM },
-            relations: ["recipients"],
+            relations: { recipients: true },
             select: {
                 id: true,
                 owner_id: true,

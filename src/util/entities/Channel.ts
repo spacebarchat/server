@@ -273,7 +273,7 @@ export class Channel extends BaseClass {
 
         const userRecipients = await Recipient.find({
             where: { user_id: creator_user_id },
-            relations: ["channel", "channel.recipients"],
+            relations: { channel: { recipients: true } },
         });
 
         for (const ur of userRecipients) {
@@ -451,8 +451,8 @@ export class Channel extends BaseClass {
 
         let member = opts.member;
         if (!member) {
-            if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: ["roles"] });
-            else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: ["roles"] });
+            if (opts.user) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user.id }, relations: { roles: true } });
+            else if (opts.user_id) member = await Member.findOneOrFail({ where: { guild_id: guild.id, id: opts.user_id }, relations: { roles: true } });
             else {
                 console.error("Channel.getUserPermissions: called without user or member for non-DM channel.");
                 return Permissions.NONE;
@@ -464,7 +464,7 @@ export class Channel extends BaseClass {
             (
                 await Member.findOneOrFail({
                     where: { guild_id: guild.id, index: member.index },
-                    relations: ["roles"],
+                    relations: { roles: true },
                     select: {
                         roles: {
                             id: true,

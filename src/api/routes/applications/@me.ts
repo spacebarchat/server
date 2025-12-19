@@ -41,7 +41,7 @@ router.get(
     async (req: Request, res: Response) => {
         const app = await Application.findOneOrFail({
             where: { id: req.user_id },
-            relations: ["owner", "bot"],
+            relations: { owner: true, bot: true },
         });
 
         return res.json(app);
@@ -66,7 +66,7 @@ router.patch(
 
         const app = await Application.findOneOrFail({
             where: { id: req.user_id },
-            relations: ["owner", "bot"],
+            relations: { owner: true, bot: true },
         });
 
         if (body.icon) {

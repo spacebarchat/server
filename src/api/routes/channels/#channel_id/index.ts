@@ -65,7 +65,7 @@ router.delete(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["recipients"],
+            relations: { recipients: true },
         });
 
         if (channel.type === ChannelType.DM) {

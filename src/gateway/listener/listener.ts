@@ -64,11 +64,11 @@ export async function setupListener(this: WebSocket) {
     const [members, recipients, relationships] = await Promise.all([
         Member.find({
             where: { id: this.user_id },
-            relations: ["guild", "guild.channels"],
+            relations: { guild: { channels: true } },
         }),
         Recipient.find({
             where: { user_id: this.user_id, closed: false },
-            relations: ["channel"],
+            relations: { channel: true },
         }),
         Relationship.find({
             where: {

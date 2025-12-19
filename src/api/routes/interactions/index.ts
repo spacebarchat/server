@@ -69,7 +69,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         interactionData.app_permissions = (await getPermission(body.application_id, body.guild_id, body.channel_id)).bitfield.toString();
 
         const guild = await Guild.findOneOrFail({ where: { id: body.guild_id } });
-        const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: ["user"] });
+        const member = await Member.findOneOrFail({ where: { guild_id: body.guild_id, id: req.user_id }, relations: { user: true } });
 
         interactionData.guild = {
             id: guild.id,
@@ -91,7 +91,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     }
 
     if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
-        interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id, flags: undefined }, relations: ["author"] });
+        interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id, flags: undefined }, relations: { author: true } });
     }
 
     emitEvent({

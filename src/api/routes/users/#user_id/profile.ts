@@ -33,7 +33,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         where: {
             id: req.params.id,
         },
-        relations: ["connected_accounts"],
+        relations: { connected_accounts: true },
     });
 
     const mutual_guilds: object[] = [];
@@ -72,7 +72,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         guild_id && typeof guild_id == "string"
             ? await Member.findOneOrFail({
                   where: { id: req.params.user_id, guild_id: guild_id },
-                  relations: ["roles"],
+                  relations: { roles: true },
               })
             : undefined;
 

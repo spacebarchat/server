@@ -90,7 +90,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const { result: tokenData, elapsed: checkTokenTime } = await timePromise(() =>
         checkToken(identify.token, {
-            // relations: ["relationships", "relationships.to", "settings"],
+            // relations: {"relationships", "relationships.to", "settings"],
             // select: [...PrivateUserProjection, "relationships", "rights"],
             select: [...PrivateUserProjection, "rights"],
         }),
@@ -180,7 +180,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() =>
             Relationship.find({
                 where: { from_id: this.user_id },
-                relations: ["to"],
+                relations: { to: true },
             }),
         ),
         timePromise(() => UserSettings.getOrDefault(this.user_id)),
@@ -221,24 +221,24 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     // 		.columns.map((x) => [x.propertyName, true]),
                     // ),
                 },
-                relations: [
+                relations: {
                     // "guild",
                     // "guild.channels",
                     // "guild.emojis",
                     // "guild.roles",
                     // "guild.stickers",
                     // "guild.voice_states",
-                    "roles",
+                    roles: true,
 
                     // For these entities, `user` is always just the logged in user we fetched above
                     // "user",
-                ],
+                },
             }),
         ),
         timePromise(() =>
             Recipient.find({
                 where: { user_id: this.user_id, closed: false },
-                relations: ["channel", "channel.recipients", "channel.recipients.user"],
+                relations: { channel: { recipients: { user: true } } },
                 select: {
                     channel: {
                         id: true,

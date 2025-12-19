@@ -41,7 +41,7 @@ router.get(
     async (req: Request, res: Response) => {
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            relations: ["relationships", "relationships.to"],
+            relations: { relationships: { to: true } },
             select: { id: true, relationships: true },
         });
 
@@ -70,7 +70,7 @@ router.put(
             res,
             await User.findOneOrFail({
                 where: { id: req.params.user_id },
-                relations: ["relationships", "relationships.to"],
+                relations: { relationships: { to: true } },
                 select: userProjection,
             }),
             req.body.type ?? RelationshipType.friends,
@@ -135,7 +135,7 @@ router.post(
             req,
             res,
             await User.findOneOrFail({
-                relations: ["relationships", "relationships.to"],
+                relations: { relationships: { to: true } },
                 select: userProjection,
                 where: {
                     discriminator: String(req.body.discriminator).padStart(4, "0"), //Discord send the discriminator as integer, we need to add leading zeroes
@@ -167,12 +167,12 @@ router.delete(
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
             select: userProjection,
-            relations: ["relationships"],
+            relations: { relationships: true },
         });
         const friend = await User.findOneOrFail({
             where: { id: user_id },
             select: userProjection,
-            relations: ["relationships"],
+            relations: { relationships: true },
         });
 
         const relationship = user.relationships.find((x) => x.to_id === user_id);
@@ -224,7 +224,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 
     const user = await User.findOneOrFail({
         where: { id: req.user_id },
-        relations: ["relationships", "relationships.to"],
+        relations: { relationships: { to: true } },
         select: userProjection,
     });
 

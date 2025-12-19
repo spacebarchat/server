@@ -40,7 +40,7 @@ router.get(
         const { channel_id } = req.params;
         const webhooks = await Webhook.find({
             where: { channel_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         return res.json(

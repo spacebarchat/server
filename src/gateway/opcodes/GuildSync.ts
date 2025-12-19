@@ -91,7 +91,7 @@ interface GuildSyncResult {
 async function handleGuildSync(ws: WebSocket, guild_id: string) {
     const res: GuildSyncResult = { id: guild_id, presences: [], members: [] };
 
-    const members = await Member.find({ where: { guild_id }, relations: ["user", "roles", "guild"] });
+    const members = await Member.find({ where: { guild_id }, relations: { user: true, roles: true, guild: true } });
     res.members = members.map((m) => m.toPublicMember());
 
     const sessions = await Session.find({ where: { user_id: In(members.map((m) => m.id)) }, order: { user_id: "ASC" } });

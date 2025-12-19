@@ -33,7 +33,7 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         const sticker_packs = await StickerPack.find({
-            relations: ["stickers"],
+            relations: { stickers: true },
         });
 
         res.json({ sticker_packs });

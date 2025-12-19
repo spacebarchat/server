@@ -81,7 +81,7 @@ router.post(
                 id: req.user_id,
             },
             select: { data: true, id: true, disabled: true, deleted: true, totp_secret: true, mfa_enabled: true, username: true },
-            relations: ["settings"],
+            relations: { settings: true },
         });
 
         if (isGenerateSchema(req.body)) {

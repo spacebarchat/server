@@ -20,7 +20,7 @@ router.get(
         const { webhook_id } = req.params;
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         if (webhook.guild_id) {
@@ -52,7 +52,7 @@ router.delete(
 
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         if (webhook.guild_id) {
@@ -98,7 +98,7 @@ router.patch(
 
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         if (webhook.guild_id) {

@@ -41,7 +41,7 @@ router.post(
         });
         const member = await Member.findOne({
             where: { id: user_id, guild_id: channel.guild_id },
-            relations: ["roles", "user"],
+            relations: { roles: true, user: true },
         });
         await emitEvent({
             event: "TYPING_START",

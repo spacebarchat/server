@@ -63,7 +63,7 @@ router.get(
                     owner_id: true,
                 },
             },
-            relations: ["guild", "roles"],
+            relations: { guild: true, roles: true },
         });
 
         const channels = await Channel.find({
@@ -115,25 +115,26 @@ router.get(
             await Message.find({
                 where: whereQuery,
                 order: { timestamp: "DESC" },
-                relations: [
-                    "author",
-                    "webhook",
-                    "application",
-                    "mentions",
-                    "mention_roles",
-                    "mention_channels",
-                    "sticker_items",
-                    "attachments",
-                    "referenced_message",
-                    "referenced_message.author",
-                    "referenced_message.webhook",
-                    "referenced_message.application",
-                    "referenced_message.mentions",
-                    "referenced_message.mention_roles",
-                    "referenced_message.mention_channels",
-                    "referenced_message.sticker_items",
-                    "referenced_message.attachments",
-                ],
+                relations: {
+                    author: true,
+                    webhook: true,
+                    application: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                    sticker_items: true,
+                    attachments: true,
+                    referenced_message: {
+                        author: true,
+                        webhook: true,
+                        application: true,
+                        mentions: true,
+                        mention_roles: true,
+                        mention_channels: true,
+                        sticker_items: true,
+                        attachments: true,
+                    },
+                },
                 take: limit,
             })
         ).map((m) => {

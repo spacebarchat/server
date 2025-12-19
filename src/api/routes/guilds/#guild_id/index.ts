@@ -83,7 +83,7 @@ router.patch(
 
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
-            relations: ["emojis", "roles", "stickers"],
+            relations: { emojis: true, roles: true, stickers: true },
         });
 
         // trying to `select` this fails

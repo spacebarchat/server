@@ -40,7 +40,7 @@ router.get(
     async (req: Request, res: Response) => {
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id },
-            relations: ["owner", "bot"],
+            relations: { owner: true, bot: true },
         });
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
@@ -66,7 +66,7 @@ router.patch(
 
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id },
-            relations: ["owner", "bot"],
+            relations: { owner: true, bot: true },
         });
 
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
@@ -114,7 +114,7 @@ router.post(
     async (req: Request, res: Response) => {
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id },
-            relations: ["bot", "owner"],
+            relations: { bot: true, owner: true },
         });
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 

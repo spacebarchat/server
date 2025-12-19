@@ -34,7 +34,7 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         const members = await Member.find({
-            relations: ["guild"],
+            relations: { guild: true },
             where: { id: req.user_id },
         });
 

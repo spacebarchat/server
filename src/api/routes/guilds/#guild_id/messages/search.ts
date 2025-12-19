@@ -80,7 +80,7 @@ router.get(
                     id: req.params.guild_id,
                 },
             },
-            relations: ["author", "webhook", "application", "mentions", "mention_roles", "mention_channels", "sticker_items", "attachments"],
+            relations: { author: true, webhook: true, application: true, mentions: true, mention_roles: true, mention_channels: true, sticker_items: true, attachments: true },
             skip: offset ? Number(offset) : 0,
         };
         //@ts-ignore

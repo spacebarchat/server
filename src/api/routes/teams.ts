@@ -44,7 +44,7 @@ router.get(
             where: {
                 owner_user_id: req.user_id,
             },
-            relations: ["members"],
+            relations: { members: true },
         });
 
         res.send(teams);

@@ -24,7 +24,7 @@ router.get(
             where: {
                 id: webhook_id,
             },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
 
         if (!webhook) {
@@ -107,7 +107,7 @@ router.delete(
             where: {
                 id: webhook_id,
             },
-            relations: ["channel", "guild", "application"],
+            relations: { channel: true, guild: true, application: true },
         });
 
         if (!webhook) {
@@ -154,7 +154,7 @@ router.patch(
 
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
-            relations: ["user", "channel", "source_channel", "guild", "source_guild", "application"],
+            relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
         const channel_id = webhook.channel_id;
         if (!body.name && !body.avatar) {

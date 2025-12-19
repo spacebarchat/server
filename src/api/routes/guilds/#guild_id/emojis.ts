@@ -42,7 +42,7 @@ router.get(
 
         const emojis = await Emoji.find({
             where: { guild_id: guild_id },
-            relations: ["user"],
+            relations: { user: true },
         });
 
         return res.json(emojis);
@@ -71,7 +71,7 @@ router.get(
 
         const emoji = await Emoji.findOneOrFail({
             where: { guild_id: guild_id, id: emoji_id },
-            relations: ["user"],
+            relations: { user: true },
         });
 
         return res.json(emoji);

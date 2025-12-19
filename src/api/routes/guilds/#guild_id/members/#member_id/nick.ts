@@ -50,7 +50,7 @@ router.patch(
 
         const member = await Member.findOne({
             where: { id: member_id, guild_id },
-            relations: ["roles"],
+            relations: { roles: true },
         });
 
         res.send(member?.toPublicMember());

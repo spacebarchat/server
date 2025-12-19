@@ -59,7 +59,7 @@ router.get(
             where: {
                 id: client_id as string,
             },
-            relations: ["bot"],
+            relations: { bot: true },
         });
 
         // TODO: use DiscordApiErrors
@@ -82,7 +82,7 @@ router.get(
             where: {
                 id: req.user_id,
             },
-            relations: ["guild", "roles", "user"],
+            relations: { guild: true, roles: true, user: true },
             select: {
                 guild: { id: true, name: true, icon: true, mfa_level: true, owner_id: true },
                 roles: { id: true },
@@ -204,7 +204,7 @@ router.post(
             where: {
                 id: client_id as string,
             },
-            relations: ["bot"],
+            relations: { bot: true },
         });
 
         // TODO: use DiscordApiErrors

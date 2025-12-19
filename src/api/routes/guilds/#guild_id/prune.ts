@@ -44,7 +44,7 @@ const inactiveMembers = async (guild_id: string, user_id: string, days: number, 
                 last_message_id: IsNull(),
             },
         ],
-        relations: ["roles"],
+        relations: { roles: true },
     });
     if (!members.length) return [];
 
@@ -53,7 +53,7 @@ const inactiveMembers = async (guild_id: string, user_id: string, days: number, 
 
     const me = await Member.findOneOrFail({
         where: { id: user_id, guild_id },
-        relations: ["roles"],
+        relations: { roles: true },
     });
     const myHighestRole = Math.max(...(me.roles?.map((x) => x.position) || []));
 

@@ -32,7 +32,7 @@ router.patch("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, re
 
     const members = await Member.find({
         where: { guild_id },
-        relations: ["roles"],
+        relations: { roles: true },
     });
 
     const [add, remove] = arrayPartition(members, (member) => member_ids.includes(member.id) && !member.roles.map((role) => role.id).includes(role_id));

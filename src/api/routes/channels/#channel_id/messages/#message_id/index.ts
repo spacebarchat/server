@@ -72,7 +72,7 @@ router.patch(
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
-            relations: ["attachments"],
+            relations: { attachments: true },
         });
 
         const permissions = await getPermission(req.user_id, undefined, channel_id);
@@ -200,7 +200,7 @@ router.put(
         }
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["recipients", "recipients.user"],
+            relations: { recipients: { user: true } },
         });
 
         const embeds = body.embeds || [];
@@ -265,7 +265,7 @@ router.get(
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
-            relations: ["attachments"],
+            relations: { attachments: true },
         });
 
         const permissions = await getPermission(req.user_id, undefined, channel_id);

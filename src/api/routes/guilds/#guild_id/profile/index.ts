@@ -47,7 +47,7 @@ router.patch(
 
         let member = await Member.findOneOrFail({
             where: { id: req.user_id, guild_id },
-            relations: ["roles", "user"],
+            relations: { roles: true, user: true },
         });
 
         if (body.banner) body.banner = await handleFile(`/guilds/${guild_id}/users/${req.user_id}/avatars`, body.banner as string);

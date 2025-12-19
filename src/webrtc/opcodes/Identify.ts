@@ -54,7 +54,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
                 session_id,
                 used: false,
             },
-            relations: ["stream"],
+            relations: { stream: true },
         });
 
         if (streamSession) {
