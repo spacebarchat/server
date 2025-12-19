@@ -95,7 +95,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
                         req.body.issue.title.length > 150 ? `${req.body.issue.title.slice(0, 147)}...` : req.body.issue.title
                     }`,
                     url: req.body.comment.html_url,
-                    description: req.body.comment.body.length > 150 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+                    description: req.body.comment.body.length > 501 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
                 },
             ];
             break;
