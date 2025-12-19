@@ -1,6 +1,10 @@
 {
-    "include": ["MessageInteractionSchema"],
-    "includeRe": ["^MessageComponentType\\..*"],
+    "include": [
+        "MessageInteractionSchema"
+    ],
+    "includeRe": [
+        "^MessageComponentType\\..*"
+    ],
     "manual": [
         "DefaultSchema",
         "Schema",
@@ -83,7 +87,9 @@
         "^Job"
     ],
     "manualWarn": [],
-    "manualWarnRe": [".*<.*>$"],
+    "manualWarnRe": [
+        ".*<.*>$"
+    ],
     "auto": [
         {
             "value": "StringSchema",

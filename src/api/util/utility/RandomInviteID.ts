@@ -49,7 +49,11 @@ export function snowflakeBasedInvite() {
         snowflake = snowflake / base;
     }
 
-    return str.substr(3, 8).split("").reverse().join("");
+    return str
+        .slice(3, 3 + 8)
+        .split("")
+        .reverse()
+        .join("");
 }
 
 export function randomUpperString(length: number = 10) {

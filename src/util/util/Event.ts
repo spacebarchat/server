@@ -204,8 +204,8 @@ class UnixSocketListener {
                 while (buffer.length >= 4) {
                     const msgLen = buffer.readUInt32BE(0);
                     if (buffer.length < 4 + msgLen) break;
-                    const msgBuf = buffer.slice(4, 4 + msgLen);
-                    buffer = buffer.slice(4 + msgLen);
+                    const msgBuf = buffer.subarray(4, 4 + msgLen);
+                    buffer = buffer.subarray(4 + msgLen);
                     try {
                         const payload = JSON.parse(msgBuf.toString());
                         this.eventEmitter.emit(payload.id, payload.event);
