@@ -24,4 +24,30 @@ export class CdnConfiguration extends EndpointConfiguration {
     imagorServerUrl: string | null = null;
     proxyCacheHeaderSeconds: number = 60 * 60 * 24;
     maxAttachmentSize: number = 25 * 1024 * 1024; // 25 MB
+
+    // limits: CdnLimitsConfiguration = new CdnLimitsConfiguration();
+}
+
+export class CdnLimitsConfiguration {
+    // ordered by route register order in CDN...
+    icon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    roleIcon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    emoji: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    sticker: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    banner: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    splash: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    avatar: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    discoverySplash: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    appIcon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    discoverSplash: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration(); // what even is this?
+    teamIcon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+    channelIcon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration(); // is this even used?
+    guildAvatar: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
+}
+
+export class CdnImageLimitsConfiguration {
+    maxHeight: number = 8192;
+    maxWidth: number = 8192;
+    maxSize: number = 10 * 1024 * 1024; // 10 MB
+    allowAnimated: "always" | "never" | "premium" = "always";
 }
