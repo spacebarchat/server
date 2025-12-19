@@ -62,8 +62,15 @@
   </style>
 
   <script>
-    // id param in query
     const guildId = new URLSearchParams(window.location.search).get("id");
+    const defaultAvatarHashMap = new Map([
+      ["0", "4a8562cf00887030c416d3ec2d46385a"],
+      ["1", "9b0bb198936784c45c72833cc426cc55"],
+      ["2", "22341bdb500c7b63a93bbce957d1601e"],
+      ["3", "d9977836b82058bf2f74eebd50edc095"],
+      ["4", "9d6ddb4e4d899a533a8cc617011351c9"],
+      ["5", "7213ab6677377974697dfdfbaf5f6a6f"],
+    ]);
 
     document.addEventListener("DOMContentLoaded", function() {
       const vcList = document.getElementById("vc-list");
@@ -99,14 +106,19 @@
             memberList.innerHTML = "";
             data.members.forEach(member => {
               const memberItem = document.createElement("div");
+
               const img = document.createElement("img");
-              img.src = member.avatar_url;
+              img.src = member.avatar_url ;
               img.alt = member.username;
               img.width = 32;
               img.height = 32;
               img.style.borderRadius = "50%";
               img.style.marginRight = "8px";
+              img.loading = "lazy";
+              img.decoding = "async";
+              img.style.contentVisibility = "auto";
               memberItem.appendChild(img);
+
               const nameSpan = document.createElement("span");
               nameSpan.textContent = member.username;
               memberItem.appendChild(nameSpan);

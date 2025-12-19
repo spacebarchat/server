@@ -107,7 +107,11 @@ router.get(
                 discriminator: x.user.discriminator,
                 avatar: x.user.avatar,
                 status: "online", // TODO
-                avatar_url: x.user.avatar ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png` : undefined,
+                avatar_url: x.avatar
+                    ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
+                    : x.user.avatar
+                      ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.avatar}.png`
+                      : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
             };
         });
 
