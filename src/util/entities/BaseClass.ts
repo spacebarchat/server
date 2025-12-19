@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseEntity, BeforeInsert, BeforeUpdate, FindOptionsWhere, ObjectIdColumn, PrimaryColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, BeforeUpdate, FindOptionsWhere, InsertResult, ObjectIdColumn, ObjectLiteral, PrimaryColumn } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
@@ -63,6 +63,11 @@ export class BaseClassWithoutId extends BaseEntity {
     static decrement<T extends BaseClass>(conditions: FindOptionsWhere<T>, propertyPath: string, value: number | string) {
         const repository = this.getRepository();
         return repository.decrement(conditions, propertyPath, value);
+    }
+
+    public async insert(): Promise<this> {
+        await getDatabase()!.getRepository(this.construct).insert(this);
+        return this;
     }
 }
 
