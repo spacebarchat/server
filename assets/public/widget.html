@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spacebar Widget</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: rgb(10, 10, 10);
+      color: white;
+      font-size: 1.1rem;
+      height: 100vh;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    p {
+      margin-top: 10px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    #wordmark {
+      width: min(250px, 50%);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #222;
+    }
+
+    .content {
+      padding: 8px;
+    }
+
+    #online-count {
+      font-size: 1.2rem;
+      font-weight: 999;
+    }
+
+    a, a:visited {
+      color: #0185ff;
+    }
+  </style>
+
+  <script>
+    // id param in query
+    const guildId = new URLSearchParams(window.location.search).get("id");
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const vcList = document.getElementById("vc-list");
+      const memberList = document.getElementById("member-list");
+      const onlineCount = document.getElementById("online-count");
+
+      function fetchData() {
+        fetch(`/api/guilds/${guildId}/widget.json`)
+          .then(response => response.json())
+          .then(data => {
+            // Update online count
+            onlineCount.textContent = data.presence_count;
+
+            // Update voice channels
+            vcList.innerHTML = "";
+            data.channels.forEach(channel => {
+              const channelDiv = document.createElement("div");
+              const channelName = document.createElement("h3");
+              channelName.textContent = "🔊 " + channel.name;
+              channelDiv.appendChild(channelName);
+
+              const userList = document.createElement("ul");
+              channel.users?.forEach(user => {
+                const userItem = document.createElement("li");
+                userItem.textContent = user.username;
+                userList.appendChild(userItem);
+              });
+              channelDiv.appendChild(userList);
+              vcList.appendChild(channelDiv);
+            });
+
+            // Update online members
+            memberList.innerHTML = "";
+            data.members.forEach(member => {
+              const memberItem = document.createElement("div");
+              const img = document.createElement("img");
+              img.src = member.avatar_url;
+              img.alt = member.username;
+              img.width = 32;
+              img.height = 32;
+              img.style.borderRadius = "50%";
+              img.style.marginRight = "8px";
+              memberItem.appendChild(img);
+              const nameSpan = document.createElement("span");
+              nameSpan.textContent = member.username;
+              memberItem.appendChild(nameSpan);
+              memberItem.style.display = "flex";
+              memberItem.style.alignItems = "center";
+              memberItem.style.marginBottom = "6px";
+              memberList.appendChild(memberItem);
+            });
+          })
+          .catch(error => {
+            console.error("Error fetching widget data:", error);
+          });
+      }
+
+      // Initial fetch
+      fetchData();
+
+      // Refresh data every 30 seconds
+      setInterval(fetchData, 30000);
+    });
+  </script>
+</head>
+
+<body>
+<div class="container">
+  <div class="header">
+    <img alt="Spacebar Logo"
+         id="wordmark"
+         src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/svg/Spacebar__Logo-Blue.svg" />
+    <span>
+      <b id="online-count">Unknown</b>
+      users online
+    </span>
+  </div>
+  <div class="content">
+    <div id="vc-list"></div>
+    <p>Online users</p>
+    <div id="member-list"></div>
+  </div>
+</div>
+</body>
+
+</html>

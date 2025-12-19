@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, DiscordApiErrors, Guild, Invite, Member, Permissions } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router({ mergeParams: true });
@@ -99,7 +99,17 @@ router.get(
 
         // Fetch members
         // TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
-        const members = await Member.find({ where: { guild_id: guild_id } });
+        const members = await Member.find({ where: { guild_id: guild_id }, relations: { user: { sessions: true } } });
+        const memberData = members.map((x) => {
+            return {
+                id: x.id,
+                username: x.user.username,
+                discriminator: x.user.discriminator,
+                avatar: x.user.avatar,
+                status: "online", // TODO
+                avatar_url: x.user.avatar ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png` : undefined,
+            };
+        });
 
         // Construct object to respond with
         const data = {
@@ -107,8 +117,8 @@ router.get(
             name: guild.name,
             instant_invite: invite?.code,
             channels: channels,
-            members: members,
-            presence_count: guild.presence_count,
+            members: memberData,
+            presence_count: guild.presence_count || members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > Date.now() - 1000 * 60)).length,
         };
 
         res.set("Cache-Control", "public, max-age=300");
