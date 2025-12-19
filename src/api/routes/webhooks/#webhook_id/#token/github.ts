@@ -95,7 +95,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
                         req.body.issue.title.length > 150 ? `${req.body.issue.title.slice(0, 147)}...` : req.body.issue.title
                     }`,
                     url: req.body.comment.html_url,
-                    description: req.body.comment.body.length > 501 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
+                    description: req.body.comment.body.length > 500 ? `${req.body.comment.body.slice(0, 497)}...` : req.body.comment.body,
                 },
             ];
             break;
@@ -119,7 +119,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             if (req.body.action === "opened") {
                 discordPayload.embeds[0].color = 15426592;
-                discordPayload.embeds[0].description = req.body.issue.body.length > 501 ? `${req.body.issue.body.slice(0, 497)}...` : req.body.issue.body;
+                discordPayload.embeds[0].description = req.body.issue.body.length > 500 ? `${req.body.issue.body.slice(0, 497)}...` : req.body.issue.body;
             }
             break;
         case "member":
@@ -252,7 +252,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
                             .slice(0, 5) // Discord only shows 5 first commits
                             .map(
                                 (c: { id: string; url: string; message: string; author: { username: string } }) =>
-                                    `[\`${c.id.slice(0, 7)}\`](${c.url}) ${c.message.split("\n")[0].length > 46 ? `${c.message.slice(0, 47)}...` : c.message.split("\n")[0]} - ${c.author.username}`,
+                                    `[\`${c.id.slice(0, 7)}\`](${c.url}) ${c.message.split("\n")[0].length > 49 ? `${c.message.slice(0, 47)}...` : c.message.split("\n")[0]} - ${c.author.username}`,
                             )
                             .join("\n"),
                     },
