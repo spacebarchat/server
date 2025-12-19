@@ -18,6 +18,7 @@
 
 import { Storage } from "./Storage";
 import fs from "fs";
+import fsp from "fs/promises";
 import { join, dirname } from "path";
 import { Readable } from "stream";
 import ExifTransformer from "exif-be-gone";
@@ -37,12 +38,12 @@ export class FileStorage implements Storage {
     async get(path: string): Promise<Buffer | null> {
         path = getPath(path);
         try {
-            return fs.readFileSync(path);
+            return await fsp.readFile(path);
         } catch (error) {
             try {
                 const files = fs.readdirSync(path);
                 if (!files.length) return null;
-                return fs.readFileSync(join(path, files[0]));
+                return await fsp.readFile(join(path, files[0]));
             } catch (error) {
                 return null;
             }
