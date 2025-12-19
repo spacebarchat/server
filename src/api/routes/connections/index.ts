@@ -30,7 +30,7 @@ router.get(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         const config = ConnectionConfig.get();
 
         Object.keys(config).forEach((key) => {

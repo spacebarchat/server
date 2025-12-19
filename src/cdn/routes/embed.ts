@@ -46,12 +46,12 @@ const router = Router({ mergeParams: true });
 
 async function getFile(path: string) {
     try {
-        return fs.readFile(path);
+        return await fs.readFile(path);
     } catch (error) {
         try {
             const files = await fs.readdir(path);
             if (!files.length) return null;
-            return fs.readFile(join(path, files[0]));
+            return await fs.readFile(join(path, files[0]));
         } catch (error) {
             return null;
         }
