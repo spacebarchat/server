@@ -39,7 +39,7 @@ router.get(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         res.send({
             marketings: {},
         } as CollectiblesMarketingResponse);

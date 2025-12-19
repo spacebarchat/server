@@ -16,11 +16,12 @@ export class IpDataClient {
         if (this.ipInfoCache.get(ip)?.expires ?? 0 > Date.now()) return this.ipInfoCache.get(ip)!.data;
 
         console.log(`[IpData] Fetching info for IP address ${ip}...`);
-        const resp = (await (await fetch(`https://eu-api.ipdata.co/${ip}?api-key=${ipdataApiKey}`)).json()) as Promise<IpDataIpLookupResponse>;
+        const response = await fetch(`https://eu-api.ipdata.co/${ip}?api-key=${ipdataApiKey}`);
+        const data = (await response.json()) as IpDataIpLookupResponse;
         this.ipInfoCache.set(ip, {
-            data: await resp,
+            data: data,
             expires: new DateBuilder().addHours(12).buildTimestamp(),
         });
-        return await resp;
+        return data;
     }
 }

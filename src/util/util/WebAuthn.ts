@@ -55,7 +55,7 @@ export async function generateWebAuthnTicket(challenge: string): Promise<string>
 export async function verifyWebAuthnToken(token: string) {
     return new Promise((res, rej) => {
         loadOrGenerateKeypair().then((kp) =>
-            jwt.verify(token, kp.publicKey, jwtVerifyOptions, async (err, decoded) => {
+            jwt.verify(token, kp.publicKey, jwtVerifyOptions, (err, decoded) => {
                 if (err) return rej(err);
                 return res(decoded);
             }),

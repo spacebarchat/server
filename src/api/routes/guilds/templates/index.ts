@@ -87,7 +87,7 @@ async function getTemplate(code: string) {
             headers: { "Content-Type": "application/json" },
         });
 
-        return await discordTemplateData.json();
+        return (await discordTemplateData.json()) as Template;
     }
 
     if (code.startsWith("external:")) {

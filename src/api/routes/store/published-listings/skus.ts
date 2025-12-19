@@ -21,7 +21,7 @@ import { route } from "@spacebar/api";
 
 const router: Router = Router({ mergeParams: true });
 
-router.get("/:sku_id", route({}), async (req: Request, res: Response) => {
+router.get("/:sku_id", route({}), (req: Request, res: Response) => {
     //TODO
     // const id = req.params.id;
     res.json({

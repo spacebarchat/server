@@ -34,7 +34,7 @@ router.post(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         const { email, school } = req.body as HubWaitlistSignupSchema;
 
         res.json({

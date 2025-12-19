@@ -45,12 +45,11 @@ router.post(
 
         const messages = (
             await Promise.all(
-                body.channels.map(
-                    async (channelId) =>
-                        await Message.findOne({
-                            where: { channel_id: channelId },
-                            order: { timestamp: "DESC" },
-                        }),
+                body.channels.map((channelId) =>
+                    Message.findOne({
+                        where: { channel_id: channelId },
+                        order: { timestamp: "DESC" },
+                    }),
                 ),
             )
         ).filter((x) => x !== null) as Message[];

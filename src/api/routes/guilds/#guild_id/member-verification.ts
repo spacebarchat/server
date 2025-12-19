@@ -29,7 +29,7 @@ router.get(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         // TODO: member verification
 
         res.status(404).json({

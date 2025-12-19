@@ -316,7 +316,7 @@ const skus = new Map([
     ],
 ]);
 
-router.get("/", route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), (req: Request, res: Response) => {
     // TODO: add the ability to add custom
     const { sku_id } = req.params;
 

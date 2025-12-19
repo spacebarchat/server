@@ -21,7 +21,7 @@ import { route } from "@spacebar/api";
 
 const router: Router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), (req: Request, res: Response) => {
     //TODO
     res.json({ country_code: "US" }).status(200);
 });

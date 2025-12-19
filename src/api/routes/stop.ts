@@ -32,7 +32,7 @@ router.post(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         console.log(`/stop was called by ${req.user_id} at ${new Date()}`);
         res.sendStatus(200);
         process.kill(process.pid, "SIGTERM");

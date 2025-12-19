@@ -30,7 +30,7 @@ router.get(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         const { guild_id } = req.params;
         // TODO:
         // Load from database

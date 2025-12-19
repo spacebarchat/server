@@ -43,8 +43,8 @@ export class DmChannelDTO {
             await Promise.all(
                 channel.recipients
                     ?.filter((r) => !excluded_recipients.includes(r.user_id))
-                    .map(async (r) => {
-                        return await User.findOneOrFail({
+                    .map((r) => {
+                        return User.findOneOrFail({
                             where: { id: r.user_id },
                             select: PublicUserProjection,
                         });

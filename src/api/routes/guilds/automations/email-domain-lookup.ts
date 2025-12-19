@@ -38,7 +38,7 @@ router.post(
             },
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         const { email } = req.body as EmailDomainLookupSchema;
 
         const [_, tld] = email.split("@");
@@ -73,7 +73,7 @@ router.post(
             501: {},
         },
     }),
-    async (req: Request, res: Response) => {
+    (req: Request, res: Response) => {
         const { email } = req.body as EmailDomainLookupVerifyCodeSchema;
 
         const [_, tld] = email.split("@");

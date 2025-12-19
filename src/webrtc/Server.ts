@@ -79,7 +79,7 @@ export class Server {
     }
 
     async stop() {
-        closeDatabase();
+        await closeDatabase();
         this.server.close();
         mediaServer?.stop();
     }

@@ -134,7 +134,7 @@ async function drawIcon(canvas: any, x: number, y: number, scale: number, icon: 
     canvas.restore();
 }
 
-async function drawText(canvas: any, x: number, y: number, color: string, font: string, text: string, maxcharacters?: number) {
+function drawText(canvas: any, x: number, y: number, color: string, font: string, text: string, maxcharacters?: number) {
     canvas.fillStyle = color;
     canvas.font = font;
     if (text.length > (maxcharacters || 0) && maxcharacters) text = text.slice(0, maxcharacters) + "...";

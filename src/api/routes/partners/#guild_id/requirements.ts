@@ -21,7 +21,7 @@ import { route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), (req: Request, res: Response) => {
     const { guild_id } = req.params;
     // TODO:
     // Load from database

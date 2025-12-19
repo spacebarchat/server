@@ -21,7 +21,7 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 //TODO: implement audit logs
-router.get("/", route({}), async (req: Request, res: Response) => {
+router.get("/", route({}), (req: Request, res: Response) => {
     res.json({
         audit_log_entries: [],
         users: [],
