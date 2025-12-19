@@ -111,7 +111,7 @@ router.post(
             // TODO: check if fingerprint was eligible generated
             const exists = await User.findOne({
                 where: { fingerprints: body.fingerprint },
-                select: ["id"],
+                select: { id: true },
             });
 
             if (exists) {

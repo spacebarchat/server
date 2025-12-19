@@ -46,7 +46,7 @@ router.post(
         const { channel_id } = req.params;
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            select: ["id", "name", "type", "guild_id"],
+            select: { id: true, name: true, type: true, guild_id: true },
         });
         isTextChannel(channel.type);
 

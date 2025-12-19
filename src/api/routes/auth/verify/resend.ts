@@ -39,7 +39,7 @@ router.post(
     async (req: Request, res: Response) => {
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["username", "email", "verified"],
+            select: { username: true, email: true, verified: true },
         });
 
         if (!user.email) {

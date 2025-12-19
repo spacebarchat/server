@@ -43,7 +43,7 @@ router.post(
 
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["totp_secret"],
+            select: { totp_secret: true },
         });
 
         const backup = await BackupCode.findOne({ where: { code: body.code } });

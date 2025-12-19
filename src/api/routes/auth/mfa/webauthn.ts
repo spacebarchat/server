@@ -54,7 +54,7 @@ router.post(
             where: {
                 totp_last_ticket: ticket,
             },
-            select: ["id"],
+            select: { id: true },
             relations: ["settings"],
         });
 

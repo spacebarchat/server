@@ -64,7 +64,7 @@ router.post(
     async (req: Request, res: Response) => {
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["mfa_enabled"],
+            select: { mfa_enabled: true },
         });
         if (!user.mfa_enabled) throw new HTTPError("You must enable MFA to create a team");
 

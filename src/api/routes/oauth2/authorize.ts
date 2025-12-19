@@ -75,7 +75,7 @@ router.get(
                 id: req.user_id,
                 bot: false,
             },
-            select: ["id", "username", "avatar", "discriminator", "public_flags"],
+            select: { id: true, username: true, avatar: true, discriminator: true, public_flags: true },
         });
 
         const guilds = await Member.find({
@@ -83,10 +83,11 @@ router.get(
                 id: req.user_id,
             },
             relations: ["guild", "roles", "user"],
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            //@ts-ignore
-            // prettier-ignore
-            select: ["guild.id", "guild.name", "guild.icon", "guild.mfa_level", "guild.owner_id", "roles.id", "user.flags"],
+            select: {
+                guild: { id: true, name: true, icon: true, mfa_level: true, owner_id: true },
+                roles: { id: true },
+                user: { flags: true },
+            },
         });
 
         const guildsWithPermissions = guilds.map((x) => {

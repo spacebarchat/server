@@ -27,7 +27,18 @@ router.get("/", route({}), async (req: Request, res: Response) => {
         where: {
             user_id: req.user_id,
         },
-        select: ["external_id", "type", "name", "verified", "visibility", "show_activity", "revoked", "token_data", "friend_sync", "integrations"],
+        select: {
+            external_id: true,
+            type: true,
+            name: true,
+            verified: true,
+            visibility: true,
+            show_activity: true,
+            revoked: true,
+            token_data: true,
+            friend_sync: true,
+            integrations: true,
+        },
     });
 
     res.json(connections.map((x) => new ConnectedAccountDTO(x, true)));

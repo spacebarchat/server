@@ -47,7 +47,7 @@ router.post(
 
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["data", "email"],
+            select: { data: true, email: true },
         });
 
         // TODO: Are guests allowed to enable 2fa?

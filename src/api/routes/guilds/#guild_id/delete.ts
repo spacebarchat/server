@@ -43,7 +43,7 @@ router.post(
 
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
-            select: ["owner_id"],
+            select: { owner_id: true },
         });
         if (guild.owner_id !== req.user_id) throw new HTTPError("You are not the owner of this guild", 401);
 

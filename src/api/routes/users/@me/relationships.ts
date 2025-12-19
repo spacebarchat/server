@@ -42,7 +42,7 @@ router.get(
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
             relations: ["relationships", "relationships.to"],
-            select: ["id", "relationships"],
+            select: { id: true, relationships: true },
         });
 
         const related_users = user.relationships.map((r) => r.toPublicRelationship());

@@ -256,7 +256,7 @@ export async function getPermission(
     let guild: Guild | undefined;
     const user = await User.findOneOrFail({
         where: { id: user_id },
-        select: ["id", "flags"],
+        select: { id: true, flags: true },
     });
 
     if (typeof channel_id === "string") {

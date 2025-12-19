@@ -63,7 +63,7 @@ router.post(
 
         const user = await User.findOne({
             where: [{ phone: login }, { email: login }],
-            select: ["username", "id", "email"],
+            select: { username: true, id: true, email: true },
         }).catch(() => {});
 
         if (user && user.email) {

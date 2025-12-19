@@ -89,7 +89,7 @@ router.get(
             // get all channel IDs that this user can access
             const channels = await Channel.find({
                 where: { guild_id: req.params.guild_id },
-                select: ["id"],
+                select: { id: true },
             });
             const ids = [];
 

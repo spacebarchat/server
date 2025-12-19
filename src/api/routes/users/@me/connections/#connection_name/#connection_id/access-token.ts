@@ -55,7 +55,18 @@ router.get("/", route({}), async (req: Request, res: Response) => {
             external_id: connection_id,
             user_id: req.user_id,
         },
-        select: ["external_id", "type", "name", "verified", "visibility", "show_activity", "revoked", "token_data", "friend_sync", "integrations"],
+        select: {
+            external_id: true,
+            type: true,
+            name: true,
+            verified: true,
+            visibility: true,
+            show_activity: true,
+            revoked: true,
+            token_data: true,
+            friend_sync: true,
+            integrations: true,
+        },
     });
     if (!connectedAccount) throw DiscordApiErrors.UNKNOWN_CONNECTION;
     if (connectedAccount.revoked) throw DiscordApiErrors.CONNECTION_REVOKED;

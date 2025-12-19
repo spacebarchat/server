@@ -39,7 +39,7 @@ router.post(
     async (req: Request, res: Response) => {
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["data"],
+            select: { data: true },
         }); //User object
         let correctpass = true;
 

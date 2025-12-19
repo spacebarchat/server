@@ -169,7 +169,7 @@ export class Member extends BaseClassWithoutId {
 
     static async removeFromGuild(user_id: string, guild_id: string) {
         const guild = await Guild.findOneOrFail({
-            select: ["owner_id"],
+            select: { owner_id: true },
             where: { id: guild_id },
         });
         if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
@@ -215,7 +215,7 @@ export class Member extends BaseClassWithoutId {
             }),
             Role.findOneOrFail({
                 where: { id: role_id, guild_id },
-                select: ["id"],
+                select: { id: true },
             }),
         ]);
         member.roles.push(Role.create({ id: role_id }));

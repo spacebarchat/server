@@ -192,13 +192,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() =>
             Application.findOne({
                 where: { id: this.user_id },
-                select: ["id", "flags"],
+                select: { id: true, flags: true },
             }),
         ),
         timePromise(() =>
             ReadState.find({
                 where: { user_id: this.user_id },
-                select: ["id", "channel_id", "last_message_id", "last_pin_timestamp", "mention_count"],
+                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true },
             }),
         ),
         timePromise(() =>

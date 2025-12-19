@@ -67,7 +67,7 @@ router.delete(
         const { guild_id } = req.params;
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
-            select: ["owner_id"],
+            select: { owner_id: true },
         });
 
         if (!guild) throw new HTTPError("Guild doesn't exist", 404);

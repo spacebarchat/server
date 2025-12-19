@@ -217,7 +217,7 @@ export class User extends BaseClass {
             // First we need to figure out the currently highest discrimnator for the given username and then increment it
             const users = await User.find({
                 where: { username },
-                select: ["discriminator"],
+                select: { discriminator: true },
             });
             const highestDiscriminator = Math.max(0, ...users.map((u) => Number(u.discriminator)));
 
@@ -236,7 +236,7 @@ export class User extends BaseClass {
                 const discriminator = Random.nextInt(1, 9999).toString().padStart(4, "0");
                 const exists = await User.findOne({
                     where: { discriminator, username: username },
-                    select: ["id"],
+                    select: { id: true },
                 });
                 if (!exists) return discriminator;
             }

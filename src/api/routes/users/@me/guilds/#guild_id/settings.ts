@@ -35,7 +35,7 @@ router.get(
     async (req: Request, res: Response) => {
         const user = await Member.findOneOrFail({
             where: { id: req.user_id, guild_id: req.params.guild_id },
-            select: ["settings"],
+            select: { settings: true },
         });
         return res.json(user.settings);
     },
@@ -66,7 +66,7 @@ router.patch(
 
         const user = await Member.findOneOrFail({
             where: { id: req.user_id, guild_id: req.params.guild_id },
-            select: ["settings"],
+            select: { settings: true },
         });
         OrmUtils.mergeDeep(user.settings || {}, body);
         Member.update({ id: req.user_id, guild_id: req.params.guild_id }, user);

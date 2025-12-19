@@ -80,7 +80,7 @@ router.post(
             where: {
                 id: req.user_id,
             },
-            select: ["data", "id", "disabled", "deleted", "totp_secret", "mfa_enabled", "username"],
+            select: { data: true, id: true, disabled: true, deleted: true, totp_secret: true, mfa_enabled: true, username: true },
             relations: ["settings"],
         });
 

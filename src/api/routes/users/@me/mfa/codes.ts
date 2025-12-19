@@ -49,7 +49,7 @@ router.post(
 
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: ["data"],
+            select: { data: true },
         });
 
         if (!(await bcrypt.compare(password, user.data.hash || ""))) {

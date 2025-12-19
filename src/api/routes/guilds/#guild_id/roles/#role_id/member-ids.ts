@@ -27,7 +27,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 
     // TODO: Is this route really not paginated?
     const members = await Member.find({
-        select: ["id"],
+        select: { id: true },
         where: {
             roles: {
                 id: role_id,

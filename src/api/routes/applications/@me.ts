@@ -79,7 +79,7 @@ router.patch(
         if (body.guild_id) {
             const guild = await Guild.findOneOrFail({
                 where: { id: body.guild_id },
-                select: ["owner_id"],
+                select: { owner_id: true },
             });
             if (guild.owner_id != req.user_id) throw new HTTPError("You must be the owner of the guild to link it to an application", 400);
         }
