@@ -6,7 +6,6 @@ import { HTTPError } from "./HTTPError";
 import bodyParser from "body-parser";
 // import helmet from "helmet";
 import http from "http";
-import chalk from "chalk";
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

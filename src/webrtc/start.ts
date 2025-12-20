@@ -22,6 +22,8 @@ process.on("unhandledRejection", console.error);
 
 import { config } from "dotenv";
 import { Server } from "./Server";
+import fs from "fs";
+import cluster from "cluster";
 config({ quiet: true });
 
 const port = Number(process.env.PORT) || 3004;
@@ -29,4 +31,8 @@ const port = Number(process.env.PORT) || 3004;
 const server = new Server({
     port,
 });
+
+if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-wrtc-${cluster.worker ? cluster.worker.id : port}`);
+process.title = `sb-wrtc-${cluster.worker ? cluster.worker.id : port}`;
+
 server.start();

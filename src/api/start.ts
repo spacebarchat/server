@@ -26,6 +26,7 @@ config({ quiet: true });
 import { SpacebarServer } from "./Server";
 import cluster from "cluster";
 import os from "os";
+import fs from "fs";
 let cores = 1;
 try {
     cores = Number(process.env.THREADS) || os.cpus().length;
@@ -47,6 +48,9 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
     });
 } else {
     const port = Number(process.env.PORT) || 3001;
+
+    if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-api-${cluster.worker ? cluster.worker.id : port}`);
+    process.title = `sb-api-${cluster.worker ? cluster.worker.id : port}`;
 
     const server = new SpacebarServer({ port });
     server.start().catch(console.error);
