@@ -289,315 +289,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "StoredEmailResponse": {
-        "type": "object",
-        "properties": {
-            "Content-Type": {
-                "type": "string"
-            },
-            "From": {
-                "type": "string"
-            },
-            "Message-Id": {
-                "type": "string"
-            },
-            "Mime-Version": {
-                "type": "string"
-            },
-            "Subject": {
-                "type": "string"
-            },
-            "To": {
-                "type": "string"
-            },
-            "sender": {
-                "type": "string"
-            },
-            "recipients": {
-                "type": "string"
-            },
-            "from": {
-                "type": "string"
-            },
-            "subject": {
-                "type": "string"
-            },
-            "body-html": {
-                "type": "string"
-            },
-            "body-plain": {
-                "type": "string"
-            },
-            "attachments": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "content-type": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "integer"
-                            },
-                            "url": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "content-type",
-                            "name",
-                            "size",
-                            "url"
-                        ]
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "content-id-map": {
-                "type": "object",
-                "properties": {},
-                "additionalProperties": true
-            },
-            "message-headers": {
-                "type": "array",
-                "items": {
-                    "type": "array",
-                    "items": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ],
-                    "minItems": 2,
-                    "maxItems": 2
-                }
-            },
-            "stripped-html": {
-                "type": "string"
-            },
-            "stripped-text": {
-                "type": "string"
-            },
-            "stripped-signature": {
-                "type": "string"
-            },
-            "Content-Transfer-Encoding": {
-                "type": "string"
-            },
-            "X-Mailgun-Tag": {
-                "type": "string"
-            },
-            "X-Mailgun-Template-Name": {
-                "type": "string"
-            },
-            "X-Mailgun-Template-Variables": {
-                "type": "string"
-            },
-            "X-Mailgun-Deliver-By": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "Content-Type",
-            "From",
-            "Message-Id",
-            "Mime-Version",
-            "Subject",
-            "To",
-            "body-html",
-            "body-plain",
-            "message-headers",
-            "recipients",
-            "sender",
-            "stripped-html",
-            "stripped-signature",
-            "stripped-text"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MessagesQueueStatusAPIResponse": {
-        "type": "object",
-        "properties": {
-            "regular": {
-                "type": "object",
-                "properties": {
-                    "is_disabled": {
-                        "type": "boolean"
-                    },
-                    "disabled": {
-                        "type": "object",
-                        "properties": {
-                            "until": {
-                                "type": "string"
-                            },
-                            "reason": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "reason",
-                            "until"
-                        ]
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "disabled",
-                    "is_disabled"
-                ]
-            },
-            "scheduled": {
-                "type": "object",
-                "properties": {
-                    "is_disabled": {
-                        "type": "boolean"
-                    },
-                    "disabled": {
-                        "type": "object",
-                        "properties": {
-                            "until": {
-                                "type": "string"
-                            },
-                            "reason": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "reason",
-                            "until"
-                        ]
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "disabled",
-                    "is_disabled"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "regular",
-            "scheduled"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountSendingLimitResponse": {
-        "type": "object",
-        "properties": {
-            "limit": {
-                "type": "integer"
-            },
-            "current": {
-                "type": "integer"
-            },
-            "period": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "current",
-            "limit",
-            "period"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountSetSendingLimitResponse": {
-        "type": "object",
-        "properties": {
-            "success": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "success"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "SubaccountDestroyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "message"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ActivateDomainKeyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            },
-            "authority": {
-                "type": "string"
-            },
-            "selector": {
-                "type": "string"
-            },
-            "active": {
-                "type": "boolean"
-            },
-            "status": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "active",
-            "authority",
-            "message",
-            "selector",
-            "status"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DeactivateDomainKeyResponse": {
-        "type": "object",
-        "properties": {
-            "message": {
-                "type": "string"
-            },
-            "authority": {
-                "type": "string"
-            },
-            "selector": {
-                "type": "string"
-            },
-            "active": {
-                "type": "boolean"
-            },
-            "status": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "active",
-            "authority",
-            "message",
-            "selector",
-            "status"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "FieldErrorResponse": {
         "type": "object",
         "properties": {
@@ -2228,12 +1919,6 @@
             "region": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": [
                     "null",
@@ -2266,6 +1951,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -3123,12 +2814,6 @@
             "id": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": "string"
             },
@@ -3191,6 +2876,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -3416,9 +3107,6 @@
             "flags": {
                 "type": "integer"
             },
-            "disabled": {
-                "type": "boolean"
-            },
             "verified": {
                 "type": "boolean"
             },
@@ -3485,6 +3173,9 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3548,9 +3239,6 @@
             "flags": {
                 "type": "integer"
             },
-            "disabled": {
-                "type": "boolean"
-            },
             "verified": {
                 "type": "boolean"
             },
@@ -3617,6 +3305,9 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3944,12 +3635,6 @@
             "region": {
                 "type": "string"
             },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
             "icon": {
                 "type": [
                     "null",
@@ -3982,6 +3667,12 @@
             },
             "description": {
                 "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "verification_level": {
                 "type": "integer"
@@ -5058,12 +4749,18 @@
                 "items": {
                     "type": "string"
                 }
+            },
+            "recipient_id": {
+                "type": "string"
+            },
+            "access_tokens": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "additionalProperties": false,
-        "required": [
-            "recipients"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "EmailDomainLookupSchema": {
@@ -13386,7 +13083,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@698": {
+                    "__@unscopables@700": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -13515,17 +13212,17 @@
                             "remove": {
                                 "type": "boolean"
                             },
-                            "__@iterator@696": {
+                            "__@iterator@698": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@700": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@698",
+                    "__@unscopables@700",
                     "length"
                 ]
             },

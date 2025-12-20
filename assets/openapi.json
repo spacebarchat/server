@@ -300,301 +300,6 @@
                     "success"
                 ]
             },
-            "StoredEmailResponse": {
-                "type": "object",
-                "properties": {
-                    "Content-Type": {
-                        "type": "string"
-                    },
-                    "From": {
-                        "type": "string"
-                    },
-                    "Message-Id": {
-                        "type": "string"
-                    },
-                    "Mime-Version": {
-                        "type": "string"
-                    },
-                    "Subject": {
-                        "type": "string"
-                    },
-                    "To": {
-                        "type": "string"
-                    },
-                    "sender": {
-                        "type": "string"
-                    },
-                    "recipients": {
-                        "type": "string"
-                    },
-                    "from": {
-                        "type": "string"
-                    },
-                    "subject": {
-                        "type": "string"
-                    },
-                    "body-html": {
-                        "type": "string"
-                    },
-                    "body-plain": {
-                        "type": "string"
-                    },
-                    "attachments": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "content-type": {
-                                        "type": "string"
-                                    },
-                                    "size": {
-                                        "type": "integer"
-                                    },
-                                    "url": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                    "content-type",
-                                    "name",
-                                    "size",
-                                    "url"
-                                ]
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "content-id-map": {
-                        "type": "object",
-                        "properties": {},
-                        "additionalProperties": true
-                    },
-                    "message-headers": {
-                        "type": "array",
-                        "items": {
-                            "type": "array",
-                            "items": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "string"
-                                }
-                            ],
-                            "minItems": 2,
-                            "maxItems": 2
-                        }
-                    },
-                    "stripped-html": {
-                        "type": "string"
-                    },
-                    "stripped-text": {
-                        "type": "string"
-                    },
-                    "stripped-signature": {
-                        "type": "string"
-                    },
-                    "Content-Transfer-Encoding": {
-                        "type": "string"
-                    },
-                    "X-Mailgun-Tag": {
-                        "type": "string"
-                    },
-                    "X-Mailgun-Template-Name": {
-                        "type": "string"
-                    },
-                    "X-Mailgun-Template-Variables": {
-                        "type": "string"
-                    },
-                    "X-Mailgun-Deliver-By": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "Content-Type",
-                    "From",
-                    "Message-Id",
-                    "Mime-Version",
-                    "Subject",
-                    "To",
-                    "body-html",
-                    "body-plain",
-                    "message-headers",
-                    "recipients",
-                    "sender",
-                    "stripped-html",
-                    "stripped-signature",
-                    "stripped-text"
-                ]
-            },
-            "MessagesQueueStatusAPIResponse": {
-                "type": "object",
-                "properties": {
-                    "regular": {
-                        "type": "object",
-                        "properties": {
-                            "is_disabled": {
-                                "type": "boolean"
-                            },
-                            "disabled": {
-                                "type": "object",
-                                "properties": {
-                                    "until": {
-                                        "type": "string"
-                                    },
-                                    "reason": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                    "reason",
-                                    "until"
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "disabled",
-                            "is_disabled"
-                        ]
-                    },
-                    "scheduled": {
-                        "type": "object",
-                        "properties": {
-                            "is_disabled": {
-                                "type": "boolean"
-                            },
-                            "disabled": {
-                                "type": "object",
-                                "properties": {
-                                    "until": {
-                                        "type": "string"
-                                    },
-                                    "reason": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                    "reason",
-                                    "until"
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "disabled",
-                            "is_disabled"
-                        ]
-                    }
-                },
-                "required": [
-                    "regular",
-                    "scheduled"
-                ]
-            },
-            "SubaccountSendingLimitResponse": {
-                "type": "object",
-                "properties": {
-                    "limit": {
-                        "type": "integer"
-                    },
-                    "current": {
-                        "type": "integer"
-                    },
-                    "period": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "current",
-                    "limit",
-                    "period"
-                ]
-            },
-            "SubaccountSetSendingLimitResponse": {
-                "type": "object",
-                "properties": {
-                    "success": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "success"
-                ]
-            },
-            "SubaccountDestroyResponse": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "message"
-                ]
-            },
-            "ActivateDomainKeyResponse": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "authority": {
-                        "type": "string"
-                    },
-                    "selector": {
-                        "type": "string"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "active",
-                    "authority",
-                    "message",
-                    "selector",
-                    "status"
-                ]
-            },
-            "DeactivateDomainKeyResponse": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "authority": {
-                        "type": "string"
-                    },
-                    "selector": {
-                        "type": "string"
-                    },
-                    "active": {
-                        "type": "boolean"
-                    },
-                    "status": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "active",
-                    "authority",
-                    "message",
-                    "selector",
-                    "status"
-                ]
-            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -2145,12 +1850,6 @@
                     "region": {
                         "type": "string"
                     },
-                    "features": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
                     "icon": {
                         "type": "string",
                         "nullable": true
@@ -2177,6 +1876,12 @@
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "verification_level": {
                         "type": "integer"
@@ -2975,12 +2680,6 @@
                     "id": {
                         "type": "string"
                     },
-                    "features": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
                     "icon": {
                         "type": "string"
                     },
@@ -3039,6 +2738,12 @@
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "verification_level": {
                         "type": "integer"
@@ -3256,9 +2961,6 @@
                     "flags": {
                         "type": "integer"
                     },
-                    "disabled": {
-                        "type": "boolean"
-                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -3325,6 +3027,9 @@
                     },
                     "premium_usage_flags": {
                         "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
                     },
                     "settings": {
                         "$ref": "#/components/schemas/UserSettingsSchema"
@@ -3383,9 +3088,6 @@
                     "flags": {
                         "type": "integer"
                     },
-                    "disabled": {
-                        "type": "boolean"
-                    },
                     "verified": {
                         "type": "boolean"
                     },
@@ -3452,6 +3154,9 @@
                     },
                     "premium_usage_flags": {
                         "type": "integer"
+                    },
+                    "disabled": {
+                        "type": "boolean"
                     },
                     "settings": {
                         "$ref": "#/components/schemas/UserSettingsSchema"
@@ -3749,12 +3454,6 @@
                     "region": {
                         "type": "string"
                     },
-                    "features": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
                     "icon": {
                         "type": "string",
                         "nullable": true
@@ -3781,6 +3480,12 @@
                     },
                     "description": {
                         "type": "string"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "verification_level": {
                         "type": "integer"
@@ -4778,11 +4483,17 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "recipient_id": {
+                        "type": "string"
+                    },
+                    "access_tokens": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
-                },
-                "required": [
-                    "recipients"
-                ]
+                }
             },
             "EmailDomainLookupSchema": {
                 "type": "object",
@@ -12604,7 +12315,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@700": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -12733,17 +12444,17 @@
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@696": {
+                                    "__@iterator@698": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@698": {
+                                    "__@unscopables@700": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@698",
+                            "__@unscopables@700",
                             "length"
                         ]
                     },
@@ -20105,6 +19816,42 @@
                 ]
             }
         },
+        "/guilds/{guild_id}/force-recount/": {
+            "post": {
+                "x-right-required": "MANAGE_GUILDS",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIGuild"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "guild_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "guild_id"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            }
+        },
         "/guilds/{guild_id}/emojis/": {
             "get": {
                 "security": [
@@ -22798,6 +22545,56 @@
                 ]
             }
         },
+        "/channels/{channel_id}/messages/{message_id}/threads/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageThreadCreationSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "message_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
         "/channels/{channel_id}/messages/{message_id}/reactions/": {
             "delete": {
                 "x-permission-required": "MANAGE_MESSAGES",
@@ -24204,6 +24001,74 @@
                 ]
             }
         },
+        "/auth/passwordless/start/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
+        "/auth/passwordless/finish/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
         "/auth/mfa/webauthn/": {
             "post": {
                 "requestBody": {
@@ -24472,6 +24337,50 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/auth/conditional/finish/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
                 ]
             }
         },
