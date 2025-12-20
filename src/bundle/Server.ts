@@ -29,6 +29,8 @@ import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
 import { Config, initDatabase } from "@spacebar/util";
+import fs from "fs";
+import cluster from "cluster";
 
 const app = express();
 const server = http.createServer();
@@ -74,6 +76,9 @@ async function main() {
 
     await new Promise((resolve) => server.listen({ port }, () => resolve(undefined)));
     await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
+
+    if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-bundle-${cluster.worker ? cluster.worker.id : port}`);
+    process.title = `sb-bundle-${cluster.worker ? cluster.worker.id : port}`;
 
     console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }
