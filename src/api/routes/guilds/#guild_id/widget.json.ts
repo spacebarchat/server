@@ -100,17 +100,18 @@ router.get(
         // Fetch members
         // TODO: Understand how Discord's max 100 random member sample works, and apply to here (see top of this file)
         const members = await Member.find({ where: { guild_id: guild_id }, relations: { user: { sessions: true } } });
-        const memberData = members.map((x) => {
+        const onlineMembers = members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > Date.now() - 1000 * 60));
+        const memberData = onlineMembers.map((x) => {
             return {
                 id: x.id,
                 username: x.user.username,
                 discriminator: x.user.discriminator,
-                avatar: x.user.avatar,
+                avatar: null,
                 status: "online", // TODO
                 avatar_url: x.avatar
                     ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
                     : x.user.avatar
-                      ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.avatar}.png`
+                      ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png`
                       : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
             };
         });
@@ -122,7 +123,8 @@ router.get(
             instant_invite: invite?.code,
             channels: channels,
             members: memberData,
-            presence_count: guild.presence_count || members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > Date.now() - 1000 * 60)).length,
+            member_count: members.length,
+            presence_count: guild.presence_count || onlineMembers.length,
         };
 
         res.set("Cache-Control", "public, max-age=300");

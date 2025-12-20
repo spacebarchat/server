@@ -63,14 +63,6 @@
 
   <script>
     const guildId = new URLSearchParams(window.location.search).get("id");
-    const defaultAvatarHashMap = new Map([
-      ["0", "4a8562cf00887030c416d3ec2d46385a"],
-      ["1", "9b0bb198936784c45c72833cc426cc55"],
-      ["2", "22341bdb500c7b63a93bbce957d1601e"],
-      ["3", "d9977836b82058bf2f74eebd50edc095"],
-      ["4", "9d6ddb4e4d899a533a8cc617011351c9"],
-      ["5", "7213ab6677377974697dfdfbaf5f6a6f"],
-    ]);
 
     document.addEventListener("DOMContentLoaded", function() {
       const vcList = document.getElementById("vc-list");
@@ -78,11 +70,24 @@
       const onlineCount = document.getElementById("online-count");
 
       function fetchData() {
+        const refreshInterval = 1000;
         fetch(`/api/guilds/${guildId}/widget.json`)
-          .then(response => response.json())
+          .then(response => {
+            if (response.ok) {
+              const cacheDuration = response.headers.get("Cache-Control")?.match(/max-age=(\d+)/);
+              if (cacheDuration && cacheDuration[1]) {
+                const interval = parseInt(cacheDuration[1], 10) * 1000;
+                if (interval > refreshInterval) {
+                  setTimeout(fetchData, interval);
+                }
+              }
+            }
+            return response.json();
+          })
           .then(data => {
+            if (!data) return;
             // Update online count
-            onlineCount.textContent = data.presence_count;
+            onlineCount.textContent = data.presence_count + "/" + data.member_count;
 
             // Update voice channels
             vcList.innerHTML = "";
@@ -108,7 +113,7 @@
               const memberItem = document.createElement("div");
 
               const img = document.createElement("img");
-              img.src = member.avatar_url ;
+              img.src = member.avatar_url;
               img.alt = member.username;
               img.width = 32;
               img.height = 32;
@@ -127,16 +132,18 @@
               memberItem.style.marginBottom = "6px";
               memberList.appendChild(memberItem);
             });
+            setTimeout(fetchData, 300000); // schedule next fetch in 5 minutes
           })
           .catch(error => {
             console.error("Error fetching widget data:", error);
+            setTimeout(fetchData, Math.floor(Math.random() * 4000) + 1000);
           });
       }
 
       // Initial fetch
       fetchData();
 
-      // Refresh data every 30 seconds
+      // Refresh data every 5 minutes
       setInterval(fetchData, 30000);
     });
   </script>
