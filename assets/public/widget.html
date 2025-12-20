@@ -114,14 +114,21 @@
 
               const img = document.createElement("img");
               img.src = member.avatar_url;
-              img.alt = member.username;
+              img.alt = "";
+              img.ariaHidden = "true";
               img.width = 32;
               img.height = 32;
               img.style.borderRadius = "50%";
               img.style.marginRight = "8px";
+              img.style.contentVisibility = "auto";
               img.loading = "lazy";
               img.decoding = "async";
-              img.style.contentVisibility = "auto";
+              img.onerror = function() {
+                console.log("Failed to load avatar for user " + member.username + ", using default.");
+                const domain = new URL(window.location.href).origin;
+                // noinspection JSUnresolvedReference - BigInt is a valid global
+                img.src = `${domain}/embed/avatar/${BigInt(member.id) % 6n}.png`;
+              };
               memberItem.appendChild(img);
 
               const nameSpan = document.createElement("span");
