@@ -43,7 +43,6 @@ And with documentation on how to set up your own server [here](https://docs.spac
 
 ## Clients
 
-You _should_ be able to use any client designed for Discord.com to connect to a Spacebar instance.  
+You _should_ be able to use any client designed for Discord.com to connect to a Spacebar instance.
 However, some incompatibilities still exist between Spacebar and Discord. For this reason, not every client will connect.  
-The [WIP official Spacebar client](https://github.com/spacebarchat/client) will always work.
-You can find a [live version here](https://app.spacebar.chat).
+We recommend using [Fermi](https://fermi.chat/login?instance=https%3A%2F%2Fspacebar.chat) as a solid starting point on your adventure in the SpaceBar!
