@@ -19,7 +19,7 @@
 import { randomString, route } from "@spacebar/api";
 import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ChannelType, GuildWidgetJsonResponse } from "@spacebar/schemas*";
+import { ChannelType, GuildWidgetJsonResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
