@@ -31,8 +31,6 @@ const router: Router = Router({ mergeParams: true });
 // members (max 100 returned) is a sample of all members, and bots par invisible status, there exists some alphabetical distribution pattern between the members returned
 
 // https://discord.com/developers/docs/resources/guild#get-guild-widget
-// TODO: Cache the response for a guild for 5 minutes regardless of response
-
 const expiryTime = 1000 * 60 * 5; // 5 minutes
 const jsonDataCache = new Map<string, { data: Promise<GuildWidgetJsonResponse>; expiry: Date }>();
 
@@ -127,20 +125,22 @@ async function getWidgetJsonData(guild_id: string) {
     const members = await Member.find({ where: { guild_id: guild_id }, relations: { user: { sessions: true } } });
     const minLastSeen = Date.now() - 1000 * 60 * 5;
     const onlineMembers = members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > minLastSeen).length > 0);
-    const memberData = onlineMembers.map((x) => {
-        return {
-            id: x.id,
-            username: x.user.username,
-            discriminator: x.user.discriminator,
-            avatar: null,
-            status: "online", // TODO
-            avatar_url: x.avatar
-                ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
-                : x.user.avatar
-                  ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png`
-                  : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
-        };
-    });
+    const memberData = onlineMembers
+        .map((x) => {
+            return {
+                id: x.id,
+                username: x.user.username,
+                discriminator: x.user.discriminator,
+                avatar: null,
+                status: "online", // TODO
+                avatar_url: x.avatar
+                    ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
+                    : x.user.avatar
+                      ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png`
+                      : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
+            };
+        })
+        .sort((a, b) => Number(BigInt(a.id) - BigInt(b.id)));
 
     // Construct object to respond with
     return {
