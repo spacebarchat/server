@@ -53,6 +53,7 @@ export const NO_AUTHORIZATION_ROUTES = [
     "/oauth2/callback",
     // Asset delivery
     /^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
+    /^(GET|HEAD) \/guilds\/\d+\/shield\.svg/,
     // Connections
     /^(POST|HEAD) \/connections\/\w+\/callback/,
     // Image proxy
