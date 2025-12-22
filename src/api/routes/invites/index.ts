@@ -44,7 +44,7 @@ router.get(
             relations: PublicInviteRelation,
         });
 
-        res.status(200).send(invite);
+        res.status(200).send(invite.toPublicJSON());
     },
 );
 
