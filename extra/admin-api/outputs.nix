@@ -102,7 +102,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         #            };
       };
 
-    containers.admin-api = pkgs.dockerTools.buildLayeredImage {
+    containers.docker.admin-api = pkgs.dockerTools.buildLayeredImage {
       name = "spacebar-server-ts-admin-api";
       tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
@@ -122,7 +122,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
     pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
       x86_64-linux = {
         #            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
-        docker-admin-api = self.containers.x86_64-linux.admin-api;
+        docker-admin-api = self.containers.x86_64-linux.docker.admin-api;
       };
     };
 }
