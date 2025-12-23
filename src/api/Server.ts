@@ -114,9 +114,20 @@ export class SpacebarServer extends Server {
 
         app.use("/imageproxy/:hash/:size/:url", ImageProxy);
 
-        app.get("/", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html")));
-        app.get("/verify-email", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html")));
-        app.get("/widget", (req, res) => res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "widget.html")));
+        app.get("/", (req, res) => {
+            res.set("Cache-Control", "public, max-age=21600");
+            return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html"));
+        });
+
+        app.get("/verify-email", (req, res) => {
+            res.set("Cache-Control", "public, max-age=21600");
+            return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html"));
+        });
+
+        app.get("/widget", (req, res) => {
+            res.set("Cache-Control", "public, max-age=21600");
+            return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "widget.html"));
+        });
 
         app.get("/_spacebar/api/schemas.json", (req, res) => {
             res.sendFile(path.join(ASSETS_FOLDER, "schemas.json"));

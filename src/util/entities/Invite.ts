@@ -104,6 +104,12 @@ export class Invite extends BaseClassWithoutId {
         if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
         return false;
     }
+    toPublicJSON() {
+        return {
+            ...this,
+            inviter: this.inviter.toPublicUser(),
+        };
+    }
 
     static async joinGuild(user_id: string, code: string) {
         const invite = await Invite.findOneOrFail({ where: { code } });
