@@ -26,7 +26,6 @@ import {
     GeneralConfiguration,
     GifConfiguration,
     GuildConfiguration,
-    KafkaConfiguration,
     LimitsConfiguration,
     LoginConfiguration,
     MetricsConfiguration,
@@ -53,7 +52,6 @@ export class ConfigValue {
     guild: GuildConfiguration = new GuildConfiguration();
     gif: GifConfiguration = new GifConfiguration();
     rabbitmq: RabbitMQConfiguration = new RabbitMQConfiguration();
-    kafka: KafkaConfiguration = new KafkaConfiguration();
     templates: TemplateConfiguration = new TemplateConfiguration();
     metrics: MetricsConfiguration = new MetricsConfiguration();
     defaults: DefaultsConfiguration = new DefaultsConfiguration();

@@ -25,7 +25,6 @@ export * from "./ExternalTokensConfiguration";
 export * from "./GeneralConfiguration";
 export * from "./GifConfiguration";
 export * from "./GuildConfiguration";
-export * from "./KafkaConfiguration";
 export * from "./LimitConfigurations";
 export * from "./LoginConfiguration";
 export * from "./MetricsConfiguration";
