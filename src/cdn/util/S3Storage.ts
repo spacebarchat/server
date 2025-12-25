@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { S3 } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 import { Storage } from "./Storage";
 
@@ -29,11 +28,15 @@ const readableToBuffer = (readable: Readable): Promise<Buffer> =>
     });
 
 export class S3Storage implements Storage {
+    private client: unknown;
     public constructor(
-        private client: S3,
+        private region: string,
         private bucket: string,
         private basePath?: string,
-    ) {}
+    ) {
+        const { S3 } = require("@aws-sdk/client-s3");
+        this.client = new S3({ region });
+    }
 
     /**
      * Always return a string, to ensure consistency.
@@ -43,6 +46,8 @@ export class S3Storage implements Storage {
     }
 
     async set(path: string, data: Buffer): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         await this.client.putObject({
             Bucket: this.bucket,
             Key: `${this.bucketBasePath}${path}`,
@@ -52,6 +57,8 @@ export class S3Storage implements Storage {
 
     async clone(path: string, newPath: string): Promise<void> {
         // TODO: does this even work?
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         await this.client.copyObject({
             Bucket: this.bucket,
             CopySource: `/${this.bucket}/${this.bucketBasePath}${path}`,
@@ -61,6 +68,8 @@ export class S3Storage implements Storage {
 
     async get(path: string): Promise<Buffer | null> {
         try {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             const s3Object = await this.client.getObject({
                 Bucket: this.bucket,
                 Key: `${this.bucketBasePath ?? ""}${path}`,
@@ -79,6 +88,8 @@ export class S3Storage implements Storage {
     }
 
     async delete(path: string): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         await this.client.deleteObject({
             Bucket: this.bucket,
             Key: `${this.bucketBasePath}${path}`,

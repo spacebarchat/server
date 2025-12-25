@@ -19,8 +19,7 @@
 import { FileStorage } from "./FileStorage";
 import path from "path";
 import fs from "fs";
-import { S3 } from "@aws-sdk/client-s3";
-import { S3Storage } from "./S3Storage";
+import { red } from "picocolors";
 process.cwd();
 
 export interface Storage {
@@ -46,6 +45,13 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 
     storage = new FileStorage();
 } else if (process.env.STORAGE_PROVIDER === "s3") {
+    try {
+        require("@aws-sdk/client-s3");
+    } catch (e) {
+        console.error(red(`[CDN] AWS S3 SDK not installed. Please run 'npm install --no-save @aws-sdk/client-s3' to use the S3 storage provider.`));
+        process.exit(1);
+    }
+
     const region = process.env.STORAGE_REGION,
         bucket = process.env.STORAGE_BUCKET;
 
@@ -67,9 +73,8 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
         location = undefined;
     }
 
-    const client = new S3({ region });
-
-    storage = new S3Storage(client, bucket, location);
+    const { S3Storage } = require("S3Storage");
+    storage = new S3Storage(region, bucket, location);
 }
 
 export { storage };
