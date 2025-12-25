@@ -156,7 +156,7 @@ export class SpacebarServer extends Server {
 
             res.json({
                 api: {
-                    baseUrl: Config.get().api.endpointPublic?.split("/api")[0] || "", // TODO: migrate database values to not include /api/v9
+                    baseUrl: Config.get().api.endpointPublic?.split("/api/")[0] || "", // TODO: migrate database values to not include /api/v9
                     apiVersions: {
                         default: Config.get().api.defaultVersion,
                         active: Config.get().api.activeVersions,
