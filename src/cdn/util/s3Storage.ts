@@ -17,7 +17,7 @@
 */
 
 import { Readable } from "stream";
-import { Storage } from "./Storage";
+import { Storage } from ".";
 
 const readableToBuffer = (readable: Readable): Promise<Buffer> =>
     new Promise((resolve, reject) => {
@@ -46,6 +46,7 @@ export class S3Storage implements Storage {
     }
 
     async set(path: string, data: Buffer): Promise<void> {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] write file: ${path}`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         await this.client.putObject({
@@ -56,6 +57,7 @@ export class S3Storage implements Storage {
     }
 
     async clone(path: string, newPath: string): Promise<void> {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] clone file: ${path} -> ${newPath}`);
         // TODO: does this even work?
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
@@ -67,6 +69,7 @@ export class S3Storage implements Storage {
     }
 
     async get(path: string): Promise<Buffer | null> {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] read file: ${path}`);
         try {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
@@ -88,6 +91,7 @@ export class S3Storage implements Storage {
     }
 
     async delete(path: string): Promise<void> {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] delete file: ${path}`);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         await this.client.deleteObject({

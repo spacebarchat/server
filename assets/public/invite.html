@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spacebar Server</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <script type="text/javascript">
+    fix_odd_viewport = () => {
+      document.body.style.width = "initial";
+      document.body.style.width = (document.body.clientWidth&~1)+"px";
+    }
+    addEventListener("resize", fix_odd_viewport);
+    fix_odd_viewport();
+  </script>
+  <style>
+    body {
+      font-family:  'Montserrat', sans-serif;
+      background-color: rgb(10, 10, 10);
+      color: white;
+      font-size: 1.1rem;
+      height: 100vh;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      /*font-size: 13pt !important;*/
+      /*line-height: 1 !important;*/
+      /*text-size-adjust: none !important;*/
+      /*font-smooth: never !important;*/
+      /*filter: contrast(100.00001%);*/
+    }
+
+    p {
+      margin-top: 10px;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 40px 0 40px;
+      height: 100%;
+    }
+
+    #wordmark {
+      width: min(300px, 50%);
+      margin-bottom: 8px;
+    }
+
+    a, a:visited {
+      color: #0185ff;
+    }
+
+    inviteInfoCard {
+      margin-top: 8px;
+      background-color: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      width: 320px;
+      height: 120px;
+
+      display: block;
+      text-align: center;
+      position: relative;
+    }
+
+    inviteInfoCard > .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://github.com/spacebarchat/spacebarchat/blob/master/branding/png/Spacebar__Banner-Discord.png?raw=true');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100%;
+      display: block;
+      mask: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 90%, rgba(0, 0, 0, 0) 100%);
+      filter: blur(0.5px);
+      overflow: hidden;
+    }
+
+    inviteInfoCard > .contents {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      margin: 12px;
+      color: white;
+    }
+
+    .inline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    #guild-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    #green-dot {
+      width: 12px;
+      height: 12px;
+      background-color: #3ba55d;
+      border: 2px solid #111;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    #gray-dot {
+      width: 12px;
+      height: 12px;
+      background-color: #747f8d;
+      border: 2px solid #111;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <img alt="Spacebar Logo"
+       id="wordmark"
+       src="https://raw.githubusercontent.com/spacebarchat/spacebarchat/master/branding/svg/Spacebar__Logo-Blue.svg" />
+
+  <h1>You've been invited!</h1>
+  <inviteInfoCard>
+    <div class="background"></div>
+    <div class="contents">
+      <div class="inline">
+        <img id="guild-icon" src="2e46fe14586f8e95471c0917f56726b5.png" />
+        <h3 id="guild-name">Loading...</h3>
+      </div>
+      <p id="invite-description">Invited by null.</p>
+      <div class="inline" style="justify-content: center; margin-top: 4px;">
+        <span id="online-count"><span id="green-dot"></span>0 Online</span>
+        <span id="member-count" style="margin-left: 16px;"><span id="gray-dot"></span>0 Members</span>
+      </div>
+    </div>
+  </inviteInfoCard>
+  <p>Pick a client to continue.</p>
+  <p><a id="fermiUrl" href="https://fermi.chat/invite/{code}?instance={serverName}&origin=sb-api-invite">Continue with
+    Fermi <small>(https://fermi.chat)</small></a></p>
+</div>
+</body>
+
+</html>

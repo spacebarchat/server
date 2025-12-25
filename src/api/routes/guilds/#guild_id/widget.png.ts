@@ -24,7 +24,7 @@ import { Request, Response, Router } from "express";
 import fs from "fs";
 import { HTTPError } from "lambert-server";
 import path from "path";
-import { storage } from "../../../../cdn/util/Storage";
+import { storage } from "@spacebar/cdn";
 
 const router: Router = Router({ mergeParams: true });
 

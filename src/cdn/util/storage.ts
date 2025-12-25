@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { FileStorage } from "./FileStorage";
+import { FileStorage } from "./fileStorage";
+import { S3Storage } from "./s3Storage";
 import path from "path";
 import fs from "fs";
 import { red } from "picocolors";
@@ -39,7 +40,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
         location = path.join(process.cwd(), "files");
     }
     // TODO: move this to some start func, so it doesn't run when server is imported
-    //console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
+    // console.log(`[CDN] storage location: ${bgCyan(`${black(location)}`)}`);
     if (!fs.existsSync(location)) fs.mkdirSync(location);
     process.env.STORAGE_LOCATION = location;
 

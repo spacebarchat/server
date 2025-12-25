@@ -25,6 +25,8 @@ import guildProfilesRoute from "./routes/guild-profiles";
 import iconsRoute from "./routes/role-icons";
 import morgan from "morgan";
 import { Like } from "typeorm";
+import { Router } from "express";
+import { BasicCrdFileRouterOptions, createBasicCrdFileRouter } from "./util/basicCrdFileRouter";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -62,48 +64,40 @@ export class CDNServer extends Server {
         this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 
         await registerRoutes(this, path.join(__dirname, "routes/"));
+        const register = (path: string, ...handlers: Router[]) => {
+            this.app.use(path, ...handlers);
+            console.log(`[Server] Route ${path} registered`);
+        };
 
-        this.app.use("/icons/", avatarsRoute);
-        console.log("[Server] Route /icons registered");
+        register("/role-icons/", iconsRoute);
+        register("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
+        register("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
 
-        this.app.use("/role-icons/", iconsRoute);
-        console.log("[Server] Route /role-icons registered");
-
-        this.app.use("/emojis/", avatarsRoute);
-        console.log("[Server] Route /emojis registered");
-
-        this.app.use("/stickers/", avatarsRoute);
-        console.log("[Server] Route /stickers registered");
-
-        this.app.use("/banners/", avatarsRoute);
-        console.log("[Server] Route /banners registered");
-
-        this.app.use("/splashes/", avatarsRoute);
-        console.log("[Server] Route /splashes registered");
-
-        this.app.use("/discovery-splashes/", avatarsRoute);
-        console.log("[Server] Route /discovery-splashes registered");
-
-        this.app.use("/app-icons/", avatarsRoute);
-        console.log("[Server] Route /app-icons registered");
-
-        this.app.use("/app-assets/", avatarsRoute);
-        console.log("[Server] Route /app-assets registered");
-
-        this.app.use("/discover-splashes/", avatarsRoute);
-        console.log("[Server] Route /discover-splashes registered");
-
-        this.app.use("/team-icons/", avatarsRoute);
-        console.log("[Server] Route /team-icons registered");
-
-        this.app.use("/channel-icons/", avatarsRoute);
-        console.log("[Server] Route /channel-icons registered");
-
-        this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
-        console.log("[Server] Route /guilds/avatars registered");
-
-        this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
-        console.log("[Server] Route /guilds/banners registered");
+        if (!process.env.CDN_CRD_ROUTER) {
+            register("/icons/", avatarsRoute);
+            register("/emojis/", avatarsRoute);
+            register("/stickers/", avatarsRoute);
+            register("/banners/", avatarsRoute);
+            register("/splashes/", avatarsRoute);
+            register("/discovery-splashes/", avatarsRoute);
+            register("/app-icons/", avatarsRoute);
+            register("/app-assets/", avatarsRoute);
+            register("/discover-splashes/", avatarsRoute);
+            register("/team-icons/", avatarsRoute);
+            register("/channel-icons/", avatarsRoute);
+        } else {
+            register("/icons/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "icons/", fallbackToAvatarPath: true })));
+            register("/emojis/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "emojis/", fallbackToAvatarPath: true })));
+            register("/stickers/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "stickers/", fallbackToAvatarPath: true })));
+            register("/banners/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "banners/", fallbackToAvatarPath: true })));
+            register("/splashes/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "splashes/", fallbackToAvatarPath: true })));
+            register("/discovery-splashes/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "discovery-splashes/", fallbackToAvatarPath: true })));
+            register("/app-icons/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "app-icons/", fallbackToAvatarPath: true })));
+            register("/app-assets/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "app-assets/", fallbackToAvatarPath: true })));
+            register("/discover-splashes/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "discover-splashes/", fallbackToAvatarPath: true })));
+            register("/team-icons/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "team-icons/", fallbackToAvatarPath: true })));
+            register("/channel-icons/", createBasicCrdFileRouter(new BasicCrdFileRouterOptions({ pathPrefix: "channel-icons/", fallbackToAvatarPath: true })));
+        }
 
         return super.start();
     }

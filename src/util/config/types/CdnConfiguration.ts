@@ -25,11 +25,10 @@ export class CdnConfiguration extends EndpointConfiguration {
     proxyCacheHeaderSeconds: number = 60 * 60 * 24;
     maxAttachmentSize: number = 25 * 1024 * 1024; // 25 MB
 
-    // limits: CdnLimitsConfiguration = new CdnLimitsConfiguration();
+    limits: CdnLimitsConfiguration = new CdnLimitsConfiguration();
 }
 
 export class CdnLimitsConfiguration {
-    // ordered by route register order in CDN...
     icon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
     roleIcon: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
     emoji: CdnImageLimitsConfiguration = new CdnImageLimitsConfiguration();
@@ -46,6 +45,12 @@ export class CdnLimitsConfiguration {
 }
 
 export class CdnImageLimitsConfiguration {
+    constructor(data?: Partial<CdnImageLimitsConfiguration>) {
+        if (data) {
+            Object.assign(this, data);
+        }
+    }
+
     maxHeight: number = 8192;
     maxWidth: number = 8192;
     maxSize: number = 10 * 1024 * 1024; // 10 MB

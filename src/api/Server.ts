@@ -24,6 +24,7 @@ import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
 import { initInstance } from "./util/handlers/Instance";
+import fs from "fs/promises";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -127,6 +128,13 @@ export class SpacebarServer extends Server {
         app.get("/widget", (req, res) => {
             res.set("Cache-Control", "public, max-age=21600");
             return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "widget.html"));
+        });
+
+        app.get("/invite/:code", async (req, res) => {
+            const { code } = req.params;
+            const content = fs.readFile(path.join(PUBLIC_ASSETS_FOLDER, "invite.html"), "utf-8");
+            res.set("Cache-Control", "public, max-age=21600");
+            return res.send((await content).replace("{code}", code).replace("{serverName}", Config.get().general.serverName));
         });
 
         app.get("/_spacebar/api/schemas.json", (req, res) => {

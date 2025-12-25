@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -18,19 +18,16 @@
 
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@spacebar/util";
-import { storage } from "../util/Storage";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
-import { multer } from "../util/multer";
+import { storage, multer, ANIMATED_MIME_TYPES, STATIC_MIME_TYPES } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
 // TODO: generate different image types of icon
 // TODO: delete old icons
 
-const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
-const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 export class BasicCrdFileRouterOptions {
@@ -44,6 +41,7 @@ export class BasicCrdFileRouterOptions {
 
 export function createBasicCrdFileRouter(opts: BasicCrdFileRouterOptions) {
     const router = Router({ mergeParams: true });
+    console.log("Creating Basic CRD File Router with opts:", JSON.stringify(opts));
 
     router.post("/:user_id", multer.single("file"), async (req: Request, res: Response) => {
         if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");

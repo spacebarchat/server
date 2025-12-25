@@ -18,19 +18,16 @@
 
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@spacebar/util";
-import { storage } from "../util/Storage";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
-import { multer } from "../util/multer";
+import { multer, storage, cache, ANIMATED_MIME_TYPES, STATIC_MIME_TYPES } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
 // TODO: generate different image types of icon
 // TODO: delete old icons
 
-const ANIMATED_MIME_TYPES = ["image/apng", "image/gif", "image/gifv"];
-const STATIC_MIME_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "image/svg"];
 const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 
 const router = Router({ mergeParams: true });
@@ -60,7 +57,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
     });
 });
 
-router.get("/:user_id", async (req: Request, res: Response) => {
+router.get("/:user_id", cache, async (req: Request, res: Response) => {
     let { user_id } = req.params;
     user_id = user_id.split(".")[0]; // remove .file extension
     const path = `avatars/${user_id}`;
@@ -70,12 +67,11 @@ router.get("/:user_id", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });
 
-export const getAvatar = async (req: Request, res: Response) => {
+router.get("/:user_id/:hash", cache, async (req: Request, res: Response) => {
     const { user_id } = req.params;
     let { hash } = req.params;
     hash = hash.split(".")[0]; // remove .file extension
@@ -86,12 +82,9 @@ export const getAvatar = async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
-};
-
-router.get("/:user_id/:hash", getAvatar);
+});
 
 router.delete("/:user_id/:id", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");

@@ -118,7 +118,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     },
                 });
 
-                const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
+                const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/_spacebar/cdn/cloud-attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
                     method: "POST",
                     headers: {
                         signature: Config.get().security.requestSignature || "",

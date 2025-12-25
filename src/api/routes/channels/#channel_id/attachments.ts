@@ -81,7 +81,7 @@ router.post(
                     userIsClip: attachment.is_clip,
                     userOriginalContentType: attachment.original_content_type,
                 });
-                await newAttachment.save();
+                await newAttachment.insert();
                 return newAttachment;
             }),
         );
@@ -91,7 +91,7 @@ router.post(
                 return {
                     id: a.userAttachmentId,
                     upload_filename: a.uploadFilename,
-                    upload_url: `${cdnUrl}/attachments/${a.uploadFilename}`,
+                    upload_url: `${cdnUrl}/_spacebar/cdn/cloud-attachments/${a.uploadFilename}`,
                     original_content_type: a.userOriginalContentType,
                 };
             }),
@@ -119,7 +119,7 @@ router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
         });
     }
 
-    const response = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${att.uploadFilename}`, {
+    const response = await fetch(`${Config.get().cdn.endpointPrivate}/_spacebar/cdn/cloud-attachments/${att.uploadFilename}`, {
         headers: {
             signature: Config.get().security.requestSignature,
         },

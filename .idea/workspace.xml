@@ -65,7 +65,7 @@
     "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "24.11.1",
     "javascript.nodejs.core.library.typings.version": "24.10.4",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/util/migration/postgres",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/nix/modules/default",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -96,18 +96,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/users" />
-      <recent name="$PROJECT_DIR$/src/util/entities" />
-      <recent name="$PROJECT_DIR$/src/gateway/opcodes" />
-      <recent name="$PROJECT_DIR$/src/api/routes/users/@me/billing" />
+      <recent name="$PROJECT_DIR$/nix/modules/default" />
+      <recent name="$PROJECT_DIR$/assets/public" />
+      <recent name="$PROJECT_DIR$/src/api/routes/guilds/#guild_id" />
+      <recent name="$PROJECT_DIR$/src/cdn/routes/_spacebar/cdn" />
+      <recent name="$PROJECT_DIR$/src/cdn/routes" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/cdn/routes/_spacebar/cdn" />
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
       <recent name="$PROJECT_DIR$/src/schemas" />
       <recent name="$PROJECT_DIR$/src/schemas/uncategorised" />
       <recent name="$PROJECT_DIR$/src/schemas/gateway" />
-      <recent name="$PROJECT_DIR$/src/schemas/api/developers" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -133,7 +133,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Compound.Start separated">
+  <component name="RunManager" selected="npm.Start CDN">
     <list>
       <item itemvalue="Compound.Start separated" />
       <item itemvalue="npm.Start API" />

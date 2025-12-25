@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Storage } from "./Storage";
+import { Storage } from ".";
 import fs from "fs";
 import fsp from "fs/promises";
 import { join, dirname } from "path";
@@ -36,6 +36,7 @@ function getPath(path: string) {
 
 export class FileStorage implements Storage {
     async get(path: string): Promise<Buffer | null> {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] read file: ${path}`);
         path = getPath(path);
         try {
             return await fsp.readFile(path);
@@ -51,6 +52,7 @@ export class FileStorage implements Storage {
     }
 
     async clone(path: string, newPath: string) {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] clone file: ${path} -> ${newPath}`);
         path = getPath(path);
         newPath = getPath(newPath);
 
@@ -61,6 +63,7 @@ export class FileStorage implements Storage {
     }
 
     async set(path: string, value: Buffer) {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] write file: ${path}`);
         path = getPath(path);
         if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
 
@@ -71,6 +74,7 @@ export class FileStorage implements Storage {
     }
 
     async delete(path: string) {
+        if (process.env.CDN_LOG_IO) console.log(`[CDN][IO] delete file: ${path}`);
         //TODO we should delete the parent directory if empty
         fs.unlinkSync(getPath(path));
     }

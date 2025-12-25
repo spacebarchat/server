@@ -16,6 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./FileStorage";
+export * from "./storage";
+export * from "./fileStorage";
+export * from "./s3Storage";
 export * from "./multer";
-export * from "./Storage";
+export * from "./cache";
+export * from "./mimetypes";
