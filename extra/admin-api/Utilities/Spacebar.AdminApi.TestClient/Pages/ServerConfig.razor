@@ -1,0 +1,26 @@
+@page "/ServerConfig"
+@inject Config Config
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using Spacebar.AdminApi.TestClient.Services
+@using Spacebar.ConfigModel.Extensions
+<h3>Server Config</h3>
+@if (CurrentServerConfig is null) {
+    <p>Loading server config...</p>
+} else {
+    <pre>@JsonSerializer.Serialize(CurrentServerConfig, new JsonSerializerOptions { WriteIndented = true })</pre>
+}
+
+@code {
+
+    private Spacebar.ConfigModel.ServerConfiguration? CurrentServerConfig { get; set; } = new();
+    
+    protected override async Task OnInitializedAsync() {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var cfgKv = await hc.GetFromJsonAsync<Dictionary<string, string?>>($"{Config.AdminUrl}/_spacebar/admin/config");
+        var cfg = cfgKv.ToNestedJsonObject();
+        CurrentServerConfig = cfg.Deserialize<Spacebar.ConfigModel.ServerConfiguration>();
+    }
+
+}
