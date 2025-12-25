@@ -28,7 +28,6 @@ import {
     GuildConfiguration,
     LimitsConfiguration,
     LoginConfiguration,
-    MetricsConfiguration,
     PasswordResetConfiguration,
     RabbitMQConfiguration,
     RegionConfiguration,
@@ -53,7 +52,6 @@ export class ConfigValue {
     gif: GifConfiguration = new GifConfiguration();
     rabbitmq: RabbitMQConfiguration = new RabbitMQConfiguration();
     templates: TemplateConfiguration = new TemplateConfiguration();
-    metrics: MetricsConfiguration = new MetricsConfiguration();
     defaults: DefaultsConfiguration = new DefaultsConfiguration();
     external: ExternalTokensConfiguration = new ExternalTokensConfiguration();
     email: EmailConfiguration = new EmailConfiguration();

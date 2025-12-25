@@ -27,7 +27,6 @@ export * from "./GifConfiguration";
 export * from "./GuildConfiguration";
 export * from "./LimitConfigurations";
 export * from "./LoginConfiguration";
-export * from "./MetricsConfiguration";
 export * from "./PasswordResetConfiguration";
 export * from "./RabbitMQConfiguration";
 export * from "./RegionConfiguration";
