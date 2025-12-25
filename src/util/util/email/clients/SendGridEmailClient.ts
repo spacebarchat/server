@@ -31,10 +31,10 @@ export class SendGridEmailClient extends BaseEmailClient {
 
         try {
             // try to import the transporter package
-            this.sendGrid = (await import("@sendgrid/mail")).default;
+            this.sendGrid = require("@sendgrid/mail").default;
         } catch {
             // if the package is not installed, log an error and return void so we don't set the transporter
-            console.error("[Email] SendGrid transport is not installed. Please run `npm install @sendgrid/mail --save-optional` to install it.");
+            console.error("[Email] SendGrid transport is not installed. Please run `npm install --no-save @sendgrid/mail` to install it.");
             return;
         }
 

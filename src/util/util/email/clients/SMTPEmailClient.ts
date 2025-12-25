@@ -20,16 +20,17 @@ import { BaseEmailClient, IEmail } from "./IEmailClient";
 import { Config } from "@spacebar/util";
 
 export class SMTPEmailClient extends BaseEmailClient {
-    // sendGrid?: unknown;
-    nodemailer?: typeof import("nodemailer");
-    transporter: import("nodemailer").Transporter;
+    nodemailer?: unknown;
+    transporter: unknown;
+    // nodemailer?: typeof import("nodemailer"); // for dev
+    // transporter: import("nodemailer").Transporter; // for dev
     override async init(): Promise<void> {
         try {
             // try to import the transporter package
-            this.nodemailer = (await import("nodemailer")).default;
+            this.nodemailer = require("nodemailer").default;
         } catch {
             // if the package is not installed, log an error and return void so we don't set the transporter
-            console.error("[Email] nodemailer is not installed. Please run `npm install nodemailer --save-optional` to install it.");
+            console.error("[Email] nodemailer is not installed. Please run `npm install --no-save nodemailer` to install it.");
             return;
         }
         // get configuration
@@ -44,6 +45,8 @@ export class SMTPEmailClient extends BaseEmailClient {
             );
 
         // construct the transporter
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const transporter = this.nodemailer.createTransport({
             host,
             port,
@@ -55,7 +58,7 @@ export class SMTPEmailClient extends BaseEmailClient {
         });
 
         // verify connection configuration
-        const verified = await transporter.verify().catch((err) => {
+        const verified = await transporter.verify().catch((err: unknown) => {
             console.error("[Email] SMTP verification failed:", err);
             return;
         });
@@ -70,6 +73,8 @@ export class SMTPEmailClient extends BaseEmailClient {
         if (!this.nodemailer) throw new Error("nodemailer not initialized");
         if (!this.transporter) throw new Error("nodemailer transporter not initialized");
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         await this.transporter.sendMail({
             to: email.to,
             from: email.from,

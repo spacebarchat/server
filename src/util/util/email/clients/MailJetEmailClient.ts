@@ -39,7 +39,7 @@ export class MailJetEmailClient extends BaseEmailClient {
             });
         } catch {
             // if the package is not installed, log an error and return void so we don't set the transporter
-            console.error("[Email] MailJet transport is not installed. Please run `npm install node-mailjet --save-optional` to install it.");
+            console.error("[Email] MailJet transport is not installed. Please run `npm install --no-save node-mailjet` to install it.");
             return;
         }
     }

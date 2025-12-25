@@ -34,7 +34,7 @@ export class MailGunEmailClient extends BaseEmailClient {
 
         try {
             // try to import the transporter package
-            this.mailGun = new (await import("mailgun.js")).default(FormData);
+            this.mailGun = new (require("mailgun.js").default)(FormData);
         } catch {
             // if the package is not installed, log an error and return void so we don't set the transporter
             console.error("[Email] MailGun transport is not installed. Please run `npm install mailgun.js --save-optional` to install it.");
