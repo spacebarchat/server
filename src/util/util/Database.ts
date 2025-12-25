@@ -39,6 +39,18 @@ const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "dat
 export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
+let hasWarnedSqlite = false;
+if (isSqlite && !hasWarnedSqlite) {
+    hasWarnedSqlite = true;
+    console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+    try {
+        const _ = require("sqlite3");
+    } catch (e) {
+        console.log(`[Database] ${red(`Failed to load sqlite3 package. Please install it with 'npm install --no-save sqlite3', or switch to a real database like Postgres.`)}`);
+        process.exit(1);
+    }
+}
+
 export const DataSourceOptions = new DataSource({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
@@ -66,10 +78,6 @@ export function getDatabase(): DataSource | null {
 export async function initDatabase(): Promise<DataSource> {
     if (dbConnection) return dbConnection;
 
-    if (isSqlite) {
-        console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
-    }
-
     if (!process.env.DB_SYNC) {
         const supported = ["postgres", "sqlite"];
         if (!supported.includes(DatabaseType)) {
@@ -80,7 +88,7 @@ export async function initDatabase(): Promise<DataSource> {
                             ` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
                     ),
             );
-            process.exit();
+            process.exit(1);
         }
     }
 
