@@ -1,17 +1,4 @@
 {
-    "CreateFingerprintResponse": {
-        "type": "object",
-        "properties": {
-            "fingerprint": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "fingerprint"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "ApplicationCommandSchema": {
         "type": "object",
         "properties": {
@@ -286,6 +273,315 @@
             "hostname",
             "score",
             "success"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "StoredEmailResponse": {
+        "type": "object",
+        "properties": {
+            "Content-Type": {
+                "type": "string"
+            },
+            "From": {
+                "type": "string"
+            },
+            "Message-Id": {
+                "type": "string"
+            },
+            "Mime-Version": {
+                "type": "string"
+            },
+            "Subject": {
+                "type": "string"
+            },
+            "To": {
+                "type": "string"
+            },
+            "sender": {
+                "type": "string"
+            },
+            "recipients": {
+                "type": "string"
+            },
+            "from": {
+                "type": "string"
+            },
+            "subject": {
+                "type": "string"
+            },
+            "body-html": {
+                "type": "string"
+            },
+            "body-plain": {
+                "type": "string"
+            },
+            "attachments": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "content-type": {
+                                "type": "string"
+                            },
+                            "size": {
+                                "type": "integer"
+                            },
+                            "url": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "content-type",
+                            "name",
+                            "size",
+                            "url"
+                        ]
+                    }
+                ],
+                "minItems": 1,
+                "maxItems": 1
+            },
+            "content-id-map": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+            },
+            "message-headers": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                }
+            },
+            "stripped-html": {
+                "type": "string"
+            },
+            "stripped-text": {
+                "type": "string"
+            },
+            "stripped-signature": {
+                "type": "string"
+            },
+            "Content-Transfer-Encoding": {
+                "type": "string"
+            },
+            "X-Mailgun-Tag": {
+                "type": "string"
+            },
+            "X-Mailgun-Template-Name": {
+                "type": "string"
+            },
+            "X-Mailgun-Template-Variables": {
+                "type": "string"
+            },
+            "X-Mailgun-Deliver-By": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "Content-Type",
+            "From",
+            "Message-Id",
+            "Mime-Version",
+            "Subject",
+            "To",
+            "body-html",
+            "body-plain",
+            "message-headers",
+            "recipients",
+            "sender",
+            "stripped-html",
+            "stripped-signature",
+            "stripped-text"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessagesQueueStatusAPIResponse": {
+        "type": "object",
+        "properties": {
+            "regular": {
+                "type": "object",
+                "properties": {
+                    "is_disabled": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "object",
+                        "properties": {
+                            "until": {
+                                "type": "string"
+                            },
+                            "reason": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "reason",
+                            "until"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "disabled",
+                    "is_disabled"
+                ]
+            },
+            "scheduled": {
+                "type": "object",
+                "properties": {
+                    "is_disabled": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "object",
+                        "properties": {
+                            "until": {
+                                "type": "string"
+                            },
+                            "reason": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "reason",
+                            "until"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "disabled",
+                    "is_disabled"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "regular",
+            "scheduled"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SubaccountSendingLimitResponse": {
+        "type": "object",
+        "properties": {
+            "limit": {
+                "type": "integer"
+            },
+            "current": {
+                "type": "integer"
+            },
+            "period": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "current",
+            "limit",
+            "period"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SubaccountSetSendingLimitResponse": {
+        "type": "object",
+        "properties": {
+            "success": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "success"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SubaccountDestroyResponse": {
+        "type": "object",
+        "properties": {
+            "message": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "message"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ActivateDomainKeyResponse": {
+        "type": "object",
+        "properties": {
+            "message": {
+                "type": "string"
+            },
+            "authority": {
+                "type": "string"
+            },
+            "selector": {
+                "type": "string"
+            },
+            "active": {
+                "type": "boolean"
+            },
+            "status": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "active",
+            "authority",
+            "message",
+            "selector",
+            "status"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "DeactivateDomainKeyResponse": {
+        "type": "object",
+        "properties": {
+            "message": {
+                "type": "string"
+            },
+            "authority": {
+                "type": "string"
+            },
+            "selector": {
+                "type": "string"
+            },
+            "active": {
+                "type": "boolean"
+            },
+            "status": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "active",
+            "authority",
+            "message",
+            "selector",
+            "status"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -1422,6 +1718,844 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "QuestRewardSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/QuestRewardType"
+            },
+            "sku_id": {
+                "type": "string"
+            },
+            "asset": {
+                "type": "string"
+            },
+            "asset_video": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "messages": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_with_article": {
+                        "type": "string"
+                    },
+                    "redemption_instructions_by_platform": {
+                        "$ref": "#/definitions/Record<string,string>"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "name_with_article",
+                    "redemption_instructions_by_platform"
+                ]
+            },
+            "approximate_count": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "redemption_link": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "expires_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "expires_at_premium": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "expiration_mode": {
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            },
+            "orb_quantity": {
+                "type": "integer"
+            },
+            "quantity": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "messages",
+            "sku_id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestRewardConfigSchema": {
+        "type": "object",
+        "properties": {
+            "assignment_method": {
+                "$ref": "#/definitions/QuestAssignmentMethod"
+            },
+            "platforms": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/QuestPlatformType"
+                }
+            },
+            "rewards": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/QuestRewardSchema"
+                }
+            },
+            "rewards_expire_at": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignment_method",
+            "platforms",
+            "rewards",
+            "rewards_expire_at"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestApplicationSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "link": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestVideoAssetSchema": {
+        "type": "object",
+        "properties": {
+            "url": {
+                "type": "string"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "thumbnail": {
+                "type": "string"
+            },
+            "caption": {
+                "type": "string"
+            },
+            "transcript": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "height",
+            "thumbnail",
+            "url",
+            "width"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestTaskSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/QuestEventType"
+            },
+            "target": {
+                "type": "integer"
+            },
+            "assets": {
+                "type": "object",
+                "properties": {
+                    "video": {
+                        "$ref": "#/definitions/QuestVideoAssetSchema"
+                    },
+                    "video_low_res": {
+                        "$ref": "#/definitions/QuestVideoAssetSchema"
+                    },
+                    "video_hls": {
+                        "$ref": "#/definitions/QuestVideoAssetSchema"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "video"
+                ]
+            },
+            "applications": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "id"
+                    ]
+                }
+            },
+            "external_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "messages": {
+                "type": "object",
+                "properties": {
+                    "video_title": {
+                        "type": "string"
+                    },
+                    "task_title": {
+                        "type": "string"
+                    },
+                    "task_description": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "event_name": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "target",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestTaskConfigV2Schema": {
+        "type": "object",
+        "properties": {
+            "join_operator": {
+                "$ref": "#/definitions/QuestJoinOperator"
+            },
+            "tasks": {
+                "$ref": "#/definitions/Partial<Record<QuestEventType,QuestTaskSchema>>"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "join_operator",
+            "tasks"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestConfigSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "config_version": {
+                "type": "integer"
+            },
+            "starts_at": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/QuestFeature"
+                }
+            },
+            "application": {
+                "$ref": "#/definitions/QuestApplicationSchema"
+            },
+            "assets": {
+                "type": "object",
+                "properties": {
+                    "hero": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "hero_video": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "quest_bar_hero": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "quest_bar_hero_video": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile_dark": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile_light": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype_dark": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype_light": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "game_tile",
+                    "game_tile_dark",
+                    "game_tile_light",
+                    "hero",
+                    "logotype",
+                    "logotype_dark",
+                    "logotype_light",
+                    "quest_bar_hero"
+                ]
+            },
+            "colors": {
+                "type": "object",
+                "properties": {
+                    "primary": {
+                        "type": "string"
+                    },
+                    "secondary": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "primary",
+                    "secondary"
+                ]
+            },
+            "messages": {
+                "type": "object",
+                "properties": {
+                    "quest_name": {
+                        "type": "string"
+                    },
+                    "game_title": {
+                        "type": "string"
+                    },
+                    "game_publisher": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "game_publisher",
+                    "game_title",
+                    "quest_name"
+                ]
+            },
+            "task_config": {},
+            "task_config_v2": {
+                "$ref": "#/definitions/QuestTaskConfigV2Schema"
+            },
+            "rewards_config": {
+                "$ref": "#/definitions/QuestRewardConfigSchema"
+            },
+            "share_policy": {
+                "$ref": "#/definitions/QuestSharePolicy"
+            },
+            "cta_config": {
+                "type": "object",
+                "properties": {
+                    "button_label": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "subtitle": {
+                        "type": "string"
+                    },
+                    "android": {
+                        "type": "object",
+                        "properties": {
+                            "android_app_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "android_app_id"
+                        ]
+                    },
+                    "ios": {
+                        "type": "object",
+                        "properties": {
+                            "ios_app_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "ios_app_id"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "button_label",
+                    "link"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application",
+            "assets",
+            "colors",
+            "config_version",
+            "cta_config",
+            "expires_at",
+            "features",
+            "id",
+            "messages",
+            "rewards_config",
+            "share_policy",
+            "starts_at",
+            "task_config_v2"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestUserStatusProgressSchema": {
+        "type": "object",
+        "properties": {
+            "value": {
+                "type": "integer"
+            },
+            "event_name": {
+                "$ref": "#/definitions/QuestEventType"
+            },
+            "updated_at": {
+                "type": "string"
+            },
+            "completed_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "heartbeat": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "last_beat_at": {
+                                "type": "string"
+                            },
+                            "expires_at": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "expires_at",
+                            "last_beat_at"
+                        ]
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "completed_at",
+            "event_name",
+            "heartbeat",
+            "updated_at",
+            "value"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestUserStatusSchema": {
+        "type": "object",
+        "properties": {
+            "user_id": {
+                "type": "string"
+            },
+            "quest_id": {
+                "type": "string"
+            },
+            "enrolled_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "completed_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "claimed_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "claimed_tier": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "last_stream_heartbeat_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "stream_progress_seconds": {
+                "type": "integer"
+            },
+            "dismissed_quest_content": {
+                "type": "integer"
+            },
+            "progress": {
+                "$ref": "#/definitions/Record<string,QuestUserStatusProgressSchema>"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "claimed_at",
+            "completed_at",
+            "enrolled_at",
+            "quest_id",
+            "stream_progress_seconds",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ClaimedQuestSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "config": {
+                "$ref": "#/definitions/QuestConfigSchema"
+            },
+            "user_status": {
+                "$ref": "#/definitions/QuestUserStatusSchema"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "config",
+            "id",
+            "user_status"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestAdIdentifiersSchema": {
+        "type": "object",
+        "properties": {
+            "campaign_id": {
+                "type": "string"
+            },
+            "ad_set_id": {
+                "type": "string"
+            },
+            "ad_id": {
+                "type": "string"
+            },
+            "creative_id": {
+                "type": "string"
+            },
+            "creative_type": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "ad_id",
+            "ad_set_id",
+            "campaign_id",
+            "creative_id",
+            "creative_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestClaimRewardRequestSchema": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "integer"
+            },
+            "platform": {
+                "$ref": "#/definitions/QuestPlatformType"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "location",
+            "platform"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestEnrollRequestSchema": {
+        "type": "object",
+        "properties": {
+            "location": {
+                "type": "integer"
+            },
+            "is_targeted": {
+                "type": "boolean"
+            },
+            "metadata_raw": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "metadata_sealed": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "location"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestEntitlementExpirationMetadataSchema": {
+        "type": "object",
+        "properties": {
+            "extended": {
+                "type": "boolean"
+            },
+            "extendable": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "extendable",
+            "extended"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestRewardCodeSchema": {
+        "type": "object",
+        "properties": {
+            "quest_id": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "platform": {
+                "$ref": "#/definitions/QuestPlatformType"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "claimed_at": {
+                "type": "string"
+            },
+            "tier": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "claimed_at",
+            "code",
+            "platform",
+            "quest_id",
+            "tier",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "config": {
+                "$ref": "#/definitions/QuestConfigSchema"
+            },
+            "preview": {
+                "type": "boolean"
+            },
+            "targeted_content": {
+                "type": "array",
+                "items": {}
+            },
+            "user_status": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/QuestUserStatusSchema"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "config",
+            "id",
+            "preview",
+            "targeted_content",
+            "user_status"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestVideoProgressRequestSchema": {
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "timestamp"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AccountStandingResponse": {
+        "type": "object",
+        "properties": {
+            "classifications": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Classification"
+                }
+            },
+            "guild_classifications": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GuildClassification"
+                }
+            },
+            "account_standing": {
+                "type": "object",
+                "properties": {
+                    "state": {
+                        "$ref": "#/definitions/AccountStandingState"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "state"
+                ]
+            },
+            "is_dsa_eligible": {
+                "type": "boolean"
+            },
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "is_appeal_eligible": {
+                "type": "boolean"
+            },
+            "appeal_eligibility": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AppealEligibility"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "account_standing",
+            "appeal_eligibility",
+            "classifications",
+            "discriminator",
+            "guild_classifications",
+            "is_appeal_eligible",
+            "is_dsa_eligible",
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "APIErrorResponse": {
         "type": "object",
         "properties": {
@@ -1503,65 +2637,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "AccountStandingResponse": {
-        "type": "object",
-        "properties": {
-            "classifications": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Classification"
-                }
-            },
-            "guild_classifications": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/GuildClassification"
-                }
-            },
-            "account_standing": {
-                "type": "object",
-                "properties": {
-                    "state": {
-                        "$ref": "#/definitions/AccountStandingState"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "state"
-                ]
-            },
-            "is_dsa_eligible": {
-                "type": "boolean"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "is_appeal_eligible": {
-                "type": "boolean"
-            },
-            "appeal_eligibility": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/AppealEligibility"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "account_standing",
-            "appeal_eligibility",
-            "classifications",
-            "discriminator",
-            "guild_classifications",
-            "is_appeal_eligible",
-            "is_dsa_eligible",
-            "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "BackupCodesChallengeResponse": {
         "type": "object",
         "properties": {
@@ -1576,6 +2651,22 @@
         "required": [
             "nonce",
             "regenerate_nonce"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ClaimedQuestsResponseSchema": {
+        "type": "object",
+        "properties": {
+            "quests": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ClaimedQuestSchema"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "quests"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -1919,6 +3010,12 @@
             "region": {
                 "type": "string"
             },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
             "icon": {
                 "type": [
                     "null",
@@ -1951,12 +3048,6 @@
             },
             "description": {
                 "type": "string"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
             },
             "verification_level": {
                 "type": "integer"
@@ -2566,6 +3657,457 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "QuestClaimRewardResponseSchema": {
+        "type": "object",
+        "properties": {
+            "claimed_at": {
+                "type": "string"
+            },
+            "entitlement_expiration_metadata": {
+                "$ref": "#/definitions/Record<string,QuestEntitlementExpirationMetadataSchema>"
+            },
+            "entitlements": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EntitlementSchema"
+                }
+            },
+            "errors": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string"
+                        },
+                        "code": {
+                            "type": "integer"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "code",
+                        "message"
+                    ]
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "claimed_at",
+            "entitlement_expiration_metadata",
+            "entitlements",
+            "errors"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestConfigResponseSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "config_version": {
+                "type": "integer"
+            },
+            "starts_at": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": "string"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/QuestFeature"
+                }
+            },
+            "application": {
+                "$ref": "#/definitions/QuestApplicationSchema"
+            },
+            "assets": {
+                "type": "object",
+                "properties": {
+                    "hero": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "hero_video": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "quest_bar_hero": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "quest_bar_hero_video": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile_dark": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "game_tile_light": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype_dark": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "logotype_light": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "game_tile",
+                    "game_tile_dark",
+                    "game_tile_light",
+                    "hero",
+                    "logotype",
+                    "logotype_dark",
+                    "logotype_light",
+                    "quest_bar_hero"
+                ]
+            },
+            "colors": {
+                "type": "object",
+                "properties": {
+                    "primary": {
+                        "type": "string"
+                    },
+                    "secondary": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "primary",
+                    "secondary"
+                ]
+            },
+            "messages": {
+                "type": "object",
+                "properties": {
+                    "quest_name": {
+                        "type": "string"
+                    },
+                    "game_title": {
+                        "type": "string"
+                    },
+                    "game_publisher": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "game_publisher",
+                    "game_title",
+                    "quest_name"
+                ]
+            },
+            "task_config": {},
+            "task_config_v2": {
+                "$ref": "#/definitions/QuestTaskConfigV2Schema"
+            },
+            "rewards_config": {
+                "$ref": "#/definitions/QuestRewardConfigSchema"
+            },
+            "share_policy": {
+                "$ref": "#/definitions/QuestSharePolicy"
+            },
+            "cta_config": {
+                "type": "object",
+                "properties": {
+                    "button_label": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "subtitle": {
+                        "type": "string"
+                    },
+                    "android": {
+                        "type": "object",
+                        "properties": {
+                            "android_app_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "android_app_id"
+                        ]
+                    },
+                    "ios": {
+                        "type": "object",
+                        "properties": {
+                            "ios_app_id": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "ios_app_id"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "button_label",
+                    "link"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application",
+            "assets",
+            "colors",
+            "config_version",
+            "cta_config",
+            "expires_at",
+            "features",
+            "id",
+            "messages",
+            "rewards_config",
+            "share_policy",
+            "starts_at",
+            "task_config_v2"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestPlacementResponseSchema": {
+        "type": "object",
+        "properties": {
+            "request_id": {
+                "type": "string"
+            },
+            "quest": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/QuestSchema"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "ad_identifiers": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/QuestAdIdentifiersSchema"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "ad_context": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "is_campaign_ias_enabled": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "is_campaign_ias_enabled"
+                        ]
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "response_ttl_seconds": {
+                "type": "integer"
+            },
+            "metadata_raw": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "ad_context",
+            "ad_identifiers",
+            "metadata_raw",
+            "quest",
+            "request_id",
+            "response_ttl_seconds"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestRewardCodeResponseSchema": {
+        "type": "object",
+        "properties": {
+            "quest_id": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "platform": {
+                "$ref": "#/definitions/QuestPlatformType"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "claimed_at": {
+                "type": "string"
+            },
+            "tier": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "claimed_at",
+            "code",
+            "platform",
+            "quest_id",
+            "tier",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestsResponseSchema": {
+        "type": "object",
+        "properties": {
+            "excluded_quests": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "replacement_id": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "id"
+                    ]
+                }
+            },
+            "quest_enrollment_blocked_until": {},
+            "quests": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/QuestSchema"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "excluded_quests",
+            "quest_enrollment_blocked_until",
+            "quests"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestUserStatusResponseSchema": {
+        "type": "object",
+        "properties": {
+            "user_id": {
+                "type": "string"
+            },
+            "quest_id": {
+                "type": "string"
+            },
+            "enrolled_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "completed_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "claimed_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "claimed_tier": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "last_stream_heartbeat_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "stream_progress_seconds": {
+                "type": "integer"
+            },
+            "dismissed_quest_content": {
+                "type": "integer"
+            },
+            "progress": {
+                "$ref": "#/definitions/Record<string,QuestUserStatusProgressSchema>"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "claimed_at",
+            "completed_at",
+            "enrolled_at",
+            "quest_id",
+            "stream_progress_seconds",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RefreshUrlsResponse": {
         "type": "object",
         "properties": {
@@ -2814,6 +4356,12 @@
             "id": {
                 "type": "string"
             },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
             "icon": {
                 "type": "string"
             },
@@ -2876,12 +4424,6 @@
             },
             "description": {
                 "type": "string"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
             },
             "verification_level": {
                 "type": "integer"
@@ -3097,15 +4639,18 @@
     "APIPrivateUser": {
         "type": "object",
         "properties": {
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
             "flags": {
                 "type": "integer"
+            },
+            "email": {
+                "type": "string"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "verified": {
                 "type": "boolean"
@@ -3173,9 +4718,6 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
-            },
-            "disabled": {
-                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3229,15 +4771,18 @@
             "newToken": {
                 "type": "string"
             },
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
             "flags": {
                 "type": "integer"
+            },
+            "email": {
+                "type": "string"
+            },
+            "disabled": {
+                "type": "boolean"
             },
             "verified": {
                 "type": "boolean"
@@ -3305,9 +4850,6 @@
             },
             "premium_usage_flags": {
                 "type": "integer"
-            },
-            "disabled": {
-                "type": "boolean"
             },
             "settings": {
                 "$ref": "#/definitions/UserSettingsSchema"
@@ -3398,6 +4940,13 @@
                 "type": "string",
                 "default": "Spacebar Instance"
             },
+            "serverName": {
+                "type": [
+                    "null",
+                    "string"
+                ],
+                "default": null
+            },
             "instanceDescription": {
                 "type": [
                     "null",
@@ -3458,6 +5007,7 @@
             "instanceDescription",
             "instanceId",
             "instanceName",
+            "serverName",
             "tosPage"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -3635,6 +5185,12 @@
             "region": {
                 "type": "string"
             },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
             "icon": {
                 "type": [
                     "null",
@@ -3667,12 +5223,6 @@
             },
             "description": {
                 "type": "string"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
             },
             "verification_level": {
                 "type": "integer"
@@ -3967,6 +5517,31 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UserRelationshipsResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/RelationshipType"
+            },
+            "nickname": {
+                "type": "null"
+            },
+            "user": {
+                "$ref": "#/definitions/PublicUser"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "nickname",
+            "type",
+            "user"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserRelationsResponse": {
         "type": "array",
         "items": {
@@ -3998,28 +5573,16 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "UserRelationshipsResponse": {
+    "VirtualCurrencyResponseSchema": {
         "type": "object",
         "properties": {
-            "id": {
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/RelationshipType"
-            },
-            "nickname": {
-                "type": "null"
-            },
-            "user": {
-                "$ref": "#/definitions/PublicUser"
+            "balance": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
         "required": [
-            "id",
-            "nickname",
-            "type",
-            "user"
+            "balance"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -4850,6 +6413,122 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "EntitlementSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/EntitlementType"
+            },
+            "sku_id": {
+                "type": "string"
+            },
+            "application_id": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "user": {
+                "$ref": "#/definitions/Partial<User>"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "parent_id": {
+                "type": "string"
+            },
+            "deleted": {
+                "type": "boolean"
+            },
+            "consumed": {
+                "type": "boolean"
+            },
+            "branches": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "starts_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "ends_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "promotion_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "subscription_id": {
+                "type": "string"
+            },
+            "gift_code_flags": {
+                "type": "integer"
+            },
+            "gift_code_batch_id": {
+                "type": "string"
+            },
+            "gifter_user_id": {
+                "type": "string"
+            },
+            "gift_style": {
+                "type": "integer"
+            },
+            "fulfillment_status": {
+                "type": "integer"
+            },
+            "fulfilled_at": {
+                "type": "string"
+            },
+            "source_type": {
+                "enum": [
+                    1,
+                    11,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "number"
+            },
+            "tenant_metadata": {
+                "$ref": "#/definitions/Record<string,unknown>"
+            },
+            "sku": {},
+            "subscription_plan": {
+                "$ref": "#/definitions/Partial<unknown>"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application_id",
+            "deleted",
+            "ends_at",
+            "gift_code_flags",
+            "id",
+            "promotion_id",
+            "sku_id",
+            "starts_at",
+            "type",
+            "user_id"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ForgotPasswordSchema": {
@@ -6095,6 +7774,16 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "RelationshipPatchSchema": {
+        "type": "object",
+        "properties": {
+            "nickname": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RelationshipPostSchema": {
         "type": "object",
         "properties": {
@@ -6110,16 +7799,6 @@
             "discriminator",
             "username"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPatchSchema": {
-        "type": "object",
-        "properties": {
-            "nickname": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "RelationshipPutSchema": {
@@ -7355,6 +9034,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "CreateFingerprintResponse": {
+        "type": "object",
+        "properties": {
+            "fingerprint": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "fingerprint"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCommandOption": {
         "type": "object",
         "properties": {
@@ -8202,6 +9894,10 @@
                     "type": "string"
                 }
             },
+            "currency": {
+                "type": "integer",
+                "default": 0
+            },
             "id": {
                 "type": "string"
             }
@@ -8212,6 +9908,7 @@
             "bot",
             "connected_accounts",
             "created_at",
+            "currency",
             "data",
             "deleted",
             "desktop",
@@ -11588,6 +13285,107 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "QuestRewardType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestAssignmentMethod": {
+        "type": "number",
+        "enum": [
+            1,
+            2
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestPlatformType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestEventType": {
+        "type": "string",
+        "enum": [
+            "STREAM_ON_DESKTOP",
+            "PLAY_ON_DESKTOP",
+            "PLAY_ON_XBOX",
+            "PLAY_ON_PLAYSTATION",
+            "PLAY_ON_DESKTOP_V2",
+            "WATCH_VIDEO",
+            "WATCH_VIDEO_ON_MOBILE",
+            "PLAY_ACTIVITY",
+            "ACHIEVEMENT_IN_GAME",
+            "ACHIEVEMENT_IN_ACTIVITY"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestJoinOperator": {
+        "type": "string",
+        "enum": [
+            "and",
+            "or"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestFeature": {
+        "type": "number",
+        "enum": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "QuestSharePolicy": {
+        "type": "string",
+        "enum": [
+            "shareable_everywhere",
+            "not_shareable"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "Classification": {
         "type": "object",
         "properties": {
@@ -13044,6 +14842,25 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "EntitlementType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RefreshedUrl": {
         "type": "object",
         "properties": {
@@ -13083,7 +14900,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@700": {
+                    "__@unscopables@703": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -13212,17 +15029,17 @@
                             "remove": {
                                 "type": "boolean"
                             },
-                            "__@iterator@698": {
+                            "__@iterator@670": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@703": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@700",
+                    "__@unscopables@703",
                     "length"
                 ]
             },

@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,19 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+import { QuestConfigSchema } from "./QuestConfigSchema";
+import { QuestUserStatusSchema } from "./QuestUserStatusSchema";
+
+export interface QuestSchema {
+    // The ID of the quest
+    id: string;
+    // The configuration and metadata for the quest
+    config: QuestConfigSchema;
+    // Whether the quest is unreleased and in preview for Discord employees
+    preview: boolean;
+    // The content areas where the quest can be shown, deprecated
+    targeted_content: unknown[];
+    // The user's quest progress, if it has been accepted
+    user_status: null | QuestUserStatusSchema;
+}

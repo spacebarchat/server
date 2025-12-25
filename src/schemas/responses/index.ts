@@ -15,11 +15,12 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+export * from "./AccountStandingResponse";
 export * from "./APIErrorOrCaptchaResponse";
 export * from "./APIErrorResponse";
-export * from "./AccountStandingResponse";
 export * from "./BackupCodesChallengeResponse";
 export * from "./CaptchaRequiredResponse";
+export * from "./ClaimedQuestsResponseSchema";
 export * from "./CollectiblesCategoriesResponse";
 export * from "./CollectiblesMarketingResponse";
 export * from "./CollectiblesShopResponse";
@@ -50,6 +51,12 @@ export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
 export * from "./PreloadMessagesResponseSchema";
+export * from "./QuestClaimRewardResponseSchema";
+export * from "./QuestConfigResponseSchema";
+export * from "./QuestPlacementResponseSchema";
+export * from "./QuestRewardCodeResponseSchema";
+export * from "./QuestsResponseSchema";
+export * from "./QuestUserStatusResponseSchema";
 export * from "./RefreshUrlsResponse";
 export * from "./SettingsProtoUpdateResponse";
 export * from "./TeamListResponse";
@@ -60,7 +67,8 @@ export * from "./UpdatesResponse";
 export * from "./UploadAttachmentResponseSchema";
 export * from "./UserNoteResponse";
 export * from "./UserProfileResponse";
-export * from "./UserRelationsResponse";
 export * from "./UserRelationshipsResponse";
+export * from "./UserRelationsResponse";
+export * from "./VirtualCurrencyResponseSchema";
 export * from "./WebAuthnCreateResponse";
 export * from "./WebhookCreateResponse";

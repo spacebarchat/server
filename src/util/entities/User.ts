@@ -168,6 +168,9 @@ export class User extends BaseClass {
     @Column({ type: "simple-array", nullable: true })
     badge_ids?: string[];
 
+    @Column()
+    currency: number = 0; // virtual currency amount
+
     // TODO: I don't like this method?
     validate() {
         if (this.discriminator) {

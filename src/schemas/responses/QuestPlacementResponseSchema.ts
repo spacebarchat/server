@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,19 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+import { QuestAdIdentifiersSchema, QuestSchema } from "@spacebar/schemas";
+
+export interface QuestPlacementResponseSchema {
+    // The advertisement decision ID
+    request_id: string;
+    // The quest to show to the user
+    quest: QuestSchema | null;
+    // The advertisement identifiers for the delivered quest
+    ad_identifiers: QuestAdIdentifiersSchema | null;
+    // The advertisement context for the delivered quest
+    ad_context: { is_campaign_ias_enabled: boolean } | null;
+    response_ttl_seconds: number;
+    // Base64-encoded protobuf metadata for the advertisement
+    metadata_raw: string | null;
+}

@@ -15,12 +15,16 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+export enum QuestEventType {
+    STREAM_ON_DESKTOP = "STREAM_ON_DESKTOP",
+    PLAY_ON_DESKTOP = "PLAY_ON_DESKTOP",
+    PLAY_ON_XBOX = "PLAY_ON_XBOX",
+    PLAY_ON_PLAYSTATION = "PLAY_ON_PLAYSTATION",
+    PLAY_ON_DESKTOP_V2 = "PLAY_ON_DESKTOP_V2",
+    WATCH_VIDEO = "WATCH_VIDEO",
+    WATCH_VIDEO_ON_MOBILE = "WATCH_VIDEO_ON_MOBILE",
+    PLAY_ACTIVITY = "PLAY_ACTIVITY",
+    ACHIEVEMENT_IN_GAME = "ACHIEVEMENT_IN_GAME",
+    ACHIEVEMENT_IN_ACTIVITY = "ACHIEVEMENT_IN_ACTIVITY",
+}

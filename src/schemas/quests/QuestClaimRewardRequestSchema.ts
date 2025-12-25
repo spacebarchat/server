@@ -15,12 +15,10 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+import { QuestPlatformType } from "./QuestPlatformType";
+
+export interface QuestClaimRewardRequestSchema {
+    location: number; // https://docs.discord.food/resources/quests#quest-content-type
+    platform: QuestPlatformType;
+}

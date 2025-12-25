@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,20 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+import { QuestPlatformType } from ".";
+
+export interface QuestRewardCodeSchema {
+    // The ID of the quest
+    quest_id: string;
+    // The redeem code
+    code: string;
+    // The platform this redeem code applies to
+    platform: QuestPlatformType;
+    // The ID of the user who this code belongs to
+    user_id: string;
+    // When the user claimed the quest's reward
+    claimed_at: string;
+    // Which reward tier the code belongs to, if the quest's assignment_method is set to TIERED
+    tier: number | null;
+}

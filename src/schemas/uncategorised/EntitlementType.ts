@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,19 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+export enum EntitlementType {
+    PURCHASE = 1,
+    PREMIUM_SUBSCRIPTION,
+    DEVELOPER_GIFT,
+    TEST_MODE_PURCHASE,
+    FREE_PURCHASE,
+    USER_GIFT,
+    PREMIUM_PURCHASE,
+    APPLICATION_SUBSCRIPTION,
+    FREE_STAFF_PURCHASE,
+    QUEST_REWARD,
+    FRACTIONAL_REDEMPTION,
+    VIRTUAL_CURRENCY_REDEMPTION,
+    GUILD_POWERUP,
+}

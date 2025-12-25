@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,16 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./api";
-export * from "./gateway";
-export * from "./HelperTypes";
-export * from "./Identifiers";
-export * from "./quests";
-export * from "./responses";
-export * from "./uncategorised";
-export * from "./Validator";
-export * from "./webrtc";
+
+import { QuestEventType } from ".";
+
+export interface QuestUserStatusProgressSchema {
+    value: number;
+    event_name: QuestEventType;
+    updated_at: string; // ISO8601 timestamp
+    completed_at: string | null; // ISO8601 timestamp
+    heartbeat: {
+        last_beat_at: string; // ISO8601 timestamp
+        expires_at: null | string; // ISO8601 timestamp
+    } | null;
+}
