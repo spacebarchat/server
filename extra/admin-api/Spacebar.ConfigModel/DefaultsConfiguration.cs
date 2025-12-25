@@ -4,8 +4,8 @@ namespace Spacebar.ConfigModel;
 
 public class DefaultsConfiguration
 {
-    [JsonPropertyName("guild")] public GuildDefaults Guild = new GuildDefaults();
-    [JsonPropertyName("user")] public ChannelDefaults Channel = new ChannelDefaults();
+    [JsonPropertyName("guild")] public GuildDefaults Guild = new();
+    [JsonPropertyName("user")] public ChannelDefaults Channel = new();
 }
 
 public class GuildDefaults
