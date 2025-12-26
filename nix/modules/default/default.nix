@@ -232,7 +232,7 @@ in
           // (
             if cfg.cdnPath != null then
               {
-                CDN_PATH = cfg.cdnPath;
+                STORAGE_LOCATION = cfg.cdnPath;
               }
             else
               { }
