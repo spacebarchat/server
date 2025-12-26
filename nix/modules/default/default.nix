@@ -88,6 +88,7 @@ in
             attrsOf (oneOf [
               str
               bool
+              int
             ]);
           options = {
             THREADS = lib.mkOption {
