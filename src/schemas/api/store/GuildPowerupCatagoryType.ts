@@ -15,11 +15,24 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum GuildPowerupCategoryType {
+    /**
+     * Guild premium tier
+     *
+     * Value: level
+     */
+    level,
+    /**
+     * Additional guild perk
+     *
+     * Value: perk
+     */
+    perk,
+    /**
+     * Game server attached to the guild
+     *
+     * Value: game_server
+     */
+    game_server,
+}

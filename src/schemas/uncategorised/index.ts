@@ -15,6 +15,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 export * from "./AckBulkSchema";
 export * from "./ActivitySchema";
 export * from "./ApplicationAuthorizeSchema";
@@ -23,6 +24,7 @@ export * from "./BackupCodesChallengeSchema";
 export * from "./BanCreateSchema";
 export * from "./BanModeratorSchema";
 export * from "./BanRegistrySchema";
+export * from "./BillingPaymentGateway";
 export * from "./BotModifySchema";
 export * from "./BulkBanSchema";
 export * from "./BulkDeleteSchema";
@@ -38,9 +40,6 @@ export * from "./EmailDomainLookupSchema";
 export * from "./EmailDomainLookupVerifyCodeSchema";
 export * from "./EmojiCreateSchema";
 export * from "./EmojiModifySchema";
-export * from "./EntitlementSchema";
-export * from "./EntitlementSpecialSourceType";
-export * from "./EntitlementType";
 export * from "./ForgotPasswordSchema";
 export * from "./GreetRequestSchema";
 export * from "./GuildCreateSchema";
@@ -50,6 +49,7 @@ export * from "./GuildUpdateSchema";
 export * from "./GuildUpdateWelcomeScreenSchema";
 export * from "./HubWaitlistSignupSchema";
 export * from "./InviteCreateSchema";
+export * from "./LocalizedStringSchema";
 export * from "./LoginResponse";
 export * from "./LoginSchema";
 export * from "./MemberChangeProfileSchema";

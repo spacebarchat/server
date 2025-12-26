@@ -56,7 +56,17 @@ router.get(
             });
         }
 
-        res.json({} as QuestPlacementResponseSchema);
+        // TODO: implement
+        console.debug(`GET /quests/decision?placement=${placement}&client_heartbeat_session_id=${client_heartbeat_session_id} is incomplete`);
+        res.json({
+            request_id: "unique-request-id-1234",
+            quest: null,
+            ad_identifiers: null,
+            ad_context: null,
+            response_ttl_seconds: 300,
+            metadata_raw: "",
+            metadata_sealed: "",
+        } as QuestPlacementResponseSchema);
     },
 );
 

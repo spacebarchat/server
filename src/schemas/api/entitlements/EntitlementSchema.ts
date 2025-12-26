@@ -17,7 +17,11 @@
 */
 
 import { User } from "@spacebar/util";
+import { SKUSchema } from "../store";
+import { EntitlementFulfillmentStatus } from "./EntitlementFulfillmentStatus";
+import { EntitlementGiftStyle } from "./EntitlementGiftStyle";
 import { EntitlementSpecialSourceType } from "./EntitlementSpecialSourceType";
+import { EntitlementTenantMetadataSchema } from "./EntitlementTenantMetadataSchema";
 import { EntitlementType } from "./EntitlementType";
 
 export interface EntitlementSchema {
@@ -36,14 +40,14 @@ export interface EntitlementSchema {
     ends_at: string | null;
     promotion_id: string | null;
     subscription_id?: string;
-    gift_code_flags: number;
+    gift_code_flags: bigint; // EntitlementGiftCodeFlags;
     gift_code_batch_id?: string;
     gifter_user_id?: string;
-    gift_style?: number;
-    fulfillment_status?: number;
+    gift_style?: EntitlementGiftStyle;
+    fulfillment_status?: EntitlementFulfillmentStatus;
     fulfilled_at?: string;
     source_type?: EntitlementSpecialSourceType;
-    tenant_metadata?: Record<string, unknown>;
-    sku?: unknown;
-    subscription_plan?: Partial<unknown>;
+    tenant_metadata?: Record<string, EntitlementTenantMetadataSchema>;
+    sku?: SKUSchema;
+    subscription_plan?: Partial<unknown>; // TODO: https://docs.discord.food/resources/store#subscription-plan-object
 }

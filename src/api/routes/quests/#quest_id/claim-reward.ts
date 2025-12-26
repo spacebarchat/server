@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { EntitlementSpecialSourceType, EntitlementType, QuestClaimRewardRequestSchema, QuestClaimRewardResponseSchema } from "@spacebar/schemas/quests";
-import { emitEvent } from "@spacebar/util";
+import { emitEvent, EntitlementGiftCodeFlags } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
@@ -74,7 +74,7 @@ router.post(
                     type: EntitlementType.QUEST_REWARD,
                     tenant_metadata: {},
                     source_type: EntitlementSpecialSourceType.QUEST_REWARD,
-                    gift_code_flags: 0, // PAYMENT_SOURCE_REQUIRED, todo: make a bitfield enum
+                    gift_code_flags: EntitlementGiftCodeFlags.FLAGS.PAYMENT_SOURCE_REQUIRED,
                     promotion_id: null,
                 },
             ],

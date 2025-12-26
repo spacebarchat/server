@@ -410,6 +410,10 @@
         {
             "value": "UserResponse",
             "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "SKUSchema",
+            "reason": "Self-reference only schema"
         }
     ]
 }

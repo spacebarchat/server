@@ -15,11 +15,48 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum SKUType {
+    /**
+     * Primary durable item
+     *
+     * Value: 1
+     * Name: DURABLE_PRIMARY
+     */
+    DURABLE_PRIMARY = 1,
+    /**
+     * Durable item
+     *
+     * Value: 2
+     * Name: DURABLE
+     */
+    DURABLE = 2,
+    /**
+     * Consumable item
+     *
+     * Value: 3
+     * Name: CONSUMABLE
+     */
+    CONSUMABLE = 3,
+    /**
+     * Bundle of items
+     *
+     * Value: 4
+     * Name: BUNDLE
+     */
+    BUNDLE = 4,
+    /**
+     * Subscription item
+     *
+     * Value: 5
+     * Name: SUBSCRIPTION
+     */
+    SUBSCRIPTION = 5,
+    /**
+     * Group of subscription items
+     *
+     * Value: 6
+     * Name: SUBSCRIPTION_GROUP
+     */
+    SUBSCRIPTION_GROUP = 6,
+}

@@ -15,11 +15,22 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export interface GuildPremiumFeatures {
+    /**
+     * Enabled powerup-specific guild features
+     */
+    features: string[];
+    /**
+     * The number of additional emoji slots available to the guild
+     */
+    additional_emoji_slots: number;
+    /**
+     * The number of additional sticker slots available to the guild
+     */
+    additional_sticker_slots: number;
+    /**
+     * The number of additional soundboard slots available to the guild
+     */
+    additional_sound_slots: number;
+}

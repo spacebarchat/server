@@ -15,11 +15,24 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum SKUContentRatingAgency {
+    /**
+     * Entertainment Software Rating Board
+     *
+     * Value: 1
+     * Name: ESRB
+     * Content Rating: ESRB Content Rating
+     * Content Descriptor: ESRB Content Descriptor
+     */
+    ESRB = 1,
+    /**
+     * Pan European Game Information
+     *
+     * Value: 2
+     * Name: PEGI
+     * Content Rating: PEGI Content Rating
+     * Content Descriptor: PEGI Content Descriptor
+     */
+    PEGI = 2,
+}

@@ -15,11 +15,8 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+import { SKUESRBContentRating } from "./SKUESRBContentRating";
+import { SKUPEGIContentRating } from "./SKUPEGIContentRating";
+
+export type SKUContentRating = SKUESRBContentRating | SKUPEGIContentRating;

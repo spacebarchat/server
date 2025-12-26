@@ -331,6 +331,7 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         // TODO: implement
+        console.debug("GET /quests/@me/claimed is incomplete");
         res.json({
             quests: [],
         } as ClaimedQuestsResponseSchema);

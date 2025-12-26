@@ -15,11 +15,20 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum SKUAccessType {
+    /**
+     * SKU is fully accessible
+     *
+     * Value: 1
+     * Name: FULL
+     */
+    FULL = 1,
+    /**
+     * SKU is in early access
+     *
+     * Value: 2
+     * Name: EARLY_ACCESS
+     */
+    EARLY_ACCESS = 2,
+}

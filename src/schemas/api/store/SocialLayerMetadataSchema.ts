@@ -15,11 +15,28 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+import { StoreCarouselItemSchema } from "./StoreCarouselItemSchema";
+
+export interface SocialLayerMetadataSchema {
+    /**
+     * The carousel items for the listing
+     */
+    carousel_items: StoreCarouselItemSchema[];
+    /**
+     * The label for the listing
+     */
+    label: string;
+    /**
+     * When the listing expires
+     */
+    expires_at: string | null;
+    /**
+     * The store asset ID for the card image
+     */
+    card_image_asset_id?: string;
+    /**
+     * The store asset ID for the card background image
+     */
+    card_background_image_asset_id?: string;
+}

@@ -15,11 +15,17 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+import { SKUGameServerPowerupMetadataSchema } from "./SKUGameServerPowerupMetadataSchema";
+import { SKUGuildPowerupMetadataSchema } from "./SKUGuildPowerupMetadataSchema";
+
+export interface SKUGuildMonetizationMetadataSchema {
+    /**
+     * Guild powerup metadata
+     */
+    powerup?: SKUGuildPowerupMetadataSchema;
+    /**
+     * Game server powerup metadata
+     */
+    game_server?: SKUGameServerPowerupMetadataSchema;
+}

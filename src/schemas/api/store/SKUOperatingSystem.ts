@@ -15,11 +15,27 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum SKUOperatingSystem {
+    /**
+     * Windows OS
+     *
+     * Value: 1
+     * Name: WINDOWS
+     */
+    WINDOWS = 1,
+    /**
+     * macOS
+     *
+     * Value: 2
+     * Name: MACOS
+     */
+    MACOS = 2,
+    /**
+     * Linux
+     *
+     * Value: 3
+     * Name: LINUX
+     */
+    LINUX = 3,
+}

@@ -15,11 +15,30 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export interface StoreCarouselItemSchema {
+    /**
+     * The YouTube video ID for the item
+     */
+    youtube_video_id?: string;
+    /**
+     * The store asset ID for the item
+     */
+    asset_id?: string;
+    /**
+     * The store asset ID for the thumbnail
+     */
+    thumbnail_asset_id?: string;
+    /**
+     * The store asset ID for the background
+     */
+    background_asset_id?: string;
+    /**
+     * The label for the item
+     */
+    label?: string;
+    /**
+     * The store asset ID for the label icon
+     */
+    label_icon_asset_id?: string;
+}

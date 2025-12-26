@@ -15,11 +15,32 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+import { SKUPremiumPriceSchema } from "./SKUPremiumPriceSchema";
+
+export interface SKUPriceSchema {
+    /**
+     * The lower-cased ISO 4217 currency code
+     */
+    currency: string;
+    /**
+     * The exponent to convert the amount to the displayed currency unit
+     */
+    currency_exponent: number;
+    /**
+     * The price amount in the smallest currency unit
+     */
+    amount: number;
+    /**
+     * The sale price amount in the smallest currency unit
+     */
+    sale_amount?: number;
+    /**
+     * The percentage discount of the sale price
+     */
+    sale_percentage?: number;
+    /**
+     * The price for premium users per premium type
+     */
+    premium?: Record<number, SKUPremiumPriceSchema>;
+}

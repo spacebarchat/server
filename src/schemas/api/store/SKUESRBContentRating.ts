@@ -15,11 +15,48 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum SKUESRBContentRating {
+    /**
+     * Suitable for all ages
+     *
+     * Value: 1
+     * Name: EVERYONE
+     */
+    EVERYONE = 1,
+    /**
+     * Suitable for ages 10 and up
+     *
+     * Value: 2
+     * Name: EVERYONE_TEN_PLUS
+     */
+    EVERYONE_TEN_PLUS = 2,
+    /**
+     * Suitable for ages 13 and up
+     *
+     * Value: 3
+     * Name: TEEN
+     */
+    TEEN = 3,
+    /**
+     * Suitable for ages 17 and up
+     *
+     * Value: 4
+     * Name: MATURE
+     */
+    MATURE = 4,
+    /**
+     * Suitable for ages 18 and up
+     *
+     * Value: 5
+     * Name: ADULTS_ONLY
+     */
+    ADULTS_ONLY = 5,
+    /**
+     * Rating is pending
+     *
+     * Value: 6
+     * Name: RATING_PENDING
+     */
+    RATING_PENDING = 6,
+}

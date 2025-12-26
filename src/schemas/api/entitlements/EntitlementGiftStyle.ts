@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,11 +15,18 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-export * from "./AuditLog";
-export * from "./Automod";
-export * from "./GuildPremiumFeaturesSchema";
-export * from "./GuildProfileResponse";
-export * from "./GuildSchema";
-export * from "./Role";
-export * from "./Sticker";
-export * from "./VoiceState";
+
+export enum EntitlementGiftStyle {
+    SNOWGLOBE = 1,
+    BOX,
+    CUP,
+    STANDARD_BOX,
+    CAKE,
+    CHEST,
+    COFFEE,
+    SEASONAL_STANDARD_BOX,
+    SEASONAL_CAKE,
+    SEASONAL_CHEST,
+    SEASONAL_COFFEE,
+    NITROWEEN_STANDARD,
+}
