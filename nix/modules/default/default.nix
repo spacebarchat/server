@@ -71,6 +71,10 @@ in
       apiEndpoint = mkEndpointOptions "api.sb.localhost" 3001;
       gatewayEndpoint = mkEndpointOptions "gateway.sb.localhost" 3003;
       cdnEndpoint = mkEndpointOptions "cdn.sb.localhost" 3003;
+      cdnPath = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        description = "Path to store CDN files.";
+      };
 
       extraEnvironment = lib.mkOption {
         default = { };
@@ -154,7 +158,7 @@ in
               UMask = "077";
               # WorkingDirectory = "/var/lib/spacebarchat-server/";
             }
-        // lib.optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
+            // lib.optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
           } conf)
           {
           }
@@ -162,10 +166,10 @@ in
     in
     {
       assertions = [
-#        {
-#          assertion = !((cfg.extraEnvironment.THREADS > 1) && !config.services.rabbitmq.enable);
-#          message = "Make sure you've setup RabbitMQ when using more than one thread with Spacebar";
-#        }
+        #        {
+        #          assertion = !((cfg.extraEnvironment.THREADS > 1) && !config.services.rabbitmq.enable);
+        #          message = "Make sure you've setup RabbitMQ when using more than one thread with Spacebar";
+        #        }
       ];
 
       systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
@@ -224,6 +228,14 @@ in
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
           }
+          // (
+            if cfg.cdnPath != null then
+              {
+                CDN_PATH = cfg.cdnPath;
+              }
+            else
+              { }
+          )
         );
         serviceConfig = {
           ExecStart = "${cfg.package}/bin/start-cdn";
