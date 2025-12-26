@@ -38,7 +38,17 @@ import {
     Snowflake,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { ApplicationCommand, GuildCreateResponse, PartialEmoji, PublicMember, PublicUser, PublicVoiceState, RelationshipType, UserPrivate } from "@spacebar/schemas";
+import {
+    ApplicationCommand,
+    GuildCreateResponse,
+    PartialEmoji,
+    PublicMember,
+    PublicUser,
+    PublicVoiceState,
+    QuestUserStatusSchema,
+    RelationshipType,
+    UserPrivate,
+} from "@spacebar/schemas";
 
 export interface Event {
     guild_id?: string;
@@ -608,6 +618,13 @@ export interface GuildMemberListUpdate extends Event {
     };
 }
 
+export interface QuestsUserStatusUpdate extends Event {
+    event: "QUESTS_USER_STATUS_UPDATE";
+    data: {
+        user_status: QuestUserStatusSchema;
+    };
+}
+
 export type EventData =
     | InvalidatedEvent
     | ReadyEvent
@@ -658,7 +675,8 @@ export type EventData =
     | InteractionFailureEvent
     | MessageAckEvent
     | RelationshipAddEvent
-    | RelationshipRemoveEvent;
+    | RelationshipRemoveEvent
+    | QuestsUserStatusUpdate;
 
 // located in collection events
 
@@ -712,6 +730,7 @@ export enum EVENTEnum {
     ApplicationCommandUpdate = "APPLICATION_COMMAND_UPDATE",
     ApplicationCommandDelete = "APPLICATION_COMMAND_DELETE",
     SessionsReplace = "SESSIONS_REPLACE",
+    QuestsUserStatusUpdate = "QUESTS_USER_STATUS_UPDATE",
 }
 
 export type EVENT =
@@ -775,6 +794,7 @@ export type EVENT =
     | "RELATIONSHIP_UPDATE"
     | "SESSIONS_REPLACE"
     | "USER_SETTINGS_PROTO_UPDATE"
+    | "QUESTS_USER_STATUS_UPDATE"
     | CUSTOMEVENTS;
 
 export type CUSTOMEVENTS = "INVALIDATED" | "RATELIMIT";

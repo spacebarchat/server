@@ -17,6 +17,7 @@
 */
 export * from "./AuditLog";
 export * from "./Automod";
+export * from "./GuildPremiumFeaturesSchema";
 export * from "./GuildProfileResponse";
 export * from "./GuildSchema";
 export * from "./Role";

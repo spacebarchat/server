@@ -18,6 +18,7 @@
 export * from "./bots";
 export * from "./channels";
 export * from "./developers";
+export * from "./entitlements";
 export * from "./guilds";
 export * from "./messages";
 export * from "./users";

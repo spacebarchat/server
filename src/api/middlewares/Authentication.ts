@@ -51,6 +51,8 @@ export const NO_AUTHORIZATION_ROUTES = [
     "GET /policies/instance/",
     // Oauth callback
     "/oauth2/callback",
+    // get quest config
+    /^GET \/quests\/\d+/,
     // Asset delivery
     /^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
     /^(GET|HEAD) \/guilds\/\d+\/shield\.svg/,
