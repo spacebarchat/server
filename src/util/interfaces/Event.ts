@@ -38,7 +38,17 @@ import {
     Snowflake,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { ApplicationCommand, GuildCreateResponse, PartialEmoji, PublicMember, PublicUser, PublicVoiceState, QuestUserStatusSchema, RelationshipType, UserPrivate } from "@spacebar/schemas";
+import {
+    ApplicationCommand,
+    GuildCreateResponse,
+    PartialEmoji,
+    PublicMember,
+    PublicUser,
+    PublicVoiceState,
+    QuestUserStatusSchema,
+    RelationshipType,
+    UserPrivate,
+} from "@spacebar/schemas";
 
 export interface Event {
     guild_id?: string;
