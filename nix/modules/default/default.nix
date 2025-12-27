@@ -22,6 +22,9 @@ let
       gateway = {
         endpointPublic = "ws${if cfg.gatewayEndpoint.useSsl then "s" else ""}://${cfg.gatewayEndpoint.host}:${toString cfg.gatewayEndpoint.publicPort}/";
       };
+      general = {
+        serverName = cfg.serverName;
+      };
     } cfg.settings
   );
 in
@@ -56,18 +59,22 @@ in
         };
     in
     {
-      enable = lib.mkEnableOption "spacebar server";
+      enable = lib.mkEnableOption "Spacebar server";
       package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "spacebar-server" { default = "default"; };
       databaseFile = lib.mkOption {
         type = lib.types.nullOr lib.types.path;
         default = null;
         description = ''
           Path to a file containing a definition of the `DATABASE` environment variable database connection string.
-          Example content: `DATABASE=postgres//username:password@host-IP:port/databaseName`.
+          Example content: `DATABASE=postgres://username:password@host-IP:port/databaseName`.
           See https://docs.spacebar.chat/setup/server/database/.
         '';
       };
 
+      serverName = lib.mkOption {
+        type = lib.types.str;
+        description = "The server name for this Spacebar instance (aka. common name, usually the domain where your well known is hosted).";
+      };
       apiEndpoint = mkEndpointOptions "api.sb.localhost" 3001;
       gatewayEndpoint = mkEndpointOptions "gateway.sb.localhost" 3003;
       cdnEndpoint = mkEndpointOptions "cdn.sb.localhost" 3003;
