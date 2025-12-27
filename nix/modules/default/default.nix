@@ -153,10 +153,10 @@ in
                 "@system-service"
                 "~@privileged"
               ];
-              WorkingDirectory = "/var/lib/spacebarchat-server/";
-              StateDirectory = "spacebar-server";
+              WorkingDirectory = "/var/lib/spacebar/";
+              StateDirectory = "spacebar";
               StateDirectoryMode = "0750";
-              RuntimeDirectory = "spacebarchat";
+              RuntimeDirectory = "spacebar";
               RuntimeDirectoryMode = "0750";
 
               Restart = "on-failure";
@@ -178,7 +178,7 @@ in
         #        }
       ];
 
-#      systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
+      #      systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
 
       users.users.spacebarchat = {
         isSystemUser = true;
@@ -194,7 +194,7 @@ in
           {
             # things we set by default...
             EVENT_TRANSMISSION = "unix";
-            EVENT_SOCKET_PATH = "/run/spacebarchat/";
+            EVENT_SOCKET_PATH = "/run/spacebar/";
           }
           // cfg.extraEnvironment
           // {
@@ -223,7 +223,7 @@ in
           {
             # things we set by default...
             EVENT_TRANSMISSION = "unix";
-            EVENT_SOCKET_PATH = "/run/spacebarchat/";
+            EVENT_SOCKET_PATH = "/run/spacebar/";
           }
           // cfg.extraEnvironment
           // {
@@ -252,7 +252,7 @@ in
           {
             # things we set by default...
             EVENT_TRANSMISSION = "unix";
-            EVENT_SOCKET_PATH = "/run/spacebarchat/";
+            EVENT_SOCKET_PATH = "/run/spacebar/";
           }
           // cfg.extraEnvironment
           // {
