@@ -153,7 +153,6 @@ in
                 "@system-service"
                 "~@privileged"
               ];
-              WorkingDirectory = "/var/lib/spacebar/";
               StateDirectory = "spacebar";
               StateDirectoryMode = "0750";
               RuntimeDirectory = "spacebar";
