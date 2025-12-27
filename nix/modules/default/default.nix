@@ -104,8 +104,8 @@ in
               description = "Number of threads to run Spacebar on when using bundle. Make sure you've enabled RabbitMQ if using more than one.";
             };
             PORT = lib.mkOption {
-              type = lib.types.port;
-              default = 3001;
+              type = lib.types.nullOr lib.types.port;
+              default = null;
               description = "Port to listen on. Used by all components, including bundle. If using bundle, all components run under the same port";
             };
           };
