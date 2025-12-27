@@ -184,8 +184,6 @@ in
         isSystemUser = true;
         description = "Spacebar service user";
         home = "/var/lib/spacebarchat-server";
-        createHome = true;
-        shell = pkgs.lib.mkShellOf pkgs.bash;
       };
 
       systemd.services.spacebar-api = makeServerTsService {
