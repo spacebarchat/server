@@ -153,8 +153,9 @@ in
                 "@system-service"
                 "~@privileged"
               ];
+              WorkingDirectory = "/var/lib/spacebarchat-server/";
               StateDirectory = "spacebar-server";
-              StateDirectoryMode = "0700";
+              StateDirectoryMode = "0750";
               RuntimeDirectory = "spacebarchat";
               RuntimeDirectoryMode = "0750";
 
@@ -162,7 +163,6 @@ in
               RestartSec = 10;
               StartLimitBurst = 5;
               UMask = "077";
-              # WorkingDirectory = "/var/lib/spacebarchat-server/";
             }
             // lib.optionalAttrs (cfg.databaseFile != null) { EnvironmentFile = cfg.databaseFile; };
           } conf)
