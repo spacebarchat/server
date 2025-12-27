@@ -104,7 +104,7 @@ in
         default = null;
         description = "Path to the secret";
       };
-      smtpPasswordPath = lib.MkOption {
+      smtpPasswordPath = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the secret";
