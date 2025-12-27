@@ -182,7 +182,7 @@ in
       users.users.spacebarchat = {
         isSystemUser = true;
         description = "Spacebar service user";
-        home = "/var/lib/spacebarchat-server";
+        home = "/var/lib/spacebar";
         group = "spacebarchat";
       };
       users.groups.spacebarchat = { };
