@@ -14,9 +14,10 @@ let
         lib.fileset.unions [
           ./src
           ./package.json
-          ./tsconfig.json
           ./package-lock.json
+          ./tsconfig.json
           ./assets
+          ./patches
         ]
       )
     );
