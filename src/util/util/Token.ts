@@ -227,7 +227,7 @@ export async function loadOrGenerateKeypair() {
         privateKey = crypto.createPrivateKey(loadedPrivateKey);
         publicKey = crypto.createPublicKey(loadedPublicKey);
     } else {
-        console.log("[JWT] Generating new keypair:", path.resolve("jwt.key"));
+        console.log("[JWT] Generating new keypair:", path.resolve("jwt.key"), "- PWD:", process.cwd());
         const res = crypto.generateKeyPairSync("ec", {
             namedCurve: "secp521r1",
         });
