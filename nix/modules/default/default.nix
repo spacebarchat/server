@@ -184,7 +184,9 @@ in
         isSystemUser = true;
         description = "Spacebar service user";
         home = "/var/lib/spacebarchat-server";
+        group = "spacebarchat";
       };
+      users.groups.spacebarchat = { };
 
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
