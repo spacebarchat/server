@@ -17,7 +17,7 @@ let
       };
       cdn = {
         endpointPublic = "http${if cfg.cdnEndpoint.useSsl then "s" else ""}://${cfg.cdnEndpoint.host}:${toString cfg.cdnEndpoint.publicPort}/";
-        endpointPrivate = "http${if cfg.cdnEndpoint.useSsl then "s" else ""}://127.0.0.1:${toString cfg.cdnEndpoint.localPort}/";
+        endpointPrivate = "http://127.0.0.1:${toString cfg.cdnEndpoint.localPort}/";
       };
       gateway = {
         endpointPublic = "ws${if cfg.gatewayEndpoint.useSsl then "s" else ""}://${cfg.gatewayEndpoint.host}:${toString cfg.gatewayEndpoint.publicPort}/";
