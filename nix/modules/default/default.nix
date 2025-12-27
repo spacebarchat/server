@@ -130,7 +130,7 @@ in
             serviceConfig = {
               User = "spacebarchat";
               Group = "spacebarchat";
-              DynamicUser = true;
+              DynamicUser = false;
               LockPersonality = true;
               ProtectClock = true;
               ProtectControlGroups = true;
@@ -179,6 +179,14 @@ in
       ];
 
 #      systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
+
+      users.users.spacebarchat = {
+        isSystemUser = true;
+        description = "Spacebar service user";
+        home = "/var/lib/spacebarchat-server";
+        createHome = true;
+        shell = pkgs.lib.mkShellOf pkgs.bash;
+      };
 
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
