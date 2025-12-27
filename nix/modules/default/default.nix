@@ -89,22 +89,22 @@ in
         default = null;
         description = "Path to the secret";
       };
-      legacyJwtSecretPath = libMkOption {
+      legacyJwtSecretPath = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the secret";
       };
-      mailjetApiKeyPath = libMkOption {
+      mailjetApiKeyPath = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the secret";
       };
-      mailjetApiSecretPath = libMkOption {
+      mailjetApiSecretPath = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the secret";
       };
-      smtpPasswordPath = libMkOption {
+      smtpPasswordPath = lib.MkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "Path to the secret";
