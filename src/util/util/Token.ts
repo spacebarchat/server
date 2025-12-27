@@ -27,6 +27,7 @@ import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm"
 import { randomUpperString } from "@spacebar/api";
 import { TimeSpan } from "./Timespan";
 import { HTTPError } from "lambert-server";
+import path from "path";
 
 /// Change history:
 /// 1 - Initial version with HS256
@@ -226,7 +227,7 @@ export async function loadOrGenerateKeypair() {
         privateKey = crypto.createPrivateKey(loadedPrivateKey);
         publicKey = crypto.createPublicKey(loadedPublicKey);
     } else {
-        console.log("[JWT] Generating new keypair");
+        console.log("[JWT] Generating new keypair:", path.resolve("jwt.key"));
         const res = crypto.generateKeyPairSync("ec", {
             namedCurve: "secp521r1",
         });

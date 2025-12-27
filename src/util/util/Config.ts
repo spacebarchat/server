@@ -40,7 +40,7 @@ export class Config {
             pairs = await validateConfig();
             config = pairsToConfig(pairs);
         } else {
-            console.log(`[Config] Using CONFIG_PATH rather than database`);
+            console.log(`[Config] Using CONFIG_PATH rather than database:`, process.env.CONFIG_PATH);
             if (existsSync(process.env.CONFIG_PATH)) {
                 const file = JSON.parse((await fs.readFile(process.env.CONFIG_PATH)).toString());
                 config = file;
