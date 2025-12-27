@@ -14,7 +14,7 @@ in
   };
 
   config = lib.mkIf (cfg.enable && cfg.nginx.enable) {
-    services.nginx = lib.trace (cfg.apiEndpoint) {
+    services.nginx = {
       virtualHosts = lib.mkIf cfg.enable {
         "${cfg.apiEndpoint.host}" = {
           enableACME = cfg.apiEndpoint.useSsl;

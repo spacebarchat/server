@@ -53,6 +53,21 @@ export class Config {
 
         config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
 
+        // TODO: factor this out someday
+        if (process.env.CDN_SIGNATURE_PATH) config.security.cdnSignatureKey = (await fs.readFile(process.env.CDN_SIGNATURE_PATH, "utf-8")).trim();
+        if (process.env.LEGACY_JWT_SECRET_PATH) config.security.jwtSecret = (await fs.readFile(process.env.LEGACY_JWT_SECRET_PATH, "utf-8")).trim();
+        if (process.env.MAILJET_API_KEY_PATH) config.email.mailjet.apiKey = (await fs.readFile(process.env.MAILJET_API_KEY_PATH, "utf-8")).trim();
+        if (process.env.MAILJET_API_SECRET_PATH) config.email.mailjet.apiSecret = (await fs.readFile(process.env.MAILJET_API_SECRET_PATH, "utf-8")).trim();
+        if (process.env.SMTP_PASSWORD_PATH) config.email.smtp.password = (await fs.readFile(process.env.SMTP_PASSWORD_PATH, "utf-8")).trim();
+        if (process.env.GIF_API_KEY_PATH) config.gif.apiKey = (await fs.readFile(process.env.GIF_API_KEY_PATH, "utf-8")).trim();
+        if (process.env.RABBITMQ_HOST) config.rabbitmq.host = process.env.RABBITMQ_HOST.trim();
+        if (process.env.RABBITMQ_HOST_PATH) config.rabbitmq.host = (await fs.readFile(process.env.RABBITMQ_HOST_PATH, "utf-8")).trim();
+        if (process.env.ABUSEIPDB_API_KEY_PATH) config.security.abuseIpDbApiKey = (await fs.readFile(process.env.ABUSEIPDB_API_KEY_PATH, "utf-8")).trim();
+        if (process.env.CAPTCHA_SECRET_KEY_PATH) config.security.captcha.secret = (await fs.readFile(process.env.CAPTCHA_SECRET_KEY_PATH, "utf-8")).trim();
+        if (process.env.CAPTCHA_SITE_KEY_PATH) config.security.captcha.sitekey = (await fs.readFile(process.env.CAPTCHA_SITE_KEY_PATH, "utf-8")).trim();
+        if (process.env.IPDATA_API_KEY_PATH) config.security.ipdataApiKey = (await fs.readFile(process.env.IPDATA_API_KEY_PATH, "utf-8")).trim();
+        if (process.env.REQUEST_SIGNATURE_PATH) config.security.requestSignature = (await fs.readFile(process.env.REQUEST_SIGNATURE_PATH, "utf-8")).trim();
+
         await this.set(config);
         validateFinalConfig(config);
         return config;
