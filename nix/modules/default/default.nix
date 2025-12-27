@@ -103,11 +103,6 @@ in
               default = 1;
               description = "Number of threads to run Spacebar on when using bundle. Make sure you've enabled RabbitMQ if using more than one.";
             };
-            PORT = lib.mkOption {
-              type = lib.types.nullOr lib.types.port;
-              default = null;
-              description = "Port to listen on. Used by all components, including bundle. If using bundle, all components run under the same port";
-            };
           };
         };
       };
@@ -198,6 +193,7 @@ in
             # things we force...
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
+            PORT = toString cfg.apiEndpoint.localPort;
           }
           // (
             if cfg.cdnPath != null then
@@ -226,6 +222,7 @@ in
             # things we force...
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
+            PORT = toString cfg.gatewayEndpoint.localPort;
           }
           // (
             if cfg.cdnPath != null then
@@ -254,6 +251,7 @@ in
             # things we force...
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
+            PORT = toString cfg.cdnEndpoint.localPort;
           }
           // (
             if cfg.cdnPath != null then
