@@ -35,7 +35,7 @@ router.get(
 
         res.json({
             admin: Config.get().admin.endpointPublic,
-            api: Config.get().api.endpointPublic?.split("/api/")[0] || "", // Transitional, see /.well-known/spacebar/client
+            api: (Config.get().api.endpointPublic + "/api/").replace("//api/", "/api/"), // Transitional, see /.well-known/spacebar/client
             apiEndpoint: api.endpointPublic,
             cdn: cdn.endpointPublic,
             defaultApiVersion: api.defaultVersion,

@@ -140,7 +140,7 @@ export class SpacebarServer extends Server {
         // current well-known location
         app.get("/.well-known/spacebar", (req, res) => {
             res.json({
-                api: Config.get().api.endpointPublic,
+                api: (Config.get().api.endpointPublic + "/api/").replace("//api/", "/api/"),
             });
         });
 
@@ -156,7 +156,7 @@ export class SpacebarServer extends Server {
 
             res.json({
                 api: {
-                    baseUrl: Config.get().api.endpointPublic?.split("/api/")[0] || "", // TODO: migrate database values to not include /api/v9
+                    baseUrl: Config.get().api.endpointPublic,
                     apiVersions: {
                         default: Config.get().api.defaultVersion,
                         active: Config.get().api.activeVersions,
