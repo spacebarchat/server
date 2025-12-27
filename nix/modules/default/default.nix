@@ -160,6 +160,8 @@ in
               ];
               StateDirectory = "spacebar-server";
               StateDirectoryMode = "0700";
+              RuntimeDirectory = "spacebarchat";
+              RuntimeDirectoryMode = "0750";
 
               Restart = "on-failure";
               RestartSec = 10;
@@ -181,7 +183,7 @@ in
         #        }
       ];
 
-      systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
+#      systemd.tmpfiles.rules = [ "d /run/spacebarchat 0750 spacebar spacebar" ];
 
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
