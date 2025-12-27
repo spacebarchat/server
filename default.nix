@@ -6,6 +6,22 @@
   ...
 }:
 
+let
+  filteredSrc = lib.fileset.toSource {
+    root = ./.;
+    fileset = (
+      lib.fileset.intersection ./. (
+        lib.fileset.unions [
+          ./src
+          ./package.json
+          ./tsconfig.json
+          ./package-lock.json
+          ./assets
+        ]
+      )
+    );
+  };
+in
 pkgs.buildNpmPackage {
   pname = "spacebar-server-ts";
   nodejs = pkgs.nodejs_24;
@@ -20,8 +36,8 @@ pkgs.buildNpmPackage {
     maintainers = with maintainers; [ RorySys ]; # lol.
   };
 
-  src = ./.;
-  npmDeps = pkgs.importNpmLock { npmRoot = ./.; };
+  src = filteredSrc;
+  npmDeps = pkgs.importNpmLock { npmRoot = filteredSrc; };
   npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
   npmBuildScript = "build:src";

@@ -253,6 +253,8 @@ in
               StateDirectoryMode = "0750";
               RuntimeDirectory = "spacebar";
               RuntimeDirectoryMode = "0750";
+              ReadWritePaths = [ cfg.cdnPath ];
+              NoExecPaths = [ cfg.cdnPath ];
 
               Restart = "on-failure";
               RestartSec = 10;
@@ -267,10 +269,10 @@ in
     in
     {
       assertions = [
-#        {
-#          assertion = lib.all (map (key: !(key == "CONFIG_PATH" || key == "CONFIG_READONLY" || key == "PORT" || key == "STORAGE_LOCATION")) (lib.attrNames cfg.extraEnvironment));
-#          message = "You cannot set CONFIG_PATH, CONFIG_READONLY, PORT or STORAGE_LOCATION in extraEnvironment, these are managed by the NixOS module.";
-#        }
+        #        {
+        #          assertion = lib.all (map (key: !(key == "CONFIG_PATH" || key == "CONFIG_READONLY" || key == "PORT" || key == "STORAGE_LOCATION")) (lib.attrNames cfg.extraEnvironment));
+        #          message = "You cannot set CONFIG_PATH, CONFIG_READONLY, PORT or STORAGE_LOCATION in extraEnvironment, these are managed by the NixOS module.";
+        #        }
       ];
 
       users.users.spacebarchat = {
