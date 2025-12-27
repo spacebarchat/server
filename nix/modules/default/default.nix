@@ -13,14 +13,14 @@ let
   configFile = jsonFormat.generate "spacebarchat-server.json" (
     lib.recursiveUpdate {
       api = {
-        endpointPublic = "http${if cfg.apiEndpoint.useSsl then "s" else ""}://${cfg.apiEndpoint.host}:${toString cfg.apiEndpoint.publicPort}/";
+        endpointPublic = "http${if cfg.apiEndpoint.useSsl then "s" else ""}://${cfg.apiEndpoint.host}:${toString cfg.apiEndpoint.publicPort}";
       };
       cdn = {
-        endpointPublic = "http${if cfg.cdnEndpoint.useSsl then "s" else ""}://${cfg.cdnEndpoint.host}:${toString cfg.cdnEndpoint.publicPort}/";
-        endpointPrivate = "http://127.0.0.1:${toString cfg.cdnEndpoint.localPort}"; # HACK: No leading slash, server cant handle this yet
+        endpointPublic = "http${if cfg.cdnEndpoint.useSsl then "s" else ""}://${cfg.cdnEndpoint.host}:${toString cfg.cdnEndpoint.publicPort}";
+        endpointPrivate = "http://127.0.0.1:${toString cfg.cdnEndpoint.localPort}";
       };
       gateway = {
-        endpointPublic = "ws${if cfg.gatewayEndpoint.useSsl then "s" else ""}://${cfg.gatewayEndpoint.host}:${toString cfg.gatewayEndpoint.publicPort}/";
+        endpointPublic = "ws${if cfg.gatewayEndpoint.useSsl then "s" else ""}://${cfg.gatewayEndpoint.host}:${toString cfg.gatewayEndpoint.publicPort}";
       };
       general = {
         serverName = cfg.serverName;
