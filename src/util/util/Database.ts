@@ -29,43 +29,51 @@ import fs from "fs";
 
 export let dbConnection: DataSource | undefined;
 
+let isHeadlessProcess = false;
 // For typeorm cli
 if (!process.env) {
+    isHeadlessProcess = true;
     config({ quiet: true });
 }
+if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
 const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
 
 export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
 
-let hasWarnedSqlite = false;
-if (isSqlite && !hasWarnedSqlite) {
-    hasWarnedSqlite = true;
-    console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
-    try {
-        const _ = require("sqlite3");
-    } catch (e) {
-        console.log(`[Database] ${red(`Failed to load sqlite3 package. Please install it with 'npm install --no-save sqlite3', or switch to a real database like Postgres.`)}`);
-        process.exit(1);
+// For openapi.js...
+if (!isHeadlessProcess) {
+    let hasWarnedSqlite = false;
+    if (isSqlite && !hasWarnedSqlite) {
+        hasWarnedSqlite = true;
+        console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+        try {
+            const _ = require("sqlite3");
+        } catch (e) {
+            console.log(`[Database] ${red(`Failed to load sqlite3 package. Please install it with 'npm install --no-save sqlite3', or switch to a real database like Postgres.`)}`);
+            process.exit(1);
+        }
     }
 }
 
-export const DataSourceOptions = new DataSource({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
-    type: DatabaseType,
-    charset: "utf8mb4",
-    url: isSqlite ? undefined : dbConnectionString,
-    database: isSqlite ? dbConnectionString : undefined,
-    entities: [path.join(__dirname, "..", "entities", "*.js")],
-    synchronize: !!process.env.DB_SYNC,
-    logging: !!process.env.DB_LOGGING,
-    bigNumberStrings: false,
-    supportBigNumbers: true,
-    name: "default",
-    migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
-});
+export const DataSourceOptions = isHeadlessProcess
+    ? (undefined as unknown as DataSource)
+    : new DataSource({
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
+          type: DatabaseType,
+          charset: "utf8mb4",
+          url: isSqlite ? undefined : dbConnectionString,
+          database: isSqlite ? dbConnectionString : undefined,
+          entities: [path.join(__dirname, "..", "entities", "*.js")],
+          synchronize: !!process.env.DB_SYNC,
+          logging: !!process.env.DB_LOGGING,
+          bigNumberStrings: false,
+          supportBigNumbers: true,
+          name: "default",
+          migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
+      });
 
 // Gets the existing database connection
 export function getDatabase(): DataSource | null {

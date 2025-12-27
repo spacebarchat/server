@@ -3236,6 +3236,11 @@
                         "type": "string",
                         "default": "Spacebar Instance"
                     },
+                    "serverName": {
+                        "type": "string",
+                        "default": null,
+                        "nullable": true
+                    },
                     "instanceDescription": {
                         "type": "string",
                         "default": "This is a Spacebar instance made in the pre-release days",
@@ -3283,6 +3288,7 @@
                     "instanceDescription",
                     "instanceId",
                     "instanceName",
+                    "serverName",
                     "tosPage"
                 ]
             },
@@ -12315,7 +12321,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@698": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -12444,17 +12450,17 @@
                                     "remove": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@698": {
+                                    "__@iterator@696": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@700": {
+                                    "__@unscopables@698": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@700",
+                            "__@unscopables@698",
                             "length"
                         ]
                     },
@@ -18307,6 +18313,44 @@
                 ]
             }
         },
+        "/guilds/{guild_id}/shield.svg/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "guild_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "guild_id"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            }
+        },
         "/guilds/{guild_id}/roles/member-counts/": {
             "get": {
                 "security": [
@@ -19795,42 +19839,6 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "guild_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "guild_id"
-                    }
-                ],
-                "tags": [
-                    "guilds"
-                ]
-            }
-        },
-        "/guilds/{guild_id}/force-recount/": {
-            "post": {
-                "x-right-required": "MANAGE_GUILDS",
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIGuild"
                                 }
                             }
                         }
@@ -22545,56 +22553,6 @@
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/threads/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/MessageThreadCreationSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "No description available"
-                    },
-                    "403": {
-                        "description": "No description available"
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "channel_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "channel_id"
-                    },
-                    {
-                        "name": "message_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "message_id"
-                    }
-                ],
-                "tags": [
-                    "channels"
-                ]
-            }
-        },
         "/channels/{channel_id}/messages/{message_id}/reactions/": {
             "delete": {
                 "x-permission-required": "MANAGE_MESSAGES",
@@ -24001,74 +23959,6 @@
                 ]
             }
         },
-        "/auth/passwordless/start/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorOrCaptchaResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "auth"
-                ]
-            }
-        },
-        "/auth/passwordless/finish/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "auth"
-                ]
-            }
-        },
         "/auth/mfa/webauthn/": {
             "post": {
                 "requestBody": {
@@ -24337,50 +24227,6 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
-                ]
-            }
-        },
-        "/auth/conditional/finish/": {
-            "post": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/WebAuthnSSOSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/TokenResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "auth"
                 ]
             }
         },

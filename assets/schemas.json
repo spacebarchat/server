@@ -3398,6 +3398,13 @@
                 "type": "string",
                 "default": "Spacebar Instance"
             },
+            "serverName": {
+                "type": [
+                    "null",
+                    "string"
+                ],
+                "default": null
+            },
             "instanceDescription": {
                 "type": [
                     "null",
@@ -3458,6 +3465,7 @@
             "instanceDescription",
             "instanceId",
             "instanceName",
+            "serverName",
             "tosPage"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -13083,7 +13091,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@700": {
+                    "__@unscopables@698": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -13212,17 +13220,17 @@
                             "remove": {
                                 "type": "boolean"
                             },
-                            "__@iterator@698": {
+                            "__@iterator@696": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@700": {
+                            "__@unscopables@698": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@700",
+                    "__@unscopables@698",
                     "length"
                 ]
             },
