@@ -197,6 +197,14 @@ in
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
           }
+          // (
+            if cfg.cdnPath != null then
+              {
+                STORAGE_LOCATION = cfg.cdnPath;
+              }
+            else
+              { }
+          )
         );
         serviceConfig = {
           ExecStart = "${cfg.package}/bin/start-api";
@@ -217,6 +225,14 @@ in
             CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
           }
+          // (
+            if cfg.cdnPath != null then
+              {
+                STORAGE_LOCATION = cfg.cdnPath;
+              }
+            else
+              { }
+          )
         );
         serviceConfig = {
           ExecStart = "${cfg.package}/bin/start-gateway";
