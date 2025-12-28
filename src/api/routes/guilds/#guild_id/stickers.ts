@@ -93,6 +93,7 @@ router.post(
                 type: StickerType.GUILD,
                 format_type: getStickerFormat(req.file.mimetype),
                 available: true,
+                user_id: req.user_id,
             }).save(),
             uploadFile(`/stickers/${id}`, req.file),
         ]);
