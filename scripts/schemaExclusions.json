@@ -414,6 +414,10 @@
         {
             "value": "SKUSchema",
             "reason": "Self-reference only schema"
+        },
+        {
+            "value": "CollectibleProductSchema",
+            "reason": "Self-reference only schema"
         }
     ]
 }

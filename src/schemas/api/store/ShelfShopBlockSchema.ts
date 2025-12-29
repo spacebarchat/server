@@ -1,26 +1,37 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2025 Spacebar and Spacebar Contributors
-
+	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-
+	
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-
+	
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+import { ShopBlockType } from "./ShopBlockType";
 
-import { AnyCollectiblesShopBlock, CollectibleUserDiscountSchema } from "@spacebar/schemas";
-import { CollectibleCategorySchema } from "./CollectiblesCategoriesResponse";
-
-export interface CollectiblesShopResponse {
-    shop_blocks: AnyCollectiblesShopBlock[];
-    categories: CollectibleCategorySchema[];
-    user_discounts?: CollectibleUserDiscountSchema[];
+export interface ShelfShopBlockSchema {
+    /**
+     * The shop block type
+     */
+    type: ShopBlockType;
+    /**
+     * The collectible category SKU ID
+     */
+    category_sku_id?: string;
+    /**
+     * The name of the shop block
+     */
+    name: string;
+    /**
+     * The SKU IDs ranked by popularity in the collectible category
+     */
+    ranked_sku_ids: string[];
 }

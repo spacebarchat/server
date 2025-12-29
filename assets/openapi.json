@@ -3332,8 +3332,201 @@
             "CollectiblesCategoriesResponse": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/CollectiblesCategoryItem"
+                    "$ref": "#/components/schemas/CollectibleCategorySchema"
                 }
+            },
+            "CollectibleCategorySchema": {
+                "type": "object",
+                "properties": {
+                    "sku_id": {
+                        "description": "The SKU ID of the collectible category",
+                        "type": "string"
+                    },
+                    "store_listing_id": {
+                        "description": "The store listing ID associated with the collectible category",
+                        "type": "string"
+                    },
+                    "banner_text_color": {
+                        "description": "The color of the banner text as a hexadecimal color string",
+                        "type": "string"
+                    },
+                    "catalog_banner_asset": {
+                        "description": "The catalog banner asset",
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema"
+                    },
+                    "hero_banner_asset": {
+                        "description": "The hero banner asset",
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema"
+                    },
+                    "featured_block_body": {
+                        "description": "The body text for the featured block",
+                        "type": "string"
+                    },
+                    "featured_block_url": {
+                        "description": "The URL of the featured block image",
+                        "type": "string"
+                    },
+                    "hero_banner_config_asset": {
+                        "description": "The hero banner asset. might be legacy in favor of hero_banner_asset?",
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema"
+                    },
+                    "hero_banner_display_config": {
+                        "description": "The display configuration for the hero banner",
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema"
+                    },
+                    "hero_banner_config": {
+                        "description": "The display configuration for the hero banner. might be legacy in favor of hero_banner_display_config?",
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema"
+                    },
+                    "hero_block_title": {
+                        "description": "The title text for the hero block",
+                        "type": "string"
+                    },
+                    "hero_logo_display_config": {
+                        "description": "The display configuration for the hero logo",
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema"
+                    },
+                    "hero_logo_url": {
+                        "description": "The URL of the hero logo image",
+                        "type": "string"
+                    },
+                    "hero_ranking": {
+                        "description": "The popularity ranking of SKU IDs within the collectible category",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "hero_rive_url": {
+                        "description": "The URL of the Rive hero animation",
+                        "type": "string"
+                    },
+                    "logo_url": {
+                        "description": "The URL of the logo image",
+                        "type": "string"
+                    },
+                    "mobile_banner_url": {
+                        "description": "The URL of the mobile banner image",
+                        "type": "string"
+                    },
+                    "mobile_bg_url": {
+                        "description": "The URL of the mobile background image",
+                        "type": "string"
+                    },
+                    "mobile_hero_block_title": {
+                        "description": "The title text for the mobile hero block",
+                        "type": "string"
+                    },
+                    "mobile_products_title": {
+                        "description": "The title text for the mobile products section",
+                        "type": "string"
+                    },
+                    "mobile_summary": {
+                        "description": "The summary text for the mobile products section",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the collectible category",
+                        "type": "string"
+                    },
+                    "pdp_bg_url": {
+                        "description": "The URL of the product display page background image",
+                        "type": "string"
+                    },
+                    "products": {
+                        "description": "The list of products in the collectible category",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CollectibleProductSchema"
+                        }
+                    },
+                    "styles": {
+                        "$ref": "#/components/schemas/CollectibleStyleSchema",
+                        "description": "The colors to use in the client"
+                    },
+                    "summary": {
+                        "description": "A description of the collectible category",
+                        "type": "string"
+                    },
+                    "unpublished_at": {
+                        "description": "The time at which the collectible category should be unpublished",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "wide_banner_asset": {
+                        "description": "The wide banner asset config",
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema"
+                    },
+                    "wide_banner_body": {
+                        "description": "The body text for the wide banner",
+                        "type": "string"
+                    },
+                    "wide_banner_title": {
+                        "description": "The title text for the wide banner",
+                        "type": "string"
+                    },
+                    "logo": {
+                        "description": "The ID of the logo image",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mobile_bg": {
+                        "description": "The ID of the mobile background image",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "pdp_bg": {
+                        "description": "The ID of the product display page background image",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mobile_banner": {
+                        "description": "The ID of the mobile banner image",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "featured_block": {
+                        "type": "string"
+                    },
+                    "hero_logo": {
+                        "description": "The ID of the hero logo image",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hero_banner_url": {
+                        "description": "The URL of the hero banner",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hero_banner_animated_url": {
+                        "description": "The URL of the animated hero banner",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "catalog_banner_url": {
+                        "description": "The URL of the catalog banner",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "wide_banner_url": {
+                        "description": "The URL of the wide banner",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "hero_ranking",
+                    "logo_url",
+                    "mobile_summary",
+                    "name",
+                    "pdp_bg_url",
+                    "products",
+                    "sku_id",
+                    "store_listing_id",
+                    "styles",
+                    "summary",
+                    "unpublished_at"
+                ]
             },
             "CollectiblesMarketingResponse": {
                 "type": "object",
@@ -3355,13 +3548,19 @@
                     "shop_blocks": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/AnyShopBlock"
+                            "$ref": "#/components/schemas/AnyCollectiblesShopBlock"
                         }
                     },
                     "categories": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/CollectiblesCategoryItem"
+                            "$ref": "#/components/schemas/CollectibleCategorySchema"
+                        }
+                    },
+                    "user_discounts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CollectibleUserDiscountSchema"
                         }
                     }
                 },
@@ -7890,6 +8089,851 @@
                     }
                 }
             },
+            "CollectibleBannerAssetSchema": {
+                "type": "object",
+                "properties": {
+                    "background_style": {
+                        "description": "The CSS the web client should use",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "desktop_max_height": {
+                        "description": "Max height of the banner on desktop",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "mobile_max_height": {
+                        "description": "Max height of the banner on mobile",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "responsive": {
+                        "description": "Whether the banner is responsive",
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "background_style",
+                    "responsive"
+                ]
+            },
+            "CollectibleItemAssetsSchema": {
+                "type": "object",
+                "properties": {
+                    "static_image_url": {
+                        "description": "The URL for the static image of the collectible",
+                        "type": "string"
+                    },
+                    "animated_image_url": {
+                        "description": "The URL for the animated image of the collectible (in APNG format)",
+                        "type": "string"
+                    },
+                    "video_url": {
+                        "description": "The URL for the video of the collectible",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "animated_image_url",
+                    "static_image_url"
+                ]
+            },
+            "CollectibleAvatarDecorationSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/CollectibleItemType",
+                        "description": "The type of collectible"
+                    },
+                    "id": {
+                        "description": "The ID of the avatar decoration",
+                        "type": "string"
+                    },
+                    "sku_id": {
+                        "description": "The SKU ID of the avatar decoration",
+                        "type": "string"
+                    },
+                    "asset": {
+                        "description": "The asset hash of the avatar decoration",
+                        "type": "string"
+                    },
+                    "assets": {
+                        "$ref": "#/components/schemas/CollectibleItemAssetsSchema",
+                        "description": "The URLs for the static and animated images of the avatar decoration"
+                    },
+                    "label": {
+                        "description": "The avatar decoration accessibility description",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "asset",
+                    "assets",
+                    "id",
+                    "label",
+                    "sku_id",
+                    "type"
+                ]
+            },
+            "CollectibleProfileEffectSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/CollectibleItemType",
+                        "description": "The type of collectible"
+                    },
+                    "id": {
+                        "description": "The ID of the profile effect",
+                        "type": "string"
+                    },
+                    "sku_id": {
+                        "description": "The ID of the profile effect SKU",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "The title of the profile effect",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "The description of the profile effect",
+                        "type": "string"
+                    },
+                    "accessibilityLabel": {
+                        "description": "An accessible description of the profile effect",
+                        "type": "string"
+                    },
+                    "animationType": {
+                        "$ref": "#/components/schemas/CollectibleProfileEffectAnimationType",
+                        "description": "The type of animation used by the profile effect"
+                    },
+                    "thumbnailPreviewSrc": {
+                        "description": "The URL of the profile effect's thumbnail preview image (in APNG format)",
+                        "type": "string"
+                    },
+                    "reducedMotionSrc": {
+                        "description": "A URL of the profile effect with reduced motion (in APNG format)",
+                        "type": "string"
+                    },
+                    "staticFrameSrc": {
+                        "description": "The URL of the static frame of the profile effect (in PNG format)",
+                        "type": "string"
+                    },
+                    "effects": {
+                        "description": "The animation frames for the profile effect",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CollectibleProfileEffectAnimation"
+                        }
+                    }
+                },
+                "required": [
+                    "accessibilityLabel",
+                    "animationType",
+                    "description",
+                    "effects",
+                    "id",
+                    "reducedMotionSrc",
+                    "sku_id",
+                    "staticFrameSrc",
+                    "thumbnailPreviewSrc",
+                    "title",
+                    "type"
+                ]
+            },
+            "CollectibleNameplateSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/CollectibleItemType",
+                        "description": "The type of collectible"
+                    },
+                    "id": {
+                        "description": "The ID of the nameplate",
+                        "type": "string"
+                    },
+                    "sku_id": {
+                        "description": "The SKU ID of the nameplate",
+                        "type": "string"
+                    },
+                    "palette": {
+                        "$ref": "#/components/schemas/CollectibleNameplateColorPalette",
+                        "description": "The nameplate's color palette"
+                    },
+                    "asset": {
+                        "description": "The nameplate asset path",
+                        "type": "string"
+                    },
+                    "assets": {
+                        "$ref": "#/components/schemas/CollectibleItemAssetsSchema",
+                        "description": "The URLs for the static and animated images of the nameplate"
+                    },
+                    "label": {
+                        "description": "The nameplate accessibility description",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "asset",
+                    "assets",
+                    "id",
+                    "label",
+                    "palette",
+                    "sku_id",
+                    "type"
+                ]
+            },
+            "CollectibleStyleSchema": {
+                "type": "object",
+                "properties": {
+                    "background_colors": {
+                        "description": "An array of background colors",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "button_colors": {
+                        "description": "An array of button colors",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "confetti_colors": {
+                        "description": "An array of confetti colors",
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "background_colors",
+                    "button_colors",
+                    "confetti_colors"
+                ]
+            },
+            "UnitPriceSchema": {
+                "type": "object",
+                "properties": {
+                    "currency": {
+                        "description": "The lower-cased ISO 4217 currency code",
+                        "type": "string"
+                    },
+                    "amount": {
+                        "description": "The price amount in the smallest currency unit",
+                        "type": "integer"
+                    },
+                    "exponent": {
+                        "description": "The exponent to convert the amount to the displayed currency unit",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "currency",
+                    "exponent"
+                ]
+            },
+            "CountryPricesSchema": {
+                "type": "object",
+                "properties": {
+                    "country_code": {
+                        "description": "The ISO 3166-1 alpha-2 country code",
+                        "type": "string"
+                    },
+                    "prices": {
+                        "description": "The prices for the plan in the given country",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UnitPriceSchema"
+                        }
+                    }
+                },
+                "required": [
+                    "country_code",
+                    "prices"
+                ]
+            },
+            "SubscriptionPricesSchema": {
+                "type": "object",
+                "properties": {
+                    "country_prices": {
+                        "$ref": "#/components/schemas/CountryPricesSchema",
+                        "description": "The prices for the plan for the given country"
+                    },
+                    "payment_source_prices": {
+                        "description": "The prices for the plan per user payment source ID",
+                        "$ref": "#/components/schemas/Record<string,UnitPriceSchema[]>"
+                    }
+                },
+                "required": [
+                    "country_prices"
+                ]
+            },
+            "CollectibleAssetConfigSchema": {
+                "type": "object",
+                "properties": {
+                    "animated": {
+                        "description": "The URL of the animated image (in APNG format)",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "static": {
+                        "description": "The URL of the static image",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "animated",
+                    "static"
+                ]
+            },
+            "HeroShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "category_sku_id": {
+                        "description": "The collectible category SKU ID",
+                        "type": "string"
+                    },
+                    "category_store_listing_id": {
+                        "description": "The collectible category store listing ID",
+                        "type": "string"
+                    },
+                    "banner_asset": {
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema",
+                        "description": "The banner asset"
+                    },
+                    "banner_display_config": {
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema",
+                        "description": "The display configuration"
+                    },
+                    "banner_text_color": {
+                        "description": "The hex color code for the banner text",
+                        "type": "string"
+                    },
+                    "hero_logo_url": {
+                        "description": "The URL of the hero logo image",
+                        "type": "string"
+                    },
+                    "hero_rive_url": {
+                        "description": "The URL of the hero Rive animation",
+                        "type": "string"
+                    },
+                    "logo_display_config": {
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema",
+                        "description": "The shop block logo display config"
+                    },
+                    "logo_url": {
+                        "description": "The URL of the hero logo image",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the shop block",
+                        "type": "string"
+                    },
+                    "mobile_title": {
+                        "description": "The title to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "mobile_summary": {
+                        "description": "The summary to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "mobile_products_title": {
+                        "description": "The products title to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "mobile_hero_url": {
+                        "description": "The URL of the mobile hero banner image",
+                        "type": "string"
+                    },
+                    "mobile_hero_animated_url": {
+                        "description": "The URL of the mobile animated hero banner image",
+                        "type": "string"
+                    },
+                    "ranked_sku_ids": {
+                        "description": "The SKU IDs ranked by popularity in the collectible category",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "summary": {
+                        "description": "A description of the collectible category",
+                        "type": "string"
+                    },
+                    "unpublished_at": {
+                        "description": "When the collectible category should be unpublished",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "banner_asset",
+                    "banner_display_config",
+                    "category_sku_id",
+                    "category_store_listing_id",
+                    "hero_logo_url",
+                    "logo_display_config",
+                    "logo_url",
+                    "name",
+                    "ranked_sku_ids",
+                    "summary",
+                    "type",
+                    "unpublished_at"
+                ]
+            },
+            "SubBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopSubBlockType",
+                        "description": "The subblock type"
+                    },
+                    "category_store_listing_id": {
+                        "description": "The collectible category store listing ID",
+                        "type": "string"
+                    },
+                    "asset_url": {
+                        "description": "The URL of the shop block asset",
+                        "type": "string"
+                    },
+                    "banner_text_color": {
+                        "description": "The hex color code of the banner text",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner_url": {
+                        "description": "The URL of the banner image",
+                        "type": "string"
+                    },
+                    "body_text": {
+                        "description": "The body text of the shop block",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "description": "The name of the shop block",
+                        "type": "string"
+                    },
+                    "unpublished_at": {
+                        "description": "When the collectible category should be unpublished",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "asset_url",
+                    "banner_text_color",
+                    "banner_url",
+                    "body_text",
+                    "category_store_listing_id",
+                    "name",
+                    "type",
+                    "unpublished_at"
+                ]
+            },
+            "FeaturedShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "subblocks": {
+                        "description": "The list of sub-blocks in the featured shop block",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubBlockSchema"
+                        }
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    }
+                },
+                "required": [
+                    "subblocks",
+                    "type"
+                ]
+            },
+            "SortedSKUIDsSchema": {
+                "type": "object",
+                "properties": {
+                    "popular": {
+                        "description": "The SKU IDs sorted by popularity",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "recommended": {
+                        "description": "The SKU IDs sorted by recommendation",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "popular",
+                    "recommended"
+                ]
+            },
+            "FeedShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "ranked_sku_ids": {
+                        "description": "All SKU IDs ranked by popularity",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sorted_sku_ids": {
+                        "$ref": "#/components/schemas/SortedSKUIDsSchema",
+                        "description": "The sorted SKU IDs"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    }
+                },
+                "required": [
+                    "ranked_sku_ids",
+                    "sorted_sku_ids",
+                    "type"
+                ]
+            },
+            "WideBannerShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "category_store_listing_id": {
+                        "description": "The collectible category store listing ID",
+                        "type": "string"
+                    },
+                    "banner_asset": {
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema",
+                        "description": "The banner asset"
+                    },
+                    "logo_url": {
+                        "description": "The URL of the wide banner logo image",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "The title of the wide banner",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body text of the wide banner",
+                        "type": "string"
+                    },
+                    "banner_text_color": {
+                        "description": "The hex color code of the banner text",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "disable_cta": {
+                        "description": "Whether to disable the CTA for the wide banner",
+                        "type": "boolean"
+                    },
+                    "cta_text": {
+                        "description": "The CTA text for the wide banner",
+                        "type": "string"
+                    },
+                    "cta_route": {
+                        "description": "The CTA route for the wide banner",
+                        "type": "string"
+                    },
+                    "is_dismissible": {
+                        "description": "Whether the wide banner is dismissible",
+                        "type": "boolean"
+                    },
+                    "dismissible_content_version": {
+                        "description": "The version of the dismissible content",
+                        "type": "integer"
+                    },
+                    "wide_banner_url": {
+                        "description": "The URL of the wide banner image",
+                        "type": "string"
+                    },
+                    "wide_banner_animated_url": {
+                        "description": "The URL of the animated wide banner image",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "banner_asset",
+                    "banner_text_color",
+                    "body",
+                    "category_store_listing_id",
+                    "cta_route",
+                    "cta_text",
+                    "disable_cta",
+                    "dismissible_content_version",
+                    "is_dismissible",
+                    "logo_url",
+                    "title",
+                    "type",
+                    "wide_banner_url"
+                ]
+            },
+            "ShelfShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "category_sku_id": {
+                        "description": "The collectible category SKU ID",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the shop block",
+                        "type": "string"
+                    },
+                    "ranked_sku_ids": {
+                        "description": "The SKU IDs ranked by popularity in the collectible category",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "ranked_sku_ids",
+                    "type"
+                ]
+            },
+            "CountdownTimerShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "title": {
+                        "description": "The title of the countdown timer",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body text of the countdown timer",
+                        "type": "string"
+                    },
+                    "banner_url": {
+                        "description": "The URL of the countdown timer banner",
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "description": "The end time of the countdown timer",
+                        "type": "string"
+                    },
+                    "text_color": {
+                        "description": "The hex color code of the text",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "banner_url",
+                    "body",
+                    "end_time",
+                    "text_color",
+                    "title",
+                    "type"
+                ]
+            },
+            "ImmersiveBannerShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "title": {
+                        "description": "The title of the immersive banner",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body text of the immersive banner",
+                        "type": "string"
+                    },
+                    "help_center_url": {
+                        "description": "The URL to the help center article",
+                        "type": "string"
+                    },
+                    "text_color": {
+                        "description": "The hex color code of the text",
+                        "type": "string"
+                    },
+                    "end_time": {
+                        "description": "The end time of the immersive banner",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner_asset": {
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema",
+                        "description": "The banner asset"
+                    }
+                },
+                "required": [
+                    "banner_asset",
+                    "body",
+                    "end_time",
+                    "help_center_url",
+                    "text_color",
+                    "title",
+                    "type"
+                ]
+            },
+            "RewardHeroShopBlockSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ShopBlockType",
+                        "description": "The shop block type"
+                    },
+                    "category_sku_id": {
+                        "description": "The collectible category SKU ID",
+                        "type": "string"
+                    },
+                    "category_store_listing_id": {
+                        "description": "The collectible category store listing ID",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "The name of the shop block",
+                        "type": "string"
+                    },
+                    "summary": {
+                        "description": "A description of the collectible category",
+                        "type": "string"
+                    },
+                    "banner_asset": {
+                        "$ref": "#/components/schemas/CollectibleAssetConfigSchema",
+                        "description": "The banner asset"
+                    },
+                    "logo_url": {
+                        "description": "The URL of the hero logo image",
+                        "type": "string"
+                    },
+                    "title": {
+                        "description": "The title of the reward hero shop block",
+                        "type": "string"
+                    },
+                    "banner_text_color": {
+                        "description": "The hex color code for the banner text",
+                        "type": "string"
+                    },
+                    "banner_display_config": {
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema",
+                        "description": "The display configuration"
+                    },
+                    "hero_rive_url": {
+                        "description": "The URL of the hero Rive animation",
+                        "type": "string"
+                    },
+                    "logo_display_config": {
+                        "$ref": "#/components/schemas/CollectibleBannerAssetSchema",
+                        "description": "The shop block logo display config"
+                    },
+                    "mobile_title": {
+                        "description": "The title to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "mobile_summary": {
+                        "description": "The summary to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "mobile_products_title": {
+                        "description": "The products title to be displayed on mobile devices",
+                        "type": "string"
+                    },
+                    "hero_banner_url": {
+                        "description": "The URL of the hero banner image",
+                        "type": "string"
+                    },
+                    "hero_banner_animated_url": {
+                        "description": "The URL of the hero animated banner image",
+                        "type": "string"
+                    },
+                    "hero_logo_url": {
+                        "description": "The URL of the hero logo image",
+                        "type": "string"
+                    },
+                    "mobile_hero_url": {
+                        "description": "The URL of the mobile hero banner image",
+                        "type": "string"
+                    },
+                    "mobile_hero_animated_url": {
+                        "description": "The URL of the mobile animated hero banner image",
+                        "type": "string"
+                    },
+                    "ranked_sku_ids": {
+                        "description": "The SKU IDs ranked by popularity in the collectible category",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "unpublished_at": {
+                        "description": "When the collectible category should be unpublished",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "reward_sku_id": {
+                        "description": "The SKU ID of the reward collectible",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "banner_asset",
+                    "banner_display_config",
+                    "category_store_listing_id",
+                    "hero_banner_animated_url",
+                    "hero_banner_url",
+                    "hero_logo_url",
+                    "logo_display_config",
+                    "logo_url",
+                    "name",
+                    "ranked_sku_ids",
+                    "reward_sku_id",
+                    "summary",
+                    "title",
+                    "type",
+                    "unpublished_at"
+                ]
+            },
+            "CollectibleUserDiscountSchema": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "description": "How much the discount is",
+                        "type": "integer"
+                    },
+                    "discount_id": {
+                        "description": "The discount ID",
+                        "type": "string"
+                    },
+                    "expires_at": {
+                        "description": "When the discount expires",
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "amount",
+                    "discount_id",
+                    "expires_at"
+                ]
+            },
             "EntitlementTenantMetadataSchema": {
                 "type": "object",
                 "properties": {
@@ -8348,23 +9392,17 @@
                             "os": {
                                 "type": "string"
                             },
-                            "os_atch": {
-                                "type": "string"
-                            },
                             "browser": {
                                 "type": "string"
                             },
                             "device": {
                                 "type": "string"
                             },
-                            "$os": {
+                            "system_locale": {
                                 "type": "string"
                             },
-                            "$browser": {
-                                "type": "string"
-                            },
-                            "$device": {
-                                "type": "string"
+                            "has_client_mods": {
+                                "type": "boolean"
                             },
                             "browser_user_agent": {
                                 "type": "string"
@@ -8400,12 +9438,30 @@
                                 "type": "integer"
                             },
                             "client_event_source": {
+                                "type": "null"
+                            },
+                            "client_launch_id": {
                                 "type": "string"
                             },
-                            "client_version": {
+                            "launch_signature": {
                                 "type": "string"
                             },
-                            "system_locale": {
+                            "client_app_state": {
+                                "type": "string"
+                            },
+                            "is_fast_connect": {
+                                "type": "boolean"
+                            },
+                            "gateway_connect_reasons": {
+                                "type": "string"
+                            },
+                            "$os": {
+                                "type": "string"
+                            },
+                            "$browser": {
+                                "type": "string"
+                            },
+                            "$device": {
                                 "type": "string"
                             }
                         },
@@ -13425,402 +14481,143 @@
                     3
                 ]
             },
-            "CollectiblesCategoryItem": {
-                "type": "object",
-                "properties": {
-                    "sku_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "summary": {
-                        "type": "string"
-                    },
-                    "store_listing_id": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "unpublished_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "styles": {
-                        "$ref": "#/components/schemas/CollectiblesCategoryStyle"
-                    },
-                    "logo": {
-                        "type": "string"
-                    },
-                    "hero_ranking": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "mobile_bg": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "pdp_bg": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "success_modal_bg": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "mobile_banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "featured_block": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "hero_banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "wide_banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "hero_logo": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "products": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/CollectiblesCategoryProductItem"
-                        }
-                    },
-                    "banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
-                    },
-                    "hero_banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
-                    }
-                },
-                "required": [
-                    "banner",
-                    "featured_block",
-                    "hero_banner",
-                    "hero_logo",
-                    "hero_ranking",
-                    "logo",
-                    "mobile_banner",
-                    "mobile_bg",
-                    "name",
-                    "pdp_bg",
-                    "products",
-                    "sku_id",
-                    "store_listing_id",
-                    "styles",
-                    "success_modal_bg",
-                    "summary",
-                    "unpublished_at",
-                    "wide_banner"
+            "CollectibleItemType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    100,
+                    1000,
+                    2000,
+                    3000
                 ]
             },
-            "CollectiblesCategoryStyle": {
-                "type": "object",
-                "properties": {
-                    "background_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+            "AnyCollectibleItem": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/CollectibleAvatarDecorationSchema"
                     },
-                    "button_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                    {
+                        "$ref": "#/components/schemas/CollectibleProfileEffectSchema"
                     },
-                    "confetti_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                    {
+                        "$ref": "#/components/schemas/CollectibleNameplateSchema"
                     }
-                },
-                "required": [
-                    "background_colors",
-                    "button_colors",
-                    "confetti_colors"
                 ]
             },
-            "CollectiblesCategoryProductItem": {
+            "CollectibleProfileEffectAnimationType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "CollectibleProfileEffectAnimation": {
                 "type": "object",
                 "properties": {
-                    "sku_id": {
+                    "src": {
+                        "description": "The URL of the animation image (in APNG format)",
                         "type": "string"
                     },
-                    "name": {
-                        "type": "string"
+                    "loop": {
+                        "description": "Whether the animation frame should loop",
+                        "type": "boolean"
                     },
-                    "summary": {
-                        "type": "string"
-                    },
-                    "store_listing_id": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "unpublished_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "styles": {
-                        "$ref": "#/components/schemas/CollectiblesCategoryStyle"
-                    },
-                    "prices": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "object",
-                            "properties": {
-                                "country_prices": {
-                                    "$ref": "#/components/schemas/CountryPrice"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "country_prices"
-                            ]
-                        }
-                    },
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ProductItem"
-                        }
-                    },
-                    "type": {
+                    "height": {
+                        "description": "The height of the animation image",
                         "type": "integer"
                     },
-                    "premium_type": {
+                    "width": {
+                        "description": "The width of the animation image",
                         "type": "integer"
                     },
-                    "category_sku_id": {
-                        "type": "string"
+                    "duration": {
+                        "description": "The duration of the animation frame (in milliseconds)",
+                        "type": "integer"
                     },
-                    "google_sku_ids": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "string"
-                        }
+                    "start": {
+                        "description": "The start time of the animation frame (in milliseconds)",
+                        "type": "integer"
                     },
-                    "variants": {
+                    "loopDelay": {
+                        "description": "The delay between loops of the animation frame (in milliseconds)",
+                        "type": "integer"
+                    },
+                    "position": {
+                        "$ref": "#/components/schemas/CollectibleProfileEffectPosition",
+                        "description": "The position of the animation frame"
+                    },
+                    "zIndex": {
+                        "description": "The z-index of the animation frame",
+                        "type": "integer"
+                    },
+                    "randomizedSources": {
+                        "description": "The sources to randomize the src from",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ProductItemVariant"
+                            "$ref": "#/components/schemas/CollectibleProfileEffectSource"
                         }
                     }
                 },
                 "required": [
-                    "banner",
-                    "category_sku_id",
-                    "google_sku_ids",
-                    "items",
-                    "name",
-                    "premium_type",
-                    "prices",
-                    "sku_id",
-                    "store_listing_id",
-                    "styles",
-                    "summary",
-                    "type",
-                    "unpublished_at"
+                    "duration",
+                    "height",
+                    "loop",
+                    "loopDelay",
+                    "position",
+                    "randomizedSources",
+                    "src",
+                    "start",
+                    "width",
+                    "zIndex"
                 ]
             },
-            "CountryPrice": {
+            "CollectibleProfileEffectPosition": {
                 "type": "object",
                 "properties": {
-                    "country_code": {
-                        "type": "string"
-                    },
-                    "prices": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/PriceEntry"
-                        }
-                    }
-                },
-                "required": [
-                    "country_code",
-                    "prices"
-                ]
-            },
-            "PriceEntry": {
-                "type": "object",
-                "properties": {
-                    "amount": {
+                    "x": {
+                        "description": "The x-coordinate of the animation frame",
                         "type": "integer"
                     },
-                    "currency": {
-                        "type": "string"
-                    },
-                    "exponent": {
+                    "y": {
+                        "description": "The y-coordinate of the animation frame",
                         "type": "integer"
                     }
                 },
                 "required": [
-                    "amount",
-                    "currency",
-                    "exponent"
+                    "x",
+                    "y"
                 ]
             },
-            "ProductItem": {
+            "CollectibleProfileEffectSource": {
                 "type": "object",
                 "properties": {
-                    "type": {
-                        "type": "integer"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "sku_id": {
-                        "type": "string"
-                    },
-                    "asset": {
-                        "type": "string"
-                    },
-                    "label": {
-                        "type": "string"
-                    },
-                    "palette": {
+                    "src": {
+                        "description": "The URL of the animation image (in APNG format)",
                         "type": "string"
                     }
                 },
                 "required": [
-                    "id",
-                    "sku_id",
-                    "type"
+                    "src"
                 ]
             },
-            "ProductItemVariant": {
-                "type": "object",
-                "properties": {
-                    "sku_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "name_localizations": {
-                        "type": "null"
-                    },
-                    "summary": {
-                        "type": "string"
-                    },
-                    "summary_localizations": {
-                        "type": "null"
-                    },
-                    "store_listing_id": {
-                        "type": "string"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "unpublished_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "styles": {
-                        "$ref": "#/components/schemas/CollectiblesCategoryStyle"
-                    },
-                    "prices": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "object",
-                            "properties": {
-                                "country_prices": {
-                                    "$ref": "#/components/schemas/CountryPrice"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "country_prices"
-                            ]
-                        }
-                    },
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ProductItem"
-                        }
-                    },
-                    "type": {
-                        "type": "integer"
-                    },
-                    "premium_type": {
-                        "type": "integer"
-                    },
-                    "category_sku_id": {
-                        "type": "string"
-                    },
-                    "google_sku_ids": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "string"
-                        }
-                    },
-                    "base_variant_sku_id": {
-                        "type": "string"
-                    },
-                    "base_variant_name": {
-                        "type": "string"
-                    },
-                    "variant_label": {
-                        "type": "string"
-                    },
-                    "variant_value": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "base_variant_name",
-                    "base_variant_sku_id",
-                    "category_sku_id",
-                    "items",
-                    "name",
-                    "name_localizations",
-                    "premium_type",
-                    "prices",
-                    "sku_id",
-                    "store_listing_id",
-                    "summary",
-                    "summary_localizations",
-                    "type",
-                    "variant_label",
-                    "variant_value"
-                ]
-            },
-            "StaticAnimatedAsset": {
-                "type": "object",
-                "properties": {
-                    "animated": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "static": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "animated",
-                    "static"
+            "CollectibleNameplateColorPalette": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11
                 ]
             },
             "CollectiblesMarketingItem": {
@@ -13846,172 +14643,54 @@
                     "version"
                 ]
             },
-            "AnyShopBlock": {
+            "AnyCollectiblesShopBlock": {
                 "anyOf": [
                     {
-                        "$ref": "#/components/schemas/ItemRowShopBlock"
+                        "$ref": "#/components/schemas/HeroShopBlockSchema"
                     },
                     {
-                        "$ref": "#/components/schemas/BundleTileRowShopBlock"
+                        "$ref": "#/components/schemas/SubBlockSchema"
                     },
                     {
-                        "$ref": "#/components/schemas/ItemCollectionShopBlock"
+                        "$ref": "#/components/schemas/FeaturedShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/FeedShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/WideBannerShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ShelfShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CountdownTimerShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ImmersiveBannerShopBlockSchema"
+                    },
+                    {
+                        "$ref": "#/components/schemas/RewardHeroShopBlockSchema"
                     }
                 ]
             },
-            "ItemRowShopBlock": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "integer",
-                        "const": 0
-                    },
-                    "category_sku_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "category_store_listing_id": {
-                        "type": "string"
-                    },
-                    "banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
-                    },
-                    "logo_url": {
-                        "type": "string"
-                    },
-                    "unpublished_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "summary": {
-                        "type": "string"
-                    },
-                    "ranked_sku_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "required": [
-                    "banner_asset",
-                    "category_sku_id",
-                    "category_store_listing_id",
-                    "logo_url",
-                    "name",
-                    "ranked_sku_ids",
-                    "summary",
-                    "type",
-                    "unpublished_at"
+            "ShopBlockType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
                 ]
             },
-            "BundleTileRowShopBlock": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "integer",
-                        "const": 1
-                    },
-                    "subblocks": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ShopBlockSubBlock"
-                        }
-                    }
-                },
-                "required": [
-                    "subblocks",
-                    "type"
-                ]
-            },
-            "ShopBlockSubBlock": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "integer"
-                    },
-                    "category_store_listing_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "unpublished_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "banner_url": {
-                        "type": "string"
-                    },
-                    "body_text": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "banner_text_color": {
-                        "type": "integer",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "banner_text_color",
-                    "banner_url",
-                    "body_text",
-                    "category_store_listing_id",
-                    "name",
-                    "type",
-                    "unpublished_at"
-                ]
-            },
-            "ItemCollectionShopBlock": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "integer",
-                        "const": 2
-                    },
-                    "ranked_sku_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "sorted_sku_ids": {
-                        "type": "object",
-                        "properties": {
-                            "recommended": {
-                                "anyOf": [
-                                    {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    {
-                                        "type": "null"
-                                    }
-                                ]
-                            },
-                            "popular": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "popular",
-                            "recommended"
-                        ]
-                    }
-                },
-                "required": [
-                    "ranked_sku_ids",
-                    "sorted_sku_ids",
-                    "type"
-                ]
+            "ShopSubBlockType": {
+                "description": "A category subblock\n\nValue: 0\nName: CATEGORY",
+                "type": "number",
+                "const": 0
             },
             "PartialMessage": {
                 "description": "https://docs.discord.food/resources/message#partial-message-structure",
@@ -24159,6 +24838,7 @@
                         "bearer": []
                     }
                 ],
+                "description": "Returns the list of collectible categories available in the store.",
                 "responses": {
                     "200": {
                         "description": "",
@@ -24169,17 +24849,115 @@
                                 }
                             }
                         }
-                    },
-                    "204": {
-                        "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "country_code",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The user's ISO 3166-1 alpha-2 country code"
+                    },
+                    {
+                        "name": "tab",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The tab to retrieve"
+                    },
+                    {
+                        "name": "shop_home_config",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The shop home configuration override"
+                    },
+                    {
+                        "name": "include_bundles",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Whether to include bundles"
+                    },
+                    {
+                        "name": "include_dynamic_blocks",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Whether to include dynamic blocks"
+                    },
+                    {
+                        "name": "include_nameplates_on_mobile",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Whether to include nameplates on mobile"
+                    },
+                    {
+                        "name": "include_unpublished",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Whether to include unpublished categories. Restricted to staff"
+                    },
+                    {
+                        "name": "no_cache",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "description": "Whether to bypass the cache. Restricted to staff"
+                    },
+                    {
+                        "name": "payment_gateway",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The payment gateway enum value of the payment source"
+                    },
+                    {
+                        "name": "skip_num_categories",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "The number of categories to skip"
+                    },
+                    {
+                        "name": "variants_return_style",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "\tThe variant style to return"
+                    }
+                ],
                 "tags": [
                     "collectibles-shop"
                 ]
             }
         },
-        "/collectibles-categories/": {
+        "/collectibles-categories/v2": {
             "get": {
                 "security": [
                     {

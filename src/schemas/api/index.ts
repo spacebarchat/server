@@ -22,3 +22,4 @@ export * from "./entitlements";
 export * from "./guilds";
 export * from "./messages";
 export * from "./users";
+export * from "./store";

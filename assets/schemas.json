@@ -3551,8 +3551,223 @@
     "CollectiblesCategoriesResponse": {
         "type": "array",
         "items": {
-            "$ref": "#/definitions/CollectiblesCategoryItem"
+            "$ref": "#/definitions/CollectibleCategorySchema"
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleCategorySchema": {
+        "type": "object",
+        "properties": {
+            "sku_id": {
+                "description": "The SKU ID of the collectible category",
+                "type": "string"
+            },
+            "store_listing_id": {
+                "description": "The store listing ID associated with the collectible category",
+                "type": "string"
+            },
+            "banner_text_color": {
+                "description": "The color of the banner text as a hexadecimal color string",
+                "type": "string"
+            },
+            "catalog_banner_asset": {
+                "description": "The catalog banner asset",
+                "$ref": "#/definitions/CollectibleAssetConfigSchema"
+            },
+            "hero_banner_asset": {
+                "description": "The hero banner asset",
+                "$ref": "#/definitions/CollectibleAssetConfigSchema"
+            },
+            "featured_block_body": {
+                "description": "The body text for the featured block",
+                "type": "string"
+            },
+            "featured_block_url": {
+                "description": "The URL of the featured block image",
+                "type": "string"
+            },
+            "hero_banner_config_asset": {
+                "description": "The hero banner asset. might be legacy in favor of hero_banner_asset?",
+                "$ref": "#/definitions/CollectibleBannerAssetSchema"
+            },
+            "hero_banner_display_config": {
+                "description": "The display configuration for the hero banner",
+                "$ref": "#/definitions/CollectibleBannerAssetSchema"
+            },
+            "hero_banner_config": {
+                "description": "The display configuration for the hero banner. might be legacy in favor of hero_banner_display_config?",
+                "$ref": "#/definitions/CollectibleBannerAssetSchema"
+            },
+            "hero_block_title": {
+                "description": "The title text for the hero block",
+                "type": "string"
+            },
+            "hero_logo_display_config": {
+                "description": "The display configuration for the hero logo",
+                "$ref": "#/definitions/CollectibleAssetConfigSchema"
+            },
+            "hero_logo_url": {
+                "description": "The URL of the hero logo image",
+                "type": "string"
+            },
+            "hero_ranking": {
+                "description": "The popularity ranking of SKU IDs within the collectible category",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "hero_rive_url": {
+                "description": "The URL of the Rive hero animation",
+                "type": "string"
+            },
+            "logo_url": {
+                "description": "The URL of the logo image",
+                "type": "string"
+            },
+            "mobile_banner_url": {
+                "description": "The URL of the mobile banner image",
+                "type": "string"
+            },
+            "mobile_bg_url": {
+                "description": "The URL of the mobile background image",
+                "type": "string"
+            },
+            "mobile_hero_block_title": {
+                "description": "The title text for the mobile hero block",
+                "type": "string"
+            },
+            "mobile_products_title": {
+                "description": "The title text for the mobile products section",
+                "type": "string"
+            },
+            "mobile_summary": {
+                "description": "The summary text for the mobile products section",
+                "type": "string"
+            },
+            "name": {
+                "description": "The name of the collectible category",
+                "type": "string"
+            },
+            "pdp_bg_url": {
+                "description": "The URL of the product display page background image",
+                "type": "string"
+            },
+            "products": {
+                "description": "The list of products in the collectible category",
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CollectibleProductSchema"
+                }
+            },
+            "styles": {
+                "$ref": "#/definitions/CollectibleStyleSchema",
+                "description": "The colors to use in the client"
+            },
+            "summary": {
+                "description": "A description of the collectible category",
+                "type": "string"
+            },
+            "unpublished_at": {
+                "description": "The time at which the collectible category should be unpublished",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "wide_banner_asset": {
+                "description": "The wide banner asset config",
+                "$ref": "#/definitions/CollectibleAssetConfigSchema"
+            },
+            "wide_banner_body": {
+                "description": "The body text for the wide banner",
+                "type": "string"
+            },
+            "wide_banner_title": {
+                "description": "The title text for the wide banner",
+                "type": "string"
+            },
+            "logo": {
+                "description": "The ID of the logo image",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "mobile_bg": {
+                "description": "The ID of the mobile background image",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "pdp_bg": {
+                "description": "The ID of the product display page background image",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "mobile_banner": {
+                "description": "The ID of the mobile banner image",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "featured_block": {
+                "type": "string"
+            },
+            "hero_logo": {
+                "description": "The ID of the hero logo image",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "hero_banner_url": {
+                "description": "The URL of the hero banner",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "hero_banner_animated_url": {
+                "description": "The URL of the animated hero banner",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "catalog_banner_url": {
+                "description": "The URL of the catalog banner",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "wide_banner_url": {
+                "description": "The URL of the wide banner",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "hero_ranking",
+            "logo_url",
+            "mobile_summary",
+            "name",
+            "pdp_bg_url",
+            "products",
+            "sku_id",
+            "store_listing_id",
+            "styles",
+            "summary",
+            "unpublished_at"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "CollectiblesMarketingResponse": {
@@ -3577,13 +3792,19 @@
             "shop_blocks": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/AnyShopBlock"
+                    "$ref": "#/definitions/AnyCollectiblesShopBlock"
                 }
             },
             "categories": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/CollectiblesCategoryItem"
+                    "$ref": "#/definitions/CollectibleCategorySchema"
+                }
+            },
+            "user_discounts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CollectibleUserDiscountSchema"
                 }
             }
         },
@@ -8450,6 +8671,919 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "CollectibleBannerAssetSchema": {
+        "type": "object",
+        "properties": {
+            "background_style": {
+                "description": "The CSS the web client should use",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "desktop_max_height": {
+                "description": "Max height of the banner on desktop",
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "mobile_max_height": {
+                "description": "Max height of the banner on mobile",
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "responsive": {
+                "description": "Whether the banner is responsive",
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "background_style",
+            "responsive"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleItemAssetsSchema": {
+        "type": "object",
+        "properties": {
+            "static_image_url": {
+                "description": "The URL for the static image of the collectible",
+                "type": "string"
+            },
+            "animated_image_url": {
+                "description": "The URL for the animated image of the collectible (in APNG format)",
+                "type": "string"
+            },
+            "video_url": {
+                "description": "The URL for the video of the collectible",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "animated_image_url",
+            "static_image_url"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleAvatarDecorationSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/CollectibleItemType",
+                "description": "The type of collectible"
+            },
+            "id": {
+                "description": "The ID of the avatar decoration",
+                "type": "string"
+            },
+            "sku_id": {
+                "description": "The SKU ID of the avatar decoration",
+                "type": "string"
+            },
+            "asset": {
+                "description": "The asset hash of the avatar decoration",
+                "type": "string"
+            },
+            "assets": {
+                "$ref": "#/definitions/CollectibleItemAssetsSchema",
+                "description": "The URLs for the static and animated images of the avatar decoration"
+            },
+            "label": {
+                "description": "The avatar decoration accessibility description",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "asset",
+            "assets",
+            "id",
+            "label",
+            "sku_id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleProfileEffectSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/CollectibleItemType",
+                "description": "The type of collectible"
+            },
+            "id": {
+                "description": "The ID of the profile effect",
+                "type": "string"
+            },
+            "sku_id": {
+                "description": "The ID of the profile effect SKU",
+                "type": "string"
+            },
+            "title": {
+                "description": "The title of the profile effect",
+                "type": "string"
+            },
+            "description": {
+                "description": "The description of the profile effect",
+                "type": "string"
+            },
+            "accessibilityLabel": {
+                "description": "An accessible description of the profile effect",
+                "type": "string"
+            },
+            "animationType": {
+                "$ref": "#/definitions/CollectibleProfileEffectAnimationType",
+                "description": "The type of animation used by the profile effect"
+            },
+            "thumbnailPreviewSrc": {
+                "description": "The URL of the profile effect's thumbnail preview image (in APNG format)",
+                "type": "string"
+            },
+            "reducedMotionSrc": {
+                "description": "A URL of the profile effect with reduced motion (in APNG format)",
+                "type": "string"
+            },
+            "staticFrameSrc": {
+                "description": "The URL of the static frame of the profile effect (in PNG format)",
+                "type": "string"
+            },
+            "effects": {
+                "description": "The animation frames for the profile effect",
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/CollectibleProfileEffectAnimation"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "accessibilityLabel",
+            "animationType",
+            "description",
+            "effects",
+            "id",
+            "reducedMotionSrc",
+            "sku_id",
+            "staticFrameSrc",
+            "thumbnailPreviewSrc",
+            "title",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleNameplateSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/CollectibleItemType",
+                "description": "The type of collectible"
+            },
+            "id": {
+                "description": "The ID of the nameplate",
+                "type": "string"
+            },
+            "sku_id": {
+                "description": "The SKU ID of the nameplate",
+                "type": "string"
+            },
+            "palette": {
+                "$ref": "#/definitions/CollectibleNameplateColorPalette",
+                "description": "The nameplate's color palette"
+            },
+            "asset": {
+                "description": "The nameplate asset path",
+                "type": "string"
+            },
+            "assets": {
+                "$ref": "#/definitions/CollectibleItemAssetsSchema",
+                "description": "The URLs for the static and animated images of the nameplate"
+            },
+            "label": {
+                "description": "The nameplate accessibility description",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "asset",
+            "assets",
+            "id",
+            "label",
+            "palette",
+            "sku_id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleStyleSchema": {
+        "type": "object",
+        "properties": {
+            "background_colors": {
+                "description": "An array of background colors",
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "button_colors": {
+                "description": "An array of button colors",
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "confetti_colors": {
+                "description": "An array of confetti colors",
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "background_colors",
+            "button_colors",
+            "confetti_colors"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UnitPriceSchema": {
+        "type": "object",
+        "properties": {
+            "currency": {
+                "description": "The lower-cased ISO 4217 currency code",
+                "type": "string"
+            },
+            "amount": {
+                "description": "The price amount in the smallest currency unit",
+                "type": "integer"
+            },
+            "exponent": {
+                "description": "The exponent to convert the amount to the displayed currency unit",
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "amount",
+            "currency",
+            "exponent"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CountryPricesSchema": {
+        "type": "object",
+        "properties": {
+            "country_code": {
+                "description": "The ISO 3166-1 alpha-2 country code",
+                "type": "string"
+            },
+            "prices": {
+                "description": "The prices for the plan in the given country",
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/UnitPriceSchema"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "country_code",
+            "prices"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SubscriptionPricesSchema": {
+        "type": "object",
+        "properties": {
+            "country_prices": {
+                "$ref": "#/definitions/CountryPricesSchema",
+                "description": "The prices for the plan for the given country"
+            },
+            "payment_source_prices": {
+                "description": "The prices for the plan per user payment source ID",
+                "$ref": "#/definitions/Record<string,UnitPriceSchema[]>"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "country_prices"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleAssetConfigSchema": {
+        "type": "object",
+        "properties": {
+            "animated": {
+                "description": "The URL of the animated image (in APNG format)",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "static": {
+                "description": "The URL of the static image",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "animated",
+            "static"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "HeroShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "category_sku_id": {
+                "description": "The collectible category SKU ID",
+                "type": "string"
+            },
+            "category_store_listing_id": {
+                "description": "The collectible category store listing ID",
+                "type": "string"
+            },
+            "banner_asset": {
+                "$ref": "#/definitions/CollectibleAssetConfigSchema",
+                "description": "The banner asset"
+            },
+            "banner_display_config": {
+                "$ref": "#/definitions/CollectibleBannerAssetSchema",
+                "description": "The display configuration"
+            },
+            "banner_text_color": {
+                "description": "The hex color code for the banner text",
+                "type": "string"
+            },
+            "hero_logo_url": {
+                "description": "The URL of the hero logo image",
+                "type": "string"
+            },
+            "hero_rive_url": {
+                "description": "The URL of the hero Rive animation",
+                "type": "string"
+            },
+            "logo_display_config": {
+                "$ref": "#/definitions/CollectibleBannerAssetSchema",
+                "description": "The shop block logo display config"
+            },
+            "logo_url": {
+                "description": "The URL of the hero logo image",
+                "type": "string"
+            },
+            "name": {
+                "description": "The name of the shop block",
+                "type": "string"
+            },
+            "mobile_title": {
+                "description": "The title to be displayed on mobile devices",
+                "type": "string"
+            },
+            "mobile_summary": {
+                "description": "The summary to be displayed on mobile devices",
+                "type": "string"
+            },
+            "mobile_products_title": {
+                "description": "The products title to be displayed on mobile devices",
+                "type": "string"
+            },
+            "mobile_hero_url": {
+                "description": "The URL of the mobile hero banner image",
+                "type": "string"
+            },
+            "mobile_hero_animated_url": {
+                "description": "The URL of the mobile animated hero banner image",
+                "type": "string"
+            },
+            "ranked_sku_ids": {
+                "description": "The SKU IDs ranked by popularity in the collectible category",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "summary": {
+                "description": "A description of the collectible category",
+                "type": "string"
+            },
+            "unpublished_at": {
+                "description": "When the collectible category should be unpublished",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner_asset",
+            "banner_display_config",
+            "category_sku_id",
+            "category_store_listing_id",
+            "hero_logo_url",
+            "logo_display_config",
+            "logo_url",
+            "name",
+            "ranked_sku_ids",
+            "summary",
+            "type",
+            "unpublished_at"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SubBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopSubBlockType",
+                "description": "The subblock type"
+            },
+            "category_store_listing_id": {
+                "description": "The collectible category store listing ID",
+                "type": "string"
+            },
+            "asset_url": {
+                "description": "The URL of the shop block asset",
+                "type": "string"
+            },
+            "banner_text_color": {
+                "description": "The hex color code of the banner text",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "banner_url": {
+                "description": "The URL of the banner image",
+                "type": "string"
+            },
+            "body_text": {
+                "description": "The body text of the shop block",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "name": {
+                "description": "The name of the shop block",
+                "type": "string"
+            },
+            "unpublished_at": {
+                "description": "When the collectible category should be unpublished",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "asset_url",
+            "banner_text_color",
+            "banner_url",
+            "body_text",
+            "category_store_listing_id",
+            "name",
+            "type",
+            "unpublished_at"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "FeaturedShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "subblocks": {
+                "description": "The list of sub-blocks in the featured shop block",
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/SubBlockSchema"
+                }
+            },
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "subblocks",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SortedSKUIDsSchema": {
+        "type": "object",
+        "properties": {
+            "popular": {
+                "description": "The SKU IDs sorted by popularity",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "recommended": {
+                "description": "The SKU IDs sorted by recommendation",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "popular",
+            "recommended"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "FeedShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "ranked_sku_ids": {
+                "description": "All SKU IDs ranked by popularity",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "sorted_sku_ids": {
+                "$ref": "#/definitions/SortedSKUIDsSchema",
+                "description": "The sorted SKU IDs"
+            },
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "ranked_sku_ids",
+            "sorted_sku_ids",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "WideBannerShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "category_store_listing_id": {
+                "description": "The collectible category store listing ID",
+                "type": "string"
+            },
+            "banner_asset": {
+                "$ref": "#/definitions/CollectibleAssetConfigSchema",
+                "description": "The banner asset"
+            },
+            "logo_url": {
+                "description": "The URL of the wide banner logo image",
+                "type": "string"
+            },
+            "title": {
+                "description": "The title of the wide banner",
+                "type": "string"
+            },
+            "body": {
+                "description": "The body text of the wide banner",
+                "type": "string"
+            },
+            "banner_text_color": {
+                "description": "The hex color code of the banner text",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "disable_cta": {
+                "description": "Whether to disable the CTA for the wide banner",
+                "type": "boolean"
+            },
+            "cta_text": {
+                "description": "The CTA text for the wide banner",
+                "type": "string"
+            },
+            "cta_route": {
+                "description": "The CTA route for the wide banner",
+                "type": "string"
+            },
+            "is_dismissible": {
+                "description": "Whether the wide banner is dismissible",
+                "type": "boolean"
+            },
+            "dismissible_content_version": {
+                "description": "The version of the dismissible content",
+                "type": "integer"
+            },
+            "wide_banner_url": {
+                "description": "The URL of the wide banner image",
+                "type": "string"
+            },
+            "wide_banner_animated_url": {
+                "description": "The URL of the animated wide banner image",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner_asset",
+            "banner_text_color",
+            "body",
+            "category_store_listing_id",
+            "cta_route",
+            "cta_text",
+            "disable_cta",
+            "dismissible_content_version",
+            "is_dismissible",
+            "logo_url",
+            "title",
+            "type",
+            "wide_banner_url"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ShelfShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "category_sku_id": {
+                "description": "The collectible category SKU ID",
+                "type": "string"
+            },
+            "name": {
+                "description": "The name of the shop block",
+                "type": "string"
+            },
+            "ranked_sku_ids": {
+                "description": "The SKU IDs ranked by popularity in the collectible category",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "ranked_sku_ids",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CountdownTimerShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "title": {
+                "description": "The title of the countdown timer",
+                "type": "string"
+            },
+            "body": {
+                "description": "The body text of the countdown timer",
+                "type": "string"
+            },
+            "banner_url": {
+                "description": "The URL of the countdown timer banner",
+                "type": "string"
+            },
+            "end_time": {
+                "description": "The end time of the countdown timer",
+                "type": "string"
+            },
+            "text_color": {
+                "description": "The hex color code of the text",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner_url",
+            "body",
+            "end_time",
+            "text_color",
+            "title",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ImmersiveBannerShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "title": {
+                "description": "The title of the immersive banner",
+                "type": "string"
+            },
+            "body": {
+                "description": "The body text of the immersive banner",
+                "type": "string"
+            },
+            "help_center_url": {
+                "description": "The URL to the help center article",
+                "type": "string"
+            },
+            "text_color": {
+                "description": "The hex color code of the text",
+                "type": "string"
+            },
+            "end_time": {
+                "description": "The end time of the immersive banner",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "banner_asset": {
+                "$ref": "#/definitions/CollectibleAssetConfigSchema",
+                "description": "The banner asset"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner_asset",
+            "body",
+            "end_time",
+            "help_center_url",
+            "text_color",
+            "title",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RewardHeroShopBlockSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ShopBlockType",
+                "description": "The shop block type"
+            },
+            "category_sku_id": {
+                "description": "The collectible category SKU ID",
+                "type": "string"
+            },
+            "category_store_listing_id": {
+                "description": "The collectible category store listing ID",
+                "type": "string"
+            },
+            "name": {
+                "description": "The name of the shop block",
+                "type": "string"
+            },
+            "summary": {
+                "description": "A description of the collectible category",
+                "type": "string"
+            },
+            "banner_asset": {
+                "$ref": "#/definitions/CollectibleAssetConfigSchema",
+                "description": "The banner asset"
+            },
+            "logo_url": {
+                "description": "The URL of the hero logo image",
+                "type": "string"
+            },
+            "title": {
+                "description": "The title of the reward hero shop block",
+                "type": "string"
+            },
+            "banner_text_color": {
+                "description": "The hex color code for the banner text",
+                "type": "string"
+            },
+            "banner_display_config": {
+                "$ref": "#/definitions/CollectibleBannerAssetSchema",
+                "description": "The display configuration"
+            },
+            "hero_rive_url": {
+                "description": "The URL of the hero Rive animation",
+                "type": "string"
+            },
+            "logo_display_config": {
+                "$ref": "#/definitions/CollectibleBannerAssetSchema",
+                "description": "The shop block logo display config"
+            },
+            "mobile_title": {
+                "description": "The title to be displayed on mobile devices",
+                "type": "string"
+            },
+            "mobile_summary": {
+                "description": "The summary to be displayed on mobile devices",
+                "type": "string"
+            },
+            "mobile_products_title": {
+                "description": "The products title to be displayed on mobile devices",
+                "type": "string"
+            },
+            "hero_banner_url": {
+                "description": "The URL of the hero banner image",
+                "type": "string"
+            },
+            "hero_banner_animated_url": {
+                "description": "The URL of the hero animated banner image",
+                "type": "string"
+            },
+            "hero_logo_url": {
+                "description": "The URL of the hero logo image",
+                "type": "string"
+            },
+            "mobile_hero_url": {
+                "description": "The URL of the mobile hero banner image",
+                "type": "string"
+            },
+            "mobile_hero_animated_url": {
+                "description": "The URL of the mobile animated hero banner image",
+                "type": "string"
+            },
+            "ranked_sku_ids": {
+                "description": "The SKU IDs ranked by popularity in the collectible category",
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "unpublished_at": {
+                "description": "When the collectible category should be unpublished",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "reward_sku_id": {
+                "description": "The SKU ID of the reward collectible",
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner_asset",
+            "banner_display_config",
+            "category_store_listing_id",
+            "hero_banner_animated_url",
+            "hero_banner_url",
+            "hero_logo_url",
+            "logo_display_config",
+            "logo_url",
+            "name",
+            "ranked_sku_ids",
+            "reward_sku_id",
+            "summary",
+            "title",
+            "type",
+            "unpublished_at"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleUserDiscountSchema": {
+        "type": "object",
+        "properties": {
+            "amount": {
+                "description": "How much the discount is",
+                "type": "integer"
+            },
+            "discount_id": {
+                "description": "The discount ID",
+                "type": "string"
+            },
+            "expires_at": {
+                "description": "When the discount expires",
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "amount",
+            "discount_id",
+            "expires_at"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EntitlementTenantMetadataSchema": {
         "type": "object",
         "properties": {
@@ -8923,23 +10057,17 @@
                     "os": {
                         "type": "string"
                     },
-                    "os_atch": {
-                        "type": "string"
-                    },
                     "browser": {
                         "type": "string"
                     },
                     "device": {
                         "type": "string"
                     },
-                    "$os": {
+                    "system_locale": {
                         "type": "string"
                     },
-                    "$browser": {
-                        "type": "string"
-                    },
-                    "$device": {
-                        "type": "string"
+                    "has_client_mods": {
+                        "type": "boolean"
                     },
                     "browser_user_agent": {
                         "type": "string"
@@ -8975,12 +10103,30 @@
                         "type": "integer"
                     },
                     "client_event_source": {
+                        "type": "null"
+                    },
+                    "client_launch_id": {
                         "type": "string"
                     },
-                    "client_version": {
+                    "launch_signature": {
                         "type": "string"
                     },
-                    "system_locale": {
+                    "client_app_state": {
+                        "type": "string"
+                    },
+                    "is_fast_connect": {
+                        "type": "boolean"
+                    },
+                    "gateway_connect_reasons": {
+                        "type": "string"
+                    },
+                    "$os": {
+                        "type": "string"
+                    },
+                    "$browser": {
+                        "type": "string"
+                    },
+                    "$device": {
                         "type": "string"
                     }
                 },
@@ -14241,441 +15387,152 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CollectiblesCategoryItem": {
-        "type": "object",
-        "properties": {
-            "sku_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "summary": {
-                "type": "string"
-            },
-            "store_listing_id": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "unpublished_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "styles": {
-                "$ref": "#/definitions/CollectiblesCategoryStyle"
-            },
-            "logo": {
-                "type": "string"
-            },
-            "hero_ranking": {
-                "anyOf": [
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "mobile_bg": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "pdp_bg": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "success_modal_bg": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "mobile_banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "featured_block": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "hero_banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "wide_banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "hero_logo": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "products": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/CollectiblesCategoryProductItem"
-                }
-            },
-            "banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
-            },
-            "hero_banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "banner",
-            "featured_block",
-            "hero_banner",
-            "hero_logo",
-            "hero_ranking",
-            "logo",
-            "mobile_banner",
-            "mobile_bg",
-            "name",
-            "pdp_bg",
-            "products",
-            "sku_id",
-            "store_listing_id",
-            "styles",
-            "success_modal_bg",
-            "summary",
-            "unpublished_at",
-            "wide_banner"
+    "CollectibleItemType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            100,
+            1000,
+            2000,
+            3000
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CollectiblesCategoryStyle": {
-        "type": "object",
-        "properties": {
-            "background_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
+    "AnyCollectibleItem": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/CollectibleAvatarDecorationSchema"
             },
-            "button_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
+            {
+                "$ref": "#/definitions/CollectibleProfileEffectSchema"
             },
-            "confetti_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
+            {
+                "$ref": "#/definitions/CollectibleNameplateSchema"
             }
-        },
-        "additionalProperties": false,
-        "required": [
-            "background_colors",
-            "button_colors",
-            "confetti_colors"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CollectiblesCategoryProductItem": {
+    "CollectibleProfileEffectAnimationType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CollectibleProfileEffectAnimation": {
         "type": "object",
         "properties": {
-            "sku_id": {
+            "src": {
+                "description": "The URL of the animation image (in APNG format)",
                 "type": "string"
             },
-            "name": {
-                "type": "string"
+            "loop": {
+                "description": "Whether the animation frame should loop",
+                "type": "boolean"
             },
-            "summary": {
-                "type": "string"
-            },
-            "store_listing_id": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "unpublished_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "styles": {
-                "$ref": "#/definitions/CollectiblesCategoryStyle"
-            },
-            "prices": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "object",
-                    "properties": {
-                        "country_prices": {
-                            "$ref": "#/definitions/CountryPrice"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "country_prices"
-                    ]
-                }
-            },
-            "items": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ProductItem"
-                }
-            },
-            "type": {
+            "height": {
+                "description": "The height of the animation image",
                 "type": "integer"
             },
-            "premium_type": {
+            "width": {
+                "description": "The width of the animation image",
                 "type": "integer"
             },
-            "category_sku_id": {
-                "type": "string"
+            "duration": {
+                "description": "The duration of the animation frame (in milliseconds)",
+                "type": "integer"
             },
-            "google_sku_ids": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
+            "start": {
+                "description": "The start time of the animation frame (in milliseconds)",
+                "type": "integer"
             },
-            "variants": {
+            "loopDelay": {
+                "description": "The delay between loops of the animation frame (in milliseconds)",
+                "type": "integer"
+            },
+            "position": {
+                "$ref": "#/definitions/CollectibleProfileEffectPosition",
+                "description": "The position of the animation frame"
+            },
+            "zIndex": {
+                "description": "The z-index of the animation frame",
+                "type": "integer"
+            },
+            "randomizedSources": {
+                "description": "The sources to randomize the src from",
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/ProductItemVariant"
+                    "$ref": "#/definitions/CollectibleProfileEffectSource"
                 }
             }
         },
         "additionalProperties": false,
         "required": [
-            "banner",
-            "category_sku_id",
-            "google_sku_ids",
-            "items",
-            "name",
-            "premium_type",
-            "prices",
-            "sku_id",
-            "store_listing_id",
-            "styles",
-            "summary",
-            "type",
-            "unpublished_at"
+            "duration",
+            "height",
+            "loop",
+            "loopDelay",
+            "position",
+            "randomizedSources",
+            "src",
+            "start",
+            "width",
+            "zIndex"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CountryPrice": {
+    "CollectibleProfileEffectPosition": {
         "type": "object",
         "properties": {
-            "country_code": {
-                "type": "string"
-            },
-            "prices": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/PriceEntry"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "country_code",
-            "prices"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PriceEntry": {
-        "type": "object",
-        "properties": {
-            "amount": {
+            "x": {
+                "description": "The x-coordinate of the animation frame",
                 "type": "integer"
             },
-            "currency": {
-                "type": "string"
-            },
-            "exponent": {
+            "y": {
+                "description": "The y-coordinate of the animation frame",
                 "type": "integer"
             }
         },
         "additionalProperties": false,
         "required": [
-            "amount",
-            "currency",
-            "exponent"
+            "x",
+            "y"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ProductItem": {
+    "CollectibleProfileEffectSource": {
         "type": "object",
         "properties": {
-            "type": {
-                "type": "integer"
-            },
-            "id": {
-                "type": "string"
-            },
-            "sku_id": {
-                "type": "string"
-            },
-            "asset": {
-                "type": "string"
-            },
-            "label": {
-                "type": "string"
-            },
-            "palette": {
+            "src": {
+                "description": "The URL of the animation image (in APNG format)",
                 "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "id",
-            "sku_id",
-            "type"
+            "src"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ProductItemVariant": {
-        "type": "object",
-        "properties": {
-            "sku_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "name_localizations": {
-                "type": "null"
-            },
-            "summary": {
-                "type": "string"
-            },
-            "summary_localizations": {
-                "type": "null"
-            },
-            "store_listing_id": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "unpublished_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "styles": {
-                "$ref": "#/definitions/CollectiblesCategoryStyle"
-            },
-            "prices": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "object",
-                    "properties": {
-                        "country_prices": {
-                            "$ref": "#/definitions/CountryPrice"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "country_prices"
-                    ]
-                }
-            },
-            "items": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ProductItem"
-                }
-            },
-            "type": {
-                "type": "integer"
-            },
-            "premium_type": {
-                "type": "integer"
-            },
-            "category_sku_id": {
-                "type": "string"
-            },
-            "google_sku_ids": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
-            },
-            "base_variant_sku_id": {
-                "type": "string"
-            },
-            "base_variant_name": {
-                "type": "string"
-            },
-            "variant_label": {
-                "type": "string"
-            },
-            "variant_value": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "base_variant_name",
-            "base_variant_sku_id",
-            "category_sku_id",
-            "items",
-            "name",
-            "name_localizations",
-            "premium_type",
-            "prices",
-            "sku_id",
-            "store_listing_id",
-            "summary",
-            "summary_localizations",
-            "type",
-            "variant_label",
-            "variant_value"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "StaticAnimatedAsset": {
-        "type": "object",
-        "properties": {
-            "animated": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "static": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "animated",
-            "static"
+    "CollectibleNameplateColorPalette": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -14704,188 +15561,56 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "AnyShopBlock": {
+    "AnyCollectiblesShopBlock": {
         "anyOf": [
             {
-                "$ref": "#/definitions/ItemRowShopBlock"
+                "$ref": "#/definitions/HeroShopBlockSchema"
             },
             {
-                "$ref": "#/definitions/BundleTileRowShopBlock"
+                "$ref": "#/definitions/SubBlockSchema"
             },
             {
-                "$ref": "#/definitions/ItemCollectionShopBlock"
+                "$ref": "#/definitions/FeaturedShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/FeedShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/WideBannerShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/ShelfShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/CountdownTimerShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/ImmersiveBannerShopBlockSchema"
+            },
+            {
+                "$ref": "#/definitions/RewardHeroShopBlockSchema"
             }
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ItemRowShopBlock": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "integer",
-                "const": 0
-            },
-            "category_sku_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "category_store_listing_id": {
-                "type": "string"
-            },
-            "banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
-            },
-            "logo_url": {
-                "type": "string"
-            },
-            "unpublished_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "summary": {
-                "type": "string"
-            },
-            "ranked_sku_ids": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "banner_asset",
-            "category_sku_id",
-            "category_store_listing_id",
-            "logo_url",
-            "name",
-            "ranked_sku_ids",
-            "summary",
-            "type",
-            "unpublished_at"
+    "ShopBlockType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "BundleTileRowShopBlock": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "integer",
-                "const": 1
-            },
-            "subblocks": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ShopBlockSubBlock"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "subblocks",
-            "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ShopBlockSubBlock": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "integer"
-            },
-            "category_store_listing_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "unpublished_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner_url": {
-                "type": "string"
-            },
-            "body_text": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner_text_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "banner_text_color",
-            "banner_url",
-            "body_text",
-            "category_store_listing_id",
-            "name",
-            "type",
-            "unpublished_at"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ItemCollectionShopBlock": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "integer",
-                "const": 2
-            },
-            "ranked_sku_ids": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "sorted_sku_ids": {
-                "type": "object",
-                "properties": {
-                    "recommended": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "popular": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "popular",
-                    "recommended"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "ranked_sku_ids",
-            "sorted_sku_ids",
-            "type"
-        ],
+    "ShopSubBlockType": {
+        "description": "A category subblock\n\nValue: 0\nName: CATEGORY",
+        "type": "number",
+        "const": 0,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "PartialMessage": {
