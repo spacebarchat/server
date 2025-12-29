@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251005-232225" />
-        <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.0-preview.20251005-232225" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
+        <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.0-preview.20251207-164820" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
         <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     </ItemGroup>

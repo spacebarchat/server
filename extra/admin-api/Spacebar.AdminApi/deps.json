@@ -1,13 +1,13 @@
 [
   {
     "pname": "ArcaneLibs",
-    "version": "1.0.0-preview.20251005-232225",
-    "hash": "sha256-EsYLSiyX5Nj+ZpFb6FOcAYqDsQFSbvgm9NKaarJjK/0="
+    "version": "1.0.0-preview.20251207-164820",
+    "hash": "sha256-Bz+w3kWgoN9ufy8PyJpb+nFCKCN48rsjeAh6hO6Ekas="
   },
   {
     "pname": "ArcaneLibs.StringNormalisation",
-    "version": "1.0.0-preview.20251005-232225",
-    "hash": "sha256-CdftHRV6idRMojLMgnDRxgSOvfP1DU+9KTKyBGlwoSI="
+    "version": "1.0.0-preview.20251207-164820",
+    "hash": "sha256-e2IUTm/Fs1Ci8lgjHaKLgrGp8TK53pOdYMeZ1DAgq7c="
   },
   {
     "pname": "Humanizer.Core",
@@ -16,8 +16,8 @@
   },
   {
     "pname": "Microsoft.AspNetCore.OpenApi",
-    "version": "10.0.0",
-    "hash": "sha256-mf3kOdkliLF4OD+CrmEhMNNDGOPKWGBOBWtX2EV5YEU="
+    "version": "10.0.1",
+    "hash": "sha256-O31K6+++fM7XWd0JGrzmzLrtydYGiI4efzv+WqAdnQA="
   },
   {
     "pname": "Microsoft.Build",
@@ -146,13 +146,8 @@
   },
   {
     "pname": "Microsoft.Extensions.Configuration",
-    "version": "10.0.0",
-    "hash": "sha256-MsLskVPpkCvov5+DWIaALCt1qfRRX4u228eHxvpE0dg="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.Abstractions",
-    "version": "10.0.0",
-    "hash": "sha256-GcgrnTAieCV7AVT13zyOjfwwL86e99iiO/MiMOxPGG0="
+    "version": "10.0.1",
+    "hash": "sha256-7xdHie4uHwoGZz5yUT4vWg2EWvkLvsSzItWCoqm4dTM="
   },
   {
     "pname": "Microsoft.Extensions.Configuration.Abstractions",
@@ -161,8 +156,8 @@
   },
   {
     "pname": "Microsoft.Extensions.Configuration.Binder",
-    "version": "10.0.0",
-    "hash": "sha256-YSiWoA3VQR22k6+bSEAUqeG7UDzZlJfHWDTubUO5V8U="
+    "version": "10.0.1",
+    "hash": "sha256-fiqTHE6EfaUXICaVrWzQEU/K6GjQNac6yRNErig6wRk="
   },
   {
     "pname": "Microsoft.Extensions.DependencyInjection",
@@ -173,11 +168,6 @@
     "pname": "Microsoft.Extensions.DependencyInjection",
     "version": "9.0.0",
     "hash": "sha256-dAH52PPlTLn7X+1aI/7npdrDzMEFPMXRv4isV1a+14k="
-  },
-  {
-    "pname": "Microsoft.Extensions.DependencyInjection.Abstractions",
-    "version": "10.0.0",
-    "hash": "sha256-9iodXP39YqgxomnOPOxd/mzbG0JfOSXzFoNU3omT2Ps="
   },
   {
     "pname": "Microsoft.Extensions.DependencyInjection.Abstractions",
@@ -233,11 +223,6 @@
     "pname": "Microsoft.Extensions.Options",
     "version": "9.0.0",
     "hash": "sha256-DT5euAQY/ItB5LPI8WIp6Dnd0lSvBRP35vFkOXC68ck="
-  },
-  {
-    "pname": "Microsoft.Extensions.Primitives",
-    "version": "10.0.0",
-    "hash": "sha256-Dup08KcptLjlnpN5t5//+p4n8FUTgRAq4n/w1s6us+I="
   },
   {
     "pname": "Microsoft.Extensions.Primitives",
@@ -441,7 +426,7 @@
   },
   {
     "pname": "Unidecode.NET",
-    "version": "2.1.0",
-    "hash": "sha256-nfxHxG/YwRftOP+wiSW8NL5hIVwt+wnfRb0lURjrZoc="
+    "version": "2.2.1",
+    "hash": "sha256-erDK7cXaIyuwntBhRpop3OlwwnpFJREYQBwE7xqpCGk="
   }
 ]

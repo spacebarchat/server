@@ -88,7 +88,6 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-AdminApi-Models
             proj.Spacebar-Db
           ];
-
         };
         #            Spacebar-AdminApi-TestClient = makeNupkg {
         #              name = "Spacebar.AdminApi.TestClient";

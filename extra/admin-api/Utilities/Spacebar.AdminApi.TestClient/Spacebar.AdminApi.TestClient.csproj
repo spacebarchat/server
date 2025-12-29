@@ -18,12 +18,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251005-232225" />
-        <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.0-preview.20251005-232225" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
+        <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.0-preview.20251207-164820" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.1" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.1" />
     </ItemGroup>
     
     <ItemGroup>
@@ -41,6 +41,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Spacebar.AdminApi.Models\Spacebar.AdminApi.Models.csproj" />
+      <ProjectReference Include="..\..\Spacebar.ConfigModel\Spacebar.ConfigModel.csproj" />
     </ItemGroup>
 
 </Project>
