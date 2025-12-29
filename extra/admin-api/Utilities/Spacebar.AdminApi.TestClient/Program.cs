@@ -2,9 +2,12 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ArcaneLibs.Blazor.Components.Services;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.JSInterop;
+using Microsoft.JSInterop.WebAssembly;
 using Spacebar.AdminApi.TestClient;
 using Spacebar.AdminApi.TestClient.Services;
 
@@ -52,8 +55,11 @@ builder.Services.AddBlazoredLocalStorageAsSingleton(config => {
         config = new Config();
         await localStorage.SetItemAsync("sb_admin_tc_config", config);
     }
+
     builder.Services.AddSingleton(config);
 }
 
-
+builder.Services.AddSingleton<JsConsoleService>();
+builder.Services.AddSingleton(sp => (WebAssemblyJSRuntime)sp.GetRequiredService<IJSRuntime>());
+builder.Services.AddSingleton(sp => (IJSInProcessRuntime)sp.GetRequiredService<IJSRuntime>());
 await builder.Build().RunAsync();

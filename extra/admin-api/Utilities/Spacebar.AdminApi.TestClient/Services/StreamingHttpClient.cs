@@ -282,13 +282,20 @@ public class StreamingHttpClient {
         return await SendAsync(request, cancellationToken);
     }
 
-    public async Task DeleteAsync(string url) {
+    public async Task<HttpResponseMessage> DeleteAsync(string url) {
         var request = new HttpRequestMessage(HttpMethod.Delete, url);
-        await SendAsync(request);
+        return await SendAsync(request);
     }
 
     public async Task<HttpResponseMessage> DeleteAsJsonAsync<T>(string url, T payload) {
         var request = new HttpRequestMessage(HttpMethod.Delete, url) {
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+        };
+        return await SendAsync(request);
+    }
+
+    public async Task<HttpResponseMessage> PatchAsJsonAsync<T>(string url, T payload) {
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), url) {
             Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         };
         return await SendAsync(request);

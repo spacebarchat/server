@@ -1,0 +1,236 @@
+@page "/NonAdmin/Guilds/{GuildId}/StickerManager"
+@using System.Diagnostics
+@using System.Diagnostics.CodeAnalysis
+@using System.Net.Http.Headers
+@using System.Text.Json.Serialization
+@using ArcaneLibs.Blazor.Components
+@using ArcaneLibs.Blazor.Components.Services
+@using ArcaneLibs.Extensions
+@using Microsoft.JSInterop.WebAssembly
+@using Spacebar.AdminApi.TestClient.Services
+@inject Config Config
+@inject WebAssemblyJSRuntime JSRuntime
+@inject JsConsoleService JsConsole
+<h3>StickerManager</h3>
+
+@* drop zone for uploads *@
+
+<InputFile OnChange="@HandleFilesDropped" multiple="true"
+           style="border-radius: 16px; border: 2px dashed gray; padding: 16px; text-align: center; cursor: pointer; margin-bottom: 16px;">
+    <p>Drag and drop files here, or click to select.</p>
+</InputFile>
+
+<p>
+    @Stickers.Count stickers, of which @Stickers.Count(x => x is LocalSticker) are not yet uploaded.
+    <LinkButton OnClickAsync="@SaveAll">Save all</LinkButton>
+</p>
+
+@if (SaveProgress.End.Value > 0) {
+    <progress value="@SaveProgress.Start.Value" max="@Stickers.Count"></progress>
+    <span>@SaveProgress.Start.Value / @Stickers.Count</span>
+}
+
+@foreach (var sticker in Stickers.OrderBy(x => ulong.Parse(x.Id))) {
+    <div style="border-radius: 16px; border: 1px solid gray; padding: 8px; margin-bottom: 8px;">
+        <img style="aspect-ratio: 1; width: 15cqh;" alt="" src="@(sticker is LocalSticker ls ? ls.BlobUri : $"{Config.CdnUrl}/stickers/{sticker.Id}")"/>
+        <div style="display: inline-block; vertical-align: middle;">
+            <span>ID: @sticker.Id</span><br/>
+            <span>Name: <FancyTextBox @bind-Value="@sticker.Name"/></span><br/>
+            <span>Description: <FancyTextBox @bind-Value="@sticker.Description"/></span><br/>
+            <span>Tags: <FancyTextBox @bind-Value="@sticker.Tags"/></span><br/>
+            <span>Available: <InputCheckbox @bind-Value="@sticker.Available"/></span><br/>
+            <span>Type: @sticker.Type.ToString()</span><br/>
+            <span>Format Type: @sticker.FormatType.ToString()</span><br/>
+            @if (sticker is LocalSticker ls2) {
+                <LinkButton OnClickAsync="@(() => UploadAsync(ls2))">Upload</LinkButton>
+            }
+            else {
+                <LinkButton OnClickAsync="@(() => SaveChangesAsync(sticker))">Save</LinkButton>
+            }
+            <LinkButton OnClickAsync="@(() => DeleteAsync(sticker))" Color="#FF0000">Delete</LinkButton>
+        </div>
+        <br/>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public required string GuildId { get; set; }
+
+    private List<Sticker> Stickers { get; set; } = [];
+
+    private Range SaveProgress { get; set; } = ..0;
+
+    protected override async Task OnInitializedAsync() {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        Stickers = await hc.GetFromJsonAsync<List<Sticker>>($"{Config.ApiUrl}/api/v9/guilds/{GuildId}/stickers");
+    }
+
+    private class Sticker {
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+
+        [JsonPropertyName("tags")]
+        public string Tags { get; set; }
+
+        [JsonPropertyName("available")]
+        public bool Available { get; set; }
+
+        [JsonPropertyName("type")]
+        public StickerType Type { get; set; }
+
+        [JsonPropertyName("format_type")]
+        public StickerFormatType FormatType { get; set; }
+    }
+
+    enum StickerType {
+        Standard = 1,
+        Guild = 2
+    }
+
+    enum StickerFormatType {
+        Png = 1,
+        Apng = 2,
+        Lottie = 3,
+        Gif = 4
+    }
+
+    private class LocalSticker : Sticker {
+        [JsonIgnore]
+        public required byte[] Data { get; set; }
+
+        [JsonIgnore]
+        public required string FileName { get; set; }
+
+        [JsonIgnore]
+        public required string ContentType { get; set; }
+
+        [JsonIgnore]
+        public required string BlobUri { get; set; }
+    }
+
+    private async Task<Sticker?> SaveChangesAsync(Sticker sticker) {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var res = await hc.PatchAsJsonAsync($"{Config.ApiUrl}/api/v9/guilds/{GuildId}/stickers/{sticker.Id}", new {
+            name = sticker.Name,
+            description = sticker.Description,
+            tags = sticker.Tags
+            // available = sticker.Available
+        });
+        return await res.Content.ReadFromJsonAsync<Sticker>();
+    }
+
+    private async Task DeleteAsync(Sticker sticker) {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        if ((await hc.DeleteAsync($"{Config.ApiUrl}/api/v9/guilds/{GuildId}/stickers/{sticker.Id}")).IsSuccessStatusCode)
+            Stickers.Remove(sticker);
+        StateHasChanged();
+    }
+
+    private async Task<Sticker?> UploadAsync(LocalSticker sticker) {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+
+        var req = new HttpRequestMessage(HttpMethod.Post, $"{Config.ApiUrl}/api/v9/guilds/{GuildId}/stickers");
+        MultipartFormDataContent content;
+        req.Content = content = new MultipartFormDataContent();
+        content.Add(new StringContent(sticker.Name), "name");
+        content.Add(new StringContent(sticker.Description ?? ""), "description");
+        content.Add(new StringContent(sticker.Tags ?? ""), "tags");
+
+        content.Add(new ByteArrayContent(sticker.Data) {
+            Headers = {
+                ContentType = new MediaTypeHeaderValue(sticker.ContentType)
+            }
+        }, "file", sticker.FileName);
+
+        var res = await hc.SendAsync(req);
+        return await res.Content.ReadFromJsonAsync<Sticker>();
+    }
+
+    private async Task HandleFilesDropped(InputFileChangeEventArgs arg) {
+        var tasks = arg.GetMultipleFiles(10000).Select(async file => {
+            await using var ms = new MemoryStream();
+            await using var stream = file.OpenReadStream(10 * 1024 * 1024);
+            await stream.CopyToAsync(ms);
+
+            return new LocalSticker {
+                Id = "0",
+                Name = Path.GetFileNameWithoutExtension(file.Name),
+                Available = true,
+                Type = StickerType.Guild,
+                FormatType = file.ContentType switch {
+                    "image/png" => StickerFormatType.Png,
+                    "image/apng" => StickerFormatType.Apng,
+                    "application/json" => StickerFormatType.Lottie,
+                    "image/gif" => StickerFormatType.Gif,
+                    _ => throw new Exception("Unsupported sticker format: " + file.ContentType)
+                },
+                FileName = file.Name,
+                ContentType = file.ContentType,
+                Data = ms.ToArray(),
+                // DataUri = $"data:{file.ContentType};base64,{Convert.ToBase64String(ms.ToArray())}"
+                BlobUri = await GetBlobUriAsync(ms.ToArray(), file.ContentType)
+            };
+        }).ToList().ToAsyncResultEnumerable();
+        await foreach (var sticker in tasks) {
+            Stickers.Add(sticker);
+            if (Stickers.Count % 25 == 0) StateHasChanged();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task<string> GetBlobUriAsync(byte[] data, string type = "application/octet-stream") {
+        await using var jsBlob = JSRuntime.InvokeConstructor("Blob", (byte[][])[data], new { type });
+        var uri = JSRuntime.Invoke<string>("URL.createObjectURL", jsBlob);
+        return uri;
+    }
+
+    private async Task SaveAll() {
+        SaveProgress = ..Stickers.Count;
+        StateHasChanged();
+        var ss = new SemaphoreSlim(32, 32);
+        var tasks = Stickers.ToList().Select(async s => {
+            return await ProcessSticker();
+
+            async Task<(Sticker Old, Sticker? New)> ProcessSticker() {
+                await ss.WaitAsync();
+                try {
+                    return (Old: s, New: await (s is LocalSticker ls ? UploadAsync(ls) : SaveChangesAsync(s)));
+                }
+                finally {
+                    ss.Release();
+                }
+            }
+        }).ToList().ToAsyncResultEnumerable();
+
+        var sw = Stopwatch.StartNew();
+        await foreach (var r in tasks) {
+            SaveProgress = (SaveProgress.Start.Value + 1)..SaveProgress.End.Value;
+            Stickers[Stickers.IndexOf(r.Old)] = r.New ?? r.Old;
+            if (r.Old is LocalSticker ls)
+                JSRuntime.InvokeVoid("URL.revokeObjectURL", ls.BlobUri);
+
+            if (sw.ElapsedMilliseconds > 2000) {
+                StateHasChanged();
+                await Task.Delay(100);
+                sw.Restart();
+            }
+        }
+        
+        SaveProgress = ..0;
+        StateHasChanged();
+    }
+
+}
