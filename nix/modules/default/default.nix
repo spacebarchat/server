@@ -29,37 +29,18 @@ let
   );
 in
 {
-  imports = [ ./integration-nginx.nix ];
+  imports = [
+    ./integration-nginx.nix
+    ./secrets.nix
+    ./users.nix
+  ];
   options.services.spacebarchat-server =
     let
-      mkEndpointOptions =
-        defaultHost: defaultPort:
-        lib.mkOption {
-          type = lib.types.submodule {
-            options = {
-              useSsl = lib.mkEnableOption "Use SSL for this endpoint.";
-              host = lib.mkOption {
-                type = lib.types.str;
-                default = defaultHost;
-                description = "Host to bind to.";
-              };
-              localPort = lib.mkOption {
-                type = lib.types.port;
-                default = defaultPort;
-                description = "Port to bind to.";
-              };
-              publicPort = lib.mkOption {
-                type = lib.types.port;
-                default = 443;
-                description = "Public port to use in .well-known, defaults to 443.";
-              };
-            };
-          };
-          default = { };
-        };
+      mkEndpointOptions = import ./options-subtypes/mkEndpointOptions.nix { inherit lib; };
     in
     {
       enable = lib.mkEnableOption "Spacebar server";
+      enableAdminApi = lib.mkEnableOption "Spacebar server Admin API";
       package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "spacebar-server" { default = "default"; };
       databaseFile = lib.mkOption {
         type = lib.types.nullOr lib.types.path;
@@ -82,72 +63,6 @@ in
         type = lib.types.str;
         default = "./files";
         description = "Path to store CDN files.";
-      };
-
-      cdnSignaturePath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      legacyJwtSecretPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      mailjetApiKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      mailjetApiSecretPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      smtpPasswordPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      gifApiKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      rabbitmqHost = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      rabbitmqHostPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      abuseIpDbApiKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      captchaSecretKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      captchaSiteKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      ipdataApiKeyPath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
-      };
-      requestSignaturePath = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = null;
-        description = "Path to the secret";
       };
 
       extraEnvironment = lib.mkOption {
@@ -253,7 +168,7 @@ in
                 "~@privileged"
                 "@chown" # Required for copying files with FICLONE, apparently.
               ];
-              CapabilityBoundingSet=[
+              CapabilityBoundingSet = [
                 "~CAP_SYS_ADMIN"
                 "~CAP_AUDIT_*"
                 "~CAP_NET_(BIND_SERVICE|BROADCAST|RAW)"
@@ -305,14 +220,6 @@ in
         #          message = "You cannot set CONFIG_PATH, CONFIG_READONLY, PORT or STORAGE_LOCATION in extraEnvironment, these are managed by the NixOS module.";
         #        }
       ];
-
-      users.users.spacebarchat = {
-        isSystemUser = true;
-        description = "Spacebar service user";
-        home = "/var/lib/spacebar";
-        group = "spacebarchat";
-      };
-      users.groups.spacebarchat = { };
 
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";

@@ -23,6 +23,7 @@ in
           gatewayEndpoint = sb.mkEndpoint "gw.sb.localhost" 3002 false;
           cdnEndpoint = sb.mkEndpoint "cdn.sb.localhost" 3003 false;
           nginx.enable = true;
+          serverName = "sb.localhost";
         };
       in
       lib.trace ("Testing with config: " + builtins.toJSON cfg) cfg;
