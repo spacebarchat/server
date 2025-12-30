@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface LocalizedStringSchema {
-    default: string;
-    localizations?: { [key: string]: string };
+export enum ApplicationInteractionsVersion {
+    /**
+     * Only Interaction Create events are sent as documented (default)
+     *
+     * Value: 1
+     * Name: VERSION_1
+     */
+    VERSION_1 = 1,
+    /**
+     * A selection of chosen events are sent
+     *
+     * Value: 2
+     * Name: VERSION_2
+     */
+    VERSION_2 = 2,
 }

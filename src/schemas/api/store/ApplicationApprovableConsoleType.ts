@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface LocalizedStringSchema {
-    default: string;
-    localizations?: { [key: string]: string };
+export enum ApplicationApprovableConsoleType {
+    /**
+     * Xbox
+     *
+     * Value: 1
+     * Name: XBOX
+     */
+    XBOX = 1,
+    /**
+     * PlayStation 5
+     *
+     * Value: 2
+     * Name: PLAYSTATION_5
+     */
+    PLAYSTATION_5 = 2,
+    /**
+     * PlayStation 4
+     *
+     * Value: 3
+     * Name: PLAYSTATION_4
+     */
+    PLAYSTATION_4 = 3,
 }

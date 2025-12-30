@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2025 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface LocalizedStringSchema {
-    default: string;
-    localizations?: { [key: string]: string };
+import { SKUProductLine } from "./SKUProductLine";
+import { SKUType } from "./SKUType";
+
+export interface CreateApplicationSKUSchema {
+    name: string;
+    sku_type: SKUType;
+    // Added for spacebar as discord seems to only allow creating Application SKUs
+    product_line?: SKUProductLine;
 }

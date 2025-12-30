@@ -56,3 +56,7 @@ export * from "./Random";
 export * from "./Url";
 export * from "./SKUFlags";
 export * from "./EntitlementGiftCodeFlags";
+export * from "./slugify";
+export * from "./ApplicationDiscoveryEligibilityFlags";
+export * from "./ApplicationFlags";
+export * from "./ApplicationMonetizationEligibilityFlags";

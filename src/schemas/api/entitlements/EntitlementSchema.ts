@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User } from "@spacebar/util";
-import { SKUSchema } from "../store";
+import { SKU, User } from "@spacebar/util";
 import { EntitlementFulfillmentStatus } from "./EntitlementFulfillmentStatus";
 import { EntitlementGiftStyle } from "./EntitlementGiftStyle";
 import { EntitlementSpecialSourceType } from "./EntitlementSpecialSourceType";
@@ -48,6 +47,6 @@ export interface EntitlementSchema {
     fulfilled_at?: string;
     source_type?: EntitlementSpecialSourceType;
     tenant_metadata?: Record<string, EntitlementTenantMetadataSchema>;
-    sku?: SKUSchema;
+    sku?: SKU;
     subscription_plan?: Partial<unknown>; // TODO: https://docs.discord.food/resources/store#subscription-plan-object
 }

@@ -16,7 +16,27 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface LocalizedStringSchema {
-    default: string;
-    localizations?: { [key: string]: string };
-}
+import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { CreateSKUSchema } from "@spacebar/schemas";
+import { SKU } from "@spacebar/util";
+
+const router: Router = Router({ mergeParams: true });
+
+router.post(
+    "/",
+    route({
+        description:
+            "Creates a new SKU. Returns the created SKU object on success. Requires an application with access to the store or monetization. User must be the owner of the application or member of the owning team.",
+        requestBody: "CreateSKUSchema",
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as CreateSKUSchema;
+
+        const sku = await SKU.createSku(body);
+
+        res.json(sku).status(200);
+    },
+);
+
+export default router;

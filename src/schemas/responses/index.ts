@@ -72,3 +72,4 @@ export * from "./UserRelationsResponse";
 export * from "./VirtualCurrencyResponseSchema";
 export * from "./WebAuthnCreateResponse";
 export * from "./WebhookCreateResponse";
+export * from "./CreateApplicationSKUResponseSchema";
