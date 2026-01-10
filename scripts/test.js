@@ -34,6 +34,7 @@ fs.writeFileSync(
         api: { endpointPublic: "http://localhost:3001/api/v9/" },
         cdn: { endpointPublic: "http://localhost:3001/", endpointPrivate: "http://localhost:3001/" },
         gateway: { endpointPublic: "ws://localhost:3001/" },
+        general: { serverName: "http://localhost:3001/" },
     }),
 );
 
