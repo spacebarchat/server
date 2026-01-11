@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Spacebar.Db.Models;
 using Stream = Spacebar.Db.Models.Stream;
 
@@ -344,6 +346,7 @@ public partial class SpacebarDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_18325f38ae6de43878487eff986");
 
+            entity.Property(e => e.MessageSnapshots).HasDefaultValueSql("'[]'::text");
             entity.Property(e => e.Timestamp).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.Application).WithMany(p => p.Messages).HasConstraintName("FK_5d3ec1cb962de6488637fd779d6");
@@ -536,13 +539,12 @@ public partial class SpacebarDbContext : DbContext
 
         modelBuilder.Entity<Session>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_3238ef96f18b355b671619111bc");
+            entity.HasKey(e => e.SessionId).HasName("PK_9340188c93349808f10d1db74a8");
 
             entity.Property(e => e.Activities).HasDefaultValueSql("'[]'::text");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Sessions)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_085d540d9f418cfbdc7bd55bb19");
+            entity.HasOne(d => d.User).WithMany(p => p.Sessions).HasConstraintName("FK_085d540d9f418cfbdc7bd55bb19");
         });
 
         modelBuilder.Entity<Sticker>(entity =>

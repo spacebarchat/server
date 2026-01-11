@@ -89,14 +89,14 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags")]
+    [Column("flags", TypeName = "character varying")]
     public ulong Flags { get; set; }
 
     [Column("public_flags")]
     public ulong PublicFlags { get; set; }
 
     [Column("purchased_flags")]
-    public ulong PurchasedFlags { get; set; }
+    public long PurchasedFlags { get; set; }
 
     [Column("premium_usage_flags")]
     public int PremiumUsageFlags { get; set; }
@@ -109,9 +109,6 @@ public partial class User
 
     [Column("fingerprints")]
     public string Fingerprints { get; set; } = null!;
-
-    [Column("extended_settings")]
-    public string ExtendedSettings { get; set; } = null!;
 
     [Column("settingsIndex")]
     public int? SettingsIndex { get; set; }

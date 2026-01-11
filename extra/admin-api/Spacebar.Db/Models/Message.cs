@@ -94,6 +94,9 @@ public partial class Message
     [Column("interaction_metadata")]
     public string? InteractionMetadata { get; set; }
 
+    [Column("message_snapshots")]
+    public string MessageSnapshots { get; set; } = null!;
+
     [ForeignKey("ApplicationId")]
     [InverseProperty("Messages")]
     public virtual Application? Application { get; set; }

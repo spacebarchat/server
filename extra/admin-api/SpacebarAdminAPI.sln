@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.ConfigModel", "Spa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigTest", "ConfigTest\ConfigTest.csproj", "{3BB51E17-8D3E-42FE-AAE6-C33DA5D8D323}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.Cdn", "Spacebar.Cdn\Spacebar.Cdn.csproj", "{A2B0770E-D5E6-47BC-8595-4469F5C3E993}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{3BB51E17-8D3E-42FE-AAE6-C33DA5D8D323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BB51E17-8D3E-42FE-AAE6-C33DA5D8D323}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BB51E17-8D3E-42FE-AAE6-C33DA5D8D323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B0770E-D5E6-47BC-8595-4469F5C3E993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B0770E-D5E6-47BC-8595-4469F5C3E993}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B0770E-D5E6-47BC-8595-4469F5C3E993}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B0770E-D5E6-47BC-8595-4469F5C3E993}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F4E179D1-A3EB-4A1D-9C11-E7019F4B1EE2} = {04787943-EBB6-4DE4-96D5-4CFB4A2CEE99}
