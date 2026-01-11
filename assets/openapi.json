@@ -23719,6 +23719,30 @@
                 ]
             }
         },
+        "/auth/whoami/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WhoAmIResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "auth"
+                ]
+            }
+        },
         "/auth/verify/view-backup-codes-challenge/": {
             "post": {
                 "requestBody": {
