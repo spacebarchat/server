@@ -45,8 +45,12 @@
         "LibraryLocalResponse",
         "SchemaTraits",
         "TraitsSchema",
+        "AbuseIpDbBlacklistResponse",
         "AbuseIpDbCheckResponse",
-        "IpDataIpLookupResponse"
+        "IpDataIpLookupResponse",
+        "recaptchaResponse",
+        "hcaptchaResponse",
+        "KeySchema"
     ],
     "manualRe": [
         ".*\\.Response$",
