@@ -152,48 +152,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "KeySchema": {
-        "type": "object",
-        "properties": {
-            "_type": {
-                "type": [
-                    "string",
-                    "integer",
-                    "object"
-                ]
-            },
-            "_output": {
-                "type": [
-                    "string",
-                    "integer",
-                    "object"
-                ]
-            },
-            "_input": {},
-            "_def": {},
-            "description": {
-                "type": "string"
-            },
-            "~standard": {
-                "$ref": "#/definitions/StandardSchemaV1.Props<any,string|number|symbol>"
-            },
-            "spa": {
-                "description": "Alias of safeParseAsync",
-                "type": "object",
-                "additionalProperties": false
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "_def",
-            "_input",
-            "_output",
-            "_type",
-            "spa",
-            "~standard"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "RouteResponse": {
         "type": "object",
         "properties": {
@@ -209,84 +167,6 @@
             }
         },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "hcaptchaResponse": {
-        "type": "object",
-        "properties": {
-            "success": {
-                "type": "boolean"
-            },
-            "challenge_ts": {
-                "type": "string"
-            },
-            "hostname": {
-                "type": "string"
-            },
-            "credit": {
-                "type": "boolean"
-            },
-            "error-codes": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "score": {
-                "type": "integer"
-            },
-            "score_reason": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "challenge_ts",
-            "credit",
-            "error-codes",
-            "hostname",
-            "score",
-            "score_reason",
-            "success"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "recaptchaResponse": {
-        "type": "object",
-        "properties": {
-            "success": {
-                "type": "boolean"
-            },
-            "score": {
-                "type": "integer"
-            },
-            "action": {
-                "type": "string"
-            },
-            "challenge_ts": {
-                "type": "string"
-            },
-            "hostname": {
-                "type": "string"
-            },
-            "error-codes": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "action",
-            "challenge_ts",
-            "hostname",
-            "score",
-            "success"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "FieldErrorResponse": {
@@ -307,73 +187,6 @@
             "code",
             "errors",
             "message"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AbuseIpDbBlacklistResponse": {
-        "type": "object",
-        "properties": {
-            "meta": {
-                "type": "object",
-                "properties": {
-                    "generatedAt": {
-                        "type": "string",
-                        "default": "2020-09-24T19:54:11+00:00"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "generatedAt"
-                ]
-            },
-            "data": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "ipAddress": {
-                            "type": "string",
-                            "default": "5.188.10.179"
-                        },
-                        "abuseConfidenceScore": {
-                            "type": "integer",
-                            "default": 100
-                        },
-                        "lastReportedAt": {
-                            "type": "string",
-                            "default": "2020-09-24T19:17:02+00:00"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "abuseConfidenceScore",
-                        "ipAddress",
-                        "lastReportedAt"
-                    ]
-                },
-                "default": [
-                    {
-                        "ipAddress": "5.188.10.179",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                    },
-                    {
-                        "ipAddress": "185.222.209.14",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:02+00:00"
-                    },
-                    {
-                        "ipAddress": "191.96.249.183",
-                        "abuseConfidenceScore": 100,
-                        "lastReportedAt": "2020-09-24T19:17:01+00:00"
-                    }
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "data",
-            "meta"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
