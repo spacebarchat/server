@@ -1,0 +1,15 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5114",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "LD_LIBRARY_PATH": "/home/Rory/git/spacebar/server-master/extra/admin-api/Spacebar.Cdn/result-lib/lib/"
+      }
+    }
+  }
+}

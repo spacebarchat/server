@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
+<!--        <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.10.1" />-->
+        <PackageReference Include="Magick.NET-Q16-HDRI-OpenMP-x64" Version="14.10.1" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Spacebar.Db\Spacebar.Db.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,62 @@
+@page "/StickerCdnTest"
+@using System.Net.Http.Headers
+@using Spacebar.AdminApi.Models
+@using Spacebar.AdminApi.TestClient.Services
+@inject Config Config
+<h3>StickerCdnTest</h3>
+
+<table>
+    @foreach (var sticker in Stickers.OrderBy(x=>x.GuildId).ThenBy(x=>x.Id))
+    {
+        <tr>
+            <td>
+                <img src="@($"{Config.CdnUrl}/stickers/{sticker.Id}.png?optimiseGif=false&applyMode=post")" alt="@sticker.Name" width="128" height="128" />
+            </td>
+            <td>
+                <img src="@($"{Config.CdnUrl}/edges/stickers/{sticker.Id}.png?optimiseGif=false&applyMode=post")" alt="@sticker.Name" width="128" height="128" />
+            </td>
+            <td>
+                PA: @sticker.IsPixelArt
+                <br/>
+                CA: @sticker.IsCartoonArt
+                <br/>
+                @sticker.Name (ID: @sticker.Id)
+            </td>
+        </tr>
+    }
+</table>
+
+@code {
+    private List<Sticker> Stickers { get; set; } = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var hc = new HttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var response = await hc.GetAsync(Config.AdminUrl + "/_spacebar/admin/media/sticker/");
+        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        var content = response.Content.ReadFromJsonAsAsyncEnumerable<Sticker>();
+        var tasks = new List<Task>();
+        var ss = new SemaphoreSlim(4, 4);
+        await foreach (var sticker in content) {
+            await ss.WaitAsync();
+            tasks.Add(Task.Run(async () => {
+                var isPixelArtTask = hc.GetFromJsonAsync<bool>($"{Config.CdnUrl}/isPixelArt/stickers/{sticker.Id}.gif");
+                var isCartoonArtTask = hc.GetFromJsonAsync<bool>($"{Config.CdnUrl}/isPixelArt/stickers/{sticker.Id}.gif");
+                
+                sticker.IsPixelArt = await isPixelArtTask; 
+                sticker.IsCartoonArt = await isCartoonArtTask;
+                Console.WriteLine($"Sticker: {sticker!.Id} - {sticker.Name}, PixelArt: {sticker.IsPixelArt}, CartoonArt: {sticker.IsCartoonArt}");
+                Stickers.Add(sticker!);
+                StateHasChanged();
+                ss.Release();
+            }));
+        }
+        await Task.WhenAll(tasks);
+        StateHasChanged();
+    }
+
+    private class Sticker : StickerModel {
+        public bool IsPixelArt { get; set; }
+        public bool IsCartoonArt { get; set; }
+    }
+}

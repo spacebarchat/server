@@ -12,7 +12,7 @@ if [ -n "$(find "flake.lock" -mtime +7 -print)" ]; then
       nix-shell $0
       exit $?
     else
-       nix flake update --extra-experimental-features 'nix-command flakes'
+       nix flake update --extra-experimental-features 'nix-command flakes' -vL
        git add flake.lock
     fi
   else
