@@ -107,10 +107,12 @@ export class SpacebarServer extends Server {
 
         //app.use("/__development", )
         //app.use("/__internals", )
+
         app.use("/api/v6", api);
         app.use("/api/v7", api);
         app.use("/api/v8", api);
         app.use("/api/v9", api);
+        app.use("/api/v10", api); // https://discord.com/developers/docs/change-log#api-v10
         app.use("/api", api); // allow unversioned requests
 
         app.use("/imageproxy/:hash/:size/:url", ImageProxy);
