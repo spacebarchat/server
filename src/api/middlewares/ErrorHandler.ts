@@ -61,9 +61,9 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
 
         if (httpcode > 511) httpcode = 400;
 
-        res.status(httpcode).json({ code: code, message, errors, _ajvErrors });
+        res.status(httpcode).json({ code, message, errors, _ajvErrors, request: `${req.method} ${req.url}` });
     } catch (error) {
         console.error(`[Internal Server Error] 500`, error);
-        return res.status(500).json({ code: 500, message: "Internal Server Error" });
+        return res.status(500).json({ code: 500, message: `Internal server error while handling error`, request: `${req.method} ${req.url}` });
     }
 }

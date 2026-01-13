@@ -97,8 +97,9 @@ export class SpacebarServer extends Server {
         // Emma [it/its] @ Rory& - the _ is required now, as pillarjs throw an error if you don't pass a param name now
         api.use("*_", (req: Request, res: Response) => {
             res.status(404).json({
-                message: "404 endpoint not found",
-                code: 0,
+                message: "Endpoint not found",
+                code: 404,
+                request: `${req.method} ${req.url}`,
             });
         });
 

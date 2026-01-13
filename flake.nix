@@ -60,7 +60,6 @@
                     Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-${mod}" ];
                     Expose = [ "3001" ];
                   };
-
                 }
               );
             };

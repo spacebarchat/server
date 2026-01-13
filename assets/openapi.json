@@ -23561,6 +23561,12 @@
                 },
                 "tags": [
                     "auth"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
