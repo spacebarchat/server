@@ -50,10 +50,12 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
     socket.userAgent = request.headers["user-agent"] as string;
 
     if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
+        console.error("Gateway connection rejected: No IP address found.");
         return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: IP address is required.");
     }
 
     if (!socket.userAgent && Config.get().security.cdnSignatureIncludeUserAgent) {
+        console.error("Gateway connection rejected: No User-Agent header found.");
         return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: User-Agent header is required.");
     }
 
@@ -95,12 +97,18 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         const { searchParams } = new URL(`http://localhost${request.url}`);
         // @ts-ignore
         socket.encoding = searchParams.get("encoding") || "json";
-        if (!["json", "etf"].includes(socket.encoding)) return socket.close(CLOSECODES.Decode_error);
+        if (!["json", "etf"].includes(socket.encoding)) {
+            console.error(`[Gateway] Unknown encoding: ${socket.encoding}`);
+            return socket.close(CLOSECODES.Decode_error);
+        }
 
         if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
 
         socket.version = Number(searchParams.get("version")) || 8;
-        if (socket.version != 8) return socket.close(CLOSECODES.Invalid_API_version);
+        if (socket.version != 8) {
+            console.error(`[Gateway] Invalid API version: ${socket.version}`);
+            return socket.close(CLOSECODES.Invalid_API_version);
+        }
 
         // @ts-ignore
         socket.compress = searchParams.get("compress") || "";
@@ -112,6 +120,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
                 socket.zstdEncoder = new Encoder(6);
                 socket.zstdDecoder = new Decoder();
             } else {
+                console.error(`[Gateway] Unknown compression: ${socket.compress}`);
                 return socket.close(CLOSECODES.Decode_error);
             }
         }

@@ -63,9 +63,13 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
         try {
             data = erlpack.unpack(buffer);
         } catch {
+            console.error("[Gateway] Failed to decode ETF payload");
             return this.close(CLOSECODES.Decode_error);
         }
-    } else return this.close(CLOSECODES.Decode_error);
+    } else {
+        console.error("[Gateway] Unknown payload format");
+        return this.close(CLOSECODES.Decode_error);
+    }
 
     if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
 
