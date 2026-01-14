@@ -29,19 +29,20 @@ export type ErrorContent = { code: string; message: string };
 export type ObjectErrorContent = { _errors: ErrorContent[] };
 
 export function FieldErrors(fields: Record<string, { code?: string; message: string }>, errors?: ErrorObject[]) {
-    return new FieldError(
-        50035,
-        "Invalid Form Body",
-        Object.values(fields).map(({ message, code }) => ({
+    const errorsObject = {} as Record<string, ObjectErrorContent>;
+
+    Object.entries(fields).map(([key, { message, code }]) => {
+        errorsObject[key] = {
             _errors: [
                 {
                     message,
                     code: code || "BASE_TYPE_INVALID",
                 },
             ],
-        })),
-        errors,
-    );
+        };
+    });
+
+    return new FieldError(50035, "Invalid Form Body", errorsObject, errors);
 }
 
 // TODO: implement Image data type: Data URI scheme that supports JPG, GIF, and PNG formats. An example Data URI format is: data:image/jpeg;base64,BASE64_ENCODED_JPEG_IMAGE_DATA
