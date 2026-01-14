@@ -4234,6 +4234,9 @@
             },
             "username": {
                 "type": "string"
+            },
+            "banner": {
+                "type": "string"
             }
         },
         "additionalProperties": false,

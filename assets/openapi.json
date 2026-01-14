@@ -3997,6 +3997,9 @@
                     },
                     "username": {
                         "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
                     }
                 }
             },

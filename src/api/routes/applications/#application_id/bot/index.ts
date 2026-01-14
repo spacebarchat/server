@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Application, DiscordApiErrors, User, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
+import { Application, DiscordApiErrors, FieldErrors, User, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { verifyToken } from "node-2fa";
@@ -99,6 +99,15 @@ router.patch(
     async (req: Request, res: Response) => {
         const body = req.body as BotModifySchema;
         if (!body.avatar?.trim()) delete body.avatar;
+
+        if (body.username?.trim() == "") {
+            throw FieldErrors({
+                username: {
+                    code: "BASE_TYPE_REQUIRED",
+                    message: req.t("common:field.BASE_TYPE_REQUIRED"),
+                },
+            });
+        }
 
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id },
