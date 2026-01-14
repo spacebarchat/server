@@ -18,25 +18,35 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { ReportMenuTypeNames } from "../../../schemas/api/reports/ReportMenu";
 
 const router = Router({ mergeParams: true });
 
-for (const type of [
-    "guild",
-    "guild_discovery",
-    "guild_directory_entry",
-    "guild_scheduled_event",
-    "message",
-    "stage_channel",
-    "first_dm",
-    "user",
-    "application",
-    "widget",
-] as const) {
+console.log("[Server] Registering reporting menu routes...");
+router.get(
+    "/",
+    route({
+        description: "[EXT] Get available reporting menu types.",
+        responses: {
+            200: {
+                body: "Array<ReportMenuTypeNames>",
+            },
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.json(Object.values(ReportMenuTypeNames));
+    },
+);
+
+for (const type of Object.values(ReportMenuTypeNames)) {
+    console.log(`[Server] Route /reporting/menu/${type} registered (reports).`);
     router.get(
         `/${type}`,
         route({
             description: `Get reporting menu options for ${type} reports.`,
+            query: {
+                variant: { type: "string", required: false, description: "Version variant of the menu to retrieve (max 256 characters, default active)" },
+            },
             responses: {
                 200: {
                     body: "ReportingMenuResponse",
@@ -46,7 +56,7 @@ for (const type of [
         }),
         (req: Request, res: Response) => {
             // TODO: implement
-            //res.send([] as ReportingMenuResponseSchema);
+            // res.send([] as ReportingMenuResponseSchema);
         },
     );
 }

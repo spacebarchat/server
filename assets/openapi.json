@@ -16117,13 +16117,151 @@
                 ]
             }
         },
-        "/reporting/menu/message/": {
+        "/reporting/menu/": {
             "get": {
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "description": "[EXT] Get available reporting menu types.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Array<ReportMenuTypeNames>"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/guild": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/guild_discovery": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_discovery reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/guild_directory_entry": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_directory_entry reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/guild_scheduled_event": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_scheduled_event reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/message": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for message reports.",
                 "responses": {
                     "200": {
                         "description": "",
@@ -16147,6 +16285,146 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/menu/stage_channel": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for stage_channel reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/first_dm": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for first_dm reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/user": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for user reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/application": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for application reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
+        "/reporting/menu/widget": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for widget reports.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
