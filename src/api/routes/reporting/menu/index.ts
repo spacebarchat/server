@@ -21,20 +21,33 @@ import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });
 
-router.get(
-    "/",
-    route({
-        responses: {
-            200: {
-                body: "ReportingMenuResponse",
+for (const type of [
+    "guild",
+    "guild_discovery",
+    "guild_directory_entry",
+    "guild_scheduled_event",
+    "message",
+    "stage_channel",
+    "first_dm",
+    "user",
+    "application",
+    "widget",
+] as const) {
+    router.get(
+        `/${type}`,
+        route({
+            description: `Get reporting menu options for ${type} reports.`,
+            responses: {
+                200: {
+                    body: "ReportingMenuResponse",
+                },
+                204: {},
             },
-            204: {},
+        }),
+        (req: Request, res: Response) => {
+            // TODO: implement
+            //res.send([] as ReportingMenuResponseSchema);
         },
-    }),
-    (req: Request, res: Response) => {
-        // TODO: implement
-        //res.send([] as ReportingMenuResponseSchema);
-    },
-);
-
+    );
+}
 export default router;
