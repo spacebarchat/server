@@ -1,0 +1,299 @@
+{
+  "name": "widget",
+  "variant": "1",
+  "version": "1.0",
+  "postback_url": "/api/reporting/widget",
+  "root_node_id": 18,
+  "success_node_id": 73,
+  "fail_node_id": 74,
+  "nodes": {
+    "73": {
+      "id": 73,
+      "key": "WIDGET_SUCCESS",
+      "header": "Report submitted",
+      "subheader": "Thank you for your report. Widgets are an experimental feature, and your report will be used to help us improve this feature. If you believe a user's Widget violates [Spacebar's Community Guidelines](https://github.com/spacebarchat/spacebarchat/blob/master/CODE_OF_CONDUCT.md), please report the User Profile.",
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "success",
+          "type": "success",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "74": {
+      "id": 74,
+      "key": "FAIL",
+      "header": "There was an error trying to submit this report. This may not yet be implemented?",
+      "subheader": null,
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "fail",
+          "type": "fail",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "18": {
+      "id": 18,
+      "key": "WIDGET_WELCOME",
+      "header": "Report widget",
+      "subheader": "Reports help us identify problematic content. Remember that abuse may backfire!",
+      "info": null,
+      "button": {
+        "type": "cancel",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "widget_preview",
+          "type": "widget_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [
+        [
+          "This is annoying",
+          222
+        ],
+        [
+          "This is spam",
+          221
+        ],
+        [
+          "This makes me feel unsafe",
+          223
+        ],
+        [
+          "This is inappropriate",
+          224
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "222": {
+      "id": 222,
+      "key": "WIDGET_ANNOYING",
+      "header": "Report widget",
+      "subheader": "Reports help us identify problematic content. Remember that abuse may backfire!",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "widget_preview",
+          "type": "widget_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_user_annoying_me",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "221": {
+      "id": 221,
+      "key": "WIDGET_SPAM",
+      "header": "Report widget",
+      "subheader": "Reports help us identify problematic content. Remember that abuse may backfire!",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "widget_preview",
+          "type": "widget_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_spam",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "223": {
+      "id": 223,
+      "key": "WIDGET_UNSAFE",
+      "header": "Report widget",
+      "subheader": "Reports help us identify problematic content. Remember that abuse may backfire!",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "widget_preview",
+          "type": "widget_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_generic_unsafe",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "224": {
+      "id": 224,
+      "key": "WIDGET_INAPPROPRIATE",
+      "header": "Report widget",
+      "subheader": "Reports help us identify problematic content. Remember that abuse may backfire!",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "widget_preview",
+          "type": "widget_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_generic_inappropriate",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    }
+  }
+}

@@ -1,0 +1,1126 @@
+{
+  "name": "application",
+  "variant": "1",
+  "version": "1.0",
+  "postback_url": "/api/reporting/application",
+  "root_node_id": 191,
+  "success_node_id": 219,
+  "fail_node_id": 74,
+  "nodes": {
+    "17": {
+      "id": 17,
+      "key": "GENERIC_SUBMIT",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "219": {
+      "id": 219,
+      "key": "APPLICATION_SUCCESS",
+      "header": "Report Submitted",
+      "subheader": "Your report has been successfully submitted.",
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "success",
+          "type": "success",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "ignore_users",
+          "type": "ignore_users",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "share_with_parents",
+          "type": "share_with_parents",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "block_users",
+          "type": "block_users",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "deauthorize_app",
+          "type": "deauthorize_app",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "74": {
+      "id": 74,
+      "key": "FAIL",
+      "header": "There was an error trying to submit this report. This may not yet be implemented?",
+      "subheader": null,
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "fail",
+          "type": "fail",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "191": {
+      "id": 191,
+      "key": "APPLICATION_WELCOME",
+      "header": "Report App",
+      "subheader": "Reports help us keep Spacebar safe - the app developer will not be notified that you reported them.",
+      "info": null,
+      "button": {
+        "type": "next",
+        "target": 190
+      },
+      "elements": [
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "external_link",
+          "type": "external_link",
+          "data": {
+            "is_localized": true,
+            "link_text": "Learn more about activity that breaks Spacebar’s developer policy.",
+            "url": "https://google.com",
+            "link_description": null
+          },
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": false
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "192": {
+      "id": 192,
+      "key": "APP_UNSOLICITED_ACTIONS",
+      "header": "What kind of unsolicited actions were taken?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "This app initiated an unwanted process on my behalf. ",
+          193
+        ],
+        [
+          "This app made unwanted changes to my account.",
+          194
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "190": {
+      "id": 190,
+      "key": "APPLICATION_SELECT_REPORT_TYPE",
+      "header": "Please select the option that best describes the problem",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [
+        {
+          "name": "app_report_illegal_activity_dsa",
+          "type": "external_link",
+          "data": {
+            "is_localized": true,
+            "link_text": "Report Illegal App Activity under DSA.",
+            "url": "https://spacebar.chat/empty/whole-app-report-illegal-activity-dsa",
+            "link_description": null,
+            "is_header_hidden": true
+          },
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "external_link",
+          "type": "external_link",
+          "data": {
+            "is_localized": true,
+            "link_text": "This app contains content that makes it ineligible to be listed or discoverable in the App Directory.",
+            "url": "https://spacebar.chat/empty/app-directory-age-restricted-content",
+            "link_description": null,
+            "is_header_hidden": true
+          },
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": false
+        },
+        {
+          "name": "external_link",
+          "type": "external_link",
+          "data": {
+            "is_localized": true,
+            "link_text": "Something else",
+            "url": "https://spacebar.chat/empty/whole-app-report-other-multiple",
+            "link_description": null,
+            "is_header_hidden": true
+          },
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": false
+        }
+      ],
+      "report_type": null,
+      "children": [
+        [
+          "This app is violating the Community Guidelines.",
+          210
+        ],
+        [
+          "This app is collecting, soliciting or deceiving users into providing passwords or other credentials.",
+          203
+        ],
+        [
+          "Impersonating other apps, Spacebar or Spacebar services",
+          200
+        ],
+        [
+          "This app is sending targeted advertising.",
+          199
+        ],
+        [
+          "This app is sending spam.",
+          195
+        ],
+        [
+          "This app took unsolicited actions on my account or server.",
+          192
+        ],
+        [
+          "This app is directed to people who are too young to use Spacebar",
+          209
+        ],
+        [
+          "This app is misrepresenting or fraudulently manipulating engagement.",
+          198
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "198": {
+      "id": 198,
+      "key": "APP_INAUTHENTIC_ENGAGEMENT",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_inauthentic_engagement",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "199": {
+      "id": 199,
+      "key": "APP_ADVERTISING",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_advertising",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "203": {
+      "id": 203,
+      "key": "APP_TOKEN_SOLICITATION",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_token_solicitation",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "209": {
+      "id": 209,
+      "key": "APP_DIRECTED_TO_UNDER_13",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_directed_to_under_13",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "193": {
+      "id": 193,
+      "key": "APP_UNSOLICITED_PROCESS",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_unsolicited_process",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "194": {
+      "id": 194,
+      "key": "APP_UNSOLICITED_ACCOUNT_CHANGES",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_unsolicited_account_changes",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "195": {
+      "id": 195,
+      "key": "APP_SENDING_SPAM",
+      "header": "What kind of spam is it?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "This app sends unsolicited messages or actions.",
+          196
+        ],
+        [
+          "This app made unwanted changes to my account.",
+          197
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "196": {
+      "id": 196,
+      "key": "APP_SPAM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_spam",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "197": {
+      "id": 197,
+      "key": "APP_SPAM_ANNOYING",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_spam_annoying",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "200": {
+      "id": 200,
+      "key": "APP_IMPERSONATION",
+      "header": "What kind of spam is it?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "This app is impersonating Spacebar, Spacebar services.",
+          201
+        ],
+        [
+          "This app is impersonating other apps.",
+          202
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "201": {
+      "id": 201,
+      "key": "APP_IMPERSONATION_DISCORD",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_impersonation_discord",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "202": {
+      "id": 202,
+      "key": "APP_IMPERSONATION_THIRD_PARTY",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_impersonation_third_party",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "210": {
+      "id": 210,
+      "key": "APP_GUIDELINES",
+      "header": "What community guidelines is this app violating?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [
+        {
+          "name": "external_link",
+          "type": "external_link",
+          "data": {
+            "is_localized": true,
+            "link_text": "This app is for the purpose of soliciting, sharing or distributing child sexual abuse material.",
+            "url": "https://spacebar.chat/empty/whole-app-CSAM-report",
+            "link_description": null,
+            "is_header_hidden": true
+          },
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": false
+        }
+      ],
+      "report_type": null,
+      "children": [
+        [
+          "This app is for the purpose of distributing or creating non-consensual pornography.",
+          211
+        ],
+        [
+          "This app is for the purpose of sharing, distributing or creating gore.",
+          212
+        ],
+        [
+          "This app is for the purpose of sharing misinformation.",
+          213
+        ],
+        [
+          "This app is for the purpose of violent extremism.",
+          214
+        ],
+        [
+          "This app is for the purpose of distributing adult content to users under the age of 18 or without age-restricted labels.",
+          215
+        ],
+        [
+          "This app is for the purpose of hateful conduct or hate speech.",
+          216
+        ],
+        [
+          "This app is for the purpose of harassment, nuking, and/or doxxing.",
+          217
+        ],
+        [
+          "This app is for the purpose of coordinating or executing scams or fraud.",
+          218
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "211": {
+      "id": 211,
+      "key": "APP_GUIDELINES_NCP",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_ncp",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "212": {
+      "id": 212,
+      "key": "APP_GUIDELINES_GORE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_gore",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "213": {
+      "id": 213,
+      "key": "APP_GUIDELINES_MISINFO",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_misinfo",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "214": {
+      "id": 214,
+      "key": "APP_GUIDELINES_VIOLENCE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_violence",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "215": {
+      "id": 215,
+      "key": "APP_GUIDELINES_AGE_RESTRICTED",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_age_restricted",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "216": {
+      "id": 216,
+      "key": "APP_GUIDELINES_HATE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_hate",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "217": {
+      "id": 217,
+      "key": "APP_GUIDELINES_HARRASMENT",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_harassment",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "218": {
+      "id": 218,
+      "key": "APP_GUIDELINES_FRAUD",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_app_CG_fraud",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    }
+  }
+}

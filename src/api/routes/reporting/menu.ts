@@ -19,6 +19,7 @@
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { ReportMenuTypeNames } from "../../../schemas/api/reports/ReportMenu";
+import path from "path";
 
 const router = Router({ mergeParams: true });
 
@@ -49,7 +50,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
             },
             responses: {
                 200: {
-                    body: "ReportingMenuResponse",
+                    // body: "ReportingMenuResponse",
                 },
                 204: {},
             },
@@ -57,6 +58,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
         (req: Request, res: Response) => {
             // TODO: implement
             // res.send([] as ReportingMenuResponseSchema);
+            res.sendFile(path.join(__dirname, "..", "..", "..", "..", "assets", "temp_report_menu_responses", `${type}.json`));
         },
     );
 }

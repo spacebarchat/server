@@ -41,3 +41,10 @@ export const ReportMenuTypeNames: Record<ReportMenuType, string> = {
     [ReportMenuType.APPLICATION]: "application",
     [ReportMenuType.WIDGET]: "widget",
 };
+
+export enum ReportButtonType {
+    SUBMIT = "submit",
+    DONE = "done",
+    CANCEL = "cancel",
+    NEXT = "next",
+}

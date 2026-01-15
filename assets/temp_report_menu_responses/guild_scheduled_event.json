@@ -1,0 +1,1509 @@
+{
+  "name": "guild_scheduled_event",
+  "variant": "1",
+  "version": "1.0",
+  "postback_url": "/api/reporting/guild_scheduled_event",
+  "root_node_id": 10,
+  "success_node_id": 68,
+  "fail_node_id": 74,
+  "nodes": {
+    "17": {
+      "id": 17,
+      "key": "GENERIC_SUBMIT",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "68": {
+      "id": 68,
+      "key": "SUCCESS",
+      "header": "Report Submitted",
+      "subheader": "Your report has been successfully submitted.",
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "success",
+          "type": "success",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "ignore_users",
+          "type": "ignore_users",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "share_with_parents",
+          "type": "share_with_parents",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "block_users",
+          "type": "block_users",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "delete_message",
+          "type": "delete_message",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "74": {
+      "id": 74,
+      "key": "FAIL",
+      "header": "There was an error trying to submit this report. This may not yet be implemented?",
+      "subheader": null,
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "fail",
+          "type": "fail",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "10": {
+      "id": 10,
+      "key": "GUILD_SCHEDULED_EVENT_WELCOME",
+      "header": "Report Event",
+      "subheader": "Is this an event dedicated to content that breaks our [Community Guidelines](https://github.com/spacebarchat/spacebarchat/blob/master/CODE_OF_CONDUCT.md)? Please choose the issue to report the event to Spacebar Trust & Safety.",
+      "info": null,
+      "button": {
+        "type": "cancel",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "guild_scheduled_event_preview",
+          "type": "guild_scheduled_event_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [
+        [
+          "Promoting or encouraging spam",
+          98
+        ],
+        [
+          "Encouraging harassment or offensive topic",
+          76
+        ],
+        [
+          "Explicit, graphic, or unwanted sexual content",
+          86
+        ],
+        [
+          "Exposing private identifying information",
+          79
+        ],
+        [
+          "Something else",
+          80
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "98": {
+      "id": 98,
+      "key": "MESSAGE_SPAM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_spam",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "76": {
+      "id": 76,
+      "key": "ABUSE_OR_HARASSMENT",
+      "header": "What kind of abuse or harassment is it?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "Using rude, vulgar, or offensive language",
+          102
+        ],
+        [
+          "Promoting hate based on identity or vulnerability",
+          107
+        ],
+        [
+          "Cyberbullying or targeted harassment",
+          101
+        ],
+        [
+          "Threatening violence or real world harm",
+          90
+        ],
+        [
+          "Harmful misinformation or glorifying violence",
+          94
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "101": {
+      "id": 101,
+      "key": "MESSAGE_VERBAL_HARASSMENT",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_general_harassment",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "102": {
+      "id": 102,
+      "key": "MESSAGE_VULGAR_LANG",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_vulgar_language",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "107": {
+      "id": 107,
+      "key": "MESSAGE_HATE_IDENTITY",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_racist_or_discriminatory_language_or_imagery",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "86": {
+      "id": 86,
+      "key": "NSFW_UNWANTED",
+      "header": "What kind of content is it?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": "sub_general_nsfw",
+      "children": [
+        [
+          "Sexual content outside of age-restricted spaces",
+          109
+        ],
+        [
+          "Gore, animal cruelty, or violent shock content",
+          108
+        ],
+        [
+          "Degrading adult pornography",
+          110
+        ],
+        [
+          "Revenge pornography or a threat to share it",
+          111
+        ],
+        [
+          "Sexual content or behavior involving minors",
+          89
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "108": {
+      "id": 108,
+      "key": "MESSAGE_GORE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_gore",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "109": {
+      "id": 109,
+      "key": "MESSAGE_NSFW_UNWANTED",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_unsolicited_porn",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "110": {
+      "id": 110,
+      "key": "MESSAGE_NSFW_DEGRADING",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_sexually_degrading_content",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "111": {
+      "id": 111,
+      "key": "MESSAGE_REVENGE_NCP",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_ncp",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "89": {
+      "id": 89,
+      "key": "NSFW_MINOR_EVENT",
+      "header": "What content does this event promote?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "Illustrations that sexualize minors, such as lolicon, shotacon, or cub",
+          112
+        ],
+        [
+          "Minors posting or sending sexual messages",
+          115
+        ],
+        [
+          "Photos or videos depicting real world child sexual abuse",
+          116
+        ],
+        [
+          "Discussing minors in a sexual way",
+          113
+        ],
+        [
+          "Suggestive or sexual messages to minors",
+          114
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "112": {
+      "id": 112,
+      "key": "MESSAGE_LOLI",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_loli",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "113": {
+      "id": 113,
+      "key": "MESSAGE_SEXUALIZING_MINOR",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_general_scrm_icwm",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "114": {
+      "id": 114,
+      "key": "MESSAGE_ICWM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_icwm",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "115": {
+      "id": 115,
+      "key": "MESSAGE_ICAAM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_icaam",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "116": {
+      "id": 116,
+      "key": "MESSAGE_CSAM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_csam",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "90": {
+      "id": 90,
+      "key": "THREAT_IRL",
+      "header": "What kind of threat is it?",
+      "subheader": null,
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "A threat to physically hurt me or someone else",
+          117
+        ],
+        [
+          "Celebrating or glorifying acts of violence",
+          118
+        ],
+        [
+          "Announcing or planning a group act of violence",
+          119
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "117": {
+      "id": 117,
+      "key": "MESSAGE_THREAT_IRL",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "threatening_behavior",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "118": {
+      "id": 118,
+      "key": "MESSAGE_GLORIFY_VIOLENCE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_glorifying_violence",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "119": {
+      "id": 119,
+      "key": "MESSAGE_EXTREMISM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_extremism",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "79": {
+      "id": 79,
+      "key": "SHARING_PII",
+      "header": "What information was posted without consent?",
+      "subheader": "Select all that apply.",
+      "info": null,
+      "button": {
+        "type": "next",
+        "target": 17
+      },
+      "elements": [
+        {
+          "name": "pii_select",
+          "type": "checkbox",
+          "data": [
+            [
+              "face_pic",
+              "Face pic"
+            ],
+            [
+              "revenge_porn",
+              "Private, intimate photo"
+            ],
+            [
+              "ip_address",
+              "IP address"
+            ],
+            [
+              "legal_name",
+              "Legal name"
+            ],
+            [
+              "credit_info",
+              "Credit card information"
+            ],
+            [
+              "email_address",
+              "Email address"
+            ],
+            [
+              "phone_info",
+              "Phone number"
+            ],
+            [
+              "physical_address",
+              "Physical home or work address"
+            ]
+          ],
+          "should_submit_data": true,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "80": {
+      "id": 80,
+      "key": "SOMETHING_ELSE",
+      "header": "How can we help?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "This person is too young to use Spacebar",
+          92
+        ],
+        [
+          "Self harm or endangering behavior",
+          93
+        ],
+        [
+          "Impersonation, scams, or fraud",
+          120
+        ],
+        [
+          "Distributing stolen accounts or credit cards",
+          123
+        ],
+        [
+          "Selling drugs or other illegal goods",
+          124
+        ],
+        [
+          "Hacks, cheats, phishing or malicious links",
+          126
+        ],
+        [
+          "Harmful misinformation or glorifying violence",
+          94
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "120": {
+      "id": 120,
+      "key": "MESSAGE_FRAUD",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_social_engineering",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "123": {
+      "id": 123,
+      "key": "MESSAGE_ATO",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_cracked_accounts",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "124": {
+      "id": 124,
+      "key": "MESSAGE_ILLICIT_GOODS",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_illicit_goods",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "126": {
+      "id": 126,
+      "key": "MESSAGE_HACKS_CHEATS",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_hacks_cheats_malicious_links",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "92": {
+      "id": 92,
+      "key": "UNDERAGE_USER_EVENT",
+      "header": "Does this person state their age in this message?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "Yes, they state their age in the event description or title",
+          127
+        ],
+        [
+          "No, they don’t state their age in the event description or title",
+          75
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "127": {
+      "id": 127,
+      "key": "MESSAGE_UNDERAGE_CONFIRM",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_coppa",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "75": {
+      "id": 75,
+      "key": "UNDERAGE_NEEDS_MORE_INFO",
+      "header": "We need more information.",
+      "subheader": "Please find and report the message where this person states their age or indicates in some way that they are too young to use Spacebar.",
+      "info": null,
+      "button": {
+        "type": "done",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "skip",
+          "type": "skip",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": null,
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "93": {
+      "id": 93,
+      "key": "SELF_HARM",
+      "header": "How is this person talking about self-harm?",
+      "subheader": null,
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "I’m worried they are planning to self harm",
+          132
+        ],
+        [
+          "They are encouraging others to self harm",
+          128
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "132": {
+      "id": 132,
+      "key": "MESSAGE_SELF_HARM_RISK",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_self_harm_threat",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "128": {
+      "id": 128,
+      "key": "MESSAGE_SELF_HARM_ENCOURAGE",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": "If there is immediate danger, contact emergency help as soon as possible.",
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_self_harm_encouragement",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "94": {
+      "id": 94,
+      "key": "MISINFO_EXTREMISM",
+      "header": "What is the issue you’d like to report?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "Spreading misinformation or conspiracy theories",
+          95
+        ],
+        [
+          "Celebrating or glorifying acts of violence",
+          118
+        ],
+        [
+          "Coordinating acts of violent extremism",
+          119
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "95": {
+      "id": 95,
+      "key": "SPREADING_MISINFO",
+      "header": "What kind of misinformation is it?",
+      "subheader": null,
+      "info": null,
+      "button": null,
+      "elements": [],
+      "report_type": null,
+      "children": [
+        [
+          "Someone is spreading lies or bad things about me or someone I know",
+          101
+        ],
+        [
+          "Spreading harmful health misinformation, harmful conspiracy theories, or denial of mass human atrocities",
+          131
+        ]
+      ],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    },
+    "131": {
+      "id": 131,
+      "key": "MESSAGE_HARMFUL_MISINFO",
+      "header": "Report Summary",
+      "subheader": "Review your report before submitting.",
+      "info": null,
+      "button": {
+        "type": "submit",
+        "target": null
+      },
+      "elements": [
+        {
+          "name": "message_preview",
+          "type": "message_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "app_preview",
+          "type": "app_preview",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "breadcrumbs",
+          "data": null,
+          "should_submit_data": false,
+          "skip_if_unlocalized": false,
+          "is_localized": true
+        }
+      ],
+      "report_type": "sub_hateful_misinformation",
+      "children": [],
+      "is_multi_select_required": false,
+      "is_auto_submit": false
+    }
+  }
+}

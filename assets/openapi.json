@@ -16152,21 +16152,31 @@
                 "description": "Get reporting menu options for guild reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16180,21 +16190,31 @@
                 "description": "Get reporting menu options for guild_discovery reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16208,21 +16228,31 @@
                 "description": "Get reporting menu options for guild_directory_entry reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16236,21 +16266,31 @@
                 "description": "Get reporting menu options for guild_scheduled_event reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16264,19 +16304,23 @@
                 "description": "Get reporting menu options for message reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
                 ],
@@ -16298,21 +16342,31 @@
                 "description": "Get reporting menu options for stage_channel reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16326,21 +16380,31 @@
                 "description": "Get reporting menu options for first_dm reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16354,21 +16418,31 @@
                 "description": "Get reporting menu options for user reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16382,21 +16456,31 @@
                 "description": "Get reporting menu options for application reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
@@ -16410,21 +16494,31 @@
                 "description": "Get reporting menu options for widget reports.",
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ReportingMenuResponse"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "204": {
                         "description": "No description available"
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Version variant of the menu to retrieve (max 256 characters, default active)"
+                    }
+                ],
                 "tags": [
                     "reporting"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },
