@@ -39,7 +39,7 @@ const getMostRelevantSession = (sessions: Session[]) => {
         return statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2;
     });
 
-    return sessions[0];
+    return sessions[0].toPublicSession();
 };
 
 async function getMembers(guild_id: string, range: [number, number]) {
@@ -124,7 +124,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
                     roles,
                     user: member.user.toPublicUser(),
                     presence: {
-                        ...session,
+                        ...session?.toPublicSession(),
                         activities: session?.activities || [],
                         user: { id: member.user.id },
                     },

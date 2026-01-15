@@ -161,6 +161,24 @@ export class Session extends BaseClassWithoutId {
             };
         }
     }
+
+    toPublicSession() {
+        return {
+            session_id: this.session_id,
+            user_id: this.user_id,
+            user: this.user,
+            activities: this.activities,
+            client_info: {
+                ...this.client_info,
+                location: undefined,
+            },
+            client_status: this.client_status,
+            status: this.status,
+            created_at: this.created_at,
+            last_seen: this.last_seen,
+            session_nickname: this.session_nickname,
+        };
+    }
 }
 
 export interface ExtendedLocationInfo {
