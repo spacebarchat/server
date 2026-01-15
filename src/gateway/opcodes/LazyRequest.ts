@@ -124,9 +124,10 @@ async function getMembers(guild_id: string, range: [number, number]) {
                     roles,
                     user: member.user.toPublicUser(),
                     presence: {
-                        ...session,
                         activities: session?.activities || [],
                         user: { id: member.user.id },
+                        client_status: session?.client_status,
+                        status: session?.status
                     },
                 },
             };
