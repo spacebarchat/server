@@ -18,7 +18,8 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { CollectiblesShopResponse } from "@spacebar/schemas";
+import { Config } from "@spacebar/util";
+import { CollectiblesCategoryItem, CollectiblesShopResponse, ItemRowShopBlock } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -33,10 +34,34 @@ router.get(
         },
     }),
     (req: Request, res: Response) => {
-        res.send({
-            shop_blocks: [],
-            categories: [],
-        } as CollectiblesShopResponse);
+        const { endpointPublic: publicCdnEndpoint } = Config.get().cdn;
+        res.send({ shop_blocks: [], categories: [] });
+        // res.send({
+        // 	shop_blocks: [
+        // 		{
+        // 			type: 0,
+        // 			banner_asset: {
+        // 				animated: null,
+        // 				static: `${publicCdnEndpoint}/content/store/banners/main-store-banner.png`,
+        // 			},
+        // 			summary: "Welcome! Don't go alone, take this! :)",
+        // 			category_sku_id: "spacebarshop",
+        // 			name: "Spacebar",
+        // 			category_store_listing_id: "a",
+        // 			logo_url: "",
+        // 			unpublished_at: null,
+        // 			ranked_sku_ids: [],
+        // 		},
+        // 	],
+        // 	categories: [
+        // 		{
+        // 			sku_id: "spacebarshop",
+        // 			name: "Spacebar shop category",
+        // 			summary: "Spacebar shop category items",
+        //
+        // 		}
+        // 	],
+        // } as CollectiblesShopResponse);
     },
 );
 
