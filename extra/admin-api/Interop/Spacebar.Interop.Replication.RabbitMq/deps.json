@@ -1,0 +1,37 @@
+[
+  {
+    "pname": "ArcaneLibs",
+    "version": "1.0.0-preview.20251207-164820",
+    "hash": "sha256-Bz+w3kWgoN9ufy8PyJpb+nFCKCN48rsjeAh6hO6Ekas="
+  },
+  {
+    "pname": "Microsoft.Extensions.Configuration",
+    "version": "10.0.2",
+    "hash": "sha256-dBJAKDyp/sm+ZSMQfH0+4OH8Jnv1s20aHlWS6HNnH+c="
+  },
+  {
+    "pname": "Microsoft.Extensions.Configuration.Abstractions",
+    "version": "10.0.2",
+    "hash": "sha256-P+0kaDGO+xB9KxF9eWHDJ4hzi05sUGM/uMNEX5NdBTE="
+  },
+  {
+    "pname": "Microsoft.Extensions.Configuration.Binder",
+    "version": "10.0.2",
+    "hash": "sha256-resI9gIxHh2cc+258/i+TjW8xxzKf4ZBTLIcWAMEYz0="
+  },
+  {
+    "pname": "Microsoft.Extensions.Primitives",
+    "version": "10.0.2",
+    "hash": "sha256-8Ccrjjv9cFVf9RyCc7GS/Byt8+DXdSNea0UX3A5BEdA="
+  },
+  {
+    "pname": "RabbitMQ.Client",
+    "version": "7.2.0",
+    "hash": "sha256-NkEb2ey0jo/OAeaVOUwIeSbeplqkOsgv1+ys8ZQgemQ="
+  },
+  {
+    "pname": "System.Threading.RateLimiting",
+    "version": "8.0.0",
+    "hash": "sha256-KOEWEt6ZthvZHJ2Wp70d9nBhBrPqobGQDi2twlKYh/w="
+  }
+]
