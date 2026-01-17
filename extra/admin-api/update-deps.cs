@@ -47,12 +47,17 @@ foreach (var outp in outs) {
         Console.WriteLine(ConsoleUtils.ColoredString($"      ==> No NuGet deps file, skipping!", 0xff, 0x80, 0x80));
         continue;
     }
-    
+
     Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Building fetch-deps script...", 0x80, 0xff, 0x80));
     Util.RunCommandSync("nix", $"build .#{outp}.passthru.fetch-deps");
-    
+
     Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Running fetch-deps script...", 0x80, 0xff, 0x80));
     Util.RunCommandSync("./result", nugetDepsFilePath);
+
+    var deps = JsonSerializer.Deserialize<object[]>(File.ReadAllText(nugetDepsFilePath));
+    Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Locked {deps.Length} dependencies...", (byte)(deps.Length == 0 ? 0xff : 0x80), (byte)(deps.Length == 0 ? 0x80 : 0xff), 0x80));
+
+
     // await Task.Delay(250);
 }
 
