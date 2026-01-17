@@ -5,14 +5,19 @@
     "hash": "sha256-Bz+w3kWgoN9ufy8PyJpb+nFCKCN48rsjeAh6hO6Ekas="
   },
   {
-    "pname": "ArcaneLibs.StringNormalisation",
-    "version": "1.0.0-preview.20251207-164820",
-    "hash": "sha256-e2IUTm/Fs1Ci8lgjHaKLgrGp8TK53pOdYMeZ1DAgq7c="
-  },
-  {
     "pname": "Humanizer.Core",
     "version": "2.14.1",
     "hash": "sha256-EXvojddPu+9JKgOG9NSQgUTfWq1RpOYw7adxDPKDJ6o="
+  },
+  {
+    "pname": "Magick.NET-Q16-HDRI-OpenMP-x64",
+    "version": "14.10.1",
+    "hash": "sha256-noJZiBphzbdeiz/ntemosD6dYMk+UYHk+h/tQmIyXVE="
+  },
+  {
+    "pname": "Magick.NET.Core",
+    "version": "14.10.1",
+    "hash": "sha256-Qg7x5eX0ZQ3oXkcamS/qE/HgmTNQ+Dppyi6exerwgkI="
   },
   {
     "pname": "Microsoft.AspNetCore.OpenApi",
@@ -145,24 +150,9 @@
     "hash": "sha256-Qb7xK6VEZDas0lJFaW1suKdFjtkSYwLHHxkQEfWIU2A="
   },
   {
-    "pname": "Microsoft.Extensions.Configuration",
-    "version": "10.0.2",
-    "hash": "sha256-dBJAKDyp/sm+ZSMQfH0+4OH8Jnv1s20aHlWS6HNnH+c="
-  },
-  {
     "pname": "Microsoft.Extensions.Configuration.Abstractions",
     "version": "10.0.1",
     "hash": "sha256-s4PDp+vtzdxKIxnOT3+dDRoTDopyl8kqmmw4KDnkOtQ="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.Abstractions",
-    "version": "10.0.2",
-    "hash": "sha256-P+0kaDGO+xB9KxF9eWHDJ4hzi05sUGM/uMNEX5NdBTE="
-  },
-  {
-    "pname": "Microsoft.Extensions.Configuration.Binder",
-    "version": "10.0.2",
-    "hash": "sha256-resI9gIxHh2cc+258/i+TjW8xxzKf4ZBTLIcWAMEYz0="
   },
   {
     "pname": "Microsoft.Extensions.DependencyInjection",
@@ -236,33 +226,8 @@
   },
   {
     "pname": "Microsoft.Extensions.Primitives",
-    "version": "10.0.2",
-    "hash": "sha256-8Ccrjjv9cFVf9RyCc7GS/Byt8+DXdSNea0UX3A5BEdA="
-  },
-  {
-    "pname": "Microsoft.Extensions.Primitives",
     "version": "9.0.0",
     "hash": "sha256-ZNLusK1CRuq5BZYZMDqaz04PIKScE2Z7sS2tehU7EJs="
-  },
-  {
-    "pname": "Microsoft.IdentityModel.Abstractions",
-    "version": "8.15.0",
-    "hash": "sha256-LKTvERNUTMCEF7xs377tCMwOMRki93OS4kh6Yv0uXJ4="
-  },
-  {
-    "pname": "Microsoft.IdentityModel.JsonWebTokens",
-    "version": "8.15.0",
-    "hash": "sha256-LwzKiGjcnORvmQ9tim6lomXpfVlPpd/fE8FKTFWKlpM="
-  },
-  {
-    "pname": "Microsoft.IdentityModel.Logging",
-    "version": "8.15.0",
-    "hash": "sha256-mMXwsjGcrrmHR1mG7BLTKg/30mX+m93QVX17/ynOOd4="
-  },
-  {
-    "pname": "Microsoft.IdentityModel.Tokens",
-    "version": "8.15.0",
-    "hash": "sha256-7Lo/TsvqgNCEMyFssO3Om233521Pqgb9K9lUeHc5HMk="
   },
   {
     "pname": "Microsoft.NET.StringTools",
@@ -365,11 +330,6 @@
     "hash": "sha256-c4qf6CocQUZB0ySGQd8s15PXY7xfrjQqMGXxkwytKyw="
   },
   {
-    "pname": "System.IdentityModel.Tokens.Jwt",
-    "version": "8.15.0",
-    "hash": "sha256-5O0wbGp0gWnukK+0mWBjMnP1bZc6N0xuNcO2qmFiUX8="
-  },
-  {
     "pname": "System.Reflection.MetadataLoadContext",
     "version": "7.0.0",
     "hash": "sha256-VYl6SFD130K9Aw4eJH16ApJ9Sau4Xu0dcxEip2veuTI="
@@ -423,10 +383,5 @@
     "pname": "System.Windows.Extensions",
     "version": "9.0.0",
     "hash": "sha256-RErD+Ju15qtnwdwB7E0SjjJGAnhXwJyC7UPcl24Z3Vs="
-  },
-  {
-    "pname": "Unidecode.NET",
-    "version": "2.2.1",
-    "hash": "sha256-erDK7cXaIyuwntBhRpop3OlwwnpFJREYQBwE7xqpCGk="
   }
 ]

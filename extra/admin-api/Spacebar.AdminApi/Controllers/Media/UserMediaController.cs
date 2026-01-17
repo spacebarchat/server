@@ -5,17 +5,16 @@ using Spacebar.Models.AdminApi;
 using Spacebar.AdminApi.Services;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
-using Spacebar.RabbitMqUtilities;
 
 namespace Spacebar.AdminApi.Controllers.Media;
 
 [ApiController]
 [Route("/media/user")]
-public class UserMediaController(ILogger<UserMediaController> logger, SpacebarDbContext db, RabbitMQService mq, AuthenticationService auth, IServiceProvider sp) : ControllerBase {
+public class UserMediaController(ILogger<UserMediaController> logger, SpacebarDbContext db, AuthenticationService auth, IServiceProvider sp) : ControllerBase {
     [HttpGet("{userId}/attachments")]
     public async IAsyncEnumerable<Attachment> GetAttachmentsByUser(string userId) {
         (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-        
+
         var db2 = sp.CreateScope().ServiceProvider.GetService<SpacebarDbContext>();
         var attachments = db.Attachments
             // .IgnoreAutoIncludes()

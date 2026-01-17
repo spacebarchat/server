@@ -1,19 +1,20 @@
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.AdminApi.Extensions;
 using Spacebar.Models.AdminApi;
 using Spacebar.AdminApi.Services;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
-using Spacebar.RabbitMqUtilities;
 using Spacebar.ConfigModel.Extensions;
 
 namespace Spacebar.AdminApi.Controllers;
 
 [ApiController]
 [Route("/Configuration")]
-public class ConfigController(ILogger<ConfigController> logger, SpacebarDbContext db, RabbitMQService mq, IServiceProvider sp, AuthenticationService auth) : ControllerBase {
+public class ConfigController(ILogger<ConfigController> logger, SpacebarDbContext db, IServiceProvider sp, AuthenticationService auth, ISpacebarReplication replication)
+    : ControllerBase {
     private readonly ILogger<ConfigController> _logger = logger;
 
     [HttpGet]
@@ -45,16 +46,24 @@ public class ConfigController(ILogger<ConfigController> logger, SpacebarDbContex
             await scopedDb.SaveChangesAsync();
         });
         await Task.WhenAll(tasks);
-        // TODO: rabbitmq
+        await replication.SendAsync(new() {
+            Event = "SB_RELOAD_CONFIG",
+            GuildId = "0",
+            Origin = "Admin API (POST /Configuration)",
+        });
 
         return Ok();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> ReloadConfig() {
         (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
-        // TODO: rabbitmq
+        await replication.SendAsync(new() {
+            Event = "SB_RELOAD_CONFIG",
+            GuildId = "0",
+            Origin = "Admin API (POST /Configuration/ReloadConfig)",
+        });
 
         return Ok();
     }

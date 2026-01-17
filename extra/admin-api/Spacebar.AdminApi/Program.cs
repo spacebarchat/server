@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.EntityFrameworkCore;
+using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.AdminApi.Middleware;
 using Spacebar.AdminApi.Services;
+using Spacebar.Interop.Replication.UnixSocket;
 using Spacebar.Models.Db.Contexts;
-using Spacebar.RabbitMqUtilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +31,10 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
 });
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<Configuration>();
-builder.Services.AddSingleton<RabbitMQConfiguration>();
-builder.Services.AddSingleton<RabbitMQService>();
+// builder.Services.AddSingleton<RabbitMQConfiguration>();
+// builder.Services.AddSingleton<RabbitMQService>();
+// builder.Services.AddSingleton<ISpacebarReplication, RabbitMqSpacebarReplication>();
+builder.Services.AddSingleton<ISpacebarReplication, UnixSocketSpacebarReplication>();
 
 builder.Services.AddRequestTimeouts(x => {
     x.DefaultPolicy = new RequestTimeoutPolicy {

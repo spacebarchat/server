@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="*" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1"> <!-- Update when npgsql updates -->
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
   </ItemGroup>
 
 </Project>
