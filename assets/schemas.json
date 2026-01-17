@@ -5814,12 +5814,15 @@
                 "items": {
                     "type": "string"
                 }
+            },
+            "channel_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "additionalProperties": false,
-        "required": [
-            "channels"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "PruneSchema": {
@@ -7072,6 +7075,74 @@
         "items": {
             "$ref": "#/definitions/ApplicationCommandCreateSchema"
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CreateReportSchema": {
+        "type": "object",
+        "properties": {
+            "version": {
+                "type": "string"
+            },
+            "variant": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "language": {
+                "type": "string"
+            },
+            "breadcrumbs": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "elements": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "channel_id": {
+                "type": "string"
+            },
+            "message_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "stage_instance_id": {
+                "type": "string"
+            },
+            "guild_scheduled_event_id": {
+                "type": "string"
+            },
+            "reported_user_id": {
+                "type": "string"
+            },
+            "application_id": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "widget_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "breadcrumbs",
+            "language",
+            "name",
+            "variant",
+            "version"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "SessionsLogoutSchema": {

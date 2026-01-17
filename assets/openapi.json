@@ -5473,11 +5473,14 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "channel_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
-                },
-                "required": [
-                    "channels"
-                ]
+                }
             },
             "PruneSchema": {
                 "type": "object",
@@ -6637,6 +6640,72 @@
                 "items": {
                     "$ref": "#/components/schemas/ApplicationCommandCreateSchema"
                 }
+            },
+            "CreateReportSchema": {
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "type": "string"
+                    },
+                    "variant": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "breadcrumbs": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "elements": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "stage_instance_id": {
+                        "type": "string"
+                    },
+                    "guild_scheduled_event_id": {
+                        "type": "string"
+                    },
+                    "reported_user_id": {
+                        "type": "string"
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "widget_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "breadcrumbs",
+                    "language",
+                    "name",
+                    "variant",
+                    "version"
+                ]
             },
             "SessionsLogoutSchema": {
                 "type": "object",
@@ -16117,7 +16186,7 @@
                 ]
             }
         },
-        "/reporting/menu/": {
+        "/reporting/": {
             "get": {
                 "security": [
                     {
@@ -16152,7 +16221,14 @@
                 "description": "Get reporting menu options for guild reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16177,6 +16253,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/guild": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16190,7 +16304,14 @@
                 "description": "Get reporting menu options for guild_discovery reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16215,6 +16336,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/guild_discovery": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_discovery reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16228,7 +16387,14 @@
                 "description": "Get reporting menu options for guild_directory_entry reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16253,6 +16419,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/guild_directory_entry": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_directory_entry reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16266,7 +16470,14 @@
                 "description": "Get reporting menu options for guild_scheduled_event reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16291,6 +16502,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/guild_scheduled_event": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for guild_scheduled_event reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16304,7 +16553,14 @@
                 "description": "Get reporting menu options for message reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16329,6 +16585,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/message": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for message reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16342,7 +16636,14 @@
                 "description": "Get reporting menu options for stage_channel reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16367,6 +16668,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/stage_channel": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for stage_channel reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16380,7 +16719,14 @@
                 "description": "Get reporting menu options for first_dm reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16405,6 +16751,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/first_dm": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for first_dm reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16418,7 +16802,14 @@
                 "description": "Get reporting menu options for user reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16443,6 +16834,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/user": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for user reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },
@@ -16456,7 +16885,14 @@
                 "description": "Get reporting menu options for application reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16484,6 +16920,44 @@
                 ]
             }
         },
+        "/reporting/application": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for application reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
+                ]
+            }
+        },
         "/reporting/menu/widget": {
             "get": {
                 "security": [
@@ -16494,7 +16968,14 @@
                 "description": "Get reporting menu options for widget reports.",
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
                     },
                     "204": {
                         "description": "No description available"
@@ -16519,6 +17000,44 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/reporting/widget": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get reporting menu options for widget reports.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateReportSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReportingMenuResponse"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "reporting"
                 ]
             }
         },

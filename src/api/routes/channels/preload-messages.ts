@@ -37,6 +37,7 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as PreloadMessagesRequestSchema;
+        body.channels ??= body.channel_ids ?? [];
         if (body.channels.length > Config.get().limits.message.maxPreloadCount)
             return res.status(400).send({
                 code: 400,
