@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Spacebar.Db\Spacebar.Db.csproj" />
+      <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" />
     </ItemGroup>
 
 </Project>

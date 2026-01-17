@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.Middleware;
 using Spacebar.AdminApi.Services;
-using Spacebar.Db.Contexts;
+using Spacebar.Models.Db.Contexts;
 using Spacebar.RabbitMqUtilities;
 
 var builder = WebApplication.CreateBuilder(args);

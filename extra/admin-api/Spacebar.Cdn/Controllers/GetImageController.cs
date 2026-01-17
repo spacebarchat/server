@@ -1,10 +1,5 @@
-using System.Configuration;
-using System.Net.Http.Headers;
 using ArcaneLibs.Extensions.Streams;
-using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Globbing;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata.Internal;
 using Spacebar.AdminApi.TestClient.Services.Services;
 
 namespace Spacebar.AdminApi.TestClient.Services.Controllers;

@@ -64,29 +64,33 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         proj = self.packages.${system};
       in
       {
-        Spacebar-Db = makeNupkg {
-          name = "Spacebar.Db";
-          nugetDeps = Spacebar.Db/deps.json;
+        Spacebar-Models-Db = makeNupkg {
+          name = "Spacebar.Models.Db";
+          projectFile = "Models/Spacebar.Models.Db/Spacebar.Models.Db.csproj";
+          nugetDeps = Models/Spacebar.Models.Db/deps.json;
         };
-        Spacebar-AdminApi-Models = makeNupkg {
-          name = "Spacebar.AdminApi.Models";
+        Spacebar-Models-AdminApi = makeNupkg {
+          name = "Spacebar.Models.AdminApi";
+          projectFile = "Models/Spacebar.Models.AdminApi/Spacebar.Models.AdminApi.csproj";
         };
-        Spacebar-ConfigModel = makeNupkg {
-          name = "Spacebar.ConfigModel";
+        Spacebar-Models-Config = makeNupkg {
+          name = "Spacebar.Models.Config";
+          projectFile = "Models/Spacebar.Models.Config/Spacebar.Models.Config.csproj";
         };
         Spacebar-CleanSettingsRows = makeNupkg {
           name = "Spacebar.CleanSettingsRows";
-          nugetDeps = Spacebar.CleanSettingsRows/deps.json;
+          projectFile = "Utilities/Spacebar.CleanSettingsRows/Spacebar.CleanSettingsRows.csproj";
+          nugetDeps = Utilities/Spacebar.CleanSettingsRows/deps.json;
           packNupkg = false;
-          projectReferences = [ proj.Spacebar-Db ];
+          projectReferences = [ proj.Spacebar-Models-Db ];
         };
         Spacebar-AdminApi = makeNupkg {
           name = "Spacebar.AdminApi";
           nugetDeps = Spacebar.AdminApi/deps.json;
           packNupkg = false;
           projectReferences = [
-            proj.Spacebar-AdminApi-Models
-            proj.Spacebar-Db
+            proj.Spacebar-Models-AdminApi
+            proj.Spacebar-Models-Db
           ];
         };
         #            Spacebar-AdminApi-TestClient = makeNupkg {

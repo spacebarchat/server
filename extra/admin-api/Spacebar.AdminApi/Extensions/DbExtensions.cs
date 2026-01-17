@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Spacebar.AdminApi.Models;
-using Spacebar.Db.Models;
+using Spacebar.Models.AdminApi;
+using Spacebar.Models.Db.Models;
 
 namespace Spacebar.AdminApi.Extensions;
 

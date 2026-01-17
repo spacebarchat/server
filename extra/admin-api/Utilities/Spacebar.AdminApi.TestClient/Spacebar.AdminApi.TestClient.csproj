@@ -40,8 +40,8 @@
 
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Spacebar.AdminApi.Models\Spacebar.AdminApi.Models.csproj" />
-      <ProjectReference Include="..\..\Spacebar.ConfigModel\Spacebar.ConfigModel.csproj" />
+      <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" />
+      <ProjectReference Include="..\..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" />
     </ItemGroup>
 
 </Project>

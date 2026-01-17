@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using Spacebar.AdminApi.Extensions;
-using Spacebar.AdminApi.Models;
+using Spacebar.Models.AdminApi;
 using Spacebar.AdminApi.Services;
-using Spacebar.Db.Contexts;
-using Spacebar.Db.Models;
+using Spacebar.Models.Db.Contexts;
+using Spacebar.Models.Db.Models;
 using Spacebar.RabbitMqUtilities;
 
 namespace Spacebar.AdminApi.Controllers;

@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
-using Spacebar.Db.Contexts;
-using Spacebar.Db.Models;
+using Spacebar.Models.Db.Contexts;
+using Spacebar.Models.Db.Models;
 
 namespace Spacebar.AdminApi.Services;
 

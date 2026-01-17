@@ -1,6 +1,8 @@
 using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using ArcaneLibs.Extensions;
 
 namespace Spacebar.AdminApi.TestClient.Classes.OpenAPI;
 
@@ -187,6 +189,8 @@ public class OpenApiSchemaRef {
     public List<OpenApiSchemaRef>? AnyOf { get; set; }
     public List<object>? Enum { get; set; }
     public string? Format { get; set; }
+    public List<OpenApiSchemaRef>? Items { get; set; }
+    public Regex? Pattern { get; set; }
 
     public OpenApiSchemaRef? GetReferencedSchema(OpenApiSchema schema) {
         if (Ref == null) return null;
@@ -271,7 +275,7 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
                     else if (property.Value.ValueKind == JsonValueKind.Null)
                         schemaRef.Default = null;
                     else if (property.Value.ValueKind == JsonValueKind.Array)
-                        if (property.Value.GetArrayLength() > 0) throw new JsonException("Expected empty array in default");
+                        if (property.Value.GetArrayLength() > 0) throw new JsonException($"Expected empty array in default, got: {property.Value.ToJson()}");
                         else schemaRef.Default = Array.Empty<object>();
                     else throw new JsonException($"Expected string|int|bool|null in default, got {property.Value.ValueKind}");
                     break;
@@ -303,8 +307,22 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
                 case "additionalProperties": //TODO
                 case "patternProperties": // Side effect of using JsonValue in typescript
                     break;
+                case "items":
+                    // Console.WriteLine($"Got 'items' property in OpenApiSchemaRef! NodeType: {property.Value.ValueKind}, Value: {property.Value.ToJson()}");
+                    try {
+                        schemaRef.Items = property.Value.ValueKind is JsonValueKind.Array ? property.Value.Deserialize<List<OpenApiSchemaRef>>(options) : [property.Value.Deserialize<OpenApiSchemaRef>(options)!];
+                    } catch (Exception ex) {
+                        throw new JsonException($"Error deserializing 'items' property: {ex.Message}\nValue: {property.Value.ToJson()}", ex);
+                    }
+                    break;
+                case "pattern":
+                    var patternStr = property.Value.GetString();
+                    if (patternStr != null) {
+                        schemaRef.Pattern = new Regex(patternStr);
+                    }
+                    break;
                 default:
-                    Console.WriteLine($"Got unexpected prop {property.Name} in OpenApiSchemaRef!");
+                    Console.WriteLine($"Got unexpected prop {property.Name} in OpenApiSchemaRef! Value: {property.Value.ToJson()}");
                     break;
             }
         }
