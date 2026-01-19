@@ -221,8 +221,27 @@ in
         #        }
       ];
 
+      systemd.services.spacebar-apply-migrations = makeServerTsService {
+        description = "Spacebar Server - Apply DB migrations";
+        after = [ "network-online.target" "postgresql.service" ];
+        environment = builtins.mapAttrs (_: val: builtins.toString val) (
+          cfg.extraEnvironment
+          // {
+            # things we force...
+            CONFIG_PATH = configFile;
+            CONFIG_READONLY = 1;
+          }
+        );
+        serviceConfig = {
+          ExecStart = "${cfg.package}/bin/apply-migrations";
+          Type = "oneshot";
+        };
+      };
+
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
+        after = [ "spacebar-apply-migrations.service" ];
+        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -245,6 +264,8 @@ in
 
       systemd.services.spacebar-gateway = makeServerTsService {
         description = "Spacebar Server - Gateway";
+        after = [ "spacebar-apply-migrations.service" ];
+        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -267,6 +288,8 @@ in
 
       systemd.services.spacebar-cdn = makeServerTsService {
         description = "Spacebar Server - CDN";
+        after = [ "spacebar-apply-migrations.service" ];
+        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
