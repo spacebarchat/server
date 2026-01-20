@@ -108,7 +108,8 @@ for (const type of Object.values(ReportMenuTypeNames)) {
                 });
             }
 
-            if (body.breadcrumbs != menuData.breadcrumbs) {
+            if (body.breadcrumbs.find((_) => !(_ in menuData.nodes))) {
+                console.log(menuData);
                 throw FieldErrors({
                     breadcrumbs: {
                         message: `Invalid report menu breadcrumbs.`,
@@ -119,8 +120,9 @@ for (const type of Object.values(ReportMenuTypeNames)) {
 
             const validateBreadcrumbs = (currentNode: unknown, breadcrumbs: number[]): boolean => {
                 // navigate via node.children ([name, id][]) according to breadcrumbs
-                let node: { children: [string, number][] } = currentNode as { children: [string, number][] };
-                for (const crumb of breadcrumbs) {
+                let node = currentNode as { children: [string, number][] };
+                for (let i = 1; i < breadcrumbs.length; i++) {
+                    const crumb = breadcrumbs[i];
                     if (!node || !node.children || !Array.isArray(node.children)) return false;
                     const nextNode = node.children.find((child: [string, number]) => child[1] === crumb);
                     if (!nextNode) return false;
