@@ -41,7 +41,7 @@ pkgs.buildNpmPackage {
   npmDeps = pkgs.importNpmLock { npmRoot = filteredSrc; };
   npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
-  npmBuildScript = "build:src";
+  npmBuildScript = "build:src:tsgo";
   makeCacheWritable = true;
   nativeBuildInputs = with pkgs; [
     (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))

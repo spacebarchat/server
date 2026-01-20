@@ -30,3 +30,4 @@ schemas_final/
 
 temp/
 !/extra/admin-api/Utilities/Spacebar.AdminApi.TestClient/wwwroot/lib/bootstrap/dist/
+*.qcow2

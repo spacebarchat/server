@@ -1,5 +1,9 @@
 # shellcheck shell=bash
 
+# We don't care about CLI scripts:
+for f in ./node_modules/.bin/*; do
+  rm -f "$(realpath $f)" $f
+done
 # sources
 echo "Removing source files..."
 find ./node_modules -name '*.ts' -type f -delete
@@ -30,17 +34,15 @@ find ./node_modules -name '*.ar-file-list' -type f -delete
 find ./node_modules -name '*.stamp' -type f -delete
 find ./node_modules -name '*musl.node' -type f -delete
 rm -rf ./node_modules/typescript
+rm -rf ./node_modules/@typescript/native-preview
 rm -rf ./node_modules/ts-node
 rm -rf ./node_modules/node-gyp
+rm -rf ./node_modules/node-gyp-build-optional-packages
 rm -rf ./node_modules/discord-protos/{discord_protos,scripts}
 
-# We don't care about CLI scripts:
-for f in ./node_modules/.bin/*; do
-  rm -vf "$(realpath $f)" $f
-done
 # rm -rf ./node_modules/typescript-json-schema
 rm -rf ./node_modules/node-gyp
-find ./node_modules -name '@types' -type d -exec rm -rfv {} +
+find ./node_modules -name '@types' -type d -exec rm -rf {} +
 
 echo "Removing random common files..."
 find ./node_modules -name 'test' -type d -exec rm -rf {} +
@@ -118,3 +120,4 @@ fi
 
 echo "Removing empty directories..."
 find node_modules -maxdepth 1 -type d -empty -delete
+echo "Trimming complete."

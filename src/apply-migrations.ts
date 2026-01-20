@@ -11,5 +11,7 @@ process.env.DB_LOGGING = "true";
 import { closeDatabase, initDatabase } from "@spacebar/util";
 
 initDatabase().then(() => {
-    closeDatabase().then((r) => {});
+    closeDatabase().then((r) => {
+        console.log("Successfully applied migrations!");
+    });
 });

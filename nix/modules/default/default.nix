@@ -235,6 +235,7 @@ in
         serviceConfig = {
           ExecStart = "${cfg.package}/bin/apply-migrations";
           Type = "oneshot";
+          RemainAfterExit = true;
         };
       };
 
