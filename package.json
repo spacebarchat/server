@@ -12,7 +12,7 @@
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
         "build:src": "tsc -b -v",
         "build:tsgo": "npm run build:src:tsgo && npm run generate:schema && npm run generate:openapi",
-        "build:src:tsgo": "rm -rf dist/* && tsgo -b -v && mv -v dist/src/* dist/ && rm -rfv dist/src",
+        "build:src:tsgo": "rm -rf dist/* tsconfig.tsbuildinfo && tsgo -b -v",
         "watch": "tsc -w -b .",
         "test": "node scripts/test.js",
         "lint": "eslint .",
