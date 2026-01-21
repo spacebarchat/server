@@ -25,12 +25,12 @@ export interface CollectiblesShopResponse {
 
 export type AnyShopBlock = ItemRowShopBlock | BundleTileRowShopBlock | ItemCollectionShopBlock;
 
-export interface BaseShopBlock {
+export class BaseShopBlock {
     type: number;
 }
 
-export interface ItemRowShopBlock extends BaseShopBlock {
-    type: 0;
+export class ItemRowShopBlock extends BaseShopBlock {
+    declare type: 0;
     category_sku_id: string;
     name: string;
     category_store_listing_id: string;
