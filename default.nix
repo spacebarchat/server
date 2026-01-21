@@ -63,7 +63,8 @@ pkgs.buildNpmPackage {
 
       # remove packages not needed for production, or at least try to...
       npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
-      ${./nix/trimNodeModules.sh}
+      rm -v dist/src.tsbuildinfo
+      time ${./nix/trimNodeModules.sh}
 
       # Copy outputs
       echo "Installing package into $out"
