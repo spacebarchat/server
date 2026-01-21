@@ -139,7 +139,7 @@ export class Permissions extends BitField {
 
     static rolePermission(roles: Role[]) {
         // adds all permissions of all roles together (Bit OR)
-        return roles.reduce((permission, role) => permission | BigInt(role.permissions), BigInt(0));
+        return roles.reduce((permission, role) => permission | BigInt(role.permissions || "0"), BigInt(0));
     }
 
     static finalPermission({
