@@ -106,7 +106,7 @@ in
         lib.recursiveUpdate
           (lib.recursiveUpdate {
             documentation = [ "https://docs.spacebar.chat/" ];
-#            wantedBy = [ "multi-user.target" ];
+            wantedBy = [ "multi-user.target" ];
             wants = [ "network-online.target" ];
             after = [ "network-online.target" ];
             environment =
