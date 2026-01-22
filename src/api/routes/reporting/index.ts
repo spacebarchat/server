@@ -57,6 +57,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
                 },
                 204: {},
             },
+            spacebarOnly: false, // Maps to /reporting/menu/:id
         }),
         (req: Request, res: Response) => {
             // TODO: implement
@@ -76,6 +77,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
                 },
                 204: {},
             },
+            spacebarOnly: false, // Maps to /reporting/:id
         }),
         (req: Request, res: Response) => {
             // TODO: implement

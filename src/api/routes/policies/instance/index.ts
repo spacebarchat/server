@@ -29,6 +29,7 @@ router.get(
                 body: "APIGeneralConfiguration",
             },
         },
+        spacebarOnly: true,
     }),
     (req: Request, res: Response) => {
         const { general } = Config.get();

@@ -36,6 +36,7 @@ router.post(
                 body: "APIErrorResponse",
             },
         },
+        spacebarOnly: false, // not part of public openapi
     }),
     async (req: Request, res: Response) => {
         // const { code, ticket, gift_code_sku_id, login_source } =

@@ -38,6 +38,7 @@ router.get(
         },
         right: "CREATE_REGISTRATION_TOKENS",
         responses: { 200: { body: "GenerateRegistrationTokensResponse" } },
+        spacebarOnly: true,
     }),
     async (req: Request, res: Response) => {
         const count = req.query.count ? parseInt(req.query.count as string) : 1;

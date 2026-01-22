@@ -32,6 +32,7 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        spacebarOnly: true,
     }),
     async (req: Request, res: Response) => {
         if (!Config.get().security.statsWorldReadable) {

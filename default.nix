@@ -18,6 +18,7 @@ let
           ./tsconfig.json
           ./assets
           ./patches
+          ./scripts
         ]
       )
     );
@@ -41,7 +42,7 @@ pkgs.buildNpmPackage {
   npmDeps = pkgs.importNpmLock { npmRoot = filteredSrc; };
   npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
-  npmBuildScript = "build:src:tsgo";
+  npmBuildScript = "build:tsgo";
   makeCacheWritable = true;
   nativeBuildInputs = with pkgs; [
     (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
@@ -64,6 +65,7 @@ pkgs.buildNpmPackage {
       # remove packages not needed for production, or at least try to...
       npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
       rm -v dist/src.tsbuildinfo
+      rm -rv scripts
       time ${./nix/trimNodeModules.sh}
 
       # Copy outputs

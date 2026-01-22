@@ -34,6 +34,7 @@ router.get(
                 body: "ApplicationDetectableResponse",
             },
         },
+        spacebarOnly: false, // not part of public openapi
     }),
     async (req: Request, res: Response) => {
         // cache for 6 hours

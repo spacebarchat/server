@@ -29,6 +29,7 @@ router.get(
                 body: "APILimitsConfiguration",
             },
         },
+        spacebarOnly: true,
     }),
     (req: Request, res: Response) => {
         const { limits } = Config.get();

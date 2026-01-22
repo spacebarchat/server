@@ -20,11 +20,17 @@ import { Router, Request, Response } from "express";
 import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), (req: Request, res: Response) => {
-    res.json({
-        page: {},
-        scheduled_maintenances: {},
-    });
-});
+router.get(
+    "/",
+    route({
+        spacebarOnly: false, // not part of public openapi
+    }),
+    (req: Request, res: Response) => {
+        res.json({
+            page: {},
+            scheduled_maintenances: {},
+        });
+    },
+);
 
 export default router;

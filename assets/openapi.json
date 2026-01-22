@@ -13639,12 +13639,6 @@
                 ],
                 "tags": [
                     "users"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             },
             "patch": {
@@ -13677,12 +13671,6 @@
                 },
                 "tags": [
                     "users"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -13795,12 +13783,6 @@
                 ],
                 "tags": [
                     "users"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             },
             "patch": {
@@ -13833,12 +13815,6 @@
                 },
                 "tags": [
                     "users"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -15797,12 +15773,6 @@
                 },
                 "tags": [
                     "track"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16109,12 +16079,6 @@
                 },
                 "tags": [
                     "scheduled-maintenances"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16247,12 +16211,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16291,12 +16249,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16336,12 +16288,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16380,12 +16326,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16425,12 +16365,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16469,12 +16403,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16514,12 +16442,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16558,12 +16480,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16603,12 +16519,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16647,12 +16557,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16692,12 +16596,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16736,12 +16634,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16781,12 +16673,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16825,12 +16711,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16870,12 +16750,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16914,12 +16788,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -16959,12 +16827,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -17003,12 +16865,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -17048,12 +16904,6 @@
                 ],
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -17092,12 +16942,6 @@
                 },
                 "tags": [
                     "reporting"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -21828,12 +21672,6 @@
                 },
                 "tags": [
                     "guild-recommendations"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -24485,12 +24323,6 @@
                 },
                 "tags": [
                     "beaker"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -24800,12 +24632,6 @@
                 },
                 "tags": [
                     "auth"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -24845,12 +24671,6 @@
                 },
                 "tags": [
                     "auth"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -25026,12 +24846,6 @@
                 },
                 "tags": [
                     "auth"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },
@@ -25156,12 +24970,6 @@
                 },
                 "tags": [
                     "applications"
-                ],
-                "x-badges": [
-                    {
-                        "label": "Spacebar-only",
-                        "color": "red"
-                    }
                 ]
             }
         },

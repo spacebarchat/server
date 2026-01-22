@@ -32,6 +32,7 @@ router.get(
                 body: "GuildRecommendationsResponse",
             },
         },
+        spacebarOnly: false, // Not part of public openapi schema
     }),
     async (req: Request, res: Response) => {
         // const { limit, personalization_disabled } = req.query;

@@ -28,6 +28,7 @@ router.post(
         responses: {
             204: {},
         },
+        spacebarOnly: false, // Not part of public openapi
     }),
     (req: Request, res: Response) => {
         // TODO:

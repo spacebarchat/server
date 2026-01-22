@@ -213,7 +213,7 @@ function apiRoutes(missingRoutes) {
 
         obj.tags = [...new Set([...(obj.tags || []), getTag(p)])];
 
-        if (missingRoutes.additional.includes(path.replace(/\/$/, ""))) {
+        if (route.spacebarOnly === true || missingRoutes?.additional.includes(path.replace(/\/$/, ""))) {
             obj["x-badges"] = [
                 {
                     label: "Spacebar-only",
@@ -231,12 +231,13 @@ function apiRoutes(missingRoutes) {
 async function main() {
     console.log("Generating OpenAPI Specification...");
 
-    const routesRes = await fetch("https://github.com/spacebarchat/missing-routes/raw/main/missing.json", {
-        headers: {
-            Accept: "application/json",
-        },
-    });
-    const missingRoutes = await routesRes.json();
+    // const routesRes = await fetch("https://github.com/spacebarchat/missing-routes/raw/main/missing.json", {
+    //     headers: {
+    //         Accept: "application/json",
+    //     },
+    // });
+    // const missingRoutes = await routesRes.json();
+    let missingRoutes = undefined;
 
     combineSchemas(schemas);
     apiRoutes(missingRoutes);

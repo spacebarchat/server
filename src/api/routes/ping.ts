@@ -30,6 +30,7 @@ router.get(
                 body: "InstancePingResponse",
             },
         },
+        spacebarOnly: true,
     }),
     (req: Request, res: Response) => {
         const { general } = Config.get();

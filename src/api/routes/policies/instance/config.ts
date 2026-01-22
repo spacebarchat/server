@@ -30,6 +30,7 @@ router.get(
                 body: "Object",
             },
         },
+        spacebarOnly: true,
     }),
     async (req: Request, res: Response) => {
         const general = Config.get();

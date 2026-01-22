@@ -40,6 +40,7 @@ router.get(
                 description: "Whether to try to apply the settings update atomically (default false)",
             },
         },
+        spacebarOnly: false, // maps to /users/@me/settings-proto/2
     }),
     async (req: Request, res: Response) => {
         const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
@@ -59,6 +60,7 @@ router.patch(
                 body: "SettingsProtoUpdateResponse",
             },
         },
+        spacebarOnly: false, // maps to /users/@me/settings-proto/2
     }),
     async (req: Request, res: Response) => {
         const { settings, required_data_version } = req.body as SettingsProtoUpdateSchema;
@@ -84,6 +86,7 @@ router.get(
                 body: "SettingsProtoJsonResponse",
             },
         },
+        spacebarOnly: true,
     }),
     async (req: Request, res: Response) => {
         const userSettings = await UserSettingsProtos.getOrDefault(req.user_id);
@@ -109,6 +112,7 @@ router.patch(
                 description: "Whether to try to apply the settings update atomically (default false)",
             },
         },
+        spacebarOnly: true,
     }),
     async (req: Request, res: Response) => {
         const { settings, required_data_version } = req.body as SettingsProtoUpdateJsonSchema;

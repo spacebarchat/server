@@ -64,6 +64,7 @@ export interface RouteOptions {
         };
     };
     deprecated?: boolean;
+    spacebarOnly?: boolean;
     // test?: {
     // 	response?: RouteResponse;
     // 	body?: unknown;

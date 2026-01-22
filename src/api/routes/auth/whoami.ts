@@ -30,6 +30,7 @@ router.get(
                 body: "WhoAmIResponse",
             },
         },
+        spacebarOnly: true,
     }),
     /*
             interface Request {

@@ -29,6 +29,7 @@ router.get(
                 body: "InstanceDomainsResponse",
             },
         },
+        spacebarOnly: true,
     }),
     (req: Request, res: Response) => {
         const { cdn, gateway, api } = Config.get();
