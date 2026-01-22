@@ -48,6 +48,7 @@
         "AbuseIpDbBlacklistResponse",
         "AbuseIpDbCheckResponse",
         "IpDataIpLookupResponse",
+        "StopForumSpamResponse",
         "recaptchaResponse",
         "hcaptchaResponse",
         "KeySchema"

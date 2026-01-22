@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes } from "@spacebar/util";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase } from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -24,6 +24,7 @@ import morgan from "morgan";
 import path from "path";
 import { red } from "picocolors";
 import { initInstance } from "./util/handlers/Instance";
+import { route } from "./util";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -181,6 +182,14 @@ export class SpacebarServer extends Server {
                           },
             });
         });
+
+        function isReady(req: Request, res: Response) {
+            if (!getDatabase()) return res.sendStatus(503);
+            return res.sendStatus(200);
+        }
+
+        app.get("/readyz", route({ description: "Get the ready state of the server" }), isReady);
+        app.get("/healthz", route({ description: "Get the ready state of the server" }), isReady);
 
         this.app.use(ErrorHandler);
 

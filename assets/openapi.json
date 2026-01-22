@@ -26001,6 +26001,7 @@
         },
         "/-/readyz/": {
             "get": {
+                "deprecated": true,
                 "responses": {
                     "default": {
                         "description": "No description available"
@@ -26019,6 +26020,7 @@
         },
         "/-/healthz/": {
             "get": {
+                "deprecated": true,
                 "responses": {
                     "default": {
                         "description": "No description available"
