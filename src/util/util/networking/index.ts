@@ -17,3 +17,4 @@
 */
 export * from "./abuseipdb";
 export * from "./ipdata";
+export * from "./stopforumspam/StopForumSpamClient";
