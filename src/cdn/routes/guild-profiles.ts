@@ -23,6 +23,7 @@ import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
 import { storage } from "../util/Storage";
 import { fileTypeFromBuffer } from "file-type";
+import { cache } from "../util/cache";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -60,7 +61,7 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
     });
 });
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", cache, async (req: Request, res: Response) => {
     const { guild_id } = req.params;
     let { user_id } = req.params;
     user_id = user_id.split(".")[0]; // remove .file extension
@@ -71,12 +72,11 @@ router.get("/", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });
 
-router.get("/:hash", async (req: Request, res: Response) => {
+router.get("/:hash", cache, async (req: Request, res: Response) => {
     const { guild_id, user_id } = req.params;
     let { hash } = req.params;
     hash = hash.split(".")[0]; // remove .file extension
@@ -87,7 +87,6 @@ router.get("/:hash", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });

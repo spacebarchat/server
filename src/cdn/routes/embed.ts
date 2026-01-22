@@ -21,6 +21,7 @@ import fs from "fs/promises";
 import { HTTPError } from "lambert-server";
 import { join } from "path";
 import { fileTypeFromBuffer } from "file-type";
+import { cache } from "../util/cache";
 
 const defaultAvatarHashMap = new Map([
     ["0", "4a8562cf00887030c416d3ec2d46385a"],
@@ -58,7 +59,7 @@ async function getFile(path: string) {
     }
 }
 
-router.get("/avatars/:id", async (req: Request, res: Response) => {
+router.get("/avatars/:id", cache, async (req: Request, res: Response) => {
     let { id } = req.params;
     id = id.split(".")[0]; // remove .file extension
     const hash = defaultAvatarHashMap.get(id);
@@ -70,12 +71,11 @@ router.get("/avatars/:id", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });
 
-router.get("/group-avatars/:id", async (req: Request, res: Response) => {
+router.get("/group-avatars/:id", cache, async (req: Request, res: Response) => {
     let { id } = req.params;
     id = id.split(".")[0]; // remove .file extension
     const hash = defaultGroupDMAvatarHashMap.get(id);
@@ -87,7 +87,6 @@ router.get("/group-avatars/:id", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });

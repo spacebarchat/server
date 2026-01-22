@@ -23,6 +23,7 @@ import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
 import { multer } from "../util/multer";
+import { cache } from "../util/cache";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -60,7 +61,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
     });
 });
 
-router.get("/:user_id", async (req: Request, res: Response) => {
+router.get("/:user_id", cache, async (req: Request, res: Response) => {
     let { user_id } = req.params;
     user_id = user_id.split(".")[0]; // remove .file extension
     const path = `avatars/${user_id}`;
@@ -70,7 +71,6 @@ router.get("/:user_id", async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });
@@ -86,12 +86,11 @@ export const getAvatar = async (req: Request, res: Response) => {
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 };
 
-router.get("/:user_id/:hash", getAvatar);
+router.get("/:user_id/:hash", cache, getAvatar);
 
 router.delete("/:user_id/:id", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");

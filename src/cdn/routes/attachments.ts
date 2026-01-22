@@ -24,6 +24,7 @@ import { multer } from "../util/multer";
 import { storage } from "../util/Storage";
 import { CloudAttachment } from "../../util/entities/CloudAttachment";
 import { fileTypeFromBuffer } from "file-type";
+import { cache } from "../util/cache";
 
 const router = Router({ mergeParams: true });
 
@@ -69,7 +70,7 @@ router.post("/:channel_id", multer.single("file"), async (req: Request, res: Res
     return res.json(file);
 });
 
-router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
+router.get("/:channel_id/:id/:filename", cache, async (req: Request, res: Response) => {
     const { channel_id, id, filename } = req.params;
     // const { format } = req.query;
 
@@ -100,7 +101,6 @@ router.get("/:channel_id/:id/:filename", async (req: Request, res: Response) => 
     }
 
     res.set("Content-Type", content_type);
-    res.set("Cache-Control", "public, max-age=31536000");
 
     return res.send(file);
 });
