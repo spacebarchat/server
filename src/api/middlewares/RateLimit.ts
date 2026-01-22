@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, getRights, listenEvent } from "@spacebar/util";
+import { Config, getRights, listenEvent, RabbitMQ } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
 import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
 
@@ -154,9 +154,21 @@ export async function initRateLimits(app: Router) {
     const { routes, global, ip, error, enabled } = Config.get().limits.rate;
     if (!enabled) return;
     console.log("Enabling rate limits...");
-    await listenEvent(EventRateLimit, (event) => {
-        Cache.set(event.channel_id as string, event.data);
-        event.acknowledge?.();
+
+    // Set up rate limit event listener
+    const setupRateLimitListener = async () => {
+        await listenEvent(EventRateLimit, (event) => {
+            Cache.set(event.channel_id as string, event.data);
+            event.acknowledge?.();
+        });
+    };
+
+    await setupRateLimitListener();
+
+    // Re-establish listener on RabbitMQ reconnection
+    RabbitMQ.on("reconnected", async () => {
+        console.log("[RateLimit] RabbitMQ reconnected, re-establishing rate limit listener");
+        await setupRateLimitListener();
     });
     // await RateLimit.delete({ expires_at: LessThan(new Date().toISOString()) }); // cleans up if not already deleted, morethan -> older date
     // const limits = await RateLimit.find({ blocked: true });

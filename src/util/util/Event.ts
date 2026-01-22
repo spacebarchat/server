@@ -36,19 +36,33 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
     if (RabbitMQ.connection) {
         const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
-        const channel = await RabbitMQ.getSafeChannel();
-        try {
-            await channel.assertExchange(id, "fanout", {
-                durable: false,
-            });
 
-            // assertQueue isn't needed, because a queue will automatically created if it doesn't exist
-            const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
-            if (!successful) throw new Error("failed to send event");
-        } catch (e) {
-            // todo: should we retry publishng the event?
-            console.log("[RabbitMQ] ", e);
-        }
+        const publishEvent = async (retryCount = 0): Promise<void> => {
+            const channel = await RabbitMQ.getSafeChannel();
+            try {
+                await channel.assertExchange(id, "fanout", {
+                    durable: false,
+                });
+
+                // assertQueue isn't needed, because a queue will automatically created if it doesn't exist
+                const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
+                if (!successful) throw new Error("failed to send event");
+            } catch (e) {
+                // Check if this is a channel closed error and if we should retry
+                const errorMessage = e instanceof Error ? e.message : String(e);
+                const isChannelError = errorMessage.includes("Channel closed") || errorMessage.includes("IllegalOperationError") || errorMessage.includes("RESOURCE_ERROR");
+
+                if (isChannelError && retryCount < 1) {
+                    console.log("[RabbitMQ] Channel error detected, retrying with new channel...");
+                    // Force the cached channel to be discarded by calling getSafeChannel which will create a new one
+                    return publishEvent(retryCount + 1);
+                }
+
+                console.log("[RabbitMQ] ", e);
+            }
+        };
+
+        await publishEvent();
     } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
         if (!unixSocketWriter) {
             unixSocketWriter = new UnixSocketWriter(process.env.EVENT_SOCKET_PATH);
@@ -64,19 +78,28 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
 export async function initEvent() {
     await RabbitMQ.init(); // does nothing if rabbitmq is not setup
-    if (RabbitMQ.connection) {
-        // empty on purpose?
-    } else {
-        // use event emitter
-        // use process messages
-    }
 
-    await listenEvent("spacebar", async (event) => {
-        console.log("[Event] Received spacebar event:", event);
-        if ((event.event as string) === "SB_RELOAD_CONFIG") {
-            console.log("[Event] Reloading config due to RELOAD_CONFIG event");
-            await Config.init(true);
-        }
+    // Set up the spacebar event listener (used for config reload, etc.)
+    const setupSpacebarListener = async () => {
+        if (!RabbitMQ.connection) return;
+
+        console.log("[Event] Setting up spacebar event listener");
+        await listenEvent("spacebar", async (event) => {
+            console.log("[Event] Received spacebar event:", event);
+            if ((event.event as string) === "SB_RELOAD_CONFIG") {
+                console.log("[Event] Reloading config due to RELOAD_CONFIG event");
+                await Config.init(true);
+            }
+        });
+    };
+
+    // Initial setup
+    await setupSpacebarListener();
+
+    // Re-establish listener on reconnection
+    RabbitMQ.on("reconnected", async () => {
+        console.log("[Event] RabbitMQ reconnected, re-establishing spacebar listener");
+        await setupSpacebarListener();
     });
 }
 
@@ -142,16 +165,29 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 
 async function rabbitListen(channel: Channel, id: string, callback: (event: EventOpts) => unknown, opts?: { acknowledge?: boolean }): Promise<() => Promise<void>> {
     await channel.assertExchange(id, "fanout", { durable: false });
+    // messageTtl ensures any orphaned messages are cleaned up quickly if the consumer disconnects.
     const q = await channel.assertQueue("", {
         exclusive: true,
         autoDelete: true,
+        messageTtl: 5000, // Messages expire after 5 seconds if not consumed
     });
 
     const consumerTag = randomUUID();
 
     const cancel = async () => {
-        await channel.cancel(consumerTag);
-        await channel.unbindQueue(q.queue, id, "");
+        try {
+            // Order matters here to prevent RESOURCE_ERROR:
+            // 1. Unbind first - stops new messages from being routed to this queue
+            await channel.unbindQueue(q.queue, id, "");
+            // 2. Cancel consumer - with autoDelete: true, this triggers queue deletion
+            //    after RabbitMQ ensures no messages are in-flight to this queue
+            await channel.cancel(consumerTag);
+            // Don't explicitly delete the queue - let autoDelete handle it safely.
+            // Explicitly deleting can race with in-flight message delivery.
+        } catch (e) {
+            // Channel might already be closed or queue already deleted - that's fine
+            console.log("[RabbitMQ] Error during consumer cancel (may be expected):", e instanceof Error ? e.message : e);
+        }
     };
 
     await channel.bindQueue(q.queue, id, "");
