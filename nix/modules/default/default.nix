@@ -223,8 +223,8 @@ in
 
       systemd.services.spacebar-apply-migrations = makeServerTsService {
         description = "Spacebar Server - Apply DB migrations";
-        after = lib.optional config.services.postgresql.enable "postgresql.service";
-        requires = lib.optional config.services.postgresql.enable "postgresql.service";
+#        after = lib.optional config.services.postgresql.enable "postgresql.service";
+#        requires = lib.optional config.services.postgresql.enable "postgresql.service";
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           cfg.extraEnvironment
           // {
