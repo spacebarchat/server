@@ -21,4 +21,5 @@ import { NextFunction, Response, Request } from "express";
 export function cache(req: Request, res: Response, next: NextFunction) {
     const cacheDuration = 21600; // 6 hours
     res.setHeader("Cache-Control", `public, max-age=${cacheDuration}, s-maxage=${cacheDuration}, immutable`);
+    next();
 }
