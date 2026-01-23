@@ -13043,6 +13043,9 @@
             "name": "voice"
         },
         {
+            "name": "warp"
+        },
+        {
             "name": "webhooks"
         }
     ],
@@ -13499,6 +13502,23 @@
                 ],
                 "tags": [
                     "webhooks"
+                ]
+            }
+        },
+        "/warp/license/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "warp"
                 ]
             }
         },
