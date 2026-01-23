@@ -8097,6 +8097,9 @@
                     "type": "string"
                 }
             },
+            "tag": {
+                "type": "string"
+            },
             "id": {
                 "type": "string"
             }
@@ -8129,6 +8132,7 @@
             "security_keys",
             "sessions",
             "system",
+            "tag",
             "username",
             "verified",
             "webauthn_enabled"

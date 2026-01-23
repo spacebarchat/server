@@ -68,7 +68,7 @@ router.post(
 
         if (user && user.email) {
             Email.sendResetPassword(user, user.email).catch((e) => {
-                console.error(`Failed to send password reset email to ${user.username}#${user.discriminator} (${user.id}): ${e}`);
+                console.error(`Failed to send password reset email to ${user.tag} (${user.id}): ${e}`);
             });
         }
     },
