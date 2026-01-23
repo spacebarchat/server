@@ -107,6 +107,7 @@ router.post(
 
         if (emoji_count >= maxEmojis) throw DiscordApiErrors.MAXIMUM_NUMBER_OF_EMOJIS_REACHED.withParams(maxEmojis);
         if (body.require_colons == null) body.require_colons = true;
+        if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
         const user = req.user;
         await handleFile(`/emojis/${id}`, body.image);
@@ -154,6 +155,8 @@ router.patch(
     async (req: Request, res: Response) => {
         const { emoji_id, guild_id } = req.params;
         const body = req.body as EmojiModifySchema;
+
+        if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
         const emoji = await Emoji.create({
             ...body,
