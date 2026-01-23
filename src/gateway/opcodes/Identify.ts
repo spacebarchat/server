@@ -16,11 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Capabilities, OPCODES, Payload, Send, WebSocket, setupListener } from "@spacebar/gateway";
+import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import {
     Application,
+    Channel,
+    checkToken,
     Config,
+    CurrentTokenFormatVersion,
+    ElapsedTime,
+    emitEvent,
+    Emoji,
     EVENTEnum,
+    generateToken,
+    getDatabase,
     Guild,
     GuildOrUnavailable,
     Intents,
@@ -33,32 +41,24 @@ import {
     ReadyGuildDTO,
     ReadyUserGuildSettingsEntries,
     Recipient,
+    Relationship,
+    Role,
     Session,
     SessionsReplace,
-    UserSettings,
-    checkToken,
-    emitEvent,
-    getDatabase,
+    Sticker,
+    Stopwatch,
+    timeFunction,
+    timePromise,
     TraceNode,
     TraceRoot,
-    Stopwatch,
-    timePromise,
-    ElapsedTime,
-    Channel,
-    Emoji,
-    Role,
-    Sticker,
-    VoiceState,
+    UserSettings,
     UserSettingsProtos,
-    generateToken,
-    CurrentTokenFormatVersion,
-    Relationship,
-    timeFunction,
+    VoiceState,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
-import { DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
+import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -479,9 +479,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             // Remove ourself from the list of other users in dm channel
             channel.recipients = channel.recipients.filter((recipient) => recipient.user.id !== this.user_id);
 
-            const channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
+            let channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
 
             if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user) => users.add(user));
+            // HACK: insert self into recipients for DMs with users that no longer exist
+            else if (channel.type === ChannelType.DM) {
+                const selfUser = user.toPublicUser();
+                users.add(selfUser);
+                channelUsers ??= [];
+                channelUsers.push(selfUser);
+            }
+
             return {
                 id: channel.id,
                 flags: channel.flags,
