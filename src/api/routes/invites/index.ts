@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Ban, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@spacebar/util";
+import { Ban, Config, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { UserFlags } from "@spacebar/schemas";
@@ -68,7 +68,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
+        if (req.user_bot && !Config.get().user.botsCanUseInvites) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
 
         const { invite_code } = req.params;
         const { public_flags } = req.user;

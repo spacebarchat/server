@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { DiscordApiErrors, emitEvent, Emoji, getPermission, getRights, Guild, GuildMemberUpdateEvent, handleFile, Member, Role, Sticker } from "@spacebar/util";
+import { Config, DiscordApiErrors, emitEvent, Emoji, getPermission, getRights, Guild, GuildMemberUpdateEvent, handleFile, Member, Role, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
@@ -173,7 +173,7 @@ router.put(
         if (member_id === "@me") {
             member_id = req.user_id;
             rights.hasThrow("JOIN_GUILDS");
-            if (req.user_bot) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
+            if (req.user_bot && !Config.get().user.botsCanUseInvites) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
         } else {
             // TODO: check oauth2 scope
 
