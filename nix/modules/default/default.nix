@@ -251,9 +251,9 @@ in
           ExecStart = "${cfg.package}/bin/apply-migrations";
           Type = "oneshot";
           RemainAfterExit = true;
-          TimeoutStartSec = 15;
+          TimeoutStartSec = 45;
           RestartSec = 1;
-          StartLimitBurst = 15;
+          StartLimitBurst = 10;
         };
       };
 
