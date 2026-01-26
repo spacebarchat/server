@@ -21,7 +21,12 @@ ProjectDef[] projects = [
 
 Console.WriteLine("==> Getting outputs...");
 var outs = JsonSerializer.Deserialize<string[]>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux --apply builtins.attrNames", silent: true, stderr: false));
-Console.WriteLine("==> Updating project dependencies...");
+if (args.Length > 0) {
+    var filter = args[0];
+    outs = outs.Where(x => x.Contains(filter)).ToArray();
+}
+
+Console.WriteLine($"==> Updating dependencies for {outs.Length} projects...");
 
 
 // foreach (var proj in projects) {
