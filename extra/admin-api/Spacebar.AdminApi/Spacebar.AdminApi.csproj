@@ -4,21 +4,22 @@
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
-        <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.0-preview.20251207-164820" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403" />
+        <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.1-preview.20260126-091403" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.Abstractions\Spacebar.Interop.Replication.Abstractions.csproj" />
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" />
-      <ProjectReference Include="..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" />
-      <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" />
-      <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" />
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.Abstractions\Spacebar.Interop.Replication.Abstractions.csproj"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj"/>
     </ItemGroup>
 
 </Project>

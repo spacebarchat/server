@@ -65,6 +65,11 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       in
       {
         # Interop
+        Spacebar-Interop-Cdn-Abstractions = makeNupkg {
+          name = "Spacebar.Interop.Cdn.Abstractions";
+          projectFile = "Interop/Spacebar.Interop.Cdn.Abstractions/Spacebar.Interop.Cdn.Abstractions.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Cdn.Abstractions/deps.json;
+        };
         Spacebar-Interop-Replication-Abstractions = makeNupkg {
           name = "Spacebar.Interop.Replication.Abstractions";
           projectFile = "Interop/Spacebar.Interop.Replication.Abstractions/Spacebar.Interop.Replication.Abstractions.csproj";
@@ -104,6 +109,13 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           nugetDeps = Utilities/Spacebar.CleanSettingsRows/deps.json;
           packNupkg = false;
           projectReferences = [ proj.Spacebar-Models-Db ];
+        };
+        Spacebar-Cdn-Fsck = makeNupkg {
+          name = "Spacebar.Cdn.Fsck";
+          projectFile = "Utilities/Spacebar.Cdn.Fsck/Spacebar.Cdn.Fsck.csproj";
+          nugetDeps = Utilities/Spacebar.Cdn.Fsck/deps.json;
+          packNupkg = false;
+          projectReferences = [ proj.Spacebar-Models-Db proj.Spacebar-Interop-Cdn-Abstractions ];
         };
 
         # Main projects

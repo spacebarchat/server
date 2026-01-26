@@ -42,7 +42,6 @@ let
 in
 {
   imports = [
-    ./cdn-cs.nix
     ./integration-nginx.nix
     ./secrets.nix
     ./users.nix

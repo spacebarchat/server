@@ -1,8 +1,10 @@
 using ArcaneLibs.Extensions.Streams;
 using Microsoft.AspNetCore.Mvc;
 using Spacebar.AdminApi.TestClient.Services.Services;
+using Spacebar.Cdn.Extensions;
+using Spacebar.Interop.Cdn.Abstractions;
 
-namespace Spacebar.AdminApi.TestClient.Services.Controllers;
+namespace Spacebar.Cdn.Controllers;
 
 [ApiController]
 public class GetImageController(LruFileCache lfc, IFileSource fs, DiscordImageResizeService dirs) : ControllerBase {

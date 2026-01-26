@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ArcaneLibs" Version="1.0.0-preview.20251207-164820" />
+      <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403" />
     </ItemGroup>
 
 </Project>

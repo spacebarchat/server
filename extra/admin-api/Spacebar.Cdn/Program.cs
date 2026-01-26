@@ -1,6 +1,9 @@
+using ArcaneLibs;
 using ImageMagick;
-using Spacebar.AdminApi.TestClient.Services;
+using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.TestClient.Services.Services;
+using Spacebar.Interop.Cdn.Abstractions;
+using Spacebar.Models.Db.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,12 @@ builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.s
 builder.Services.AddSingleton<LruFileCache>(new LruFileCache(1*1024*1024*1024));
 builder.Services.AddSingleton<PixelArtDetectionService>();
 builder.Services.AddSingleton<DiscordImageResizeService>();
+
+builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("Spacebar"))
+        .EnableDetailedErrors();
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

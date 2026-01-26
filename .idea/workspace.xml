@@ -12,6 +12,11 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/home/Rory/git/spacebar/server-master" value="2oJ9u2nkEFq1qQW1NFF69ECjiYu" />
+    </persistenceIdMap>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -62,10 +67,11 @@
     &quot;Node.js.Server.ts.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;24.11.1&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;24.10.4&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/src/util/migration/postgres&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;24.10.9&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/Rory/git/spacebar/server-master/nix/modules/default&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -80,7 +86,6 @@
     &quot;npm.build:src.executor&quot;: &quot;Run&quot;,
     &quot;npm.start.executor&quot;: &quot;Debug&quot;,
     &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.customInstructions.CopilotInstructionsConfigurable&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -96,11 +101,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/nix/modules/default" />
+      <recent name="$PROJECT_DIR$/src/api/routes/warp" />
       <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
       <recent name="$PROJECT_DIR$/src/util/entities" />
-      <recent name="$PROJECT_DIR$/src/gateway/opcodes" />
-      <recent name="$PROJECT_DIR$/src/api/routes/users/@me/billing" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
@@ -143,7 +148,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.27397.92" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.242" />
       </set>
     </attachedChunks>
   </component>
@@ -177,6 +182,9 @@
       <workItem from="1765861713706" duration="18045000" />
       <workItem from="1766715967914" duration="40995000" />
       <workItem from="1766823293461" duration="11580000" />
+      <workItem from="1769106282329" duration="7551000" />
+      <workItem from="1769177782123" duration="8132000" />
+      <workItem from="1769278836997" duration="449000" />
     </task>
     <servers />
   </component>

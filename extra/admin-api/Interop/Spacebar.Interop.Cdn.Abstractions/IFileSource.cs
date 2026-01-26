@@ -1,10 +1,9 @@
-using ImageMagick;
-
-namespace Spacebar.AdminApi.TestClient.Services.Services;
+namespace Spacebar.Interop.Cdn.Abstractions;
 
 public interface IFileSource {
     public string BaseUrl { get; }
     public Task<FileInfo> GetFile(string path, CancellationToken? cancellationToken = null);
+    public Task<bool> FileExists(string path, CancellationToken? cancellationToken = null);
 }
 
 public class FileInfo : IDisposable, IAsyncDisposable {
@@ -27,24 +26,5 @@ public class FileInfo : IDisposable, IAsyncDisposable {
     public async ValueTask DisposeAsync() {
         await DisposeAsyncCore();
         GC.SuppressFinalize(this);
-    }
-    
-    public async Task<MagickImageCollection> ToMagickImageCollectionAsync() {
-        var ms = new MemoryStream();
-        Stream.Position = 0;
-        await Stream.CopyToAsync(ms);
-        ms.Position = 0;
-        var img = MimeType switch {
-            "image/apng" => new MagickImageCollection(ms, MagickFormat.APng),
-            _ => new MagickImageCollection(ms)
-        };
-        
-        // if (img.First().Format == MagickFormat.Png) {
-            // img.Dispose();
-            // ms.Position = 0;
-            // img = new MagickImageCollection(ms, MagickFormat.APng);
-        // }
-
-        return img;
     }
 }

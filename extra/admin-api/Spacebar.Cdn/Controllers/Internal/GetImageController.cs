@@ -1,8 +1,11 @@
+using ArcaneLibs.Collections;
 using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
 using Spacebar.AdminApi.TestClient.Services.Services;
+using Spacebar.Cdn.Extensions;
+using Spacebar.Interop.Cdn.Abstractions;
 
-namespace Spacebar.AdminApi.TestClient.Services.Controllers;
+namespace Spacebar.Cdn.Controllers.Internal;
 
 [ApiController]
 public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDetectionService pads, DiscordImageResizeService dirs) : ControllerBase {
