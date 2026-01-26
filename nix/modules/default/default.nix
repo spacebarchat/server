@@ -28,7 +28,7 @@ let
         };
       }
       // (
-        if cfg.enableAdmInApi then
+        if cfg.enableAdminApi then
           {
             adminApi = {
               endpointPublic = "http${if cfg.adminApiEndpoint.useSsl then "s" else ""}://${cfg.adminApiEndpoint.host}:${toString cfg.adminApiEndpoint.publicPort}";
@@ -42,7 +42,6 @@ let
 in
 {
   imports = [
-    ./cdn-cs.nix
     ./integration-nginx.nix
     ./secrets.nix
     ./users.nix
@@ -306,7 +305,7 @@ in
         };
       };
 
-      systemd.services.spacebar-cdn = lib.mkIf (!cfg.useCdnCs) (makeServerTsService {
+      systemd.services.spacebar-cdn = lib.mkIf (!cfg.enableCdnCs) (makeServerTsService {
         description = "Spacebar Server - CDN";
         after = [ "spacebar-apply-migrations.service" ];
         requires = [ "spacebar-apply-migrations.service" ];
