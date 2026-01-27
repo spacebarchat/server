@@ -94,39 +94,79 @@ export async function setupListener(this: WebSocket) {
         console.error(`[RabbitMQ] [user-${this.user_id}] Channel Error (Handled):`, err);
     };
 
-    if (RabbitMQ.connection) {
-        console.log("[RabbitMQ] setupListener: opts.channel = ", typeof opts.channel, "with channel id", opts.channel?.ch);
-        opts.channel = await RabbitMQ.connection.createChannel();
+    // Function to set up all event listeners (used for initial setup and reconnection)
+    const setupEventListeners = async () => {
+        if (RabbitMQ.connection) {
+            console.log(`[RabbitMQ] [user-${this.user_id}] Setting up channel and event listeners`);
+            opts.channel = await RabbitMQ.connection.createChannel();
 
-        opts.channel.on("error", handleChannelError);
-        opts.channel.queues = {};
-        console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
-    }
+            opts.channel.on("error", handleChannelError);
+            opts.channel.queues = {};
+            console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
+        }
 
-    this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
+        this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
 
-    relationships.forEach(async (relationship) => {
-        this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
-    });
+        for (const relationship of relationships) {
+            this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
+        }
 
-    dm_channels.forEach(async (channel) => {
-        this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
-    });
+        for (const channel of dm_channels) {
+            this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+        }
 
-    guilds.forEach(async (guild) => {
-        const permission = await getPermission(this.user_id, guild.id);
-        this.permissions[guild.id] = permission;
-        this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
+        for (const guild of guilds) {
+            const permission = await getPermission(this.user_id, guild.id);
+            this.permissions[guild.id] = permission;
+            this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
-        guild.channels.forEach(async (channel) => {
-            if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
-                this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+            for (const channel of guild.channels) {
+                if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
+                    this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                }
             }
-        });
-    });
+        }
+    };
+
+    // Initial setup
+    await setupEventListeners();
+
+    // Handle RabbitMQ reconnection - re-establish all subscriptions
+    const handleReconnect = async () => {
+        console.log(`[RabbitMQ] [user-${this.user_id}] Connection restored, re-establishing subscriptions`);
+        try {
+            // Clear old event handlers (they're now invalid)
+            this.events = {};
+            this.member_events = {};
+            opts.channel = undefined;
+
+            // re-establish all subscriptions
+            await setupEventListeners();
+            console.log(`[RabbitMQ] [user-${this.user_id}] Successfully re-established subscriptions`);
+        } catch (e) {
+            console.error(`[RabbitMQ] [user-${this.user_id}] Failed to re-establish subscriptions:`, e);
+            // close the WebSocket - will force client to reconnect and redo subscription setup
+            this.close(4000, "Failed to re-establish event subscriptions");
+        }
+    };
+
+    const handleDisconnect = () => {
+        console.log(`[RabbitMQ] [user-${this.user_id}] Connection lost, waiting for reconnection`);
+        // mark channel invalid
+        if (opts.channel) {
+            opts.channel.off("error", handleChannelError);
+        }
+        opts.channel = undefined;
+    };
+
+    // Subscribe to RabbitMQ connection events
+    RabbitMQ.on("reconnected", handleReconnect);
+    RabbitMQ.on("disconnected", handleDisconnect);
 
     this.once("close", async () => {
-        // console.log("[Events] setupListener: close for", this.user_id, "=", typeof opts.channel, "with channel id", opts.channel?.ch);
+        // Unsubscribe from RabbitMQ events
+        RabbitMQ.off("reconnected", handleReconnect);
+        RabbitMQ.off("disconnected", handleDisconnect);
 
         // wait for event consumer cancellation
         await Promise.all(
@@ -138,7 +178,11 @@ export async function setupListener(this: WebSocket) {
         await Promise.all(Object.values(this.member_events).map((x) => x()));
 
         if (opts.channel) {
-            await opts.channel.close();
+            try {
+                await opts.channel.close();
+            } catch {
+                // Channel might already be closed
+            }
             opts.channel.off("error", handleChannelError);
         }
     });

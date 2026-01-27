@@ -18,75 +18,164 @@
 
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { Config } from "./Config";
+import EventEmitter from "events";
 
 export class RabbitMQ {
     public static connection: ChannelModel | null = null;
     public static channel: Channel | null = null;
 
+    // Event emitter for connection state changes
+    private static events = new EventEmitter();
+
+    // Reconnection state
+    private static isReconnecting = false;
+    private static reconnectAttempts = 0;
+    private static readonly MAX_RECONNECT_DELAY_MS = 30000; // Max 30 seconds between retries
+    private static readonly BASE_RECONNECT_DELAY_MS = 1000; // Start with 1 second
+
+    // Track if event listeners have been set up (to avoid duplicates)
+    private static connectionListenersAttached = false;
+
+    /**
+     * Subscribe to connection events.
+     * - 'reconnected': Fired after successful reconnection. Consumers should re-establish subscriptions.
+     * - 'disconnected': Fired when connection is lost.
+     */
+    static on(event: "reconnected" | "disconnected", listener: () => void) {
+        this.events.on(event, listener);
+    }
+
+    static off(event: "reconnected" | "disconnected", listener: () => void) {
+        this.events.off(event, listener);
+    }
+
     static async init() {
         const host = Config.get().rabbitmq.host;
         if (!host) return;
-        console.log(`[RabbitMQ] connect: ${host}`);
-        this.connection = await amqp.connect(host, {
-            timeout: 1000 * 60,
-        });
-        console.log(`[RabbitMQ] connected`);
 
-        // log connection errors
+        await this.connect(host);
+    }
+
+    private static async connect(host: string): Promise<void> {
+        try {
+            console.log(`[RabbitMQ] Connecting to: ${host}`);
+            this.connection = await amqp.connect(host, {
+                timeout: 1000 * 60,
+            });
+            console.log(`[RabbitMQ] Connected successfully`);
+
+            // Reset reconnection state on successful connect
+            this.reconnectAttempts = 0;
+            this.isReconnecting = false;
+
+            // Only attach listeners once per connection object
+            if (!this.connectionListenersAttached) {
+                this.attachConnectionListeners(host);
+                this.connectionListenersAttached = true;
+            }
+
+            // Pre-create the shared channel
+            await this.getSafeChannel();
+
+            // Notify subscribers that connection is (re-)established
+            this.events.emit("reconnected");
+        } catch (error) {
+            console.error("[RabbitMQ] Connection failed:", error);
+            await this.scheduleReconnect(host);
+            throw error;
+        }
+    }
+
+    private static attachConnectionListeners(host: string) {
+        if (!this.connection) return;
+
         this.connection.on("error", (err) => {
-            console.error("[RabbitMQ] Connection Error:", err);
+            console.error("[RabbitMQ] Connection error:", err);
+            // Don't reconnect here - wait for 'close' event
         });
 
         this.connection.on("close", () => {
-            console.error("[RabbitMQ] connection closed");
-            // TODO: Add reconnection logic here if the connection crashes??
-            // will be a pain since we will have to reconstruct entire state
-        });
+            console.error("[RabbitMQ] Connection closed");
+            this.channel = null;
+            this.connection = null;
+            this.connectionListenersAttached = false;
 
-        await this.getSafeChannel(); // why is this here?
+            // Notify subscribers that connection is lost
+            this.events.emit("disconnected");
+
+            // Schedule reconnection
+            this.scheduleReconnect(host);
+        });
+    }
+
+    private static async scheduleReconnect(host: string): Promise<void> {
+        if (this.isReconnecting) {
+            console.log("[RabbitMQ] Reconnection already in progress, skipping");
+            return;
+        }
+
+        this.isReconnecting = true;
+        this.reconnectAttempts++;
+
+        // Exponential backoff with jitter
+        const baseDelay = Math.min(this.BASE_RECONNECT_DELAY_MS * Math.pow(2, this.reconnectAttempts - 1), this.MAX_RECONNECT_DELAY_MS);
+        // Add jitter (±25%) to prevent thundering herd
+        const jitter = baseDelay * 0.25 * (Math.random() * 2 - 1);
+        const delay = Math.round(baseDelay + jitter);
+
+        console.log(`[RabbitMQ] Scheduling reconnection attempt ${this.reconnectAttempts} in ${delay}ms`);
+
+        await new Promise((resolve) => setTimeout(resolve, delay));
+
+        try {
+            await this.connect(host);
+        } catch {
+            // connect() will schedule another reconnect on failure
+            console.log("[RabbitMQ] Reconnection attempt failed, will retry");
+        }
     }
 
     static async getSafeChannel(): Promise<Channel> {
-        if (!this.connection) return Promise.reject();
-        if (this.channel) return this.channel;
+        if (!this.connection) {
+            return Promise.reject(new Error("[RabbitMQ] No connection available"));
+        }
+
+        // Check if cached channel is still usable
+        if (this.channel) {
+            // amqplib channels have a 'closed' property when closed
+            const isClosed = (this.channel as unknown as { closed?: boolean }).closed;
+            if (!isClosed) {
+                return this.channel;
+            }
+            console.log("[RabbitMQ] Cached channel is closed, creating new one");
+            this.channel = null;
+        }
 
         try {
             this.channel = await this.connection.createChannel();
-            console.log(`[RabbitMQ] channel created`);
+            console.log("[RabbitMQ] Channel created");
 
-            // log channel errors
             this.channel.on("error", (err) => {
-                console.error("[RabbitMQ] Channel Error:", err);
+                console.error("[RabbitMQ] Channel error:", err);
             });
 
             this.channel.on("close", () => {
-                console.log("[RabbitMQ] channel closed");
+                console.log("[RabbitMQ] Channel closed");
                 this.channel = null;
-            });
-
-            this.connection.on("error", (err) => {
-                console.error("[RabbitMQ] connection error, setting channel to null and reconnecting:", err);
-                this.channel = null;
-                this.connection = null;
-                this.init();
-            });
-
-            this.connection.on("close", () => {
-                console.log("[RabbitMQ] connection closed, setting channel to null and reconnecting");
-                this.channel = null;
-                this.connection = null;
-                this.init();
             });
 
             return this.channel;
         } catch (e) {
             console.error("[RabbitMQ] Failed to create channel:", e);
-            console.error("[RabbitMQ] Forcing reconnect!");
-            this.connection = null;
             this.channel = null;
-            await this.init();
-            return await this.getSafeChannel();
-            // return Promise.reject(e);
+            throw e;
         }
+    }
+
+    /**
+     * Check if RabbitMQ is currently connected and ready.
+     */
+    static isConnected(): boolean {
+        return this.connection !== null && !this.isReconnecting;
     }
 }
