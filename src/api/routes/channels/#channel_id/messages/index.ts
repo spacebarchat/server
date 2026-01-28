@@ -41,6 +41,7 @@ import {
     stringGlobToRegexp,
     uploadFile,
     User,
+    Recipient,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -59,6 +60,7 @@ import {
     Reaction,
     ReadStateType,
     RelationshipType,
+    ChannelType,
 } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -136,6 +138,11 @@ router.get(
                     mention_channels: true,
                     sticker_items: true,
                     attachments: true,
+                },
+                thread: {
+                    recipients: {
+                        user: true,
+                    },
                 },
             },
         };
@@ -246,6 +253,7 @@ router.get(
 
             return x;
         });
+        //console.log(ret);
 
         await Promise.all(
             ret
@@ -409,8 +417,6 @@ router.post(
         //@ts-ignore dont care2
         message.edited_timestamp = null;
 
-        channel.last_message_id = message.id;
-
         if (channel.isDm()) {
             const channel_dto = await DmChannelDTO.from(channel);
 
@@ -464,11 +470,20 @@ router.post(
                 data: message,
             } as MessageCreateEvent),
             message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
-            channel.save(),
         ]);
 
         // no await as it shouldnt block the message send function and silently catch error
         postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
+        if (channel.type === ChannelType.GUILD_PUBLIC_THREAD && channel.recipients && !channel.recipients.find((_) => _.user.id === req.user_id)) {
+            const rec = Recipient.create({
+                channel_id: channel.id,
+                user_id: req.user_id,
+            });
+            channel.recipients.push(rec);
+            rec.save().then(() => {
+                channel.save();
+            });
+        }
 
         return res.json(
             message.withSignedAttachments(

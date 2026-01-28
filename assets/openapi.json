@@ -2531,6 +2531,9 @@
                             "$ref": "#/components/schemas/Webhook"
                         }
                     },
+                    "member_count": {
+                        "type": "integer"
+                    },
                     "roles": {
                         "type": "array",
                         "items": {
@@ -2617,9 +2620,6 @@
                         "type": "integer"
                     },
                     "max_video_channel_users": {
-                        "type": "integer"
-                    },
-                    "member_count": {
                         "type": "integer"
                     },
                     "presence_count": {
@@ -6412,6 +6412,29 @@
                     "enabled"
                 ]
             },
+            "MessageThreadCreationSchema": {
+                "type": "object",
+                "properties": {
+                    "auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "location": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
             "VoiceIdentifySchema": {
                 "type": "object",
                 "properties": {
@@ -7008,6 +7031,12 @@
                     "channel": {
                         "$ref": "#/components/schemas/Channel"
                     },
+                    "thread_id": {
+                        "type": "string"
+                    },
+                    "thread": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
                     "guild_id": {
                         "type": "string"
                     },
@@ -7377,6 +7406,18 @@
                     "default_thread_rate_limit_per_user": {
                         "type": "integer",
                         "default": 0
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/components/schemas/threadMetadata"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
                     },
                     "position": {
                         "description": "Must be calculated Channel.calculatePosition",
@@ -9853,6 +9894,36 @@
                     "user_id"
                 ]
             },
+            "threadMetadata": {
+                "type": "object",
+                "properties": {
+                    "archived": {
+                        "type": "boolean"
+                    },
+                    "auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "archive_timestamp": {
+                        "type": "string"
+                    },
+                    "locked": {
+                        "type": "boolean"
+                    },
+                    "invitable": {
+                        "type": "boolean"
+                    },
+                    "create_timestamp": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "archive_timestamp",
+                    "archived",
+                    "auto_archive_duration",
+                    "create_timestamp",
+                    "locked"
+                ]
+            },
             "Attachment": {
                 "type": "object",
                 "properties": {
@@ -10086,6 +10157,7 @@
                     16,
                     19,
                     20,
+                    21,
                     41,
                     42,
                     43,
@@ -23183,6 +23255,56 @@
                             "type": "string"
                         },
                         "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/messages/{message_id}/threads/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageThreadCreationSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "message_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "message_id"
                     }
                 ],
                 "tags": [

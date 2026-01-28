@@ -31,7 +31,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Member } from "./Member";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection, threadMetadata } from "@spacebar/schemas";
 
 @Entity({
     name: "channels",
@@ -152,6 +152,18 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     default_thread_rate_limit_per_user?: number = 0;
 
+    @Column({ type: "simple-json", nullable: true })
+    thread_metadata?: threadMetadata;
+
+    @Column({ nullable: true })
+    member_count?: number;
+
+    @Column({ nullable: true })
+    message_count?: number;
+
+    @Column({ nullable: true })
+    total_message_sent?: number;
+
     /** Must be calculated Channel.calculatePosition */
     position: number;
 
@@ -203,6 +215,7 @@ export class Channel extends BaseClass {
         }
 
         switch (channel.type) {
+            case ChannelType.GUILD_PUBLIC_THREAD:
             case ChannelType.GUILD_TEXT:
             case ChannelType.GUILD_NEWS:
             case ChannelType.GUILD_VOICE:
@@ -532,6 +545,7 @@ export class Channel extends BaseClass {
             user_limit: this.user_limit || undefined,
             rate_limit_per_user: this.rate_limit_per_user || undefined,
             owner_id: this.owner_id || undefined,
+            ...(this.type === ChannelType.GUILD_PUBLIC_THREAD && this.recipients ? { member_ids_preview: this.recipients.map((_) => _.user.id) } : {}),
         };
     }
 }

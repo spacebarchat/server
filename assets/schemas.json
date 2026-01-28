@@ -2657,6 +2657,9 @@
                     "$ref": "#/definitions/Webhook"
                 }
             },
+            "member_count": {
+                "type": "integer"
+            },
             "roles": {
                 "type": "array",
                 "items": {
@@ -2751,9 +2754,6 @@
                 "type": "integer"
             },
             "max_video_channel_users": {
-                "type": "integer"
-            },
-            "member_count": {
                 "type": "integer"
             },
             "presence_count": {
@@ -6841,6 +6841,31 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "MessageThreadCreationSchema": {
+        "type": "object",
+        "properties": {
+            "auto_archive_duration": {
+                "type": "integer"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "integer"
+            },
+            "location": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "VoiceIdentifySchema": {
         "type": "object",
         "properties": {
@@ -7467,6 +7492,12 @@
             "channel": {
                 "$ref": "#/definitions/Channel"
             },
+            "thread_id": {
+                "type": "string"
+            },
+            "thread": {
+                "$ref": "#/definitions/Channel"
+            },
             "guild_id": {
                 "type": "string"
             },
@@ -7842,6 +7873,18 @@
             "default_thread_rate_limit_per_user": {
                 "type": "integer",
                 "default": 0
+            },
+            "thread_metadata": {
+                "$ref": "#/definitions/threadMetadata"
+            },
+            "member_count": {
+                "type": "integer"
+            },
+            "message_count": {
+                "type": "integer"
+            },
+            "total_message_sent": {
+                "type": "integer"
             },
             "position": {
                 "description": "Must be calculated Channel.calculatePosition",
@@ -10418,6 +10461,38 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "threadMetadata": {
+        "type": "object",
+        "properties": {
+            "archived": {
+                "type": "boolean"
+            },
+            "auto_archive_duration": {
+                "type": "integer"
+            },
+            "archive_timestamp": {
+                "type": "string"
+            },
+            "locked": {
+                "type": "boolean"
+            },
+            "invitable": {
+                "type": "boolean"
+            },
+            "create_timestamp": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "archive_timestamp",
+            "archived",
+            "auto_archive_duration",
+            "create_timestamp",
+            "locked"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "Attachment": {
         "type": "object",
         "properties": {
@@ -10661,6 +10736,7 @@
             16,
             19,
             20,
+            21,
             41,
             42,
             43,

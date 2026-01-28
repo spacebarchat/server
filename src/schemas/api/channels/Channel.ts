@@ -36,6 +36,14 @@ export enum ChannelPermissionOverwriteType {
     member = 1,
     group = 2,
 }
+export interface threadMetadata {
+    archived: boolean;
+    auto_archive_duration: number;
+    archive_timestamp: string;
+    locked: boolean;
+    invitable?: boolean;
+    create_timestamp: string; //Discord docs say this is optional, but it's only for after a certain date so it's not
+}
 
 export interface DMChannel extends Omit<Channel, "type" | "recipients"> {
     type: ChannelType.DM | ChannelType.GROUP_DM;

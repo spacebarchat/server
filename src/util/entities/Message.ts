@@ -49,6 +49,16 @@ export class Message extends BaseClass {
     channel: Channel;
 
     @Column({ nullable: true })
+    @RelationId((message: Message) => message.thread)
+    thread_id?: string;
+
+    @JoinColumn({ name: "thread_id" })
+    @ManyToOne(() => Channel, {
+        onDelete: "CASCADE",
+    })
+    thread?: Channel;
+
+    @Column({ nullable: true })
     @RelationId((message: Message) => message.guild)
     guild_id?: string;
 
@@ -234,6 +244,7 @@ export class Message extends BaseClass {
             poll: this.poll ?? undefined,
             content: this.content ?? "",
             pinned: this.pinned,
+            thread: this.thread ? this.thread.toJSON() : this.thread,
         };
     }
 

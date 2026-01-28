@@ -296,7 +296,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     ] = await Promise.all([
         timePromise(() =>
             Channel.find({
-                where: { guild_id: In(guildIds) },
+                where: {
+                    guild_id: In(guildIds),
+                    type: Not(ChannelType.GUILD_PUBLIC_THREAD),
+                },
                 order: { guild_id: "ASC" },
             }),
         ),
