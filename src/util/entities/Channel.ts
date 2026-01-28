@@ -424,6 +424,18 @@ export class Channel extends BaseClass {
         return this.type === ChannelType.DM || this.type === ChannelType.GROUP_DM;
     }
 
+    isThread() {
+        return this.type === ChannelType.GUILD_NEWS_THREAD || this.type === ChannelType.GUILD_PUBLIC_THREAD || this.type === ChannelType.GUILD_PRIVATE_THREAD;
+    }
+
+    isPrivateThread() {
+        return this.type === ChannelType.GUILD_PRIVATE_THREAD;
+    }
+
+    isPublicThread() {
+        return this.type === ChannelType.GUILD_NEWS_THREAD || this.type === ChannelType.GUILD_PUBLIC_THREAD;
+    }
+
     // Does the channel support sending messages ( eg categories do not )
     isWritable() {
         const disallowedChannelTypes = [ChannelType.GUILD_CATEGORY, ChannelType.GUILD_STAGE_VOICE];
