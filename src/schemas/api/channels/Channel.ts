@@ -9,19 +9,18 @@ export enum ChannelType {
     GUILD_CATEGORY = 4, // an organizational category that contains zero or more channels
     GUILD_NEWS = 5, // a channel that users can follow and crosspost into a guild or route
     GUILD_STORE = 6, // a channel in which game developers can sell their things
-    ENCRYPTED = 7, // end-to-end encrypted channel
-    ENCRYPTED_THREAD = 8, // end-to-end encrypted thread channel
-    TRANSACTIONAL = 9, // event chain style transactional channel
+    GUILD_LFG = 7, // @deprecated "A channel where users can match up for various games"
+    LFG_GROUP_DM = 8, // @deprecated "A private channel between multiple users for a group within an LFG channel"
+    THREAD_ALPHA = 9, // @deprecated "The first iteration of the threads feature, never widely used"
     GUILD_NEWS_THREAD = 10, // a temporary sub-channel within a GUILD_NEWS channel
     GUILD_PUBLIC_THREAD = 11, // a temporary sub-channel within a GUILD_TEXT channel
     GUILD_PRIVATE_THREAD = 12, // a temporary sub-channel within a GUILD_TEXT channel that is only viewable by those invited and those with the MANAGE_THREADS permission
     GUILD_STAGE_VOICE = 13, // a voice channel for hosting events with an audience
-    DIRECTORY = 14, // guild directory listing channel
+    GUILD_DIRECTORY = 14, // guild directory listing channel
     GUILD_FORUM = 15, // forum composed of IM threads
-    TICKET_TRACKER = 33, // ticket tracker, individual ticket items shall have type 12
-    KANBAN = 34, // confluence like kanban board
-    VOICELESS_WHITEBOARD = 35, // whiteboard but without voice (whiteboard + voice is the same as stage)
-    CUSTOM_START = 64, // start custom channel types from here
+    GUILD_MEDIA = 16, // channel for media sharing
+    LOBBY = 17, // a game lobby channel
+    EPHEMERAL_DM = 18, // a private channel created by the social layer sdk
     UNHANDLED = 255, // unhandled unowned pass-through channel type
 }
 
@@ -50,7 +49,7 @@ export function isTextChannel(type: ChannelType): boolean {
         case ChannelType.GUILD_STAGE_VOICE:
         case ChannelType.GUILD_CATEGORY:
         case ChannelType.GUILD_FORUM:
-        case ChannelType.DIRECTORY:
+        case ChannelType.GUILD_DIRECTORY:
             throw new HTTPError("not a text channel", 400);
         case ChannelType.DM:
         case ChannelType.GROUP_DM:
@@ -60,8 +59,6 @@ export function isTextChannel(type: ChannelType): boolean {
         case ChannelType.GUILD_PUBLIC_THREAD:
         case ChannelType.GUILD_PRIVATE_THREAD:
         case ChannelType.GUILD_TEXT:
-        case ChannelType.ENCRYPTED:
-        case ChannelType.ENCRYPTED_THREAD:
             return true;
         default:
             throw new HTTPError("unimplemented", 400);
