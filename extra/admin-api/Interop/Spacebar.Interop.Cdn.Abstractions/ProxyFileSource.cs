@@ -1,7 +1,14 @@
+using System.Net;
 using ArcaneLibs;
+using ArcaneLibs.Extensions;
+using ArcaneLibs.Extensions.Streams;
 
 namespace Spacebar.Interop.Cdn.Abstractions;
 
+/// <summary>
+/// Class only exists as a stepping stone between old cdn and migrations...
+/// </summary>
+/// <param name="baseUrl"></param>
 public class ProxyFileSource(string baseUrl) : IFileSource {
     private static LruFileCache _cache = new(100 * 1024 * 1024); // 100 MB
 
@@ -10,6 +17,8 @@ public class ProxyFileSource(string baseUrl) : IFileSource {
     };
 
     public string BaseUrl => baseUrl;
+
+    public async Task Init(CancellationToken? cancellationToken = null) { }
 
     public async Task<FileInfo> GetFile(string path, CancellationToken? cancellationToken = null) {
         var res = await _cache.GetOrAdd(path, async () => {
@@ -31,6 +40,14 @@ public class ProxyFileSource(string baseUrl) : IFileSource {
 
     public async Task<bool> FileExists(string path, CancellationToken? cancellationToken = null) {
         var res = await _httpClient.SendUnhandledAsync(new(HttpMethod.Head, path), cancellationToken);
+        if (!res.IsSuccessStatusCode) {
+            await using var s = await res.Content.ReadAsStreamAsync();
+            Console.WriteLine($"Got {res.StatusCode}: ({res.Content.Headers.ContentLength}b of {res.Content.Headers.ContentType})\n{s.ReadToEnd().AsString()}");
+        }
         return res.IsSuccessStatusCode;
+    }
+
+    public async Task WriteFile(string path, Stream stream) {
+        Console.WriteLine("Can't write to HTTP store! Ignoring.");
     }
 }

@@ -12,7 +12,7 @@ public class DiscordImageResizeParams {
     public bool Animated { get; set; } = true;
 
     public bool SpacebarAllowUpscale { get; set; } = false;
-    public bool SpacebarOptimiseGif {get;set;} = true;
+    public bool SpacebarOptimiseGif { get; set; } = true;
 }
 
 public enum DiscordImageResizeQuality {
@@ -34,7 +34,7 @@ public class DiscordImageResizeService(PixelArtDetectionService pads) {
                 resizeParams.Size = 4096;
 
             if (img.Max(x => Math.Max(x.Height, x.Width)) > resizeParams.Size || resizeParams.SpacebarAllowUpscale) {
-                Parallel.ForEach(img,  new ParallelOptions(){MaxDegreeOfParallelism = 8}, frame => {
+                Parallel.ForEach(img, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, frame => {
                     if (resizeParams.Size.HasValue) {
                         uint oldWidth = frame.Width, oldHeight = frame.Height;
                         frame.Resize(resizeParams.Size.Value, resizeParams.Size.Value, pads.IsPixelArt(frame) ? FilterType.Point : FilterType.Gaussian);
