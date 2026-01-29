@@ -163,7 +163,7 @@ export class Member extends BaseClassWithoutId {
                 where: { id: user_id, guild: { id: guild_id } },
             })
         )
-            return true;
+            return;
         throw new HTTPError("You are not member of this guild", 403);
     }
 
