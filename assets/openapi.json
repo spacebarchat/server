@@ -4051,16 +4051,15 @@
                             13,
                             14,
                             15,
+                            16,
+                            17,
+                            18,
                             2,
                             255,
                             3,
-                            33,
-                            34,
-                            35,
                             4,
                             5,
                             6,
-                            64,
                             7,
                             8,
                             9
@@ -4140,6 +4139,15 @@
                     },
                     "video_quality_mode": {
                         "type": "integer"
+                    },
+                    "auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "archived": {
+                        "type": "boolean"
+                    },
+                    "locked": {
+                        "type": "boolean"
                     }
                 }
             },
@@ -6425,7 +6433,12 @@
                         "type": "string"
                     },
                     "type": {
-                        "type": "integer"
+                        "enum": [
+                            10,
+                            11,
+                            12
+                        ],
+                        "type": "number"
                     },
                     "location": {
                         "type": "string"
@@ -7408,7 +7421,7 @@
                         "default": 0
                     },
                     "thread_metadata": {
-                        "$ref": "#/components/schemas/threadMetadata"
+                        "$ref": "#/components/schemas/ThreadMetadata"
                     },
                     "member_count": {
                         "type": "integer"
@@ -7457,10 +7470,9 @@
                     13,
                     14,
                     15,
-                    33,
-                    34,
-                    35,
-                    64,
+                    16,
+                    17,
+                    18,
                     255
                 ]
             },
@@ -9894,7 +9906,7 @@
                     "user_id"
                 ]
             },
-            "threadMetadata": {
+            "ThreadMetadata": {
                 "type": "object",
                 "properties": {
                     "archived": {
@@ -10155,13 +10167,52 @@
                     14,
                     15,
                     16,
+                    17,
+                    18,
                     19,
                     20,
                     21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
                     41,
                     42,
                     43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49,
                     50,
+                    51,
+                    52,
+                    53,
+                    54,
+                    55,
+                    56,
+                    57,
+                    58,
+                    59,
+                    60,
+                    61,
+                    62,
                     63,
                     255
                 ]
@@ -22422,6 +22473,150 @@
                         "description": "No description available"
                     },
                     "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/thread-members/": {
+            "get": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/thread-members/{user_id}": {
+            "post": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "user_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            },
+            "delete": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "user_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/thread-members/@me/settings": {
+            "patch": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
                         "description": "No description available"
                     }
                 },
