@@ -34,9 +34,9 @@ export interface ReadyPrivateChannel {
     type: ChannelType.DM | ChannelType.GROUP_DM;
 }
 
-export type GuildOrUnavailable = { id: string; unavailable: boolean } | (Guild & { joined_at?: Date; unavailable: undefined });
+export type GuildOrUnavailable = { id: string; unavailable: boolean } | (Guild & { joined_at?: Date; unavailable: undefined; threads: Channel[] });
 
-const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false } => {
+const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false; threads: Channel[] } => {
     return guild.unavailable != true;
 };
 
@@ -215,7 +215,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
         this.roles = guild.roles.map((x) => x.toJSON());
         this.stage_instances = [];
         this.stickers = guild.stickers;
-        this.threads = [];
+        this.threads = guild.threads;
         this.version = "1"; // ??????
         this.guild_hashes = {};
         this.joined_at = guild.joined_at;

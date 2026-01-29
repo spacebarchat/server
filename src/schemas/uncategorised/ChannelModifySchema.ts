@@ -45,4 +45,7 @@ export interface ChannelModifySchema {
     flags?: number;
     default_thread_rate_limit_per_user?: number;
     video_quality_mode?: number;
+    auto_archive_duration?: number;
+    archived?: boolean;
+    locked?: boolean;
 }

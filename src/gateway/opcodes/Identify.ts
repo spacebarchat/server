@@ -450,7 +450,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             ...member.guild.toJSON(),
             joined_at: member.joined_at,
 
-            threads: [],
+            threads: member.guild.channels.filter((x) => x.isThread()),
         };
     });
     const generateGuildsListTime = taskSw.getElapsedAndReset();

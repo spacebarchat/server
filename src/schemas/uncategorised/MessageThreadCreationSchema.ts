@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { ChannelType } from "../api";
+
 export interface MessageThreadCreationSchema {
     auto_archive_duration?: number;
     rate_limit_per_user?: number;
     name: string;
-    type?: number;
+    type?: ChannelType.GUILD_NEWS_THREAD | ChannelType.GUILD_PRIVATE_THREAD | ChannelType.GUILD_PUBLIC_THREAD;
     location?: string; //0 clue what this means lol
 }

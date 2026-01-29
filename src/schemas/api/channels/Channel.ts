@@ -36,7 +36,7 @@ export enum ChannelPermissionOverwriteType {
     member = 1,
     group = 2,
 }
-export interface threadMetadata {
+export interface ThreadMetadata {
     archived: boolean;
     auto_archive_duration: number;
     archive_timestamp: string;
