@@ -438,6 +438,19 @@ router.post(
             );
         }
 
+        if (channel.isThread()) {
+            channel.message_count = (channel.message_count || 0) + 1;
+            channel.total_message_sent = (channel.total_message_sent || 0) + 1;
+            await Promise.all([
+                channel.save(),
+                emitEvent({
+                    event: "CHANNEL_UPDATE",
+                    data: { ...channel, newly_created: false },
+                    guild_id: channel.guild_id,
+                }),
+            ]);
+        }
+
         if (message.guild_id) {
             // handleMessage will fetch the Member, but only if they are not guild owner.
             // have to fetch ourselves otherwise.

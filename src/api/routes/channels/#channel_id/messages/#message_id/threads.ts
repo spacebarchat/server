@@ -38,6 +38,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
+        // TODO: check for differences with https://github.com/spacebarchat/server/pull/876/files#diff-95be9c4cdfd8ba6f67361cd40b9abc8226b35d83e2bb44bf5b4682f1d66155e9
         const { message_id, channel_id } = req.params;
         const body = req.body as MessageThreadCreationSchema;
         const message = await Message.findOneOrFail({

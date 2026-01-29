@@ -22,4 +22,5 @@ export class GuildConfiguration {
     discovery: DiscoveryConfiguration = new DiscoveryConfiguration();
     autoJoin: AutoJoinConfiguration = new AutoJoinConfiguration();
     defaultFeatures: string[] = [];
+    publicThreadsInvitable: boolean = false;
 }
