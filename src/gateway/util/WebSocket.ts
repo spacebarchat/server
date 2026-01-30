@@ -27,6 +27,7 @@ export interface WebSocket extends WS {
     version: number;
     user_id: string;
     session_id: string;
+    accessToken: string;
     encoding: "etf" | "json";
     compress?: "zlib-stream" | "zstd-stream";
     ipAddress?: string;

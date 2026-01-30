@@ -96,6 +96,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         }),
     );
 
+    this.accessToken = identify.token;
+
     taskSw.reset(); // don't include checkToken time...
 
     const user = tokenData.user;
@@ -634,7 +636,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     });
 
     if (this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) && tokenData.tokenVersion != CurrentTokenFormatVersion) {
-        d.auth_token = await generateToken(this.user_id);
+        d.auth_token = this.accessToken = (await generateToken(this.user_id))!;
     }
     // const buildReadyEventDataTime = taskSw.getElapsedAndReset();
 
