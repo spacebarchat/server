@@ -26,7 +26,7 @@ import { LazyRequestSchema } from "@spacebar/schemas";
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
 // TODO: rewrite typeorm
 
-const getMostRelevantSession = (sessions: Session[]) => {
+function getMostRelevantSession(sessions: Session[]) {
     const statusMap = {
         online: 0,
         idle: 1,
@@ -40,7 +40,7 @@ const getMostRelevantSession = (sessions: Session[]) => {
     });
 
     return sessions[0];
-};
+}
 
 async function getMembers(guild_id: string, range: [number, number]) {
     if (!Array.isArray(range) || range.length !== 2) {
@@ -127,7 +127,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
                         activities: session?.activities || [],
                         user: { id: member.user.id },
                         client_status: session?.client_status,
-                        status: session?.status
+                        status: session?.status,
                     },
                 },
             };
