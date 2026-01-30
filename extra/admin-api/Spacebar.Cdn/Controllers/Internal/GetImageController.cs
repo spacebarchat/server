@@ -6,7 +6,7 @@ using Spacebar.Cdn.Extensions;
 using Spacebar.Interop.Cdn.Abstractions;
 
 namespace Spacebar.Cdn.Controllers.Internal;
-
+/*
 [ApiController]
 public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDetectionService pads, DiscordImageResizeService dirs) : ControllerBase {
     private static readonly LruCache<bool> _isPixelArtCache = new(100_000);
@@ -146,3 +146,4 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
         }).ContinueWith(t => File(t.Result.Data, t.Result.MimeType));
     }
 }
+*/
