@@ -152,6 +152,16 @@ router.patch(
         }
 
         if (body.discriminator) {
+            // TODO: HACK - maybe make this optional?
+            if (!/^\d{4}$/.test(body.discriminator)) {
+                throw FieldErrors({
+                    discriminator: {
+                        code: "INVALID_DISCRIMINATOR",
+                        message: "Discriminator must be 4 digits.",
+                    },
+                });
+            }
+
             if (
                 await User.findOne({
                     where: {
