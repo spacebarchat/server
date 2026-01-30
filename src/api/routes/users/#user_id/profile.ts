@@ -77,6 +77,8 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
               })
             : undefined;
 
+    if (guild_member) guild_member.roles = guild_member?.roles.filter((role) => role.id != guild_id);
+
     // TODO: make proper DTO's in util?
 
     const userProfile = {
