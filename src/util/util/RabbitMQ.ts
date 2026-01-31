@@ -30,8 +30,8 @@ export class RabbitMQ {
     // Reconnection state
     private static isReconnecting = false;
     private static reconnectAttempts = 0;
-    private static readonly MAX_RECONNECT_DELAY_MS = 30000; // Max 30 seconds between retries
-    private static readonly BASE_RECONNECT_DELAY_MS = 1000; // Start with 1 second
+    private static readonly MAX_RECONNECT_DELAY_MS = 5000; // Max 5 seconds between retries
+    private static readonly BASE_RECONNECT_DELAY_MS = 500; // Start with 500 milliseconds
 
     // Track if event listeners have been set up (to avoid duplicates)
     private static connectionListenersAttached = false;
@@ -117,11 +117,10 @@ export class RabbitMQ {
         this.isReconnecting = true;
         this.reconnectAttempts++;
 
-        // Exponential backoff with jitter
-        const baseDelay = Math.min(this.BASE_RECONNECT_DELAY_MS * Math.pow(2, this.reconnectAttempts - 1), this.MAX_RECONNECT_DELAY_MS);
-        // Add jitter (±25%) to prevent thundering herd
-        const jitter = baseDelay * 0.25 * (Math.random() * 2 - 1);
-        const delay = Math.round(baseDelay + jitter);
+        // add random jitter to reconnection delay
+        const baseDelay = Math.min(this.BASE_RECONNECT_DELAY_MS + Math.random() * 2000, this.MAX_RECONNECT_DELAY_MS);
+
+        const delay = Math.round(baseDelay);
 
         console.log(`[RabbitMQ] Scheduling reconnection attempt ${this.reconnectAttempts} in ${delay}ms`);
 
