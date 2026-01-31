@@ -107,25 +107,33 @@ export async function setupListener(this: WebSocket) {
 
         this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
 
-        for (const relationship of relationships) {
-            this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
-        }
+        await Promise.all(
+            relationships.map(async (relationship) => {
+                this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
+            }),
+        );
 
-        for (const channel of dm_channels) {
-            this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
-        }
+        await Promise.all(
+            dm_channels.map(async (channel) => {
+                this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+            }),
+        );
 
-        for (const guild of guilds) {
-            const permission = await getPermission(this.user_id, guild.id);
-            this.permissions[guild.id] = permission;
-            this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
+        await Promise.all(
+            guilds.map(async (guild) => {
+                const permission = await getPermission(this.user_id, guild.id);
+                this.permissions[guild.id] = permission;
+                this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
-            for (const channel of guild.channels) {
-                if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
-                    this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
-                }
-            }
-        }
+                await Promise.all(
+                    guild.channels.map(async (channel) => {
+                        if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
+                            this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                        }
+                    }),
+                );
+            }),
+        );
     };
 
     // Initial setup
