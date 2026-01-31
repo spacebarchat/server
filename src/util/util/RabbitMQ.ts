@@ -30,8 +30,7 @@ export class RabbitMQ {
     // Reconnection state
     private static isReconnecting = false;
     private static reconnectAttempts = 0;
-    private static readonly MAX_RECONNECT_DELAY_MS = 5000; // Max 5 seconds between retries
-    private static readonly BASE_RECONNECT_DELAY_MS = 500; // Start with 500 milliseconds
+    private static readonly BASE_RECONNECT_DELAY_MS = 500; // reconnect after 500 milliseconds delay
 
     // Track if event listeners have been set up (to avoid duplicates)
     private static connectionListenersAttached = false;
@@ -117,14 +116,9 @@ export class RabbitMQ {
         this.isReconnecting = true;
         this.reconnectAttempts++;
 
-        // add random jitter to reconnection delay
-        const baseDelay = Math.min(this.BASE_RECONNECT_DELAY_MS + Math.random() * 2000, this.MAX_RECONNECT_DELAY_MS);
+        console.log(`[RabbitMQ] Scheduling reconnection attempt ${this.reconnectAttempts} in ${this.BASE_RECONNECT_DELAY_MS}ms`);
 
-        const delay = Math.round(baseDelay);
-
-        console.log(`[RabbitMQ] Scheduling reconnection attempt ${this.reconnectAttempts} in ${delay}ms`);
-
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, this.BASE_RECONNECT_DELAY_MS));
 
         try {
             await this.connect(host);
