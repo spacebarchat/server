@@ -346,9 +346,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         });
         if (referencedMessage && referencedMessage.author_id !== message.author_id) {
             message.mentions.push(
-                User.create({
-                    id: referencedMessage.author_id,
-                }),
+                // @ts-expect-error it does not like the .toPublicUser() lol
+                (await User.findOne({ where: { id: referencedMessage.author_id } }))!.toPublicUser(),
             );
         }
 
