@@ -37,7 +37,7 @@ router.get(
         const mutual_relations: UserRelationsResponse = [];
 
         const requested_relations = await User.findOneOrFail({
-            where: { id: req.params.user_id },
+            where: { id: req.params.user_id as string },
             relations: { relationships: true },
         });
         const self_relations = await User.findOneOrFail({

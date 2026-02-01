@@ -42,7 +42,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const userIds: Array<string> = req.body.user_ids;
         if (!userIds) throw new HTTPError("The user_ids array is missing", 400);

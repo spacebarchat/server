@@ -37,7 +37,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { invite_code } = req.params;
+        const { invite_code } = req.params as { [key: string]: string };
 
         const invite = await Invite.findOneOrFail({
             where: { code: invite_code },
@@ -70,7 +70,7 @@ router.post(
     async (req: Request, res: Response) => {
         if (req.user_bot && !Config.get().user.botsCanUseInvites) throw DiscordApiErrors.BOT_PROHIBITED_ENDPOINT;
 
-        const { invite_code } = req.params;
+        const { invite_code } = req.params as { [key: string]: string };
         const { public_flags } = req.user;
         const { guild_id } = await Invite.findOneOrFail({
             where: { code: invite_code },
@@ -128,7 +128,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { invite_code } = req.params;
+        const { invite_code } = req.params as { [key: string]: string };
         const invite = await Invite.findOneOrFail({ where: { code: invite_code } });
         const { guild_id, channel_id } = invite;
 

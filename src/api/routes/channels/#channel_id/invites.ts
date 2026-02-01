@@ -43,7 +43,7 @@ router.post(
     async (req: Request, res: Response) => {
         const { user_id } = req;
         const body = req.body as InviteCreateSchema;
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
             select: { id: true, name: true, type: true, guild_id: true },
@@ -98,7 +98,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });

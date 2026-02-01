@@ -67,7 +67,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
+        const { message_id, channel_id } = req.params as { [key: string]: string };
         let body = req.body as MessageEditSchema;
 
         const message = await Message.findOneOrFail({
@@ -165,7 +165,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, message_id } = req.params;
+        const { channel_id, message_id } = req.params as { [key: string]: string };
         const body = req.body as MessageCreateSchema;
         const attachments: (MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
@@ -261,7 +261,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
+        const { message_id, channel_id } = req.params as { [key: string]: string };
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
@@ -288,7 +288,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
+        const { message_id, channel_id } = req.params as { [key: string]: string };
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },

@@ -37,7 +37,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
         const webhooks = await Webhook.find({
             where: { channel_id },
             relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
@@ -69,7 +69,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const channel_id = req.params.channel_id;
+        const { channel_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });

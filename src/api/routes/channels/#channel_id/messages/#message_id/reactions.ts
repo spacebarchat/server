@@ -68,7 +68,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
+        const { message_id, channel_id } = req.params as { [key: string]: string };
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
@@ -104,8 +104,8 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
-        const emoji = getEmoji(req.params.emoji);
+        const { message_id, channel_id } = req.params as { [key: string]: string };
+        const emoji = getEmoji(req.params.emoji as string);
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
@@ -149,8 +149,8 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id } = req.params;
-        const emoji = getEmoji(req.params.emoji);
+        const { message_id, channel_id } = req.params as { [key: string]: string };
+        const emoji = getEmoji(req.params.emoji as string);
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
@@ -186,9 +186,9 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { message_id, channel_id, user_id } = req.params;
+        const { message_id, channel_id, user_id } = req.params as { [key: string]: string };
         if (user_id !== "@me") throw new HTTPError("Invalid user");
-        const emoji = getEmoji(req.params.emoji);
+        const emoji = getEmoji(req.params.emoji as string);
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
@@ -261,10 +261,10 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        let { user_id } = req.params;
-        const { message_id, channel_id } = req.params;
+        let { user_id } = req.params as { [key: string]: string };
+        const { message_id, channel_id } = req.params as { [key: string]: string };
 
-        const emoji = getEmoji(req.params.emoji);
+        const emoji = getEmoji(req.params.emoji as string);
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
@@ -318,10 +318,10 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        let { user_id } = req.params;
-        const { message_id, channel_id } = req.params;
+        let { user_id } = req.params as { [key: string]: string };
+        const { message_id, channel_id } = req.params as { [key: string]: string };
 
-        const emoji = getEmoji(req.params.emoji);
+        const emoji = getEmoji(req.params.emoji as string);
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },

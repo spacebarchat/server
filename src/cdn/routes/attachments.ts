@@ -36,7 +36,7 @@ router.post("/:channel_id", multer.single("file"), async (req: Request, res: Res
     if (!req.file) throw new HTTPError("file missing");
 
     const { buffer, mimetype, size, originalname } = req.file;
-    const { channel_id } = req.params;
+    const { channel_id } = req.params as { [key: string]: string };
     const filename = originalname.replaceAll(" ", "_").replace(/[^a-zA-Z0-9._]+/g, "");
     const id = Snowflake.generate();
     const path = `attachments/${channel_id}/${id}/${filename}`;
@@ -71,7 +71,7 @@ router.post("/:channel_id", multer.single("file"), async (req: Request, res: Res
 });
 
 router.get("/:channel_id/:id/:filename", cache, async (req: Request, res: Response) => {
-    const { channel_id, id, filename } = req.params;
+    const { channel_id, id, filename } = req.params as { [key: string]: string };
     // const { format } = req.query;
 
     const path = `attachments/${channel_id}/${id}/${filename}`;
@@ -108,7 +108,7 @@ router.get("/:channel_id/:id/:filename", cache, async (req: Request, res: Respon
 router.delete("/:channel_id/:id/:filename", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 
-    const { channel_id, id, filename } = req.params;
+    const { channel_id, id, filename } = req.params as { [key: string]: string };
     const path = `attachments/${channel_id}/${id}/${filename}`;
 
     await storage.delete(path);
@@ -118,7 +118,7 @@ router.delete("/:channel_id/:id/:filename", async (req: Request, res: Response) 
 
 // "cloud attachments"
 router.put("/:channel_id/:batch_id/:attachment_id/:filename", multer.single("file"), async (req: Request, res: Response) => {
-    const { channel_id, batch_id, attachment_id, filename } = req.params;
+    const { channel_id, batch_id, attachment_id, filename } = req.params as { [key: string]: string };
     const att = await CloudAttachment.findOneOrFail({
         where: {
             uploadFilename: `${channel_id}/${batch_id}/${attachment_id}/${filename}`,
@@ -177,7 +177,7 @@ router.delete("/:channel_id/:batch_id/:attachment_id/:filename", async (req: Req
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
     console.log("[Cloud Delete] Deleting attachment", req.params);
 
-    const { channel_id, batch_id, attachment_id, filename } = req.params;
+    const { channel_id, batch_id, attachment_id, filename } = req.params as { [key: string]: string };
     const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
 
     const att = await CloudAttachment.findOne({
@@ -201,7 +201,7 @@ router.post("/:channel_id/:batch_id/:attachment_id/:filename/clone_to_message/:m
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
     console.log("[Cloud Clone] Cloning attachment to message", req.params);
 
-    const { channel_id, batch_id, attachment_id, filename, message_id } = req.params;
+    const { channel_id, batch_id, attachment_id, filename, message_id } = req.params as { [key: string]: string };
     const path = `attachments/${channel_id}/${batch_id}/${attachment_id}/${filename}`;
     const newPath = `attachments/${channel_id}/${message_id}/${filename}`;
 

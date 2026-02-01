@@ -39,9 +39,9 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         let permissionString: PermissionResolvable = "MANAGE_NICKNAMES";
-        const member_id = req.params.member_id === "@me" ? ((permissionString = "CHANGE_NICKNAME"), req.user_id) : req.params.member_id;
+        const member_id = req.params.member_id === "@me" ? ((permissionString = "CHANGE_NICKNAME"), req.user_id) : (req.params.member_id as string);
 
         const perms = await getPermission(req.user_id, guild_id);
         perms.hasThrow(permissionString);

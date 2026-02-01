@@ -36,7 +36,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { emoji_id } = req.params;
+        const { emoji_id } = req.params as { [key: string]: string };
 
         const emoji = await Emoji.findOne({ where: { id: emoji_id } });
         if (!emoji) {

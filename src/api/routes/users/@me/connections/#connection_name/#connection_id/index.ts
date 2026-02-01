@@ -24,7 +24,7 @@ const router = Router({ mergeParams: true });
 
 // TODO: connection update schema
 router.patch("/", route({ requestBody: "ConnectionUpdateSchema" }), async (req: Request, res: Response) => {
-    const { connection_name, connection_id } = req.params;
+    const { connection_name, connection_id } = req.params as { [key: string]: string };
     const body = req.body as ConnectionUpdateSchema;
 
     const connection = await ConnectedAccount.findOne({
@@ -63,7 +63,7 @@ router.patch("/", route({ requestBody: "ConnectionUpdateSchema" }), async (req: 
 });
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
-    const { connection_name, connection_id } = req.params;
+    const { connection_name, connection_id } = req.params as { [key: string]: string };
 
     const account = await ConnectedAccount.findOneOrFail({
         where: {

@@ -39,7 +39,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, member_id } = req.params;
+        const { guild_id, member_id } = req.params as { [key: string]: string };
         await Member.IsInGuildOrFail(req.user_id, guild_id);
 
         const member = await Member.findOneOrFail({
@@ -85,8 +85,8 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
-        const member_id = req.params.member_id === "@me" ? req.user_id : req.params.member_id;
+        const { guild_id } = req.params as { [key: string]: string };
+        const member_id = req.params.member_id === "@me" ? req.user_id : (req.params.member_id as string);
         const body = req.body as MemberChangeSchema;
 
         const member = await Member.findOneOrFail({
@@ -168,8 +168,8 @@ router.put(
 
         const rights = await getRights(req.user_id);
 
-        const { guild_id } = req.params;
-        let { member_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
+        let { member_id } = req.params as { [key: string]: string };
         if (member_id === "@me") {
             member_id = req.user_id;
             rights.hasThrow("JOIN_GUILDS");
@@ -216,7 +216,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, member_id } = req.params;
+        const { guild_id, member_id } = req.params as { [key: string]: string };
         const permission = await getPermission(req.user_id, guild_id);
         const rights = await getRights(req.user_id);
         if (member_id === "@me" || member_id === req.user_id) {

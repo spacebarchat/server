@@ -25,7 +25,7 @@ import { cache } from "../util/cache";
 const router = Router({ mergeParams: true });
 
 router.get("/:badge_id", cache, async (req: Request, res: Response) => {
-    const { badge_id } = req.params;
+    const { badge_id } = req.params as { [key: string]: string };
     const path = `badge-icons/${badge_id}`;
 
     const file = await storage.get(path);

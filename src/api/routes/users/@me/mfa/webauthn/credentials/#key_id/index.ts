@@ -29,7 +29,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { key_id } = req.params;
+        const { key_id } = req.params as { [key: string]: string };
 
         await SecurityKey.delete({
             id: key_id,

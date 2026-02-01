@@ -33,7 +33,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
         const user_id = req.user_id;
         const timestamp = Math.floor(Date.now() / 1000);
         const channel = await Channel.findOneOrFail({

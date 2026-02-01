@@ -32,7 +32,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, user_id } = req.params;
+        const { channel_id, user_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
             relations: { recipients: true },
@@ -82,7 +82,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, user_id } = req.params;
+        const { channel_id, user_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
             relations: { recipients: true },

@@ -35,7 +35,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { user_id } = req.params;
+        const { user_id } = req.params as { [key: string]: string };
 
         const note = await Note.findOneOrFail({
             where: {
@@ -64,7 +64,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { user_id } = req.params;
+        const { user_id } = req.params as { [key: string]: string };
         const owner = req.user;
         const target = await User.findOneOrFail({ where: { id: user_id } }); //if noted user does not exist throw
         const { note } = req.body;

@@ -24,7 +24,7 @@ const router = Router({ mergeParams: true });
 
 router.patch("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
     // Payload is JSON containing a list of member_ids, the new list of members to have the role
-    const { guild_id, role_id } = req.params;
+    const { guild_id, role_id } = req.params as { [key: string]: string };
     const { member_ids } = req.body;
 
     // don't mess with @everyone

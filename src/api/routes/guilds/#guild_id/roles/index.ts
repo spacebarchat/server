@@ -25,7 +25,7 @@ import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";
 const router: Router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-    const guild_id = req.params.guild_id;
+    const guild_id = req.params.guild_id as string;
 
     await Member.IsInGuildOrFail(req.user_id, guild_id);
 
@@ -52,7 +52,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const guild_id = req.params.guild_id;
+        const guild_id = req.params.guild_id as string;
         const body = req.body as RoleModifySchema;
 
         const role_count = await Role.count({ where: { guild_id } });
@@ -124,7 +124,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const body = req.body as RolePositionUpdateSchema;
 
         await Promise.all(body.map(async (x) => Role.update({ guild_id, id: x.id }, { position: x.position })));

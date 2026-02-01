@@ -19,7 +19,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id, token } = req.params;
+        const { webhook_id, token } = req.params as { [key: string]: string };
         const webhook = await Webhook.findOne({
             where: {
                 id: webhook_id,
@@ -101,7 +101,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id, token } = req.params;
+        const { webhook_id, token } = req.params as { [key: string]: string };
 
         const webhook = await Webhook.findOne({
             where: {
@@ -149,7 +149,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id, token } = req.params;
+        const { webhook_id, token } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 
         const webhook = await Webhook.findOneOrFail({

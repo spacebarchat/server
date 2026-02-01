@@ -43,8 +43,8 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as VoiceStateUpdateSchema;
-        const { guild_id } = req.params;
-        const user_id = req.params.user_id === "@me" ? req.user_id : req.params.user_id;
+        const { guild_id } = req.params as { [key: string]: string };
+        const user_id = req.params.user_id === "@me" ? req.user_id : (req.params.user_id as string);
 
         const perms = await getPermission(req.user_id, guild_id, body.channel_id);
 

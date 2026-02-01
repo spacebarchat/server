@@ -43,7 +43,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
         if (!guild.features.includes("ALIASABLE_NAMES")) {
@@ -82,7 +82,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const body = req.body as VanityUrlSchema;
         const code = body.code?.replace(InviteRegex, "");
 

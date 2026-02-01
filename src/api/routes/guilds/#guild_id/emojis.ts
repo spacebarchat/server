@@ -36,7 +36,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         await Member.IsInGuildOrFail(req.user_id, guild_id);
 
@@ -65,7 +65,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, emoji_id } = req.params;
+        const { guild_id, emoji_id } = req.params as { [key: string]: string };
 
         await Member.IsInGuildOrFail(req.user_id, guild_id);
 
@@ -96,7 +96,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const body = req.body as EmojiCreateSchema;
 
         const id = Snowflake.generate();
@@ -153,7 +153,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { emoji_id, guild_id } = req.params;
+        const { emoji_id, guild_id } = req.params as { [key: string]: string };
         const body = req.body as EmojiModifySchema;
 
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
@@ -189,7 +189,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { emoji_id, guild_id } = req.params;
+        const { emoji_id, guild_id } = req.params as { [key: string]: string };
 
         await Emoji.delete({
             id: emoji_id,

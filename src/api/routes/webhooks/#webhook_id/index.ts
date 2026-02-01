@@ -17,7 +17,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id } = req.params;
+        const { webhook_id } = req.params as { [key: string]: string };
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
             relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
@@ -48,7 +48,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id } = req.params;
+        const { webhook_id } = req.params as { [key: string]: string };
 
         const webhook = await Webhook.findOneOrFail({
             where: { id: webhook_id },
@@ -93,7 +93,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id } = req.params;
+        const { webhook_id } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 
         const webhook = await Webhook.findOneOrFail({

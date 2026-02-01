@@ -39,7 +39,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, overwrite_id } = req.params;
+        const { channel_id, overwrite_id } = req.params as { [key: string]: string };
         const body = req.body as ChannelPermissionOverwriteSchema;
 
         const channel = await Channel.findOneOrFail({
@@ -82,7 +82,7 @@ router.put(
 
 // TODO: check permission hierarchy
 router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES", responses: { 204: {}, 404: {} } }), async (req: Request, res: Response) => {
-    const { channel_id, overwrite_id } = req.params;
+    const { channel_id, overwrite_id } = req.params as { [key: string]: string };
 
     const channel = await Channel.findOneOrFail({
         where: { id: channel_id },

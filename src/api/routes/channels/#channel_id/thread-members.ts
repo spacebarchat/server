@@ -41,7 +41,7 @@ router.get(
             after?: Snowflake;
             limit?: string;
         };
-        const { id: channel_id } = req.params;
+        const { id: channel_id } = req.params as { [key: string]: string };
 
         if (limit && parseInt(limit) > 100) limit = "100";
 
@@ -69,7 +69,7 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         // eslint-disable-next-line prefer-const
-        let { channel_id, user_id } = req.params;
+        let { channel_id, user_id } = req.params as { [key: string]: string };
         const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
 
         if (user_id != "@me") (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.SEND_MESSAGES);
@@ -126,7 +126,7 @@ router.delete(
     }),
     async (req: Request, res: Response) => {
         // eslint-disable-next-line prefer-const
-        let { channel_id, user_id } = req.params;
+        let { channel_id, user_id } = req.params as { [key: string]: string };
         const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
 
         // TODO: require thread creator for private threads
@@ -181,9 +181,9 @@ router.patch(
     async (req: Request, res: Response) => {
         // TODO
         // eslint-disable-next-line prefer-const
-        let { channel_id } = req.params;
+        let { channel_id } = req.params as { [key: string]: string };
         const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
-        await Member.IsInGuildOrFail(req.params.user_id, thread.guild_id!);
+        await Member.IsInGuildOrFail(req.params.user_id as string, thread.guild_id!);
         // var threadMember = await ThreadMember.findOneOrFail({ where: { member_id: req.user_id, id: channel_id } });
 
         // await emitEvent({

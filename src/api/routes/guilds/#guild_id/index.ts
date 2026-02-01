@@ -40,7 +40,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const [guild, member] = await Promise.all([Guild.findOneOrFail({ where: { id: guild_id } }), Member.findOne({ where: { guild_id: guild_id, id: req.user_id } })]);
         if (!member) throw new HTTPError("You are not a member of the guild you are trying to access", 401);
@@ -74,7 +74,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as GuildUpdateSchema;
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const rights = await getRights(req.user_id);
         const permission = await getPermission(req.user_id, guild_id);

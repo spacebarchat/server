@@ -37,7 +37,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
 
@@ -68,7 +68,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const body = req.body as WidgetModifySchema;
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         await Guild.update(
             { id: guild_id },

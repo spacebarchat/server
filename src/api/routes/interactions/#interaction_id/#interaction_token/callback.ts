@@ -68,7 +68,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         throw FieldErrors(errors);
     }
 
-    const interactionId = req.params.interaction_id;
+    const interactionId = req.params.interaction_id as string;
     const interaction = pendingInteractions.get(req.params.interaction_id);
 
     if (!interaction) {

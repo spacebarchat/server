@@ -28,7 +28,7 @@ const ALLOWED_CONNECTIONS = ["twitch", "youtube"];
 
 // NOTE: this route has not been extensively tested, as the required connections are not implemented as of writing
 router.get("/", route({}), async (req: Request, res: Response) => {
-    const { connection_name, connection_id } = req.params;
+    const { connection_name, connection_id } = req.params as { [key: string]: string };
 
     const connection = ConnectionStore.connections.get(connection_name);
 

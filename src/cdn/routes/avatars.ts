@@ -40,7 +40,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
     if (!req.file) throw new HTTPError("Missing file");
     const { buffer, size } = req.file;
-    const { user_id } = req.params;
+    const { user_id } = req.params as { [key: string]: string };
 
     let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
@@ -62,7 +62,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
 });
 
 router.get("/:user_id", cache, async (req: Request, res: Response) => {
-    let { user_id } = req.params;
+    let { user_id } = req.params as { [key: string]: string };
     user_id = user_id.split(".")[0]; // remove .file extension
     const path = `avatars/${user_id}`;
 
@@ -76,8 +76,8 @@ router.get("/:user_id", cache, async (req: Request, res: Response) => {
 });
 
 export const getAvatar = async (req: Request, res: Response) => {
-    const { user_id } = req.params;
-    let { hash } = req.params;
+    const { user_id } = req.params as { [key: string]: string };
+    let { hash } = req.params as { [key: string]: string };
     hash = hash.split(".")[0]; // remove .file extension
     const path = `avatars/${user_id}/${hash}`;
 
@@ -94,7 +94,7 @@ router.get("/:user_id/:hash", cache, getAvatar);
 
 router.delete("/:user_id/:id", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-    const { user_id, id } = req.params;
+    const { user_id, id } = req.params as { [key: string]: string };
     const path = `avatars/${user_id}/${id}`;
 
     await storage.delete(path);

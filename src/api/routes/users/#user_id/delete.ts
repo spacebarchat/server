@@ -58,7 +58,7 @@ router.post(
         const sw = Stopwatch.startNew();
         const body = req.body as InstanceUserDeleteSchema | undefined;
         const user = await User.findOneOrFail({
-            where: { id: req.params.user_id },
+            where: { id: req.params.user_id as string },
             select: [...PrivateUserProjection, "data"],
         });
 
@@ -130,11 +130,11 @@ router.post(
         );
 
         // change ownership on guilds
-        const guilds = await Guild.find({ where: { owner_id: req.params.user_id } });
+        const guilds = await Guild.find({ where: { owner_id: req.params.user_id as string } });
         await Promise.all(
             guilds.map(async (guild) => {
                 const members = await Member.find({
-                    where: { guild_id: guild.id, id: Not(req.params.user_id) },
+                    where: { guild_id: guild.id, id: Not(req.params.user_id as string) },
                     relations: { roles: true },
                     select: { id: true, roles: { id: true, position: true } },
                 });
@@ -156,7 +156,7 @@ router.post(
                     console.log(`[Instance ban] Transferred ownership of guild ${guild.id} to user ${guild.owner_id}`);
 
                     // safety - reassign emojis/stickers owned by the old owner
-                    const stickers = await Sticker.find({ where: { guild_id: guild.id, user_id: req.params.user_id } });
+                    const stickers = await Sticker.find({ where: { guild_id: guild.id, user_id: req.params.user_id as string } });
                     await Promise.all(
                         stickers.map(async (sticker) => {
                             sticker.user_id = guild.owner_id;
@@ -165,7 +165,7 @@ router.post(
                         }),
                     );
 
-                    const emojis = await Emoji.find({ where: { guild_id: guild.id, user_id: req.params.user_id } });
+                    const emojis = await Emoji.find({ where: { guild_id: guild.id, user_id: req.params.user_id as string } });
                     await Promise.all(
                         emojis.map(async (emoji) => {
                             emoji.user_id = guild.owner_id!;
@@ -177,16 +177,16 @@ router.post(
             }),
         );
 
-        const members = await Member.find({ where: { id: req.params.user_id } });
+        const members = await Member.find({ where: { id: req.params.user_id as string } });
         await Promise.all([...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
-        await UserSettingsProtos.delete({ user_id: req.params.user_id });
-        await User.delete({ id: req.params.user_id });
+        await UserSettingsProtos.delete({ user_id: req.params.user_id as string });
+        await User.delete({ id: req.params.user_id as string });
 
         // TODO: respect intents as USER_DELETE has potential to cause privacy issues
         await emitEvent({
             event: "USER_DELETE",
             user_id: req.user_id,
-            data: { user_id: req.params.user_id },
+            data: { user_id: req.params.user_id as string },
         } as UserDeleteEvent);
 
         console.log(`[Instance ban] Deleted user ${user.id} from instance in ${sw.elapsed().toString()}`);

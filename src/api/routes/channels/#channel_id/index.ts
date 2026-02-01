@@ -37,7 +37,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
@@ -61,7 +61,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
@@ -147,7 +147,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const payload = req.body as ChannelModifySchema;
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
         if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
         const channel = await Channel.findOneOrFail({

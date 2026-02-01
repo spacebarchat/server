@@ -40,7 +40,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         let bans = await Ban.find({ where: { guild_id: guild_id } });
         const promisesToAwait: Promise<PublicUser>[] = [];
@@ -98,7 +98,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const limit = Number(req.query.limit) || 10;
         if (limit > 10 || limit < 1) throw new HTTPError("Limit must be between 1 and 10");
@@ -154,7 +154,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, user_id } = req.params;
+        const { guild_id, user_id } = req.params as { [key: string]: string };
 
         const ban = (await Ban.findOneOrFail({
             where: { guild_id: guild_id, user_id: user_id },
@@ -196,8 +196,8 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
-        const banned_user_id = req.params.user_id;
+        const { guild_id } = req.params as { [key: string]: string };
+        const banned_user_id = req.params.user_id as string;
         const opts = req.body as BanCreateSchema;
 
         let deleteMessagesMs = opts.delete_message_days
@@ -262,7 +262,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, user_id } = req.params;
+        const { guild_id, user_id } = req.params as { [key: string]: string };
 
         await Ban.findOneOrFail({
             where: { guild_id: guild_id, user_id: user_id },

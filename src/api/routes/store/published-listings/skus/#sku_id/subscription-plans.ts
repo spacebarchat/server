@@ -318,7 +318,7 @@ const skus = new Map([
 
 router.get("/", route({}), (req: Request, res: Response) => {
     // TODO: add the ability to add custom
-    const { sku_id } = req.params;
+    const { sku_id } = req.params as { [key: string]: string };
 
     if (!skus.has(sku_id)) {
         console.log(`Request for invalid SKU ${sku_id}! Please report this!`);

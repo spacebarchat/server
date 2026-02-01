@@ -37,7 +37,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, message_id } = req.params;
+        const { channel_id, message_id } = req.params as { [key: string]: string };
 
         const message = await Message.findOneOrFail({
             where: { id: message_id },
@@ -122,7 +122,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id, message_id } = req.params;
+        const { channel_id, message_id } = req.params as { [key: string]: string };
 
         const message = await Message.findOneOrFail({
             where: { id: message_id },
@@ -169,7 +169,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
 
         const pins = await Message.find({
             where: { channel_id: channel_id, pinned_at: Not(IsNull()) },

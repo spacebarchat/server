@@ -87,7 +87,7 @@ router.get(
         let roles = req.query.include_roles;
         if (typeof roles === "string") roles = [roles]; //express will return array otherwise
 
-        const members = await inactiveMembers(req.params.guild_id, req.user_id, days, roles as string[]);
+        const members = await inactiveMembers(req.params.guild_id as string, req.user_id, days, roles as string[]);
 
         res.send({ pruned: members.length });
     },
@@ -113,7 +113,7 @@ router.post(
         let roles = req.query.include_roles;
         if (typeof roles === "string") roles = [roles];
 
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const members = await inactiveMembers(guild_id, req.user_id, days, roles as string[]);
 
         await Promise.all(members.map((x) => Member.removeFromGuild(x.id, guild_id)));

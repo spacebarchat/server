@@ -38,7 +38,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const rules = await AutomodRule.find({ where: { guild_id } });
         return res.json(rules);
     },
@@ -62,7 +62,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         if (req.user_id !== req.body.creator_id) throw new HTTPError("You can't create a rule for someone else", 403);
 
         if (guild_id !== req.body.guild_id) throw new HTTPError("You can't create a rule for another guild", 403);
@@ -103,7 +103,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { rule_id } = req.params;
+        const { rule_id } = req.params as { [key: string]: string };
         const rule = await AutomodRule.findOneOrFail({
             where: { id: rule_id },
         });
@@ -131,7 +131,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { rule_id } = req.params;
+        const { rule_id } = req.params as { [key: string]: string };
         await AutomodRule.delete({ id: rule_id });
         return res.status(204).send();
     },

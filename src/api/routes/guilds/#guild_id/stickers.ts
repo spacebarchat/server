@@ -37,7 +37,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         await Member.IsInGuildOrFail(req.user_id, guild_id);
 
         res.json(await Sticker.find({ where: { guild_id } }));
@@ -74,7 +74,7 @@ router.post(
     async (req: Request, res: Response) => {
         if (!req.file) throw new HTTPError("missing file");
 
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const body = req.body as ModifyGuildStickerSchema;
         const id = Snowflake.generate();
 
@@ -132,7 +132,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, sticker_id } = req.params;
+        const { guild_id, sticker_id } = req.params as { [key: string]: string };
         await Member.IsInGuildOrFail(req.user_id, guild_id);
 
         res.json(
@@ -161,7 +161,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, sticker_id } = req.params;
+        const { guild_id, sticker_id } = req.params as { [key: string]: string };
         const body = req.body as ModifyGuildStickerSchema;
 
         const sticker = await Sticker.create({
@@ -198,7 +198,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, sticker_id } = req.params;
+        const { guild_id, sticker_id } = req.params as { [key: string]: string };
 
         await Sticker.delete({ guild_id, id: sticker_id });
         await sendStickerUpdateEvent(guild_id);

@@ -32,7 +32,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const channels = await Channel.find({ where: { guild_id } });
 
         for await (const channel of channels) {
@@ -63,7 +63,7 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         // creates a new guild channel https://discord.com/developers/docs/resources/guild#create-guild-channel
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const body = req.body as ChannelModifySchema;
 
         const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
@@ -90,7 +90,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         // changes guild channel position
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         let body = req.body as ChannelReorderSchema;
 
         const guild = await Guild.findOneOrFail({

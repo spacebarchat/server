@@ -66,7 +66,7 @@ router.get(
                 }); // todo this is wrong
         }
 
-        const permissions = await getPermission(req.user_id, req.params.guild_id, channel_id as string | undefined);
+        const permissions = await getPermission(req.user_id, req.params.guild_id as string, channel_id as string | undefined);
         permissions.hasThrow("VIEW_CHANNEL");
         if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json({ messages: [], total_results: 0 });
 
@@ -77,7 +77,7 @@ router.get(
             take: parsedLimit || 0,
             where: {
                 guild: {
-                    id: req.params.guild_id,
+                    id: req.params.guild_id as string,
                 },
             },
             relations: { author: true, webhook: true, application: true, mentions: true, mention_roles: true, mention_channels: true, sticker_items: true, attachments: true },
@@ -88,13 +88,13 @@ router.get(
         else {
             // get all channel IDs that this user can access
             const channels = await Channel.find({
-                where: { guild_id: req.params.guild_id },
+                where: { guild_id: req.params.guild_id as string },
                 select: { id: true },
             });
             const ids = [];
 
             for (const channel of channels) {
-                const perm = await getPermission(req.user_id, req.params.guild_id, channel.id);
+                const perm = await getPermission(req.user_id, req.params.guild_id as string, channel.id);
                 if (!perm.has("VIEW_CHANNEL") || !perm.has("READ_MESSAGE_HISTORY")) continue;
                 ids.push(channel.id);
             }

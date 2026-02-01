@@ -23,7 +23,7 @@ import { route } from "@spacebar/api";
 const router = Router({ mergeParams: true });
 
 router.get("/", route({}), async (req: Request, res: Response) => {
-    const { guild_id, role_id } = req.params;
+    const { guild_id, role_id } = req.params as { [key: string]: string };
 
     // TODO: Is this route really not paginated?
     const members = await Member.find({

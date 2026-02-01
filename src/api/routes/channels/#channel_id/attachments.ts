@@ -40,7 +40,7 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const payload = req.body as UploadAttachmentRequestSchema;
-        const { channel_id } = req.params;
+        const { channel_id } = req.params as { [key: string]: string };
 
         const user = req.user;
         const channel = await Channel.findOneOrFail({ where: { id: channel_id } });
@@ -100,7 +100,7 @@ router.post(
 );
 
 router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
-    const { channel_id, cloud_attachment_url } = req.params;
+    const { channel_id, cloud_attachment_url } = req.params as { [key: string]: string };
 
     const user = req.user;
     const channel = await Channel.findOneOrFail({ where: { id: channel_id } });

@@ -31,7 +31,7 @@ router.get(
         },
     }),
     (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         // TODO:
         // Load from database
         // Admin control, but for now it allows anyone to be discoverable

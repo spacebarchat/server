@@ -49,7 +49,7 @@ export function createBasicCrdFileRouter(opts: BasicCrdFileRouterOptions) {
         if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
         if (!req.file) throw new HTTPError("Missing file");
         const { buffer, size } = req.file;
-        const { user_id } = req.params;
+        const { user_id } = req.params as { [key: string]: string };
 
         let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
@@ -71,7 +71,7 @@ export function createBasicCrdFileRouter(opts: BasicCrdFileRouterOptions) {
     });
 
     router.get("/:user_id", async (req: Request, res: Response) => {
-        let { user_id } = req.params;
+        let { user_id } = req.params as { [key: string]: string };
         user_id = user_id.split(".")[0]; // remove .file extension
         const path = `${opts.pathPrefix}/${user_id}`;
 
@@ -86,8 +86,8 @@ export function createBasicCrdFileRouter(opts: BasicCrdFileRouterOptions) {
     });
 
     const getAvatar = async (req: Request, res: Response) => {
-        const { user_id } = req.params;
-        let { hash } = req.params;
+        const { user_id } = req.params as { [key: string]: string };
+        let { hash } = req.params as { [key: string]: string };
         hash = hash.split(".")[0]; // remove .file extension
         const path = `${opts.pathPrefix}/${user_id}/${hash}`;
 
@@ -105,7 +105,7 @@ export function createBasicCrdFileRouter(opts: BasicCrdFileRouterOptions) {
 
     router.delete("/:user_id/:hash", async (req: Request, res: Response) => {
         if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-        const { user_id, hash } = req.params;
+        const { user_id, hash } = req.params as { [key: string]: string };
         const path = `${opts.pathPrefix}/${user_id}/${hash}`;
 
         await storage.delete(path);

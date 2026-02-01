@@ -40,7 +40,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         // const member_id =
         // 	req.params.member_id === "@me" ? req.user_id : req.params.member_id;
         const body = req.body as MemberChangeProfileSchema;

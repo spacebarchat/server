@@ -34,7 +34,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, role_id, member_id } = req.params;
+        const { guild_id, role_id, member_id } = req.params as { [key: string]: string };
 
         await Member.removeRole(member_id, guild_id, role_id);
         res.sendStatus(204);
@@ -51,7 +51,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, role_id, member_id } = req.params;
+        const { guild_id, role_id, member_id } = req.params as { [key: string]: string };
 
         await Member.addRole(member_id, guild_id, role_id);
         res.sendStatus(204);

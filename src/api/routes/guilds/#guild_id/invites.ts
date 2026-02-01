@@ -33,7 +33,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const invites = await Invite.find({
             where: { guild_id },

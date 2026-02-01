@@ -34,7 +34,7 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         const app = await Application.findOneOrFail({
-            where: { id: req.params.id }, // ...huh? there's no ID in the path...
+            where: { id: req.params.id as string }, // ...huh? there's no ID in the path...
             relations: { bot: true, owner: true },
             select: {
                 owner: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),

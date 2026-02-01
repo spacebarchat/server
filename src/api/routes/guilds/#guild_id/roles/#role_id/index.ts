@@ -40,7 +40,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, role_id } = req.params;
+        const { guild_id, role_id } = req.params as { [key: string]: string };
         await Member.IsInGuildOrFail(req.user_id, guild_id);
         const role = await Role.findOneOrFail({
             where: { guild_id, id: role_id },
@@ -67,7 +67,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id, role_id } = req.params;
+        const { guild_id, role_id } = req.params as { [key: string]: string };
         if (role_id === guild_id) throw new HTTPError("You can't delete the @everyone role");
 
         await Promise.all([
@@ -112,7 +112,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { role_id, guild_id } = req.params;
+        const { role_id, guild_id } = req.params as { [key: string]: string };
         const body = req.body as RoleModifySchema;
 
         if (body.icon && body.icon.length) body.icon = await handleFile(`/role-icons/${role_id}`, body.icon as string);

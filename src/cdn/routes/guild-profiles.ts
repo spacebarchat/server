@@ -40,7 +40,7 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
     if (!req.file) throw new HTTPError("Missing file");
     const { buffer, size } = req.file;
-    const { guild_id, user_id } = req.params;
+    const { guild_id, user_id } = req.params as { [key: string]: string };
 
     let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
@@ -62,8 +62,8 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
 });
 
 router.get("/", cache, async (req: Request, res: Response) => {
-    const { guild_id } = req.params;
-    let { user_id } = req.params;
+    const { guild_id } = req.params as { [key: string]: string };
+    let { user_id } = req.params as { [key: string]: string };
     user_id = user_id.split(".")[0]; // remove .file extension
     const path = `guilds/${guild_id}/users/${user_id}/avatars`;
 
@@ -77,8 +77,8 @@ router.get("/", cache, async (req: Request, res: Response) => {
 });
 
 router.get("/:hash", cache, async (req: Request, res: Response) => {
-    const { guild_id, user_id } = req.params;
-    let { hash } = req.params;
+    const { guild_id, user_id } = req.params as { [key: string]: string };
+    let { hash } = req.params as { [key: string]: string };
     hash = hash.split(".")[0]; // remove .file extension
     const path = `guilds/${guild_id}/users/${user_id}/avatars/${hash}`;
 
@@ -93,7 +93,7 @@ router.get("/:hash", cache, async (req: Request, res: Response) => {
 
 router.delete("/:id", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-    const { guild_id, user_id, id } = req.params;
+    const { guild_id, user_id, id } = req.params as { [key: string]: string };
     const path = `guilds/${guild_id}/users/${user_id}/avatars/${id}`;
 
     await storage.delete(path);

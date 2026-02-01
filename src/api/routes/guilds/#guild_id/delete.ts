@@ -39,7 +39,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },

@@ -51,7 +51,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
 
         const templates = await Template.find({
             where: { source_guild_id: guild_id },
@@ -82,7 +82,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const { guild_id } = req.params;
+        const { guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
             select: TemplateGuildProjection,
@@ -117,7 +117,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { code, guild_id } = req.params;
+        const { code, guild_id } = req.params as { [key: string]: string };
 
         const template = await Template.delete({
             code,
@@ -138,7 +138,7 @@ router.put(
         },
     }),
     async (req: Request, res: Response) => {
-        const { code, guild_id } = req.params;
+        const { code, guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
             select: TemplateGuildProjection,
@@ -164,7 +164,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { code, guild_id } = req.params;
+        const { code, guild_id } = req.params as { [key: string]: string };
         const { name, description } = req.body;
 
         const template = await Template.findOneOrFail({

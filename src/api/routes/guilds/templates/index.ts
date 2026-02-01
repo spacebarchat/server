@@ -40,7 +40,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { template_code } = req.params;
+        const { template_code } = req.params as { [key: string]: string };
 
         const template = await getTemplate(template_code);
 
@@ -49,7 +49,7 @@ router.get(
 );
 
 router.post("/:template_code", route({ requestBody: "GuildTemplateCreateSchema" }), async (req: Request, res: Response) => {
-    const { template_code } = req.params;
+    const { template_code } = req.params as { [key: string]: string };
     const body = req.body as GuildTemplateCreateSchema;
 
     const { maxGuilds } = Config.get().limits.user;

@@ -36,7 +36,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const guild_id = req.params.guild_id;
+        const guild_id = req.params.guild_id as string;
 
         const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
         await Member.IsInGuildOrFail(req.user_id, guild_id);
@@ -61,7 +61,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const guild_id = req.params.guild_id;
+        const guild_id = req.params.guild_id as string;
         const body = req.body as GuildUpdateWelcomeScreenSchema;
 
         const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
