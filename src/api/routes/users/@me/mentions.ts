@@ -46,7 +46,7 @@ router.get(
         const user = req.user;
 
         const memberships = await Member.find({
-            where: { id: req.user_id, ...(guild_id === undefined ? {} : { guild_id: String(guild_id) }) },
+            where: { id: req.user_id, ...(guild_id === undefined || guild_id === "0" ? {} : { guild_id: String(guild_id) }) },
             select: {
                 guild_id: true,
                 id: true,
