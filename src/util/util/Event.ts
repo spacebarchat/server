@@ -81,8 +81,6 @@ export async function initEvent() {
 
     // Set up the spacebar event listener (used for config reload, etc.)
     const setupSpacebarListener = async () => {
-        if (!RabbitMQ.connection) return;
-
         console.log("[Event] Setting up spacebar event listener");
         await listenEvent("spacebar", async (event) => {
             console.log("[Event] Received spacebar event:", event);
@@ -176,7 +174,7 @@ async function rabbitListen(channel: Channel, id: string, callback: (event: Even
 
     const cancel = async () => {
         try {
-            // Order matters here to prevent RESOURCE_ERROR:
+            // Order matters here to prevent RESOURCE_ERROR, due to potential race condition:
             // 1. Unbind first - stops new messages from being routed to this queue
             await channel.unbindQueue(q.queue, id, "");
             // 2. Cancel consumer - with autoDelete: true, this triggers queue deletion
