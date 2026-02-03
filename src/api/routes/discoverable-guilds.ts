@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Guild } from "@spacebar/util";
+import { Config, Guild, Member } from "@spacebar/util";
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Like } from "typeorm";
+import { In, Like, Not } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -37,6 +37,13 @@ router.get(
         const { offset, limit, categories } = req.query;
         const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
         const configLimit = Config.get().guild.discovery.limit;
+        const hideJoinedGuilds = Config.get().guild.discovery.hideJoinedGuilds;
+        const hiddenGuildIds = hideJoinedGuilds
+            ? await Member.find({
+                  where: { id: req.user_id },
+                  select: { guild_id: true },
+              }).then((members) => members.map((member) => member.guild_id))
+            : [];
         let guilds;
         if (categories == undefined) {
             guilds = showAllGuilds
@@ -50,13 +57,14 @@ router.get(
         } else {
             guilds = showAllGuilds
                 ? await Guild.find({
-                      where: { primary_category_id: categories.toString() },
+                      where: { primary_category_id: categories.toString(), id: Not(In(hiddenGuildIds)) },
                       take: Math.abs(Number(limit || configLimit)),
                   })
                 : await Guild.find({
                       where: {
                           primary_category_id: categories.toString(),
                           features: Like("%DISCOVERABLE%"),
+                          id: Not(In(hiddenGuildIds)),
                       },
                       take: Math.abs(Number(limit || configLimit)),
                   });

@@ -21,4 +21,5 @@ export class DiscoveryConfiguration {
     useRecommendation: boolean = false; // TODO: Recommendation, privacy concern?
     offset: number = 0;
     limit: number = 24;
+    hideJoinedGuilds: boolean = true;
 }
