@@ -65,6 +65,11 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       in
       {
         # Interop
+        Spacebar-Interop-Authentication = makeNupkg {
+          name = "Spacebar.Interop.Authentication";
+          projectFile = "Interop/Spacebar.Interop.Authentication/Spacebar.Interop.Authentication.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Authentication/deps.json;
+        };
         Spacebar-Interop-Cdn-Abstractions = makeNupkg {
           name = "Spacebar.Interop.Cdn.Abstractions";
           projectFile = "Interop/Spacebar.Interop.Cdn.Abstractions/Spacebar.Interop.Cdn.Abstractions.csproj";
