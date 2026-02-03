@@ -32,6 +32,7 @@ router.post(
     "/",
     route({
         requestBody: "MessageThreadCreationSchema",
+        permission: "CREATE_PUBLIC_THREADS",
         responses: {
             200: {},
             403: {},
