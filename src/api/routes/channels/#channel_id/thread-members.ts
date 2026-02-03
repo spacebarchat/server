@@ -154,17 +154,17 @@ router.delete(
             },
             channel_id: thread.id,
         } as ThreadMembersUpdateEvent);
-
-        await emitEvent({
-            event: "THREAD_DELETE",
-            data: {
-                id: thread.id,
-                guild_id: thread.guild_id!,
-                parent_id: thread.parent_id!,
-                type: thread.type,
-            },
-            user_id: user_id,
-        } as ThreadDeleteEvent);
+        if (thread.type === ChannelType.GUILD_PRIVATE_THREAD)
+            await emitEvent({
+                event: "THREAD_DELETE",
+                data: {
+                    id: thread.id,
+                    guild_id: thread.guild_id!,
+                    parent_id: thread.parent_id!,
+                    type: thread.type,
+                },
+                user_id: user_id,
+            } as ThreadDeleteEvent);
 
         return res.status(204).send();
     },
