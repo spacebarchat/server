@@ -100,10 +100,10 @@ export class CDNServer extends Server {
         console.log("[Server] Route /channel-icons registered");
 
         this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
-        console.log("[Server] Route /guilds/avatars registered");
+        console.log("[Server] Route /guilds/:guild_id/users/:user_id/avatars registered");
 
         this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
-        console.log("[Server] Route /guilds/banners registered");
+        console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
         return super.start();
     }
