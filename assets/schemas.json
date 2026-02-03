@@ -8152,6 +8152,18 @@
                     "type": "string"
                 }
             },
+            "avatar_decoration_data": {
+                "$ref": "#/definitions/AvatarDecorationData"
+            },
+            "display_name_styles": {
+                "$ref": "#/definitions/DisplayNameStyle"
+            },
+            "collectibles": {
+                "$ref": "#/definitions/Collectibles"
+            },
+            "primary_guild": {
+                "$ref": "#/definitions/PrimaryGuild"
+            },
             "tag": {
                 "type": "string"
             },
@@ -9002,6 +9014,142 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "AvatarDecorationData": {
+        "type": "object",
+        "properties": {
+            "asset": {
+                "type": "string"
+            },
+            "sku_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "expires_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "asset",
+            "expires_at",
+            "sku_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "DisplayNameStyle": {
+        "type": "object",
+        "properties": {
+            "font_id": {
+                "type": "integer"
+            },
+            "effect_id": {
+                "type": "integer"
+            },
+            "colors": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "colors",
+            "effect_id",
+            "font_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Collectibles": {
+        "type": "object",
+        "properties": {
+            "nameplate": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/NameplateData"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "nameplate"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "NameplateData": {
+        "type": "object",
+        "properties": {
+            "asset": {
+                "type": "string"
+            },
+            "sku_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "label": {
+                "type": "string"
+            },
+            "palette": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "asset",
+            "expires_at",
+            "label",
+            "palette",
+            "sku_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PrimaryGuild": {
+        "type": "object",
+        "properties": {
+            "identity_enabled": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "identity_guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "tag": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "badge": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "badge",
+            "identity_enabled",
+            "identity_guild_id",
+            "tag"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "Guild": {
         "type": "object",
         "properties": {
@@ -9377,6 +9525,15 @@
                         "type": "null"
                     }
                 ]
+            },
+            "avatar_decoration_data": {
+                "$ref": "#/definitions/AvatarDecorationData"
+            },
+            "display_name_styles": {
+                "$ref": "#/definitions/DisplayNameStyle"
+            },
+            "collectibles": {
+                "$ref": "#/definitions/Collectibles"
             }
         },
         "additionalProperties": false,
@@ -12672,142 +12829,6 @@
             "discriminator",
             "id",
             "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AvatarDecorationData": {
-        "type": "object",
-        "properties": {
-            "asset": {
-                "type": "string"
-            },
-            "sku_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "expires_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "asset",
-            "expires_at",
-            "sku_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "Collectibles": {
-        "type": "object",
-        "properties": {
-            "nameplate": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/NameplateData"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "nameplate"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "NameplateData": {
-        "type": "object",
-        "properties": {
-            "asset": {
-                "type": "string"
-            },
-            "sku_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "label": {
-                "type": "string"
-            },
-            "palette": {
-                "type": "string"
-            },
-            "expires_at": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "asset",
-            "expires_at",
-            "label",
-            "palette",
-            "sku_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DisplayNameStyle": {
-        "type": "object",
-        "properties": {
-            "font_id": {
-                "type": "integer"
-            },
-            "effect_id": {
-                "type": "integer"
-            },
-            "colors": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "colors",
-            "effect_id",
-            "font_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PrimaryGuild": {
-        "type": "object",
-        "properties": {
-            "identity_enabled": {
-                "type": [
-                    "null",
-                    "boolean"
-                ]
-            },
-            "identity_guild_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "tag": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "badge": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "badge",
-            "identity_enabled",
-            "identity_guild_id",
-            "tag"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
