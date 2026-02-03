@@ -27,7 +27,17 @@ import { Relationship } from "./Relationship";
 import { SecurityKey } from "./SecurityKey";
 import { Session } from "./Session";
 import { UserSettings } from "./UserSettings";
-import { ChannelType, PrivateUserProjection, PublicUser, PublicUserProjection, UserPrivate } from "@spacebar/schemas";
+import {
+    AvatarDecorationData,
+    ChannelType,
+    Collectibles,
+    DisplayNameStyle,
+    PrimaryGuild,
+    PrivateUserProjection,
+    PublicUser,
+    PublicUserProjection,
+    UserPrivate,
+} from "@spacebar/schemas";
 
 @Entity({
     name: "users",
@@ -167,6 +177,18 @@ export class User extends BaseClass {
 
     @Column({ type: "simple-array", nullable: true })
     badge_ids?: string[];
+
+    @Column({ type: "simple-json", nullable: true })
+    avatar_decoration_data?: AvatarDecorationData;
+
+    @Column({ type: "simple-json", nullable: true })
+    display_name_styles?: DisplayNameStyle;
+
+    @Column({ type: "simple-json", nullable: true })
+    collectibles?: Collectibles;
+
+    @Column({ type: "simple-json", nullable: true })
+    primary_guild?: PrimaryGuild;
 
     // TODO: I don't like this method?
     validate() {
