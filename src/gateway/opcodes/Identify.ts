@@ -47,6 +47,7 @@ import {
     SessionsReplace,
     Sticker,
     Stopwatch,
+    ThreadMember,
     timeFunction,
     timePromise,
     TraceNode,
@@ -206,7 +207,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 where: { id: this.user_id },
                 select: {
                     // We only want some member props
-                    ...Object.fromEntries(MemberPrivateProjection.map((x) => [x, true])),
+                    ...Object.fromEntries(["index", ...MemberPrivateProjection].map((x) => [x, true])),
                     settings: true, // guild settings
                     roles: { id: true }, // the full role is fetched from the `guild` relation
                     guild: { id: true },
@@ -298,7 +299,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             Channel.find({
                 where: {
                     guild_id: In(guildIds),
-                    type: Not(ChannelType.GUILD_PUBLIC_THREAD),
+                    type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
                 },
                 order: { guild_id: "ASC" },
             }),
@@ -412,9 +413,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ];
     });
     const mergedMembersTime = taskSw.getElapsedAndReset();
+    const member_idx = members.map(({ index }) => index);
+
+    const threadMembers = await ThreadMember.find({
+        where: { member_idx: In(member_idx) },
+        relations: { channel: { recipients: { user: true } } },
+    });
+    const threadMemberTime = taskSw.getElapsedAndReset();
 
     // Populated with guilds 'unavailable' currently
     // Just for bots
+
     const pending_guilds: Guild[] = [];
 
     // Generate guilds list ( make them unavailable if user is bot )
@@ -445,12 +454,23 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             pending_guilds.push(member.guild);
             return { id: member.guild.id, unavailable: true };
         }
+        const threads = threadMembers
+            .filter(({ channel }) => channel.guild_id === member.guild.id)
+            .map((_) => {
+                return {
+                    member: {
+                        ..._.toJSON(),
+                        channel: undefined,
+                    },
+                    ..._.channel.toJSON(),
+                };
+            });
 
         return {
             ...member.guild.toJSON(),
             joined_at: member.joined_at,
 
-            threads: member.guild.channels.filter((x) => x.isThread()),
+            threads,
         };
     });
     const generateGuildsListTime = taskSw.getElapsedAndReset();
@@ -665,6 +685,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         emitPresenceUpdateTime,
         remapReadStateIdsTime,
         buildReadyEventDataTime,
+        threadMemberTime,
     };
     for (const [key, value] of Object.entries(times)) {
         if (value) {
