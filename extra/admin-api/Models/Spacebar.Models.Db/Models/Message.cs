@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -97,6 +97,9 @@ public partial class Message
     [Column("message_snapshots")]
     public string MessageSnapshots { get; set; } = null!;
 
+    [Column("thread_id", TypeName = "character varying")]
+    public string? ThreadId { get; set; }
+
     [ForeignKey("ApplicationId")]
     [InverseProperty("Messages")]
     public virtual Application? Application { get; set; }
@@ -109,7 +112,7 @@ public partial class Message
     public virtual User? Author { get; set; }
 
     [ForeignKey("ChannelId")]
-    [InverseProperty("Messages")]
+    [InverseProperty("MessageChannels")]
     public virtual Channel? Channel { get; set; }
 
     [ForeignKey("GuildId")]
@@ -127,12 +130,16 @@ public partial class Message
     [InverseProperty("InverseMessageReferenceNavigation")]
     public virtual Message? MessageReferenceNavigation { get; set; }
 
+    [ForeignKey("ThreadId")]
+    [InverseProperty("MessageThreads")]
+    public virtual Channel? Thread { get; set; }
+
     [ForeignKey("WebhookId")]
     [InverseProperty("Messages")]
     public virtual Webhook? Webhook { get; set; }
 
     [ForeignKey("MessagesId")]
-    [InverseProperty("MessagesNavigation")]
+    [InverseProperty("Messages")]
     public virtual ICollection<Channel> Channels { get; set; } = new List<Channel>();
 
     [ForeignKey("MessagesId")]

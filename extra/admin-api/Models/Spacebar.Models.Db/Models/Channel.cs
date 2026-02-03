@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -73,6 +73,18 @@ public partial class Channel
     [Column("default_thread_rate_limit_per_user")]
     public int? DefaultThreadRateLimitPerUser { get; set; }
 
+    [Column("thread_metadata")]
+    public string? ThreadMetadata { get; set; }
+
+    [Column("member_count")]
+    public int? MemberCount { get; set; }
+
+    [Column("message_count")]
+    public int? MessageCount { get; set; }
+
+    [Column("total_message_sent")]
+    public int? TotalMessageSent { get; set; }
+
     [InverseProperty("Channel")]
     public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();
 
@@ -102,7 +114,10 @@ public partial class Channel
     public virtual ICollection<Invite> Invites { get; set; } = new List<Invite>();
 
     [InverseProperty("Channel")]
-    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
+    public virtual ICollection<Message> MessageChannels { get; set; } = new List<Message>();
+
+    [InverseProperty("Thread")]
+    public virtual ICollection<Message> MessageThreads { get; set; } = new List<Message>();
 
     [ForeignKey("OwnerId")]
     [InverseProperty("Channels")]
@@ -121,6 +136,9 @@ public partial class Channel
     [InverseProperty("Channel")]
     public virtual ICollection<Stream> Streams { get; set; } = new List<Stream>();
 
+    [InverseProperty("IdNavigation")]
+    public virtual ICollection<ThreadMember> ThreadMembers { get; set; } = new List<ThreadMember>();
+
     [InverseProperty("Channel")]
     public virtual ICollection<VoiceState> VoiceStates { get; set; } = new List<VoiceState>();
 
@@ -132,5 +150,5 @@ public partial class Channel
 
     [ForeignKey("ChannelsId")]
     [InverseProperty("Channels")]
-    public virtual ICollection<Message> MessagesNavigation { get; set; } = new List<Message>();
+    public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

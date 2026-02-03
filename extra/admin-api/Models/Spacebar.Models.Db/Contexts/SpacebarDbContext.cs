@@ -1,5 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.Models.Db.Models;
 using Stream = Spacebar.Models.Db.Models.Stream;
@@ -90,6 +88,8 @@ public partial class SpacebarDbContext : DbContext
     public virtual DbSet<TeamMember> TeamMembers { get; set; }
 
     public virtual DbSet<Template> Templates { get; set; }
+
+    public virtual DbSet<ThreadMember> ThreadMembers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -355,7 +355,7 @@ public partial class SpacebarDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_05535bc695e9f7ee104616459d3");
 
-            entity.HasOne(d => d.Channel).WithMany(p => p.Messages)
+            entity.HasOne(d => d.Channel).WithMany(p => p.MessageChannels)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_86b9109b155eb70c0a2ca3b4b6d");
 
@@ -371,9 +371,13 @@ public partial class SpacebarDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_61a92bb65b302a76d9c1fcd3174");
 
+            entity.HasOne(d => d.Thread).WithMany(p => p.MessageThreads)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_bb3af7f695d50083e6523290d41");
+
             entity.HasOne(d => d.Webhook).WithMany(p => p.Messages).HasConstraintName("FK_f83c04bcf1df4e5c0e7a52ed348");
 
-            entity.HasMany(d => d.Channels).WithMany(p => p.MessagesNavigation)
+            entity.HasMany(d => d.Channels).WithMany(p => p.Messages)
                 .UsingEntity<Dictionary<string, object>>(
                     "MessageChannelMention",
                     r => r.HasOne<Channel>().WithMany()
@@ -618,6 +622,15 @@ public partial class SpacebarDbContext : DbContext
             entity.HasOne(d => d.SourceGuild).WithMany(p => p.Templates)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_445d00eaaea0e60a017a5ed0c11");
+        });
+
+        modelBuilder.Entity<ThreadMember>(entity =>
+        {
+            entity.HasKey(e => e.Index).HasName("PK_22232a9f7a08fb9967a9c78da53");
+
+            entity.HasOne(d => d.IdNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_cf20e37d71b0e1bf1ab633861c8");
+
+            entity.HasOne(d => d.MemberIdxNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_4721015b4e24ad29da55dbd2de0");
         });
 
         modelBuilder.Entity<User>(entity =>

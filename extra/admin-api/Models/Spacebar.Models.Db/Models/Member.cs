@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -65,6 +65,15 @@ public partial class Member
     [Column("communication_disabled_until", TypeName = "timestamp without time zone")]
     public DateTime? CommunicationDisabledUntil { get; set; }
 
+    [Column("avatar_decoration_data")]
+    public string? AvatarDecorationData { get; set; }
+
+    [Column("display_name_styles")]
+    public string? DisplayNameStyles { get; set; }
+
+    [Column("collectibles")]
+    public string? Collectibles { get; set; }
+
     [ForeignKey("GuildId")]
     [InverseProperty("Members")]
     public virtual Guild Guild { get; set; } = null!;
@@ -72,6 +81,9 @@ public partial class Member
     [ForeignKey("Id")]
     [InverseProperty("Members")]
     public virtual User IdNavigation { get; set; } = null!;
+
+    [InverseProperty("MemberIdxNavigation")]
+    public virtual ICollection<ThreadMember> ThreadMembers { get; set; } = new List<ThreadMember>();
 
     [ForeignKey("Index")]
     [InverseProperty("Indices")]

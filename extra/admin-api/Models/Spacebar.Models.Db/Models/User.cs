@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -89,14 +89,14 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags", TypeName = "character varying")]
+    [Column("flags")]
     public ulong Flags { get; set; }
 
     [Column("public_flags")]
     public ulong PublicFlags { get; set; }
 
     [Column("purchased_flags")]
-    public long PurchasedFlags { get; set; }
+    public ulong PurchasedFlags { get; set; }
 
     [Column("premium_usage_flags")]
     public int PremiumUsageFlags { get; set; }
@@ -118,6 +118,18 @@ public partial class User
 
     [Column("badge_ids")]
     public string? BadgeIds { get; set; }
+
+    [Column("avatar_decoration_data")]
+    public string? AvatarDecorationData { get; set; }
+
+    [Column("display_name_styles")]
+    public string? DisplayNameStyles { get; set; }
+
+    [Column("collectibles")]
+    public string? Collectibles { get; set; }
+
+    [Column("primary_guild")]
+    public string? PrimaryGuild { get; set; }
 
     [InverseProperty("BotUser")]
     public virtual Application? ApplicationBotUser { get; set; }
