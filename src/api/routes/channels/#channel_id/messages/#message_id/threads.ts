@@ -63,7 +63,7 @@ router.post(
                 name: body.name,
                 guild_id: channel.guild_id,
                 rate_limit_per_user: body.rate_limit_per_user,
-                type: ChannelType.GUILD_PUBLIC_THREAD,
+                type: channel.type === ChannelType.GUILD_NEWS ? ChannelType.GUILD_NEWS_THREAD : ChannelType.GUILD_PUBLIC_THREAD,
                 recipients: [],
                 thread_metadata: {
                     archived: false,
