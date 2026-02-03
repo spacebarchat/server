@@ -28,7 +28,7 @@ import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { Role } from "./Role";
 import { User } from "./User";
-import { PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
+import { AvatarDecorationData, Collectibles, DisplayNameStyle, PrimaryGuild, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
     "id",
@@ -146,6 +146,15 @@ export class Member extends BaseClassWithoutId {
     // @Column({ type: "simple-json" })
     // read_state: ReadState;
 
+    @Column({ type: "simple-json", nullable: true })
+    avatar_decoration_data?: AvatarDecorationData;
+
+    @Column({ type: "simple-json", nullable: true })
+    display_name_styles?: DisplayNameStyle;
+
+    @Column({ type: "simple-json", nullable: true })
+    collectibles?: Collectibles;
+
     @BeforeUpdate()
     @BeforeInsert()
     validate() {
@@ -160,7 +169,7 @@ export class Member extends BaseClassWithoutId {
     static async IsInGuildOrFail(user_id: string, guild_id: string) {
         if (
             await Member.count({
-                where: { id: user_id, guild: { id: guild_id } },
+                where: { id: user_id, guild_id },
             })
         )
             return;
@@ -172,7 +181,7 @@ export class Member extends BaseClassWithoutId {
             select: { owner_id: true },
             where: { id: guild_id },
         });
-        if (guild.owner_id === user_id) throw new Error("The owner cannot be removed of the guild");
+        if (guild.owner_id === user_id) throw new Error("The owner cannot be removed from the guild");
         const member = await Member.findOneOrFail({
             where: { id: user_id, guild_id },
             relations: { user: true },
