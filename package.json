@@ -24,7 +24,8 @@
         "generate:openapi": "node scripts/openapi.js",
         "add:license": "node scripts/license.js",
         "migrate-from-staging": "node -r dotenv/config -r module-alias/register scripts/stagingMigration/index.js",
-        "node:tests": "npm run build:src:tsgo && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js"
+        "node:tests": "npm run build:src:tsgo && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
+        "apply:migrations": "node --enable-source-maps dist/apply-migrations.js"
     },
     "main": "dist/bundle/index.js",
     "types": "src/bundle/index.ts",
