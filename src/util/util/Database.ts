@@ -132,8 +132,10 @@ export async function initDatabase(): Promise<DataSource> {
         await qr.release();
     }
 
-    console.log("[Database] Applying missing migrations, if any.");
-    await dbConnection.runMigrations();
+    if (process.env.APPLY_DB_MIGRATIONS !== "false") {
+        console.log("[Database] Applying missing migrations, if any.");
+        await dbConnection.runMigrations();
+    }
 
     console.log(`[Database] ${green("Connected")}`);
 

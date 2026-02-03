@@ -235,32 +235,8 @@ in
         #        }
       ];
 
-      systemd.services.spacebar-apply-migrations = makeServerTsService {
-        description = "Spacebar Server - Apply DB migrations";
-        # after = lib.optional config.services.postgresql.enable "postgresql.service";
-        # requires = lib.optional config.services.postgresql.enable "postgresql.service";
-        environment = builtins.mapAttrs (_: val: builtins.toString val) (
-          cfg.extraEnvironment
-          // {
-            # things we force...
-            CONFIG_PATH = configFile;
-            CONFIG_READONLY = 1;
-          }
-        );
-        serviceConfig = {
-          ExecStart = "${cfg.package}/bin/apply-migrations";
-          Type = "oneshot";
-          RemainAfterExit = true;
-          TimeoutStartSec = 45;
-          RestartSec = 1;
-          StartLimitBurst = 10;
-        };
-      };
-
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
-        after = [ "spacebar-apply-migrations.service" ];
-        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -283,8 +259,6 @@ in
 
       systemd.services.spacebar-gateway = makeServerTsService {
         description = "Spacebar Server - Gateway";
-        after = [ "spacebar-apply-migrations.service" ];
-        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -298,6 +272,7 @@ in
             CONFIG_READONLY = 1;
             PORT = toString cfg.gatewayEndpoint.localPort;
             STORAGE_LOCATION = cfg.cdnPath;
+            APPLY_DB_MIGRATIONS = false;
           }
         );
         serviceConfig = {
@@ -307,8 +282,6 @@ in
 
       systemd.services.spacebar-cdn = lib.mkIf (!cfg.enableCdnCs) (makeServerTsService {
         description = "Spacebar Server - CDN";
-        after = [ "spacebar-apply-migrations.service" ];
-        requires = [ "spacebar-apply-migrations.service" ];
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -322,6 +295,7 @@ in
             CONFIG_READONLY = 1;
             PORT = toString cfg.cdnEndpoint.localPort;
             STORAGE_LOCATION = cfg.cdnPath;
+            APPLY_DB_MIGRATIONS = false;
           }
         );
         serviceConfig = {
