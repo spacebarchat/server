@@ -6,7 +6,11 @@ export class MemberProfileCustomisation1770079838835 implements MigrationInterfa
     public async up(queryRunner: QueryRunner): Promise<void> {
         // just gonna let typeorm do its thing for once...
         await queryRunner.query(`ALTER TABLE "thread_members" DROP CONSTRAINT "FK_606ac45e8756d3440c584477f4e"`);
-        await queryRunner.query(`ALTER TABLE "webhooks" DROP CONSTRAINT "fk_d64f38834fa676f6caa4786ddd6"`);
+        try {
+            await queryRunner.query(`ALTER TABLE "webhooks" DROP CONSTRAINT "fk_d64f38834fa676f6caa4786ddd6"`);
+        } catch {
+            /* empty */
+        }
         await queryRunner.query(`DROP INDEX "public"."IDX_bde0970b6a26bdbd83508addd2"`);
         await queryRunner.query(`ALTER TABLE "members" ADD "avatar_decoration_data" text`);
         await queryRunner.query(`ALTER TABLE "members" ADD "display_name_styles" text`);
@@ -26,9 +30,6 @@ export class MemberProfileCustomisation1770079838835 implements MigrationInterfa
         await queryRunner.query(`ALTER TABLE "members" DROP COLUMN "display_name_styles"`);
         await queryRunner.query(`ALTER TABLE "members" DROP COLUMN "avatar_decoration_data"`);
         await queryRunner.query(`CREATE UNIQUE INDEX "IDX_bde0970b6a26bdbd83508addd2" ON "thread_members" ("id", "member_idx") `);
-        await queryRunner.query(
-            `ALTER TABLE "webhooks" ADD CONSTRAINT "fk_d64f38834fa676f6caa4786ddd6" FOREIGN KEY ("source_channel_id") REFERENCES "channels"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-        );
         await queryRunner.query(
             `ALTER TABLE "thread_members" ADD CONSTRAINT "FK_606ac45e8756d3440c584477f4e" FOREIGN KEY ("member_idx") REFERENCES "members"("index") ON DELETE CASCADE ON UPDATE NO ACTION`,
         );
