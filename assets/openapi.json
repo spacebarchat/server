@@ -2756,6 +2756,18 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     }
                 },
                 "required": [
@@ -2830,6 +2842,18 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     },
                     "mfa_enabled": {
                         "type": "boolean"
@@ -2957,6 +2981,18 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     },
                     "mfa_enabled": {
                         "type": "boolean"
@@ -6076,6 +6112,42 @@
                         "minLength": 4,
                         "maxLength": 4,
                         "type": "string"
+                    },
+                    "display_name_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "display_name_effect_id": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
+                    },
+                    "display_name_font_id": {
+                        "enum": [
+                            0,
+                            1,
+                            10,
+                            11,
+                            12,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9
+                        ],
+                        "type": "number"
                     }
                 }
             },
@@ -8538,7 +8610,10 @@
                         "type": "integer"
                     },
                     "colors": {
-                        "type": "integer"
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -10997,6 +11072,18 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     }
                 },
                 "required": [

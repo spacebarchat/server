@@ -57,6 +57,10 @@ interface UserEntityPleaseRewriteThankYou {
     fingerprints: string[];
     settings?: UserSettingsSchema;
     badge_ids?: string[];
+    avatar_decoration_data?: AvatarDecorationData;
+    display_name_styles?: DisplayNameStyle;
+    collectibles?: Collectibles;
+    primary_guild?: PrimaryGuild;
 }
 
 export interface PartialUser {
@@ -97,7 +101,7 @@ export interface NameplateData {
 export interface DisplayNameStyle {
     font_id: number;
     effect_id: number;
-    colors: number;
+    colors: number[];
 }
 
 export interface PrimaryGuild {
@@ -122,6 +126,10 @@ export enum PublicUserEnum {
     theme_colors,
     pronouns,
     badge_ids,
+    avatar_decoration_data,
+    display_name_styles,
+    collectibles,
+    primary_guild,
 }
 export type PublicUserKeys = keyof typeof PublicUserEnum;
 

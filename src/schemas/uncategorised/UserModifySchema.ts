@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { User_DisplayNameEffect, User_DisplayNameFont } from "discord-protos";
+
 export interface UserModifySchema {
     /**
      * @minLength 2
@@ -49,4 +51,8 @@ export interface UserModifySchema {
      * @maxLength 4
      */
     discriminator?: string;
+
+    display_name_colors?: number[];
+    display_name_effect_id?: User_DisplayNameEffect;
+    display_name_font_id?: User_DisplayNameFont;
 }
