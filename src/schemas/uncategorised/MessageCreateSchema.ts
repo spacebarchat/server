@@ -49,7 +49,7 @@ export interface MessageCreateSchema {
         replied_user?: boolean;
     };
     message_reference?: {
-        message_id: string;
+        message_id?: string;
         channel_id?: string;
         guild_id?: string;
         fail_if_not_exists?: boolean;

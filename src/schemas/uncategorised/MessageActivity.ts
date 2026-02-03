@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface MessageThreadCreationSchema {
-    auto_archive_duration?: number;
-    rate_limit_per_user?: number;
-    name: string;
-    location?: string; //ignore it
-    type?: number;
+export interface MessageActivity {
+    type: 1 | 3 | 5;
+    session_id?: string;
+    party_id?: string;
+    name_override?: string;
+    icon_override?: string;
 }

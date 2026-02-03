@@ -270,10 +270,10 @@ router.get(
         // polyfill message references for old messages
         await Promise.all(
             ret
-                .filter((msg) => msg.message_reference && !msg.referenced_message?.id)
+                .filter((msg) => msg.message_reference && !msg.referenced_message?.id && msg.message_reference.message_id)
                 .map(async (msg) => {
                     const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
-                        id: msg.message_reference!.message_id,
+                        id: msg.message_reference!.message_id as string,
                     };
                     if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
                     if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
@@ -290,7 +290,7 @@ router.get(
 );
 
 // TODO: config max upload size
-const messageUpload = multer({
+export const messageUpload = multer({
     limits: {
         fileSize: Config.get().limits.message.maxAttachmentSize,
         fields: 10,

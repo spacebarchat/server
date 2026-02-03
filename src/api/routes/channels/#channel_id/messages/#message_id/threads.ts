@@ -92,6 +92,16 @@ router.post(
             },
             author_id: user.id,
         });
+        sendMessage({
+            channel_id: channel.id,
+            type: MessageType.THREAD_CREATED,
+            content: thread.name,
+            message_reference: {
+                channel_id: channel.id,
+                guild_id: channel.guild_id,
+            },
+            author_id: user.id,
+        });
         await Promise.all([
             emitEvent({
                 event: "THREAD_CREATE",

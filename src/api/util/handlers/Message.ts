@@ -248,38 +248,40 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                 }
 
                 message.message_reference = opts.message_reference;
-                message.referenced_message = await Message.findOneOrFail({
-                    where: {
-                        id: opts.message_reference.message_id,
-                    },
-                    relations: {
-                        author: true,
-                        webhook: true,
-                        application: true,
-                        mentions: true,
-                        mention_roles: true,
-                        mention_channels: true,
-                        sticker_items: true,
-                        attachments: true,
-                    },
-                });
+                if (message.message_reference.message_id) {
+                    message.referenced_message = await Message.findOneOrFail({
+                        where: {
+                            id: opts.message_reference.message_id,
+                        },
+                        relations: {
+                            author: true,
+                            webhook: true,
+                            application: true,
+                            mentions: true,
+                            mention_roles: true,
+                            mention_channels: true,
+                            sticker_items: true,
+                            attachments: true,
+                        },
+                    });
 
-                if (
-                    message.referenced_message.channel_id &&
-                    message.referenced_message.channel_id !== opts.message_reference.channel_id &&
-                    opts.type !== MessageType.THREAD_STARTER_MESSAGE
-                )
-                    throw new HTTPError("Referenced message not found in the specified channel", 404);
-                if (
-                    message.referenced_message.guild_id &&
-                    message.referenced_message.guild_id !== opts.message_reference.guild_id &&
-                    opts.type !== MessageType.THREAD_STARTER_MESSAGE
-                )
-                    throw new HTTPError("Referenced message not found in the specified channel", 404);
+                    if (
+                        message.referenced_message.channel_id &&
+                        message.referenced_message.channel_id !== opts.message_reference.channel_id &&
+                        opts.type !== MessageType.THREAD_STARTER_MESSAGE
+                    )
+                        throw new HTTPError("Referenced message not found in the specified channel", 404);
+                    if (
+                        message.referenced_message.guild_id &&
+                        message.referenced_message.guild_id !== opts.message_reference.guild_id &&
+                        opts.type !== MessageType.THREAD_STARTER_MESSAGE
+                    )
+                        throw new HTTPError("Referenced message not found in the specified channel", 404);
+                }
             }
             /** Q: should be checked if the referenced message exists? ANSWER: NO
 			 otherwise backfilling won't work **/
-            if (MessageType.THREAD_STARTER_MESSAGE !== message.type) message.type = MessageType.REPLY;
+            if (MessageType.THREAD_STARTER_MESSAGE !== message.type && MessageType.THREAD_CREATED !== message.type) message.type = MessageType.REPLY;
         }
     }
 
