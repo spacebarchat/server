@@ -26,12 +26,14 @@ time (
   echo -en "\nRemoving specific known large unneeded packages: "
   rm -rf ./node_modules/typescript && echo -n .
   rm -rf ./node_modules/@typescript/native-preview && echo -n .
+  rm -rf ./node_modules/@tsconfig && echo -n .
   rm -rf ./node_modules/ts-node && echo -n .
   rm -rf ./node_modules/node-gyp && echo -n .
   rm -rf ./node_modules/node-gyp-build-optional-packages && echo -n .
   rm -rf ./node_modules/discord-protos/{discord_protos,scripts} && echo -n .
   rm -f ./node_modules/.package-lock.json && echo -n .
   rm -rf ./node_modules/@jimp/plugin-print/fonts && echo -n . # duplicated in dist/fonts
+  rm -rf ./node_modules/@toondepauw/node-zstd-linux-x64-musl && echo -n .
   for i in ./node_modules/@jimp/*; do
     if [ -d "$i/dist/commonjs" ]; then
       rm -rf "$i/dist/commonjs" && echo -n .
@@ -113,7 +115,7 @@ time (
   find ./node_modules -regextype posix-extended -iregex '.*(\.(swp|swo|eslintcache)|~)$' -type f -delete -printf .
   find ./node_modules -regextype posix-extended -iregex '.*\.(vscode|editorconfig|pre-commit-config\.yaml)$' -type f -delete -printf .
   find ./node_modules -regextype posix-extended -iregex '.*\.(vscode|idea)$' -type d -exec rm -rf {} + -printf .
-  find ./node_modules -regextype posix-extended -iregex '.*\.jsdoc-conf\.json$' -type d -exec rm -rf {} + -printf .
+  find ./node_modules -regextype posix-extended -iregex '.*\.jsdoc-conf\.json$' -type f -delete -printf .
   find ./node_modules -iname '*.iml' -type f -delete -printf .
   echo -en "\n - CI configuration files: "
   find ./node_modules -regextype posix-extended -iregex '.*(travis|circleci|github|gitlab|airtap|appveyor|wercker|codeship|drone|semaphoreci|buildkite).*\.(yml|yaml)$' -type f -delete -printf .

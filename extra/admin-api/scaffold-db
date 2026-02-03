@@ -1,20 +1,25 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i nix -p nix
-#! nix shell nixpkgs#bash nixpkgs#dotnet-ef nixpkgs#postgresql --command bash
+#! nix shell nixpkgs#bash nixpkgs#dotnet-ef nixpkgs#postgresql nixpkgs#nodejs nixpkgs#dos2unix --command bash
 
 set -ex
-rm -rfv Spacebar.Db
+rm -rfv Models/Spacebar.Models.Db
 
 # prep temporary db
 # - Update collation version for template1 just incase!
 psql -U postgres -c 'ALTER DATABASE template1 REFRESH COLLATION VERSION;'
 dropdb -U postgres sb-server-scaffold --if-exists --force || true
 createdb -U postgres sb-server-scaffold
-DATABASE=postgres://postgres@127.0.0.1/sb-server-scaffold nix shell nixpkgs#nodejs ../.. --command npm run sync:db
+# - Build spacebar-ts and apply it's migrations
+pushd ../..
+npm run build:src:tsgo
+DATABASE=postgres://postgres@127.0.0.1/sb-server-scaffold npm run apply:migrations
+popd
 
 # Create new project
-dotnet new classlib --no-restore -o Spacebar.Db
-cd Spacebar.Db
+pushd Models
+dotnet new classlib --no-restore -o Spacebar.Models.Db
+pushd Spacebar.Models.Db
 rm Class1.cs
 dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL -n -f net9.0
 dotnet add package Microsoft.EntityFrameworkCore.Design -n -f net9.0
@@ -29,9 +34,13 @@ dotnet-ef dbcontext scaffold "Host=127.0.0.1; Username=postgres; Database=sb-ser
   --force \
   --no-onconfiguring \
   --data-annotations
-  
-for patch in ../db-patches/*.patch; do
-  patch -p1 < $patch
+
+for f in **/*.cs; do
+  dos2unix --verbose --keepdate "$f"
 done
 
-echo 'Scaffolded database and applied patches. Dont forget to generate new patches with `git diff --relative Spacebar.Db/path/xyz > db-patches/001-your-patch-name.patch!`'
+for patch in ../db-patches/*.patch; do
+  patch --verbose -p2 < $patch
+done
+
+echo 'Scaffolded database and applied patches. Dont forget to generate new patches with `cd Models && git diff --relative Spacebar.Models.Db/path/xyz > db-patches/001-your-patch-name.patch!`'
