@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Spacebar.AdminApi.Services;
+using Spacebar.Interop.Authentication.AspNetCore;
 
 namespace Spacebar.AdminApi.Controllers;
 
 [ApiController]
 [Route("/")]
-public class PingController(ILogger<PingController> logger, IServiceProvider sp, AuthenticationService auth) : ControllerBase {
+public class PingController(ILogger<PingController> logger, IServiceProvider sp, SpacebarAspNetAuthenticationService auth) : ControllerBase {
     private readonly ILogger<PingController> _logger = logger;
 
     [HttpGet("ping")]
@@ -17,7 +17,7 @@ public class PingController(ILogger<PingController> logger, IServiceProvider sp,
     
     [HttpGet("whoami")]
     public async Task<object> WhoAmI() {
-        var user = await auth.GetCurrentUser(Request);
+        var user = await auth.GetCurrentUserAsync(Request);
         return new {
             user.Id,
             user.Username,

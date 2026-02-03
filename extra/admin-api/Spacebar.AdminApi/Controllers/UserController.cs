@@ -1,12 +1,12 @@
 using System.Diagnostics;
 using ArcaneLibs;
-using ArcaneLibs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.AdminApi.Extensions;
+using Spacebar.Interop.Authentication;
+using Spacebar.Interop.Authentication.AspNetCore;
+using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.Models.AdminApi;
-using Spacebar.AdminApi.Services;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
 
@@ -16,15 +16,15 @@ namespace Spacebar.AdminApi.Controllers;
 [Route("/users")]
 public class UserController(
     ILogger<UserController> logger,
-    Configuration config,
+    SpacebarAuthenticationConfiguration config,
     SpacebarDbContext db,
     IServiceProvider sp,
-    AuthenticationService auth,
+    SpacebarAspNetAuthenticationService auth,
     ISpacebarReplication replication
 ) : ControllerBase {
     [HttpGet]
     public async IAsyncEnumerable<UserModel> Get() {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var results = db.Users
             .Include(user => user.ApplicationBotUser)
@@ -79,7 +79,7 @@ public class UserController(
 
     [HttpGet("{id}/delete")]
     public async IAsyncEnumerable<AsyncActionResult> DeleteUser(string id, [FromQuery] int messageDeleteChunkSize = 100) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var user = await db.Users.FindAsync(id);
         if (user == null) {
@@ -173,7 +173,7 @@ public class UserController(
 
     [HttpGet("duplicate")]
     public async Task<IActionResult> Duplicate() {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var msg = db.Messages.First();
         var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
@@ -218,7 +218,7 @@ public class UserController(
 
     [HttpGet("duplicate/{id}")]
     public async Task<IActionResult> DuplicateMessage(ulong id, [FromQuery] int count = 100) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var msg = await db.Messages.FindAsync(id.ToString());
         int createdCount = 1;
@@ -264,7 +264,7 @@ public class UserController(
 
     [HttpGet("truncate_messages")]
     public async Task TruncateMessages() {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
 
@@ -295,7 +295,7 @@ public class UserController(
     }
 
     private async IAsyncEnumerable<T> AggregateAsyncEnumerablesWithoutOrder<T>(params IEnumerable<IAsyncEnumerable<T>> enumerables) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var enumerators = enumerables.Select(e => e.GetAsyncEnumerator()).ToList();
         var tasks = enumerators.Select(e => e.MoveNextAsync().AsTask()).ToList();
@@ -372,7 +372,7 @@ public class UserController(
 
     [HttpGet("test")]
     public async IAsyncEnumerable<string> Test() {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var guildId = "1006649183970562092";
         // var roleId = "1006706520514028812"; //Administrator

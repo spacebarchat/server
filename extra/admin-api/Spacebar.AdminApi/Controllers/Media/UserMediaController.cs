@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.Extensions;
 using Spacebar.Models.AdminApi;
-using Spacebar.AdminApi.Services;
+using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
 
@@ -10,10 +10,10 @@ namespace Spacebar.AdminApi.Controllers.Media;
 
 [ApiController]
 [Route("/media/user")]
-public class UserMediaController(ILogger<UserMediaController> logger, SpacebarDbContext db, AuthenticationService auth, IServiceProvider sp) : ControllerBase {
+public class UserMediaController(ILogger<UserMediaController> logger, SpacebarDbContext db, SpacebarAspNetAuthenticationService auth, IServiceProvider sp) : ControllerBase {
     [HttpGet("{userId}/attachments")]
     public async IAsyncEnumerable<Attachment> GetAttachmentsByUser(string userId) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var db2 = sp.CreateScope().ServiceProvider.GetService<SpacebarDbContext>();
         var attachments = db.Attachments

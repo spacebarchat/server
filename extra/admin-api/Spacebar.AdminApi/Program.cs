@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.AdminApi.Middleware;
-using Spacebar.AdminApi.Services;
+using Spacebar.Interop.Authentication;
+using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.UnixSocket;
 using Spacebar.Models.Db.Contexts;
 
@@ -29,8 +30,9 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
         .UseNpgsql(builder.Configuration.GetConnectionString("Spacebar"))
         .EnableDetailedErrors();
 });
-builder.Services.AddScoped<AuthenticationService>();
-builder.Services.AddScoped<Configuration>();
+builder.Services.AddScoped<SpacebarAuthenticationConfiguration>();
+builder.Services.AddScoped<SpacebarAuthenticationService>();
+builder.Services.AddScoped<SpacebarAspNetAuthenticationService>();
 // builder.Services.AddSingleton<RabbitMQConfiguration>();
 // builder.Services.AddSingleton<RabbitMQService>();
 // builder.Services.AddSingleton<ISpacebarReplication, RabbitMqSpacebarReplication>();

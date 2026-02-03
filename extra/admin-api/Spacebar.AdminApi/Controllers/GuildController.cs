@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.AdminApi.Extensions;
 using Spacebar.Models.AdminApi;
-using Spacebar.AdminApi.Services;
+using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
 
@@ -13,17 +13,15 @@ namespace Spacebar.AdminApi.Controllers;
 [Route("/Guilds")]
 public class GuildController(
     ILogger<GuildController> logger,
-    Configuration config,
     SpacebarDbContext db,
     IServiceProvider sp,
-    AuthenticationService auth,
+    SpacebarAspNetAuthenticationService auth,
     ISpacebarReplication replication
 ) : ControllerBase {
-    private readonly ILogger<GuildController> _logger = logger;
 
     [HttpGet]
     public async IAsyncEnumerable<GuildModel> Get() {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var results = db.Guilds.Select(x => new GuildModel {
             Id = x.Id,
@@ -82,14 +80,14 @@ public class GuildController(
 
     [HttpPost("{id}/force_join")]
     public async Task<IActionResult> ForceJoinGuild([FromBody] ForceJoinRequest request, string id) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var guild = await db.Guilds.FindAsync(id);
         if (guild == null) {
             return NotFound(new { entity = "Guild", id, message = "Guild not found" });
         }
 
-        var userId = request.UserId ?? config.OverrideUid ?? (await auth.GetCurrentUser(Request)).Id;
+        var userId = request.UserId ?? (await auth.GetCurrentUserAsync(Request)).Id;
         var user = await db.Users.FindAsync(userId);
         if (user == null) {
             return NotFound(new { entity = "User", id = userId, message = "User not found" });
@@ -149,7 +147,7 @@ public class GuildController(
 
     [HttpGet("{id}/delete")]
     public async IAsyncEnumerable<AsyncActionResult> DeleteUser(string id, [FromQuery] int messageDeleteChunkSize = 100) {
-        (await auth.GetCurrentUser(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var user = await db.Users.FindAsync(id);
         if (user == null) {
