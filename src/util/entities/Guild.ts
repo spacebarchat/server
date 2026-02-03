@@ -51,6 +51,7 @@ import { arrayRemove } from "@spacebar/util";
 
 export const PublicGuildRelations = [
     "channels",
+    "threads",
     "emojis",
     "roles",
     "stickers",
@@ -150,7 +151,7 @@ export class Guild extends BaseClass {
         orphanedRowAction: "delete",
     })
     channels: Channel[];
-
+    threads: Channel[];
     @Column({ nullable: true })
     @RelationId((guild: Guild) => guild.template)
     template_id?: string;
