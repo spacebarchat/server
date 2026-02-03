@@ -81,7 +81,6 @@ export class RabbitMQ {
         } catch (error) {
             console.error("[RabbitMQ] Connection failed:", error);
             await this.scheduleReconnect(host);
-            throw error;
         }
     }
 
