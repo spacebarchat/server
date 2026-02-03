@@ -101,8 +101,8 @@ router.post(
                 type: MessageType.THREAD_CREATED,
                 content: thread.name,
                 message_reference: {
-                    channel_id: channel.id,
-                    guild_id: channel.guild_id,
+                    channel_id: thread.id,
+                    guild_id: thread.guild_id,
                 },
                 author_id: user.id,
             });
