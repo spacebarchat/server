@@ -196,6 +196,8 @@ class UnixSocketListener {
         const net = await import("net");
         const fs = await import("fs");
 
+        // remove stale socket file if it exists
+        // can happen if there's a PID conflict (across containers/PID namespaces)
         try {
             if (fs.existsSync(this.socketPath)) {
                 fs.unlinkSync(this.socketPath);
@@ -312,6 +314,18 @@ class UnixSocketWriter {
                 delete this.clients[fullPath];
             }
 
+            // check if it's actually a socket file (not a ghost/regular file)
+            try {
+                const stats = fs.statSync(fullPath);
+                if (!stats.isSocket()) {
+                    console.log("[Events] Ignoring non-socket file:", fullPath);
+                    return;
+                }
+            } catch (e) {
+                console.log("[Events] Cannot stat socket file:", fullPath);
+                return;
+            }
+
             try {
                 this.clients[fullPath] = net.createConnection(fullPath, () => {
                     console.log("[Events] Unix socket client connected to", fullPath);
@@ -382,22 +396,30 @@ class UnixSocketWriter {
     async emit(event: Event) {
         if (!this.clients) throw new Error("UnixSocketWriter not initialized");
 
+        // check if there are any listeners
+        const clientCount = Object.entries(this.clients).length;
+        if (clientCount === 0) {
+            console.warn("[Events] Unix socket writer has no connected clients to emit to");
+            return;
+        }
+
         const tsw = Stopwatch.startNew();
         const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event }));
         const lenBuf = Buffer.alloc(4);
         lenBuf.writeUInt32BE(payloadBuf.length, 0);
         const framed = Buffer.concat([lenBuf, payloadBuf]);
-        for (const socket of Object.entries(this.clients)) {
-            if (socket[1].destroyed) {
-                console.log("[Events] Unix socket writer found destroyed socket, removing:", socket[0]);
-                delete this.clients[socket[0]];
+
+        for (const [socketPath, socket] of Object.entries(this.clients)) {
+            if (socket.destroyed) {
+                console.log("[Events] Unix socket writer found destroyed socket, removing:", socketPath);
+                delete this.clients[socketPath];
                 continue;
             }
 
             try {
-                socket[1].write(framed);
+                socket.write(framed);
             } catch (e) {
-                console.error("[Events] Unix socket writer failed to write to socket", socket[0], ":", e);
+                console.error("[Events] Unix socket writer failed to write to socket", socketPath, ":", e);
             }
         }
 
