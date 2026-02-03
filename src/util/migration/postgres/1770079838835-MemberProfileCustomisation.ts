@@ -6,11 +6,6 @@ export class MemberProfileCustomisation1770079838835 implements MigrationInterfa
     public async up(queryRunner: QueryRunner): Promise<void> {
         // just gonna let typeorm do its thing for once...
         await queryRunner.query(`ALTER TABLE "thread_members" DROP CONSTRAINT "FK_606ac45e8756d3440c584477f4e"`);
-        try {
-            await queryRunner.query(`ALTER TABLE "webhooks" DROP CONSTRAINT "fk_d64f38834fa676f6caa4786ddd6"`);
-        } catch {
-            /* empty */
-        }
         await queryRunner.query(`DROP INDEX "public"."IDX_bde0970b6a26bdbd83508addd2"`);
         await queryRunner.query(`ALTER TABLE "members" ADD "avatar_decoration_data" text`);
         await queryRunner.query(`ALTER TABLE "members" ADD "display_name_styles" text`);
