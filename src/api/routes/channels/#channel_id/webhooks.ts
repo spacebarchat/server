@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName, Application } from "@spacebar/util";
 import crypto from "crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -98,6 +98,7 @@ router.post(
             guild_id: channel.guild_id,
             channel_id: channel.id,
             user_id: req.user_id,
+            application: (await Application.findOneBy({ id: req.user_id })) ?? undefined,
             token: crypto.randomBytes(24).toString("base64url"),
         }).save();
 
