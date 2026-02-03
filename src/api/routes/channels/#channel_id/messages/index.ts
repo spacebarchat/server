@@ -315,7 +315,6 @@ router.post(
     },
     route({
         requestBody: "MessageCreateSchema",
-        permission: "SEND_MESSAGES",
         right: "SEND_MESSAGES",
         responses: {
             200: {
@@ -337,6 +336,11 @@ router.post(
             where: { id: channel_id },
             relations: { recipients: { user: true } },
         });
+        if (channel.isThread()) {
+            req.permission!.hasThrow("SEND_MESSAGES_IN_THREADS");
+        } else {
+            req.permission!.hasThrow("SEND_MESSAGES");
+        }
         if (!channel.isWritable()) {
             throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
         }
