@@ -81,6 +81,7 @@ router.post(
         }
 
         const member = await Member.findOneOrFail({ where: { id: user_id, guild_id: thread.guild_id! } });
+
         if (await ThreadMember.existsBy({ member_idx: member.index, id: channel_id })) {
             return res.status(204).send();
         }
@@ -100,7 +101,7 @@ router.post(
                 guild_id: thread.guild_id!,
                 id: thread.id,
                 member_count: thread.member_count,
-                added_member_ids: [user_id],
+                added_members: [{ user_id: user_id, ...threadMember.toJSON() }],
             },
             channel_id: thread.id,
         } as ThreadMembersUpdateEvent);
@@ -153,17 +154,17 @@ router.delete(
             },
             channel_id: thread.id,
         } as ThreadMembersUpdateEvent);
-
-        await emitEvent({
-            event: "THREAD_DELETE",
-            data: {
-                id: thread.id,
-                guild_id: thread.guild_id!,
-                parent_id: thread.parent_id!,
-                type: thread.type,
-            },
-            user_id: user_id,
-        } as ThreadDeleteEvent);
+        if (thread.type === ChannelType.GUILD_PRIVATE_THREAD)
+            await emitEvent({
+                event: "THREAD_DELETE",
+                data: {
+                    id: thread.id,
+                    guild_id: thread.guild_id!,
+                    parent_id: thread.parent_id!,
+                    type: thread.type,
+                },
+                user_id: user_id,
+            } as ThreadDeleteEvent);
 
         return res.status(204).send();
     },

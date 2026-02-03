@@ -173,7 +173,7 @@ export class Message extends BaseClass {
 
     @Column({ type: "simple-json", nullable: true })
     message_reference?: {
-        message_id: string;
+        message_id?: string;
         channel_id?: string;
         guild_id?: string;
         type?: number; // 0 = DEFAULT, 1 = FORWARD

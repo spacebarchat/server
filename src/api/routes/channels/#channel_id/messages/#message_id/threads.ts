@@ -32,6 +32,7 @@ router.post(
     "/",
     route({
         requestBody: "MessageThreadCreationSchema",
+        permission: "CREATE_PUBLIC_THREADS",
         responses: {
             200: {},
             403: {},
@@ -63,7 +64,7 @@ router.post(
                 name: body.name,
                 guild_id: channel.guild_id,
                 rate_limit_per_user: body.rate_limit_per_user,
-                type: ChannelType.GUILD_PUBLIC_THREAD,
+                type: channel.type === ChannelType.GUILD_NEWS ? ChannelType.GUILD_NEWS_THREAD : ChannelType.GUILD_PUBLIC_THREAD,
                 recipients: [],
                 thread_metadata: {
                     archived: false,
@@ -86,6 +87,16 @@ router.post(
             type: MessageType.THREAD_STARTER_MESSAGE,
             message_reference: {
                 message_id: message.id,
+                channel_id: channel.id,
+                guild_id: channel.guild_id,
+            },
+            author_id: user.id,
+        });
+        sendMessage({
+            channel_id: channel.id,
+            type: MessageType.THREAD_CREATED,
+            content: thread.name,
+            message_reference: {
                 channel_id: channel.id,
                 guild_id: channel.guild_id,
             },

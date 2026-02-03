@@ -42,6 +42,10 @@ import {
     uploadFile,
     User,
     Recipient,
+    ThreadMember,
+    ThreadMemberFlags,
+    ThreadMembersUpdateEvent,
+    ThreadCreateEvent,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -266,10 +270,10 @@ router.get(
         // polyfill message references for old messages
         await Promise.all(
             ret
-                .filter((msg) => msg.message_reference && !msg.referenced_message?.id)
+                .filter((msg) => msg.message_reference && !msg.referenced_message?.id && msg.message_reference.message_id)
                 .map(async (msg) => {
                     const whereOptions: { id: string; guild_id?: string; channel_id?: string } = {
-                        id: msg.message_reference!.message_id,
+                        id: msg.message_reference!.message_id as string,
                     };
                     if (msg.message_reference!.guild_id) whereOptions.guild_id = msg.message_reference!.guild_id;
                     if (msg.message_reference!.channel_id) whereOptions.channel_id = msg.message_reference!.channel_id;
@@ -286,7 +290,7 @@ router.get(
 );
 
 // TODO: config max upload size
-const messageUpload = multer({
+export const messageUpload = multer({
     limits: {
         fileSize: Config.get().limits.message.maxAttachmentSize,
         fields: 10,
@@ -315,7 +319,7 @@ router.post(
     },
     route({
         requestBody: "MessageCreateSchema",
-        permission: "SEND_MESSAGES",
+        permission: "VIEW_CHANNEL",
         right: "SEND_MESSAGES",
         responses: {
             200: {
@@ -337,6 +341,48 @@ router.post(
             where: { id: channel_id },
             relations: { recipients: { user: true } },
         });
+        if (channel.isThread()) {
+            req.permission!.hasThrow("SEND_MESSAGES_IN_THREADS");
+            if (channel.recipients && !channel.recipients.find(({ id }) => id === req.user_id)) {
+                const member = await Member.findOneOrFail({ where: { id: req.user_id, guild_id: channel.guild_id! } });
+
+                if (!(await ThreadMember.existsBy({ member_idx: member.index, id: channel_id }))) {
+                    const threadMember = ThreadMember.create({
+                        member_idx: member.index,
+                        id: channel_id,
+                        join_timestamp: new Date(),
+                        muted: false,
+                        flags: ThreadMemberFlags.ALL_MESSAGES,
+                    });
+                    await threadMember.save();
+
+                    // increment member count
+                    if (channel.member_count !== null && channel.member_count !== undefined) {
+                        channel.member_count++;
+                        await channel.save();
+                    }
+
+                    await emitEvent({
+                        event: "THREAD_MEMBERS_UPDATE",
+                        data: {
+                            guild_id: channel.guild_id!,
+                            id: channel.id,
+                            member_count: channel.member_count,
+                            added_members: [{ user_id: req.user_id, ...threadMember.toJSON() }],
+                        },
+                        channel_id: channel.id,
+                    } as ThreadMembersUpdateEvent);
+
+                    await emitEvent({
+                        event: "THREAD_CREATE",
+                        data: { ...channel.toJSON(), newly_created: false },
+                        user_id: req.user_id,
+                    } as ThreadCreateEvent);
+                }
+            }
+        } else {
+            req.permission!.hasThrow("SEND_MESSAGES");
+        }
         if (!channel.isWritable()) {
             throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
         }

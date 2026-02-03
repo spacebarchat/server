@@ -92,3 +92,5 @@ export * from "./WebhookExecuteSchema";
 export * from "./WebhookUpdateSchema";
 export * from "./WidgetModifySchema";
 export * from "./MessageThreadCreationSchema";
+export * from "./ThreadCreationSchema";
+export * from "./MessageActivity";

@@ -645,7 +645,7 @@ export interface ThreadMembersUpdateEvent extends Event {
         id: string;
         guild_id: string;
         member_count: number;
-        added_members?: ThreadMember[];
+        added_members?: (ThreadMember & { user_id: string })[];
         removed_member_ids?: string[];
     };
 }
