@@ -116,7 +116,7 @@ router.post(
             }
             const embeds = body.message.embeds || [];
             const message = await handleMessage({
-                ...body,
+                ...body.message,
                 type: 0,
                 pinned: false,
                 author_id: req.user_id,
