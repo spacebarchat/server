@@ -122,7 +122,7 @@ router.post(
                 pinned: false,
                 author_id: req.user_id,
                 embeds,
-                channel_id,
+                channel_id: thread.id,
                 attachments,
                 timestamp: new Date(),
             });
