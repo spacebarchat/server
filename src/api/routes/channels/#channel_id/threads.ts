@@ -17,11 +17,13 @@
 */
 
 import { handleMessage, postHandleMessage, route, sendMessage } from "@spacebar/api";
-import { Channel, emitEvent, User, uploadFile, Attachment, Member, ReadState, MessageCreateEvent } from "@spacebar/util";
+import { Channel, emitEvent, User, uploadFile, Attachment, Member, ReadState, MessageCreateEvent, FieldErrors, getPermission, ThreadMember, Message } from "@spacebar/util";
 import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
+import { HTTPError } from "#util/util/lambert-server";
+import { FindManyOptions, FindOptionsOrder, In, Like } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -165,6 +167,103 @@ router.post(
         }
 
         return res.json(thread.toJSON());
+    },
+);
+
+router.get(
+    "/search",
+    route({
+        responses: {
+            200: {
+                body: "GuildMessagesSearchResponse",
+            },
+            403: {
+                body: "APIErrorResponse",
+            },
+            422: {
+                body: "APIErrorResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { name, slop, tag, tag_setting, archived, sort_by, sort_order, limit, offset, max_id, min_id } = req.query as Record<string, string>;
+        const { channel_id } = req.params as Record<string, string>;
+
+        const parsedLimit = Number(limit) || 25;
+        if (parsedLimit < 1 || parsedLimit > 25) throw new HTTPError("limit must be between 1 and 25", 422);
+
+        let order: FindOptionsOrder<Channel>;
+        switch (sort_by) {
+            case undefined:
+            case "creation_time":
+                order = {
+                    created_at: sort_order === "asc" ? "ASC" : "DESC",
+                };
+                break;
+            case "last_message_time":
+                order = {
+                    last_message_id: sort_order === "asc" ? "ASC" : "DESC",
+                };
+                break;
+            default:
+                throw FieldErrors({
+                    sort_by: {
+                        message: "Value must be one of ('last_message_time', 'archive_time', 'relevance', 'creation_time').",
+                        code: "BASE_TYPE_CHOICES",
+                    },
+                }); // todo this is wrong
+        }
+        const channel = await Channel.findOneOrFail({
+            where: {
+                id: channel_id,
+            },
+        });
+
+        const permissions = await getPermission(req.user_id, channel.guild_id, channel);
+        permissions.hasThrow("VIEW_CHANNEL");
+        if (!permissions.has("READ_MESSAGE_HISTORY")) return res.json({ threads: [], total_results: 0, members: [], has_more: false, first_messages: [] });
+        const member = await Member.findOneOrFail({ where: { guild_id: channel.guild_id, id: req.user_id } });
+
+        const query: FindManyOptions<Channel> = {
+            order,
+            where: {
+                parent_id: channel_id,
+                ...(name ? { name: Like(`%${name}%`) } : {}),
+                ...(archived
+                    ? {
+                          thread_metadata: {
+                              archived: archived === "true" ? true : false,
+                          },
+                      }
+                    : {}),
+            },
+            relations: {},
+        };
+
+        const threads: Channel[] = await Channel.find({ ...query, take: parsedLimit || 0, skip: offset ? Number(offset) : 0 });
+        const total_results = await Channel.count(query);
+
+        const members = ThreadMember.find({
+            where: {
+                member_idx: member.index,
+                id: In(threads.map(({ id }) => id)),
+            },
+        });
+
+        const messages = Message.find({
+            where: {
+                id: In(threads.map(({ id }) => id)),
+            },
+        });
+
+        const left = total_results - threads.length - +offset;
+        return res.json({
+            threads: threads.map((_) => _.toJSON()),
+            members: (await members).map((_) => _.toJSON()),
+            messages: (await messages).map((_) => _.toJSON()),
+            total_results,
+            has_more: left > 0,
+        });
     },
 );
 

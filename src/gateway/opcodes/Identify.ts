@@ -419,14 +419,23 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const threadMembers = await ThreadMember.find({
         where: { member_idx: In(member_idx) },
-        relations: { channel: { thread_members: { member: true } } },
     });
+    const threadMemberMap = new Map(threadMembers.map((member) => [member.id, member] as const));
     const threadMemberTime = taskSw.getElapsedAndReset();
 
     // Populated with guilds 'unavailable' currently
     // Just for bots
 
     const pending_guilds: Guild[] = [];
+
+    const allThreads = (
+        await Channel.find({
+            where: {
+                type: In([ChannelType.GUILD_NEWS_THREAD, ChannelType.GUILD_PUBLIC_THREAD]),
+                guild_id: In(members.map(({ guild }) => guild.id)),
+            },
+        })
+    ).filter(({ thread_metadata }) => thread_metadata?.archived === false);
 
     // Generate guilds list ( make them unavailable if user is bot )
     const guilds: GuildOrUnavailable[] = members.map((member) => {
@@ -456,23 +465,20 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             pending_guilds.push(member.guild);
             return { id: member.guild.id, unavailable: true };
         }
-        const threads = threadMembers
-            .filter(({ channel }) => channel.guild_id === member.guild.id)
-            .map((_) => {
-                return {
-                    member: {
-                        ..._.toJSON(),
-                        channel: undefined,
-                    },
-                    ..._.channel.toJSON(),
-                };
-            });
+
+        const threads: Channel[] = allThreads.filter((_) => _.guild_id === member.guild_id);
 
         return {
             ...member.guild.toJSON(),
             joined_at: member.joined_at,
 
-            threads,
+            threads: threads.map((thread) => {
+                const member = threadMemberMap.get(thread.id)?.toJSON();
+                return {
+                    ...thread.toJSON(),
+                    member,
+                };
+            }),
         };
     });
     const generateGuildsListTime = taskSw.getElapsedAndReset();
