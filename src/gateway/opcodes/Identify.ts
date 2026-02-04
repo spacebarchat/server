@@ -425,8 +425,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     // Populated with guilds 'unavailable' currently
     // Just for bots
-
-    const pending_guilds: object[] = [];
+    //TODO get this a better type
+    const pending_guilds: { id: string }[] = [];
 
     // Generate guilds list ( make them unavailable if user is bot )
     const guilds: GuildOrUnavailable[] = members.map((member) => {
