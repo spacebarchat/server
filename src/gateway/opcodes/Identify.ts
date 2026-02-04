@@ -417,7 +417,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const threadMembers = await ThreadMember.find({
         where: { member_idx: In(member_idx) },
-        relations: { channel: { recipients: { user: true } } },
+        relations: { channel: { thread_members: { member: true } } },
     });
     const threadMemberTime = taskSw.getElapsedAndReset();
 

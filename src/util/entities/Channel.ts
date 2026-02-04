@@ -57,6 +57,12 @@ export class Channel extends BaseClass {
     })
     recipients?: Recipient[];
 
+    @OneToMany(() => ThreadMember, (member: ThreadMember) => member.channel, {
+        cascade: true,
+        orphanedRowAction: "delete",
+    })
+    thread_members?: ThreadMember[];
+
     @Column({ nullable: true })
     last_message_id?: string;
 
@@ -676,7 +682,7 @@ export class Channel extends BaseClass {
             user_limit: this.user_limit || undefined,
             rate_limit_per_user: this.rate_limit_per_user || undefined,
             owner_id: this.owner_id || undefined,
-            ...(this.isThread() && this.recipients ? { member_ids_preview: this.recipients.map((_) => _.user.id) } : {}),
+            ...(this.isThread() && this.thread_members ? { member_ids_preview: this.thread_members.map((_) => _.member.id) } : {}),
         };
     }
 }

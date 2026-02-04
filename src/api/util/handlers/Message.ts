@@ -243,7 +243,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
                 if (opts.message_reference.type != 1) {
                     if (opts.message_reference.guild_id !== channel.guild_id) throw new HTTPError("You can only reference messages from this guild");
-                    if (opts.message_reference.channel_id !== opts.channel_id && opts.type !== MessageType.THREAD_STARTER_MESSAGE)
+                    if (opts.message_reference.channel_id !== opts.channel_id && opts.type !== MessageType.THREAD_STARTER_MESSAGE && opts.type !== MessageType.THREAD_CREATED)
                         throw new HTTPError("You can only reference messages from this channel");
                 }
 

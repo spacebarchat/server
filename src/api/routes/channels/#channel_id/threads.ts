@@ -17,8 +17,8 @@
 */
 
 import { handleMessage, postHandleMessage, route, sendMessage } from "@spacebar/api";
-import { Message, Channel, emitEvent, User, MessageUpdateEvent, Recipient, uploadFile, Attachment, Member, ReadState, MessageCreateEvent } from "@spacebar/util";
-import { MessageThreadCreationSchema, ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
+import { Channel, emitEvent, User, uploadFile, Attachment, Member, ReadState, MessageCreateEvent } from "@spacebar/util";
+import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
@@ -81,9 +81,6 @@ router.post(
             void 0,
             { skipPermissionCheck: true, keepId: true, skipEventEmit: true },
         );
-        const recipient = Recipient.create({ channel_id: channel.id, user });
-
-        await recipient.save();
 
         await Promise.all([
             emitEvent({
