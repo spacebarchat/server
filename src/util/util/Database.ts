@@ -20,7 +20,9 @@ import { config } from "dotenv";
 import path from "path";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
+// noinspection ES6PreferShortImport
 import { ConfigEntity } from "../entities/Config";
+// noinspection ES6PreferShortImport
 import { Migration } from "../entities/Migration";
 import fs from "fs";
 
@@ -41,6 +43,7 @@ const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "dat
 
 export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
 const isSqlite = DatabaseType.includes("sqlite");
+const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
 
 // For openapi.js...
 if (!isHeadlessProcess) {
@@ -72,7 +75,7 @@ export const DataSourceOptions = isHeadlessProcess
           bigNumberStrings: false,
           supportBigNumbers: true,
           name: "default",
-          migrations: [path.join(__dirname, "..", "migration", DatabaseType, "*.js")],
+          migrations: applyMigrations ? [path.join(__dirname, "..", "migration", DatabaseType, "*.js")] : [],
       });
 
 // Gets the existing database connection
@@ -120,21 +123,26 @@ export async function initDatabase(): Promise<DataSource> {
             return false;
         }
     };
+    if (applyMigrations) {
+        if (!(await dbExists())) {
+            console.log("[Database] This appears to be a fresh database. Running initial DDL.");
+            const qr = dbConnection.createQueryRunner();
+            const initialPath = path.join(__dirname, "..", "migration", DatabaseType + "-initial.js");
+            if (fs.existsSync(initialPath)) {
+                console.log("[Database] Found initial migration file, running it.");
+                await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
+            } else console.log("[Database] No initial migration file found at '", initialPath, "', skipping.");
+            await qr.release();
+        }
 
-    if (!(await dbExists())) {
-        console.log("[Database] This appears to be a fresh database. Running initial DDL.");
-        const qr = dbConnection.createQueryRunner();
-        const initialPath = path.join(__dirname, "..", "migration", DatabaseType + "-initial.js");
-        if (fs.existsSync(initialPath)) {
-            console.log("[Database] Found initial migration file, running it.");
-            await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
-        } else console.log("[Database] No initial migration file found at '", initialPath, "', skipping.");
-        await qr.release();
-    }
-
-    if (process.env.APPLY_DB_MIGRATIONS !== "false") {
-        console.log("[Database] Applying missing migrations, if any.");
+        console.log("[Database] Applying missing migrations, if any.", process.env.APPLY_DB_MIGRATIONS);
         await dbConnection.runMigrations();
+    } else {
+        console.log("[Database] Skipping migrations as per config.");
+        while (!(await dbExists())) {
+            console.log("[Database] Database does not exist, and we are not running migrations... Waiting 1 seconds...");
+            await new Promise((r) => setTimeout(r, 5000));
+        }
     }
 
     console.log(`[Database] ${green("Connected")}`);

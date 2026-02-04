@@ -58,7 +58,6 @@ in
   };
 
   testScript = ''
-    machine.wait_for_unit("spacebar-apply-migrations")
     machine.wait_for_unit("spacebar-api")
     machine.wait_for_unit("spacebar-cdn")
     machine.wait_for_unit("spacebar-gateway")

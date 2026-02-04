@@ -7,3 +7,4 @@ appsettings.Local*.json
 
 Spacebar.Db/**/*.orig
 Spacebar.Db/**/*.rej
+Spacebar.GatewayOffload/http-client.private.env.json

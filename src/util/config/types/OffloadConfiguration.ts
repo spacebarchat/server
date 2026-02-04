@@ -21,5 +21,6 @@ export class OffloadConfiguration {
 }
 
 export class GatewayOffloadConfiguration {
+    op12BaseUrl: string | null = null;
     op14BaseUrl: string | null = null;
 }

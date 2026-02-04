@@ -269,7 +269,7 @@ export async function getPermission(
     } else if (channel_id) {
         channel = channel_id;
     }
-    if (channel?.isThread() && channel.parent_id) {
+    while (channel?.isThread() && channel.parent_id) {
         const parent = await Channel.findOneOrFail({ where: { id: channel.parent_id }, ...query });
         if (channel.type === ChannelType.GUILD_PRIVATE_THREAD) {
             if (!parent.thread_members!.find(({ member }) => member.id === user_id)) {

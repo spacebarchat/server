@@ -283,6 +283,9 @@ export class Channel extends BaseClass {
 
         return ret;
     }
+    threadOnly() {
+        return this.type === ChannelType.GUILD_FORUM || this.type === ChannelType.GUILD_MEDIA;
+    }
 
     static async createThreadChannel(
         channel: Partial<Channel>,

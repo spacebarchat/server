@@ -14,11 +14,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" />
-        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj"  Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Replication.UnixSocket" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.AdminApi" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Config" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
     <ItemGroup>

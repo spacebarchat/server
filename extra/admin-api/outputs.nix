@@ -28,6 +28,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         runtimeId ? null,
         useAppHost ? null,
         packNupkg ? true,
+        srcRoot ? ./.,
       }@args:
       pkgs.buildDotnetModule rec {
         inherit
@@ -36,6 +37,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           projectFile
           runtimeId
           useAppHost
+          srcRoot
           ;
 
         pname = "${name}";
@@ -45,10 +47,10 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           "--include-source"
           "--version-suffix ${rVersion}"
         ];
-        #          dotnetFlags = [ "-v:diag" ];
+        dotnetFlags = [ "-v:n" ]; # diag
         dotnet-sdk = pkgs.dotnet-sdk_10;
         dotnet-runtime = pkgs.dotnet-aspnetcore_10;
-        src = pkgs.lib.cleanSource ./.;
+        src = pkgs.lib.cleanSource srcRoot;
         packNupkg = true;
         meta = with pkgs.lib; {
           description = "Spacebar Server, Typescript Edition (C# extensions)";
@@ -67,50 +69,70 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         # Interop
         Spacebar-Interop-Authentication = makeNupkg {
           name = "Spacebar.Interop.Authentication";
-          projectFile = "Interop/Spacebar.Interop.Authentication/Spacebar.Interop.Authentication.csproj";
+          projectFile = "Spacebar.Interop.Authentication.csproj";
           nugetDeps = Interop/Spacebar.Interop.Authentication/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Authentication;
+          projectReferences = [ proj.Spacebar-Models-Db ];
+        };
+        Spacebar-Interop-Authentication-AspNetCore = makeNupkg {
+          name = "Spacebar.Interop.Authentication.AspNetCore";
+          projectFile = "Spacebar.Interop.Authentication.AspNetCore.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Authentication.AspNetCore/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Authentication.AspNetCore;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Authentication
+          ];
         };
         Spacebar-Interop-Cdn-Abstractions = makeNupkg {
           name = "Spacebar.Interop.Cdn.Abstractions";
-          projectFile = "Interop/Spacebar.Interop.Cdn.Abstractions/Spacebar.Interop.Cdn.Abstractions.csproj";
+          projectFile = "Spacebar.Interop.Cdn.Abstractions.csproj";
           nugetDeps = Interop/Spacebar.Interop.Cdn.Abstractions/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Cdn.Abstractions;
         };
         Spacebar-Interop-Replication-Abstractions = makeNupkg {
           name = "Spacebar.Interop.Replication.Abstractions";
-          projectFile = "Interop/Spacebar.Interop.Replication.Abstractions/Spacebar.Interop.Replication.Abstractions.csproj";
+          projectFile = "Spacebar.Interop.Replication.Abstractions.csproj";
+          srcRoot = Interop/Spacebar.Interop.Replication.Abstractions;
         };
         Spacebar-Interop-Replication-RabbitMq = makeNupkg {
           name = "Spacebar.Interop.Replication.RabbitMq";
-          projectFile = "Interop/Spacebar.Interop.Replication.RabbitMq/Spacebar.Interop.Replication.RabbitMq.csproj";
+          projectFile = "Spacebar.Interop.Replication.RabbitMq.csproj";
           nugetDeps = Interop/Spacebar.Interop.Replication.RabbitMq/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Replication.RabbitMq;
           projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
         };
         Spacebar-Interop-Replication-UnixSocket = makeNupkg {
           name = "Spacebar.Interop.Replication.UnixSocket";
-          projectFile = "Interop/Spacebar.Interop.Replication.UnixSocket/Spacebar.Interop.Replication.UnixSocket.csproj";
+          projectFile = "Spacebar.Interop.Replication.UnixSocket.csproj";
           nugetDeps = Interop/Spacebar.Interop.Replication.UnixSocket/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Replication.UnixSocket;
           projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
         };
 
         # Models
         Spacebar-Models-AdminApi = makeNupkg {
           name = "Spacebar.Models.AdminApi";
-          projectFile = "Models/Spacebar.Models.AdminApi/Spacebar.Models.AdminApi.csproj";
+          projectFile = "Spacebar.Models.AdminApi.csproj";
+          srcRoot = Models/Spacebar.Models.AdminApi;
         };
         Spacebar-Models-Config = makeNupkg {
           name = "Spacebar.Models.Config";
-          projectFile = "Models/Spacebar.Models.Config/Spacebar.Models.Config.csproj";
+          projectFile = "Spacebar.Models.Config.csproj";
+          srcRoot = Models/Spacebar.Models.Config;
         };
         Spacebar-Models-Db = makeNupkg {
           name = "Spacebar.Models.Db";
-          projectFile = "Models/Spacebar.Models.Db/Spacebar.Models.Db.csproj";
+          projectFile = "Spacebar.Models.Db.csproj";
           nugetDeps = Models/Spacebar.Models.Db/deps.json;
+          srcRoot = Models/Spacebar.Models.Db;
         };
 
         # Utilities
         Spacebar-CleanSettingsRows = makeNupkg {
           name = "Spacebar.CleanSettingsRows";
-          projectFile = "Utilities/Spacebar.CleanSettingsRows/Spacebar.CleanSettingsRows.csproj";
+          srcRoot = Utilities/Spacebar.CleanSettingsRows;
+          projectFile = "Spacebar.CleanSettingsRows.csproj";
           nugetDeps = Utilities/Spacebar.CleanSettingsRows/deps.json;
           packNupkg = false;
           projectReferences = [ proj.Spacebar-Models-Db ];
@@ -120,7 +142,10 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           projectFile = "Utilities/Spacebar.Cdn.Fsck/Spacebar.Cdn.Fsck.csproj";
           nugetDeps = Utilities/Spacebar.Cdn.Fsck/deps.json;
           packNupkg = false;
-          projectReferences = [ proj.Spacebar-Models-Db proj.Spacebar-Interop-Cdn-Abstractions ];
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Cdn-Abstractions
+          ];
         };
 
         # Main projects
@@ -129,7 +154,12 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           nugetDeps = Spacebar.AdminApi/deps.json;
           packNupkg = false;
           projectReferences = [
+            proj.Spacebar-Interop-Authentication
+            proj.Spacebar-Interop-Authentication-AspNetCore
+            proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Interop-Replication-UnixSocket
             proj.Spacebar-Models-AdminApi
+            proj.Spacebar-Models-Config
             proj.Spacebar-Models-Db
           ];
         };
@@ -139,6 +169,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           packNupkg = false;
           projectReferences = [
             proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Cdn-Abstractions
           ];
         };
         #            Spacebar-AdminApi-TestClient = makeNupkg {

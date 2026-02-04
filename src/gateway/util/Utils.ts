@@ -53,5 +53,9 @@ export async function cleanupOnStartup(): Promise<void> {
     //	},
     //);
 
-    await VoiceState.clear();
+    try {
+        await VoiceState.clear();
+    } catch (e) {
+        console.error("Error clearing voice states on startup:", e);
+    }
 }

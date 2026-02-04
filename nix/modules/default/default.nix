@@ -272,7 +272,7 @@ in
             CONFIG_READONLY = 1;
             PORT = toString cfg.gatewayEndpoint.localPort;
             STORAGE_LOCATION = cfg.cdnPath;
-            APPLY_DB_MIGRATIONS = false;
+            APPLY_DB_MIGRATIONS = "false";
           }
         );
         serviceConfig = {
@@ -295,7 +295,7 @@ in
             CONFIG_READONLY = 1;
             PORT = toString cfg.cdnEndpoint.localPort;
             STORAGE_LOCATION = cfg.cdnPath;
-            APPLY_DB_MIGRATIONS = false;
+            APPLY_DB_MIGRATIONS = "false";
           }
         );
         serviceConfig = {

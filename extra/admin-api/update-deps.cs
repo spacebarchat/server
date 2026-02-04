@@ -41,12 +41,12 @@ Console.WriteLine($"==> Updating dependencies for {outs.Length} projects...");
 
 foreach (var outp in outs) {
     Console.WriteLine(ConsoleUtils.ColoredString($"  ==> Updating {outp}...", 0x80, 0x80, 0xff));
-    Console.Write(ConsoleUtils.ColoredString($"    ==> Getting project files... ", 0x80, 0xff, 0xff));
-    var projectFiles = JsonSerializer.Deserialize<string[]>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.dotnetProjectFiles", silent: true, stderr: false));
-    Console.WriteLine(ConsoleUtils.ColoredString($"{string.Join(", ", projectFiles)}", 0x80, 0xff, 0xff));
-    if (projectFiles.Length != 1) throw new Exception("Invalid project file count?");
+    Console.Write(ConsoleUtils.ColoredString($"    ==> Getting project root directory... ", 0x80, 0xff, 0xff));
+    var rootDir = JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.srcRoot", silent: true, stderr: false)).Split("/extra/admin-api/",2)[1];
+    Console.WriteLine(ConsoleUtils.ColoredString($"{rootDir}", 0x80, 0xff, 0xff));
+    if (rootDir.Length <= 1) throw new Exception("Invalid project file count?");
 
-    var nugetDepsFilePath = Path.Combine(Path.GetDirectoryName(projectFiles[0]), "deps.json");
+    var nugetDepsFilePath = Path.Combine(rootDir, "deps.json");
     Console.WriteLine(ConsoleUtils.ColoredString($"    ==> {nugetDepsFilePath} exists: {File.Exists(nugetDepsFilePath)}", 0x80, 0xff, 0xff));
     if (!File.Exists(nugetDepsFilePath)) {
         Console.WriteLine(ConsoleUtils.ColoredString($"      ==> No NuGet deps file, skipping!", 0xff, 0x80, 0x80));

@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Spacebar.Interop.Authentication\Spacebar.Interop.Authentication.csproj" />
+        <ProjectReference Include="..\Spacebar.Interop.Authentication\Spacebar.Interop.Authentication.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Authentication" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
 </Project>

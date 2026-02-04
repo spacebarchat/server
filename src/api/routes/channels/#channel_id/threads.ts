@@ -68,7 +68,7 @@ router.post(
                 name: body.name,
                 guild_id: channel.guild_id,
                 rate_limit_per_user: body.rate_limit_per_user,
-                type: body.type,
+                type: body.type || (channel.threadOnly() ? ChannelType.GUILD_PUBLIC_THREAD : ChannelType.GUILD_PRIVATE_THREAD),
                 recipients: [],
                 thread_metadata: {
                     archived: false,
@@ -116,7 +116,7 @@ router.post(
             }
             const embeds = body.message.embeds || [];
             const message = await handleMessage({
-                ...body,
+                ...body.message,
                 id: thread.id,
                 type: 0,
                 pinned: false,
