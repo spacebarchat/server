@@ -89,7 +89,7 @@ public partial class User
     [Column("email", TypeName = "character varying")]
     public string? Email { get; set; }
 
-    [Column("flags")]
+    [Column("flags", TypeName = "character varying")]
     public ulong Flags { get; set; }
 
     [Column("public_flags")]

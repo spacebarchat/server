@@ -127,6 +127,19 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           nugetDeps = Models/Spacebar.Models.Db/deps.json;
           srcRoot = Models/Spacebar.Models.Db;
         };
+        Spacebar-Models-Gateway = makeNupkg {
+          name = "Spacebar.Models.Gateway";
+          projectFile = "Spacebar.Models.Gateway.csproj";
+          # nugetDeps = Models/Spacebar.Models.Gateway/deps.json;
+          srcRoot = Models/Spacebar.Models.Gateway;
+          projectReferences = [ proj.Spacebar-Models-Generic ];
+        };
+        Spacebar-Models-Generic = makeNupkg {
+          name = "Spacebar.Models.Generic";
+          projectFile = "Spacebar.Models.Generic.csproj";
+          # nugetDeps = Models/Spacebar.Models.Generic/deps.json;
+          srcRoot = Models/Spacebar.Models.Generic;
+        };
 
         # Utilities
         Spacebar-CleanSettingsRows = makeNupkg {
@@ -139,7 +152,8 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         };
         Spacebar-Cdn-Fsck = makeNupkg {
           name = "Spacebar.Cdn.Fsck";
-          projectFile = "Utilities/Spacebar.Cdn.Fsck/Spacebar.Cdn.Fsck.csproj";
+          projectFile = "Spacebar.Cdn.Fsck.csproj";
+          srcRoot = Utilities/Spacebar.Cdn.Fsck;
           nugetDeps = Utilities/Spacebar.Cdn.Fsck/deps.json;
           packNupkg = false;
           projectReferences = [
@@ -152,6 +166,8 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Spacebar-AdminApi = makeNupkg {
           name = "Spacebar.AdminApi";
           nugetDeps = Spacebar.AdminApi/deps.json;
+          projectFile = "Spacebar.AdminApi.csproj";
+          srcRoot = ./Spacebar.AdminApi;
           packNupkg = false;
           projectReferences = [
             proj.Spacebar-Interop-Authentication
@@ -166,10 +182,27 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Spacebar-Cdn = makeNupkg {
           name = "Spacebar.Cdn";
           nugetDeps = Spacebar.Cdn/deps.json;
+          projectFile = "Spacebar.Cdn.csproj";
+          srcRoot = ./Spacebar.Cdn;
           packNupkg = false;
           projectReferences = [
             proj.Spacebar-Models-Db
             proj.Spacebar-Interop-Cdn-Abstractions
+          ];
+        };
+        Spacebar-GatewayOffload = makeNupkg {
+          name = "Spacebar.GatewayOffload";
+          nugetDeps = Spacebar.GatewayOffload/deps.json;
+          projectFile = "Spacebar.GatewayOffload.csproj";
+          srcRoot = ./Spacebar.GatewayOffload;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-Interop-Authentication
+            proj.Spacebar-Interop-Authentication-AspNetCore
+            proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
           ];
         };
         #            Spacebar-AdminApi-TestClient = makeNupkg {

@@ -51,6 +51,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.GatewayOffload", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.Interop.Authentication.AspNetCore", "Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj", "{BB961FD8-61C2-4443-AB68-B8088CBC3D43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.Models.Generic", "Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj", "{58766A5F-BA91-41F1-8A09-44E96685E361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spacebar.Models.Gateway", "Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj", "{0057DA5E-3183-4A7A-B092-167137872FF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -313,6 +317,30 @@ Global
 		{BB961FD8-61C2-4443-AB68-B8088CBC3D43}.Release|x64.Build.0 = Release|Any CPU
 		{BB961FD8-61C2-4443-AB68-B8088CBC3D43}.Release|x86.ActiveCfg = Release|Any CPU
 		{BB961FD8-61C2-4443-AB68-B8088CBC3D43}.Release|x86.Build.0 = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|x64.Build.0 = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Debug|x86.Build.0 = Debug|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|x64.ActiveCfg = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|x64.Build.0 = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|x86.ActiveCfg = Release|Any CPU
+		{58766A5F-BA91-41F1-8A09-44E96685E361}.Release|x86.Build.0 = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|x64.Build.0 = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Debug|x86.Build.0 = Debug|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|x64.ActiveCfg = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|x64.Build.0 = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|x86.ActiveCfg = Release|Any CPU
+		{0057DA5E-3183-4A7A-B092-167137872FF8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,5 +364,7 @@ Global
 		{95A8E8CC-53B2-4FC6-B41E-196BE5F96BB5} = {16DBEA54-D51A-4D91-84DF-C701B6B4786F}
 		{8864E79A-2FF3-4B08-8AE9-F9D877CC69B3} = {16DBEA54-D51A-4D91-84DF-C701B6B4786F}
 		{BB961FD8-61C2-4443-AB68-B8088CBC3D43} = {16DBEA54-D51A-4D91-84DF-C701B6B4786F}
+		{58766A5F-BA91-41F1-8A09-44E96685E361} = {259D1A9B-2927-4571-A366-68C3BB30C2B2}
+		{0057DA5E-3183-4A7A-B092-167137872FF8} = {259D1A9B-2927-4571-A366-68C3BB30C2B2}
 	EndGlobalSection
 EndGlobal
