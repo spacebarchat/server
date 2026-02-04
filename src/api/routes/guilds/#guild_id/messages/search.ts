@@ -74,14 +74,12 @@ router.get(
             order: {
                 timestamp: sort_order ? (sort_order.toUpperCase() as "ASC" | "DESC") : "DESC",
             },
-            take: parsedLimit || 0,
             where: {
                 guild: {
                     id: req.params.guild_id as string,
                 },
             },
             relations: { author: true, webhook: true, application: true, mentions: true, mention_roles: true, mention_channels: true, sticker_items: true, attachments: true },
-            skip: offset ? Number(offset) : 0,
         };
         //@ts-ignore
         if (channel_id) query.where.channel = { id: channel_id };
@@ -107,7 +105,7 @@ router.get(
         //@ts-ignore
         if (content) query.where.content = Like(`%${content}%`);
 
-        const messages: Message[] = await Message.find(query);
+        const messages: Message[] = await Message.find({ ...query, take: parsedLimit || 0, skip: offset ? Number(offset) : 0 });
         delete query.take;
         const total_results = await Message.count(query);
 
