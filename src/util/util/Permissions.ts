@@ -5,7 +5,8 @@
 import { Channel, Guild, Member, Role, User } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, UserFlags } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, UserFlags } from "@spacebar/schemas";
+import { FindOneOptions } from "typeorm";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -258,16 +259,29 @@ export async function getPermission(
         where: { id: user_id },
         select: { id: true, flags: true },
     });
-
+    const query = {
+        relations: ["recipients", "thread_members", "thread_members.member", ...(opts.channel_relations || [])],
+        select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id", ...(opts.channel_select || [])],
+    } as FindOneOptions<Channel>;
     if (typeof channel_id === "string") {
-        channel = await Channel.findOneOrFail({
-            where: { id: channel_id },
-            relations: ["recipients", ...(opts.channel_relations || [])],
-            select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id", ...(opts.channel_select || [])],
-        });
+        channel = await Channel.findOneOrFail({ where: { id: channel_id }, ...query });
         if (channel.guild_id) guild_id = channel.guild_id; // derive guild_id from the channel
     } else if (channel_id) {
         channel = channel_id;
+    }
+    if (channel?.isThread() && channel.parent_id) {
+        const parent = await Channel.findOneOrFail({ where: { id: channel.parent_id }, ...query });
+        if (channel.type === ChannelType.GUILD_PRIVATE_THREAD) {
+            if (!parent.thread_members!.find(({ member }) => member.id === user_id)) {
+                const perms: Permissions = await getPermission(user_id, guild_id, parent, opts);
+                if (!perms.has("MANAGE_THREADS")) {
+                    return new Permissions(0);
+                } else {
+                    return perms;
+                }
+            }
+        }
+        channel = parent;
     }
 
     if (guild_id) {
