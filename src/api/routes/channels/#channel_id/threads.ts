@@ -81,7 +81,7 @@ router.post(
                 },
             },
             void 0,
-            { skipPermissionCheck: true, keepId: true, skipEventEmit: true },
+            { skipPermissionCheck: true, keepId: true, skipEventEmit: true, skipNameChecks: true },
         );
 
         await Promise.all([
