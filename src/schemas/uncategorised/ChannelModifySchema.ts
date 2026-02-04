@@ -30,6 +30,7 @@ export interface ChannelModifySchema {
     user_limit?: number;
     rate_limit_per_user?: number;
     position?: number;
+    invitable?: boolean;
     permission_overwrites?: {
         id: string;
         type: ChannelPermissionOverwriteType;

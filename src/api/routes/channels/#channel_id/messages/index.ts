@@ -341,6 +341,7 @@ router.post(
             where: { id: channel_id },
             relations: { recipients: { user: true } },
         });
+        if (channel.thread_metadata?.locked) throw DiscordApiErrors.THREAD_IS_LOCKED;
         if (channel.isThread()) {
             req.permission!.hasThrow("SEND_MESSAGES_IN_THREADS");
             if (channel.recipients && !channel.recipients.find(({ id }) => id === req.user_id)) {

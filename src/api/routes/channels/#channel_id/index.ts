@@ -134,7 +134,7 @@ router.patch(
     "/",
     route({
         requestBody: "ChannelModifySchema",
-        permission: "MANAGE_CHANNELS",
+        permission: "VIEW_CHANNEL",
         responses: {
             200: {
                 body: "Channel",
@@ -148,12 +148,38 @@ router.patch(
     async (req: Request, res: Response) => {
         const payload = req.body as ChannelModifySchema;
         const { channel_id } = req.params as { [key: string]: string };
-        if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
-
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });
+
+        if (channel.isThread()) {
+            if (channel.owner_id !== req.user.id) {
+                req.permission!.hasThrow("MANAGE_THREADS");
+            }
+            if (payload.permission_overwrites) {
+                //TODO better error maybe?
+                throw new Error("You can't change permission overwrites for threads");
+            }
+        } else {
+            req.permission!.hasThrow("MANAGE_CHANNELS");
+        }
+
+        if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
+
         channel.assign(payload);
+        if (channel.thread_metadata) {
+            if (payload.archived !== undefined) {
+                channel.thread_metadata.archived = payload.archived;
+                channel.thread_metadata.archive_timestamp = new Date().toISOString();
+            }
+            if (payload.locked !== undefined) channel.thread_metadata.locked = payload.locked;
+            if (payload.auto_archive_duration !== undefined) channel.thread_metadata.auto_archive_duration = payload.auto_archive_duration;
+            if (payload.invitable !== undefined) channel.thread_metadata.invitable = payload.invitable;
+            if (payload.locked !== undefined) {
+                req.permission!.hasThrow("MANAGE_THREADS");
+                channel.thread_metadata.locked = payload.locked;
+            }
+        }
 
         await Promise.all([
             channel.save(),
