@@ -24,7 +24,7 @@ export interface ThreadCreationSchema {
     auto_archive_duration?: number;
     rate_limit_per_user?: number;
     name: string;
-    type: ChannelType.GUILD_PUBLIC_THREAD | ChannelType.GUILD_PRIVATE_THREAD;
+    type?: ChannelType.GUILD_PUBLIC_THREAD | ChannelType.GUILD_PRIVATE_THREAD;
     invitable?: boolean;
     applied_tags?: string[];
     location?: string; //Ignore it
