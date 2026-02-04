@@ -426,7 +426,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     // Populated with guilds 'unavailable' currently
     // Just for bots
 
-    const pending_guilds: Guild[] = [];
+    const pending_guilds: object[] = [];
 
     // Generate guilds list ( make them unavailable if user is bot )
     const guilds: GuildOrUnavailable[] = members.map((member) => {
@@ -452,10 +452,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             })
             .sort((a, b) => a.position - b.position);
 
-        if (user.bot) {
-            pending_guilds.push(member.guild);
-            return { id: member.guild.id, unavailable: true };
-        }
         const threads = threadMembers
             .filter(({ channel }) => channel.guild_id === member.guild.id)
             .map((_) => {
@@ -467,13 +463,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     ..._.channel.toJSON(),
                 };
             });
-
-        return {
+        const guildjson = {
             ...member.guild.toJSON(),
             joined_at: member.joined_at,
 
             threads,
         };
+
+        if (user.bot) {
+            pending_guilds.push(guildjson);
+            return { id: member.guild.id, unavailable: true };
+        }
+
+        return guildjson;
     });
     const generateGuildsListTime = taskSw.getElapsedAndReset();
 
@@ -760,7 +762,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 t: EVENTEnum.GuildCreate,
                 s: this.sequence++,
                 d: {
-                    ...x.toJSON(),
+                    ...x,
                     members: botMemberObject
                         ? [
                               {
