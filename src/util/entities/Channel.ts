@@ -228,6 +228,8 @@ export class Channel extends BaseClass {
             case ChannelType.GUILD_PRIVATE_THREAD:
             case ChannelType.GUILD_NEWS_THREAD:
             case ChannelType.GUILD_TEXT:
+            case ChannelType.GUILD_FORUM:
+            case ChannelType.GUILD_MEDIA:
             case ChannelType.GUILD_NEWS:
             case ChannelType.GUILD_VOICE:
                 if (channel.parent_id && !opts?.skipExistsCheck) {
