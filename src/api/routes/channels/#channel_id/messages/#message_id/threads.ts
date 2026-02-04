@@ -50,7 +50,6 @@ router.post(
             where: { id: channel_id },
         });
         const user = await User.findOneOrFail({ where: { id: req.user_id } });
-        const recipient = Recipient.create({ channel_id: message.id, user });
 
         const thread = await Channel.createChannel(
             {
@@ -77,8 +76,6 @@ router.post(
             void 0,
             { skipPermissionCheck: true, keepId: true, skipEventEmit: true },
         );
-
-        recipient.save();
 
         message.thread = thread;
         message.flags ||= 1 << 5;
