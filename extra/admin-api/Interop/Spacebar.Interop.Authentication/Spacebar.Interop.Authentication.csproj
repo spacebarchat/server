@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.2"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0"/>

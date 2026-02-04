@@ -14,8 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Cdn.Abstractions\Spacebar.Interop.Cdn.Abstractions.csproj" />
-      <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" />
+      <ProjectReference Include="..\Interop\Spacebar.Interop.Cdn.Abstractions\Spacebar.Interop.Cdn.Abstractions.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Cdn.Abstractions" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+      <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
 </Project>

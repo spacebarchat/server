@@ -11,9 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" />
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication\Spacebar.Interop.Authentication.csproj" />
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" />
+      <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+      <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Replication.UnixSocket" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
 </Project>
