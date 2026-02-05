@@ -37,6 +37,7 @@ export interface ChannelModifySchema {
         allow: string;
         deny: string;
     }[];
+    applied_tags?: string[];
     parent_id?: string;
     id?: string; // is not used (only for guild create)
     nsfw?: boolean;

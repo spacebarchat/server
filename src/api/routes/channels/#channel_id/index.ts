@@ -174,6 +174,28 @@ router.patch(
                 channel.available_tags = channel.available_tags.filter((_) => filter.has(_.id));
             }
         }
+        if (payload.applied_tags) {
+            if (channel.isThread()) {
+                const parent = await Channel.findOneOrFail({
+                    where: {
+                        id: channel.parent_id as string,
+                    },
+                    relations: ["available_tags"],
+                });
+                if (!parent.available_tags) throw new Error("shoot, internetal error");
+                const realTags = new Map(parent.available_tags.map((tag) => [tag.id, tag]));
+                const bad = payload.applied_tags.find((tag) => !realTags.has(tag));
+                //TODO better error
+                if (bad) throw new Error("Invalid tag " + bad);
+                const permsNeeded = payload.applied_tags.find((_) => realTags.get(_)?.moderated);
+                if (permsNeeded) {
+                    req.permission?.hasThrow("MANAGE_THREADS");
+                }
+            } else {
+                //TODO maybe error instead?
+                payload.applied_tags = undefined;
+            }
+        }
 
         if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
 
