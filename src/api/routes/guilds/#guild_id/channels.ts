@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, ChannelUpdateEvent, Guild, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelModifySchema, ChannelReorderSchema } from "@spacebar/schemas";
+import { ChannelCreateSchema } from "../../../../schemas/uncategorised/ChannelCreateSchema";
 const router = Router({ mergeParams: true });
 
 router.get(
@@ -47,7 +48,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "ChannelModifySchema",
+        requestBody: "ChannelCreateSchema",
         permission: "MANAGE_CHANNELS",
         responses: {
             201: {
@@ -64,7 +65,7 @@ router.post(
     async (req: Request, res: Response) => {
         // creates a new guild channel https://discord.com/developers/docs/resources/guild#create-guild-channel
         const { guild_id } = req.params as { [key: string]: string };
-        const body = req.body as ChannelModifySchema;
+        const body = req.body as ChannelCreateSchema;
 
         const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
         channel.position = await Channel.calculatePosition(channel.id, guild_id, channel.guild);

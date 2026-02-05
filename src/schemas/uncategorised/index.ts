@@ -96,3 +96,4 @@ export * from "./ThreadCreationSchema";
 export * from "./MessageActivity";
 export * from "./PostDataSchema";
 export * from "./TagCreateSchema";
+export * from "./ChannelCreateSchema";

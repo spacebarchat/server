@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelPermissionOverwriteType, ChannelType } from "@spacebar/schemas";
+import { ChannelPermissionOverwriteType, ChannelType, TagCreateSchema } from "@spacebar/schemas";
 
 export interface ChannelModifySchema {
     /**
@@ -49,4 +49,5 @@ export interface ChannelModifySchema {
     auto_archive_duration?: number;
     archived?: boolean;
     locked?: boolean;
+    available_tags?: TagCreateSchema & { id: string };
 }

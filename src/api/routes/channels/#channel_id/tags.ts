@@ -46,7 +46,10 @@ router.post(
 
         const tag = Tag.create({
             channel,
-            ...body,
+            name: body.name,
+            moderated: body.moderated || false,
+            emoji_id: body.emoji_id || undefined,
+            emoji_name: body.emoji_name || undefined,
         });
         channel.available_tags?.push(tag);
 
