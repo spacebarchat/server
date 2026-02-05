@@ -17,7 +17,22 @@
 */
 
 import { handleMessage, postHandleMessage, route, sendMessage } from "@spacebar/api";
-import { Channel, emitEvent, User, uploadFile, Attachment, Member, ReadState, MessageCreateEvent, FieldErrors, getPermission, ThreadMember, Message } from "@spacebar/util";
+import {
+    Channel,
+    emitEvent,
+    User,
+    uploadFile,
+    Attachment,
+    Member,
+    ReadState,
+    MessageCreateEvent,
+    FieldErrors,
+    getPermission,
+    ThreadMember,
+    Message,
+    ChannelFlags,
+    DiscordApiErrors,
+} from "@spacebar/util";
 import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
@@ -56,7 +71,22 @@ router.post(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
+            relations: ["available_tags"],
         });
+        if (!body.applied_tags?.length) {
+            const required = channel.flags & Number(ChannelFlags.FLAGS.REQUIRE_TAG);
+            //TODO better error
+            if (required) throw new Error("Tag is required for this API");
+        } else if (channel.available_tags) {
+            const realTags = new Map(channel.available_tags.map((tag) => [tag.id, tag]));
+            const bad = body.applied_tags.find((tag) => !realTags.has(tag));
+            //TODO better error
+            if (bad) throw new Error("Invalid tag " + bad);
+            const permsNeeded = body.applied_tags.find((_) => realTags.get(_)?.moderated);
+            if (permsNeeded) {
+                req.permission?.hasThrow("MANAGE_THREADS");
+            }
+        }
         const user = await User.findOneOrFail({ where: { id: req.user_id } });
 
         const thread = await Channel.createChannel(
@@ -72,6 +102,7 @@ router.post(
                 rate_limit_per_user: body.rate_limit_per_user,
                 type: body.type || (channel.threadOnly() ? ChannelType.GUILD_PUBLIC_THREAD : ChannelType.GUILD_PRIVATE_THREAD),
                 recipients: [],
+                applied_tags: body.applied_tags || [],
                 thread_metadata: {
                     archived: false,
                     auto_archive_duration: body.auto_archive_duration || channel.default_auto_archive_duration || 4320,
