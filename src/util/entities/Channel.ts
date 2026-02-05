@@ -593,6 +593,9 @@ export class Channel extends BaseClass {
     isThread() {
         return this.type === ChannelType.GUILD_NEWS_THREAD || this.type === ChannelType.GUILD_PUBLIC_THREAD || this.type === ChannelType.GUILD_PRIVATE_THREAD;
     }
+    isForum() {
+        return this.type === ChannelType.GUILD_FORUM || this.type === ChannelType.GUILD_MEDIA;
+    }
 
     isPrivateThread() {
         return this.type === ChannelType.GUILD_PRIVATE_THREAD;

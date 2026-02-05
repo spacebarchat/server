@@ -16,42 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Channel } from "./Channel";
-
-@Entity({
-    name: "tags",
-})
-export class Tag extends BaseClass {
-    @Column()
-    channel_id: string;
-
-    @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, (channel) => channel.available_tags, {
-        onDelete: "CASCADE",
-    })
-    channel: Channel;
-
-    @Column()
+export interface TagCreateSchema {
     name: string;
-
-    @Column()
-    moderated: boolean = false;
-
-    @Column({ nullable: true })
+    moderated?: boolean;
     emoji_id?: string;
-
-    @Column({ nullable: true })
     emoji_name?: string;
-
-    toJSON() {
-        return {
-            name: this.name,
-            id: this.id,
-            moderated: this.moderated,
-            emoji_id: this.emoji_id,
-            emoji_name: this.emoji_name,
-        };
-    }
 }

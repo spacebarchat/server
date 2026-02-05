@@ -304,6 +304,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
                 },
                 order: { guild_id: "ASC" },
+                relations: ["available_tags"],
             }),
         ),
         timePromise(() =>
