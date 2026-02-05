@@ -29,7 +29,9 @@ router.post(
         requestBody: "TagCreateSchema",
         permission: "MANAGE_CHANNELS",
         responses: {
-            201: {},
+            200: {
+                body: "Channel",
+            },
             404: {},
         },
     }),
@@ -71,7 +73,9 @@ router.delete(
     route({
         permission: "MANAGE_CHANNELS",
         responses: {
-            201: {},
+            200: {
+                body: "Channel",
+            },
             404: {},
         },
     }),
