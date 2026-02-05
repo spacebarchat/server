@@ -61,6 +61,7 @@ router.post(
                 where: {
                     id: In(threads.map(({ id }) => id)),
                 },
+                relations: ["author"],
             }),
             Member.find({
                 where: {
