@@ -38,7 +38,7 @@ import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
 import { HTTPError } from "#util/util/lambert-server";
-import { FindManyOptions, FindOptionsOrder, In, Like } from "typeorm";
+import { FindManyOptions, FindOptionsOrder, In, Like, ArrayContains, ArrayOverlap } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -261,9 +261,8 @@ router.get(
             where: {
                 parent_id: channel_id,
                 ...(name ? { name: Like(`%${name}%`) } : {}),
-                //If someone else knows something that's less hacky looking let me know
-                //@ts-expect-error this works, you're allowed to use an array here
-                applied_tags: tags as string,
+                ...(tags.length ? { applied_tags: tag_setting === "match_all" ? ArrayContains(tags) : ArrayOverlap(tags) } : {}),
+
                 ...(archived
                     ? {
                           thread_metadata: {
