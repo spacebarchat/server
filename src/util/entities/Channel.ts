@@ -25,6 +25,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
 import { Message } from "./Message";
+import { Tag } from "./Tag";
 import { ReadState } from "./ReadState";
 import { Recipient } from "./Recipient";
 import { User } from "./User";
@@ -171,6 +172,16 @@ export class Channel extends BaseClass {
 
     @Column({ nullable: true })
     total_message_sent?: number;
+
+    @JoinColumn({ name: "available_tags_ids" })
+    @OneToMany(() => Tag, (tag: Tag) => tag.channel, {
+        cascade: true,
+        orphanedRowAction: "delete",
+    })
+    available_tags?: Tag[];
+
+    @Column("text", { array: true, nullable: true })
+    applied_tags?: string[];
 
     /** Must be calculated Channel.calculatePosition */
     position: number;
