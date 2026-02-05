@@ -125,7 +125,7 @@ router.post(
                 },
             }),
         ]);
-        if (body.type !== ChannelType.GUILD_PRIVATE_THREAD)
+        if (body.type !== ChannelType.GUILD_PRIVATE_THREAD && !channel.isForum())
             sendMessage({
                 channel_id: channel.id,
                 type: MessageType.THREAD_CREATED,
