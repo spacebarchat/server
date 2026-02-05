@@ -217,7 +217,8 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { name, slop, tag, tag_setting, archived, sort_by, sort_order, limit, offset, max_id, min_id } = req.query as Record<string, string>;
+        const { name, slop, tag, tag_setting, archived, sort_by, sort_order, limit, offset, max_id, min_id } = req.query as Record<string, string | undefined>;
+        const tags = tag ? tag.split(",") : [];
         const { channel_id } = req.params as Record<string, string>;
 
         const parsedLimit = Number(limit) || 25;
@@ -260,6 +261,9 @@ router.get(
             where: {
                 parent_id: channel_id,
                 ...(name ? { name: Like(`%${name}%`) } : {}),
+                //If someone else knows something that's less hacky looking let me know
+                //@ts-expect-error this works, you're allowed to use an array here
+                applied_tags: tags as string,
                 ...(archived
                     ? {
                           thread_metadata: {
@@ -287,7 +291,7 @@ router.get(
             },
         });
 
-        const left = total_results - threads.length - +offset;
+        const left = total_results - threads.length - +(offset || 0);
         return res.json({
             threads: threads.map((_) => _.toJSON()),
             members: (await members).map((_) => _.toJSON()),
