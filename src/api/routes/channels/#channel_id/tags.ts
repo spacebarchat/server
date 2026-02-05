@@ -66,4 +66,41 @@ router.post(
     },
 );
 
+router.delete(
+    "/:tag_id",
+    route({
+        permission: "MANAGE_CHANNELS",
+        responses: {
+            201: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id, tag_id } = req.params as Record<string, string>;
+
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+            relations: ["available_tags"],
+        });
+
+        if (!channel.isForum()) throw new Error("is not thread only channel");
+
+        const tag = await Tag.findOneByOrFail({
+            id: tag_id,
+        });
+        channel.available_tags = channel.available_tags?.filter((t) => t.id !== tag.id);
+
+        await Promise.all([
+            tag.remove(),
+            emitEvent({
+                event: "CHANNEL_UPDATE",
+                data: channel.toJSON(),
+                channel_id,
+            } as ChannelUpdateEvent),
+        ]);
+
+        res.json(channel.toJSON());
+    },
+);
+
 export default router;

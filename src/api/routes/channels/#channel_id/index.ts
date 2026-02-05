@@ -150,6 +150,7 @@ router.patch(
         const { channel_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
+            relations: payload.available_tags ? ["available_tags"] : [],
         });
 
         if (channel.isThread()) {
@@ -162,6 +163,16 @@ router.patch(
             }
         } else {
             req.permission!.hasThrow("MANAGE_CHANNELS");
+        }
+
+        if (payload.available_tags) {
+            if (channel.isForum() && channel.available_tags) {
+                //TODO maybe error if this fails, and maybe handle creating tags?
+                const filter = new Set(payload.available_tags.map(({ id }) => id));
+                const tags = channel.available_tags.filter((_) => !filter.has(_.id));
+                tags.forEach((_) => _.remove());
+                channel.available_tags = channel.available_tags.filter((_) => filter.has(_.id));
+            }
         }
 
         if (payload.icon) payload.icon = await handleFile(`/channel-icons/${channel_id}`, payload.icon);
