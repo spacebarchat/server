@@ -462,11 +462,6 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             })
             .sort((a, b) => a.position - b.position);
 
-        if (user.bot) {
-            pending_guilds.push(member.guild);
-            return { id: member.guild.id, unavailable: true };
-        }
-
         const threads: Channel[] = allThreads.filter((_) => _.guild_id === member.guild_id);
 
         const guildjson = {
