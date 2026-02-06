@@ -46,4 +46,15 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             },
             config.AuthCacheExpiry);
     }
+
+    public async Task<User> GetCurrentSessionAsync(string token) {
+        var res = await ValidateTokenAsync(token);
+        return await UserCache.GetOrAdd(token,
+            async () => {
+                var uid = config.OverrideUid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "id").Value;
+                if (string.IsNullOrWhiteSpace(uid)) throw new InvalidOperationException("No user ID specified, is the access token valid?");
+                return await db.Users.FindAsync(uid) ?? throw new InvalidOperationException();
+            },
+            config.AuthCacheExpiry);
+    }
 }

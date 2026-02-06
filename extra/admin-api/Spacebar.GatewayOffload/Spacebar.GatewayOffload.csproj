@@ -11,6 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\DataMappings\Spacebar.DataMappings.Generic\Spacebar.DataMappings.Generic.csproj"  Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.DataMappings.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
         <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
         <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
         <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.Abstractions\Spacebar.Interop.Replication.Abstractions.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>

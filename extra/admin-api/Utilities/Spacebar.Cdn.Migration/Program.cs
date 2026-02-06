@@ -7,6 +7,9 @@ using Spacebar.Interop.Cdn.Signing;
 using Spacebar.Models.Db.Contexts;
 
 var builder = Host.CreateApplicationBuilder(args);
+if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
+    builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
+
 // builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.server.spacebar.chat"));
 IFileSource fromSrc, toSrc;
 

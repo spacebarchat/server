@@ -5,6 +5,8 @@ using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
+if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
+    builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
 
 // Add services to the container.
 

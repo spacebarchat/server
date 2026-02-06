@@ -6,11 +6,31 @@
     let
       cfg = {
         enable = true;
-        apiEndpoint = { useSsl = false; host = "api.sb.localhost"; localPort = 3001; publicPort = 8080; };
-        gatewayEndpoint = { useSsl = false; host = "gw.sb.localhost"; localPort = 3002; publicPort = 8080; };
-        cdnEndpoint = { useSsl = false; host = "cdn.sb.localhost"; localPort = 3003; publicPort = 8080; };
+        apiEndpoint = {
+          useSsl = false;
+          host = "api.sb.localhost";
+          localPort = 3001;
+          publicPort = 8080;
+        };
+        gatewayEndpoint = {
+          useSsl = false;
+          host = "gw.sb.localhost";
+          localPort = 3002;
+          publicPort = 8080;
+        };
+        cdnEndpoint = {
+          useSsl = false;
+          host = "cdn.sb.localhost";
+          localPort = 3003;
+          publicPort = 8080;
+        };
         nginx.enable = true;
         serverName = "sb.localhost";
+        gatewayOffload = {
+          enable = true;
+          enableGuildSync = true;
+          extraConfiguration.ConnectionStrings.Spacebar = "Host=127.0.0.1; Username=Spacebar; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
+        };
         extraEnvironment = {
           DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";
           #WEBRTC_PORT_RANGE=60000-61000;
@@ -41,5 +61,7 @@
     btop
     duf
     lnav
+    net-tools
+    nethogs
   ];
 }

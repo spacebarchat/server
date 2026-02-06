@@ -22,12 +22,18 @@ in
           apiEndpoint = sb.mkEndpoint "api.sb.localhost" 3001 false;
           gatewayEndpoint = sb.mkEndpoint "gw.sb.localhost" 3002 false;
           cdnEndpoint = sb.mkEndpoint "cdn.sb.localhost" 3003 false;
-          nginx.enable = true;
           serverName = "sb.localhost";
           extraEnvironment = {
             DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";
             LOG_REQUESTS = "-"; # Log all requests
             LOG_VALIDATION_ERRORS = true;
+          };
+
+          nginx.enable = true;
+          gatewayOffload = {
+            enable = true;
+            enableGuildSync = true;
+            extraConfiguration.ConnectionStrings.Spacebar = "Host=127.0.0.1; Username=Spacebar; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
           };
         };
       in

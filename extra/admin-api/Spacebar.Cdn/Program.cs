@@ -6,10 +6,12 @@ using Spacebar.Interop.Cdn.Abstractions;
 using Spacebar.Models.Db.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
+if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
+    builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
 
 // Add services to the container.
 builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.server.spacebar.chat"));
-builder.Services.AddSingleton<LruFileCache>(new LruFileCache(1*1024*1024*1024));
+builder.Services.AddSingleton<LruFileCache>(new LruFileCache(1 * 1024 * 1024 * 1024));
 builder.Services.AddSingleton<PixelArtDetectionService>();
 builder.Services.AddSingleton<DiscordImageResizeService>();
 
@@ -45,7 +47,7 @@ app.Use((context, next) => {
 });
 
 // fallback to proxy in case we dont have a specific endpoint...
-app.MapFallback("{*_}",async context => {
+app.MapFallback("{*_}", async context => {
     var client = new StreamingHttpClient();
     var requestMessage = new HttpRequestMessage(
         new HttpMethod(context.Request.Method),

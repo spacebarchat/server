@@ -66,6 +66,18 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         proj = self.packages.${system};
       in
       {
+        # Data mappings
+        Spacebar-DataMappings-Generic = makeNupkg {
+          name = "Spacebar.DataMappings.Generic";
+          projectFile = "Spacebar.DataMappings.Generic.csproj";
+          nugetDeps = DataMappings/Spacebar.DataMappings.Generic/deps.json;
+          srcRoot = DataMappings/Spacebar.DataMappings.Generic;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Generic
+          ];
+        };
+
         # Interop
         Spacebar-Interop-Authentication = makeNupkg {
           name = "Spacebar.Interop.Authentication";
@@ -197,6 +209,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           srcRoot = ./Spacebar.GatewayOffload;
           packNupkg = false;
           projectReferences = [
+            proj.Spacebar-DataMappings-Generic
             proj.Spacebar-Interop-Authentication
             proj.Spacebar-Interop-Authentication-AspNetCore
             proj.Spacebar-Interop-Replication-Abstractions
@@ -223,7 +236,25 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
       config = {
         Cmd = [ "${self.outputs.packages.${system}.Spacebar-AdminApi}/bin/Spacebar.AdminApi" ];
-        Expose = [ "3001" ];
+        Expose = [ "5000" ];
+      };
+    };
+    containers.docker.gateway-offload = pkgs.dockerTools.buildLayeredImage {
+      name = "spacebar-server-ts-gateway-offload";
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+      contents = [ self.packages.${system}.Spacebar-AdminApi ];
+      config = {
+        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-GatewayOffload}" ];
+        Expose = [ "5000" ];
+      };
+    };
+    containers.docker.cdn-cs = pkgs.dockerTools.buildLayeredImage {
+      name = "spacebar-server-ts-cdn-cs";
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+      contents = [ self.packages.${system}.Spacebar-AdminApi ];
+      config = {
+        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-AdminApi}" ];
+        Expose = [ "5000" ];
       };
     };
   }
@@ -238,6 +269,8 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       x86_64-linux = {
         #            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
         docker-admin-api = self.containers.x86_64-linux.docker.admin-api;
+        docker-gateway-offload = self.containers.x86_64-linux.docker.gateway-offload;
+        docker-cdn-cs = self.containers.x86_64-linux.docker.cdn-cs;
       };
     };
 }
