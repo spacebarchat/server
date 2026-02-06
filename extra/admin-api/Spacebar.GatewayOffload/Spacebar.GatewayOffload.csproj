@@ -11,10 +11,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
         <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-      <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Interop.Replication.UnixSocket" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.Abstractions\Spacebar.Interop.Replication.Abstractions.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Replication.Abstractions" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Gateway" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
 </Project>
