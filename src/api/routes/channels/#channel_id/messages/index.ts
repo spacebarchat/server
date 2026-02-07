@@ -488,6 +488,7 @@ router.post(
         if (channel.isThread()) {
             channel.message_count = (channel.message_count || 0) + 1;
             channel.total_message_sent = (channel.total_message_sent || 0) + 1;
+            channel.last_message_id = message.id;
             await Promise.all([
                 channel.save(),
                 emitEvent({
