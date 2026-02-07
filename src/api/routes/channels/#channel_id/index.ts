@@ -150,7 +150,7 @@ router.patch(
         const { channel_id } = req.params as { [key: string]: string };
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: payload.available_tags ? ["available_tags"] : [],
+            relations: ["available_tags"],
         });
 
         if (channel.isThread()) {
