@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, ChannelUpdateEvent, emitEvent, Tag } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { TagCreateSchema } from "@spacebar/schemas";
+import { HTTPError } from "#util/util/lambert-server";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -54,6 +55,47 @@ router.post(
             emoji_name: body.emoji_name || undefined,
         });
         channel.available_tags?.push(tag);
+
+        await Promise.all([
+            tag.save(),
+            emitEvent({
+                event: "CHANNEL_UPDATE",
+                data: channel.toJSON(),
+                channel_id,
+            } as ChannelUpdateEvent),
+        ]);
+
+        res.json(channel.toJSON());
+    },
+);
+
+router.put(
+    "/:tag_id",
+    route({
+        requestBody: "TagCreateSchema",
+        permission: "MANAGE_CHANNELS",
+        responses: {
+            200: {
+                body: "Channel",
+            },
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const body = req.body as TagCreateSchema;
+        const { channel_id, tag_id } = req.params as Record<string, string>;
+
+        const channel = await Channel.findOneOrFail({
+            where: { id: channel_id },
+            relations: ["available_tags"],
+        });
+
+        if (!channel.isForum()) throw new Error("is not thread only channel");
+
+        const tag = channel.available_tags?.find((tag) => tag.id == tag_id);
+        //TODO better error
+        if (!tag) throw new HTTPError("Tag not found");
+        tag.assign(body);
 
         await Promise.all([
             tag.save(),
