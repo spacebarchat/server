@@ -187,7 +187,8 @@ router.patch(
                 const bad = payload.applied_tags.find((tag) => !realTags.has(tag));
                 //TODO better error
                 if (bad) throw new Error("Invalid tag " + bad);
-                const permsNeeded = payload.applied_tags.find((_) => realTags.get(_)?.moderated);
+                const changed = new Set(channel.applied_tags || []).symmetricDifference(new Set(payload.applied_tags));
+                const permsNeeded = [...changed].find((_) => realTags.get(_)?.moderated);
                 if (permsNeeded) {
                     req.permission?.hasThrow("MANAGE_THREADS");
                 }
