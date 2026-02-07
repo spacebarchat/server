@@ -192,6 +192,7 @@ router.patch(
                 if (permsNeeded) {
                     req.permission?.hasThrow("MANAGE_THREADS");
                 }
+                channel.applied_tags = payload.applied_tags;
             } else {
                 //TODO maybe error instead?
                 payload.applied_tags = undefined;
