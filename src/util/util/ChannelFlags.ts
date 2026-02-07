@@ -9,8 +9,7 @@ export class ChannelFlags extends BitField {
         GUILD_FEED_REMOVED: BigInt(1) << BigInt(0),
         PINNED: BigInt(1) << BigInt(1),
         ACTIVE_CHANNELS_REMOVED: BigInt(1) << BigInt(2),
-        REQUIRE_TAG: BigInt(1) << BigInt(3),
-        URGENT: BigInt(1) << BigInt(4),
+        REQUIRE_TAG: BigInt(1) << BigInt(4),
         IS_SPAM: BigInt(1) << BigInt(5),
         //Missing 6
         IS_GUILD_RESOURCE_CHANNEL: BigInt(1) << BigInt(7),
