@@ -261,7 +261,7 @@ export async function getPermission(
     });
     const query = {
         relations: ["recipients", "thread_members", "thread_members.member", ...(opts.channel_relations || [])],
-        select: ["id", "recipients", "permission_overwrites", "owner_id", "guild_id", ...(opts.channel_select || [])],
+        select: ["type", "parent_id", "id", "recipients", "permission_overwrites", "owner_id", "guild_id", ...(opts.channel_select || [])],
     } as FindOneOptions<Channel>;
     if (typeof channel_id === "string") {
         channel = await Channel.findOneOrFail({ where: { id: channel_id }, ...query });
