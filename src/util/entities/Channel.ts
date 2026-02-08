@@ -434,6 +434,7 @@ export class Channel extends BaseClass {
         const type = recipients.length > 1 ? ChannelType.GROUP_DM : ChannelType.DM;
 
         let channel = null;
+        let needsTx = true;
 
         const channelRecipients = [...recipients, creator_user_id];
 
@@ -449,6 +450,7 @@ export class Channel extends BaseClass {
                 if (channelRecipients.every((_) => re.includes(_))) {
                     if (channel == null) {
                         channel = ur.channel;
+                        if (!ur.closed) needsTx = false;
                         await ur.assign({ closed: false }).save();
                     }
                 }
@@ -476,7 +478,9 @@ export class Channel extends BaseClass {
 
         const channel_dto = await DmChannelDTO.from(channel);
 
-        if (type === ChannelType.GROUP_DM && channel.recipients) {
+        if (!needsTx) {
+            /*ignored*/
+        } else if (type === ChannelType.GROUP_DM && channel.recipients) {
             for (const recipient of channel.recipients) {
                 await emitEvent({
                     event: "CHANNEL_CREATE",
