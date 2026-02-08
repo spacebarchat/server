@@ -611,6 +611,7 @@ export async function sendMessage(opts: MessageOptions) {
     const ephemeral = (message.flags & Number(MessageFlags.FLAGS.EPHEMERAL)) !== 0;
     await Promise.all([
         Message.insert(message),
+        Channel.update(message.channel.id, message.channel),
         emitEvent({
             event: "MESSAGE_CREATE",
             ...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
