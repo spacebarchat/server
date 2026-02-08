@@ -18,12 +18,13 @@
 
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import { closeDatabase, Config, initDatabase, initEvent } from "@spacebar/util";
+import { checkToken, closeDatabase, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
 import ws from "ws";
-import { Connection } from "./events/Connection";
+import { Connection, openConnections } from "./events/Connection";
 import http from "http";
 import { cleanupOnStartup } from "./util/Utils";
 import { randomString } from "@spacebar/api";
+import { setInterval } from "timers";
 
 export class Server {
     public ws: ws.Server;
@@ -37,9 +38,114 @@ export class Server {
 
         if (server) this.server = server;
         else {
-            this.server = http.createServer(function (req, res) {
+            const elu = [1, 5, 15].map((x) => performance.eventLoopUtilization());
+            const eluP = [1, 5, 15].map((x) => performance.eventLoopUtilization());
+            const cpu = [1, 5, 15].map((x) => process.cpuUsage());
+            let sec = 0;
+            setInterval(() => {
+                sec += 1;
+                // for some reason this behaves differently from cpuUsage, so we need an absolute reference as "previous"
+                const eluC = performance.eventLoopUtilization();
+
+                cpu[0] = process.cpuUsage(cpu[0]);
+                elu[0] = performance.eventLoopUtilization(eluP[0]);
+                eluP[0] = eluC;
+                if (sec % 5 === 0) {
+                    cpu[1] = process.cpuUsage(cpu[1]);
+                    elu[1] = performance.eventLoopUtilization(eluP[1]);
+                    eluP[1] = eluC;
+                }
+                if (sec % 15 === 0) {
+                    cpu[2] = process.cpuUsage(cpu[2]);
+                    elu[2] = performance.eventLoopUtilization(eluP[2]);
+                    eluP[2] = eluC;
+                }
+            }, 1000);
+
+            this.server = http.createServer(async (req, res) => {
                 if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
                     res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
+                }
+                const requestUrl = new URL(`http://${req.headers.host}${req.url}`);
+                if (requestUrl.pathname === "/_spacebar/gateway/admin/introspect") {
+                    if (!req.headers.authorization) {
+                        return res.writeHead(401).end("Unauthorized");
+                    } else {
+                        const auth = req.headers.authorization.split(" ");
+                        const sess = await checkToken(auth[1]);
+                        if ((BigInt(sess.user.rights) & BigInt(Rights.FLAGS.OPERATOR)) === BigInt(0)) {
+                            return res.writeHead(401).end("Unauthorized");
+                        }
+                    }
+                    const useFullWsObj = requestUrl.searchParams.get("fullWs") === "true";
+                    res.setHeader("Content-Type", "application/json")
+                        .writeHead(200)
+                        .end(
+                            JSON.stringify(
+                                {
+                                    uptime: process.uptime(),
+                                    resourceUsage: process.resourceUsage(),
+                                    eventLoop: elu,
+                                    cpu: cpu.map((x) => ({
+                                        user: x.user / 1000,
+                                        system: x.system / 1000,
+                                    })),
+                                    socketStates: {
+                                        open: openConnections.length,
+                                        sessions: openConnections.map((x) => {
+                                            // console.log(x);
+                                            return useFullWsObj
+                                                ? {
+                                                      ...x,
+                                                      ...{
+                                                          _events: undefined,
+                                                          _closeTimer: undefined,
+                                                          accessToken: x.accessToken?.split(".")[0] + "." + x.accessToken?.split(".")[1] + ".***",
+                                                      },
+                                                  }
+                                                : {
+                                                      wsReadystate: x.readyState,
+                                                      version: x.version,
+                                                      user_id: x.user_id,
+                                                      session_id: x.session_id,
+                                                      accessToken: x.accessToken?.split(".")[0] + "." + x.accessToken?.split(".")[1] + +".***",
+                                                      encoding: x.encoding,
+                                                      compress: x.compress,
+                                                      ipAddress: x.ipAddress,
+                                                      userAgent: x.userAgent,
+                                                      fingerprint: x.fingerprint,
+                                                      shard_count: x.shard_count,
+                                                      shard_id: x.shard_id,
+                                                      deflate: x.deflate != null,
+                                                      inflate: x.inflate != null,
+                                                      zstdEncoder: x.zstdEncoder != null,
+                                                      zstdDecoder: x.zstdDecoder != null,
+                                                      heartbeatTimeout: x.heartbeatTimeout,
+                                                      readyTimeout: x.readyTimeout,
+                                                      intents: x.intents,
+                                                      sequence: x.sequence,
+                                                      permissions: x.permissions,
+                                                      events: x.events,
+                                                      member_events: x.member_events,
+                                                      listen_options: x.listen_options,
+                                                      capabilities: x.capabilities,
+                                                      large_threshold: x.large_threshold,
+                                                      qos: x.qos,
+                                                      session: x.session,
+                                                  };
+                                        }),
+                                    },
+                                },
+                                (key, value) => {
+                                    if (value === null || value === undefined) return value;
+                                    if (Object.getPrototypeOf(value)?.constructor?.name === "Timeout") return `[Timeout] ${value._idleTimeout}ms, repeat: ${value._repeat}`;
+                                    if (Object.getPrototypeOf(value)?.constructor?.name === "BigInt") return value.toString() + "n";
+                                    return value;
+                                },
+                                2,
+                            ),
+                        );
+                    return;
                 }
 
                 res.writeHead(200).end("Online");
