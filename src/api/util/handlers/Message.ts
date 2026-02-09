@@ -114,6 +114,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
     if (!ephermal) {
         channel.last_message_id = message.id;
+        channel.save();
     }
 
     if (cloudAttachments && cloudAttachments.length > 0) {
