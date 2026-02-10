@@ -1,0 +1,36 @@
+name: Build cdn cs docker image
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "extra/admin-api/Spacebar.Cdn/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build the docker image
+        run: nix build .#containers.x86_64-linux.docker.cdn-cs
+      - run: docker load < result
+      - name: downcase REPO
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>$GITHUB_ENV
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag and push the image
+        run: |
+         IMAGE_ID=$(docker images spacebar-server-ts-cdn-cs --format '{{.ID}}')
+         docker tag $IMAGE_ID ghcr.io/$REPO-cdn-cs
+         docker push ghcr.io/$REPO-cdn-cs

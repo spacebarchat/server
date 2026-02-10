@@ -1,0 +1,38 @@
+name: Build api docker image
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/api/**"
+      - "src/schemas/**"
+      - "src/util/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build the docker image
+        run: nix build .#containers.x86_64-linux.docker.api
+      - run: docker load < result
+      - name: downcase REPO
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>$GITHUB_ENV
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag and push the image
+        run: |
+         IMAGE_ID=$(docker images spacebar-server-ts-api --format '{{.ID}}')
+         docker tag $IMAGE_ID ghcr.io/$REPO-api
+         docker push ghcr.io/$REPO-api
