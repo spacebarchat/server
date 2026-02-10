@@ -70,6 +70,7 @@
                 nodePackages.typescript
                 nodePackages.patch-package
                 nodePackages.prettier
+                (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
               ];
             };
           }

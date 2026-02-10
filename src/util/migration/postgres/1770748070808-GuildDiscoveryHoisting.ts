@@ -4,8 +4,8 @@ export class GuildDiscoveryHoisting1770748070808 implements MigrationInterface {
     name = "GuildDiscoveryHoisting1770748070808";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "guilds" ADD "discovery_weight" integer NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "guilds" ADD "discovery_excluded" boolean NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "guilds" ADD "discovery_weight" integer NOT NULL DEFAULT 0`);
+        await queryRunner.query(`ALTER TABLE "guilds" ADD "discovery_excluded" boolean NOT NULL DEFAULT FALSE`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
