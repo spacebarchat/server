@@ -2813,6 +2813,12 @@
                 "items": {
                     "type": "string"
                 }
+            },
+            "discovery_weight": {
+                "type": "integer"
+            },
+            "discovery_excluded": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,
@@ -2820,6 +2826,8 @@
             "bans",
             "channel_ordering",
             "channels",
+            "discovery_excluded",
+            "discovery_weight",
             "emojis",
             "features",
             "id",
@@ -4366,6 +4374,9 @@
             "position": {
                 "type": "integer"
             },
+            "invitable": {
+                "type": "boolean"
+            },
             "permission_overwrites": {
                 "type": "array",
                 "items": {
@@ -4391,6 +4402,12 @@
                         "id",
                         "type"
                     ]
+                }
+            },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
                 }
             },
             "parent_id": {
@@ -4431,6 +4448,43 @@
             },
             "locked": {
                 "type": "boolean"
+            },
+            "available_tags": {
+                "type": "array",
+                "items": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "moderated": {
+                            "type": [
+                                "null",
+                                "boolean"
+                            ]
+                        },
+                        "emoji_id": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "emoji_name": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "id": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "name"
+                    ]
+                }
             }
         },
         "additionalProperties": false,
@@ -4795,7 +4849,7 @@
             "channels": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/ChannelModifySchema"
+                    "$ref": "#/definitions/ChannelCreateSchema"
                 }
             },
             "system_channel_id": {
@@ -5382,10 +5436,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "message_id"
-                ]
+                "additionalProperties": false
             },
             "payload_json": {
                 "type": "string"
@@ -5614,6 +5665,12 @@
             "flags": {
                 "type": "integer"
             },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
             "channel_id": {
                 "type": "string"
             },
@@ -5681,10 +5738,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "message_id"
-                ]
+                "additionalProperties": false
             },
             "payload_json": {
                 "type": "string"
@@ -5766,12 +5820,6 @@
             },
             "enforce_nonce": {
                 "type": "boolean"
-            },
-            "applied_tags": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
             },
             "thread_name": {
                 "type": "string"
@@ -6933,22 +6981,428 @@
             "name": {
                 "type": "string"
             },
-            "type": {
-                "enum": [
-                    10,
-                    11,
-                    12
-                ],
-                "type": "number"
-            },
             "location": {
                 "type": "string"
+            },
+            "type": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
         "required": [
             "name"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationCommandCreateSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "type": "number"
+            },
+            "name": {
+                "type": "string"
+            },
+            "name_localizations": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            },
+            "description": {
+                "type": "string"
+            },
+            "description_localizations": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
+            },
+            "options": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationCommandOption"
+                }
+            },
+            "default_member_permissions": {
+                "type": "string"
+            },
+            "dm_permission": {
+                "type": "boolean"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "integration_types": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ApplicationIntegrationType"
+                }
+            },
+            "contexts": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/InteractionContextType"
+                }
+            },
+            "handler": {
+                "enum": [
+                    1,
+                    2,
+                    3
+                ],
+                "type": "number"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BulkApplicationCommandCreateSchema": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/ApplicationCommandCreateSchema"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ThreadCreationSchema": {
+        "type": "object",
+        "properties": {
+            "auto_archive_duration": {
+                "type": "integer"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "enum": [
+                    11,
+                    12
+                ],
+                "type": "number"
+            },
+            "invitable": {
+                "type": "boolean"
+            },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "location": {
+                "type": "string"
+            },
+            "message": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "embeds": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Embed"
+                        }
+                    },
+                    "allowed_mentions": {
+                        "type": "object",
+                        "properties": {
+                            "parse": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "users": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "replied_user": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "components": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/ActionRowComponent"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "sticker_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "activity": {
+                        "$ref": "#/definitions/MessageActivity"
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "attachments": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "filename": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "filename",
+                                        "id"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "filename": {
+                                            "type": "string"
+                                        },
+                                        "uploaded_filename": {
+                                            "type": "string"
+                                        },
+                                        "original_content_type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "required": [
+                                        "filename",
+                                        "uploaded_filename"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PostDataSchema": {
+        "type": "object",
+        "properties": {
+            "thread_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "thread_ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "TagCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "moderated": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "emoji_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji_name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelCreateSchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "maxLength": 100,
+                "type": "string"
+            },
+            "type": {
+                "enum": [
+                    0,
+                    1,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    2,
+                    255,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "type": "number"
+            },
+            "id": {
+                "type": "string"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "parent_id": {
+                "type": "string"
+            },
+            "default_auto_archive_duration": {
+                "type": "integer"
+            },
+            "permission_overwrites": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "$ref": "#/definitions/ChannelPermissionOverwriteType"
+                        },
+                        "allow": {
+                            "type": "string"
+                        },
+                        "deny": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "allow",
+                        "deny",
+                        "id",
+                        "type"
+                    ]
+                }
+            },
+            "video_quality_mode": {
+                "type": "integer"
+            },
+            "bitrate": {
+                "type": "integer"
+            },
+            "user_limit": {
+                "type": "integer"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "topic": {
+                "type": "string"
+            },
+            "default_thread_rate_limit_per_user": {
+                "type": "integer"
+            },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "position": {
+                "type": "integer"
+            },
+            "invitable": {
+                "type": "boolean"
+            },
+            "rtc_region": {
+                "type": "string"
+            },
+            "default_reaction_emoji": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "auto_archive_duration": {
+                "type": "integer"
+            },
+            "archived": {
+                "type": "boolean"
+            },
+            "locked": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "VoiceIdentifySchema": {
@@ -7106,85 +7560,6 @@
             "audio_ssrc",
             "video_ssrc"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ApplicationCommandCreateSchema": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
-            },
-            "name": {
-                "type": "string"
-            },
-            "name_localizations": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
-            },
-            "description": {
-                "type": "string"
-            },
-            "description_localizations": {
-                "type": "object",
-                "additionalProperties": {
-                    "type": "string"
-                }
-            },
-            "options": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ApplicationCommandOption"
-                }
-            },
-            "default_member_permissions": {
-                "type": "string"
-            },
-            "dm_permission": {
-                "type": "boolean"
-            },
-            "nsfw": {
-                "type": "boolean"
-            },
-            "integration_types": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ApplicationIntegrationType"
-                }
-            },
-            "contexts": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/InteractionContextType"
-                }
-            },
-            "handler": {
-                "enum": [
-                    1,
-                    2,
-                    3
-                ],
-                "type": "number"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BulkApplicationCommandCreateSchema": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/ApplicationCommandCreateSchema"
-        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "CreateReportSchema": {
@@ -7727,10 +8102,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "message_id"
-                ]
+                "additionalProperties": false
             },
             "referenced_message": {
                 "anyOf": [
@@ -7863,6 +8235,12 @@
                     "$ref": "#/definitions/Recipient"
                 }
             },
+            "thread_members": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ThreadMember"
+                }
+            },
             "last_message_id": {
                 "type": "string"
             },
@@ -7970,6 +8348,18 @@
             },
             "total_message_sent": {
                 "type": "integer"
+            },
+            "available_tags": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Tag"
+                }
+            },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             },
             "position": {
                 "description": "Must be calculated Channel.calculatePosition",
@@ -9225,6 +9615,162 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ThreadMember": {
+        "type": "object",
+        "properties": {
+            "index": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "channel": {
+                "$ref": "#/definitions/Channel"
+            },
+            "member_idx": {
+                "type": "string"
+            },
+            "member": {
+                "$ref": "#/definitions/Member"
+            },
+            "join_timestamp": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "muted": {
+                "type": "boolean"
+            },
+            "mute_config": {
+                "$ref": "#/definitions/ThreadMemberMuteConfig"
+            },
+            "flags": {
+                "$ref": "#/definitions/ThreadMemberFlags"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel",
+            "flags",
+            "id",
+            "index",
+            "join_timestamp",
+            "member",
+            "member_idx",
+            "muted"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Member": {
+        "type": "object",
+        "properties": {
+            "index": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "user": {
+                "$ref": "#/definitions/User"
+            },
+            "guild_id": {
+                "type": "string"
+            },
+            "guild": {
+                "$ref": "#/definitions/Guild"
+            },
+            "nick": {
+                "type": "string"
+            },
+            "roles": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Role"
+                }
+            },
+            "joined_at": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "premium_since": {
+                "type": "integer"
+            },
+            "deaf": {
+                "type": "boolean"
+            },
+            "mute": {
+                "type": "boolean"
+            },
+            "pending": {
+                "type": "boolean"
+            },
+            "settings": {
+                "$ref": "#/definitions/UserGuildSettings"
+            },
+            "last_message_id": {
+                "type": "string"
+            },
+            "joined_by": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "theme_colors": {
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "communication_disabled_until": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "avatar_decoration_data": {
+                "$ref": "#/definitions/AvatarDecorationData"
+            },
+            "display_name_styles": {
+                "$ref": "#/definitions/DisplayNameStyle"
+            },
+            "collectibles": {
+                "$ref": "#/definitions/Collectibles"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner",
+            "bio",
+            "communication_disabled_until",
+            "deaf",
+            "guild",
+            "guild_id",
+            "id",
+            "index",
+            "joined_at",
+            "joined_by",
+            "mute",
+            "pending",
+            "roles",
+            "settings",
+            "user"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "Guild": {
         "type": "object",
         "properties": {
@@ -9448,6 +9994,14 @@
                     "type": "string"
                 }
             },
+            "discovery_weight": {
+                "type": "integer",
+                "default": 0
+            },
+            "discovery_excluded": {
+                "type": "boolean",
+                "default": false
+            },
             "id": {
                 "type": "string"
             }
@@ -9457,6 +10011,8 @@
             "bans",
             "channel_ordering",
             "channels",
+            "discovery_excluded",
+            "discovery_weight",
             "emojis",
             "features",
             "id",
@@ -9517,117 +10073,6 @@
             "id",
             "user",
             "user_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "Member": {
-        "type": "object",
-        "properties": {
-            "index": {
-                "type": "string"
-            },
-            "id": {
-                "type": "string"
-            },
-            "user": {
-                "$ref": "#/definitions/User"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "guild": {
-                "$ref": "#/definitions/Guild"
-            },
-            "nick": {
-                "type": "string"
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Role"
-                }
-            },
-            "joined_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "premium_since": {
-                "type": "integer"
-            },
-            "deaf": {
-                "type": "boolean"
-            },
-            "mute": {
-                "type": "boolean"
-            },
-            "pending": {
-                "type": "boolean"
-            },
-            "settings": {
-                "$ref": "#/definitions/UserGuildSettings"
-            },
-            "last_message_id": {
-                "type": "string"
-            },
-            "joined_by": {
-                "type": "string"
-            },
-            "avatar": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "bio": {
-                "type": "string"
-            },
-            "theme_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
-            },
-            "pronouns": {
-                "type": "string"
-            },
-            "communication_disabled_until": {
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "avatar_decoration_data": {
-                "$ref": "#/definitions/AvatarDecorationData"
-            },
-            "display_name_styles": {
-                "$ref": "#/definitions/DisplayNameStyle"
-            },
-            "collectibles": {
-                "$ref": "#/definitions/Collectibles"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "banner",
-            "bio",
-            "communication_disabled_until",
-            "deaf",
-            "guild",
-            "guild_id",
-            "id",
-            "index",
-            "joined_at",
-            "joined_by",
-            "mute",
-            "pending",
-            "roles",
-            "settings",
-            "user"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -9725,133 +10170,6 @@
         "additionalProperties": false,
         "required": [
             "primary_color"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserGuildSettings": {
-        "type": "object",
-        "properties": {
-            "channel_overrides": {
-                "anyOf": [
-                    {
-                        "type": "object",
-                        "additionalProperties": {
-                            "$ref": "#/definitions/ChannelOverride"
-                        }
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "message_notifications": {
-                "type": "integer"
-            },
-            "mobile_push": {
-                "type": "boolean"
-            },
-            "mute_config": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/MuteConfig"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "muted": {
-                "type": "boolean"
-            },
-            "suppress_everyone": {
-                "type": "boolean"
-            },
-            "suppress_roles": {
-                "type": "boolean"
-            },
-            "version": {
-                "type": "integer"
-            },
-            "guild_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "flags": {
-                "type": "integer"
-            },
-            "mute_scheduled_events": {
-                "type": "boolean"
-            },
-            "hide_muted_channels": {
-                "type": "boolean"
-            },
-            "notify_highlights": {
-                "type": "integer",
-                "const": 0
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "channel_overrides",
-            "flags",
-            "guild_id",
-            "hide_muted_channels",
-            "message_notifications",
-            "mobile_push",
-            "mute_config",
-            "mute_scheduled_events",
-            "muted",
-            "notify_highlights",
-            "suppress_everyone",
-            "suppress_roles",
-            "version"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ChannelOverride": {
-        "type": "object",
-        "properties": {
-            "message_notifications": {
-                "type": "integer"
-            },
-            "mute_config": {
-                "$ref": "#/definitions/MuteConfig"
-            },
-            "muted": {
-                "type": "boolean"
-            },
-            "channel_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "channel_id",
-            "message_notifications",
-            "mute_config",
-            "muted"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "MuteConfig": {
-        "type": "object",
-        "properties": {
-            "end_time": {
-                "type": "integer"
-            },
-            "selected_time_window": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "end_time",
-            "selected_time_window"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -10618,6 +10936,158 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UserGuildSettings": {
+        "type": "object",
+        "properties": {
+            "channel_overrides": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/definitions/ChannelOverride"
+                        }
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "message_notifications": {
+                "type": "integer"
+            },
+            "mobile_push": {
+                "type": "boolean"
+            },
+            "mute_config": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/MuteConfig"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "muted": {
+                "type": "boolean"
+            },
+            "suppress_everyone": {
+                "type": "boolean"
+            },
+            "suppress_roles": {
+                "type": "boolean"
+            },
+            "version": {
+                "type": "integer"
+            },
+            "guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "mute_scheduled_events": {
+                "type": "boolean"
+            },
+            "hide_muted_channels": {
+                "type": "boolean"
+            },
+            "notify_highlights": {
+                "type": "integer",
+                "const": 0
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel_overrides",
+            "flags",
+            "guild_id",
+            "hide_muted_channels",
+            "message_notifications",
+            "mobile_push",
+            "mute_config",
+            "mute_scheduled_events",
+            "muted",
+            "notify_highlights",
+            "suppress_everyone",
+            "suppress_roles",
+            "version"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ChannelOverride": {
+        "type": "object",
+        "properties": {
+            "message_notifications": {
+                "type": "integer"
+            },
+            "mute_config": {
+                "$ref": "#/definitions/MuteConfig"
+            },
+            "muted": {
+                "type": "boolean"
+            },
+            "channel_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel_id",
+            "message_notifications",
+            "mute_config",
+            "muted"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MuteConfig": {
+        "type": "object",
+        "properties": {
+            "end_time": {
+                "type": "integer"
+            },
+            "selected_time_window": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "end_time",
+            "selected_time_window"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ThreadMemberMuteConfig": {
+        "type": "object",
+        "properties": {
+            "end_time": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "selected_time_window": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ThreadMemberFlags": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            4,
+            8
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ChannelPermissionOverwrite": {
         "type": "object",
         "properties": {
@@ -10734,6 +11204,42 @@
             "auto_archive_duration",
             "create_timestamp",
             "locked"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Tag": {
+        "type": "object",
+        "properties": {
+            "channel_id": {
+                "type": "string"
+            },
+            "channel": {
+                "$ref": "#/definitions/Channel"
+            },
+            "name": {
+                "type": "string"
+            },
+            "moderated": {
+                "type": "boolean",
+                "default": false
+            },
+            "emoji_id": {
+                "type": "string"
+            },
+            "emoji_name": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel",
+            "channel_id",
+            "id",
+            "moderated",
+            "name"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -13961,6 +14467,36 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageActivity": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "enum": [
+                    1,
+                    3,
+                    5
+                ],
+                "type": "number"
+            },
+            "session_id": {
+                "type": "string"
+            },
+            "party_id": {
+                "type": "string"
+            },
+            "name_override": {
+                "type": "string"
+            },
+            "icon_override": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "type"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

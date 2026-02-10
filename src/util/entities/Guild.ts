@@ -298,6 +298,12 @@ export class Guild extends BaseClass {
     @Column({ select: false, type: "simple-array" })
     channel_ordering: string[];
 
+    @Column()
+    discovery_weight: number = 0;
+
+    @Column()
+    discovery_excluded: boolean = false;
+
     static async createGuild(body: {
         name?: string;
         icon?: string | null;

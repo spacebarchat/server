@@ -44,31 +44,21 @@ router.get(
                   select: { guild_id: true },
               }).then((members) => members.map((member) => member.guild_id))
             : [];
-        let guilds;
-        if (categories == undefined) {
-            guilds = showAllGuilds
-                ? await Guild.find({
-                      take: Math.abs(Number(limit || configLimit)),
-                  })
-                : await Guild.find({
-                      where: { features: Like(`%DISCOVERABLE%`) },
-                      take: Math.abs(Number(limit || configLimit)),
-                  });
-        } else {
-            guilds = showAllGuilds
-                ? await Guild.find({
-                      where: { primary_category_id: categories.toString(), id: Not(In(hiddenGuildIds)) },
-                      take: Math.abs(Number(limit || configLimit)),
-                  })
-                : await Guild.find({
-                      where: {
-                          primary_category_id: categories.toString(),
-                          features: Like("%DISCOVERABLE%"),
-                          id: Not(In(hiddenGuildIds)),
-                      },
-                      take: Math.abs(Number(limit || configLimit)),
-                  });
-        }
+
+        const guilds = await Guild.find({
+            where: {
+                id: Not(In(hiddenGuildIds)),
+                discovery_excluded: false,
+                ...(categories == undefined ? {} : { primary_category_id: categories.toString() }), // TODO: isnt this an array?
+                ...(showAllGuilds ? {} : { features: Like("%DISCOVERABLE%") }),
+            },
+            order: {
+                discovery_weight: "DESC",
+                member_count: "DESC",
+            },
+            skip: Math.abs(Number(offset || Config.get().guild.discovery.offset)),
+            take: Math.abs(Number(limit || configLimit)),
+        });
 
         const total = guilds ? guilds.length : undefined;
 
