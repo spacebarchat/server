@@ -150,6 +150,7 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         const { message_id, channel_id } = req.params as { [key: string]: string };
+        const limit = req.query.limit ? Number(req.query.limit) : 25;
         const emoji = getEmoji(req.params.emoji as string);
 
         const message = await Message.findOneOrFail({
@@ -164,6 +165,7 @@ router.get(
                     id: In(reaction.user_ids),
                 },
                 select: PublicUserProjection,
+                take: limit,
             })
         ).map((user) => user.toPublicUser());
 
