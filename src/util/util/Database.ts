@@ -50,7 +50,14 @@ if (!isHeadlessProcess) {
     let hasWarnedSqlite = false;
     if (isSqlite && !hasWarnedSqlite) {
         hasWarnedSqlite = true;
-        console.log(`[Database] ${red(`You are running sqlite! Please keep in mind that we recommend setting up a dedicated database!`)}`);
+        console.log(
+            `[Database] ${red(`You do not have a database configured. This implies that it will try to use SQLite, which has been broken for a while and is unlikely to see a real fix any time soon.`)}`,
+        );
+        console.log(`[Database] ${red(`Please set up a PostgreSQL database instead: https://docs.spacebar.chat/setup/server/database/.`)}`);
+        console.log(
+            `[Database] ${red(`Alternatively, if you're able to install Nix (except MacOSX), and are trying to run a quick and dirty localhost instance: nix run .\\#testVm.config.system.build.vm, then open a client and connect to http://localhost:8080`)}`,
+        );
+        console.log(`[Database] ${red(`If you would like to try *anyways*, see the error below:`)}`);
         try {
             const _ = require("sqlite3");
         } catch (e) {
