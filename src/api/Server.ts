@@ -160,7 +160,7 @@ export class SpacebarServer extends Server {
 
             res.json({
                 api: {
-                    baseUrl: Config.get().api.endpointPublic?.split("/api")[0],
+                    baseUrl: Config.get().api.endpointPublic?.split("/api/")[0],
                     apiVersions: {
                         default: Config.get().api.defaultVersion,
                         active: Config.get().api.activeVersions,
