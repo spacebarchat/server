@@ -9,6 +9,7 @@
         "start:api": "node --enable-source-maps dist/api/start.js",
         "start:cdn": "node --enable-source-maps dist/cdn/start.js",
         "start:gateway": "node --enable-source-maps dist/gateway/start.js",
+        "start:webrtc": "node --enable-source-maps dist/webrtc/start.js",
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
         "build:src": "tsc -b -v",
         "build:tsgo": "npm run build:src:tsgo && npm run generate:schema && npm run generate:openapi",
