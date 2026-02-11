@@ -28,9 +28,7 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Build the docker image
         run: nix build .#containers.x86_64-linux.docker.${{ matrix.package }}
-        working-directory: server
       - run: docker load < result
-        working-directory: server
       - name: downcase REPO
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
       - name: Log in to the Container registry
