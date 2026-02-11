@@ -1,0 +1,39 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/DataMappings/">
+    <Project Path="DataMappings/Spacebar.DataMappings.Generic/Spacebar.DataMappings.Generic.csproj" />
+  </Folder>
+  <Folder Name="/Interop/">
+    <Project Path="Interop/Spacebar.Interop.Authentication.AspNetCore/Spacebar.Interop.Authentication.AspNetCore.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Authentication/Spacebar.Interop.Authentication.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Cdn.Abstractions/Spacebar.Interop.Cdn.Abstractions.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Cdn.Signing/Spacebar.Interop.Cdn.Signing.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Replication.Abstractions/Spacebar.Interop.Replication.Abstractions.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Replication.RabbitMq/Spacebar.Interop.Replication.RabbitMq.csproj" />
+    <Project Path="Interop/Spacebar.Interop.Replication.UnixSocket/Spacebar.Interop.Replication.UnixSocket.csproj" />
+  </Folder>
+  <Folder Name="/Models/">
+    <Project Path="Models/Spacebar.Models.AdminApi/Spacebar.Models.AdminApi.csproj" />
+    <Project Path="Models/Spacebar.Models.Config/Spacebar.Models.Config.csproj" />
+    <Project Path="Models/Spacebar.Models.Db/Spacebar.Models.Db.csproj" />
+    <Project Path="Models/Spacebar.Models.Gateway/Spacebar.Models.Gateway.csproj" />
+    <Project Path="Models/Spacebar.Models.Generic/Spacebar.Models.Generic.csproj" />
+  </Folder>
+  <Folder Name="/Utilities/">
+    <Project Path="Utilities/ConfigTest/ConfigTest.csproj" />
+    <Project Path="Utilities/DiscordEmojiConverter/DiscordEmojiConverter.csproj" />
+    <Project Path="Utilities/Spacebar.AdminApi.PrepareTestData/Spacebar.AdminApi.PrepareTestData.csproj" />
+    <Project Path="Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj" />
+    <Project Path="Utilities/Spacebar.AdminApiTest/Spacebar.AdminApiTest.csproj" />
+    <Project Path="Utilities/Spacebar.Cdn.Fsck/Spacebar.Cdn.Fsck.csproj" />
+    <Project Path="Utilities/Spacebar.Cdn.Migration/Spacebar.Cdn.Migration.csproj" />
+    <Project Path="Utilities/Spacebar.CleanSettingsRows/Spacebar.CleanSettingsRows.csproj" />
+  </Folder>
+  <Project Path="Spacebar.AdminApi/Spacebar.AdminApi.csproj" />
+  <Project Path="Spacebar.Cdn/Spacebar.Cdn.csproj" />
+  <Project Path="Spacebar.GatewayOffload/Spacebar.GatewayOffload.csproj" />
+</Solution>
