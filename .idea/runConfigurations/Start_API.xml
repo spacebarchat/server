@@ -12,12 +12,15 @@
       <option name="DIRENV_ENABLED" value="false" />
       <option name="DIRENV_TRUSTED" value="false" />
     </EXTENSION>
+    <EXTENSION ID="com.intellij.javascript.debugger.execution.StartBrowserRunConfigurationExtension">
+      <browser with-js-debugger="true" />
+    </EXTENSION>
     <method v="2">
       <option name="NpmBeforeRunTask" enabled="true">
         <package-json value="$PROJECT_DIR$/package.json" />
         <command value="run" />
         <scripts>
-          <script value="build" />
+          <script value="build:tsgo" />
         </scripts>
         <node-interpreter value="project" />
         <envs />
