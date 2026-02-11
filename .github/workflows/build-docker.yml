@@ -1,0 +1,53 @@
+name: Build docker images
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        package:
+          - default
+          - cdn
+          - api
+          - gateway
+          - admin-api
+          - cdn-cs
+          - gateway-offload
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Build the docker image
+        run: nix build .#containers.x86_64-linux.docker.${{ matrix.package }}
+        working-directory: server
+      - run: docker load < result
+        working-directory: server
+      - name: downcase REPO
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compute image suffix
+        run: |
+         if [ "${{ matrix.package }}" = "default" ]; then
+         echo "SUFFIX=" >> $GITHUB_ENV
+         else
+         echo "SUFFIX=-${{ matrix.package }}" >> $GITHUB_ENV
+         fi
+      - name: Tag and push the image
+        run: |
+         IMAGE_ID=$(docker images spacebar-server-ts$SUFFIX --format '{{.ID}}')
+         docker tag $IMAGE_ID ghcr.io/$REPO$SUFFIX:latest
+         docker push ghcr.io/$REPO$SUFFIX:latest
