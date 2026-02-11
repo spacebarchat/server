@@ -32,10 +32,11 @@ export class S3Storage implements Storage {
     public constructor(
         private region: string,
         private bucket: string,
+        private endpoint: string,
         private basePath?: string,
     ) {
         const { S3 } = require("@aws-sdk/client-s3");
-        this.client = new S3({ region });
+        this.client = new S3({ region: region, endpoint: endpoint });
     }
 
     /**
