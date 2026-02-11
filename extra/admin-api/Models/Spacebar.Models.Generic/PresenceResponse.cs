@@ -3,9 +3,9 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Spacebar.Models.Generic;
 
-namespace Spacebar.Models.Gateway;
+namespace Spacebar.Models.Generic;
 
-public class PresenceResponse {
+public class Presence {
     [JsonPropertyName("user")]
     public required PartialUser User { get; set; }
 
@@ -28,6 +28,14 @@ public class PresenceResponse {
 
     [JsonPropertyName("has_played_game")]
     public bool? HasPlayedGame { get; set; }
+
+    // Unsure if this is used outside of op14
+    [JsonPropertyName("game")]
+    public JsonObject? Game { get; set; }
+
+    // Unsure if used outside of op14
+    [JsonPropertyName("processed_at_timestamp")]
+    public ulong? ProcessedAtTimestamp { get; set; }
 
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     public class ClientStatuses {

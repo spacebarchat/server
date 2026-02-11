@@ -29,3 +29,9 @@ public class Member {
     [JsonPropertyName("bio")]
     public string? Bio { get; set; }
 }
+
+// Unsure if this is used anywhere outside of op14...?
+public class MemberWithPresence : Member {
+    [JsonPropertyName("presence")]
+    public Presence? Presence { get; set; }
+}

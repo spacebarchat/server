@@ -3,8 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Spacebar.Models.Gateway;
 
-public class IdentifyRequest
-{
+public class IdentifyRequest {
     [JsonPropertyName("token")]
     public string Token { get; set; }
 
@@ -34,8 +33,7 @@ public class IdentifyRequest
 }
 
 [Flags]
-public enum GatewayIntentFlags
-{
+public enum GatewayIntentFlags : ulong {
     Guilds = 1,
     GuildMembers = 1 << 1,
     GuildModeration = 1 << 2,
@@ -68,8 +66,7 @@ public enum GatewayIntentFlags
 }
 
 [Flags]
-public enum GatewayCapabilityFlags
-{
+public enum GatewayCapabilityFlags {
     LazyUserNotes = 1,
     NoAffineUserIds = 1 << 1,
     VersionedReadStates = 1 << 2,

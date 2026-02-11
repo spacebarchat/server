@@ -23,4 +23,9 @@ public class SpacebarAspNetAuthenticationService(SpacebarAuthenticationService a
         var token = GetTokenAsync(request);
         return await authService.GetCurrentUserAsync(token);
     }
+
+    public Task<Session> GetCurrentSessionAsync(HttpRequest request) {
+        var token = GetTokenAsync(request);
+        return authService.GetCurrentSessionAsync(token);
+    }
 }

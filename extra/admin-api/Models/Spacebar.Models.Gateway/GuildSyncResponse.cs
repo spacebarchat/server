@@ -8,7 +8,7 @@ public class GuildSyncResponse {
     public string GuildId { get; set; }
 
     [JsonPropertyName("presences")]
-    public List<PresenceResponse> Presences { get; set; }
+    public List<Presence> Presences { get; set; }
 
     [JsonPropertyName("members")]
     public List<Member> Members { get; set; }

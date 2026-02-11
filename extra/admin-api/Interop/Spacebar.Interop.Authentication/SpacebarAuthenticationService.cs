@@ -10,6 +10,7 @@ namespace Spacebar.Interop.Authentication;
 
 public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService> logger, SpacebarDbContext db, SpacebarAuthenticationConfiguration config) {
     private static readonly ExpiringSemaphoreCache<User> UserCache = new();
+    private static readonly ExpiringSemaphoreCache<Session> SessionCache = new();
 
     public async Task<TokenValidationResult?> ValidateTokenAsync(string token) {
         var handler = new JwtSecurityTokenHandler();
@@ -47,13 +48,13 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             config.AuthCacheExpiry);
     }
 
-    public async Task<User> GetCurrentSessionAsync(string token) {
+    public async Task<Session> GetCurrentSessionAsync(string token) {
         var res = await ValidateTokenAsync(token);
-        return await UserCache.GetOrAdd(token,
+        return await SessionCache.GetOrAdd(token,
             async () => {
-                var uid = config.OverrideUid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "id").Value;
-                if (string.IsNullOrWhiteSpace(uid)) throw new InvalidOperationException("No user ID specified, is the access token valid?");
-                return await db.Users.FindAsync(uid) ?? throw new InvalidOperationException();
+                var did = config.OverrideDid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "did").Value;
+                if (string.IsNullOrWhiteSpace(did)) throw new InvalidOperationException("No device ID specified, is the access token valid?");
+                return await db.Sessions.FindAsync(did) ?? throw new InvalidOperationException();
             },
             config.AuthCacheExpiry);
     }
