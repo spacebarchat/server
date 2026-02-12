@@ -22,7 +22,7 @@ import { Role } from "./Role";
 import { Channel } from "./Channel";
 import { InteractionType } from "../interfaces/Interaction";
 import { Application } from "./Application";
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId, FindOneOptions, Raw, Not, BaseEntity } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId, FindOneOptions, Raw, Not, BaseEntity, In } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
@@ -215,7 +215,28 @@ export class Message extends BaseClass {
     @Column({ default: "[]", type: "simple-json" })
     message_snapshots: MessageSnapshot[];
 
-    toJSON(): Message {
+    static async fillReplies(messages: Message[]) {
+        const ms = messages
+            .filter((msg) => msg.message_reference && !msg.referenced_message?.id && msg.message_reference.message_id)
+            .filter((msg) => [MessageType.REPLY, MessageType.THREAD_STARTER_MESSAGE, MessageType.CONTEXT_MENU_COMMAND].includes(msg.type));
+        if (!ms.length) return;
+        const curMs = new Map(messages.map((m) => [m.id, m] as const));
+        const neededIds = new Set(ms.map((m) => m.message_reference!.message_id as string)).difference(curMs);
+        if (neededIds.size) {
+            const newMessages = await Message.find({
+                where: {
+                    id: In([...neededIds]),
+                },
+                relations: { author: true, mentions: true, mention_roles: true, mention_channels: true },
+            });
+            newMessages.forEach((msg) => curMs.set(msg.id, msg));
+        }
+        for (const message of ms) {
+            message.referenced_message = curMs.get(message.message_reference!.message_id as string) || null;
+        }
+    }
+
+    toJSON(shallow = false): Message {
         return {
             ...this,
             author_id: undefined,
@@ -246,6 +267,7 @@ export class Message extends BaseClass {
             content: this.content ?? "",
             pinned: this.pinned,
             thread: this.thread ? this.thread.toJSON() : this.thread,
+            referenced_message: this.referenced_message && !shallow ? this.referenced_message.toJSON(true) : undefined,
         };
     }
 
