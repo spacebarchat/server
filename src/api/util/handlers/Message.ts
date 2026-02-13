@@ -53,6 +53,7 @@ import {
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
 import {
+    ActionRowComponent,
     ButtonStyle,
     ChannelType,
     Embed,
@@ -63,53 +64,138 @@ import {
     MessageCreateSchema,
     MessageType,
     Reaction,
+    UnfurledMediaItem,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
+function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], errors: Record<string, { code?: string; message: string }>, rowIndex: number) {
+    if (!row.components) {
+        return;
+    }
 
+    if (row.components.length < 1 || row.components.length > 5) {
+        errors[`data.components[${rowIndex}].components`] = {
+            code: "BASE_TYPE_BAD_LENGTH",
+            message: `Must be between 1 and 5 in length.`,
+        };
+    }
+
+    for (const component of row.components) {
+        if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
+            if (component.custom_id?.trim() === "") {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
+                    message: "A custom id required",
+                };
+            }
+
+            if (knownComponentIds.includes(component.custom_id!)) {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "COMPONENT_CUSTOM_ID_DUPLICATED",
+                    message: "Component custom id cannot be duplicated",
+                };
+            } else {
+                knownComponentIds.push(component.custom_id!);
+            }
+        }
+    }
+}
+async function processMedia(media: UnfurledMediaItem) {
+    if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
+    if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
+    const url = new URL(media.url);
+    if (!["http", "https", "attachment"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
+}
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const errors: Record<string, { code?: string; message: string }> = {};
     const knownComponentIds: string[] = [];
-
-    for (const row of opts.components || []) {
-        if (!row.components) {
-            continue;
-        }
-
-        if (row.components.length < 1 || row.components.length > 5) {
-            errors[`data.components[${opts.components!.indexOf(row)}].components`] = {
-                code: "BASE_TYPE_BAD_LENGTH",
-                message: `Must be between 1 and 5 in length.`,
-            };
-        }
-
-        for (const component of row.components) {
-            if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
-                if (component.custom_id?.trim() === "") {
-                    errors[`data.components[${opts.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
-                        code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
-                        message: "A custom id required",
-                    };
-                }
-
-                if (knownComponentIds.includes(component.custom_id!)) {
-                    errors[`data.components[${opts.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
-                        code: "COMPONENT_CUSTOM_ID_DUPLICATED",
-                        message: "Component custom id cannot be duplicated",
-                    };
-                } else {
-                    knownComponentIds.push(component.custom_id!);
+    const compv2 = (opts.flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
+    const medias: UnfurledMediaItem[] = [];
+    for (const comp of opts.components || []) {
+        if (comp.type === MessageComponentType.ActionRow) {
+            checkActionRow(comp, knownComponentIds, errors, opts.components!.indexOf(comp));
+        } else if (comp.type === MessageComponentType.Section) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            const accessory = comp.accessory;
+            if (comp.components.length < 1 || comp.components.length > 3) {
+                errors[`data.components[${opts.components!.indexOf(comp)}].components`] = {
+                    code: "TOO_LONG",
+                    message: "Component list is too long",
+                };
+            }
+            if (accessory.type === MessageComponentType.Thumbnail) {
+                medias.push(accessory.media);
+            }
+        } else if (comp.type === MessageComponentType.TextDispaly) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+        } else if (comp.type === MessageComponentType.MediaGallery) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            if (comp.items.length < 1 || comp.items.length > 10) {
+                errors[`data.components[${opts.components!.indexOf(comp)}].items`] = {
+                    code: "TOO_LONG",
+                    message: "Media list is too long",
+                };
+            }
+            medias.push(...comp.items.map(({ media }) => media));
+        } else if (comp.type === MessageComponentType.File) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            medias.push(comp.file);
+        } else if (comp.type === MessageComponentType.Seperator) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+        } else if (comp.type === MessageComponentType.Container) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            for (const elm of comp.components) {
+                switch (elm.type) {
+                    case MessageComponentType.Seperator:
+                    case MessageComponentType.TextDispaly:
+                        break;
+                    case MessageComponentType.Section: {
+                        const accessory = elm.accessory;
+                        if (elm.components.length < 1 || elm.components.length > 3) {
+                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
+                                code: "TOO_LONG",
+                                message: "Component list is too long",
+                            };
+                        }
+                        if (accessory.type === MessageComponentType.Thumbnail) {
+                            medias.push(accessory.media);
+                        }
+                        break;
+                    }
+                    case MessageComponentType.MediaGallery:
+                        if (elm.items.length < 1 || elm.items.length > 10) {
+                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
+                                code: "TOO_LONG",
+                                message: "Media list is too long",
+                            };
+                        }
+                        medias.push(...elm.items.map(({ media }) => media));
+                        break;
+                    case MessageComponentType.File: {
+                        medias.push(elm.file);
+                        break;
+                    }
+                    case MessageComponentType.ActionRow:
+                        checkActionRow(elm, knownComponentIds, errors, opts.components!.indexOf(elm));
+                        break;
+                    default:
+                        elm satisfies never;
                 }
             }
+        } else {
+            comp satisfies never;
         }
     }
 
     if (Object.keys(errors).length > 0) {
         throw FieldErrors(errors);
     }
+
+    await Promise.all(medias.map(processMedia));
+
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
         relations: { recipients: true },
@@ -662,8 +748,8 @@ export async function sendMessage(opts: MessageOptions) {
 
     const ephemeral = (message.flags & Number(MessageFlags.FLAGS.EPHEMERAL)) !== 0;
     await Promise.all([
-        Message.insert(message),
-        Channel.update(message.channel.id, message.channel),
+        message.insert(),
+        message.channel.save(),
         emitEvent({
             event: "MESSAGE_CREATE",
             ...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),

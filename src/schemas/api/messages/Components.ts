@@ -20,13 +20,78 @@ import { PartialEmoji } from "@spacebar/schemas";
 
 export interface MessageComponent {
     type: MessageComponentType;
+    id?: number;
+}
+
+export interface SectionComponent extends MessageComponent {
+    type: MessageComponentType.Section;
+    components: TextDispalyComponent[];
+    accessory: ThumbnailComponent | ButtonComponent;
+}
+
+export interface ThumbnailComponent extends MessageComponent {
+    type: MessageComponentType.Thumbnail;
+    description?: string;
+    media: UnfurledMediaItem;
+    spoiler?: boolean;
+}
+export interface UnfurledMediaItem {
+    id?: string;
+    url: string;
+    proxy_url?: string;
+    height?: number;
+    width?: number;
+    flags?: number;
+    content_type?: string;
+    content_scan_metadata?: unknown; //TODO deal with this lol
+    placeholder_version?: number;
+    placeholder?: string;
+    loading_state?: number;
+    attachment_id?: string;
+}
+export interface TextDispalyComponent extends MessageComponent {
+    type: MessageComponentType.TextDispaly;
+    content: string;
+}
+export interface MediaGalleryComponent extends MessageComponent {
+    type: MessageComponentType.MediaGallery;
+    items: {
+        media: UnfurledMediaItem;
+        description?: string;
+        spoiler?: boolean;
+    }[];
+}
+
+export interface FileComponent extends MessageComponent {
+    type: MessageComponentType.File;
+    file: UnfurledMediaItem;
+    spoiler: boolean;
+    name: string;
+    size: number;
+}
+export const enum SeperatorSpacing {
+    Small = 1,
+    Large = 2,
+}
+export interface SeperatorComponent extends MessageComponent {
+    type: MessageComponentType.Seperator;
+    divider?: boolean;
+    spacing?: SeperatorSpacing;
 }
 
 export interface ActionRowComponent extends MessageComponent {
     type: MessageComponentType.ActionRow;
     components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
 }
-export type BaseMessageComponents = ActionRowComponent;
+
+export interface ContainerComponent extends MessageComponent {
+    type: MessageComponentType.Container;
+    components: (ActionRowComponent | TextDispalyComponent | SectionComponent | MediaGalleryComponent | SeperatorComponent | FileComponent)[];
+    accent_color?: number;
+    spoiler?: boolean;
+}
+
+export type BaseMessageComponents = ActionRowComponent | SectionComponent | TextDispalyComponent | MediaGalleryComponent | FileComponent | SeperatorComponent | ContainerComponent;
 
 export interface ButtonComponent extends MessageComponent {
     type: MessageComponentType.Button;
@@ -109,4 +174,11 @@ export enum MessageComponentType {
     RoleSelect = 6,
     MentionableSelect = 7,
     ChannelSelect = 8,
+    Section = 9,
+    TextDispaly = 10,
+    Thumbnail = 11,
+    MediaGallery = 12,
+    File = 13,
+    Seperator = 14,
+    Container = 15,
 }
