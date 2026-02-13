@@ -21,6 +21,8 @@ import fs from "fs/promises";
 import path from "path";
 
 import { ErlpackType, JSONReplacer } from "@spacebar/util";
+import { storeReplayEvent } from "./ReplayBuffer";
+import { OPCODES } from "./Constants";
 let erlpack: ErlpackType | null = null;
 try {
     erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
@@ -44,6 +46,11 @@ const recurseJsonReplace = (json: any) => {
 
 export async function Send(socket: WebSocket, data: Payload) {
     if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+
+    // Store dispatched events (op 0) in the replay buffer for Resume support
+    if (data.op === OPCODES.Dispatch && data.s !== undefined && socket.session_id && socket.user_id) {
+        storeReplayEvent(socket.session_id, socket.user_id, socket.accessToken, data);
+    }
 
     if (process.env.WS_DUMP) {
         const id = socket.session_id || "unknown";

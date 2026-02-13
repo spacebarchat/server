@@ -17,6 +17,7 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
+import { markSessionDisconnected } from "../util/ReplayBuffer";
 import { emitEvent, PresenceUpdateEvent, PrivateSessionProjection, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
@@ -26,6 +27,11 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     this.deflate?.close();
     this.inflate?.close();
     this.removeAllListeners();
+
+    // Preserve replay buffer for potential resume (will expire after 5 minutes)
+    if (this.session_id) {
+        markSessionDisconnected(this.session_id);
+    }
 
     if (this.session_id) {
         await Session.delete({ session_id: this.session_id });
