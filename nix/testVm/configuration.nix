@@ -1,6 +1,20 @@
 { pkgs, lib, ... }:
+let
+  nginxTestSigning = {
+    addSSL = true;
+    enableACME = false;
+
+    # We don't care about certificates around here...
+    sslCertificate = "${pkgs.path}/nixos/tests/common/acme/server/acme.test.cert.pem";
+    sslCertificateKey = "${pkgs.path}/nixos/tests/common/acme/server/acme.test.key.pem";
+  };
+in
 {
   networking.hostName = "sbtest";
+  services.nginx.virtualHosts."sb.localhost" = nginxTestSigning;
+  services.nginx.virtualHosts."api.sb.localhost" = nginxTestSigning;
+  services.nginx.virtualHosts."gw.sb.localhost" = nginxTestSigning;
+  services.nginx.virtualHosts."cdn.sb.localhost" = nginxTestSigning;
 
   services.spacebarchat-server =
     let
