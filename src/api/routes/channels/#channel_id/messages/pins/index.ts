@@ -173,7 +173,21 @@ router.get(
 
         const pins = await Message.find({
             where: { channel_id: channel_id, pinned_at: Not(IsNull()) },
-            relations: { author: true },
+            relations: {
+                author: true,
+                webhook: true,
+                application: true,
+                mentions: true,
+                mention_roles: true,
+                mention_channels: true,
+                sticker_items: true,
+                attachments: true,
+                thread: {
+                    recipients: {
+                        user: true,
+                    },
+                },
+            },
             order: { pinned_at: "DESC" },
         });
 
