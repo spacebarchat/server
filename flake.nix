@@ -44,6 +44,9 @@
                   contents = [ self.packages.${system}.default ];
                   config = {
                     Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
+                    Env = {
+                      PORT = "3001";
+                    };
                     Expose = [ "3001" ];
                   };
                 };
@@ -58,6 +61,9 @@
                   ];
                   config = {
                     Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-${mod}" ];
+                    Env = {
+                      PORT = "3001";
+                    };
                     Expose = [ "3001" ];
                   };
                 }
