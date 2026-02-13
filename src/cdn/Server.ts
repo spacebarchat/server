@@ -63,9 +63,6 @@ export class CDNServer extends Server {
 
         await registerRoutes(this, path.join(__dirname, "routes/"));
 
-        this.app.use("/icons/", avatarsRoute);
-        console.log("[Server] Route /icons registered");
-
         this.app.use("/role-icons/", iconsRoute);
         console.log("[Server] Route /role-icons registered");
 

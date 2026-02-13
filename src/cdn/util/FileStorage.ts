@@ -74,4 +74,17 @@ export class FileStorage implements Storage {
         //TODO we should delete the parent directory if empty
         fs.unlinkSync(getPath(path));
     }
+
+    async exists(path: string) {
+        return fs.existsSync(getPath(path));
+    }
+
+    async move(path: string, newPath: string) {
+        path = getPath(path);
+        newPath = getPath(newPath);
+
+        if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
+
+        fs.renameSync(path, newPath);
+    }
 }
