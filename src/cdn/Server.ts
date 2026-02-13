@@ -63,39 +63,6 @@ export class CDNServer extends Server {
 
         await registerRoutes(this, path.join(__dirname, "routes/"));
 
-        this.app.use("/role-icons/", iconsRoute);
-        console.log("[Server] Route /role-icons registered");
-
-        this.app.use("/emojis/", avatarsRoute);
-        console.log("[Server] Route /emojis registered");
-
-        this.app.use("/stickers/", avatarsRoute);
-        console.log("[Server] Route /stickers registered");
-
-        this.app.use("/banners/", avatarsRoute);
-        console.log("[Server] Route /banners registered");
-
-        this.app.use("/splashes/", avatarsRoute);
-        console.log("[Server] Route /splashes registered");
-
-        this.app.use("/discovery-splashes/", avatarsRoute);
-        console.log("[Server] Route /discovery-splashes registered");
-
-        this.app.use("/app-icons/", avatarsRoute);
-        console.log("[Server] Route /app-icons registered");
-
-        this.app.use("/app-assets/", avatarsRoute);
-        console.log("[Server] Route /app-assets registered");
-
-        this.app.use("/discover-splashes/", avatarsRoute);
-        console.log("[Server] Route /discover-splashes registered");
-
-        this.app.use("/team-icons/", avatarsRoute);
-        console.log("[Server] Route /team-icons registered");
-
-        this.app.use("/channel-icons/", avatarsRoute);
-        console.log("[Server] Route /channel-icons registered");
-
         this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
         console.log("[Server] Route /guilds/:guild_id/users/:user_id/avatars registered");
 
