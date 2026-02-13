@@ -127,7 +127,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
                         activities: session?.activities || [],
                         user: { id: member.user.id },
                         client_status: session?.client_status,
-                        status: session?.status,
+                        status: session?.getPublicStatus() || "offline",
                     },
                 },
             };
@@ -201,8 +201,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
                     t: "PRESENCE_UPDATE",
                     d: {
                         user: user,
-                        activities: session?.activities || [],
-                        client_status: session?.client_status,
+                        activities: Array.isArray(session?.activities) ? session.activities : [],
+                        client_status: session?.client_status && typeof session.client_status === "object" ? session.client_status : {},
                         status: session?.getPublicStatus() || "offline",
                     } as Presence,
                 });
@@ -248,12 +248,14 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
     // TODO: unsubscribe member_events that are not in op.members
 
-    ops.forEach((op) => {
-        op.members.forEach(async (member) => {
-            if (!member?.user.id) return;
-            return subscribeToMemberEvents.call(this, member.user.id);
-        });
-    });
+    await Promise.all(
+        ops.flatMap((op) =>
+            op.members.map((member) => {
+                if (!member?.user.id) return;
+                return subscribeToMemberEvents.call(this, member.user.id);
+            }),
+        ),
+    );
 
     const groups = [...new Set(ops.map((x) => x.groups).flat())];
 

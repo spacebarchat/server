@@ -16,22 +16,51 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload } from "@spacebar/gateway";
+import { WebSocket, Payload, CLOSECODES } from "@spacebar/gateway";
 import { emitEvent, PresenceUpdateEvent, Session, User } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { ActivitySchema } from "@spacebar/schemas";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
-    const startTime = Date.now();
     check.call(this, ActivitySchema, d);
     const presence = d as ActivitySchema;
 
-    await Session.update({ session_id: this.session_id }, { status: presence.status, activities: presence.activities });
+    if (!this.session) {
+        return this.close(CLOSECODES.Not_authenticated);
+    }
 
-    const session = await Session.findOneOrFail({
-        select: { client_status: true },
-        where: { session_id: this.session_id },
-    });
+    const session = this.session;
+    const platform = session.client_info?.platform?.toLowerCase() || "web";
+    let clientType: "desktop" | "mobile" | "web" | "embedded" = "web";
+    if (platform.includes("mobile") || platform.includes("ios") || platform.includes("android")) {
+        clientType = "mobile";
+    } else if (platform.includes("desktop") || platform.includes("windows") || platform.includes("linux") || platform.includes("mac")) {
+        clientType = "desktop";
+    } else if (platform.includes("embedded")) {
+        clientType = "embedded";
+    }
+
+    session.status = presence.status;
+    session.activities = presence.activities ?? [];
+
+    if (!session.client_status || typeof session.client_status !== "object") {
+        session.client_status = {};
+    }
+
+    session.client_status = {
+        ...session.client_status,
+        [clientType]: presence.status,
+    };
+
+    // to match the DB row
+    await Session.update(
+        { session_id: session.session_id },
+        {
+            status: session.status,
+            activities: session.activities,
+            client_status: session.client_status,
+        },
+    );
 
     await emitEvent({
         event: "PRESENCE_UPDATE",
@@ -39,10 +68,8 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
         data: {
             user: await User.getPublicUser(this.user_id),
             status: session.getPublicStatus(),
-            activities: presence.activities,
-            client_status: session.client_status,
+            activities: Array.isArray(session.activities) ? session.activities : [],
+            client_status: session.client_status && typeof session.client_status === "object" ? session.client_status : {},
         },
     } as PresenceUpdateEvent);
-
-    console.log(`Presence update for user ${this.user_id} processed in ${Date.now() - startTime}ms`);
 }

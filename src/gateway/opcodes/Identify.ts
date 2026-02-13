@@ -31,6 +31,7 @@ import {
     getDatabase,
     Guild,
     GuildOrUnavailable,
+    User,
     Intents,
     Member,
     MemberPrivateProjection,
@@ -57,7 +58,7 @@ import {
     VoiceState,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { In, Not } from "typeorm";
+import { In, Not, FindOptionsSelect } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
 
@@ -93,7 +94,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         checkToken(identify.token, {
             // relations: {"relationships", "relationships.to", "settings"],
             // select: [...PrivateUserProjection, "relationships", "rights"],
-            select: [...PrivateUserProjection, "rights"],
+            select: [...PrivateUserProjection, "rights"] as unknown as FindOptionsSelect<User>,
         }),
     );
 
@@ -142,12 +143,27 @@ export async function onIdentify(this: WebSocket, data: Payload) {
           };
 
     this.session = session;
+    // sync the WebSocket session_id with the actual DB session_id
+    this.session_id = session.session_id;
     this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
     this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
     this.session.client_info.os = identify.properties?.os || identify.properties?.$os;
-    this.session.client_status = {};
+
+    const platform = this.session.client_info.platform?.toLowerCase() || "web";
+    let clientType: "desktop" | "mobile" | "web" | "embedded" = "web";
+    if (platform.includes("mobile") || platform.includes("ios") || platform.includes("android")) {
+        clientType = "mobile";
+    } else if (platform.includes("desktop") || platform.includes("windows") || platform.includes("linux") || platform.includes("mac")) {
+        clientType = "desktop";
+    } else if (platform.includes("embedded")) {
+        clientType = "embedded";
+    }
+
+    this.session.client_status = {
+        [clientType]: this.session.status,
+    };
     this.session.activities = identify.presence?.activities ?? []; // TODO: validation
 
     if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
@@ -542,6 +558,32 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     user.relationships.forEach((x) => users.add(x.to.toPublicUser()));
     const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
+    // compute READY_SUPPLEMENTAL guilds (with voice states btw) BEFORE building READY,
+    // so we can add voice state users to the users array.
+    const availableGuilds = guilds.filter((guild) => !guild.unavailable) as Guild[];
+    const readySupplementalGuilds = availableGuilds.map((guild) => {
+        return {
+            voice_states: guild.voice_states.map((state) => state.toPublicVoiceState()),
+            id: guild.id,
+            embedded_activities: [],
+        };
+    });
+
+    const voiceStateUserIds = new Set<string>();
+    for (const guild of readySupplementalGuilds) {
+        for (const vs of guild.voice_states) {
+            if (vs.user_id && vs.user_id !== this.user_id) {
+                voiceStateUserIds.add(vs.user_id);
+            }
+        }
+    }
+    if (voiceStateUserIds.size > 0) {
+        const voiceUsers = await Promise.all([...voiceStateUserIds].map((uid) => User.getPublicUser(uid).catch(() => null)));
+        for (const vu of voiceUsers) {
+            if (vu) users.add(vu);
+        }
+    }
+
     // Send SESSIONS_REPLACE and PRESENCE_UPDATE
     const allSessions = sessions.concat(this.session!).map((x) => x.toPrivateGatewayDeviceInfo());
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
@@ -560,8 +602,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 user_id: this.user_id,
                 data: {
                     user: user.toPublicUser(),
-                    activities: this.session!.activities,
-                    client_status: this.session!.client_status,
+                    activities: Array.isArray(this.session!.activities) ? this.session!.activities : [],
+                    client_status: this.session!.client_status && typeof this.session!.client_status === "object" ? this.session!.client_status : {},
                     status: this.session!.getPublicStatus(),
                 },
             } as PresenceUpdateEvent),
@@ -783,15 +825,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         }),
     );
 
-    const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => {
-        return {
-            voice_states: guild.voice_states.map((state) => state.toPublicVoiceState()),
-            id: guild.id,
-            embedded_activities: [],
-        };
-    });
-
-    // TODO: ready supplemental
+    // TODO: populate merged_presences and merged_members once format is validated
     await Send(this, {
         op: OPCodes.DISPATCH,
         t: EVENTEnum.ReadySupplemental,
@@ -801,12 +835,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 guilds: [],
                 friends: [],
             },
-            // these merged members seem to be all users currently in vc in your guilds
             merged_members: [],
             lazy_private_channels: [],
-            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
-            // embedded_activities are users currently in an activity?
-            disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
+            guilds: readySupplementalGuilds,
+            disclose: [],
         },
     });
 

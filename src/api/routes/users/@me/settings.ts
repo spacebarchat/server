@@ -75,25 +75,53 @@ router.patch(
         await user.settings.save();
         await user.save();
         if (body.status) {
-            const [session] = (await Session.find({
+            const sessions = await Session.find({
                 where: { user_id: user.id },
-            })) as [Session | undefined];
-            if (session) {
-                session.status = body.status;
+            });
 
-                await Promise.all([
-                    emitEvent({
-                        event: "PRESENCE_UPDATE",
-                        user_id: user.id,
-                        data: {
-                            user: user.toPublicUser(),
-                            activities: session.activities,
-                            client_status: session?.client_status,
-                            status: session.getPublicStatus(),
-                        },
-                    } as PresenceUpdateEvent),
-                    session.save(),
-                ]);
+            if (sessions && sessions.length > 0) {
+                // update status for all sessions and their client_status
+                await Promise.all(
+                    sessions.map(async (session) => {
+                        session.status = body.status!;
+
+                        // update client_status for each platform
+                        const platform = session.client_info?.platform?.toLowerCase() || "web";
+                        let clientType: "desktop" | "mobile" | "web" | "embedded" = "web";
+                        if (platform.includes("mobile") || platform.includes("ios") || platform.includes("android")) {
+                            clientType = "mobile";
+                        } else if (platform.includes("desktop") || platform.includes("windows") || platform.includes("linux") || platform.includes("mac")) {
+                            clientType = "desktop";
+                        } else if (platform.includes("embedded")) {
+                            clientType = "embedded";
+                        }
+
+                        // ensure client_status is initialized
+                        if (!session.client_status || typeof session.client_status !== "object") {
+                            session.client_status = {};
+                        }
+
+                        session.client_status = {
+                            ...session.client_status,
+                            [clientType]: body.status!,
+                        };
+
+                        return session.save();
+                    }),
+                );
+
+                // Emit PRESENCE_UPDATE event (use first session for activities)
+                const primarySession = sessions[0];
+                await emitEvent({
+                    event: "PRESENCE_UPDATE",
+                    user_id: user.id,
+                    data: {
+                        user: user.toPublicUser(),
+                        activities: Array.isArray(primarySession.activities) ? primarySession.activities : [],
+                        client_status: primarySession.client_status && typeof primarySession.client_status === "object" ? primarySession.client_status : {},
+                        status: primarySession.getPublicStatus(),
+                    },
+                } as PresenceUpdateEvent);
             }
         }
 

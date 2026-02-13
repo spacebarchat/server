@@ -88,8 +88,8 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
             user_id: this.user_id,
             data: {
                 user: userOrId,
-                activities: session.activities,
-                client_status: session?.client_status,
+                activities: Array.isArray(session.activities) ? session.activities : [],
+                client_status: session?.client_status && typeof session.client_status === "object" ? session.client_status : {},
                 status: session.getPublicStatus?.() ?? session.status,
             },
         } as PresenceUpdateEvent);

@@ -166,15 +166,15 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
             2: 2,
             3: 2,
         }; // ????? // emma: this appears to always be an empty attrset...
-        this.channels = guild.channels;
+        this.channels = Array.isArray(guild.channels) ? guild.channels : [];
         this.data_mode = "full";
-        this.emojis = guild.emojis;
+        this.emojis = Array.isArray(guild.emojis) ? guild.emojis : [];
         this.guild_scheduled_events = [];
         this.id = guild.id;
         this.large = guild.large;
         this.lazy = true; // ??????????
         this.member_count = guild.member_count;
-        this.members = guild.members?.map((x) => x.toPublicMember());
+        this.members = guild.members?.map((x) => x.toPublicMember()) ?? [];
         this.premium_subscription_count = guild.premium_subscription_count;
         this.properties = {
             name: guild.name,
@@ -212,10 +212,10 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
             nsfw: guild.nsfw,
             safety_alerts_channel_id: null,
         };
-        this.roles = guild.roles.map((x) => x.toJSON());
+        this.roles = Array.isArray(guild.roles) ? guild.roles.map((x) => x.toJSON()) : [];
         this.stage_instances = [];
-        this.stickers = guild.stickers;
-        this.threads = guild.threads;
+        this.stickers = Array.isArray(guild.stickers) ? guild.stickers : [];
+        this.threads = Array.isArray(guild.threads) ? guild.threads : [];
         this.version = "1"; // ??????
         this.guild_hashes = {};
         this.joined_at = guild.joined_at;
