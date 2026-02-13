@@ -475,6 +475,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     member,
                 };
             }),
+            guild_scheduled_events: [],
+            presences: [],
         };
 
         if (user.bot) {
