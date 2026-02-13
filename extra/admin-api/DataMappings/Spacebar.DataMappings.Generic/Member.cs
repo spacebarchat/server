@@ -2,9 +2,9 @@ using Spacebar.Models.Generic;
 
 namespace Spacebar.DataMappings.Generic;
 
-public static class Member
+public static class MemberExtensions
 {
-    public static Models.Generic.Member ToPublicMember(this Models.Db.Models.Member member, PartialUser? partialUser = null)
+    public static Member ToPublicMember(this Models.Db.Models.Member member, PartialUser? partialUser = null)
     {
         return new()
         {
@@ -15,7 +15,8 @@ public static class Member
             Collectibles = member.Collectibles,
             DisplayNameStyles = member.DisplayNameStyles,
             Bio = string.IsNullOrWhiteSpace(member.Bio) ? null : member.Bio,
-            Nick = string.IsNullOrWhiteSpace(member.Nick) ? null : member.Nick
+            Nick = string.IsNullOrWhiteSpace(member.Nick) ? null : member.Nick,
+            Roles = member.Roles.Select(x=>x.Id).ToList()
         };
     }
 }

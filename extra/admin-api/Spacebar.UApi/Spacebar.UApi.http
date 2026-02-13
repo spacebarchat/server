@@ -1,0 +1,6 @@
+@Spacebar.UApi_HostAddress = http://localhost:5085
+
+GET {{Spacebar.UApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
