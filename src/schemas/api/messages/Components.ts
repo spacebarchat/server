@@ -26,6 +26,7 @@ export interface ActionRowComponent extends MessageComponent {
     type: MessageComponentType.ActionRow;
     components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
 }
+export type BaseMessageComponents = ActionRowComponent;
 
 export interface ButtonComponent extends MessageComponent {
     type: MessageComponentType.Button;

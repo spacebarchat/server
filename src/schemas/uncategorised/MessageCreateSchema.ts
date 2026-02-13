@@ -17,7 +17,7 @@
 */
 
 import { InteractionType, Snowflake } from "@spacebar/util";
-import { ActionRowComponent, ApplicationCommandType, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
+import { ApplicationCommandType, BaseMessageComponents, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
 
 export type MessageCreateAttachment = {
     id: string;
@@ -63,7 +63,7 @@ export interface MessageCreateSchema {
 	**/
     attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
     sticker_ids?: string[] | null; // null check: fixes Discord-Go
-    components?: ActionRowComponent[] | null; // null check: fixes Discord-Go
+    components?: BaseMessageComponents[] | null; // null check: fixes Discord-Go
     // TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
     poll?: PollCreationSchema;
     enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here

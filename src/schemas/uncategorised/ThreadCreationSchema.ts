@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActionRowComponent, ChannelType, Embed } from "#schemas/api";
+import { BaseMessageComponents, ChannelType, Embed } from "#schemas/api";
 import { MessageActivity } from "./MessageActivity";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "./MessageCreateSchema";
 
@@ -37,7 +37,7 @@ export interface ThreadCreationSchema {
             users?: string[];
             replied_user?: boolean;
         };
-        components?: ActionRowComponent[] | null;
+        components?: BaseMessageComponents[] | null;
         sticker_ids?: string[];
         activity?: MessageActivity;
         application_id?: string;
