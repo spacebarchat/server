@@ -190,9 +190,10 @@ router.get(
             },
             order: { pinned_at: "DESC" },
         });
+        await Message.fillReplies(pins);
 
         const items = pins.map((message: Message) => ({
-            message,
+            message: message.toJSON(),
             pinned_at: message.pinned_at,
         }));
 

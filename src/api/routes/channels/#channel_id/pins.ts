@@ -191,8 +191,9 @@ router.get(
             },
             order: { pinned_at: "DESC" },
         });
+        await Message.fillReplies(pins);
 
-        res.send(pins);
+        res.send(pins.map((_) => _.toJSON()));
     },
 );
 
