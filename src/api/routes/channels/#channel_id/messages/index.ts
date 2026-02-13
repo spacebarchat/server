@@ -147,7 +147,6 @@ router.get(
         if (around) {
             query.take = Math.floor(limit / 2);
             if (query.take != 0) {
-                console.time("Query");
                 const [right, left] = await Promise.all([
                     Message.find({
                         ...query,
@@ -159,7 +158,6 @@ router.get(
                         order: { timestamp: "ASC" },
                     }),
                 ]);
-                console.timeEnd("Query");
                 left.push(...right);
                 messages = left.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
             } else {
