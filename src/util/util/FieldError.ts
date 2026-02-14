@@ -28,6 +28,10 @@ export type ErrorList = Record<string, ObjectErrorContent>;
 export type ErrorContent = { code: string; message: string };
 export type ObjectErrorContent = { _errors: ErrorContent[] };
 
+export function makeObjectErrorContent(code: string, message: string): ObjectErrorContent {
+    return { _errors: [{ code, message }] };
+}
+
 export function FieldErrors(fields: Record<string, { code?: string; message: string }>, errors?: ErrorObject[]) {
     const errorObj: ErrorList = {};
     for (const [key, { message, code }] of Object.entries(fields)) {

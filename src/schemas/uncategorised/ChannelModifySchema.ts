@@ -19,9 +19,6 @@
 import { ChannelPermissionOverwriteType, ChannelType, TagCreateSchema } from "@spacebar/schemas";
 
 export interface ChannelModifySchema {
-    /**
-     * @maxLength 100
-     */
     name?: string;
     type?: ChannelType;
     topic?: string;

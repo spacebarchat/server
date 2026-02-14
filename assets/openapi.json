@@ -4082,7 +4082,6 @@
                 "type": "object",
                 "properties": {
                     "name": {
-                        "maxLength": 100,
                         "type": "string"
                     },
                     "type": {
@@ -6831,7 +6830,6 @@
                 "type": "object",
                 "properties": {
                     "name": {
-                        "maxLength": 100,
                         "type": "string"
                     },
                     "type": {
@@ -13373,9 +13371,14 @@
                     "maxWebhooks": {
                         "type": "integer",
                         "default": 100
+                    },
+                    "maxName": {
+                        "type": "integer",
+                        "default": 32
                     }
                 },
                 "required": [
+                    "maxName",
                     "maxPins",
                     "maxTopic",
                     "maxWebhooks"
