@@ -37,25 +37,37 @@ export class SMTPEmailClient extends BaseEmailClient {
         const { host, port, secure, username, password } = Config.get().email.smtp;
 
         // ensure all required configuration values are set
-        if (!host || !port || secure === null || !username || !password) return console.error("[Email] SMTP has not been configured correctly.");
+        if (!host || !port || secure === null) return console.error("[Email] SMTP has not been configured correctly.");
 
         if (!Config.get().email.senderAddress && !Config.get().general.correspondenceEmail)
             return console.error(
                 '[Email] You have to configure either "email_senderAddress" or "general_correspondenceEmail" for emails to work. The configured value is used as the sender address.',
             );
 
+        /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc) */
+        let nodemailer_opts: unknown;
+        if(!username || !password) {
+            nodemailer_opts = {
+                host,
+                port,
+                secure,
+            };
+        } else {
+            nodemailer_opts = {
+                host,
+                port,
+                secure,
+                auth: {
+                    user: username,
+                    pass: password,
+                },
+            };
+        }
+
         // construct the transporter
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        const transporter = this.nodemailer.createTransport({
-            host,
-            port,
-            secure,
-            auth: {
-                user: username,
-                pass: password,
-            },
-        });
+        const transporter = this.nodemailer.createTransport(nodemailer_opts);
 
         // verify connection configuration
         const verified = await transporter.verify().catch((err: unknown) => {
