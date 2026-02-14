@@ -45,7 +45,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
             where: { id: user_id },
         });
         const self_member = await Member.find({
-            where: { id: user_id },
+            where: { id: req.user_id },
         });
 
         for (const rmem of requested_member) {
