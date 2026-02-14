@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EmbedHandlers } from "@spacebar/api";
+import { EmbedHandlers, randomString } from "@spacebar/api";
 import {
     Application,
     Attachment,
@@ -103,11 +103,86 @@ function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], er
         }
     }
 }
-async function processMedia(media: UnfurledMediaItem) {
+async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string) {
     if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
     if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
     const url = new URL(media.url);
     if (!["http", "https", "attachment"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
+    let attEnt: CloudAttachment;
+    let delWhenDone = false;
+    if (url.protocol !== "attachment") {
+        const res = await fetch(url);
+        if (!res.ok) throw new HTTPError("URL did not return OK");
+        const blob = await res.blob();
+        const name = url.pathname.split("/").findLast((_) => _) || id;
+        const uploadFilename = `${channel.id}/${batchId}/${id ?? "0"}/${name}`;
+        attEnt = CloudAttachment.create({
+            user: user,
+            channel: channel,
+            uploadFilename: uploadFilename,
+            userAttachmentId: "0",
+            userFilename: name,
+            userFileSize: blob.size,
+            userIsClip: false,
+        });
+        await attEnt.save();
+        const cdnUrl = Config.get().cdn.endpointPublic;
+        const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
+        await (
+            await fetch(fetchUrl, {
+                method: "PUT",
+                body: blob,
+            })
+        ).text();
+        // re-fetch due to changed DB entry
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                id: attEnt.id,
+            },
+        });
+        delWhenDone = true;
+    } else {
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                uploadFilename: url.hostname,
+            },
+        });
+    }
+
+    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
+        method: "POST",
+        headers: {
+            signature: Config.get().security.requestSignature || "",
+        },
+    });
+
+    if (!cloneResponse.ok) {
+        console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${messageId}`);
+        throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
+    }
+
+    const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
+    //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
+    media.id = attEnt.id;
+    media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
+    if (url.protocol !== "attachment") media.url = media.proxy_url;
+    media.height = attEnt.height;
+    media.width = attEnt.width;
+    media.content_type = attEnt.contentType;
+    //TODO flags?
+    media.attachment_id = attEnt.id;
+    //TODO preview stuff
+
+    if (delWhenDone) {
+        fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
+            headers: {
+                signature: Config.get().security.requestSignature,
+            },
+            method: "DELETE",
+        }).then(() => {
+            attEnt.remove();
+        });
+    }
 }
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const errors: Record<string, { code?: string; message: string }> = {};
@@ -194,8 +269,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         throw FieldErrors(errors);
     }
 
-    await Promise.all(medias.map(processMedia));
-
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
         relations: { recipients: true },
@@ -242,6 +315,18 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         mentions: [],
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
+    const batchId = `CLOUD_${message.author_id}_${randomString(128)}`;
+
+    if (opts.author_id) {
+        message.author = await User.findOneOrFail({
+            where: { id: opts.author_id },
+        });
+        const rights = await getRights(opts.author_id);
+        rights.hasThrow("SEND_MESSAGES");
+    }
+
+    await Promise.all(medias.map((m, index) => processMedia(m, message.id, batchId, message.author as User, channel, index + "")));
+
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
         const rep = Channel.getRepository();
@@ -304,13 +389,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         throw new HTTPError("Content length over max character limit");
     }
 
-    if (opts.author_id) {
-        message.author = await User.findOneOrFail({
-            where: { id: opts.author_id },
-        });
-        const rights = await getRights(opts.author_id);
-        rights.hasThrow("SEND_MESSAGES");
-    }
     if (opts.application_id) {
         message.application = await Application.findOneOrFail({
             where: { id: opts.application_id },
