@@ -31,7 +31,7 @@ import {
     GuildMemberAddEvent,
     Ban,
 } from "@spacebar/util";
-import { OPCODES } from "../util/Constants";
+import { OPCODES, CLOSECODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
@@ -96,44 +96,73 @@ export async function setupListener(this: WebSocket) {
 
     // Function to set up all event listeners (used for initial setup and reconnection)
     const setupEventListeners = async () => {
-        if (RabbitMQ.connection) {
-            console.log(`[RabbitMQ] [user-${this.user_id}] Setting up channel and event listeners`);
-            opts.channel = await RabbitMQ.connection.createChannel();
+        try {
+            if (RabbitMQ.connection) {
+                console.log(`[RabbitMQ] [user-${this.user_id}] Setting up channel and event listeners`);
+                opts.channel = await RabbitMQ.connection.createChannel();
 
-            opts.channel.on("error", handleChannelError);
-            opts.channel.queues = {};
-            console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
-        }
+                opts.channel.on("error", handleChannelError);
+                opts.channel.queues = {};
+                console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
+            }
 
-        this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
+            try {
+                this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
+            } catch (error) {
+                console.error(`[Gateway] Failed to set up user event listener for ${this.user_id}:`, error);
+                throw error;
+            }
 
-        await Promise.all(
-            relationships.map(async (relationship) => {
-                this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
-            }),
-        );
+            const relationshipPromises = relationships.map(async (relationship) => {
+                try {
+                    this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
+                } catch (error) {
+                    console.error(`[Gateway] Failed to set up relationship event listener for ${relationship.to_id}:`, error);
+                    // continue with other listeners even if one fails
+                }
+            });
 
-        await Promise.all(
-            dm_channels.map(async (channel) => {
-                this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
-            }),
-        );
+            const dmPromises = dm_channels.map(async (channel) => {
+                try {
+                    this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                } catch (error) {
+                    console.error(`[Gateway] Failed to set up DM channel event listener for ${channel.id}:`, error);
+                    // continue with other listeners even if one fails
+                }
+            });
 
-        await Promise.all(
-            guilds.map(async (guild) => {
-                const permission = await getPermission(this.user_id, guild.id);
-                this.permissions[guild.id] = permission;
-                this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
+            const guildPromises = guilds.map(async (guild) => {
+                try {
+                    const permission = await getPermission(this.user_id, guild.id);
+                    this.permissions[guild.id] = permission;
+                    this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
 
-                await Promise.all(
-                    guild.channels.map(async (channel) => {
+                    // channel event listeners for this guild
+                    const channelPromises = guild.channels.map(async (channel) => {
                         if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
-                            this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                            try {
+                                this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                            } catch (error) {
+                                console.error(`[Gateway] Failed to set up guild channel event listener for ${channel.id}:`, error);
+                                // continue with other channels even if one fails
+                            }
                         }
-                    }),
-                );
-            }),
-        );
+                    });
+
+                    await Promise.all(channelPromises);
+                } catch (error) {
+                    console.error(`[Gateway] Failed to set up guild event listener for ${guild.id}:`, error);
+                    // continue with other guilds even if one fails
+                }
+            });
+
+            await Promise.all([...relationshipPromises, ...dmPromises, ...guildPromises]);
+
+            console.log(`[Gateway] Event listeners setup completed for user ${this.user_id}`);
+        } catch (error) {
+            console.error(`[Gateway] Critical failure setting up event listeners for user ${this.user_id}:`, error);
+            throw error;
+        }
     };
 
     // Initial setup
@@ -198,157 +227,169 @@ export async function setupListener(this: WebSocket) {
 
 // TODO: only subscribe for events that are in the connection intents
 async function consume(this: WebSocket, opts: EventOpts) {
-    const { data, event } = opts;
-    const id = data.id as string;
-    const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
+    let eventName: string = "unknown";
+    try {
+        const { data, event } = opts;
+        eventName = event;
+        const id = data.id as string;
+        const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
-    const consumer = consume.bind(this);
-    const listenOpts = opts as ListenEventOpts;
-    opts.acknowledge?.();
-    // console.log("event", event);
+        const consumer = consume.bind(this);
+        const listenOpts = opts as ListenEventOpts;
+        opts.acknowledge?.();
+        // console.log("event", event);
 
-    // subscription managment
-    switch (event) {
-        case "GUILD_MEMBER_REMOVE":
-            this.member_events[data.user.id]?.();
-            delete this.member_events[data.user.id];
-            break;
-        case "GUILD_MEMBER_ADD":
-            if (this.member_events[data.user.id]) break; // already subscribed
-            this.member_events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
-            break;
-        case "GUILD_MEMBER_UPDATE":
-            if (!this.member_events[data.user.id]) break;
-            this.member_events[data.user.id]();
-            break;
-        case "RELATIONSHIP_REMOVE":
-        case "CHANNEL_DELETE":
-        case "GUILD_DELETE":
-            this.events[id]?.();
-            delete this.events[id];
-            if (event === "GUILD_DELETE" && this.ipAddress) {
-                const ban = await Ban.findOne({
-                    where: { guild_id: id, user_id: this.user_id },
-                });
-
-                if (ban) {
-                    ban.ip = this.ipAddress || undefined;
-                    await ban.save();
-                }
-            }
-            break;
-        case "CHANNEL_CREATE":
-            if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
-            this.events[id] = await listenEvent(id, consumer, listenOpts);
-            break;
-        case "RELATIONSHIP_ADD":
-            this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
-            break;
-        case "GUILD_CREATE":
-            Promise.all([
-                ...data.channels.map(async ({ id }: { id: string }) => {
-                    this.events[id] = await listenEvent(id, consumer, listenOpts);
-                }),
-                listenEvent(id, consumer, listenOpts).then((ret) => (this.events[id] = ret)),
-            ]);
-            break;
-        case "CHANNEL_UPDATE": {
-            const exists = this.events[id];
-            if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
-                if (exists) break;
-                this.events[id] = await listenEvent(id, consumer, listenOpts);
-            } else {
-                if (!exists) return; // return -> do not send channel update events for hidden channels
-                opts.cancel(id);
+        // subscription managment
+        switch (event) {
+            case "GUILD_MEMBER_REMOVE":
+                this.member_events[data.user.id]?.();
+                delete this.member_events[data.user.id];
+                break;
+            case "GUILD_MEMBER_ADD":
+                if (this.member_events[data.user.id]) break; // already subscribed
+                this.member_events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+                break;
+            case "GUILD_MEMBER_UPDATE":
+                if (!this.member_events[data.user.id]) break;
+                this.member_events[data.user.id]();
+                break;
+            case "RELATIONSHIP_REMOVE":
+            case "CHANNEL_DELETE":
+            case "GUILD_DELETE":
+                this.events[id]?.();
                 delete this.events[id];
-            }
-            break;
-        }
-    }
+                if (event === "GUILD_DELETE" && this.ipAddress) {
+                    const ban = await Ban.findOne({
+                        where: { guild_id: id, user_id: this.user_id },
+                    });
 
-    // permission checking
-    switch (event) {
-        case "INVITE_CREATE":
-        case "INVITE_DELETE":
-        case "GUILD_INTEGRATIONS_UPDATE":
-            if (!permission.has("MANAGE_GUILD")) return;
-            break;
-        case "WEBHOOKS_UPDATE":
-            if (!permission.has("MANAGE_WEBHOOKS")) return;
-            break;
-        case "GUILD_MEMBER_ADD":
-        case "GUILD_MEMBER_REMOVE":
-        case "GUILD_MEMBER_UPDATE": // only send them, if the user subscribed for this part of the member list, or is a bot
-        case "PRESENCE_UPDATE": // exception if user is friend
-            break;
-        case "GUILD_BAN_ADD":
-        case "GUILD_BAN_REMOVE":
-            if (!permission.has("BAN_MEMBERS")) return;
-            break;
-        case "VOICE_STATE_UPDATE":
-        case "MESSAGE_CREATE":
-        case "MESSAGE_DELETE":
-        case "MESSAGE_DELETE_BULK":
-        case "MESSAGE_UPDATE":
-        case "CHANNEL_PINS_UPDATE":
-        case "MESSAGE_REACTION_ADD":
-        case "MESSAGE_REACTION_REMOVE":
-        case "MESSAGE_REACTION_REMOVE_ALL":
-        case "MESSAGE_REACTION_REMOVE_EMOJI":
-        case "TYPING_START":
-            // only gets send if the user is alowed to view the current channel
-            if (!permission.has("VIEW_CHANNEL")) return;
-            break;
-        case "GUILD_CREATE":
-        case "GUILD_DELETE":
-        case "GUILD_UPDATE":
-        case "GUILD_ROLE_CREATE":
-        case "GUILD_ROLE_UPDATE":
-        case "GUILD_ROLE_DELETE":
-        case "CHANNEL_CREATE":
-        case "CHANNEL_DELETE":
-        case "CHANNEL_UPDATE":
-        case "GUILD_EMOJIS_UPDATE":
-        case "READY": // will be sent by the gateway
-        case "USER_UPDATE":
-        case "APPLICATION_COMMAND_CREATE":
-        case "APPLICATION_COMMAND_DELETE":
-        case "APPLICATION_COMMAND_UPDATE":
-        default:
-            // always gets sent
-            // Any events not defined in an intent are considered "passthrough" and will always be sent
-            break;
-    }
-
-    // data rewrites, e.g. signed attachment URLs
-    switch (event) {
-        case "MESSAGE_CREATE":
-        case "MESSAGE_UPDATE":
-            // console.log(this.request)
-            if (data["attachments"])
-                data["attachments"] = Message.prototype.withSignedAttachments.call(
-                    data,
-                    new NewUrlUserSignatureData({
-                        ip: this.ipAddress,
-                        userAgent: this.userAgent,
+                    if (ban) {
+                        ban.ip = this.ipAddress || undefined;
+                        await ban.save();
+                    }
+                }
+                break;
+            case "CHANNEL_CREATE":
+                if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
+                this.events[id] = await listenEvent(id, consumer, listenOpts);
+                break;
+            case "RELATIONSHIP_ADD":
+                this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+                break;
+            case "GUILD_CREATE":
+                Promise.all([
+                    ...data.channels.map(async ({ id }: { id: string }) => {
+                        this.events[id] = await listenEvent(id, consumer, listenOpts);
                     }),
-                ).attachments;
-            break;
-        default:
-            break;
-    }
-
-    if (event === "GUILD_MEMBER_ADD") {
-        if ((data as PublicMember).roles === undefined || (data as PublicMember).roles === null) {
-            console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!", opts.origin ?? "(Event origin not defined)", data);
-            (data as PublicMember).roles = [];
+                    listenEvent(id, consumer, listenOpts).then((ret) => (this.events[id] = ret)),
+                ]);
+                break;
+            case "CHANNEL_UPDATE": {
+                const exists = this.events[id];
+                if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
+                    if (exists) break;
+                    this.events[id] = await listenEvent(id, consumer, listenOpts);
+                } else {
+                    if (!exists) return; // return -> do not send channel update events for hidden channels
+                    opts.cancel(id);
+                    delete this.events[id];
+                }
+                break;
+            }
         }
-    }
 
-    await Send(this, {
-        op: OPCODES.Dispatch,
-        t: event,
-        d: data,
-        s: this.sequence++,
-    });
+        // permission checking
+        switch (event) {
+            case "INVITE_CREATE":
+            case "INVITE_DELETE":
+            case "GUILD_INTEGRATIONS_UPDATE":
+                if (!permission.has("MANAGE_GUILD")) return;
+                break;
+            case "WEBHOOKS_UPDATE":
+                if (!permission.has("MANAGE_WEBHOOKS")) return;
+                break;
+            case "GUILD_MEMBER_ADD":
+            case "GUILD_MEMBER_REMOVE":
+            case "GUILD_MEMBER_UPDATE": // only send them, if the user subscribed for this part of the member list, or is a bot
+            case "PRESENCE_UPDATE": // exception if user is friend
+                break;
+            case "GUILD_BAN_ADD":
+            case "GUILD_BAN_REMOVE":
+                if (!permission.has("BAN_MEMBERS")) return;
+                break;
+            case "VOICE_STATE_UPDATE":
+            case "MESSAGE_CREATE":
+            case "MESSAGE_DELETE":
+            case "MESSAGE_DELETE_BULK":
+            case "MESSAGE_UPDATE":
+            case "CHANNEL_PINS_UPDATE":
+            case "MESSAGE_REACTION_ADD":
+            case "MESSAGE_REACTION_REMOVE":
+            case "MESSAGE_REACTION_REMOVE_ALL":
+            case "MESSAGE_REACTION_REMOVE_EMOJI":
+            case "TYPING_START":
+                // only gets send if the user is alowed to view the current channel
+                if (!permission.has("VIEW_CHANNEL")) return;
+                break;
+            case "GUILD_CREATE":
+            case "GUILD_DELETE":
+            case "GUILD_UPDATE":
+            case "GUILD_ROLE_CREATE":
+            case "GUILD_ROLE_UPDATE":
+            case "GUILD_ROLE_DELETE":
+            case "CHANNEL_CREATE":
+            case "CHANNEL_DELETE":
+            case "CHANNEL_UPDATE":
+            case "GUILD_EMOJIS_UPDATE":
+            case "READY": // will be sent by the gateway
+            case "USER_UPDATE":
+            case "APPLICATION_COMMAND_CREATE":
+            case "APPLICATION_COMMAND_DELETE":
+            case "APPLICATION_COMMAND_UPDATE":
+            default:
+                // always gets sent
+                // Any events not defined in an intent are considered "passthrough" and will always be sent
+                break;
+        }
+
+        // data rewrites, e.g. signed attachment URLs
+        switch (event) {
+            case "MESSAGE_CREATE":
+            case "MESSAGE_UPDATE":
+                // console.log(this.request)
+                if (data["attachments"])
+                    data["attachments"] = Message.prototype.withSignedAttachments.call(
+                        data,
+                        new NewUrlUserSignatureData({
+                            ip: this.ipAddress,
+                            userAgent: this.userAgent,
+                        }),
+                    ).attachments;
+                break;
+            default:
+                break;
+        }
+
+        if (event === "GUILD_MEMBER_ADD") {
+            if ((data as PublicMember).roles === undefined || (data as PublicMember).roles === null) {
+                console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_ADD] roles is undefined, setting to empty array!", opts.origin ?? "(Event origin not defined)", data);
+                (data as PublicMember).roles = [];
+            }
+        }
+
+        await Send(this, {
+            op: OPCODES.Dispatch,
+            t: event,
+            d: data,
+            s: this.sequence++,
+        }).catch((sendError) => {
+            console.error(`[Gateway] Failed to send event ${event} to user ${this.user_id}:`, sendError);
+            this.isHealthy = false;
+            this.close(CLOSECODES.Unknown_error, "Failed to send event");
+        });
+    } catch (error) {
+        console.error(`[Gateway] Unhandled error in event consumer for user ${this.user_id}, event ${eventName}:`, error);
+        this.isHealthy = false;
+        // let health check handle it or allow client to reconnect
+    }
 }

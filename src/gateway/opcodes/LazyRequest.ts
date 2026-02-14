@@ -212,7 +212,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
         if (!channels) return;
     }
 
-    if (!channels) throw new Error("Must provide channel ranges");
+    if (!channels) return;
 
     const channel_id = Object.keys(channels || {})[0];
     if (!channel_id) return;
