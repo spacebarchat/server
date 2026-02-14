@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EmbedHandlers } from "@spacebar/api";
+import { EmbedHandlers, randomString } from "@spacebar/api";
 import {
     Application,
     Attachment,
@@ -48,17 +48,227 @@ import {
     Member,
     Session,
     MessageFlags,
+    FieldErrors,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
-import { ChannelType, Embed, EmbedType, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
+import {
+    ActionRowComponent,
+    ButtonStyle,
+    ChannelType,
+    Embed,
+    EmbedType,
+    MessageComponentType,
+    MessageCreateAttachment,
+    MessageCreateCloudAttachment,
+    MessageCreateSchema,
+    MessageType,
+    Reaction,
+    UnfurledMediaItem,
+} from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
+function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], errors: Record<string, { code?: string; message: string }>, rowIndex: number) {
+    if (!row.components) {
+        return;
+    }
 
+    if (row.components.length < 1 || row.components.length > 5) {
+        errors[`data.components[${rowIndex}].components`] = {
+            code: "BASE_TYPE_BAD_LENGTH",
+            message: `Must be between 1 and 5 in length.`,
+        };
+    }
+
+    for (const component of row.components) {
+        if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
+            if (component.custom_id?.trim() === "") {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
+                    message: "A custom id required",
+                };
+            }
+
+            if (knownComponentIds.includes(component.custom_id!)) {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "COMPONENT_CUSTOM_ID_DUPLICATED",
+                    message: "Component custom id cannot be duplicated",
+                };
+            } else {
+                knownComponentIds.push(component.custom_id!);
+            }
+        }
+    }
+}
+async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string) {
+    if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
+    if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
+    const url = new URL(media.url);
+    if (!["http", "https", "attachment"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
+    let attEnt: CloudAttachment;
+    let delWhenDone = false;
+    if (url.protocol !== "attachment") {
+        const res = await fetch(url);
+        if (!res.ok) throw new HTTPError("URL did not return OK");
+        const blob = await res.blob();
+        const name = url.pathname.split("/").findLast((_) => _) || id;
+        const uploadFilename = `${channel.id}/${batchId}/${id ?? "0"}/${name}`;
+        attEnt = CloudAttachment.create({
+            user: user,
+            channel: channel,
+            uploadFilename: uploadFilename,
+            userAttachmentId: "0",
+            userFilename: name,
+            userFileSize: blob.size,
+            userIsClip: false,
+        });
+        await attEnt.save();
+        const cdnUrl = Config.get().cdn.endpointPublic;
+        const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
+        await (
+            await fetch(fetchUrl, {
+                method: "PUT",
+                body: blob,
+            })
+        ).text();
+        // re-fetch due to changed DB entry
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                id: attEnt.id,
+            },
+        });
+        delWhenDone = true;
+    } else {
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                uploadFilename: url.hostname,
+            },
+        });
+    }
+
+    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
+        method: "POST",
+        headers: {
+            signature: Config.get().security.requestSignature || "",
+        },
+    });
+
+    if (!cloneResponse.ok) {
+        console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${messageId}`);
+        throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
+    }
+
+    const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
+    //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
+    media.id = attEnt.id;
+    media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
+    if (url.protocol !== "attachment") media.url = media.proxy_url;
+    media.height = attEnt.height;
+    media.width = attEnt.width;
+    media.content_type = attEnt.contentType;
+    //TODO flags?
+    media.attachment_id = attEnt.id;
+    //TODO preview stuff
+
+    if (delWhenDone) {
+        fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
+            headers: {
+                signature: Config.get().security.requestSignature,
+            },
+            method: "DELETE",
+        }).then(() => {
+            attEnt.remove();
+        });
+    }
+}
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
+    const errors: Record<string, { code?: string; message: string }> = {};
+    const knownComponentIds: string[] = [];
+    const compv2 = (opts.flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
+    const medias: UnfurledMediaItem[] = [];
+    for (const comp of opts.components || []) {
+        if (comp.type === MessageComponentType.ActionRow) {
+            checkActionRow(comp, knownComponentIds, errors, opts.components!.indexOf(comp));
+        } else if (comp.type === MessageComponentType.Section) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            const accessory = comp.accessory;
+            if (comp.components.length < 1 || comp.components.length > 3) {
+                errors[`data.components[${opts.components!.indexOf(comp)}].components`] = {
+                    code: "TOO_LONG",
+                    message: "Component list is too long",
+                };
+            }
+            if (accessory.type === MessageComponentType.Thumbnail) {
+                medias.push(accessory.media);
+            }
+        } else if (comp.type === MessageComponentType.TextDispaly) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+        } else if (comp.type === MessageComponentType.MediaGallery) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            if (comp.items.length < 1 || comp.items.length > 10) {
+                errors[`data.components[${opts.components!.indexOf(comp)}].items`] = {
+                    code: "TOO_LONG",
+                    message: "Media list is too long",
+                };
+            }
+            medias.push(...comp.items.map(({ media }) => media));
+        } else if (comp.type === MessageComponentType.File) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            medias.push(comp.file);
+        } else if (comp.type === MessageComponentType.Seperator) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+        } else if (comp.type === MessageComponentType.Container) {
+            if (!compv2) throw new HTTPError("Must be comp v2");
+            for (const elm of comp.components) {
+                switch (elm.type) {
+                    case MessageComponentType.Seperator:
+                    case MessageComponentType.TextDispaly:
+                        break;
+                    case MessageComponentType.Section: {
+                        const accessory = elm.accessory;
+                        if (elm.components.length < 1 || elm.components.length > 3) {
+                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
+                                code: "TOO_LONG",
+                                message: "Component list is too long",
+                            };
+                        }
+                        if (accessory.type === MessageComponentType.Thumbnail) {
+                            medias.push(accessory.media);
+                        }
+                        break;
+                    }
+                    case MessageComponentType.MediaGallery:
+                        if (elm.items.length < 1 || elm.items.length > 10) {
+                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
+                                code: "TOO_LONG",
+                                message: "Media list is too long",
+                            };
+                        }
+                        medias.push(...elm.items.map(({ media }) => media));
+                        break;
+                    case MessageComponentType.File: {
+                        medias.push(elm.file);
+                        break;
+                    }
+                    case MessageComponentType.ActionRow:
+                        checkActionRow(elm, knownComponentIds, errors, opts.components!.indexOf(elm));
+                        break;
+                    default:
+                        elm satisfies never;
+                }
+            }
+        } else {
+            comp satisfies never;
+        }
+    }
+
+    if (Object.keys(errors).length > 0) {
+        throw FieldErrors(errors);
+    }
+
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
         relations: { recipients: true },
@@ -105,6 +315,18 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         mentions: [],
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
+    const batchId = `CLOUD_${message.author_id}_${randomString(128)}`;
+
+    if (opts.author_id) {
+        message.author = await User.findOneOrFail({
+            where: { id: opts.author_id },
+        });
+        const rights = await getRights(opts.author_id);
+        rights.hasThrow("SEND_MESSAGES");
+    }
+
+    await Promise.all(medias.map((m, index) => processMedia(m, message.id, batchId, message.author as User, channel, index + "")));
+
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
         const rep = Channel.getRepository();
@@ -167,13 +389,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         throw new HTTPError("Content length over max character limit");
     }
 
-    if (opts.author_id) {
-        message.author = await User.findOneOrFail({
-            where: { id: opts.author_id },
-        });
-        const rights = await getRights(opts.author_id);
-        rights.hasThrow("SEND_MESSAGES");
-    }
     if (opts.application_id) {
         message.application = await Application.findOneOrFail({
             where: { id: opts.application_id },
@@ -611,8 +826,8 @@ export async function sendMessage(opts: MessageOptions) {
 
     const ephemeral = (message.flags & Number(MessageFlags.FLAGS.EPHEMERAL)) !== 0;
     await Promise.all([
-        Message.insert(message),
-        Channel.update(message.channel.id, message.channel),
+        message.insert(),
+        message.channel.save(),
         emitEvent({
             event: "MESSAGE_CREATE",
             ...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),

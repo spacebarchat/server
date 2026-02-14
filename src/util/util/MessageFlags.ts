@@ -14,5 +14,7 @@ export class MessageFlags extends BitField {
         // HAS_THREAD: BigInt(1) << BigInt(5) // does not apply to spacebar due to infrastructural differences
         EPHEMERAL: BigInt(1) << BigInt(6), // it that has been routed to only some of the users that can see the channel
         INTERACTION_WAIT: BigInt(1) << BigInt(7), // discord.com calls this LOADING
+
+        IS_COMPONENTS_V2: 1n << 15n,
     };
 }
