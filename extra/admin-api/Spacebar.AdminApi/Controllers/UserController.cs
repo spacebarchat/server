@@ -22,6 +22,10 @@ public class UserController(
     SpacebarAspNetAuthenticationService auth,
     ISpacebarReplication replication
 ) : ControllerBase {
+    /// <summary>
+    /// Get all users
+    /// </summary>
+    /// <returns>List of user objects</returns>
     [HttpGet]
     public async IAsyncEnumerable<UserModel> Get() {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
@@ -75,6 +79,63 @@ public class UserController(
         await foreach (var user in results) {
             yield return user;
         }
+    }
+
+    /// <summary>
+    /// Get user by ID
+    /// </summary>
+    /// <param name="id">User ID</param>
+    /// <returns>User object</returns>
+    [HttpGet("{id}")]
+    public async Task<UserModel> GetById(string id) {
+        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
+
+        return await db.Users
+            .Include(user => user.ApplicationBotUser)
+            .Include(user => user.MessageAuthors)
+            .Include(user => user.Sessions)
+            .Include(user => user.Templates)
+            .Include(user => user.VoiceStates)
+            .Include(user => user.Guilds)
+            .Select(x => new UserModel {
+                Id = x.Id,
+                Username = x.Username,
+                Discriminator = x.Discriminator,
+                Avatar = x.Avatar,
+                AccentColor = x.AccentColor,
+                Banner = x.Banner,
+                ThemeColors = x.ThemeColors,
+                Pronouns = x.Pronouns,
+                Phone = x.Phone,
+                Desktop = x.Desktop,
+                Mobile = x.Mobile,
+                Premium = x.Premium,
+                PremiumType = x.PremiumType,
+                Bot = x.Bot,
+                Bio = x.Bio,
+                System = x.System,
+                NsfwAllowed = x.NsfwAllowed,
+                MfaEnabled = x.MfaEnabled,
+                WebauthnEnabled = x.WebauthnEnabled,
+                CreatedAt = x.CreatedAt,
+                PremiumSince = x.PremiumSince,
+                Verified = x.Verified,
+                Disabled = x.Disabled,
+                Deleted = x.Deleted,
+                Email = x.Email,
+                Flags = x.Flags,
+                PublicFlags = x.PublicFlags,
+                Rights = x.Rights,
+                ApplicationBotUser = x.ApplicationBotUser == null ? null : new(),
+                ConnectedAccounts = new List<UserModel.ConnectedAccountModel>(),
+                MessageCount = x.MessageAuthors.Count, // This property is weirdly named due to scaffolding, might patch later
+                SessionCount = x.Sessions.Count,
+                TemplateCount = x.Templates.Count,
+                VoiceStateCount = x.VoiceStates.Count,
+                GuildCount = x.Guilds.Count,
+                OwnedGuildCount = x.Guilds.Count(g => g.OwnerId == x.Id)
+            })
+            .SingleAsync(x => x.Id == id);
     }
 
     [HttpGet("{id}/delete")]
@@ -171,129 +232,6 @@ public class UserController(
         }
     }
 
-    [HttpGet("duplicate")]
-    public async Task<IActionResult> Duplicate() {
-        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-
-        var msg = db.Messages.First();
-        var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
-        int count = 1;
-        while (true) {
-            foreach (var channel in channels) {
-                var newMsg = new Message {
-                    Id = $"{Random.Shared.NextInt64()}",
-                    ChannelId = channel.Id,
-                    GuildId = channel.GuildId,
-                    AuthorId = msg.AuthorId,
-                    Content = msg.Content,
-                    MemberId = msg.MemberId,
-                    Timestamp = msg.Timestamp,
-                    EditedTimestamp = msg.EditedTimestamp,
-                    Tts = msg.Tts,
-                    MentionEveryone = msg.MentionEveryone,
-                    Attachments = msg.Attachments,
-                    Embeds = msg.Embeds,
-                    Reactions = msg.Reactions,
-                    Nonce = msg.Nonce,
-                    PinnedAt = msg.PinnedAt,
-                    Type = msg.Type,
-                };
-                db.Messages.Add(newMsg);
-                count++;
-            }
-
-            if (count % 100 == 0) {
-                await db.SaveChangesAsync();
-                await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
-            }
-
-            if (count >= 100_000) {
-                await db.SaveChangesAsync();
-                await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
-                await db.Database.ExecuteSqlRawAsync("REINDEX TABLE messages");
-                return Ok();
-            }
-        }
-    }
-
-    [HttpGet("duplicate/{id}")]
-    public async Task<IActionResult> DuplicateMessage(ulong id, [FromQuery] int count = 100) {
-        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-
-        var msg = await db.Messages.FindAsync(id.ToString());
-        int createdCount = 1;
-        while (true) {
-            var newMsg = new Message {
-                Id = $"{Random.Shared.NextInt64()}",
-                ChannelId = msg.ChannelId,
-                GuildId = msg.GuildId,
-                AuthorId = msg.AuthorId,
-                Content = msg.Content,
-                MemberId = msg.MemberId,
-                Timestamp = msg.Timestamp,
-                EditedTimestamp = msg.EditedTimestamp,
-                Tts = msg.Tts,
-                MentionEveryone = msg.MentionEveryone,
-                Attachments = msg.Attachments,
-                Embeds = msg.Embeds,
-                Reactions = msg.Reactions,
-                Nonce = msg.Nonce,
-                PinnedAt = msg.PinnedAt,
-                Type = msg.Type,
-            };
-            db.Messages.Add(newMsg);
-            createdCount++;
-
-            if (createdCount % 100 == 0) {
-                await db.SaveChangesAsync();
-            }
-
-            if (createdCount >= count) {
-                await db.SaveChangesAsync();
-                await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
-                await db.Database.ExecuteSqlRawAsync("REINDEX TABLE messages");
-                return Ok();
-            }
-        }
-
-        await db.SaveChangesAsync();
-        await db.Database.ExecuteSqlRawAsync("VACUUM FULL messages");
-
-        return Ok();
-    }
-
-    [HttpGet("truncate_messages")]
-    public async Task TruncateMessages() {
-        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-
-        var channels = db.Channels.Select(x => new { x.Id, x.GuildId }).ToList();
-
-        var ss = new SemaphoreSlim(12, 12);
-
-        async Task TruncateChannelMessages(string channelId, string guildId) {
-            await ss.WaitAsync();
-            var tasks = Enumerable.Range(0, 99).Select(i => Task.Run(async () => {
-                await using var scope = sp.CreateAsyncScope();
-                await using var _db = scope.ServiceProvider.GetRequiredService<SpacebarDbContext>();
-                // set timeout
-                _db.Database.SetCommandTimeout(6000);
-                await _db.Database.ExecuteSqlAsync($"""
-                                                    DELETE FROM messages
-                                                      WHERE channel_id = '{channelId}'
-                                                        AND guild_id = '{guildId}'
-                                                        AND id LIKE '%{i:00}';
-                                                    """);
-
-                Console.WriteLine($"Truncated messages for {channelId} in {guildId} ending with {i}");
-            })).ToList();
-            await Task.WhenAll(tasks);
-            ss.Release();
-        }
-
-        var tasks = channels.Select(c => TruncateChannelMessages(c.Id, c.GuildId)).ToList();
-        await Task.WhenAll(tasks);
-    }
-
     private async IAsyncEnumerable<T> AggregateAsyncEnumerablesWithoutOrder<T>(params IEnumerable<IAsyncEnumerable<T>> enumerables) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
@@ -345,77 +283,6 @@ public class UserController(
                     // ignored
                 }
             }
-        }
-    }
-
-    // {
-    // "op": 0,
-    // "t": "GUILD_ROLE_UPDATE",
-    // "d": {
-    // "guild_id": "1006649183970562092",
-    // "role": {
-    // "id": "1006706520514028812",
-    // "guild_id": "1006649183970562092",
-    // "color": 16711680,
-    // "hoist": true,
-    // "managed": false,
-    // "mentionable": true,
-    // "name": "Adminstrator",
-    // "permissions": "9",
-    // "position": 5,
-    // "unicode_emoji": "💖",
-    // "flags": 0
-    // }
-    // },
-    // "s": 38
-    // }
-
-    [HttpGet("test")]
-    public async IAsyncEnumerable<string> Test() {
-        (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-
-        var guildId = "1006649183970562092";
-        // var roleId = "1006706520514028812"; //Administrator
-        var roleId = "1391303296148639051"; //Spacebar Maintainer
-        // int color = 16711680; //Administrator
-        int color = 99839; //Spacebar Maintainer
-
-        int framerate = 30;
-        float delay = 1000f / framerate;
-        var secondsPerRotation = 6.243f;
-        // use delay, 255f = one rotation, lengthFactor = iterations to make a full rotation
-        var lengthFactor = (secondsPerRotation * 1000f / delay);
-        Console.WriteLine("Length factor: {0}, RPS: {1}", lengthFactor, 0);
-        var re = new RainbowEnumerator(lengthFactor: lengthFactor, offset: color, skip: 1);
-        var sw = Stopwatch.StartNew();
-        while (true) {
-            var clr = re.Next();
-            color = clr.r << 16 | clr.g << 8 | clr.b;
-            await replication.SendAsync(new() {
-                Event = "GUILD_ROLE_UPDATE",
-                GuildId = guildId,
-                Origin = "Admin API (GET /users/test)",
-                Payload = new {
-                    guild_id = guildId,
-                    role = new {
-                        id = roleId,
-                        guild_id = guildId,
-                        color,
-                        hoist = false,
-                        managed = false,
-                        mentionable = true,
-                        name = "Spacebar Maintainer",
-                        permissions = "8",
-                        position = 5,
-                        unicode_emoji = "",
-                        flags = 0
-                    }
-                }
-            });
-
-            yield return $"{clr.r:X2} {clr.g:X2} {clr.b:X2} | {color:X8} | {sw.Elapsed} (waiting {Math.Max(0, (int)delay - (int)sw.ElapsedMilliseconds)} out of {delay} ms)";
-            await Task.Delay(Math.Max(0, (int)delay - (int)sw.ElapsedMilliseconds));
-            sw.Restart();
         }
     }
 }

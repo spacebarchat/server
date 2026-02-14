@@ -5,6 +5,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/DataMappings/">
+    <Project Path="DataMappings/Spacebar.DataMappings.AdminApi/Spacebar.DataMappings.AdminApi.csproj" />
     <Project Path="DataMappings/Spacebar.DataMappings.Generic/Spacebar.DataMappings.Generic.csproj" />
   </Folder>
   <Folder Name="/Interop/">
