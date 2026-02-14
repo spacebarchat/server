@@ -27,7 +27,7 @@ export class SMTPEmailClient extends BaseEmailClient {
     override async init(): Promise<void> {
         try {
             // try to import the transporter package
-            this.nodemailer = require("nodemailer").default;
+            this.nodemailer = require("nodemailer");
         } catch {
             // if the package is not installed, log an error and return void so we don't set the transporter
             console.error("[Email] nodemailer is not installed. Please run `npm install --no-save nodemailer` to install it.");
