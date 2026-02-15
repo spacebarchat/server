@@ -49,6 +49,7 @@ const getMostRelevantSession = (sessions: Session[]) => {
         dnd: 2,
         invisible: 3,
         offline: 4,
+        unknown: 5,
     };
     // sort sessions by relevance
     sessions = sessions.sort((a, b) => {
@@ -103,15 +104,13 @@ async function handleGuildSync(ws: WebSocket, guild_id: string) {
 
     for (const member of members) {
         const userSessions = sessionsByUserId.get(member.id) || [];
-        if (userSessions.length === 0) continue;
-
-        const mostRelevantSession = getMostRelevantSession(userSessions);
+        const mostRelevantSession = userSessions.length > 0 ? getMostRelevantSession(userSessions) : null;
         const presence: Presence = {
             user: member.user.toPublicUser(),
             guild_id: guild_id,
-            status: mostRelevantSession.getPublicStatus(),
-            activities: mostRelevantSession.activities,
-            client_status: mostRelevantSession.client_status,
+            status: mostRelevantSession ? mostRelevantSession.getPublicStatus() : "offline",
+            activities: mostRelevantSession ? mostRelevantSession.activities : [],
+            client_status: mostRelevantSession ? mostRelevantSession.client_status : {},
         };
         res.presences.push(presence);
     }

@@ -84,7 +84,8 @@ export class Session extends BaseClassWithoutId {
     session_nickname?: string;
 
     getPublicStatus() {
-        return this.status === "invisible" ? "offline" : this.status;
+        if (this.status === "invisible" || this.status === "unknown") return "offline";
+        return this.status || "offline";
     }
 
     getDiscordDeviceInfo() {

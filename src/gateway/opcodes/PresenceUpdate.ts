@@ -40,7 +40,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
         clientType = "embedded";
     }
 
-    session.status = presence.status;
+    session.status = presence.status || "unknown";
     session.activities = presence.activities ?? [];
 
     if (!session.client_status || typeof session.client_status !== "object") {

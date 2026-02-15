@@ -377,6 +377,13 @@ async function consume(this: WebSocket, opts: EventOpts) {
             }
         }
 
+        if (event === "GUILD_MEMBER_UPDATE") {
+            if ((data as { roles: string[] }).roles === undefined || (data as { roles: string[] }).roles === null) {
+                console.log(bgRedBright("[Gateway]"), "[GUILD_MEMBER_UPDATE] roles is undefined, setting to empty array!", opts.origin ?? "(Event origin not defined)", data);
+                (data as { roles: string[] }).roles = [];
+            }
+        }
+
         await Send(this, {
             op: OPCODES.Dispatch,
             t: event,

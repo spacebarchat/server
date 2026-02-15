@@ -211,7 +211,7 @@ export class Member extends BaseClassWithoutId {
     }
 
     static async addRole(user_id: string, guild_id: string, role_id: string) {
-        const [member] = await Promise.all([
+        const [member, role] = await Promise.all([
             Member.findOneOrFail({
                 where: { id: user_id, guild_id },
                 relations: { user: true, roles: true }, // we don't want to load  the role objects just the ids
@@ -227,20 +227,25 @@ export class Member extends BaseClassWithoutId {
                 select: { id: true },
             }),
         ]);
-        member.roles.push(Role.create({ id: role_id }));
 
-        await Promise.all([
-            member.save(),
-            emitEvent({
-                event: "GUILD_MEMBER_UPDATE",
-                data: {
-                    guild_id,
-                    user: member.user,
-                    roles: member.roles.map((x) => x.id),
-                },
+        // prevent duplicates
+        if (member.roles.some((r) => r.id === role_id)) {
+            return;
+        }
+
+        member.roles.push(role);
+
+        await member.save();
+
+        await emitEvent({
+            event: "GUILD_MEMBER_UPDATE",
+            data: {
                 guild_id,
-            } as GuildMemberUpdateEvent),
-        ]);
+                user: member.user,
+                roles: member.roles.map((x) => x.id),
+            },
+            guild_id,
+        } as GuildMemberUpdateEvent);
     }
 
     static async removeRole(user_id: string, guild_id: string, role_id: string) {
