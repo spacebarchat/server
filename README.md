@@ -7,7 +7,7 @@
   <a href="https://matrix.to/#/#spacebar:rory.gay">
     <img src="https://img.shields.io/matrix/spacebar%3Arory.gay?server_fqdn=matrix.rory.gay&fetchMode=summary&logo=matrix&logoColor=fffffff&label=Matrix" />
   </a>
-  <a href="https://fermi.chat/invite/NAa7zJ?instance=https%3A%2F%2Fspacebar.chat">
+  <a href="https://fermi.chat/invite/spacebar?instance=spacebar.chat">
     <img src="https://api.old.server.spacebar.chat/api/guilds/1006649183970562092/shield.svg" />
   </a>
   <a href="https://discord.gg/ZrnGQP6p3d">
