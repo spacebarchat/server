@@ -49,6 +49,7 @@
                   ];
                   config = {
                     Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-bundle" ];
+                    WorkingDir = "/data";
                     Env = [
                       "PORT=3001"
                     ];
@@ -69,6 +70,7 @@
                   ];
                   config = {
                     Cmd = [ "${self.outputs.packages.${system}.default}/bin/start-${mod}" ];
+                    WorkingDir = "/data";
                     Env = [
                       "PORT=3001"
                     ];
