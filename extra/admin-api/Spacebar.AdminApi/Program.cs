@@ -36,6 +36,7 @@ builder.Services.AddScoped<SpacebarAspNetAuthenticationService>();
 // builder.Services.AddSingleton<RabbitMQConfiguration>();
 // builder.Services.AddSingleton<RabbitMQService>();
 // builder.Services.AddSingleton<ISpacebarReplication, RabbitMqSpacebarReplication>();
+builder.Services.AddSingleton<UnixSocketConfiguration>();
 builder.Services.AddSingleton<ISpacebarReplication, UnixSocketSpacebarReplication>();
 
 builder.Services.AddRequestTimeouts(x => {

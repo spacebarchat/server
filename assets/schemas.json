@@ -4931,7 +4931,7 @@
             "name": {
                 "type": "string"
             },
-            "avatar": {
+            "icon": {
                 "type": [
                     "null",
                     "string"
@@ -6051,6 +6051,9 @@
                     4
                 ],
                 "type": "number"
+            },
+            "confirm_stranger_request": {
+                "type": "boolean"
             }
         },
         "additionalProperties": false,

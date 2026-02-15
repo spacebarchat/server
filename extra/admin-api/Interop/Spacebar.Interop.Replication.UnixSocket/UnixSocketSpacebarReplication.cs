@@ -34,7 +34,7 @@ public class UnixSocketSpacebarReplication(UnixSocketConfiguration conf) : ISpac
 
 public class UnixSocketConfiguration {
     public UnixSocketConfiguration(IConfiguration config) {
-        config.GetRequiredSection("UnixSocketReplication").Bind(this);
+        config.GetRequiredSection("Spacebar").GetRequiredSection("UnixSocketReplication").Bind(this);
     }
 
     public string SocketDir { get; set; } = null!;

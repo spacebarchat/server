@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Spacebar.Interop.Authentication;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
+using Spacebar.UApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
@@ -32,6 +33,7 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
 builder.Services.AddSingleton<SpacebarAuthenticationConfiguration>();
 builder.Services.AddScoped<SpacebarAuthenticationService>();
 builder.Services.AddScoped<SpacebarAspNetAuthenticationService>();
+builder.Services.AddScoped<TemplateImportService>();
 
 var app = builder.Build();
 
