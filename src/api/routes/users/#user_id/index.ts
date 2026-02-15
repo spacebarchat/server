@@ -32,7 +32,8 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { user_id } = req.params as { [key: string]: string };
+        let { user_id } = req.params as { [key: string]: string };
+        if (user_id === "@me") user_id = req.user_id;
 
         res.json(await User.getPublicUser(user_id));
     },
