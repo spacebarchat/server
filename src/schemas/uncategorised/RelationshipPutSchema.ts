@@ -18,6 +18,7 @@
 
 export interface RelationshipPutSchema {
     type?: RelationshipType;
+    confirm_stranger_request?: boolean;
 }
 
 export enum RelationshipType {
