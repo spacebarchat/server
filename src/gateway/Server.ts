@@ -92,6 +92,8 @@ export class Server {
                                     })),
                                     socketStates: {
                                         open: openConnections.length,
+                                        healthy: openConnections.filter((x) => x.isHealthy !== false).length,
+                                        unhealthy: openConnections.filter((x) => x.isHealthy === false).length,
                                         sessions: openConnections.map((x) => {
                                             // console.log(x);
                                             return useFullWsObj

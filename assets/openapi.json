@@ -8437,7 +8437,8 @@
                     "idle",
                     "invisible",
                     "offline",
-                    "online"
+                    "online",
+                    "unknown"
                 ],
                 "type": "string"
             },

@@ -75,13 +75,15 @@ export async function Send(socket: WebSocket, data: Payload) {
 
     return new Promise((res, rej) => {
         if (socket.readyState !== 1) {
-            // return rej("socket not open");
-            socket.close();
-            return;
+            console.warn(`[Gateway] WebSocket not open, cannot send data (readyState: ${socket.readyState}) for user ${socket.user_id || "unknown"}`);
+            return res(null);
         }
 
         socket.send(buffer, (err) => {
-            if (err) return rej(err);
+            if (err) {
+                console.error(`[Gateway] Send error for user ${socket.user_id || "unknown"}:`, err);
+                return rej(err);
+            }
             return res(null);
         });
     });

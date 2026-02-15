@@ -27,3 +27,48 @@ export function setHeartbeat(socket: WebSocket) {
         return socket.close(CLOSECODES.Session_timed_out);
     }, 1000 * 45);
 }
+
+const HEALTH_CHECK_INTERVAL = 30 * 1000;
+const MAX_INACTIVITY_TIME = 5 * 60 * 1000;
+
+export function startHealthCheck(socket: WebSocket) {
+    if (socket.healthCheckInterval) clearInterval(socket.healthCheckInterval);
+
+    socket.healthCheckInterval = setInterval(() => {
+        performHealthCheck(socket);
+    }, HEALTH_CHECK_INTERVAL);
+}
+
+function performHealthCheck(socket: WebSocket) {
+    const now = Date.now();
+    const timeSinceLastActivity = now - socket.lastActivity;
+
+    // check if socket is still connected and responsive
+    if (socket.readyState !== 1) {
+        console.warn(`[Gateway] Health check failed: socket not ready (readyState: ${socket.readyState}) for user ${socket.user_id || "unknown"}`);
+        socket.isHealthy = false;
+        socket.close(CLOSECODES.Unknown_error, "Connection became unresponsive");
+        return;
+    }
+
+    // Check for inactivity
+    if (timeSinceLastActivity > MAX_INACTIVITY_TIME) {
+        console.warn(`[Gateway] Health check failed: no activity for ${timeSinceLastActivity / 1000}s for user ${socket.user_id || "unknown"}`);
+        socket.isHealthy = false;
+        socket.close(CLOSECODES.Session_timed_out, "Connection inactive");
+        return;
+    }
+
+    if (socket.user_id && Object.keys(socket.events).length === 0) {
+        console.warn(`[Gateway] Health check failed: no event listeners for user ${socket.user_id}`);
+        socket.isHealthy = false;
+        socket.close(CLOSECODES.Unknown_error, "Event listeners lost");
+        return;
+    }
+
+    socket.isHealthy = true;
+}
+
+export function updateActivity(socket: WebSocket) {
+    socket.lastActivity = Date.now();
+}

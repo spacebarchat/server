@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session, User, Intents, Permissions } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In } from "typeorm";
@@ -26,34 +26,87 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();
     // Schema validation can only accept either string or array, so transforming it here to support both
     if (!d.guild_id) throw new Error('"guild_id" is required');
-    d.guild_id = Array.isArray(d.guild_id) ? d.guild_id[0] : d.guild_id;
-
+    const guild_ids = Array.isArray(d.guild_id) ? d.guild_id : [d.guild_id];
     if (d.user_ids && !Array.isArray(d.user_ids)) d.user_ids = [d.user_ids];
 
-    check.call(this, RequestGuildMembersSchema, d);
+    // bot
+    const user = await User.findOneOrFail({ where: { id: this.user_id }, select: ["id", "bot"] });
 
-    const { presences, nonce, query: requestQuery } = d as RequestGuildMembersSchema;
-    let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;
-
-    // some discord libraries send empty string as query when they meant to send undefined, which was leading to errors being thrown in this handler
-    const query = requestQuery != "" ? requestQuery : undefined;
-
-    guild_id = guild_id as string;
-    user_ids = user_ids as string[] | undefined;
-
-    if (d.query && (!limit || Number.isNaN(limit))) {
-        console.log("Query:", d);
-        throw new Error('"query" requires "limit" to be set');
+    if (user.bot && guild_ids.length > 1) {
+        throw new Error("Bots can only request one guild at a time");
     }
 
-    if (d.query && user_ids) {
-        console.log("Query:", d);
-        throw new Error('"query" and "user_ids" are mutually exclusive');
+    if (d.user_ids && Array.isArray(d.user_ids) && d.user_ids.length > 100) {
+        throw new Error('"user_ids" is limited to 100 members');
     }
 
-    // TODO: Configurable limit?
-    if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100)) limit = 100;
+    if (d.nonce && Buffer.byteLength(d.nonce, "utf8") > 32) {
+        throw new Error('"nonce" is limited to 32 bytes');
+    }
 
+    for (const guild_id of guild_ids) {
+        d.guild_id = guild_id;
+
+        check.call(this, RequestGuildMembersSchema, d);
+
+        const { presences, nonce, query: requestQuery } = d as RequestGuildMembersSchema;
+        let { limit, user_ids } = d as RequestGuildMembersSchema;
+
+        // some discord libraries send empty string as query when they meant to send undefined
+        const query = requestQuery != "" ? requestQuery : undefined;
+        user_ids = user_ids as string[] | undefined;
+
+        if (d.query && (!limit || Number.isNaN(limit))) {
+            console.log("Query:", d);
+            throw new Error('"query" requires "limit" to be set');
+        }
+
+        if (d.query && user_ids) {
+            console.log("Query:", d);
+            throw new Error('"query" and "user_ids" are mutually exclusive');
+        }
+
+        // requesting entire member list (query="" and limit=0)
+        const requestingFullList = (!query || query === "") && limit === 0;
+
+        if (requestingFullList) {
+            if (user.bot) {
+                // bots need GUILD_MEMBERS intent
+                if (!this.intents.has(Intents.FLAGS.GUILD_MEMBERS)) {
+                    throw new Error("Missing GUILD_MEMBERS intent to request full member list");
+                }
+            } else {
+                // users need specific permissions
+                const permissions = await getPermission(this.user_id, guild_id);
+                const hasPermission = permissions.has("MANAGE_ROLES") || permissions.has("KICK_MEMBERS") || permissions.has("BAN_MEMBERS");
+                if (!hasPermission) {
+                    throw new Error("Missing required permissions (MANAGE_ROLES, KICK_MEMBERS, or BAN_MEMBERS) to request full member list");
+                }
+            }
+        }
+
+        // bots need GUILD_PRESENCES intent to request presences
+        if (presences && user.bot && !this.intents.has(Intents.FLAGS.GUILD_PRESENCES)) {
+            throw new Error("Missing GUILD_PRESENCES intent to request presences");
+        }
+
+        if ((query || (user_ids && user_ids.length > 0)) && (!limit || limit > 100)) limit = 100;
+
+        await processGuildRequest.call(this, guild_id, query, limit, user_ids, presences, nonce, startTime);
+    }
+}
+
+async function processGuildRequest(
+    this: WebSocket,
+    guild_id: string,
+    query: string | undefined,
+    limit: number | undefined,
+    user_ids: string[] | undefined,
+    presences: boolean | undefined,
+    nonce: string | undefined,
+    startTime: number,
+) {
+    // basic perms check
     const permissions = await getPermission(this.user_id, guild_id);
     permissions.hasThrow("VIEW_CHANNEL");
 
@@ -145,7 +198,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
                 if (session)
                     presenceList.push({
                         user: member.user.toPublicUser(),
-                        status: session.status,
+                        status: session.getPublicStatus(),
                         activities: session.activities,
                         client_status: session.client_status,
                     });

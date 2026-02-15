@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, OrmUtils, UserSettingsProtos } from "@spacebar/util";
+import { emitEvent, OrmUtils, PresenceUpdateEvent, Session, User, UserSettingsProtos } from "@spacebar/util";
 import { PreloadedUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas";
@@ -177,6 +177,47 @@ async function patchUserSettings(userId: string, updatedSettings: PreloadedUserS
             partial: false, // Unsure how this should behave
         },
     });
+
+    // if status changed, update sessions and emit PRESENCE_UPDATE
+    const newStatus = updatedSettings.status?.status?.value;
+    if (newStatus && ["online", "idle", "dnd", "invisible", "offline"].includes(newStatus)) {
+        const sessions = await Session.find({ where: { user_id: userId } });
+        if (sessions.length > 0) {
+            await Promise.all(
+                sessions.map(async (session) => {
+                    session.status = newStatus as "online" | "idle" | "dnd" | "invisible" | "offline";
+                    const platform = session.client_info?.platform?.toLowerCase() || "web";
+                    let clientType: "desktop" | "mobile" | "web" | "embedded" = "web";
+                    if (platform.includes("mobile") || platform.includes("ios") || platform.includes("android")) {
+                        clientType = "mobile";
+                    } else if (platform.includes("desktop") || platform.includes("windows") || platform.includes("linux") || platform.includes("mac")) {
+                        clientType = "desktop";
+                    } else if (platform.includes("embedded")) {
+                        clientType = "embedded";
+                    }
+                    if (!session.client_status || typeof session.client_status !== "object") {
+                        session.client_status = {};
+                    }
+                    session.client_status = { ...session.client_status, [clientType]: newStatus };
+                    return session.save();
+                }),
+            );
+
+            const primarySession = sessions[0];
+            const user = await User.getPublicUser(userId);
+            await emitEvent({
+                event: "PRESENCE_UPDATE",
+                user_id: userId,
+                data: {
+                    user: user,
+                    activities: Array.isArray(primarySession.activities) ? primarySession.activities : [],
+                    client_status: primarySession.client_status && typeof primarySession.client_status === "object" ? primarySession.client_status : {},
+                    status: primarySession.status === "invisible" ? "offline" : primarySession.status,
+                },
+            } as PresenceUpdateEvent);
+        }
+    }
+
     // This should also send a USER_SETTINGS_UPDATE event, but that isn't sent
     // when using the USER_SETTINGS_PROTOS capability, so we ignore it for now.
 

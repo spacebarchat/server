@@ -25,6 +25,7 @@ import WS from "ws";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import { PayloadSchema } from "@spacebar/schemas";
+import { updateActivity } from "../util/Heartbeat";
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 
@@ -36,6 +37,8 @@ try {
 }
 
 export async function Message(this: WebSocket, buffer: WS.Data) {
+    // activity timestamp
+    updateActivity(this);
     // TODO: compression
     let data: Payload;
 

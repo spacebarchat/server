@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export type Status = "idle" | "dnd" | "online" | "offline" | "invisible";
+export type Status = "idle" | "dnd" | "online" | "offline" | "invisible" | "unknown";
 
 export interface ClientStatus {
     desktop?: string; // e.g. Windows/Linux/Mac

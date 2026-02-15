@@ -21,7 +21,7 @@ import WS from "ws";
 import { genSessionId, WebSocket } from "@spacebar/gateway";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
-import { setHeartbeat } from "../util/Heartbeat";
+import { setHeartbeat, startHealthCheck } from "../util/Heartbeat";
 import { IncomingMessage } from "http";
 import { Close } from "./Close";
 import { Message } from "./Message";
@@ -137,8 +137,11 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         socket.member_events = {};
         socket.permissions = {};
         socket.sequence = 0;
+        socket.lastActivity = Date.now();
+        socket.isHealthy = true;
 
         setHeartbeat(socket);
+        startHealthCheck(socket);
 
         await Send(socket, {
             op: OPCODES.Hello,

@@ -23,7 +23,7 @@ import crypto from "node:crypto";
 import fs from "fs/promises";
 import { existsSync } from "fs";
 // TODO: dont use deprecated APIs lol
-import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
+import { FindOptionsRelations, FindOptionsSelect } from "typeorm";
 import { randomUpperString } from "@spacebar/api";
 import { TimeSpan } from "./Timespan";
 import { HTTPError } from "lambert-server";
@@ -60,8 +60,8 @@ function rejectAndLog(rejectFunction: (reason?: unknown) => void, httpCode: numb
 export const checkToken = (
     token: string,
     opts?: {
-        select?: FindOptionsSelectByString<User>;
-        relations?: FindOptionsRelationByString;
+        select?: FindOptionsSelect<User>;
+        relations?: FindOptionsRelations<User>;
         ipAddress?: string;
         fingerprint?: string;
     },
@@ -82,7 +82,7 @@ export const checkToken = (
             const [user, session] = await Promise.all([
                 User.findOne({
                     where: { id: decoded.id },
-                    select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
+                    select: [...((opts?.select as unknown as (keyof User)[]) || []), "id", "bot", "disabled", "deleted", "rights", "data"],
                     relations: opts?.relations,
                 }),
                 decoded.did ? Session.findOne({ where: { session_id: decoded.did, user_id: decoded.id } }) : undefined,
@@ -93,10 +93,9 @@ export const checkToken = (
                 return rejectAndLog(reject, 401, "User not found");
             }
 
-            if (decoded.did && !session) {
-                logAuth("validateUser rejected: Session not found");
-                return rejectAndLog(reject, 401, "Invalid Token");
-            }
+            // if the token references a session (did) that no longer exists, treat it as a sessionless token rather than rejecting.
+            // the session may have been deleted on a previous disconnect and the client will re-identify to create a new one.
+            // it will maybe break some clients idk
 
             // we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
             if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0)) {

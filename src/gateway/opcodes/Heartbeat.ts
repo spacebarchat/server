@@ -17,7 +17,7 @@
 */
 
 import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
-import { setHeartbeat } from "../util/Heartbeat";
+import { setHeartbeat, updateActivity } from "../util/Heartbeat";
 import { Send } from "../util/Send";
 import { Session } from "@spacebar/util";
 import { FindOptionsWhere } from "typeorm";
@@ -36,6 +36,7 @@ export interface QoSPayload {
 export async function onHeartbeat(this: WebSocket, data: Payload) {
     // TODO: validate payload
 
+    updateActivity(this);
     setHeartbeat(this);
 
     if (data.op === OPCODES.SetQoS) {

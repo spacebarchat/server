@@ -51,4 +51,7 @@ export interface WebSocket extends WS {
     large_threshold: number;
     qos?: QoSPayload;
     session?: Session;
+    lastActivity: number;
+    healthCheckInterval?: NodeJS.Timeout;
+    isHealthy: boolean;
 }
