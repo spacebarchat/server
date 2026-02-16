@@ -42,7 +42,7 @@ export class Role extends BaseClass {
     @Column()
     hoist: boolean;
 
-    @Column()
+    @Column({ default: false })
     managed: boolean;
 
     @Column()

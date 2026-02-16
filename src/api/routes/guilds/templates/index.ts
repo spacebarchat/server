@@ -17,10 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Guild, Member, Template } from "@spacebar/util";
+import { Config, DiscordApiErrors, Guild, Member, Tag, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { GuildTemplateCreateSchema } from "@spacebar/schemas";
+import { ChannelType, GuildTemplateCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -64,7 +64,7 @@ router.post("/:template_code", route({ requestBody: "GuildTemplateCreateSchema" 
         // body comes after the template
         ...body,
         owner_id: req.user_id,
-        template_guild_id: template.source_guild_id,
+        source_guild_id: template.source_guild_id,
     });
 
     await Member.addToGuild(req.user_id, guild.id);
@@ -87,7 +87,28 @@ async function getTemplate(code: string) {
             headers: { "Content-Type": "application/json" },
         });
 
-        return (await discordTemplateData.json()) as Template;
+        const templateData = (await discordTemplateData.json()) as Template;
+
+        // Role ID is position in new Discord template schema. Do a little converting.
+        templateData.serialized_source_guild.roles.forEach((role) => {
+            role.position = role.id as unknown as number;
+        });
+
+        templateData.serialized_source_guild.channels.forEach((channel) => {
+            if (channel.type === ChannelType.GUILD_FORUM) {
+                channel.available_tags =
+                    channel.available_tags?.map((tag) =>
+                        Tag.create({
+                            name: tag.name,
+                            emoji_id: tag.emoji_id,
+                            emoji_name: tag.emoji_name,
+                            moderated: tag.moderated,
+                        }),
+                    ) ?? [];
+            }
+        });
+
+        return templateData;
     }
 
     if (code.startsWith("external:")) {

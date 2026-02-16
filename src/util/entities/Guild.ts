@@ -310,7 +310,7 @@ export class Guild extends BaseClass {
         owner_id?: string;
         roles?: Partial<Role>[];
         channels?: Partial<Channel>[];
-        template_guild_id: string | null;
+        source_guild_id: string | null;
     }) {
         const guild_id = Snowflake.generate();
 
@@ -372,7 +372,7 @@ export class Guild extends BaseClass {
                             guild_id,
                             id:
                                 // role.id === body.template_guild_id indicates that this is the @everyone role
-                                role.id === body.template_guild_id ? guild_id : Snowflake.generate(),
+                                role.id === body.source_guild_id || role.id == "0" ? guild_id : Snowflake.generate(),
                         })
                             .save()
                             .then(resolve);
