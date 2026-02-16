@@ -160,7 +160,7 @@ in
             # things we force...
             # CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
-            ASPNETCORE_URLS = "http://127.0.0.1:${toString cfg.gatewayOffload.listenPort}";
+            ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.gatewayOffload.listenPort}";
             STORAGE_LOCATION = cfg.cdnPath;
             APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-gateway-offload.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.gatewayOffload.extraConfiguration);
           }
