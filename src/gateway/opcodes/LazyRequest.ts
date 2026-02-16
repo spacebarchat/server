@@ -33,6 +33,7 @@ function getMostRelevantSession(sessions: Session[]) {
         dnd: 2,
         invisible: 3,
         offline: 4,
+        unknown: 5,
     };
     // sort sessions by relevance
     sessions = sessions.sort((a, b) => {
@@ -127,7 +128,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
                         activities: session?.activities || [],
                         user: { id: member.user.id },
                         client_status: session?.client_status,
-                        status: session?.status,
+                        status: session?.getPublicStatus() || "offline",
                     },
                 },
             };
@@ -201,8 +202,8 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
                     t: "PRESENCE_UPDATE",
                     d: {
                         user: user,
-                        activities: session?.activities || [],
-                        client_status: session?.client_status,
+                        activities: Array.isArray(session?.activities) ? session.activities : [],
+                        client_status: session?.client_status && typeof session.client_status === "object" ? session.client_status : {},
                         status: session?.getPublicStatus() || "offline",
                     } as Presence,
                 });
@@ -212,7 +213,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
         if (!channels) return;
     }
 
-    if (!channels) throw new Error("Must provide channel ranges");
+    if (!channels) return;
 
     const channel_id = Object.keys(channels || {})[0];
     if (!channel_id) return;
@@ -248,12 +249,14 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
     // TODO: unsubscribe member_events that are not in op.members
 
-    ops.forEach((op) => {
-        op.members.forEach(async (member) => {
-            if (!member?.user.id) return;
-            return subscribeToMemberEvents.call(this, member.user.id);
-        });
-    });
+    await Promise.all(
+        ops.flatMap((op) =>
+            op.members.map((member) => {
+                if (!member?.user.id) return;
+                return subscribeToMemberEvents.call(this, member.user.id);
+            }),
+        ),
+    );
 
     const groups = [...new Set(ops.map((x) => x.groups).flat())];
 

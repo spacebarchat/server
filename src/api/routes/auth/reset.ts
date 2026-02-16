@@ -21,6 +21,7 @@ import { checkToken, Email, FieldErrors, generateToken, User } from "@spacebar/u
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { PasswordResetSchema } from "@spacebar/schemas";
+import { FindOptionsSelect } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -44,7 +45,7 @@ router.post(
         let user;
         try {
             const userTokenData = await checkToken(token, {
-                select: ["email"],
+                select: ["email"] as unknown as FindOptionsSelect<User>,
                 fingerprint: req.fingerprint,
                 ipAddress: req.ip,
             });

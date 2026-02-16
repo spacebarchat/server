@@ -23,6 +23,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
     if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
     if (this.readyTimeout) clearTimeout(this.readyTimeout);
+    if (this.healthCheckInterval) clearInterval(this.healthCheckInterval);
     this.deflate?.close();
     this.inflate?.close();
     this.removeAllListeners();
@@ -88,8 +89,8 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
             user_id: this.user_id,
             data: {
                 user: userOrId,
-                activities: session.activities,
-                client_status: session?.client_status,
+                activities: Array.isArray(session.activities) ? session.activities : [],
+                client_status: session?.client_status && typeof session.client_status === "object" ? session.client_status : {},
                 status: session.getPublicStatus?.() ?? session.status,
             },
         } as PresenceUpdateEvent);

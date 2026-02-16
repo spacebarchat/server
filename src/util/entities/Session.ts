@@ -84,7 +84,8 @@ export class Session extends BaseClassWithoutId {
     session_nickname?: string;
 
     getPublicStatus() {
-        return this.status === "invisible" ? "offline" : this.status;
+        if (this.status === "invisible" || this.status === "unknown") return "offline";
+        return this.status || "offline";
     }
 
     getDiscordDeviceInfo() {
@@ -124,6 +125,9 @@ export class Session extends BaseClassWithoutId {
         const hasPrivateActivities = this.status == "offline" || this.status == "invisible";
         const inactiveTreshold = new DateBuilder(new Date(0)).addMinutes(5).buildTimestamp();
 
+        // ensure activities is always an array DB could have NULL for old sessions
+        const safeActivities = Array.isArray(this.activities) ? this.activities : [];
+
         return {
             session_id: this.session_id,
             client_info: {
@@ -132,8 +136,8 @@ export class Session extends BaseClassWithoutId {
                 version: this.client_info?.version ?? 0,
             } as GatewaySessionClientInfo,
             status: this.status,
-            activities: hasPrivateActivities ? [] : this.activities,
-            hidden_activities: hasPrivateActivities ? this.activities : [],
+            activities: hasPrivateActivities ? [] : safeActivities,
+            hidden_activities: hasPrivateActivities ? safeActivities : [],
             active: TimeSpan.fromDates(this.last_seen?.getTime() ?? 0, new Date().getTime()).totalMillis < inactiveTreshold,
         };
     }

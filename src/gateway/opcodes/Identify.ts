@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
+import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket, databaseCircuitBreaker } from "@spacebar/gateway";
 import {
     Application,
     Channel,
     checkToken,
+    ClientStatus,
     Config,
     CurrentTokenFormatVersion,
     ElapsedTime,
@@ -31,10 +32,12 @@ import {
     getDatabase,
     Guild,
     GuildOrUnavailable,
+    User,
     Intents,
     Member,
     MemberPrivateProjection,
     OPCodes,
+    Presence,
     PresenceUpdateEvent,
     ReadState,
     ReadyEventData,
@@ -55,11 +58,49 @@ import {
     UserSettings,
     UserSettingsProtos,
     VoiceState,
+    Status,
 } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { In, Not } from "typeorm";
+
+const getMostRelevantSession = (sessions: Session[]) => {
+    const statusMap = {
+        online: 0,
+        idle: 1,
+        dnd: 2,
+        invisible: 3,
+        offline: 4,
+        unknown: 5,
+    };
+
+    sessions = sessions.sort((a, b) => {
+        return statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2;
+    });
+
+    return sessions[0];
+};
+
+function safeStatus(raw: unknown): Status {
+    const allowed: Status[] = ["online", "idle", "dnd", "offline", "invisible", "unknown"];
+    if (typeof raw === "string" && allowed.includes(raw as Status)) return raw as Status;
+    console.warn(`[Gateway] safeStatus fallback "${raw}" → "unknown"`);
+    return "unknown";
+}
+
+type ClientType = "desktop" | "mobile" | "web" | "embedded";
+
+import { In, Not, FindOptionsSelect } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
-import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
+import {
+    ChannelOverride,
+    ChannelType,
+    DefaultUserGuildSettings,
+    DMChannel,
+    IdentifySchema,
+    PrivateUserProjection,
+    PublicUser,
+    PublicUserProjection,
+    RelationshipType,
+} from "@spacebar/schemas";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -93,7 +134,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         checkToken(identify.token, {
             // relations: {"relationships", "relationships.to", "settings"],
             // select: [...PrivateUserProjection, "relationships", "rights"],
-            select: [...PrivateUserProjection, "rights"],
+            select: [...PrivateUserProjection, "rights"] as unknown as FindOptionsSelect<User>,
         }),
     );
 
@@ -142,12 +183,27 @@ export async function onIdentify(this: WebSocket, data: Payload) {
           };
 
     this.session = session;
+    // sync the WebSocket session_id with the actual DB session_id
+    this.session_id = session.session_id;
     this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
     this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
     this.session.client_info.os = identify.properties?.os || identify.properties?.$os;
-    this.session.client_status = {};
+
+    const platform = this.session.client_info.platform?.toLowerCase() || "web";
+    let clientType: "desktop" | "mobile" | "web" | "embedded" = "web";
+    if (platform.includes("mobile") || platform.includes("ios") || platform.includes("android")) {
+        clientType = "mobile";
+    } else if (platform.includes("desktop") || platform.includes("windows") || platform.includes("linux") || platform.includes("mac")) {
+        clientType = "desktop";
+    } else if (platform.includes("embedded")) {
+        clientType = "embedded";
+    }
+
+    this.session.client_status = {
+        [clientType]: this.session.status,
+    };
     this.session.activities = identify.presence?.activities ?? []; // TODO: validation
 
     if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
@@ -162,6 +218,103 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     // * guild members for this user
     // * recipients ( dm channels )
     // * the bot application, if it exists
+    const dbResult = await databaseCircuitBreaker.execute(async () => {
+        return await Promise.all([
+            // avoid a round trip to check if it exists...
+            timePromise(() => (isNewSession ? Session.insert(session) : Session.update({ session_id: session.session_id }, session)) as Promise<unknown>),
+            timePromise(() =>
+                Session.find({
+                    where: { user_id: this.user_id, is_admin_session: false, session_id: Not(this.session_id) },
+                }),
+            ),
+            timePromise(() =>
+                Relationship.find({
+                    where: { from_id: this.user_id },
+                    relations: { to: true },
+                }),
+            ),
+            timePromise(() => UserSettings.getOrDefault(this.user_id)),
+            timePromise(() =>
+                UserSettingsProtos.findOne({
+                    where: { user_id: this.user_id },
+                }),
+            ),
+            timePromise(() =>
+                Application.findOne({
+                    where: { id: this.user_id },
+                    select: { id: true, flags: true },
+                }),
+            ),
+            timePromise(() =>
+                ReadState.find({
+                    where: { user_id: this.user_id },
+                    select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true },
+                }),
+            ),
+            timePromise(() =>
+                Member.find({
+                    where: { id: this.user_id },
+                    select: {
+                        // We only want some member props
+                        ...Object.fromEntries(["index", ...MemberPrivateProjection].map((x) => [x, true])),
+                        settings: true, // guild settings
+                        roles: { id: true }, // the full role is fetched from the `guild` relation
+                        guild: { id: true },
+
+                        // TODO: we don't really need every property of
+                        // guild channels, emoji, roles, stickers
+                        // but we do want almost everything from guild.
+                        // How do you do that without just enumerating the guild props?
+                        // guild: Object.fromEntries(
+                        // 	getDatabase()!
+                        // 		.getMetadata(Guild)
+                        // 		.columns.map((x) => [x.propertyName, true]),
+                        // ),
+                    },
+                    relations: {
+                        // "guild",
+                        // "guild.channels",
+                        // "guild.emojis",
+                        // "guild.roles",
+                        // "guild.stickers",
+                        // "guild.voice_states",
+                        roles: true,
+
+                        // For these entities, `user` is always just the logged in user we fetched above
+                        // "user",
+                    },
+                }),
+            ),
+            timePromise(() =>
+                Recipient.find({
+                    where: { user_id: this.user_id, closed: false },
+                    relations: { channel: { recipients: { user: true } } },
+                    select: {
+                        channel: {
+                            id: true,
+                            flags: true,
+                            // is_spam: true,	// TODO
+                            last_message_id: true,
+                            last_pin_timestamp: true,
+                            type: true,
+                            icon: true,
+                            name: true,
+                            owner_id: true,
+                            recipients: {
+                                // we don't actually need this ID or any other information about the recipient info,
+                                // but typeorm does not select anything from the users relation of recipients unless we select
+                                // at least one column.
+                                id: true,
+                                // We only want public user data for each dm channel
+                                user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+                            },
+                        },
+                    },
+                }),
+            ),
+        ]);
+    });
+
     const [
         { elapsed: sessionSaveTime },
         { result: sessions, elapsed: sessionQueryTime },
@@ -172,172 +325,86 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         { result: read_states, elapsed: read_statesQueryTime },
         { result: members, elapsed: membersQueryTime },
         { result: recipients, elapsed: recipientsQueryTime },
-    ] = await Promise.all([
-        // avoid a round trip to check if it exists...
-        timePromise(() => (isNewSession ? Session.insert(session) : Session.update({ session_id: session.session_id }, session)) as Promise<unknown>),
-        timePromise(() =>
-            Session.find({
-                where: { user_id: this.user_id, is_admin_session: false, session_id: Not(this.session_id) },
-            }),
-        ),
-        timePromise(() =>
-            Relationship.find({
-                where: { from_id: this.user_id },
-                relations: { to: true },
-            }),
-        ),
-        timePromise(() => UserSettings.getOrDefault(this.user_id)),
-        timePromise(() =>
-            UserSettingsProtos.findOne({
-                where: { user_id: this.user_id },
-            }),
-        ),
-        timePromise(() =>
-            Application.findOne({
-                where: { id: this.user_id },
-                select: { id: true, flags: true },
-            }),
-        ),
-        timePromise(() =>
-            ReadState.find({
-                where: { user_id: this.user_id },
-                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true },
-            }),
-        ),
-        timePromise(() =>
-            Member.find({
-                where: { id: this.user_id },
-                select: {
-                    // We only want some member props
-                    ...Object.fromEntries(["index", ...MemberPrivateProjection].map((x) => [x, true])),
-                    settings: true, // guild settings
-                    roles: { id: true }, // the full role is fetched from the `guild` relation
-                    guild: { id: true },
-
-                    // TODO: we don't really need every property of
-                    // guild channels, emoji, roles, stickers
-                    // but we do want almost everything from guild.
-                    // How do you do that without just enumerating the guild props?
-                    // guild: Object.fromEntries(
-                    // 	getDatabase()!
-                    // 		.getMetadata(Guild)
-                    // 		.columns.map((x) => [x.propertyName, true]),
-                    // ),
-                },
-                relations: {
-                    // "guild",
-                    // "guild.channels",
-                    // "guild.emojis",
-                    // "guild.roles",
-                    // "guild.stickers",
-                    // "guild.voice_states",
-                    roles: true,
-
-                    // For these entities, `user` is always just the logged in user we fetched above
-                    // "user",
-                },
-            }),
-        ),
-        timePromise(() =>
-            Recipient.find({
-                where: { user_id: this.user_id, closed: false },
-                relations: { channel: { recipients: { user: true } } },
-                select: {
-                    channel: {
-                        id: true,
-                        flags: true,
-                        // is_spam: true,	// TODO
-                        last_message_id: true,
-                        last_pin_timestamp: true,
-                        type: true,
-                        icon: true,
-                        name: true,
-                        owner_id: true,
-                        recipients: {
-                            // we don't actually need this ID or any other information about the recipient info,
-                            // but typeorm does not select anything from the users relation of recipients unless we select
-                            // at least one column.
-                            id: true,
-                            // We only want public user data for each dm channel
-                            user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
-                        },
-                    },
-                },
-            }),
-        ),
-    ]);
+    ] = dbResult;
 
     user.relationships = relationships;
     user.settings = settings;
 
     const userMetaQueryTime = taskSw.getElapsedAndReset();
 
-    const { result: memberGuilds, elapsed: queryGuildsTime } = await timePromise(() =>
-        Promise.all(
-            members.map((m) =>
-                Guild.findOneOrFail({
-                    where: { id: m.guild_id },
-                    select: Object.fromEntries(
-                        getDatabase()!
-                            .getMetadata(Guild)
-                            .columns.map((x) => [x.propertyName, true]),
-                    ),
-                }),
+    const { result, elapsed: queryGuildsTime } = await timePromise(() =>
+        databaseCircuitBreaker.execute(() =>
+            Promise.all(
+                members.map((m: Member) =>
+                    Guild.findOneOrFail({
+                        where: { id: m.guild_id },
+                        select: Object.fromEntries(
+                            getDatabase()!
+                                .getMetadata(Guild)
+                                .columns.map((x) => [x.propertyName, true]),
+                        ),
+                    }),
+                ),
             ),
         ),
     );
 
-    const guildIds = memberGuilds.map((g) => g.id);
+    const memberGuilds = result as Guild[];
+
+    const guildIds = memberGuilds.map((g: Guild) => g.id);
 
     // select relations
+    const guildRelationsResult = await databaseCircuitBreaker.execute(() =>
+        Promise.all([
+            timePromise(() =>
+                Channel.find({
+                    where: {
+                        guild_id: In(guildIds),
+                        type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
+                    },
+                    order: { guild_id: "ASC" },
+                    relations: ["available_tags"],
+                }),
+            ),
+            timePromise(() =>
+                Emoji.find({
+                    where: { guild_id: In(guildIds) },
+                    order: { guild_id: "ASC" },
+                }),
+            ),
+            timePromise(() =>
+                Role.find({
+                    where: { guild_id: In(guildIds) },
+                    order: { guild_id: "ASC" },
+                }),
+            ),
+            timePromise(() =>
+                Sticker.find({
+                    where: { guild_id: In(guildIds) },
+                    order: { guild_id: "ASC" },
+                }),
+            ),
+            timePromise(() =>
+                VoiceState.find({
+                    where: { guild_id: In(guildIds) },
+                    order: { guild_id: "ASC" },
+                }),
+            ),
+        ]),
+    );
+
     const [
         { result: memberGuildChannels, elapsed: queryGuildChannelsTime },
         { result: memberGuildEmojis, elapsed: queryGuildEmojisTime },
         { result: memberGuildRoles, elapsed: queryGuildRolesTime },
         { result: memberGuildStickers, elapsed: queryGuildStickersTime },
         { result: memberGuildVoiceStates, elapsed: queryGuildVoiceStatesTime },
-    ] = await Promise.all([
-        timePromise(() =>
-            Channel.find({
-                where: {
-                    guild_id: In(guildIds),
-                    type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
-                },
-                order: { guild_id: "ASC" },
-                relations: ["available_tags"],
-            }),
-        ),
-        timePromise(() =>
-            Emoji.find({
-                where: { guild_id: In(guildIds) },
-                order: { guild_id: "ASC" },
-            }),
-        ),
-        timePromise(() =>
-            Role.find({
-                where: { guild_id: In(guildIds) },
-                order: { guild_id: "ASC" },
-            }),
-        ),
-        timePromise(() =>
-            Sticker.find({
-                where: { guild_id: In(guildIds) },
-                order: { guild_id: "ASC" },
-            }),
-        ),
-        timePromise(() =>
-            VoiceState.find({
-                where: { guild_id: In(guildIds) },
-                order: { guild_id: "ASC" },
-            }),
-        ),
-    ]);
-
+    ] = guildRelationsResult;
     const mergeMemberGuildsTrace: TraceNode = {
         micros: 0,
         calls: [],
     };
-    members.forEach((m) => {
+    members.forEach((m: Member) => {
         const sw = Stopwatch.startNew();
         const totalSw = Stopwatch.startNew();
         const trace: TraceNode = {
@@ -345,29 +412,29 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             calls: [],
         };
 
-        const g = memberGuilds.find((mg) => mg.id === m.guild_id);
+        const g = memberGuilds.find((mg: Guild) => mg.id === m.guild_id);
         if (g) {
             m.guild = g;
             trace.calls.push("findGuild", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //channels
-            g.channels = memberGuildChannels.filter((c) => c.guild_id === m.guild_id);
+            g.channels = memberGuildChannels.filter((c: Channel) => c.guild_id === m.guild_id);
             trace.calls.push("filterChannels", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //emojis
-            g.emojis = memberGuildEmojis.filter((e) => e.guild_id === m.guild_id);
+            g.emojis = memberGuildEmojis.filter((e: Emoji) => e.guild_id === m.guild_id);
             trace.calls.push("filterEmojis", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //roles
-            g.roles = memberGuildRoles.filter((r) => r.guild_id === m.guild_id);
+            g.roles = memberGuildRoles.filter((r: Role) => r.guild_id === m.guild_id);
             trace.calls.push("filterRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //stickers
-            g.stickers = memberGuildStickers.filter((s) => s.guild_id === m.guild_id);
+            g.stickers = memberGuildStickers.filter((s: Sticker) => s.guild_id === m.guild_id);
             trace.calls.push("filterStickers", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //voice states
-            g.voice_states = memberGuildVoiceStates.filter((v) => v.guild_id === m.guild_id);
+            g.voice_states = memberGuildVoiceStates.filter((v: VoiceState) => v.guild_id === m.guild_id);
             trace.calls.push("filterVoiceStates", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //total
@@ -395,12 +462,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     }
 
     // Generate merged_members
-    const merged_members = members.map((x) => {
+    const merged_members = members.map((x: Member) => {
         return [
             {
                 ...x,
-                // filter out @everyone role
-                roles: x.roles.filter((r) => r.id !== x.guild.id).map((x) => x.id),
+                // filter out @everyone role and deduplicate
+                roles: [...new Set(x.roles.filter((r: Role) => r.id !== x.guild.id).map((r: Role) => r.id))],
 
                 // add back user, which we don't fetch from db
                 // TODO: For guild profiles, this may need to be changed.
@@ -416,12 +483,66 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ];
     });
     const mergedMembersTime = taskSw.getElapsedAndReset();
-    const member_idx = members.map(({ index }) => index);
+
+    const memberIds = members.map((m) => m.id);
+    const friendIds = user.relationships.filter((r) => r.type === RelationshipType.friends).map((r) => r.to.id);
+
+    const guildMemberUsers = await Member.find({
+        where: { guild_id: In(guildIds) },
+        select: { id: true, guild_id: true },
+        take: 1000,
+    });
+
+    const guildMemberUserIds = [...new Set(guildMemberUsers.map((m) => m.id).filter((id) => id !== this.user_id))];
+
+    const allUserIds = [...new Set([...memberIds, ...friendIds, ...guildMemberUserIds, user.id])];
+    const allPresenceSessions = await Session.find({ where: { user_id: In(allUserIds) } });
+    const sessionsByUserId = new Map<string, Session[]>();
+    for (const session of allPresenceSessions) {
+        if (!sessionsByUserId.has(session.user_id)) sessionsByUserId.set(session.user_id, []);
+        sessionsByUserId.get(session.user_id)!.push(session);
+    }
+
+    const friendPresences: Presence[] = user.relationships
+        .filter((r) => r.type === RelationshipType.friends && r.to)
+        .map((r) => {
+            const userSessions = sessionsByUserId.get(r.to.id) || [];
+            if (userSessions.length === 0) return null;
+
+            const mostRelevantSession = getMostRelevantSession(userSessions);
+            const rawStatus = mostRelevantSession.getPublicStatus();
+            const status = safeStatus(rawStatus) || "unknown";
+            if (status === "offline") return null;
+
+            const publicUser = r.to.toPublicUser();
+            if (!publicUser?.id) return null;
+
+            const client_status: Partial<Record<ClientType, Status>> = {};
+            const sessionCs = mostRelevantSession.client_status;
+            if (sessionCs && typeof sessionCs === "object") {
+                const cs = sessionCs as ClientStatus;
+                ["desktop", "mobile", "web", "embedded"].forEach((plat) => {
+                    const platStatus = cs[plat as keyof ClientStatus];
+                    if (typeof platStatus === "string") client_status[plat as ClientType] = safeStatus(platStatus);
+                });
+            }
+            if (Object.keys(client_status).length === 0) client_status.web = status;
+
+            return {
+                user: publicUser,
+                status,
+                activities: Array.isArray(mostRelevantSession.activities) ? mostRelevantSession.activities : [],
+                client_status,
+            };
+        })
+        .filter((p) => p !== null) as Presence[];
+
+    const member_idx = members.map(({ index }: Member) => index);
 
     const threadMembers = await ThreadMember.find({
         where: { member_idx: In(member_idx) },
     });
-    const threadMemberMap = new Map(threadMembers.map((member) => [member.id, member] as const));
+    const threadMemberMap = new Map(threadMembers.map((member: ThreadMember) => [member.id, member] as const));
     const threadMemberTime = taskSw.getElapsedAndReset();
 
     // Populated with guilds 'unavailable' currently
@@ -433,13 +554,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         await Channel.find({
             where: {
                 type: In([ChannelType.GUILD_NEWS_THREAD, ChannelType.GUILD_PUBLIC_THREAD]),
-                guild_id: In(members.map(({ guild }) => guild.id)),
+                guild_id: In(members.map(({ guild }: Member) => guild.id)),
             },
         })
     ).filter(({ thread_metadata }) => thread_metadata?.archived === false);
 
     // Generate guilds list ( make them unavailable if user is bot )
-    const guilds: GuildOrUnavailable[] = members.map((member) => {
+    const guilds: GuildOrUnavailable[] = members.map((member: Member) => {
         member.guild.channels = member.guild.channels
             /*
    			//TODO maybe implement this correctly, by causing create and delete events for users who can newly view and not view the channels, along with doing these checks correctly, as they don't currently take into account that the owner of the guild is always able to view channels, with potentially other issues
@@ -447,7 +568,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 				const perms = Permissions.finalPermission({
 					user: {
 						id: member.id,
-						roles: member.roles.map((x) => x.id),
+						roles: member.roles.map((x: Role) => x.id),
 					},
 					guild: member.guild,
 					channel,
@@ -462,7 +583,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             })
             .sort((a, b) => a.position - b.position);
 
-        const threads: Channel[] = allThreads.filter((_) => _.guild_id === member.guild_id);
+        const threads: Channel[] = allThreads.filter((_: Channel) => _.guild_id === member.guild_id);
 
         const guildjson = {
             ...member.guild.toJSON(),
@@ -489,11 +610,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const generateGuildsListTime = taskSw.getElapsedAndReset();
 
     // Generate user_guild_settings
-    const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] = members.map((x) => ({
+    const user_guild_settings_entries: ReadyUserGuildSettingsEntries[] = members.map((x: Member) => ({
         ...DefaultUserGuildSettings,
         ...x.settings,
         guild_id: x.guild_id,
-        channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map((y) => ({
+        channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map((y: [string, ChannelOverride]) => ({
             ...y[1],
             channel_id: y[0],
         })),
@@ -506,18 +627,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     // Generate dm channels from recipients list. Append recipients to `users` list
     const channels = recipients
-        .filter(({ channel }) => channel.isDm())
-        .map((r) => {
+        .filter(({ channel }: Recipient) => channel.isDm())
+        .map((r: Recipient) => {
             // TODO: fix the types of Recipient
             // Their channels are only ever private (I think) and thus are always DM channels
             const channel = r.channel as DMChannel;
 
             // Remove ourself from the list of other users in dm channel
-            channel.recipients = channel.recipients.filter((recipient) => recipient.user.id !== this.user_id);
+            channel.recipients = channel.recipients.filter((recipient: Recipient) => recipient.user.id !== this.user_id);
 
-            let channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
+            let channelUsers = channel.recipients?.map((recipient: Recipient) => recipient.user.toPublicUser());
 
-            if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user) => users.add(user));
+            if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user: PublicUser) => users.add(user));
             // HACK: insert self into recipients for DMs with users that no longer exist
             else if (channel.type === ChannelType.DM) {
                 const selfUser = user.toPublicUser();
@@ -541,11 +662,98 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const generateDmChannelsTime = taskSw.getElapsedAndReset();
 
     // From user relationships ( friends ), also append to `users` list
-    user.relationships.forEach((x) => users.add(x.to.toPublicUser()));
+    user.relationships.forEach((x: Relationship) => users.add(x.to.toPublicUser()));
     const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
+    // compute READY_SUPPLEMENTAL guilds BEFORE building READY
+    const availableGuilds = guilds.filter((guild) => !guild.unavailable) as Guild[];
+    const readySupplementalGuilds = availableGuilds.map((guild: Guild) => {
+        return {
+            voice_states: Array.isArray(guild.voice_states) ? guild.voice_states.map((state: VoiceState) => state.toPublicVoiceState()) : [],
+            id: guild.id,
+            activity_instances: [],
+        };
+    });
+
+    const voiceStateUserIds = new Set<string>();
+    for (const guild of readySupplementalGuilds) {
+        for (const vs of guild.voice_states) {
+            if (vs.user_id && vs.user_id !== this.user_id) {
+                voiceStateUserIds.add(vs.user_id);
+            }
+        }
+    }
+    if (voiceStateUserIds.size > 0) {
+        const voiceUsers = await Promise.all([...voiceStateUserIds].map((uid) => User.getPublicUser(uid).catch(() => null)));
+        for (const vu of voiceUsers) {
+            if (vu) users.add(vu);
+        }
+    }
+
+    const guildMembersWithPresence: Array<{ userId: string; session: Session; guildId: string }> = [];
+    for (const guildMember of guildMemberUsers) {
+        if (guildMember.id === this.user_id) continue;
+
+        const userSessions = sessionsByUserId.get(guildMember.id) || [];
+        if (userSessions.length === 0) continue;
+
+        const mostRelevantSession = getMostRelevantSession(userSessions);
+        const status = safeStatus(mostRelevantSession.getPublicStatus());
+
+        if (status === "offline") continue;
+
+        guildMembersWithPresence.push({ userId: guildMember.id, session: mostRelevantSession, guildId: guildMember.guild_id });
+    }
+
+    const guildMemberPublicUsers = await Promise.all(guildMembersWithPresence.map(({ userId }) => User.getPublicUser(userId).catch(() => null)));
+
+    const merged_presences_guilds: Presence[][] = [];
+    for (const guild of availableGuilds) {
+        const guildPresences: Presence[] = [];
+
+        for (let i = 0; i < guildMembersWithPresence.length; i++) {
+            const memberUser = guildMemberPublicUsers[i];
+            if (!memberUser?.id) continue;
+
+            const { session, guildId } = guildMembersWithPresence[i];
+            if (guildId !== guild.id) continue;
+
+            const status = safeStatus(session.getPublicStatus());
+            if (status === "offline") continue;
+
+            const client_status: Partial<Record<ClientType, Status>> = {};
+            const sessionCs = session.client_status;
+            if (sessionCs && typeof sessionCs === "object") {
+                const cs = sessionCs as ClientStatus;
+                ["desktop", "mobile", "web", "embedded"].forEach((plat) => {
+                    const platStatus = cs[plat as keyof ClientStatus];
+                    if (typeof platStatus === "string") client_status[plat as ClientType] = safeStatus(platStatus);
+                });
+            }
+            if (Object.keys(client_status).length === 0) client_status.web = status;
+
+            const presence = {
+                user: memberUser,
+                status: status,
+                activities: Array.isArray(session.activities) ? session.activities : [],
+                client_status: client_status,
+            };
+
+            if (!presence.user?.id || typeof presence.status !== "string") {
+                console.error("[WARN] Skipping invalid presence:", presence);
+                continue;
+            }
+
+            guildPresences.push(presence);
+        }
+
+        if (guildPresences.length > 0) {
+            merged_presences_guilds.push(guildPresences);
+        }
+    }
+
     // Send SESSIONS_REPLACE and PRESENCE_UPDATE
-    const allSessions = sessions.concat(this.session!).map((x) => x.toPrivateGatewayDeviceInfo());
+    const allSessions = sessions.concat(this.session!).map((x: Session) => x.toPrivateGatewayDeviceInfo());
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
     const [{ elapsed: emitSessionsReplaceTime }, { elapsed: emitPresenceUpdateTime }] = await Promise.all([
@@ -562,8 +770,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 user_id: this.user_id,
                 data: {
                     user: user.toPublicUser(),
-                    activities: this.session!.activities,
-                    client_status: this.session!.client_status,
+                    activities: Array.isArray(this.session!.activities) ? this.session!.activities : [],
+                    client_status: this.session!.client_status && typeof this.session!.client_status === "object" ? this.session!.client_status : {},
                     status: this.session!.getPublicStatus(),
                 },
             } as PresenceUpdateEvent),
@@ -579,7 +787,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         calls: [],
     };
     const { elapsed: remapReadStateIdsTime } = timeFunction(() =>
-        read_states.forEach((x) => {
+        read_states.forEach((x: ReadState) => {
             x.id = x.channel_id;
         }),
     );
@@ -630,7 +838,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 version: 0, // TODO
             },
             private_channels: channels,
-            presences: [], // TODO: Send actual data
+            presences: [
+                {
+                    user: user.toPublicUser(),
+                    status: "unknown",
+                    activities: [],
+                    client_status: {},
+                },
+            ],
             session_id: this.session_id,
             country_code: user.settings!.locale, // TODO: do ip analysis instead
             users: Array.from(users),
@@ -764,7 +979,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     await Promise.all(
         pending_guilds.map((x) => {
             //Even with the GUILD_MEMBERS intent, the bot always receives just itself as the guild members
-            const botMemberObject = members.find((member) => member.guild_id === x.id);
+            const botMemberObject = members.find((member: Member) => member.guild_id === x.id);
 
             return Send(this, {
                 op: OPCODES.Dispatch,
@@ -785,30 +1000,20 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         }),
     );
 
-    const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => {
-        return {
-            voice_states: guild.voice_states.map((state) => state.toPublicVoiceState()),
-            id: guild.id,
-            embedded_activities: [],
-        };
-    });
-
-    // TODO: ready supplemental
+    // TODO: populate merged_presences and merged_members once format is validated
     await Send(this, {
         op: OPCodes.DISPATCH,
         t: EVENTEnum.ReadySupplemental,
         s: this.sequence++,
         d: {
             merged_presences: {
-                guilds: [],
-                friends: [],
+                guilds: merged_presences_guilds,
+                friends: friendPresences,
             },
-            // these merged members seem to be all users currently in vc in your guilds
-            merged_members: [],
+            merged_members: availableGuilds.map(() => []),
             lazy_private_channels: [],
-            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
-            // embedded_activities are users currently in an activity?
-            disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
+            guilds: readySupplementalGuilds,
+            disclose: [],
         },
     });
 
