@@ -124,7 +124,7 @@ router.post(
             }
         }
 
-        if (!regTokenUsed && register.checkIp) {
+        if (!regTokenUsed && register.enableAbuseIpDb) {
             const blacklist = await AbuseIpDbClient.getBlacklist();
             if (blacklist) {
                 const entry = blacklist.data.find((e) => e.ipAddress === ip);
@@ -140,7 +140,9 @@ router.post(
                 console.log(`[Register] ${ip} blocked from registration: AbuseIPDB score ${checkIp.data.abuseConfidenceScore} >= ${register.blockAbuseIpDbAboveScore} (CHECK)`);
                 throw new HTTPError("Your IP is blocked from registration");
             }
+        }
 
+        if (!regTokenUsed && register.enableIpData) {
             const ipData = await IpDataClient.getIpInfo(ip);
             if (ipData) {
                 if (!ipData.threat) {
