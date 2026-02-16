@@ -133,7 +133,7 @@ in
 
       services.spacebarchat-server.settings.admin = {
         endpointPublic = "http${if cfg.adminApiEndpoint.useSsl then "s" else ""}://${cfg.adminApiEndpoint.host}:${toString cfg.adminApiEndpoint.publicPort}";
-        endpointPrivate = "http://0.0.0.0:${builtins.toString cfg.adminApiEndpoint.localPort}";
+        endpointPrivate = "http://127.0.0.1:${builtins.toString cfg.adminApiEndpoint.localPort}";
       };
 
       systemd.services.spacebar-admin-api = makeServerTsService {
@@ -149,7 +149,7 @@ in
             # things we force...
             # CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
-            ASPNETCORE_URLS = "http://127.0.0.1:${toString cfg.adminApiEndpoint.localPort}";
+            ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.adminApiEndpoint.localPort}";
             STORAGE_LOCATION = cfg.cdnPath;
             APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-adminapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.adminApi.extraConfiguration);
           }
