@@ -15,9 +15,11 @@ in
   services.nginx.virtualHosts."api.sb.localhost" = nginxTestSigning;
   services.nginx.virtualHosts."gw.sb.localhost" = nginxTestSigning;
   services.nginx.virtualHosts."cdn.sb.localhost" = nginxTestSigning;
+  services.nginx.virtualHosts."admin.sb.localhost" = nginxTestSigning;
 
   services.spacebarchat-server =
     let
+      csConnectionString = "Host=127.0.0.1; Username=postgres; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
       cfg = {
         enable = true;
         apiEndpoint = {
@@ -38,12 +40,22 @@ in
           localPort = 3003;
           publicPort = 8080;
         };
+        adminApiEndpoint = {
+          useSsl = false;
+          host = "admin.sb.localhost";
+          localPort = 3005;
+          publicPort = 8080;
+        };
         nginx.enable = true;
         serverName = "sb.localhost";
         gatewayOffload = {
           enable = true;
           enableGuildSync = true;
-          extraConfiguration.ConnectionStrings.Spacebar = "Host=127.0.0.1; Username=Spacebar; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
+          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
+        };
+        adminApi = {
+          enable = true;
+          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
         extraEnvironment = {
           DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";

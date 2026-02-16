@@ -38,7 +38,13 @@ in
             proxyPass = "http://127.0.0.1:${toString cfg.cdnEndpoint.localPort}/";
           };
         };
-
+        "${cfg.adminApiEndpoint.host}" = lib.mkIf cfg.adminApi.enable {
+          enableACME = cfg.adminApiEndpoint.useSsl;
+          forceSSL = cfg.adminApiEndpoint.useSsl;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString cfg.adminApiEndpoint.localPort}/";
+          };
+        };
       };
     };
   };

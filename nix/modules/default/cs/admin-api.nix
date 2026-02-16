@@ -14,30 +14,22 @@ let
 in
 {
   imports = [ ];
-  options.services.spacebarchat-server.gatewayOffload = lib.mkOption {
+  options.services.spacebarchat-server.adminApi = lib.mkOption {
     default = { };
-    description = "Configuration for C# gateway offload daemon.";
+    description = "Configuration for admin api.";
     type = lib.types.submodule {
       options = {
-        enable = lib.mkEnableOption "Enable gateway offload daemon (C#).";
-        listenPort = lib.mkOption {
-          type = lib.types.port;
-          default = 3011;
-          description = "Port for the gateway offload daemon to listen on.";
-        };
+        enable = lib.mkEnableOption "Enable admin api.";
         extraConfiguration = lib.mkOption {
           type = jsonFormat.type;
           default = import ./default-appsettings-json.nix;
           description = "Extra appsettings.json configuration for the gateway offload daemon.";
         };
-        enableIdentify = lib.mkEnableOption "Enable offloading gateway opcode 2 (IDENTIFY).";
-        enableGuildSync = lib.mkEnableOption "Enable offloading gateway opcode 12 (GUILD_SYNC).";
-        enableLazyRequest = lib.mkEnableOption "Enable offloading gateway opcode 12 (LAZY_REQUEST).";
       };
     };
   };
 
-  config = lib.mkIf cfg.gatewayOffload.enable (
+  config = lib.mkIf cfg.adminApi.enable (
     let
       makeServerTsService = (
         conf:
@@ -129,26 +121,23 @@ in
       assertions = [
         {
           assertion =
-            cfg.gatewayOffload.extraConfiguration ? ConnectionStrings
-            && cfg.gatewayOffload.extraConfiguration.ConnectionStrings ? Spacebar
-            && cfg.gatewayOffload.extraConfiguration.ConnectionStrings.Spacebar != null;
+            cfg.adminApi.extraConfiguration ? ConnectionStrings
+            && cfg.adminApi.extraConfiguration.ConnectionStrings ? Spacebar
+            && cfg.adminApi.extraConfiguration.ConnectionStrings.Spacebar != null;
           message = ''
-            Gateway Offload: Setting a database connection string in extraConfiguration (`extraConfiguration.ConnectionStrings.Spacebar`) is required when using C# services.
+            Admin API: Setting a database connection string in extraConfiguration (`extraConfiguration.ConnectionStrings.Spacebar`) is required when using C# services.
             Example: Host=127.0.0.1; Username=Spacebar; Password=SuperSecurePassword12; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;
           '';
         }
       ];
 
-      services.spacebarchat-server.settings.offload = {
-        gateway = {
-          op2BaseUrl = lib.mkIf cfg.gatewayOffload.enableIdentify "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
-          op12BaseUrl = lib.mkIf cfg.gatewayOffload.enableGuildSync "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
-          op14BaseUrl = lib.mkIf cfg.gatewayOffload.enableLazyRequest "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
-        };
+      services.spacebarchat-server.settings.admin = {
+        endpointPublic = "http${if cfg.adminApiEndpoint.useSsl then "s" else ""}://${cfg.adminApiEndpoint.host}:${toString cfg.adminApiEndpoint.publicPort}";
+        endpointPrivate = "http://127.0.0.1:${builtins.toString cfg.adminApiEndpoint.localPort}";
       };
 
-      systemd.services.spacebar-cs-gateway-offload = makeServerTsService {
-        description = "Spacebar Server - C# Gateway offload";
+      systemd.services.spacebar-admin-api = makeServerTsService {
+        description = "Spacebar Server - Admin API";
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -160,13 +149,13 @@ in
             # things we force...
             # CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
-            ASPNETCORE_URLS = "http://127.0.0.1:${toString cfg.gatewayOffload.listenPort}";
+            ASPNETCORE_URLS = "http://127.0.0.1:${toString cfg.adminApiEndpoint.localPort}";
             STORAGE_LOCATION = cfg.cdnPath;
-            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-gateway-offload.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.gatewayOffload.extraConfiguration);
+            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-adminapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.adminApi.extraConfiguration);
           }
         );
         serviceConfig = {
-          ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-GatewayOffload}/bin/Spacebar.GatewayOffload";
+          ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-AdminApi}/bin/Spacebar.AdminApi";
         };
       };
     }

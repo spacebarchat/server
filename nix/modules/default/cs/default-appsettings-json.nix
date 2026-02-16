@@ -12,5 +12,8 @@
       PrivateKeyPath = "./jwt.key";
       PublicKeyPath = "./jwt.key.pub";
     };
+    UnixSocketReplication = {
+      SocketDir = "/run/spacebar";
+    };
   };
 }
