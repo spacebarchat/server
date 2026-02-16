@@ -171,9 +171,12 @@ export class Server {
         await Config.init();
         await initEvent();
         // temporary fix
+        console.log("[Gateway] Clearing voice states");
         await cleanupOnStartup();
 
+        console.log("[Gateway] dbg checking if server is listening");
         if (!this.server.listening) {
+            console.log("gonna start listening on", this.port);
             this.server.listen(this.port);
             console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
         }
