@@ -486,7 +486,7 @@ export async function postHandleMessage(message: Message) {
     const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
 
     const linkMatches = content?.match(LINK_REGEX) || [];
-
+    message.clean_data();
     const data = { ...message };
 
     const currentNormalizedUrls = new Set<string>();

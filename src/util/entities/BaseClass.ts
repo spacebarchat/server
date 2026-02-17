@@ -20,10 +20,38 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, Column, ColumnOptions, FindOpti
 import { Snowflake } from "../util/Snowflake";
 import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
+import { annotationsKey } from "../util/Decorators";
 
 export class BaseClassWithoutId extends BaseEntity {
     private get construct() {
         return this.constructor;
+    }
+
+    // stores custom annotations we may stick on the properties
+    [annotationsKey]: { [p: string]: string[] };
+
+    // retrieves the custom annotations as its not super straight forward
+    get_annotations() {
+        return Object.getPrototypeOf(this)[annotationsKey];
+    }
+
+    // Loops through all the keys and compares it to annotations. If the RemoveEmpty is there it sets the value to undefined if null
+    clean_data() {
+        const annotations = this.get_annotations();
+        for (const key in this) {
+            if (
+                key in this && // This object has this property, should never fail but better to be safe
+                key in annotations && // If this property has an annotation
+                annotations[key].indexOf("JsonRemoveEmpty") > -1 && // if one of the annotations is JsonRemoveEmpty
+                (this[key] == null || // If this property is null
+                    (typeof this[key] == "object" && Object.keys(this[key]).length == 0))
+            ) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                this[key] = undefined; // set to undefined to remove
+            }
+        }
+        return this;
     }
 
     private get metadata() {
