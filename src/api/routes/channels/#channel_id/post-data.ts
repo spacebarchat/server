@@ -61,7 +61,21 @@ router.post(
                 where: {
                     id: In(threads.map(({ id }) => id)),
                 },
-                relations: ["author"],
+                relations: {
+                    author: true,
+                    webhook: true,
+                    application: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                    sticker_items: true,
+                    attachments: true,
+                    thread: {
+                        recipients: {
+                            user: true,
+                        },
+                    },
+                },
             }),
             Member.find({
                 where: {
@@ -69,6 +83,7 @@ router.post(
                 },
             }),
         ]);
+        await Message.fillReplies(messages);
         const objRet: { threads: Record<string, { first_message: null | Message; owner: null | Member }> } = { threads: {} };
         for (const thread of threads) {
             const owner = members.find(({ id }) => id === thread.owner_id)?.toJSON() || null;
