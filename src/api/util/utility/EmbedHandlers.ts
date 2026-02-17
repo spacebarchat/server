@@ -105,10 +105,11 @@ export const getMetaDescriptions = (text: string) => {
     };
 };
 
-const doFetch = async (url: URL) => {
+const doFetch = async (url: URL, opts?: RequestInit) => {
     try {
         const res = await fetch(url, {
             ...DEFAULT_FETCH_OPTIONS,
+            ...opts,
         });
         if (res.headers.get("content-length")) {
             const contentLength = parseInt(res.headers.get("content-length")!);
@@ -449,7 +450,7 @@ export const EmbedHandlers: {
     "youtu.be": (url) => EmbedHandlers["www.youtube.com"](url),
     "youtube.com": (url) => EmbedHandlers["www.youtube.com"](url),
     "www.youtube.com": async (url: URL): Promise<Embed | null> => {
-        const response = await doFetch(url);
+        const response = await doFetch(url, { headers: { cookie: "CONSENT=PENDING+999" } });
         if (!response) return null;
         const metas = getMetaDescriptions(await response.text());
 
