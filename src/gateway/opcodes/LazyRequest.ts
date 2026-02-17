@@ -275,5 +275,5 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
         },
     });
 
-    console.log(`[Gateway] LAZY_REQUEST ${guild_id} ${channel_id} took ${Date.now() - startTime}ms`);
+    console.log(`[Gateway/${this.user_id}] LAZY_REQUEST ${guild_id} ${channel_id} took ${Date.now() - startTime}ms`);
 }

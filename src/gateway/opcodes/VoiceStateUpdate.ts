@@ -141,5 +141,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
         } as VoiceServerUpdateEvent);
     }
 
-    console.log(`[Gateway] VOICE_STATE_UPDATE for user ${this.user_id} in channel ${voiceState.channel_id} in guild ${voiceState.guild_id} in ${Date.now() - startTime}ms`);
+    console.log(
+        `[Gateway/${this.user_id}] VOICE_STATE_UPDATE for user ${this.user_id} in channel ${voiceState.channel_id} in guild ${voiceState.guild_id} in ${Date.now() - startTime}ms`,
+    );
 }

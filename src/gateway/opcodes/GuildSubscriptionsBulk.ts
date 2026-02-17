@@ -19,5 +19,7 @@ export async function onGuildSubscriptionsBulk(this: WebSocket, payload: Payload
             },
         });
     }
-    console.log(`[Gateway] GuildSubscriptionsBulk processed ${Object.keys(body.subscriptions).length} subscriptions for user ${this.user_id} in ${Date.now() - startTime}ms`);
+    console.log(
+        `[Gateway/${this.user_id}] GuildSubscriptionsBulk processed ${Object.keys(body.subscriptions).length} subscriptions for user ${this.user_id} in ${Date.now() - startTime}ms`,
+    );
 }

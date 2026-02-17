@@ -71,14 +71,14 @@ export async function onGuildSync(this: WebSocket, { d }: Payload) {
     // not awaiting lol
     Promise.all(tasks)
         .then((res) => {
-            console.log(`[Gateway] GUILD_SYNC processed ${guild_ids.length} guilds in ${sw.elapsed().totalMilliseconds}ms:`, {
+            console.log(`[Gateway/${this.user_id}] GUILD_SYNC processed ${guild_ids.length} guilds in ${sw.elapsed().totalMilliseconds}ms:`, {
                 ...Object.fromEntries(
                     res.map((r) => [r.result.id, `${r.result.id}: ${r.result.members.length}U/${r.result.presences.length}P in ${r.elapsed.totalMilliseconds}ms`]),
                 ),
             });
         })
         .catch((err) => {
-            console.error("[Gateway] Error processing GUILD_SYNC:", err);
+            console.error(`[Gateway/${this.user_id}] Error processing GUILD_SYNC:`, err);
         });
 }
 

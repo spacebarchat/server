@@ -84,7 +84,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         // @ts-ignore
         socket.on("message", Message);
 
-        socket.on("error", (err) => console.error("[Gateway]", err));
+        socket.on("error", (err) => console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}]`, err));
 
         console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
@@ -106,7 +106,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         // @ts-ignore
         socket.encoding = searchParams.get("encoding") || "json";
         if (!["json", "etf"].includes(socket.encoding)) {
-            console.error(`[Gateway] Unknown encoding: ${socket.encoding}`);
+            console.error(`[Gateway/${socket.ipAddress}] Unknown encoding: ${socket.encoding}`);
             return socket.close(CLOSECODES.Decode_error);
         }
 
@@ -114,7 +114,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
         socket.version = Number(searchParams.get("version")) || 8;
         if (socket.version != 8) {
-            console.error(`[Gateway] Invalid API version: ${socket.version}`);
+            console.error(`[Gateway/${socket.ipAddress}] Invalid API version: ${socket.version}`);
             return socket.close(CLOSECODES.Invalid_API_version);
         }
 
@@ -128,7 +128,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
                 socket.zstdEncoder = new Encoder(6);
                 socket.zstdDecoder = new Decoder();
             } else {
-                console.error(`[Gateway] Unknown compression: ${socket.compress}`);
+                console.error(`[Gateway/${socket.user_id}] Unknown compression: ${socket.compress}`);
                 return socket.close(CLOSECODES.Decode_error);
             }
         }

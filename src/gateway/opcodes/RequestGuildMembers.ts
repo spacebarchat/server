@@ -184,5 +184,5 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
     });
 
-    console.log(`[Gateway] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`);
+    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`);
 }

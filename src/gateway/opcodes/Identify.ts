@@ -103,7 +103,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const user = tokenData.user;
     if (!user) {
-        console.log("[Gateway] Failed to identify user");
+        console.log(`[Gateway/${this.ipAddress}] Failed to identify user`);
         return this.close(CLOSECODES.Authentication_failed);
     }
 
@@ -124,7 +124,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
         if (this.shard_count == null || this.shard_id == null || this.shard_id > this.shard_count || this.shard_id < 0 || this.shard_count <= 0) {
             // TODO: why do we even care about this right now?
-            console.log(`[Gateway] Invalid sharding from ${user.id}: ${identify.shard}`);
+            console.log(`[Gateway/${this.user_id}] Invalid sharding from ${user.id}: ${identify.shard}`);
             return this.close(CLOSECODES.Invalid_shard);
         }
     }
@@ -374,7 +374,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             trace.micros = totalSw.elapsed().totalMicroseconds;
             mergeMemberGuildsTrace.calls!.push(`guild_${m.guild_id}`, trace);
         } else {
-            console.error(`[Gateway] Member ${m.id} has invalid guild_id ${m.guild_id}`);
+            console.error(`[Gateway/${this.user_id}] Member ${m.id} has invalid guild_id ${m.guild_id}`);
             mergeMemberGuildsTrace.calls!.push(`guild_~~${m.guild_id}~~`, trace);
         }
     });
@@ -781,7 +781,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                           ]
                         : [],
                 },
-            })?.catch((e) => console.error(`[Gateway] error when sending bot guilds`, e));
+            })?.catch((e) => console.error(`[Gateway/${this.user_id}] error when sending bot guilds`, e));
         }),
     );
 
@@ -815,5 +815,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     //TODO send GUILD_MEMBER_LIST_UPDATE
     //TODO send VOICE_STATE_UPDATE to let the client know if another device is already connected to a voice channel
     await setupListener.call(this);
-    console.log(`[Gateway] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`, process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "");
+    console.log(
+        `[Gateway/${this.user_id}] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`,
+        process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "",
+    );
 }
