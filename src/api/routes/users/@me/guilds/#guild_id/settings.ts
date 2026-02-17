@@ -69,7 +69,7 @@ router.patch(
             select: { settings: true },
         });
         OrmUtils.mergeDeep(user.settings || {}, body);
-        Member.update({ id: req.user_id, guild_id: req.params.guild_id as string }, user);
+        user.save();
 
         res.json(user.settings);
     },
