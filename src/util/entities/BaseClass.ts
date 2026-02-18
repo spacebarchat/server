@@ -20,7 +20,7 @@ import { BaseEntity, BeforeInsert, BeforeUpdate, Column, ColumnOptions, FindOpti
 import { Snowflake } from "../util/Snowflake";
 import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";
-import { annotationsKey } from "../util/Decorators";
+import { annotationsKey, JsonNumber } from "../util/Decorators";
 
 export class BaseClassWithoutId extends BaseEntity {
     private get construct() {
@@ -56,7 +56,7 @@ export class BaseClassWithoutId extends BaseEntity {
             if (
                 key in this && // This object has this property, should never fail but better to be safe
                 key in annotations && // If this property has an annotation
-                annotations[key].indexOf("BigintToLong") > -1 && // if one of the annotations is JsonRemoveEmpty
+                annotations[key].indexOf("JsonNumber") > -1 && // if one of the annotations is JsonRemoveEmpty
                 typeof this[key] == "string" // and its a String
             ) {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

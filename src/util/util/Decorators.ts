@@ -20,7 +20,7 @@ export function JsonRemoveEmpty(target: BaseClassWithoutId, propertyKey: string)
     addAnnotationMetadata(target, propertyKey, "JsonRemoveEmpty");
 }
 
-export function BigintToLong(target: BaseClassWithoutId, propertyKey: string) {
+export function JsonNumber(target: BaseClassWithoutId, propertyKey: string) {
     initAnnotationMetadata(target, propertyKey);
-    addAnnotationMetadata(target, propertyKey, "BigintToLong");
+    addAnnotationMetadata(target, propertyKey, "JsonNumber");
 }
