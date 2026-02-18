@@ -38,6 +38,7 @@ import {
     PublicUserProjection,
     UserPrivate,
 } from "@spacebar/schemas";
+import { BigintToLong } from "../util/Decorators";
 
 @Entity({
     name: "users",
@@ -124,18 +125,22 @@ export class User extends BaseClass {
     email?: string; // email of the user
 
     @Column({ type: "bigint" })
+    @BigintToLong
     flags: number = 0; // UserFlags // TODO: generate
 
     @Column({ type: "bigint" })
+    @BigintToLong
     public_flags: number = 0;
 
     @Column({ type: "bigint" })
+    @BigintToLong
     purchased_flags: number = 0;
 
     @Column()
     premium_usage_flags: number = 0;
 
     @Column({ type: "bigint" })
+    @BigintToLong
     rights: string;
 
     @OneToMany(() => Session, (session: Session) => session.user)

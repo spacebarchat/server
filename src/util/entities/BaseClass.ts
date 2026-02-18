@@ -38,6 +38,9 @@ export class BaseClassWithoutId extends BaseEntity {
     // Loops through all the keys and compares it to annotations. If the RemoveEmpty is there it sets the value to undefined if null
     clean_data() {
         const annotations = this.get_annotations();
+        if (annotations == undefined || annotations.length > 0)
+            //prevent errors if there are no annotations on an object
+            return;
         for (const key in this) {
             if (
                 key in this && // This object has this property, should never fail but better to be safe
@@ -49,6 +52,16 @@ export class BaseClassWithoutId extends BaseEntity {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-expect-error
                 this[key] = undefined; // set to undefined to remove
+            }
+            if (
+                key in this && // This object has this property, should never fail but better to be safe
+                key in annotations && // If this property has an annotation
+                annotations[key].indexOf("BigintToLong") > -1 && // if one of the annotations is JsonRemoveEmpty
+                typeof this[key] == "string" // and its a String
+            ) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                this[key] = Number(this[key]); // convert string back to number
             }
         }
         return this;
@@ -66,6 +79,7 @@ export class BaseClassWithoutId extends BaseEntity {
     // TODO: fix eslint
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     toJSON(): any {
+        this.clean_data();
         return Object.fromEntries(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             this.metadata!.columns // @ts-ignore

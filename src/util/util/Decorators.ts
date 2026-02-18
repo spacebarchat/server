@@ -19,3 +19,8 @@ export function JsonRemoveEmpty(target: BaseClassWithoutId, propertyKey: string)
     initAnnotationMetadata(target, propertyKey);
     addAnnotationMetadata(target, propertyKey, "JsonRemoveEmpty");
 }
+
+export function BigintToLong(target: BaseClassWithoutId, propertyKey: string) {
+    initAnnotationMetadata(target, propertyKey);
+    addAnnotationMetadata(target, propertyKey, "BigintToLong");
+}

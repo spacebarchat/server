@@ -29,6 +29,7 @@ import { Message } from "./Message";
 import { Role } from "./Role";
 import { User } from "./User";
 import { AvatarDecorationData, Collectibles, DisplayNameStyle, PrimaryGuild, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
+import { BigintToLong } from "../util/Decorators";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
     "id",
@@ -98,6 +99,7 @@ export class Member extends BaseClassWithoutId {
     joined_at: Date;
 
     @Column({ type: "bigint", nullable: true })
+    @BigintToLong
     premium_since?: number;
 
     @Column()
