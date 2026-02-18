@@ -6,13 +6,22 @@ import { BitField } from "./BitField";
 
 export class MessageFlags extends BitField {
     static FLAGS = {
-        CROSSPOSTED: BigInt(1) << BigInt(0),
-        IS_CROSSPOST: BigInt(1) << BigInt(1),
-        SUPPRESS_EMBEDS: BigInt(1) << BigInt(2),
-        // SOURCE_MESSAGE_DELETED: BigInt(1) << BigInt(3), // spacebar will delete them from destination too, making this redundant
-        URGENT: BigInt(1) << BigInt(4),
-        // HAS_THREAD: BigInt(1) << BigInt(5) // does not apply to spacebar due to infrastructural differences
-        EPHEMERAL: BigInt(1) << BigInt(6), // it that has been routed to only some of the users that can see the channel
-        INTERACTION_WAIT: BigInt(1) << BigInt(7), // discord.com calls this LOADING
+        CROSSPOSTED: 1n,
+        IS_CROSSPOST: 1n << 1n,
+        SUPPRESS_EMBEDS: 1n << 2n,
+        SOURCE_MESSAGE_DELETED: 1n << 3n,
+        URGENT: 1n << 4n,
+        HAS_THREAD: 1n << 5n,
+        EPHEMERAL: 1n << 6n,
+        LOADING: 1n << 17n,
+        FAILED_TO_MENTION_SOME_ROLES_IN_THREAD: 1n << 8n,
+        GUILD_FEED_HIDDEN: 1n << 9n,
+        SHOULD_SHOW_LINK_NOT_DISCORD_WARNING: 1n << 10n,
+        // 1<<11 not documented
+        SUPPRESS_NOTIFICATIONS: 1n << 12n,
+        IS_VOICE_MESSAGE: 1n << 13n,
+        HAS_SNAPSHOT: 1n << 14n,
+        IS_COMPONENTS_V2: 1n << 15n,
+        SENT_BY_SOCIAL_LAYER_INTEGRATION: 1n << 16n,
     };
 }
