@@ -51,6 +51,20 @@ export class DmChannelDTO {
                     }) || [],
             )
         ).map((u) => new MinimalPublicUserDTO(u));
+
+		if (obj.type === 1 && obj.recipients.length === 0) {
+			obj.recipients = [
+				new MinimalPublicUserDTO({
+				avatar: null,
+				discriminator: "0000",
+				id: "0",
+				public_flags: 0,
+				username: "Deleted User",
+				badge_ids: null,
+			} as any),
+			];
+		}
+		
         return obj;
     }
 
