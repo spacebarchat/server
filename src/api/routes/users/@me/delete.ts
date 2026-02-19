@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Member, User, UserSettingsProtos } from "@spacebar/util";
+import { DiscordApiErrors, Guild, Member, User, UserSettingsProtos } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -55,8 +55,14 @@ router.post(
         // TODO: decrement guild member count
 
         if (correctpass) {
+            // Check if the user owns any guilds.
+            const ownedGuilds = await Guild.findOne({ where: { owner_id: req.user_id } });
+            if (ownedGuilds) {
+                throw new HTTPError("User owns guilds and cannot be deleted", 403);
+            }
+
             const members = await Member.find({ where: { id: req.user_id } });
-			await UserSettingsProtos.delete({ user_id: req.user_id });
+            await UserSettingsProtos.delete({ user_id: req.user_id });
             await Promise.all([User.delete({ id: req.user_id }), ...members.map((member) => Member.removeFromGuild(member.id, member.guild_id))]);
 
             res.sendStatus(204);
