@@ -502,13 +502,17 @@ export async function postHandleMessage(message: Message) {
             continue;
         }
     }
-    data.embeds?.forEach((embed) => {
-        if (!embed.type) {
-            embed.type = EmbedType.rich;
-        }
-    });
+    if (data.embeds != undefined) {
+        data.embeds?.forEach((embed) => {
+            if (!embed.type) {
+                embed.type = EmbedType.rich;
+            }
+        });
+    }
     // Filter out embeds that could be links, start from scratch
-    data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
+    if (data.embeds != undefined) {
+        data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
+    }
 
     const seenNormalizedUrls = new Set<string>();
     const uniqueLinks: string[] = [];
@@ -533,7 +537,9 @@ export async function postHandleMessage(message: Message) {
 
     if (uniqueLinks.length === 0) {
         // No valid unique links found, update message to remove old embeds
-        data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
+        if (data.embeds != undefined) {
+            data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
+        }
         const author = data.author?.toPublicUser();
         const event = {
             event: "MESSAGE_UPDATE",
@@ -543,7 +549,8 @@ export async function postHandleMessage(message: Message) {
                 author,
             },
         } as MessageUpdateEvent;
-        await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds })]);
+        const embeds = data.embeds == undefined ? [] : data.embeds;
+        await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds })]);
         return;
     }
 
@@ -566,6 +573,9 @@ export async function postHandleMessage(message: Message) {
         });
 
         if (cached) {
+            if (data.embeds == undefined) {
+                data.embeds = [];
+            }
             data.embeds?.push(cached.embed);
             continue;
         }
@@ -587,20 +597,23 @@ export async function postHandleMessage(message: Message) {
                     embed: embed,
                 });
                 cachePromises.push(cache.save());
+                if (data.embeds == undefined) {
+                    data.embeds = [];
+                }
                 data.embeds?.push(embed);
             }
         } catch (e) {
             console.error(`[Embeds] Error while generating embed for ${link}`, e);
         }
     }
-
+    const embeds = data.embeds == undefined ? [] : data.embeds;
     await Promise.all([
         emitEvent({
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
             data,
         } as MessageUpdateEvent),
-        Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: data.embeds }),
+        Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds }),
         ...cachePromises,
     ]);
 }
