@@ -34,13 +34,12 @@ pkgs.stdenv.mkDerivation {
     license = licenses.agpl3Plus;
     platforms = platforms.all;
     mainProgram = "start-bundle";
-    maintainers = with maintainers; [ RorySys ]; # lol.
+    maintainers = with maintainers; [ RorySys ];
   };
 
   src = filteredSrc;
   dontStrip = true;
 
-  npmBuildScript = "build:tsgo";
   nativeBuildInputs = with pkgs; [
     nodejs
     makeWrapper
@@ -49,12 +48,12 @@ pkgs.stdenv.mkDerivation {
 
   configurePhase = ''
     cp -r --no-preserve=ownership,timestamps ${pkgs.callPackage ./node-modules.nix { }} node_modules
-    chown $USER:$GROUP node_modules -Rc
-    chmod +w node_modules -Rc
+    chown $USER:$GROUP node_modules -R
+    chmod +w node_modules -R
   '';
 
   buildPhase = ''
-    npm run --loglevel silly build:tsgo
+    npm run build:tsgo
   '';
 
   installPhase =
@@ -71,9 +70,8 @@ pkgs.stdenv.mkDerivation {
       runHook preInstall
       # set -x
 
-      echo installPhase
       # remove packages not needed for production, or at least try to...
-      npm prune --omit dev --no-save  --offline #--loglevel silly
+      npm prune --omit dev --no-save  --offline
       rm -v dist/src.tsbuildinfo
       rm -rv scripts
       time ${./nix/trimNodeModules.sh}
