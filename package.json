@@ -78,6 +78,7 @@
         "typescript-json-schema": "^0.65.1"
     },
     "dependencies": {
+        "@spacebarchat/medooze-webrtc": "^1.0.10",
         "@toondepauw/node-zstd": "^1.2.0",
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",

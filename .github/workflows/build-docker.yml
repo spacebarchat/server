@@ -18,6 +18,7 @@ jobs:
           - cdn
           - api
           - gateway
+          - webrtc
           - admin-api
           - cdn-cs
           - gateway-offload

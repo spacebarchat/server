@@ -37,6 +37,7 @@ pkgs.buildNpmPackage {
 
   dontNpmBuild = true;
   makeCacheWritable = true;
+
   nativeBuildInputs = with pkgs; [
     (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
   ];

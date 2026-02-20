@@ -221,7 +221,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Spacebar-UApi = makeNupkg {
           name = "Spacebar.UApi";
           nugetDeps = Spacebar.UApi/deps.json;
-          projectFile = "Spacebar.UApid.csproj";
+          projectFile = "Spacebar.UApi.csproj";
           srcRoot = ./Spacebar.UApi;
           packNupkg = false;
           projectReferences = [
