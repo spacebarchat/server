@@ -47,6 +47,7 @@ in
     ./users.nix
     (import ./cs/gateway-offload-cs.nix self)
     (import ./cs/admin-api.nix self)
+    (import ./cs/uapi.nix self)
   ];
   options.services.spacebarchat-server =
     let
