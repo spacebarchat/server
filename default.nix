@@ -14,7 +14,6 @@ let
         lib.fileset.unions [
           ./src
           ./package.json
-          ./package-lock.json
           ./tsconfig.json
           ./assets
           ./patches
@@ -24,7 +23,7 @@ let
     );
   };
 in
-pkgs.buildNpmPackage {
+pkgs.stdenv.mkDerivation {
   pname = "spacebar-server-ts";
   nodejs = pkgs.nodejs_24;
   version = "1.0.0-" + rVersion;
@@ -35,18 +34,27 @@ pkgs.buildNpmPackage {
     license = licenses.agpl3Plus;
     platforms = platforms.all;
     mainProgram = "start-bundle";
-    maintainers = with maintainers; [ RorySys ]; # lol.
+    maintainers = with maintainers; [ RorySys ];
   };
 
   src = filteredSrc;
-  npmDeps = pkgs.importNpmLock { npmRoot = filteredSrc; };
-  npmConfigHook = pkgs.importNpmLock.npmConfigHook;
+  dontStrip = true;
 
-  npmBuildScript = "build:tsgo";
-  makeCacheWritable = true;
   nativeBuildInputs = with pkgs; [
+    nodejs
+    makeWrapper
     (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
   ];
+
+  configurePhase = ''
+    cp -r --no-preserve=ownership,timestamps ${pkgs.callPackage ./node-modules.nix { }} node_modules
+    chown $USER:$GROUP node_modules -R
+    chmod +w node_modules -R
+  '';
+
+  buildPhase = ''
+    npm run build:tsgo
+  '';
 
   installPhase =
     let
@@ -63,7 +71,7 @@ pkgs.buildNpmPackage {
       # set -x
 
       # remove packages not needed for production, or at least try to...
-      npm prune --omit dev --no-save $npmInstallFlags "''${npmInstallFlagsArray[@]}" $npmFlags "''${npmFlagsArray[@]}"
+      npm prune --omit dev --no-save  --offline
       rm -v dist/src.tsbuildinfo
       rm -rv scripts
       time ${./nix/trimNodeModules.sh}

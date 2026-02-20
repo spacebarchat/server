@@ -34,6 +34,7 @@
           {
             packages = {
               default = (pkgs.callPackage (import ./default.nix { inherit self rVersion; })) { };
+              nodeModules = (pkgs.callPackage ./node-modules.nix) { };
             };
 
             containers = {
@@ -57,7 +58,7 @@
                   };
                 };
               }
-              // lib.genAttrs [ "api" "cdn" "gateway" ] (
+              // lib.genAttrs [ "api" "cdn" "gateway" "webrtc" ] (
                 mod:
                 pkgs.dockerTools.buildLayeredImage {
                   name = "spacebar-server-ts-${mod}";

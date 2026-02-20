@@ -52,7 +52,7 @@ export const loadWebRtcLibrary = async () => {
         console.log(`[WebRTC] ${green(`Succesfully loaded ${selectedWrtcLibrary}`)}`);
         return Promise.resolve();
     } catch (error) {
-        console.log(`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : ""}`)}`);
+        console.log(`[WebRTC] ${red(`Failed to import ${selectedWrtcLibrary}: ${error instanceof NoConfiguredLibraryError ? error.message : (error as Error).message}`)}`);
 
         return Promise.reject();
     }

@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using ArcaneLibs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.Extensions;
@@ -8,7 +6,6 @@ using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.Models.AdminApi;
 using Spacebar.Models.Db.Contexts;
-using Spacebar.Models.Db.Models;
 
 namespace Spacebar.AdminApi.Controllers;
 
@@ -183,6 +180,11 @@ public class UserController(
             }
         }
     }
+
+    // [HttpGet("{id}/Dms")]
+    // public async IEnumerable<object> GetDmsAsync(string userId) {
+        // yield break; // TODO
+    // }
 
     private async IAsyncEnumerable<AsyncActionResult> DeleteMessagesForChannel(
         // context

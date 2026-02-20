@@ -99,7 +99,6 @@ export enum TextInputStyle {
 }
 
 export enum MessageComponentType {
-    Script = 0, // self command script
     ActionRow = 1,
     Button = 2,
     StringSelect = 3,
@@ -108,4 +107,19 @@ export enum MessageComponentType {
     RoleSelect = 6,
     MentionableSelect = 7,
     ChannelSelect = 8,
+    Section = 9,
+    TextDisplay = 10,
+    Thumbnail = 11,
+    MediaGallery = 12,
+    File = 13,
+    Separator = 14,
+    // 15 is unknown?
+    ContentInventoryEntry = 16, // activity feed entry
+    Container = 17,
+    Label = 18,
+    FileUpload = 19,
+    CheckpointCard = 20, // year in review 2026
+    RadioGroup = 21,
+    CheckboxGroup = 22,
+    Checkbox = 23,
 }

@@ -56,8 +56,18 @@
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Abstractions",
+    "version": "10.0.0",
+    "hash": "sha256-UDgZbRQcGPaKsE53EH6bvJiv+Q4KSxAbnsVhTVFGG4Q="
+  },
+  {
+    "pname": "Microsoft.EntityFrameworkCore.Abstractions",
     "version": "10.0.2",
     "hash": "sha256-qkDfIJpcPO2kk4n5OE/13hI/0mUygpTofInn95XjRZI="
+  },
+  {
+    "pname": "Microsoft.EntityFrameworkCore.Analyzers",
+    "version": "10.0.0",
+    "hash": "sha256-7Q0jYJO50cqGI+u6gLpootbB8GZvgsgtg0F9FZI1jig="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Analyzers",
@@ -83,6 +93,11 @@
     "pname": "Microsoft.Extensions.Caching.Abstractions",
     "version": "10.0.2",
     "hash": "sha256-nKmQuZTt1g5/8gBajo7wdCV64kdCucdiQR8JTt7ZZb0="
+  },
+  {
+    "pname": "Microsoft.Extensions.Caching.Memory",
+    "version": "10.0.0",
+    "hash": "sha256-AMgDSm1k6q0s17spGtyR5q8nAqUFDOxl/Fe38f9M+d4="
   },
   {
     "pname": "Microsoft.Extensions.Caching.Memory",
@@ -183,6 +198,11 @@
     "pname": "Microsoft.Extensions.Hosting.Abstractions",
     "version": "10.0.2",
     "hash": "sha256-mkeKUXepn4bfEdZFXdURmNEFdGiHQdpcxnm6joG+pUA="
+  },
+  {
+    "pname": "Microsoft.Extensions.Logging",
+    "version": "10.0.0",
+    "hash": "sha256-P+zPAadLL63k/GqK34/qChqQjY9aIRxZfxlB9lqsSrs="
   },
   {
     "pname": "Microsoft.Extensions.Logging",

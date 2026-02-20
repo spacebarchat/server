@@ -1,0 +1,12 @@
+@Spacebar.AdminApi_HostAddress = http://localhost:5112
+
+POST {{Spacebar.AdminApi_HostAddress}}/_spacebar/admin/guilds/1473141782615941382/force_join
+Content-Type: application/json
+Accept: application/json
+
+{
+  "MakeOwner": true,
+  "UserId": "1006598230156341276"
+}
+
+###
