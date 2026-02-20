@@ -98,10 +98,15 @@ public class GuildController(
             member = new Member {
                 Id = userId,
                 GuildId = id,
-                JoinedAt = DateTime.UtcNow,
+                JoinedAt = DateTime.Now,
                 PremiumSince = 0,
                 Roles = [await db.Roles.SingleAsync(r => r.Id == id)],
-                Pending = false
+                Pending = false,
+                Settings = "{}",
+                Bio = "",
+                Mute = false,
+                Deaf = false,
+                
             };
             await db.Members.AddAsync(member);
             guild.MemberCount++;
