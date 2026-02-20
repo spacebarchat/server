@@ -46,4 +46,7 @@ public class FilesystemFileSource(string baseUrl) : IFileSource {
     //     using var mic = new MagickImageCollection(stream);
     //     return Mimes.GetMime(mic.First().Format);
     // }
+    public Task<bool> DirectoryExists(string path) {
+        return Task.FromResult(Directory.Exists(Path.Join(baseUrl, path)));
+    }
 }

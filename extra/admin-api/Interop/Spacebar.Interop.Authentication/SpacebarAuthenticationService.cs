@@ -12,22 +12,32 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
     private static readonly ExpiringSemaphoreCache<User> UserCache = new();
     private static readonly ExpiringSemaphoreCache<Session> SessionCache = new();
 
-    public async Task<TokenValidationResult?> ValidateTokenAsync(string token) {
-        var handler = new JwtSecurityTokenHandler();
+    private static bool _isInitialised;
+    private static readonly JwtSecurityTokenHandler Handler = new();
+
+    private static readonly TokenValidationParameters TokenValidationParameters = new() {
+        // IssuerSigningKey = new ECDsaSecurityKey(key),
+        ValidAlgorithms = ["ES512"],
+        LogValidationExceptions = true,
+        // These are required to be false for the token to be valid as they aren't provided by the token
+        ValidateIssuer = false,
+        ValidateLifetime = false,
+        ValidateAudience = false,
+        // TryAllIssuerSigningKeys = true
+    };
+
+    public async Task InitializeAsync() {
+        if (_isInitialised) return;
         var secretFile = await File.ReadAllTextAsync(config.PublicKeyPath);
         var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         key.ImportFromPem(secretFile);
+        TokenValidationParameters.IssuerSigningKey = new ECDsaSecurityKey(key);
+        _isInitialised = true;
+    }
 
-        var res = await handler.ValidateTokenAsync(token, new TokenValidationParameters {
-            IssuerSigningKey = new ECDsaSecurityKey(key),
-            ValidAlgorithms = ["ES512"],
-            LogValidationExceptions = true,
-            // These are required to be false for the token to be valid as they aren't provided by the token
-            ValidateIssuer = false,
-            ValidateLifetime = false,
-            ValidateAudience = false,
-            // TryAllIssuerSigningKeys = true
-        });
+    public async Task<TokenValidationResult?> ValidateTokenAsync(string token) {
+        if (!_isInitialised) await InitializeAsync();
+        var res = await Handler.ValidateTokenAsync(token, TokenValidationParameters);
 
         if ((!res.IsValid || res.Exception is not null) && !config.DisableAuthentication) {
             logger.LogInformation("Invalid token");
@@ -58,4 +68,10 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             },
             config.AuthCacheExpiry);
     }
+
+    // public async Task<string> GenerateAccessTokenAsync(string userId) {
+    //     // await db.Sessions.AddAsync(new() {
+    //         
+    //     // })
+    // }
 }

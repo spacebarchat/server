@@ -5,6 +5,11 @@
     "hash": "sha256-CSmNE16nDi05qyDAcJR+8SqQQ2ReAeX0+/dRP3WpNsg="
   },
   {
+    "pname": "BCrypt.Net-Next",
+    "version": "4.1.0",
+    "hash": "sha256-Efjrsw4FXgVKA2vQV6ztc40pLsonnV3JxwxW7eOyfDk="
+  },
+  {
     "pname": "Humanizer.Core",
     "version": "2.14.1",
     "hash": "sha256-EXvojddPu+9JKgOG9NSQgUTfWq1RpOYw7adxDPKDJ6o="
