@@ -80,7 +80,7 @@
     "dependencies": {
         "@spacebarchat/medooze-webrtc": "^1.0.10",
         "@toondepauw/node-zstd": "^1.2.0",
-        "ajv": "^8.17.1",
+        "ajv": "^8.18.0",
         "ajv-formats": "^3.0.1",
         "amqplib": "^0.10.9",
         "badge-maker": "^5.0.2",
