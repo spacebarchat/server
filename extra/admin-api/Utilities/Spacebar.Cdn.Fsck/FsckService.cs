@@ -29,6 +29,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
     public struct FsckItem {
         public string Path;
         public string ItemId;
+        public bool IsSingleSubDirFile;
     }
 
     private async Task RunFsckAsync(string name, string path, IQueryable<FsckItem> items) {
@@ -44,8 +45,17 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
                 }
 
                 i++;
-                if (!await fs.FileExists(item.Path))
-                    logger.LogWarning("{itemType} {itemId} is missing at {path}", name, item.ItemId, item.Path);
+                if (!item.IsSingleSubDirFile) {
+                    if (!await fs.FileExists(item.Path))
+                        logger.LogWarning("{itemType} {itemId} is missing at {path}", name, item.ItemId, item.Path);
+                }
+                else if (item.IsSingleSubDirFile && fs is FilesystemFileSource ffs) {
+                    if(!await ffs.DirectoryExists(Path.GetDirectoryName(item.Path)))
+                        logger.LogWarning("{itemType} {itemId} is missing at {path} (directory missing)", name, item.ItemId, item.Path);
+                }
+                else {
+                    logger.LogWarning("Unhandled case: {itemType} {itemId} -> {path} (IsSingleSubDirFile: {isSingleSubDirFile}, fstype: {fsType})", name, item.ItemId, item.Path, item.IsSingleSubDirFile, fs.GetType().Name);
+                }
 
                 _fsckSemaphore.Release();
             }));
@@ -87,7 +97,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
                 Path = $"/icons/{x.Id}/{x.Icon}",
                 ItemId = x.Id
             });
-    
+
     public IQueryable<FsckItem> EnumerateRoleIconPathsAsync() =>
         _db.Roles
             .Where(x => !string.IsNullOrWhiteSpace(x.Icon))
@@ -101,16 +111,18 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
         _db.Stickers
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
-                Path = $"/stickers/{x.Id}.png",
-                ItemId = x.Id
+                Path = $"/stickers/{x.Id}",
+                ItemId = x.Id,
+                IsSingleSubDirFile = fs is FilesystemFileSource
             });
 
     public IQueryable<FsckItem> EnumerateEmojiPathsAsync() =>
         _db.Emojis
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
-                Path = $"/emojis/{x.Id}",
-                ItemId = x.Id
+                Path = $"/emojis/{x.Id}/",
+                ItemId = x.Id,
+                IsSingleSubDirFile = fs is FilesystemFileSource
             });
 
 #endregion
