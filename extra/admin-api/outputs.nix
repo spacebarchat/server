@@ -57,6 +57,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           homepage = "https://github.com/spacebarchat/server";
           license = licenses.agpl3Plus;
           maintainers = with maintainers; [ RorySys ];
+          mainProgram = name;
         };
       };
   in
@@ -142,7 +143,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Spacebar-Models-Gateway = makeNupkg {
           name = "Spacebar.Models.Gateway";
           projectFile = "Spacebar.Models.Gateway.csproj";
-          # nugetDeps = Models/Spacebar.Models.Gateway/deps.json;
+          nugetDeps = Models/Spacebar.Models.Gateway/deps.json;
           srcRoot = Models/Spacebar.Models.Gateway;
           projectReferences = [ proj.Spacebar-Models-Generic ];
         };

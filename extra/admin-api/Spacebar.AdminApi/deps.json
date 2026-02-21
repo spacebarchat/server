@@ -15,54 +15,9 @@
     "hash": "sha256-Efjrsw4FXgVKA2vQV6ztc40pLsonnV3JxwxW7eOyfDk="
   },
   {
-    "pname": "Humanizer.Core",
-    "version": "2.14.1",
-    "hash": "sha256-EXvojddPu+9JKgOG9NSQgUTfWq1RpOYw7adxDPKDJ6o="
-  },
-  {
     "pname": "Microsoft.AspNetCore.OpenApi",
-    "version": "10.0.2",
-    "hash": "sha256-FU57fPXL4NUDRqi+rLresi4yKttv1KcAnLuEdPCyTos="
-  },
-  {
-    "pname": "Microsoft.Build.Framework",
-    "version": "17.11.31",
-    "hash": "sha256-YS4oASrmC5dmZrx5JPS7SfKmUpIJErlUpVDsU3VrfFE="
-  },
-  {
-    "pname": "Microsoft.Build.Framework",
-    "version": "18.0.2",
-    "hash": "sha256-fO31KAdDs2J0RUYD1ov9UB3ucsbALan7K0YdWW+yg7A="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.Analyzers",
-    "version": "3.11.0",
-    "hash": "sha256-hQ2l6E6PO4m7i+ZsfFlEx+93UsLPo4IY3wDkNG11/Sw="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.Common",
-    "version": "5.0.0",
-    "hash": "sha256-g4ALvBSNyHEmSb1l5TFtWW7zEkiRmhqLx4XWZu9sr2U="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.CSharp",
-    "version": "5.0.0",
-    "hash": "sha256-ctBCkQGFpH/xT5rRE3xibu9YxPD108RuC4a4Z25koG8="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.CSharp.Workspaces",
-    "version": "5.0.0",
-    "hash": "sha256-yWVcLt/f2CouOfFy966glGdtSFy+RcgrU1dd9UtlL/Q="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.Workspaces.Common",
-    "version": "5.0.0",
-    "hash": "sha256-Bir5e1gEhgQQ6upQmVKQHAKLRfenAu60DAzNupNnZsQ="
-  },
-  {
-    "pname": "Microsoft.CodeAnalysis.Workspaces.MSBuild",
-    "version": "5.0.0",
-    "hash": "sha256-+58+iqTayTiE0pDaog1U8mjaDA8bNNDLA8gjCQZZudo="
+    "version": "10.0.3",
+    "hash": "sha256-j7lAYuz2585j/j24XkptImH7WHx9rBp+tY8ZXqpC77k="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore",
@@ -70,19 +25,9 @@
     "hash": "sha256-xfgrlxhtOkQwF5Q7j8gSm41URJiH8IuJ/T/Dh88++hE="
   },
   {
-    "pname": "Microsoft.EntityFrameworkCore",
-    "version": "10.0.2",
-    "hash": "sha256-FS6T8EnaWCMtj4PnZhh+oF8mcM44VlM3wkTSMlpte9A="
-  },
-  {
     "pname": "Microsoft.EntityFrameworkCore.Abstractions",
     "version": "10.0.0",
     "hash": "sha256-UDgZbRQcGPaKsE53EH6bvJiv+Q4KSxAbnsVhTVFGG4Q="
-  },
-  {
-    "pname": "Microsoft.EntityFrameworkCore.Abstractions",
-    "version": "10.0.2",
-    "hash": "sha256-qkDfIJpcPO2kk4n5OE/13hI/0mUygpTofInn95XjRZI="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Analyzers",
@@ -90,69 +35,34 @@
     "hash": "sha256-7Q0jYJO50cqGI+u6gLpootbB8GZvgsgtg0F9FZI1jig="
   },
   {
-    "pname": "Microsoft.EntityFrameworkCore.Analyzers",
-    "version": "10.0.2",
-    "hash": "sha256-yOv78rgAACBz1zjitpcZbQQ3zx8huJongZTHkhN4PQ0="
-  },
-  {
-    "pname": "Microsoft.EntityFrameworkCore.Design",
-    "version": "10.0.2",
-    "hash": "sha256-bTShsGux0y/49PIIMb/4ZX3x5+rPacvT5/NcooNCI1Y="
-  },
-  {
     "pname": "Microsoft.EntityFrameworkCore.Relational",
     "version": "10.0.0",
     "hash": "sha256-vOP2CE5YA551BlpbOuIy6RuAiAEPEpCVS1cEE33/zN4="
   },
   {
-    "pname": "Microsoft.EntityFrameworkCore.Relational",
-    "version": "10.0.2",
-    "hash": "sha256-Y4jPpoYhKizg5wF6QfkBX4sYlE2FU1bYhfoDN3xkhKM="
-  },
-  {
-    "pname": "Microsoft.Extensions.DependencyModel",
-    "version": "10.0.2",
-    "hash": "sha256-w/dGIjtZiGH+KW3969BPOdQpQEV+WB7RPTa2MK2DavE="
-  },
-  {
     "pname": "Microsoft.IdentityModel.Abstractions",
-    "version": "8.15.0",
-    "hash": "sha256-LKTvERNUTMCEF7xs377tCMwOMRki93OS4kh6Yv0uXJ4="
+    "version": "8.16.0",
+    "hash": "sha256-OpTFQpTtg1A8I1bBIOqv/n9pwYXTqzMI8ZLXLZDti5w="
   },
   {
     "pname": "Microsoft.IdentityModel.JsonWebTokens",
-    "version": "8.15.0",
-    "hash": "sha256-LwzKiGjcnORvmQ9tim6lomXpfVlPpd/fE8FKTFWKlpM="
+    "version": "8.16.0",
+    "hash": "sha256-Cctf2iuIXLMklTuCvzWv721v2mHs0HEBA47BqAKhp9I="
   },
   {
     "pname": "Microsoft.IdentityModel.Logging",
-    "version": "8.15.0",
-    "hash": "sha256-mMXwsjGcrrmHR1mG7BLTKg/30mX+m93QVX17/ynOOd4="
+    "version": "8.16.0",
+    "hash": "sha256-355u+3LIn/QfiCHFMXD+3ipdRTnbXLAQNzC4sWEFapQ="
   },
   {
     "pname": "Microsoft.IdentityModel.Tokens",
-    "version": "8.15.0",
-    "hash": "sha256-7Lo/TsvqgNCEMyFssO3Om233521Pqgb9K9lUeHc5HMk="
+    "version": "8.16.0",
+    "hash": "sha256-6s8ZLnKw32W6+KbnahCVe1v9YzpoemnpHNQ3VbFSV4M="
   },
   {
     "pname": "Microsoft.OpenApi",
     "version": "2.0.0",
     "hash": "sha256-8eiM3Mx4Hx1etx52RlczoHG2z9XIpWgu2LQtWSt086k="
-  },
-  {
-    "pname": "Microsoft.VisualStudio.SolutionPersistence",
-    "version": "1.0.52",
-    "hash": "sha256-KZGPtOXe6Hv8RrkcsgoLKTRyaCScIpQEa2NhNB3iOXw="
-  },
-  {
-    "pname": "Mono.TextTemplating",
-    "version": "3.0.0",
-    "hash": "sha256-VlgGDvgNZb7MeBbIZ4DE2Nn/j2aD9k6XqNHnASUSDr0="
-  },
-  {
-    "pname": "Newtonsoft.Json",
-    "version": "13.0.3",
-    "hash": "sha256-hy/BieY4qxBWVVsDqqOPaLy1QobiIapkbrESm6v2PHc="
   },
   {
     "pname": "Npgsql",
@@ -165,44 +75,9 @@
     "hash": "sha256-XIJxnTMektQVP1qtslEIGbmBGrIQsvjQjCMRTs9UIbg="
   },
   {
-    "pname": "System.CodeDom",
-    "version": "6.0.0",
-    "hash": "sha256-uPetUFZyHfxjScu5x4agjk9pIhbCkt5rG4Axj25npcQ="
-  },
-  {
-    "pname": "System.Composition",
-    "version": "9.0.0",
-    "hash": "sha256-FehOkQ2u1p8mQ0/wn3cZ+24HjhTLdck8VZYWA1CcgbM="
-  },
-  {
-    "pname": "System.Composition.AttributedModel",
-    "version": "9.0.0",
-    "hash": "sha256-a7y7H6zj+kmYkllNHA402DoVfY9IaqC3Ooys8Vzl24M="
-  },
-  {
-    "pname": "System.Composition.Convention",
-    "version": "9.0.0",
-    "hash": "sha256-tw4vE5JRQ60ubTZBbxoMPhtjOQCC3XoDFUH7NHO7o8U="
-  },
-  {
-    "pname": "System.Composition.Hosting",
-    "version": "9.0.0",
-    "hash": "sha256-oOxU+DPEEfMCuNLgW6wSkZp0JY5gYt44FJNnWt+967s="
-  },
-  {
-    "pname": "System.Composition.Runtime",
-    "version": "9.0.0",
-    "hash": "sha256-AyIe+di1TqwUBbSJ/sJ8Q8tzsnTN+VBdJw4K8xZz43s="
-  },
-  {
-    "pname": "System.Composition.TypedParts",
-    "version": "9.0.0",
-    "hash": "sha256-F5fpTUs3Rr7yP/NyIzr+Xn5NdTXXp8rrjBnF9UBBUog="
-  },
-  {
     "pname": "System.IdentityModel.Tokens.Jwt",
-    "version": "8.15.0",
-    "hash": "sha256-5O0wbGp0gWnukK+0mWBjMnP1bZc6N0xuNcO2qmFiUX8="
+    "version": "8.16.0",
+    "hash": "sha256-wCEkUPnKDjO7Kpfr1vpr5Icvk69gFHgEWcSLbFtD6pg="
   },
   {
     "pname": "Unidecode.NET",

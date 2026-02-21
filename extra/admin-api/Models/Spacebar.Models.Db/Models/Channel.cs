@@ -85,6 +85,9 @@ public partial class Channel
     [Column("total_message_sent")]
     public int? TotalMessageSent { get; set; }
 
+    [Column("applied_tags")]
+    public List<string>? AppliedTags { get; set; }
+
     [InverseProperty("Channel")]
     public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();
 
@@ -135,6 +138,9 @@ public partial class Channel
 
     [InverseProperty("Channel")]
     public virtual ICollection<Stream> Streams { get; set; } = new List<Stream>();
+
+    [InverseProperty("Channel")]
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 
     [InverseProperty("IdNavigation")]
     public virtual ICollection<ThreadMember> ThreadMembers { get; set; } = new List<ThreadMember>();

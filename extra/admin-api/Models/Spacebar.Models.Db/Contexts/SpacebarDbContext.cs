@@ -83,6 +83,8 @@ public partial class SpacebarDbContext : DbContext
 
     public virtual DbSet<StreamSession> StreamSessions { get; set; }
 
+    public virtual DbSet<Tag> Tags { get; set; }
+
     public virtual DbSet<Team> Teams { get; set; }
 
     public virtual DbSet<TeamMember> TeamMembers { get; set; }
@@ -593,6 +595,13 @@ public partial class SpacebarDbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.StreamSessions).HasConstraintName("FK_13ae5c29aff4d0890c54179511a");
         });
 
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_e7dc17249a1148a1970748eda99");
+
+            entity.HasOne(d => d.Channel).WithMany(p => p.Tags).HasConstraintName("FK_2e2df07f6dacc12e1932b361fe4");
+        });
+
         modelBuilder.Entity<Team>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_7e5523774a38b08a6236d322403");
@@ -694,7 +703,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.SourceChannel).WithMany(p => p.WebhookSourceChannels)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_4495b7032a33c6b8b605d030398");
+                .HasConstraintName("fk_d64f38834fa676f6caa4786ddd6");
 
             entity.HasOne(d => d.SourceGuild).WithMany(p => p.WebhookSourceGuilds)
                 .OnDelete(DeleteBehavior.Cascade)
