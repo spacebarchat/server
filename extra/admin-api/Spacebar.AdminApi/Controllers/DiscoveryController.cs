@@ -10,9 +10,9 @@ using Spacebar.Models.Db.Models;
 namespace Spacebar.AdminApi.Controllers;
 
 [ApiController]
-[Route("/discovery")]
-public class DiscoveryController(
-    ILogger<DiscoveryController> logger,
+[Route("/discovery/guilds")]
+public class GuildDiscoveryController(
+    ILogger<GuildDiscoveryController> logger,
     SpacebarDbContext db,
     IServiceProvider sp,
     SpacebarAspNetAuthenticationService auth,

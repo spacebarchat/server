@@ -1,0 +1,84 @@
+@page "/GuildDiscovery"
+@using System.Net.Http.Headers
+@using System.Text.Json.Nodes
+@using ArcaneLibs
+@using ArcaneLibs.Blazor.Components
+@using Spacebar.AdminApi.TestClient.Services
+@using Spacebar.Models.AdminApi
+@inject Config Config
+<h3>GuildDiscovery</h3>
+<LinkButton OnClickAsync="@SaveChangesAsync">Save</LinkButton>
+
+<div class="guild-list">
+    @foreach (var guild in _guilds) {
+        if (guild == null) continue;
+
+        <div class="@("guild-card " + (guild.DiscoveryExcluded ? "excluded" : ""))">
+            <img class="guild-icon" src="@(guild.Icon is null ? $"{Config.CdnUrl}/embed/avatars/0.png" : $"{Config.CdnUrl}/icons/{guild.Id}/{guild.Icon}")" alt="@guild.Name"/>
+            @if (guild.Banner is not null) {
+                <img class="guild-banner" src="@($"{Config.CdnUrl}/banners/{guild.Id}/{guild.Banner}")"
+                     alt="@guild.Name"/>
+            }
+            <h4>@guild.Name</h4>
+            <p>@guild.Description</p>
+
+            <div class="guild-details">
+                <div class="guild-stats">
+                    <span>@guild.PresenceCount Online</span>
+                    <span>@guild.MemberCount Members</span>
+                </div>
+                <label>Exclude</label>
+                <InputCheckbox @bind-Value="@guild.DiscoveryExcluded"/>
+                <label>Weight</label>
+                <InputNumber @bind-Value="@guild.DiscoveryWeight" style="width: 100px;"/>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    private List<DiscoverableGuildModel?> _guilds = [];
+
+    protected override async Task OnInitializedAsync() {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var response = await hc.GetAsync(Config.AdminUrl + $"/_spacebar/admin/discovery/guilds?includeExcluded=true");
+        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        var content = response.Content.ReadFromJsonAsAsyncEnumerable<DiscoverableGuildModel>();
+        await foreach (var guild in content) {
+            _guilds.Add(guild);
+            // var d = Task.Delay(25);
+            await StateHasChangedAsync();
+            // await d;
+        }
+    }
+
+    private async Task StateHasChangedAsync() {
+        StateHasChanged();
+        await Task.Delay(1);
+    }
+
+    protected async Task SaveChangesAsync() {
+        var hc = new StreamingHttpClient();
+        hc.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Config.AccessToken);
+        var response = await hc.GetAsync(Config.AdminUrl + $"/_spacebar/admin/discovery/guilds?includeExcluded=true");
+        if (!response.IsSuccessStatusCode) throw new Exception(await response.Content.ReadAsStringAsync());
+        var content = response.Content.ReadFromJsonAsAsyncEnumerable<DiscoverableGuildModel>();
+        await foreach (var guild in content) {
+            var matchingGuild = _guilds.FirstOrDefault(g => g!.Id == guild!.Id);
+            if (matchingGuild == null) continue;
+            JsonObject update = new();
+
+            if (matchingGuild.DiscoveryExcluded != guild.DiscoveryExcluded)
+                update["discovery_excluded"] = matchingGuild.DiscoveryExcluded;
+
+            if (matchingGuild.DiscoveryWeight != guild.DiscoveryWeight)
+                update["discovery_weight"] = matchingGuild.DiscoveryWeight;
+
+            if (update.Count == 0) continue;
+            await hc.PatchAsJsonAsync(Config.AdminUrl + $"/_spacebar/admin/discovery/guilds/{guild.Id}", update);
+        }
+    }
+
+}
