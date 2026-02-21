@@ -63,6 +63,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
         prevState = { ...voiceState };
         voiceState.assign(body);
     } catch (error) {
+		isChanged = true;
         voiceState = VoiceState.create({
             ...body,
             user_id: this.user_id,
