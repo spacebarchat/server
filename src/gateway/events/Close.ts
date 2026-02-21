@@ -28,7 +28,26 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     this.removeAllListeners();
 
     if (this.session_id) {
-        await Session.delete({ session_id: this.session_id });
+		const authSessionId = this.session?.session_id;
+		const closedAt = Date.now();
+	
+		setTimeout(async () => {
+			try {
+				if (authSessionId && this.user_id) {
+					const s = await Session.findOne({
+						where: { user_id: this.user_id, session_id: authSessionId },
+					});
+					if (s && (s.last_seen?.getTime() ?? 0) <= closedAt) {
+						await Session.update(
+							{ user_id: this.user_id, session_id: authSessionId },
+							{ status: "offline", activities: [], client_status: {} }
+						);
+					}
+				}
+			} catch(e) {
+				console.error("[WebSocket] Close session cleanup failed", code, e);
+			}
+		}, 5_000);
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },

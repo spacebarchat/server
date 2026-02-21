@@ -518,12 +518,20 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             let channelUsers = channel.recipients?.map((recipient) => recipient.user.toPublicUser());
 
             if (channelUsers && channelUsers.length > 0) channelUsers.forEach((user) => users.add(user));
-            // HACK: insert self into recipients for DMs with users that no longer exist
+            // HACK: insert "Deleted User" into recipients for DMs with users that no longer exist
             else if (channel.type === ChannelType.DM) {
-                const selfUser = user.toPublicUser();
-                users.add(selfUser);
-                channelUsers ??= [];
-                channelUsers.push(selfUser);
+				const deletedUser = {
+					avatar: null,
+					discriminator: "0000",
+					id: "0",
+					public_flags: 0,
+					username: "Deleted User",
+					badge_ids: null,
+				};
+			
+				users.add(deletedUser as any);
+				channelUsers ??= [];
+				channelUsers.push(deletedUser as any);
             }
 
             return {
