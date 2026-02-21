@@ -230,6 +230,8 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-Interop-Authentication
             proj.Spacebar-Interop-Authentication-AspNetCore
             proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Interop-Replication-UnixSocket
+            proj.Spacebar-Models-Config
             proj.Spacebar-Models-Db
             proj.Spacebar-Models-Gateway
             proj.Spacebar-Models-Generic

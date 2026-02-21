@@ -10,23 +10,25 @@
     <ItemGroup>
         <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403"/>
         <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.1-preview.20260126-091403"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\DataMappings\Spacebar.DataMappings.Generic\Spacebar.DataMappings.Generic.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.DataMappings.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Interop.Replication.UnixSocket" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Models.AdminApi" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Models.Config" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
-        <ProjectReference Include="..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="Spacebar.Models.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+    <ItemGroup Condition="'$(ContinuousIntegrationBuild)'!='true'">
+        <ProjectReference Include="..\DataMappings\Spacebar.DataMappings.Generic\Spacebar.DataMappings.Generic.csproj"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Authentication.AspNetCore\Spacebar.Interop.Authentication.AspNetCore.csproj"/>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Replication.UnixSocket\Spacebar.Interop.Replication.UnixSocket.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj"/>
+        <ProjectReference Include="..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj"/>
+    </ItemGroup>
+
+    <!-- For nix... -->
+    <ItemGroup Condition="'$(ContinuousIntegrationBuild)'=='true'">
+        <PackageReference Include="Spacebar.DataMappings.Generic" Version="*-preview*"/>
+        <PackageReference Include="Spacebar.Interop.Authentication.AspNetCore" Version="*-preview*"/>
+        <PackageReference Include="Spacebar.Interop.Replication.UnixSocket" Version="*-preview*"/>
+        <PackageReference Include="Spacebar.Models.Config" Version="*-preview*"/>
+        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*"/>
+        <PackageReference Include="Spacebar.Models.Generic" Version="*-preview*"/>
     </ItemGroup>
 </Project>

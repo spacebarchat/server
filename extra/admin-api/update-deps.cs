@@ -20,7 +20,7 @@ var ss = new SemaphoreSlim(1, 1);
 var tasks = outs.Select(outp => Task.Run(async () => {
     Console.WriteLine(ConsoleUtils.ColoredString($"  ==> Updating {outp}...", 0x80, 0x80, 0xff));
     Console.Write(ConsoleUtils.ColoredString($"    ==> Getting project root directory... ", 0x80, 0xff, 0xff));
-    var rootDir = JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.srcRoot", silent: true, stderr: false)).Split("/extra/admin-api/",2)[1];
+    var rootDir = JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.srcRoot", silent: true, stderr: false)).Split("/extra/admin-api/", 2)[1];
     Console.WriteLine(ConsoleUtils.ColoredString($"{rootDir}", 0x80, 0xff, 0xff));
     if (rootDir.Length <= 1) throw new Exception("Invalid project file count?");
 
@@ -35,12 +35,12 @@ var tasks = outs.Select(outp => Task.Run(async () => {
     Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Building fetch-deps script {fname}...", 0x80, 0xff, 0x80));
     Util.RunCommandSync("nix", $"build .#{outp}.passthru.fetch-deps --out-link {fname}");
 
-    Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Running fetch-deps script...", 0x80, 0xff, 0x80));
+    Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Running fetch-deps script, writing into {nugetDepsFilePath}...", 0x80, 0xff, 0x80));
     Util.RunCommandSync(fname, nugetDepsFilePath);
 
     var deps = JsonSerializer.Deserialize<object[]>(await File.ReadAllTextAsync(nugetDepsFilePath));
     Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Locked {deps.Length} dependencies...", (byte)(deps.Length == 0 ? 0xff : 0x80), (byte)(deps.Length == 0 ? 0x80 : 0xff), 0x80));
-    File.Delete(fname);
+    // File.Delete(fname);
 
 
     // await Task.Delay(250);
