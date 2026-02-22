@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403" />
         <PackageReference Include="ArcaneLibs.StringNormalisation" Version="1.0.1-preview.20260126-091403" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
     </ItemGroup>
 
     <ItemGroup>

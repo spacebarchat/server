@@ -1,0 +1,59 @@
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { transform: translateY(0); }
+}
+
+.guild-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 3rem 1rem;
+    padding: 2rem 1rem 1rem;
+}
+
+.guild-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    padding-top: 40px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    height: 360px;
+    background-color: var(--bs-card-bg);
+    margin-top: 32px;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.guild-icon {
+    position: absolute;
+    top: -32px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: 0;
+    border: 4px solid var(--bs-body-bg);
+    z-index: 10;
+}
+
+.guild-banner {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.guild-details {
+    margin-top: auto;
+    text-align: center;
+}
+
+.guild-card.excluded {
+    opacity: 0.2;
+}
