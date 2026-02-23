@@ -132,10 +132,11 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
         setHeartbeat(socket);
 
+        const heartbeatInterval = parseInt(process.env.GATEWAY_HEARTBEAT_INTERVAL ?? "30000");
         await Send(socket, {
             op: OPCODES.Hello,
             d: {
-                heartbeat_interval: 1000 * 30,
+                heartbeat_interval: heartbeatInterval,
             },
         });
 
