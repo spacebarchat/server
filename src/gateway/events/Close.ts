@@ -47,7 +47,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 			} catch(e) {
 				console.error("[WebSocket] Close session cleanup failed", code, e);
 			}
-		}, 5_000);
+		}, 10_000);
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
