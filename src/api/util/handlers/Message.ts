@@ -474,6 +474,53 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
     }
 
+    const attachmentIndices = new Map(
+        message.attachments?.map((attachment, index) => {
+            return [`attachment://${attachment.filename}`, index];
+        }),
+    );
+    const attachmentsToRemove = new Set<number>();
+    function fetchAttachment(url: string | undefined): Attachment | undefined {
+        if (url == undefined) {
+            return undefined;
+        }
+        const index = attachmentIndices.get(url);
+        if (index === undefined) {
+            return undefined;
+        }
+        const attachment = message.attachments?.[index];
+        if (attachment === undefined) {
+            return undefined;
+        }
+        attachmentsToRemove.add(index);
+        return attachment;
+    }
+    for (const embed of message.embeds) {
+        const footer = embed.footer;
+        const footerAttachment = fetchAttachment(footer?.icon_url);
+        if (footerAttachment !== undefined) {
+            footer!.icon_url = footerAttachment.url;
+            footer!.proxy_icon_url = footerAttachment.proxy_url;
+        }
+
+        const image = embed.image;
+        const imageAttachment = fetchAttachment(image?.url);
+        if (imageAttachment !== undefined) {
+            image!.url = imageAttachment.url;
+            image!.proxy_url = imageAttachment.proxy_url;
+        }
+
+        const author = embed.author;
+        const authorAttachment = fetchAttachment(author?.icon_url);
+        if (authorAttachment !== undefined) {
+            author!.icon_url = authorAttachment.url;
+            author!.proxy_icon_url = authorAttachment.proxy_url;
+        }
+    }
+    message.attachments = message.attachments?.filter((_, index) => {
+        return !attachmentsToRemove.has(index);
+    });
+
     // TODO: check and put it all in the body
 
     return message;
