@@ -20,6 +20,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeor
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { User } from "./User";
+import { ReadStateFlags, ReadStateType } from "@spacebar/schemas";
 
 // for read receipts
 // notification cursor and public read receipt need to be forwards-only (the former to prevent re-pinging when marked as unread, and the latter to be acceptable as a legal acknowledgement in criminal proceedings), and private read marker needs to be advance-rewind capable
@@ -50,25 +51,43 @@ export class ReadState extends BaseClass {
     })
     user: User;
 
-    // fully read marker
     @Column({ nullable: true })
-    last_message_id: string;
+    last_message_id?: string;
 
-    // public read receipt
     @Column({ nullable: true })
-    public_ack: string;
+    last_acked_id?: string;
 
-    // notification cursor / private read receipt
     @Column({ nullable: true })
     notifications_cursor: string;
+
+    @Column({ default: 0 })
+    mention_count: number;
+
+    @Column({ default: 0 })
+    badge_count: number;
 
     @Column({ nullable: true })
     last_pin_timestamp?: Date;
 
-    @Column({ nullable: true })
-    mention_count: number;
+    @Column({ default: ReadStateType.CHANNEL })
+    read_state_type: ReadStateType;
 
-    // @Column({ nullable: true })
-    // TODO: derive this from (last_message_id=notifications_cursor=public_ack)=true
-    manual: boolean;
+    @Column({ default: 0 })
+    flags: ReadStateFlags;
+
+    toJSON() {
+        const res = { ...this } as Partial<ReadState>;
+        if (this.read_state_type === ReadStateType.CHANNEL) {
+            delete res.badge_count;
+            delete res.last_acked_id;
+        } else {
+            delete res.mention_count; // mutually exclusive with badge_count
+            delete res.last_message_id; // mutually exclusive with last_acked_id
+            // these only apply to channels:
+            delete res.last_pin_timestamp;
+            delete res.flags;
+            // delete res.last_viewed; // TODO
+        }
+        return res;
+    }
 }

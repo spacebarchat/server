@@ -57,6 +57,10 @@ in
           enable = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
+        uApi = {
+          enable = true;
+          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
+        };
         extraEnvironment = {
           DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";
           #WEBRTC_PORT_RANGE=60000-61000;

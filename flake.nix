@@ -2,7 +2,7 @@
   description = "Spacebar server, written in Typescript.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/master"; # temp hack because unstable is frozen
     flake-utils.url = "github:numtide/flake-utils";
   };
 

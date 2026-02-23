@@ -21,6 +21,7 @@ import { Config, Guild, Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { In, Like, Not } from "typeorm";
+import { DiscoverableGuildsResponse } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -64,7 +65,11 @@ router.get(
 
         res.send({
             total: total,
-            guilds: guilds,
+            guilds: guilds.map((g) => ({
+                ...g,
+                discovery_weight: undefined,
+                discovery_splash: undefined,
+            })),
             offset: Number(offset || Config.get().guild.discovery.offset),
             limit: Number(limit || configLimit),
         });

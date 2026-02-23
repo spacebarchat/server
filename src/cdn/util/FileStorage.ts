@@ -24,23 +24,26 @@ import { Readable } from "stream";
 import ExifTransformer from "exif-be-gone";
 
 // TODO: split stored files into separate folders named after cloned route
-
-function getPath(path: string) {
-    // STORAGE_LOCATION has a default value in start.ts
-    const root = process.env.STORAGE_LOCATION || "../";
-    const filename = join(root, path);
-
-    if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
-    return filename;
-}
-
 export class FileStorage implements Storage {
+    getFsPath(path: string): string {
+        // STORAGE_LOCATION has a default value in start.ts
+        const root = process.env.STORAGE_LOCATION || "../";
+        const filename = join(root, path);
+
+        if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+        return filename;
+    }
+    isFile(path: string): Promise<boolean> {
+        return Promise.resolve(fs.statSync(this.getFsPath(path)).isFile());
+    }
+
     async get(path: string): Promise<Buffer | null> {
-        path = getPath(path);
+        path = this.getFsPath(path);
         try {
             return await fsp.readFile(path);
         } catch (error) {
             try {
+                console.warn("[CDN] Warning: falling back to first file in dir for path", path);
                 const files = fs.readdirSync(path);
                 if (!files.length) return null;
                 return await fsp.readFile(join(path, files[0]));
@@ -51,8 +54,8 @@ export class FileStorage implements Storage {
     }
 
     async clone(path: string, newPath: string) {
-        path = getPath(path);
-        newPath = getPath(newPath);
+        path = this.getFsPath(path);
+        newPath = this.getFsPath(newPath);
 
         if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
 
@@ -61,7 +64,7 @@ export class FileStorage implements Storage {
     }
 
     async set(path: string, value: Buffer) {
-        path = getPath(path);
+        path = this.getFsPath(path);
         if (!fs.existsSync(dirname(path))) fs.mkdirSync(dirname(path), { recursive: true });
 
         const ret = Readable.from(value);
@@ -72,16 +75,16 @@ export class FileStorage implements Storage {
 
     async delete(path: string) {
         //TODO we should delete the parent directory if empty
-        fs.unlinkSync(getPath(path));
+        fs.unlinkSync(this.getFsPath(path));
     }
 
     async exists(path: string) {
-        return fs.existsSync(getPath(path));
+        return fs.existsSync(this.getFsPath(path));
     }
 
     async move(path: string, newPath: string) {
-        path = getPath(path);
-        newPath = getPath(newPath);
+        path = this.getFsPath(path);
+        newPath = this.getFsPath(newPath);
 
         if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
 

@@ -15,12 +15,13 @@ in
 
   config = lib.mkIf (cfg.enable && cfg.nginx.enable) {
     services.nginx = {
+      recommendedProxySettings = true;
       virtualHosts = lib.mkIf cfg.enable {
         "${cfg.apiEndpoint.host}" = {
           enableACME = cfg.apiEndpoint.useSsl;
           forceSSL = cfg.apiEndpoint.useSsl;
           locations."/" = {
-            proxyPass = "http://127.0.0.1:${toString cfg.apiEndpoint.localPort}/";
+            proxyPass = if cfg.uApi.enable then "http://127.0.0.1:${toString cfg.uApi.listenPort}/" else "http://127.0.0.1:${toString cfg.apiEndpoint.localPort}/";
           };
         };
         "${cfg.gatewayEndpoint.host}" = {

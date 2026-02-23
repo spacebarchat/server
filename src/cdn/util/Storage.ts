@@ -28,6 +28,7 @@ export interface Storage {
     get(path: string): Promise<Buffer | null>;
     delete(path: string): Promise<void>;
     exists(path: string): Promise<boolean>;
+    isFile(path: string): Promise<boolean>;
     move(path: string, newPath: string): Promise<void>;
 }
 

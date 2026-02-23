@@ -11,8 +11,10 @@ using Spacebar.Models.Db.Contexts;
 using Spacebar.UApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
+if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH"))) {
+    Console.WriteLine("Loading appsettings from path: " + Environment.GetEnvironmentVariable("APPSETTINGS_PATH"));
     builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
+}
 
 // Add services to the container.
 
@@ -70,9 +72,23 @@ app.UseAuthorization();
 app.MapControllers();
 StreamingHttpClient.LogRequests = false;
 app.Use((context, next) => {
-    context.Response.Headers["Access-Control-Allow-Origin"] = "*";
-    context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
-    context.Response.Headers["Access-Control-Allow-Headers"] = "*, Authorization";
+    context.Response.Headers["Access-Control-Allow-Origin"] =
+        string.IsNullOrWhiteSpace(context.Request.Headers.Origin)
+            ? "*"
+            : context.Request.Headers.Origin;
+
+    context.Response.Headers["Access-Control-Allow-Methods"] =
+        string.IsNullOrWhiteSpace(context.Request.Headers.AccessControlRequestMethod)
+            ? "GET, POST, PUT, DELETE, OPTIONS"
+            : context.Request.Headers.AccessControlRequestMethod.ToString();
+
+    context.Response.Headers["Access-Control-Allow-Headers"] =
+        string.IsNullOrWhiteSpace(context.Request.Headers.AccessControlRequestHeaders)
+            ? "*, Authorization"
+            : context.Request.Headers.AccessControlRequestHeaders.ToString();
+
+    context.Response.Headers.AccessControlAllowCredentials = "true";
+    
     if (context.Request.Method == "OPTIONS") {
         context.Response.StatusCode = 200;
         return Task.CompletedTask;

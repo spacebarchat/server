@@ -16,8 +16,7 @@
         <div class="@("guild-card " + (guild.DiscoveryExcluded ? "excluded" : ""))">
             <img class="guild-icon" src="@(guild.Icon is null ? $"{Config.CdnUrl}/embed/avatars/0.png" : $"{Config.CdnUrl}/icons/{guild.Id}/{guild.Icon}")" alt="@guild.Name"/>
             @if (guild.Banner is not null) {
-                <img class="guild-banner" src="@($"{Config.CdnUrl}/banners/{guild.Id}/{guild.Banner}")"
-                     alt="@guild.Name"/>
+                <img class="guild-banner" src="@($"{Config.CdnUrl}/banners/{guild.Id}/{guild.Banner}")" alt="@guild.Name"/>
             }
             <h4>@guild.Name</h4>
             <p>@guild.Description</p>

@@ -20,6 +20,11 @@ in
     type = lib.types.submodule {
       options = {
         enable = lib.mkEnableOption "Enable C# API overlay.";
+        listenPort = lib.mkOption {
+          type = lib.types.port;
+          default = 3012;
+          description = "Port for the gateway offload daemon to listen on.";
+        };
         extraConfiguration = lib.mkOption {
           type = jsonFormat.type;
           default = import ./default-appsettings-json.nix;
@@ -119,25 +124,11 @@ in
     in
     {
       assertions = [
-        {
-          assertion =
-            cfg.adminApi.extraConfiguration ? ConnectionStrings
-            && cfg.adminApi.extraConfiguration.ConnectionStrings ? Spacebar
-            && cfg.adminApi.extraConfiguration.ConnectionStrings.Spacebar != null;
-          message = ''
-            Admin API: Setting a database connection string in extraConfiguration (`extraConfiguration.ConnectionStrings.Spacebar`) is required when using C# services.
-            Example: Host=127.0.0.1; Username=Spacebar; Password=SuperSecurePassword12; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;
-          '';
-        }
+        (import ./assert-has-connection-string.nix "uAPI" cfg.uApi.extraConfiguration)
       ];
 
-      services.spacebarchat-server.settings.admin = {
-        endpointPublic = "http${if cfg.adminApiEndpoint.useSsl then "s" else ""}://${cfg.adminApiEndpoint.host}:${toString cfg.adminApiEndpoint.publicPort}";
-        endpointPrivate = "http://127.0.0.1:${builtins.toString cfg.adminApiEndpoint.localPort}";
-      };
-
-      systemd.services.spacebar-admin-api = makeServerTsService {
-        description = "Spacebar Server - Admin API";
+      systemd.services.spacebar-uapi = makeServerTsService {
+        description = "Spacebar Server - C# API overlay";
         environment = builtins.mapAttrs (_: val: builtins.toString val) (
           {
             # things we set by default...
@@ -149,7 +140,7 @@ in
             # things we force...
             # CONFIG_PATH = configFile;
             CONFIG_READONLY = 1;
-            ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.uApi.localPort}";
+            ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.uApi.listenPort}";
             STORAGE_LOCATION = cfg.cdnPath;
             APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-uapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.uApi.extraConfiguration);
           }

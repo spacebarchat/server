@@ -38,6 +38,9 @@ export class S3Storage implements Storage {
         const { S3 } = require("@aws-sdk/client-s3");
         this.client = new S3({ region: region, endpoint: endpoint });
     }
+    isFile(path: string): Promise<boolean> {
+        return this.exists(path);
+    }
 
     /**
      * Always return a string, to ensure consistency.

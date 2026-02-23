@@ -51,7 +51,7 @@ import {
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
-import { ChannelType, Embed, EmbedType, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction } from "@spacebar/schemas";
+import { ChannelType, Embed, EmbedType, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction, ReadStateType } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -444,7 +444,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
         }
         const repository = ReadState.getRepository();
-        const condition = { channel_id: channel.id };
+        const condition = { channel_id: channel.id, type: ReadStateType.CHANNEL };
         await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
         await repository.increment(condition, "mention_count", 1);
     } else {
@@ -467,11 +467,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
         if (users.size) {
             const repository = ReadState.getRepository();
-            const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id };
+            const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
 
             await fillInMissingIDs([...users]);
-
-            await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
             await repository.increment(condition, "mention_count", 1);
         }
     }

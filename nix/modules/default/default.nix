@@ -212,6 +212,7 @@ in
         #          message = "You cannot set CONFIG_PATH, CONFIG_READONLY, PORT or STORAGE_LOCATION in extraEnvironment, these are managed by the NixOS module.";
         #        }
       ];
+      services.spacebarchat-server.uApi.extraConfiguration.Spacebar.UApi.FallbackApiEndpoint = "http://127.0.0.1:${toString cfg.apiEndpoint.localPort}";
 
       systemd.services.spacebar-api = makeServerTsService {
         description = "Spacebar Server - API";
