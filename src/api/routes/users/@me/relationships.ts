@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, User, emitEvent } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { PublicUserProjection, RelationshipType, RelationshipPatchSchema } from "@spacebar/schemas";
@@ -314,6 +314,15 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
             user_id: id,
         } as RelationshipAddEvent),
     ]);
+
+
+	if (
+		incoming_relationship.type === RelationshipType.friends &&
+		outgoing_relationship.type === RelationshipType.friends
+	) {
+		await Channel.createDMChannel([id], req.user_id);
+		await Channel.createDMChannel([req.user_id], id);
+	}
 
     return res.sendStatus(204);
 }
