@@ -212,6 +212,7 @@ export class User extends BaseClass {
     }
 
     toPublicUser() {
+        this.clean_data();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const user: any = {};
         PublicUserProjection.forEach((x) => {
@@ -221,6 +222,7 @@ export class User extends BaseClass {
     }
 
     toPrivateUser(extraFields: (keyof User)[] = []) {
+        this.clean_data();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const user: any = {};
         [...PrivateUserProjection, ...extraFields].forEach((x) => {

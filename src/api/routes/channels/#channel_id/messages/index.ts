@@ -481,6 +481,7 @@ router.post(
                     where: { id: req.user_id, guild_id: message.guild_id },
                     relations: { roles: true },
                 });
+                message.member.clean_data();
             }
 
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
