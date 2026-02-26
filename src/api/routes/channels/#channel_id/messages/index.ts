@@ -502,15 +502,11 @@ router.post(
 
         // no await as it shouldnt block the message send function and silently catch error
         postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
-
-        return res.json(
-            message.withSignedAttachments(
-                new NewUrlUserSignatureData({
-                    ip: req.ip,
-                    userAgent: req.headers["user-agent"] as string,
-                }),
-            ),
-        );
+        const sign = new NewUrlUserSignatureData({
+            ip: req.ip,
+            userAgent: req.headers["user-agent"] as string,
+        });
+        return res.json(await Message.prototype.withSignedComponents.call(message.withSignedAttachments(sign), sign));
     },
 );
 
