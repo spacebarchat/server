@@ -109,7 +109,6 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
     if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
     const url = new URL(media.url);
-    console.log(url);
     if (!["http:", "https:", "attachment:"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
     let attEnt: CloudAttachment;
     let delWhenDone = false;
@@ -128,7 +127,6 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             userFileSize: blob.size,
             userIsClip: false,
         });
-        console.log(attEnt.id);
         await attEnt.save();
         const cdnUrl = Config.get().cdn.endpointPublic;
         const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
@@ -162,7 +160,6 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     });
 
     if (!cloneResponse.ok) {
-        console.log(cloneResponse, url2);
         console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${messageId}`);
         throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
     }
@@ -185,15 +182,12 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
     media.id = realAtt.id;
 
-    console.log(media);
-
     media.height = attEnt.height;
     media.width = attEnt.width;
     media.content_type = attEnt.contentType;
     //TODO flags?
     media.attachment_id = attEnt.id;
     //TODO preview stuff
-    console.log(media);
 
     if (delWhenDone) {
         return () =>
@@ -355,7 +349,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
         const rep = Channel.getRepository();
-        console.log(channel.id);
         await rep.increment({ id: channel.id }, "message_count", 1);
         await rep.increment({ id: channel.id }, "total_message_sent", 1);
     }
@@ -681,7 +674,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                 await fillInMissingIDs(channel.recipients.map(({ user_id }) => user_id));
             }
         } else {
-            console.log(channel.guild_id);
             await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
         }
         const repository = ReadState.getRepository();
