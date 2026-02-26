@@ -514,7 +514,7 @@ router.post(
             ip: req.ip,
             userAgent: req.headers["user-agent"] as string,
         });
-        return res.json(await Message.prototype.withSignedComponents.call(message.withSignedAttachments(sign), sign));
+        return res.json(Message.prototype.withSignedComponents.call(message.withSignedAttachments(sign), sign));
     },
 );
 

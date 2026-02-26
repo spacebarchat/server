@@ -314,7 +314,7 @@ export class Message extends BaseClass {
             attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
         };
     }
-    async withSignedComponents(data: NewUrlUserSignatureData) {
+    withSignedComponents(data: NewUrlUserSignatureData) {
         if (!this.components || !(this.flags & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2))) return { ...this };
         function signMedia(media: UnfurledMediaItem) {
             Object.assign(media, Attachment.prototype.signUrls.call(media, data));
