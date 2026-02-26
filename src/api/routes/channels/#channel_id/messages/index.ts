@@ -503,7 +503,7 @@ router.post(
             emitEvent({
                 event: "MESSAGE_CREATE",
                 channel_id: channel_id,
-                data: message,
+                data: message.toJSON(),
             } as MessageCreateEvent),
             message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
         ]);
@@ -514,7 +514,7 @@ router.post(
             ip: req.ip,
             userAgent: req.headers["user-agent"] as string,
         });
-        return res.json(Message.prototype.withSignedComponents.call(message.withSignedAttachments(sign), sign));
+        return res.json(Message.prototype.withSignedComponents.call(Message.prototype.withSignedAttachments.call(message.toJSON(), sign), sign));
     },
 );
 
