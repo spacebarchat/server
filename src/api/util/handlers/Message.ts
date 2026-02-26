@@ -49,6 +49,7 @@ import {
     Session,
     MessageFlags,
     FieldErrors,
+    Snowflake,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
@@ -104,11 +105,12 @@ function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], er
         }
     }
 }
-async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string) {
+async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string): Promise<(() => void) | void> {
     if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
     if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
     const url = new URL(media.url);
-    if (!["http", "https", "attachment"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
+    console.log(url);
+    if (!["http:", "https:", "attachment:"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
     let attEnt: CloudAttachment;
     let delWhenDone = false;
     if (url.protocol !== "attachment") {
@@ -121,11 +123,12 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             user: user,
             channel: channel,
             uploadFilename: uploadFilename,
-            userAttachmentId: "0",
+            userAttachmentId: id ?? "0",
             userFilename: name,
             userFileSize: blob.size,
             userIsClip: false,
         });
+        console.log(attEnt.id);
         await attEnt.save();
         const cdnUrl = Config.get().cdn.endpointPublic;
         const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
@@ -149,8 +152,9 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             },
         });
     }
+    const url2 = `${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`;
 
-    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
+    const cloneResponse = await fetch(url2, {
         method: "POST",
         headers: {
             signature: Config.get().security.requestSignature || "",
@@ -158,16 +162,19 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     });
 
     if (!cloneResponse.ok) {
+        console.log(cloneResponse, url2);
         console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${messageId}`);
         throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
     }
 
     const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
+    media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
+    if (url.protocol === "attachment:") media.url = media.proxy_url;
 
     const realAtt = Attachment.create({
         filename: attEnt.userFilename,
-        url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
-        proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+        url: media.url,
+        proxy_url: media.proxy_url,
         size: attEnt.size,
         height: attEnt.height,
         width: attEnt.width,
@@ -177,24 +184,27 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
 
     //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
     media.id = realAtt.id;
-    media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
-    if (url.protocol !== "attachment") media.url = media.proxy_url;
+
+    console.log(media);
+
     media.height = attEnt.height;
     media.width = attEnt.width;
     media.content_type = attEnt.contentType;
     //TODO flags?
     media.attachment_id = attEnt.id;
     //TODO preview stuff
+    console.log(media);
 
     if (delWhenDone) {
-        fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
-            headers: {
-                signature: Config.get().security.requestSignature,
-            },
-            method: "DELETE",
-        }).then(() => {
-            attEnt.remove();
-        });
+        return () =>
+            fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
+                headers: {
+                    signature: Config.get().security.requestSignature,
+                },
+                method: "DELETE",
+            }).then(() => {
+                attEnt.remove();
+            });
     }
 }
 
@@ -340,7 +350,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         rights.hasThrow("SEND_MESSAGES");
     }
 
-    await Promise.all(medias.map((m, index) => processMedia(m, message.id, batchId, message.author as User, channel, index + "")));
+    (await Promise.all(medias.map((m, index) => processMedia(m, message.id, batchId, message.author as User, channel, index + "")))).forEach((_) => _?.());
 
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
@@ -763,7 +773,7 @@ export async function postHandleMessage(message: Message) {
 
     const linkMatches = content?.match(LINK_REGEX) || [];
     message.clean_data();
-    const data = { ...message };
+    const data = { ...message.toJSON() };
 
     const currentNormalizedUrls = new Set<string>();
     for (const link of linkMatches) {
@@ -815,14 +825,10 @@ export async function postHandleMessage(message: Message) {
         if (data.embeds != undefined) {
             data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
         }
-        const author = data.author?.toPublicUser();
         const event = {
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
-            data: {
-                ...data,
-                author,
-            },
+            data,
         } as MessageUpdateEvent;
         const embeds = data.embeds == undefined ? [] : data.embeds;
         await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds })]);
