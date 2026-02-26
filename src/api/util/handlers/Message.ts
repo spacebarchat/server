@@ -163,8 +163,20 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     }
 
     const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
+
+    const realAtt = Attachment.create({
+        filename: attEnt.userFilename,
+        url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+        proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+        size: attEnt.size,
+        height: attEnt.height,
+        width: attEnt.width,
+        content_type: attEnt.contentType || attEnt.userOriginalContentType,
+    });
+    await realAtt.save();
+
     //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
-    media.id = attEnt.id;
+    media.id = realAtt.id;
     media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
     if (url.protocol !== "attachment") media.url = media.proxy_url;
     media.height = attEnt.height;
