@@ -39,7 +39,7 @@ export class Snowflake {
      * @returns {string}
      * @private
      */
-    static idToBinary(num) {
+    private static idToBinary(num: string): string {
         let bin = "";
         let high = parseInt(num.slice(0, -10)) || 0;
         let low = parseInt(num.slice(-10));
@@ -60,7 +60,7 @@ export class Snowflake {
      * @returns {Snowflake}
      * @private
      */
-    static binaryToID(num) {
+    private static binaryToID(num: string): string {
         let dec = "";
 
         while (num.length > 50) {
@@ -112,7 +112,7 @@ export class Snowflake {
      * @param {Snowflake} snowflake Snowflake to deconstruct
      * @returns {DeconstructedSnowflake} Deconstructed snowflake
      */
-    static deconstruct(snowflake) {
+    static deconstruct(snowflake: string) {
         const BINARY = Snowflake.idToBinary(snowflake).toString(2).padStart(64, "0");
         const res = {
             timestamp: parseInt(BINARY.substring(0, 42), 2) + Snowflake.EPOCH,

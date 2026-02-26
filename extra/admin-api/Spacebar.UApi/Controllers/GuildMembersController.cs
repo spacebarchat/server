@@ -8,6 +8,7 @@ using Spacebar.Models.Generic;
 namespace Spacebar.UApi.Controllers;
 
 [Route("/api/v{_}/guilds/{guildId}/members/")]
+[ApiController]
 public class GuildMembersController(ILogger<GuildMembersController> logger, SpacebarDbContext db, SpacebarAspNetAuthenticationService authService) : ControllerBase {
     /// <summary>
     ///     Get a guild member by ID

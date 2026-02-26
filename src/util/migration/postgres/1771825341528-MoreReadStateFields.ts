@@ -10,6 +10,7 @@ export class MoreReadStateFields1771825341528 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "read_states" ADD "read_state_type" integer NOT NULL DEFAULT '0'`);
         await queryRunner.query(`ALTER TABLE "read_states" ADD "flags" integer NOT NULL DEFAULT '0'`);
         await queryRunner.query(`ALTER TABLE "read_states" ALTER COLUMN "mention_count" SET DEFAULT '0'`);
+        await queryRunner.query(`UPDATE "read_states" SET "mention_count" = 0 WHERE "mention_count" IS NULL`);
         await queryRunner.query(`ALTER TABLE "read_states" ALTER COLUMN "mention_count" SET NOT NULL`);
     }
 

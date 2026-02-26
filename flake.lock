@@ -20,11 +20,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1771807909,
-        "narHash": "sha256-EIBJlDXxqYpmUDvZ/H13BZwRtMbaKqJYDbrYNGkKGfk=",
+        "lastModified": 1772001049,
+        "narHash": "sha256-W03sIIWi0tGCCVKjfuBwktvuKbXq10SwFDuhqQhoAm0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e2e54a67c07f3dcc70ffbb769dc5cb011a28fcc6",
+        "rev": "4e331cc3846f585943eb6f3eef9f00ace010e750",
         "type": "github"
       },
       "original": {
@@ -34,10 +34,34 @@
         "type": "github"
       }
     },
+    "pion-webrtc": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772089711,
+        "narHash": "sha256-N4XQECQRWDirbf4mrZ0w5eCKPO5o2yNZv4LwW5SS4j0=",
+        "owner": "spacebarchat",
+        "repo": "pion-webrtc",
+        "rev": "d18098fd78687a2864ea8e696596d412889f9250",
+        "type": "github"
+      },
+      "original": {
+        "owner": "spacebarchat",
+        "repo": "pion-webrtc",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "pion-webrtc": "pion-webrtc"
       }
     },
     "systems": {

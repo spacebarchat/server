@@ -99,7 +99,7 @@ router.post(
     },
 );
 
-router.delete("/:cloud_attachment_url", async (req: Request, res: Response) => {
+router.delete("/:cloud_attachment_url", route({}), async (req: Request, res: Response) => {
     const { channel_id, cloud_attachment_url } = req.params as { [key: string]: string };
 
     const user = req.user;

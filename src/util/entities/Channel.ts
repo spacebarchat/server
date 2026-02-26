@@ -95,8 +95,8 @@ export class Channel extends BaseClass {
     @ManyToOne(() => User)
     owner: User;
 
-    @Column({ nullable: true })
-    last_pin_timestamp?: number;
+    @Column({ nullable: true, type: "timestamp with time zone" })
+    last_pin_timestamp?: Date | null; // ISO8601
 
     @Column({ nullable: true })
     default_auto_archive_duration?: number;

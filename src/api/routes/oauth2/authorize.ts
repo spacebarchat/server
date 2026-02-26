@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { ApiError, Application, DiscordApiErrors, FieldErrors, Member, Permissions, User, getPermission } from "@spacebar/util";
+import { ApiError, Application, DiscordApiErrors, FieldErrors, Member, Permissions, User, getPermission, Role } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ApplicationAuthorizeSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
@@ -213,6 +213,16 @@ router.post(
         if (!app.bot) throw new ApiError("OAuth2 application does not have a bot", 50010, 400);
 
         await Member.addToGuild(app.id, body.guild_id);
+        if (body.permissions) {
+            const role = Role.create({
+                managed: true,
+                name: app.name,
+                permissions: body.permissions,
+                guild_id: body.guild_id,
+            });
+            await role.save();
+            await Member.addRole(body.guild_id, req.user_id, role.id);
+        }
 
         return res.json({
             location: "/oauth2/authorized", // redirect URL

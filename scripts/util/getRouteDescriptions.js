@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const { traverseDirectory } = require("lambert-server");
 const RouteUtility = require("../../dist/api/util/handlers/route.js");
-const { bgRedBright, greenBright, yellowBright, blueBright, redBright, underline, bold } = require("picocolors");
+const { bgRedBright, greenBright, yellowBright, blueBright, redBright, underline, bold, bgYellow, black } = require("picocolors");
 
 const methods = ["get", "post", "put", "delete", "patch"];
 const routes = new Map();
@@ -46,7 +46,7 @@ function proxy(file, apiMethod, apiPathPrefix, apiPath, ...args) {
     const opts = args.find((x) => x?.prototype?.OPTS_MARKER == true);
     if (!opts)
         return console.error(
-            ` \x1b[5m${bgRedBright("ERROR")}\x1b[25m ${file.replace(path.resolve(__dirname, "..", "..", "dist"), "/src/")} has route without route() description middleware: ${colorizeMethod(apiMethod)} ${formatPath(apiPath)}`,
+            `  \x1b[5m${bgYellow(black("WARN"))}\x1b[25m ${file.replace(path.resolve(__dirname, "..", "..", "dist"), "/src")} has route without route() description middleware: ${colorizeMethod(apiMethod)} ${formatPath(apiPath)}`,
         );
 
     console.log(`${colorizeMethod(apiMethod).padStart("DELETE".length + 10)} ${formatPath(apiPathPrefix + apiPath)}`);

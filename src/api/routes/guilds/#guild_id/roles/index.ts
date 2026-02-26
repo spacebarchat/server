@@ -60,6 +60,8 @@ router.post(
 
         if (role_count > maxRoles) throw DiscordApiErrors.MAXIMUM_ROLES.withParams(maxRoles);
 
+        const everyoneRole = await Role.findOne({ where: { id: guild_id } });
+
         const role = Role.create({
             // values before ...body are default and can be overridden
             position: 1,
@@ -69,7 +71,7 @@ router.post(
             ...body,
             guild_id: guild_id,
             managed: false,
-            permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
+            permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || everyoneRole?.permissions || 0)),
             tags: undefined,
             icon: undefined,
             unicode_emoji: undefined,

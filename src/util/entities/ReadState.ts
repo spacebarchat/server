@@ -75,19 +75,19 @@ export class ReadState extends BaseClass {
     @Column({ default: 0 })
     flags: ReadStateFlags;
 
-    toJSON() {
-        const res = { ...this } as Partial<ReadState>;
-        if (this.read_state_type === ReadStateType.CHANNEL) {
-            delete res.badge_count;
-            delete res.last_acked_id;
-        } else {
-            delete res.mention_count; // mutually exclusive with badge_count
-            delete res.last_message_id; // mutually exclusive with last_acked_id
-            // these only apply to channels:
-            delete res.last_pin_timestamp;
-            delete res.flags;
-            // delete res.last_viewed; // TODO
-        }
-        return res;
-    }
+    // toJSON() {
+    //     const res = { ...this } as Partial<ReadState>;
+    //     if (this.read_state_type === ReadStateType.CHANNEL) {
+    //         delete res.badge_count;
+    //         delete res.last_acked_id;
+    //     } else {
+    //         delete res.mention_count; // mutually exclusive with badge_count
+    //         delete res.last_message_id; // mutually exclusive with last_acked_id
+    //         // these only apply to channels:
+    //         delete res.last_pin_timestamp;
+    //         delete res.flags;
+    //         // delete res.last_viewed; // TODO
+    //     }
+    //     return res;
+    // }
 }

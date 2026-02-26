@@ -1,6 +1,4 @@
 {
-  nixpkgs,
-  modulesPath,
   pkgs,
   lib,
   ...
@@ -54,15 +52,5 @@
     earlySetup = true;
     font = "${pkgs.cozette}/share/consolefonts/cozette6x13.psfu";
     packages = with pkgs; [ cozette ];
-  };
-
-  system = {
-    #activatable = false;
-    copySystemConfiguration = false;
-    includeBuildDependencies = false;
-    disableInstallerTools = lib.mkForce true;
-    build = {
-      separateActivationScript = true;
-    };
   };
 }

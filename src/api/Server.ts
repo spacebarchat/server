@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase } from "@spacebar/util";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase, getRevInfoOrFail } from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -139,6 +139,13 @@ export class SpacebarServer extends Server {
 
         app.get("/_spacebar/api/openapi.json", (req, res) => {
             res.sendFile(path.join(ASSETS_FOLDER, "openapi.json"));
+        });
+
+        app.get("/_spacebar/api/version", (req, res) => {
+            res.json({
+                implementation: "spacebar-server-ts",
+                version: getRevInfoOrFail(),
+            });
         });
 
         // current well-known location

@@ -131,7 +131,7 @@ router.patch(
     },
 );
 
-router.delete("/", async (req: Request, res: Response) => {
+router.delete("/", route({}), async (req: Request, res: Response) => {
     const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
 
     if (!applicationExists) {

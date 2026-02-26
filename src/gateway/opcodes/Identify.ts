@@ -141,6 +141,17 @@ export async function onIdentify(this: WebSocket, data: Payload) {
               isNewSession: true,
           };
 
+    if (tokenData.tokenVersion < CurrentTokenFormatVersion)
+        console.warn(
+            "[Identify/WARN] Access token version",
+            tokenData.tokenVersion,
+            "used by user",
+            tokenData.user.id,
+            `(${tokenData.user.tag})! - Client`,
+            this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) ? "did" : "did not",
+            "opt for token refresh.",
+        );
+
     this.session = session;
     this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();

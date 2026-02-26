@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/master"; # temp hack because unstable is frozen
     flake-utils.url = "github:numtide/flake-utils";
+    pion-webrtc = {
+      url = "github:spacebarchat/pion-webrtc";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
   outputs =
@@ -11,6 +16,7 @@
       self,
       nixpkgs,
       flake-utils,
+      pion-webrtc
     }:
     nixpkgs.lib.recursiveUpdate
       (
@@ -35,6 +41,7 @@
             packages = {
               default = (pkgs.callPackage (import ./default.nix { inherit self rVersion; })) { };
               nodeModules = (pkgs.callPackage ./node-modules.nix) { };
+              pion-sfu = pion-webrtc.packages.${system}.default;
             };
 
             containers = {

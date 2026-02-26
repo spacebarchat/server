@@ -171,6 +171,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         message.author = await User.findOneOrFail({
             where: { id: opts.author_id },
         });
+        message.author.clean_data();
         const rights = await getRights(opts.author_id);
         rights.hasThrow("SEND_MESSAGES");
     }
@@ -444,7 +445,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
         }
         const repository = ReadState.getRepository();
-        const condition = { channel_id: channel.id, type: ReadStateType.CHANNEL };
+        const condition = { channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
         await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
         await repository.increment(condition, "mention_count", 1);
     } else {
@@ -473,6 +474,53 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             await repository.increment(condition, "mention_count", 1);
         }
     }
+
+    const attachmentIndices = new Map(
+        message.attachments?.map((attachment, index) => {
+            return [`attachment://${attachment.filename}`, index];
+        }),
+    );
+    const attachmentsToRemove = new Set<number>();
+    function fetchAttachment(url: string | undefined): Attachment | undefined {
+        if (url == undefined) {
+            return undefined;
+        }
+        const index = attachmentIndices.get(url);
+        if (index === undefined) {
+            return undefined;
+        }
+        const attachment = message.attachments?.[index];
+        if (attachment === undefined) {
+            return undefined;
+        }
+        attachmentsToRemove.add(index);
+        return attachment;
+    }
+    for (const embed of message.embeds) {
+        const footer = embed.footer;
+        const footerAttachment = fetchAttachment(footer?.icon_url);
+        if (footerAttachment !== undefined) {
+            footer!.icon_url = footerAttachment.url;
+            footer!.proxy_icon_url = footerAttachment.proxy_url;
+        }
+
+        const image = embed.image;
+        const imageAttachment = fetchAttachment(image?.url);
+        if (imageAttachment !== undefined) {
+            image!.url = imageAttachment.url;
+            image!.proxy_url = imageAttachment.proxy_url;
+        }
+
+        const author = embed.author;
+        const authorAttachment = fetchAttachment(author?.icon_url);
+        if (authorAttachment !== undefined) {
+            author!.icon_url = authorAttachment.url;
+            author!.proxy_icon_url = authorAttachment.proxy_url;
+        }
+    }
+    message.attachments = message.attachments?.filter((_, index) => {
+        return !attachmentsToRemove.has(index);
+    });
 
     // TODO: check and put it all in the body
 
@@ -643,7 +691,7 @@ interface MessageOptions extends MessageCreateSchema {
     author_id?: string;
     webhook_id?: string;
     application_id?: string;
-    embeds?: Embed[];
+    embeds?: Embed[] | null;
     reactions?: Reaction[];
     channel_id?: string;
     attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment | Attachment)[]; // why are we masking this?

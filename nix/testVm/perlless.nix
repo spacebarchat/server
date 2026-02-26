@@ -1,7 +1,7 @@
-{ pkgs, lib, ... }:
+{ lib, ... }:
 {
   #perlless profile
-#  system.switch.enable = lib.mkForce false;
+  #system.switch.enable = lib.mkForce false;
 
   # Remove perl from activation
   #system.etc.overlay.enable = lib.mkForce true;
