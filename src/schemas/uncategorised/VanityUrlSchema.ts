@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface VanityUrlSchema {
-    /**
-     * @minLength 1
-     * @maxLength 20
-     */
-    code?: string;
-}
+import { z } from "zod";
+
+export const VanityUrlSchema = z.object({
+    code: z.string().min(1).max(20).optional(),
+});
+
+export type VanityUrlSchema = z.infer<typeof VanityUrlSchema>;

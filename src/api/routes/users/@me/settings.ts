@@ -44,7 +44,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "UserSettingsUpdateSchema",
+        requestBody: UserSettingsUpdateSchema,
         responses: {
             200: {
                 body: "UserSettings",

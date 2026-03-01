@@ -16,10 +16,16 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActivitySchema, Snowflake } from "@spacebar/schemas";
+import { z } from "zod";
+import { ActivitySchema } from "@spacebar/schemas";
 import { ClientStatus } from "@spacebar/util";
 
-export type SessionsLogoutSchema = { session_ids?: Snowflake[]; session_id_hashes?: string[] };
+export const SessionsLogoutSchema = z.object({
+    session_ids: z.array(z.string()).optional(),
+    session_id_hashes: z.array(z.string()).optional(),
+});
+
+export type SessionsLogoutSchema = z.infer<typeof SessionsLogoutSchema>;
 export type GetSessionsResponse = { user_sessions: DeviceInfo[] };
 
 export type DeviceInfo = {

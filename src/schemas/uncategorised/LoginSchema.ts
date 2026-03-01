@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface LoginSchema {
-    login: string;
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
-    password: string;
-    undelete?: boolean;
-    captcha_key?: string;
-    login_source?: string;
-    gift_code_sku_id?: string;
-}
+import { z } from "zod";
+
+export const LoginSchema = z.object({
+    login: z.string(),
+    password: z.string().min(1).max(72),
+    undelete: z.boolean().optional(),
+    captcha_key: z.string().optional(),
+    login_source: z.string().optional(),
+    gift_code_sku_id: z.string().optional(),
+});
+
+export type LoginSchema = z.infer<typeof LoginSchema>;

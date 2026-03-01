@@ -46,7 +46,7 @@ export class SMTPEmailClient extends BaseEmailClient {
 
         /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc) */
         let nodemailer_opts: unknown;
-        if(!username || !password) {
+        if (!username || !password) {
             nodemailer_opts = {
                 host,
                 port,

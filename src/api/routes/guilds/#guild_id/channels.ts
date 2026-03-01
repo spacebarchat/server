@@ -48,7 +48,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "ChannelCreateSchema",
+        requestBody: ChannelCreateSchema,
         permission: "MANAGE_CHANNELS",
         responses: {
             201: {
@@ -77,7 +77,7 @@ router.post(
 router.patch(
     "/",
     route({
-        requestBody: "ChannelReorderSchema",
+        requestBody: ChannelReorderSchema,
         permission: "MANAGE_CHANNELS",
         responses: {
             204: {},

@@ -19,13 +19,14 @@
 import { route } from "@spacebar/api";
 import { getPermission, Member, PermissionResolvable } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { MemberNickChangeSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
 router.patch(
     "/",
     route({
-        requestBody: "MemberNickChangeSchema",
+        requestBody: MemberNickChangeSchema,
         responses: {
             200: {
                 body: "APIPublicMember",

@@ -16,6 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface RelationshipPatchSchema {
-    nickname?: string;
-}
+import { z } from "zod";
+
+export const RelationshipPatchSchema = z.object({
+    type: z.number().optional(),
+    nickname: z.string().nullish(),
+});
+
+export type RelationshipPatchSchema = z.infer<typeof RelationshipPatchSchema>;

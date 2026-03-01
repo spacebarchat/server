@@ -28,8 +28,8 @@ export interface ApplicationCommandSchema {
 
 export interface ApplicationCommandIndexPermissions {
     user?: boolean;
-    roles?: Record<Snowflake, boolean>;
-    channels?: Record<Snowflake, boolean>;
+    roles?: { [key: string]: boolean };
+    channels?: { [key: string]: boolean };
 }
 
 export enum ApplicationCommandType {

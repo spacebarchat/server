@@ -16,7 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface WidgetModifySchema {
-    enabled: boolean; // whether the widget is enabled
-    channel_id: string; // the widget channel id
-}
+import { z } from "zod";
+
+export const WidgetModifySchema = z.object({
+    enabled: z.boolean(),
+    channel_id: z.string(),
+});
+
+export type WidgetModifySchema = z.infer<typeof WidgetModifySchema>;

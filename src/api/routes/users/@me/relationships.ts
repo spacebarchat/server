@@ -1,26 +1,26 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { PublicUserProjection, RelationshipType, RelationshipPatchSchema } from "@spacebar/schemas";
+import { PublicUserProjection, RelationshipType, RelationshipPatchSchema, RelationshipPostSchema, RelationshipPutSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -53,7 +53,7 @@ router.get(
 router.put(
     "/:user_id",
     route({
-        requestBody: "RelationshipPutSchema",
+        requestBody: RelationshipPutSchema,
         responses: {
             204: {},
             400: {
@@ -81,7 +81,7 @@ router.put(
 router.patch(
     "/:user_id",
     route({
-        requestBody: "RelationshipPatchSchema",
+        requestBody: RelationshipPatchSchema,
         responses: {
             204: {},
             400: {
@@ -100,7 +100,7 @@ router.patch(
                 to_id: req.params.user_id as string,
             },
         });
-        rel.nickname = body.nickname;
+        rel.nickname = body.nickname ?? undefined;
         await Promise.all([
             emitEvent({
                 event: "RELATIONSHIP_UPDATE",
@@ -119,7 +119,7 @@ router.patch(
 router.post(
     "/",
     route({
-        requestBody: "RelationshipPostSchema",
+        requestBody: RelationshipPostSchema,
         responses: {
             204: {},
             400: {

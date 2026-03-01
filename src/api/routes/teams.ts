@@ -54,7 +54,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "TeamCreateSchema",
+        requestBody: TeamCreateSchema,
         responses: {
             200: {
                 body: "Team",

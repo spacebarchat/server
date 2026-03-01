@@ -4,7 +4,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
-import { WebhookUpdateSchema } from "@spacebar/schemas";
+import { WebhookUpdateSchema, WebhookExecuteSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(
@@ -13,7 +13,7 @@ router.get(
         description: "Returns a webhook object for the given id and token.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "Webhook",
             },
             404: {},
         },
@@ -65,7 +65,7 @@ router.post(
         next();
     },
     route({
-        requestBody: "WebhookExecuteSchema",
+        requestBody: WebhookExecuteSchema,
         query: {
             wait: {
                 type: "boolean",
@@ -136,7 +136,7 @@ router.delete(
 router.patch(
     "/",
     route({
-        requestBody: "WebhookUpdateSchema",
+        requestBody: WebhookUpdateSchema,
         responses: {
             200: {
                 body: "Message",

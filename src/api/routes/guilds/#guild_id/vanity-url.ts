@@ -67,7 +67,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "VanityUrlSchema",
+        requestBody: VanityUrlSchema,
         permission: "MANAGE_GUILD",
         responses: {
             200: {

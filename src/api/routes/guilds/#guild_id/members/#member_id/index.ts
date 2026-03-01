@@ -68,7 +68,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "MemberChangeSchema",
+        requestBody: MemberChangeSchema,
         responses: {
             200: {
                 body: "Member",

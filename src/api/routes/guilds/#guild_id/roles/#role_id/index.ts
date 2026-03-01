@@ -94,7 +94,7 @@ router.delete(
 router.patch(
     "/",
     route({
-        requestBody: "RoleModifySchema",
+        requestBody: RoleModifySchema,
         permission: "MANAGE_ROLES",
         responses: {
             200: {

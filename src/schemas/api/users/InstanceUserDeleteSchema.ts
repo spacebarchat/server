@@ -1,7 +1,12 @@
-import { ConnectedAccount } from "@spacebar/util";
+import { z } from "zod";
 
-export type InstanceUserDeleteSchema = InstanceUserDeleteSchemaContent | undefined; //unsure if this a correct way to make the body optional
-export interface InstanceUserDeleteSchemaContent {
-    reason?: string;
-    persistInstanceBan?: boolean;
-}
+export const InstanceUserDeleteSchemaContent = z.object({
+    reason: z.string().optional(),
+    persistInstanceBan: z.boolean().optional(),
+});
+
+// Body is optional (can be undefined)
+export const InstanceUserDeleteSchema = InstanceUserDeleteSchemaContent.optional();
+
+export type InstanceUserDeleteSchemaContent = z.infer<typeof InstanceUserDeleteSchemaContent>;
+export type InstanceUserDeleteSchema = z.infer<typeof InstanceUserDeleteSchema>;

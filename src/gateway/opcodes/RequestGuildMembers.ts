@@ -1,24 +1,23 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
-import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In } from "typeorm";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
 
@@ -30,10 +29,10 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
     if (d.user_ids && !Array.isArray(d.user_ids)) d.user_ids = [d.user_ids];
 
-    check.call(this, RequestGuildMembersSchema, d);
+    const dParsed = RequestGuildMembersSchema.parse(d);
 
-    const { presences, nonce, query: requestQuery } = d as RequestGuildMembersSchema;
-    let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;
+    const { presences, nonce, query: requestQuery } = dParsed;
+    let { limit, user_ids, guild_id } = dParsed;
 
     // some discord libraries send empty string as query when they meant to send undefined, which was leading to errors being thrown in this handler
     const query = requestQuery != "" ? requestQuery : undefined;

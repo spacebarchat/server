@@ -27,7 +27,7 @@ const router: Router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "InviteCreateSchema",
+        requestBody: InviteCreateSchema,
         permission: "CREATE_INSTANT_INVITE",
         right: "CREATE_INVITES",
         responses: {

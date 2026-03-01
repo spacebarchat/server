@@ -27,7 +27,7 @@ const router: Router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "TagCreateSchema",
+        requestBody: TagCreateSchema,
         permission: "MANAGE_CHANNELS",
         responses: {
             200: {
@@ -72,7 +72,7 @@ router.post(
 router.put(
     "/:tag_id",
     route({
-        requestBody: "TagCreateSchema",
+        requestBody: TagCreateSchema,
         permission: "MANAGE_CHANNELS",
         responses: {
             200: {

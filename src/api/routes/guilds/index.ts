@@ -28,7 +28,7 @@ const router: Router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "GuildCreateSchema",
+        requestBody: GuildCreateSchema,
         right: "CREATE_GUILDS",
         responses: {
             201: {

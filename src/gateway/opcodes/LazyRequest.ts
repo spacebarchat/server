@@ -1,25 +1,24 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition } from "@spacebar/util";
 import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
-import { check } from "./instanceOf";
 import { LazyRequestSchema } from "@spacebar/schemas";
 
 // TODO: only show roles/members that have access to this channel
@@ -173,8 +172,8 @@ async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();
     // TODO: check data
-    check.call(this, LazyRequestSchema, d);
-    const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
+    const parsedData = LazyRequestSchema.parse(d);
+    const { guild_id, typing, channels, activities, members } = parsedData;
 
     if (members) {
         // Client has requested a PRESENCE_UPDATE for specific member

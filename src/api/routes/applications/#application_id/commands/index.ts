@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
+import { ApplicationCommandCreateSchema, ApplicationCommandSchema, BulkApplicationCommandCreateSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Application, ApplicationCommand, FieldErrors, Snowflake } from "@spacebar/util";
@@ -39,7 +39,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 router.post(
     "/",
     route({
-        requestBody: "ApplicationCommandCreateSchema",
+        requestBody: ApplicationCommandCreateSchema,
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -99,7 +99,7 @@ router.post(
 router.put(
     "/",
     route({
-        requestBody: "BulkApplicationCommandCreateSchema",
+        requestBody: BulkApplicationCommandCreateSchema,
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });

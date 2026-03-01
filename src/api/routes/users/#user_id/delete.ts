@@ -43,7 +43,7 @@ router.post(
     "/",
     route({
         right: "MANAGE_USERS",
-        requestBody: "InstanceUserDeleteSchema",
+        requestBody: InstanceUserDeleteSchema,
         responses: {
             204: {},
             403: {

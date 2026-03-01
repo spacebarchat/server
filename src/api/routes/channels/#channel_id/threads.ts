@@ -57,7 +57,7 @@ router.post(
         next();
     },
     route({
-        requestBody: "ThreadCreationSchema",
+        requestBody: ThreadCreationSchema,
         permission: "CREATE_PUBLIC_THREADS",
         responses: {
             200: {},

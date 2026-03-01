@@ -1,35 +1,30 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface RequestGuildMembersSchema {
-    guild_id: string | [string];
-    query?: string;
-    limit?: number;
-    presences?: boolean;
-    user_ids?: string | string[];
-    nonce?: string;
-}
+import { z } from "zod";
 
-export const RequestGuildMembersSchema = {
-    guild_id: "" as string | string[],
-    $query: String,
-    $limit: Number,
-    $presences: Boolean,
-    $user_ids: [] as string | string[],
-    $nonce: String,
-};
+export const RequestGuildMembersSchema = z.object({
+    guild_id: z.union([z.string(), z.array(z.string())]),
+    query: z.string().optional(),
+    limit: z.number().optional(),
+    presences: z.boolean().optional(),
+    user_ids: z.union([z.string(), z.array(z.string())]).optional(),
+    nonce: z.string().optional(),
+});
+
+export type RequestGuildMembersSchema = z.infer<typeof RequestGuildMembersSchema>;

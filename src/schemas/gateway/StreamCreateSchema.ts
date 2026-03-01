@@ -1,13 +1,10 @@
-export interface StreamCreateSchema {
-    type: "guild" | "call";
-    channel_id: string;
-    guild_id?: string;
-    preferred_region?: string;
-}
+import { z } from "zod";
 
-export const StreamCreateSchema = {
-    type: String,
-    channel_id: String,
-    $guild_id: String,
-    $preferred_region: String,
-};
+export const StreamCreateSchema = z.object({
+    type: z.enum(["guild", "call"]),
+    channel_id: z.string(),
+    guild_id: z.string().optional(),
+    preferred_region: z.string().optional(),
+});
+
+export type StreamCreateSchema = z.infer<typeof StreamCreateSchema>;

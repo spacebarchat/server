@@ -19,6 +19,7 @@
 import { route } from "@spacebar/api";
 import { emitEvent, getPermission, MessageAckEvent, ReadState } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { MessageAcknowledgeSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -29,7 +30,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "MessageAcknowledgeSchema",
+        requestBody: MessageAcknowledgeSchema,
         responses: {
             200: {},
             403: {},

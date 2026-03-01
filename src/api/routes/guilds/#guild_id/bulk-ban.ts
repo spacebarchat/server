@@ -21,13 +21,14 @@ import { Ban, DiscordApiErrors, GuildBanAddEvent, Member, User, emitEvent } from
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { Config } from "@spacebar/util";
+import { BulkBanSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
 router.post(
     "/",
     route({
-        requestBody: "BulkBanSchema",
+        requestBody: BulkBanSchema,
         permission: ["BAN_MEMBERS", "MANAGE_GUILD"],
         responses: {
             200: {

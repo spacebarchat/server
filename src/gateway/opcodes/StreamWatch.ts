@@ -1,13 +1,11 @@
 import { genVoiceToken, parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
 import { Config, emitEvent, Stream, StreamCreateEvent, StreamServerUpdateEvent, StreamSession } from "@spacebar/util";
-import { check } from "./instanceOf";
 import { Not } from "typeorm";
 import { StreamWatchSchema } from "@spacebar/schemas";
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamWatchSchema, data.d);
-    const body = data.d as StreamWatchSchema;
+    const body = StreamWatchSchema.parse(data.d);
 
     // TODO: apply perms: check if user is allowed to watch
 

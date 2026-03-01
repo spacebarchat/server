@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface TotpDisableSchema {
-    /**
-     * @minLength 6
-     * @maxLength 6
-     */
-    code: string;
-}
+import { z } from "zod";
+
+export const TotpDisableSchema = z.object({
+    code: z.string().min(6).max(6),
+});
+
+export type TotpDisableSchema = z.infer<typeof TotpDisableSchema>;

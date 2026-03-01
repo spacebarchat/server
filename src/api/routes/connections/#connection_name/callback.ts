@@ -23,7 +23,7 @@ import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
-router.post("/", route({ requestBody: "ConnectionCallbackSchema" }), async (req: Request, res: Response) => {
+router.post("/", route({ requestBody: ConnectionCallbackSchema }), async (req: Request, res: Response) => {
     const { connection_name } = req.params as { [key: string]: string };
     const connection = ConnectionStore.connections.get(connection_name);
     if (!connection)

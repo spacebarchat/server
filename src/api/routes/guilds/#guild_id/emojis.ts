@@ -81,7 +81,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "EmojiCreateSchema",
+        requestBody: EmojiCreateSchema,
         permission: "MANAGE_EMOJIS_AND_STICKERS",
         responses: {
             201: {
@@ -141,7 +141,7 @@ router.post(
 router.patch(
     "/:emoji_id",
     route({
-        requestBody: "EmojiModifySchema",
+        requestBody: EmojiModifySchema,
         permission: "MANAGE_EMOJIS_AND_STICKERS",
         responses: {
             200: {

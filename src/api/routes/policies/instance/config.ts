@@ -27,7 +27,7 @@ router.get(
     route({
         responses: {
             200: {
-                body: "Object",
+                body: "ConfigObjectResponse",
             },
         },
         spacebarOnly: true,

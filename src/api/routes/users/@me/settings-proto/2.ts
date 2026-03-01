@@ -54,7 +54,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "SettingsProtoUpdateSchema",
+        requestBody: SettingsProtoUpdateSchema,
         responses: {
             200: {
                 body: "SettingsProtoUpdateResponse",
@@ -100,7 +100,7 @@ router.get(
 router.patch(
     "/json",
     route({
-        requestBody: "SettingsProtoUpdateJsonSchema",
+        requestBody: SettingsProtoUpdateJsonSchema,
         responses: {
             200: {
                 body: "SettingsProtoUpdateJsonResponse",

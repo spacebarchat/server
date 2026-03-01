@@ -1,26 +1,30 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface BanRegistrySchema {
-    id: string;
-    user_id: string;
-    guild_id: string;
-    executor_id: string;
-    ip?: string;
-    reason?: string | undefined;
-}
+import { z } from "zod";
+
+export const BanRegistrySchema = z.object({
+    id: z.string(),
+    user_id: z.string(),
+    guild_id: z.string(),
+    executor_id: z.string(),
+    ip: z.ipv4().or(z.ipv6()).optional(),
+    reason: z.string().optional(),
+});
+
+export type BanRegistrySchema = z.infer<typeof BanRegistrySchema>;

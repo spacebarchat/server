@@ -44,7 +44,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "UserGuildSettingsSchema",
+        requestBody: UserGuildSettingsSchema,
         responses: {
             200: {},
             400: {

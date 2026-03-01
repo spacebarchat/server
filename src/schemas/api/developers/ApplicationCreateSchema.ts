@@ -16,7 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface ApplicationCreateSchema {
-    name: string;
-    team_id?: string;
-}
+import { z } from "zod";
+
+export const ApplicationCreateSchema = z.object({
+    name: z.string(),
+    team_id: z.string().optional(),
+});
+
+export type ApplicationCreateSchema = z.infer<typeof ApplicationCreateSchema>;

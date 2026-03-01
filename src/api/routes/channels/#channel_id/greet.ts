@@ -27,7 +27,7 @@ const router: Router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "GreetRequestSchema",
+        requestBody: GreetRequestSchema,
         permission: "SEND_MESSAGES",
         responses: {
             200: {

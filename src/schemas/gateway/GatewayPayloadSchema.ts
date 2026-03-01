@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Tuple } from "lambert-server";
+import { z } from "zod";
 
-export const PayloadSchema = {
-    op: Number,
-    $d: new Tuple(Object, Number), // or number for heartbeat sequence
-    $s: Number,
-    $t: String,
-};
+export const PayloadSchema = z.object({
+	op: z.number(),
+	d: z.any().optional(),
+	s: z.number().optional(),
+	t: z.string().optional(),
+});

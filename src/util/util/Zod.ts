@@ -1,39 +1,23 @@
 /*
     Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-    Copyright (C) 2025 Spacebar and Spacebar Contributors
-
+    Copyright (C) 2023-2025 Spacebar and Spacebar Contributors
+	
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+	
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Affero General Public License for more details.
-
+	
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { z } from "zod";
 
-export const CreateReportSchema = z.object({
-    version: z.string(),
-    variant: z.string(),
-    name: z.string(),
-    language: z.string(),
-    breadcrumbs: z.array(z.number()),
-    elements: z.record(z.string(), z.array(z.string())).optional(),
-    channel_id: z.string().optional(),
-    message_id: z.string().optional(),
-    guild_id: z.string().optional(),
-    stage_instance_id: z.string().optional(),
-    guild_scheduled_event_id: z.string().optional(),
-    reported_user_id: z.string().optional(),
-    application_id: z.string().optional(),
-    user_id: z.string().optional(),
-    widget_id: z.string().optional(),
-});
+export const Snowflake = z.string().regex(/^\d+$/, "Invalid Snowflake format");
 
-export type CreateReportSchema = z.infer<typeof CreateReportSchema>;
+export const ImageSchema = z.string().regex(/^data:image\/(jpeg|png|gif);base64,/, "Invalid image data format");

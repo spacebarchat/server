@@ -48,7 +48,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "GuildUpdateWelcomeScreenSchema",
+        requestBody: GuildUpdateWelcomeScreenSchema,
         permission: "MANAGE_GUILD",
         responses: {
             204: {},

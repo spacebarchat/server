@@ -19,6 +19,7 @@
 import { route, verifyCaptcha } from "@spacebar/api";
 import { checkToken, Config, FieldErrors, generateToken, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { VerifyEmailSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 async function getToken(user: User) {
@@ -35,7 +36,7 @@ async function getToken(user: User) {
 router.post(
     "/",
     route({
-        requestBody: "VerifyEmailSchema",
+        requestBody: VerifyEmailSchema,
         responses: {
             200: {
                 body: "TokenResponse",

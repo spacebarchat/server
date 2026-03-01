@@ -44,7 +44,7 @@ router.get(
 router.post(
     "/logout",
     route({
-        requestBody: "SessionsLogoutSchema",
+        requestBody: SessionsLogoutSchema,
         responses: {
             204: {},
         },

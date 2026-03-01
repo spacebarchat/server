@@ -1,30 +1,24 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { DiscordApiErrors, EVENT, FieldErrors, PermissionResolvable, Permissions, RightResolvable, Rights, SpacebarApiErrors, getPermission, getRights } from "@spacebar/util";
-import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
-import { ajv } from "@spacebar/schemas";
-
-const ignoredRequestSchemas = [
-    // skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
-    "SettingsProtoUpdateJsonSchema",
-];
+import { z } from "zod";
 
 declare global {
     // TODO: fix this
@@ -39,16 +33,15 @@ declare global {
 export type RouteResponse = {
     status?: number;
     body?: `${string}Response`;
-    headers?: Record<string, string>;
+    headers?: { [key: string]: string };
 };
 
 export interface RouteOptions {
     permission?: PermissionResolvable;
     right?: RightResolvable;
-    requestBody?: `${string}Schema`; // typescript interface name
+    requestBody?: z.ZodType;
     responses?: {
         [status: number]: {
-            // body?: `${string}Response`;
             body?: string;
         };
     };
@@ -65,28 +58,9 @@ export interface RouteOptions {
     };
     deprecated?: boolean;
     spacebarOnly?: boolean;
-    // test?: {
-    // 	response?: RouteResponse;
-    // 	body?: unknown;
-    // 	path?: string;
-    // 	event?: EVENT | EVENT[];
-    // 	headers?: Record<string, string>;
-    // };
 }
 
 export function route(opts: RouteOptions) {
-    let validate: AnyValidateFunction | undefined;
-    if (opts.requestBody) {
-        try {
-            validate = ajv.getSchema(opts.requestBody);
-        } catch (e) {
-            console.error("AJV getSchema failed!");
-            throw e;
-        }
-
-        if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
-    }
-
     return async (req: Request, res: Response, next: NextFunction) => {
         if (opts.permission) {
             const { guild_id, channel_id } = req.params as { [key: string]: string };
@@ -94,7 +68,6 @@ export function route(opts: RouteOptions) {
 
             const requiredPerms = Array.isArray(opts.permission) ? opts.permission : [opts.permission];
             requiredPerms.forEach((perm) => {
-                // bitfield comparison: check if user lacks certain permission
                 if (!req.permission!.has(new Permissions(perm))) {
                     throw DiscordApiErrors.MISSING_PERMISSIONS.withParams(perm as string);
                 }
@@ -110,20 +83,20 @@ export function route(opts: RouteOptions) {
             }
         }
 
-        if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
-            const valid = validate(req.body);
-            if (!valid) {
+        if (opts.requestBody) {
+            const result = opts.requestBody.safeParse(req.body);
+            if (!result.success) {
                 const fields: Record<string, { code?: string; message: string }> = {};
-                validate.errors?.forEach(
-                    (x) =>
-                        (fields[x.instancePath.slice(1)] = {
-                            code: x.keyword,
-                            message: x.message || "",
-                        }),
-                );
-                if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
-                throw FieldErrors(fields, validate.errors!);
+                result.error.issues.forEach((x: z.core.$ZodIssue) => {
+                    fields[x.path.join(".")] = {
+                        code: x.code,
+                        message: x.message,
+                    };
+                });
+                if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} -`, z.treeifyError(result.error));
+                throw FieldErrors(fields);
             }
+            req.body = result.data;
         }
         next();
     };

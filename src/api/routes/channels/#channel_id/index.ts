@@ -145,7 +145,7 @@ router.delete(
 router.patch(
     "/",
     route({
-        requestBody: "ChannelModifySchema",
+        requestBody: ChannelModifySchema,
         permission: "VIEW_CHANNEL",
         responses: {
             200: {

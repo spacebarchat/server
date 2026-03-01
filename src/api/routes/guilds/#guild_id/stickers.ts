@@ -58,7 +58,7 @@ router.post(
     bodyParser,
     route({
         permission: "MANAGE_EMOJIS_AND_STICKERS",
-        requestBody: "ModifyGuildStickerSchema",
+        requestBody: ModifyGuildStickerSchema,
         responses: {
             200: {
                 body: "Sticker",
@@ -146,7 +146,7 @@ router.get(
 router.patch(
     "/:sticker_id",
     route({
-        requestBody: "ModifyGuildStickerSchema",
+        requestBody: ModifyGuildStickerSchema,
         permission: "MANAGE_EMOJIS_AND_STICKERS",
         responses: {
             200: {

@@ -16,9 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface TagCreateSchema {
-    name: string;
-    moderated?: boolean | null;
-    emoji_id?: string | null;
-    emoji_name?: string | null;
-}
+import { z } from "zod";
+
+export const TagCreateSchema = z.object({
+    name: z.string(),
+    moderated: z.boolean().nullish(),
+    emoji_id: z.string().nullish(),
+    emoji_name: z.string().nullish(),
+});
+
+export type TagCreateSchema = z.infer<typeof TagCreateSchema>;

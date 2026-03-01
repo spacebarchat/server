@@ -24,7 +24,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/signup",
     route({
-        requestBody: "HubWaitlistSignupSchema",
+        requestBody: HubWaitlistSignupSchema,
         responses: {
             200: {
                 body: "HubWaitlistSignupResponse",

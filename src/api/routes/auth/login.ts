@@ -29,7 +29,7 @@ export default router;
 router.post(
     "/",
     route({
-        requestBody: "LoginSchema",
+        requestBody: LoginSchema,
         responses: {
             200: {
                 body: "LoginResponse",

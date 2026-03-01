@@ -1,25 +1,24 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Payload, WebSocket } from "@spacebar/gateway";
 import { Config, emitEvent, Guild, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 import { genVoiceToken } from "../util/SessionUtils";
-import { check } from "./instanceOf";
 import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
 // TODO: check if a voice server is setup
 
@@ -29,8 +28,7 @@ import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
 
 export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, VoiceStateUpdateSchema, data.d);
-    const body = data.d as VoiceStateUpdateSchema;
+    const body = VoiceStateUpdateSchema.parse(data.d);
     const isNew = body.channel_id === null && body.guild_id === null;
     let isChanged = false;
 

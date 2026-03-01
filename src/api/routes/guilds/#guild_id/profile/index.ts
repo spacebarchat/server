@@ -26,7 +26,7 @@ const router = Router({ mergeParams: true });
 router.patch(
     "/:member_id",
     route({
-        requestBody: "MemberChangeProfileSchema",
+        requestBody: MemberChangeProfileSchema,
         responses: {
             200: {
                 body: "Member",

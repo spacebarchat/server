@@ -16,7 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface VerifyEmailSchema {
-    captcha_key?: string | null;
-    token: string;
-}
+import { z } from "zod";
+
+export const VerifyEmailSchema = z.object({
+    captcha_key: z.string().nullish(),
+    token: z.string(),
+});
+
+export type VerifyEmailSchema = z.infer<typeof VerifyEmailSchema>;

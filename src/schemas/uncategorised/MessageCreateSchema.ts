@@ -1,100 +1,91 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { InteractionType, Snowflake } from "@spacebar/util";
-import { ActionRowComponent, ApplicationCommandType, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
+import { z } from "zod";
 
-export type MessageCreateAttachment = {
-    id: string;
-    filename: string;
-};
+export const MessageCreateAttachment = z.object({
+    id: z.string(),
+    filename: z.string(),
+});
 
-export type MessageCreateCloudAttachment = {
-    id?: string;
-    filename: string;
-    uploaded_filename: string;
-    original_content_type?: string;
-};
+export const MessageCreateCloudAttachment = z.object({
+    id: z.string().optional(),
+    filename: z.string(),
+    uploaded_filename: z.string(),
+    original_content_type: z.string().optional(),
+});
 
-export interface MessageCreateSchema {
-    type?: number;
-    content?: string;
-    mobile_network_type?: string;
-    nonce?: string;
-    channel_id?: string;
-    tts?: boolean;
-    flags?: number;
-    embeds?: Embed[] | null;
-    embed?: Embed | null;
-    // TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
-    allowed_mentions?: {
-        parse?: string[];
-        roles?: string[];
-        users?: string[];
-        replied_user?: boolean;
-    };
-    message_reference?: {
-        message_id?: string;
-        channel_id?: string;
-        guild_id?: string;
-        fail_if_not_exists?: boolean;
-        type?: number;
-    };
-    payload_json?: string;
-    file?: { filename: string };
-    /**
-	TODO: we should create an interface for attachments
-	TODO: OpenWAAO<-->attachment-style metadata conversion
-	**/
-    attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
-    sticker_ids?: string[] | null; // null check: fixes Discord-Go
-    components?: ActionRowComponent[] | null; // null check: fixes Discord-Go
-    // TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
-    poll?: PollCreationSchema;
-    enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
-    applied_tags?: string[]; // Not implemented yet, for webhooks in forums
-    thread_name?: string; // Not implemented yet, for webhooks
-    avatar_url?: string; // Not implemented yet, for webhooks
-    interaction?: MessageInteractionSchema;
-    interaction_metadata?: MessageInteractionSchema;
-}
+const AllowedMentionsSchema = z
+    .object({
+        parse: z.array(z.string()),
+        roles: z.array(z.string()),
+        users: z.array(z.string()),
+        replied_user: z.boolean(),
+    })
+    .partial();
 
-// TypeScript complains once this is used above
-export interface PollCreationSchema {
-    question: PollMedia;
-    answers: PollAnswer[];
-    duration?: number;
-    allow_multiselect?: boolean;
-    layout_type?: number;
-}
+const MessageReferenceSchema = z
+    .object({
+        message_id: z.string(),
+        channel_id: z.string(),
+        guild_id: z.string(),
+        fail_if_not_exists: z.boolean(),
+        type: z.number(),
+    })
+    .partial();
 
-interface MessageInteractionSchema {
-    id: string;
-    type: InteractionType;
-    name: string;
-    command_type?: ApplicationCommandType;
-    ephemerality_reason?: number;
-    user?: PublicUser; // It has to be optional cause LSP gives an errors for some reason
-    user_id?: string;
-    authorizing_integration_owners?: object; // It has to be optional cause LSP gives an errors for some reason
-    original_response_message_id?: Snowflake;
-    interacted_message_id?: Snowflake;
-    triggering_interaction_metadata?: MessageInteractionSchema;
-    target_user?: PublicUser;
-    target_message_id?: Snowflake;
-}
+export const PollCreationSchema = z.object({
+    question: z.object({ text: z.string().optional() }),
+    answers: z.array(z.object({ poll_media: z.object({ text: z.string().optional(), emoji: z.any().optional() }) })),
+    duration: z.number().optional(),
+    allow_multiselect: z.boolean().optional(),
+    layout_type: z.number().optional(),
+});
+
+export const MessageCreateSchema = z
+    .object({
+        type: z.number(),
+        content: z.string(),
+        mobile_network_type: z.string(),
+        nonce: z.string(),
+        channel_id: z.string(),
+        tts: z.boolean(),
+        flags: z.number(),
+        embeds: z.array(z.any()).nullable(),
+        embed: z.any().nullable(),
+        allowed_mentions: AllowedMentionsSchema,
+        message_reference: MessageReferenceSchema,
+        payload_json: z.string(),
+        file: z.object({ filename: z.string() }),
+        attachments: z.array(z.union([MessageCreateAttachment, MessageCreateCloudAttachment])),
+        sticker_ids: z.array(z.string()).nullable(),
+        components: z.array(z.any()).nullable(),
+        poll: PollCreationSchema,
+        enforce_nonce: z.boolean(),
+        applied_tags: z.array(z.string()),
+        thread_name: z.string(),
+        avatar_url: z.string(),
+        interaction: z.any(),
+        interaction_metadata: z.any(),
+    })
+    .partial();
+
+export type MessageCreateSchema = z.infer<typeof MessageCreateSchema>;
+export type PollCreationSchema = z.infer<typeof PollCreationSchema>;
+export type MessageCreateAttachment = z.infer<typeof MessageCreateAttachment>;
+export type MessageCreateCloudAttachment = z.infer<typeof MessageCreateCloudAttachment>;

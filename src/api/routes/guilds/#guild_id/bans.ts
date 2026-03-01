@@ -183,7 +183,7 @@ router.get(
 router.put(
     "/:user_id",
     route({
-        requestBody: "BanCreateSchema",
+        requestBody: BanCreateSchema,
         permission: "BAN_MEMBERS",
         responses: {
             204: {},

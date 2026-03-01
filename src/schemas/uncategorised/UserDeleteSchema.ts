@@ -16,6 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface UserDeleteSchema {
-    user_id: string;
-}
+import { z } from "zod";
+
+export const UserDeleteSchema = z.object({
+    user_id: z.string(),
+});
+
+export type UserDeleteSchema = z.infer<typeof UserDeleteSchema>;

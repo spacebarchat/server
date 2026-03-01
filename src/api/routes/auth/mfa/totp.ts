@@ -27,7 +27,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "TotpSchema",
+        requestBody: TotpSchema,
         responses: {
             200: {
                 body: "TokenResponse",

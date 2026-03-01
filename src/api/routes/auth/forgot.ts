@@ -25,7 +25,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "ForgotPasswordSchema",
+        requestBody: ForgotPasswordSchema,
         responses: {
             204: {},
             400: {

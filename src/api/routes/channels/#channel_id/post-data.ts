@@ -42,7 +42,7 @@ router.post(
         next();
     },
     route({
-        requestBody: "PostDataSchema",
+        requestBody: PostDataSchema,
         permission: "VIEW_CHANNEL",
         responses: {
             200: {},

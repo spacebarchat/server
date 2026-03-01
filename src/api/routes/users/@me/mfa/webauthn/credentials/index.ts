@@ -60,7 +60,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 router.post(
     "/",
     route({
-        requestBody: "WebAuthnPostSchema",
+        requestBody: WebAuthnPostSchema,
         responses: {
             200: {
                 body: "WebAuthnCreateResponse",

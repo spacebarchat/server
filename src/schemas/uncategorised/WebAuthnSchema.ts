@@ -16,21 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// FIXME: better naming
-export interface GenerateWebAuthnCredentialsSchema {
-    password: string;
-}
+import { z } from "zod";
 
-// FIXME: better naming
-export interface CreateWebAuthnCredentialSchema {
-    credential: string;
-    name: string;
-    ticket: string;
-}
+export const GenerateWebAuthnCredentialsSchema = z.object({
+    password: z.string(),
+});
 
-export type WebAuthnPostSchema = GenerateWebAuthnCredentialsSchema | CreateWebAuthnCredentialSchema;
+export const CreateWebAuthnCredentialSchema = z.object({
+    credential: z.string(),
+    name: z.string(),
+    ticket: z.string(),
+});
 
-export interface WebAuthnTotpSchema {
-    code: string;
-    ticket: string;
-}
+export const WebAuthnPostSchema = z.union([GenerateWebAuthnCredentialsSchema, CreateWebAuthnCredentialSchema]);
+
+export const WebAuthnTotpSchema = z.object({
+    code: z.string(),
+    ticket: z.string(),
+});
+
+export type GenerateWebAuthnCredentialsSchema = z.infer<typeof GenerateWebAuthnCredentialsSchema>;
+export type CreateWebAuthnCredentialSchema = z.infer<typeof CreateWebAuthnCredentialSchema>;
+export type WebAuthnPostSchema = z.infer<typeof WebAuthnPostSchema>;
+export type WebAuthnTotpSchema = z.infer<typeof WebAuthnTotpSchema>;

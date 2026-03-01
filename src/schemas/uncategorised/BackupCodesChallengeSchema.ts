@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface BackupCodesChallengeSchema {
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
-    password: string;
-}
+import { z } from "zod";
+
+export const BackupCodesChallengeSchema = z.object({
+    password: z.string(),
+});
+
+export type BackupCodesChallengeSchema = z.infer<typeof BackupCodesChallengeSchema>;

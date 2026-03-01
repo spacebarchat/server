@@ -1,19 +1,19 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 const { Stopwatch } = require("../dist/util/util/Stopwatch");
@@ -26,6 +26,27 @@ const fs = require("fs");
 const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("../dist/util/util/extensions");
 const { bgRedBright } = require("picocolors");
+
+let zodModule;
+let zodToJsonSchemaModule;
+try {
+    const z = require("zod");
+    zodModule = z;
+    if (z.toJSONSchema) {
+        zodToJsonSchemaModule = (schema, opts) =>
+            z.toJSONSchema(schema, {
+                ...opts,
+                unrepresentable: "any",
+                override: (ctx) => {
+                    const def = ctx.zodSchema._zod?.def;
+                    if (def?.type === "date") {
+                        ctx.jsonSchema.type = "string";
+                        ctx.jsonSchema.format = "date-time";
+                    }
+                },
+            });
+    }
+} catch (e) {}
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
@@ -99,9 +120,21 @@ function combineSchemas(schemas) {
         if (typeof definition.properties === "object") {
             for (const property of Object.values(definition.properties)) {
                 if (Array.isArray(property.type)) {
-                    if (property.type.includes("null")) {
-                        property.type = property.type.find((x) => x !== "null");
-                        property.nullable = true;
+                    if (property.type.length === 1) {
+                        property.type = property.type[0];
+                    }
+                }
+
+                if (Array.isArray(property.items)) {
+                    property.prefixItems = property.items;
+                    delete property.items;
+                }
+                if (Array.isArray(property.anyOf)) {
+                    for (const anyOfItem of property.anyOf) {
+                        if (Array.isArray(anyOfItem.items)) {
+                            anyOfItem.prefixItems = anyOfItem.items;
+                            delete anyOfItem.items;
+                        }
                     }
                 }
             }
@@ -126,7 +159,10 @@ function apiRoutes(missingRoutes) {
 
     routes.forEach((route, pathAndMethod) => {
         const [p, method] = pathAndMethod.split("|");
-        const path = p.replace(/:(\w+)/g, "{$1}");
+        let path = p.replace(/:(\w+)/g, "{$1}");
+        if (path !== "/" && path.endsWith("/")) {
+            path = path.slice(0, -1);
+        }
 
         let obj = specification.paths[path]?.[method] || {};
         obj["x-right-required"] = route.right;
@@ -140,23 +176,69 @@ function apiRoutes(missingRoutes) {
             })
         ) {
             obj.security = [{ bearer: [] }];
+        } else {
+            obj.security = [];
         }
 
         if (route.description) obj.description = route.description;
-        if (route.summary) obj.summary = route.summary;
+        obj.summary = route.summary || "No summary provided";
         if (route.deprecated) obj.deprecated = route.deprecated;
 
         if (route.requestBody) {
-            obj.requestBody = {
-                required: true,
-                content: {
-                    "application/json": {
-                        schema: {
-                            $ref: `#/components/schemas/${route.requestBody}`,
+            let schemaRef;
+
+            if (zodModule && route.requestBody instanceof zodModule.ZodType) {
+                let schemaName = null;
+                try {
+                    const schemasBaseDir = path.join(__dirname, "..", "dist", "schemas");
+                    const dirs = ["uncategorised", "api/bots", "api/developers", "api/users", "api/reports", "webrtc"];
+                    for (const dir of dirs) {
+                        const dirPath = path.join(schemasBaseDir, dir);
+                        if (!fs.existsSync(dirPath)) continue;
+                        const schemasModule = require(dirPath);
+                        for (const [name, value] of Object.entries(schemasModule)) {
+                            if (value === route.requestBody) {
+                                schemaName = name;
+                                break;
+                            }
+                        }
+                        if (schemaName) break;
+                    }
+                } catch (e) {}
+
+                if (!schemaName) {
+                    try {
+                        const jsonSchema =
+                            typeof zodToJsonSchemaModule === "function"
+                                ? zodToJsonSchemaModule(route.requestBody, { target: "openApi3" })
+                                : zodToJsonSchemaModule.zodToJsonSchema(route.requestBody, {
+                                      target: "openApi3",
+                                      $refStrategy: "none",
+                                  });
+                        delete jsonSchema.$schema;
+                        schemaRef = jsonSchema;
+                    } catch (e) {
+                        schemaRef = { type: "object" };
+                    }
+                }
+
+                if (schemaName) {
+                    schemaRef = { $ref: `#/components/schemas/${schemaName}` };
+                }
+            } else {
+                schemaRef = { $ref: `#/components/schemas/${route.requestBody}` };
+            }
+
+            if (schemaRef) {
+                obj.requestBody = {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: schemaRef,
                         },
                     },
-                },
-            };
+                };
+            }
         }
 
         if (route.responses) {
@@ -242,7 +324,10 @@ async function main() {
     combineSchemas(schemas);
     apiRoutes(missingRoutes);
 
-    fs.writeFileSync(openapiPath, JSON.stringify(specification, null, 4).replaceAll("#/definitions", "#/components/schemas").replaceAll("bigint", "number"));
+    const outStr = JSON.stringify(specification, null, 4)
+        .replaceAll("#/definitions", "#/components/schemas")
+        .replace(/"type":\s*"bigint"/g, '"type": "number"');
+    fs.writeFileSync(openapiPath, outStr);
     console.log("Wrote OpenAPI specification to", openapiPath);
     const elapsedMs = Number(totalSw.elapsed().totalMilliseconds + "." + totalSw.elapsed().microseconds);
     console.log(

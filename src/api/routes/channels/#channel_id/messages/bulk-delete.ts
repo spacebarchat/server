@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, Config, emitEvent, getPermission, getRights, Message, MessageDeleteBulkEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { BulkDeleteSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -31,7 +32,7 @@ export default router;
 router.post(
     "/",
     route({
-        requestBody: "BulkDeleteSchema",
+        requestBody: BulkDeleteSchema,
         responses: {
             204: {},
             400: {

@@ -56,7 +56,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "WebhookCreateSchema",
+        requestBody: WebhookCreateSchema,
         permission: "MANAGE_WEBHOOKS",
         responses: {
             200: {

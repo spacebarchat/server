@@ -156,7 +156,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "ApplicationAuthorizeSchema",
+        requestBody: ApplicationAuthorizeSchema,
         query: {
             client_id: {
                 type: "string",

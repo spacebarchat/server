@@ -1,12 +1,10 @@
 import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
 import { emitEvent, Stream, StreamDeleteEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
-import { check } from "./instanceOf";
 import { StreamDeleteSchema } from "@spacebar/schemas";
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamDeleteSchema, data.d);
-    const body = data.d as StreamDeleteSchema;
+    const body = StreamDeleteSchema.parse(data.d);
 
     let parsedKey: {
         type: "guild" | "call";

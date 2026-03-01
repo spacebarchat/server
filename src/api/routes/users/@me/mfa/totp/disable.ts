@@ -28,7 +28,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "TotpDisableSchema",
+        requestBody: TotpDisableSchema,
         responses: {
             200: {
                 body: "TokenOnlyResponse",

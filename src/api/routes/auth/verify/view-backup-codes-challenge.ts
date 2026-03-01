@@ -26,7 +26,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "BackupCodesChallengeSchema",
+        requestBody: BackupCodesChallengeSchema,
         responses: {
             200: { body: "BackupCodesChallengeResponse" },
             400: { body: "APIErrorResponse" },

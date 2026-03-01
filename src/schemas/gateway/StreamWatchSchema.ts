@@ -1,7 +1,7 @@
-export interface StreamWatchSchema {
-    stream_key: string;
-}
+import { z } from "zod";
 
-export const StreamWatchSchema = {
-    stream_key: String,
-};
+export const StreamWatchSchema = z.object({
+    stream_key: z.string(),
+});
+
+export type StreamWatchSchema = z.infer<typeof StreamWatchSchema>;

@@ -29,7 +29,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "MfaCodesSchema",
+        requestBody: MfaCodesSchema,
         deprecated: true,
         description: "This route is replaced with users/@me/mfa/codes-verification in newer clients",
         responses: {

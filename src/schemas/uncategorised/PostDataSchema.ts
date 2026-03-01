@@ -16,6 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface PostDataSchema {
-    thread_ids: string[];
-}
+import { z } from "zod";
+
+export const PostDataSchema = z.object({
+    thread_ids: z.array(z.string()),
+});
+
+export type PostDataSchema = z.infer<typeof PostDataSchema>;

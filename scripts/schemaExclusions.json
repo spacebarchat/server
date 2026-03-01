@@ -415,6 +415,26 @@
         {
             "value": "UserResponse",
             "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "_JSONSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "JSONSchema",
+            "reason": "Self-reference only schema"
+        },
+        {
+            "value": "OptionalOutSchema",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "OptionalInSchema",
+            "reason": "Schema with only uppercase properties"
+        },
+        {
+            "value": "ZodJSONSchema",
+            "reason": "Self-reference only schema"
         }
     ]
 }

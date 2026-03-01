@@ -52,7 +52,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "WidgetModifySchema",
+        requestBody: WidgetModifySchema,
         permission: "MANAGE_GUILD",
         responses: {
             200: {

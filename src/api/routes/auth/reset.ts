@@ -28,7 +28,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "PasswordResetSchema",
+        requestBody: PasswordResetSchema,
         responses: {
             200: {
                 body: "TokenOnlyResponse",

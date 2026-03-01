@@ -27,7 +27,7 @@ const router: Router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "UploadAttachmentRequestSchema",
+        requestBody: UploadAttachmentRequestSchema,
         responses: {
             200: {
                 body: "UploadAttachmentResponseSchema",

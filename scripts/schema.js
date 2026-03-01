@@ -1,23 +1,23 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 /*
-	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
+    Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
 const { Stopwatch } = require("../dist/util/util/Stopwatch");
 const totalSw = Stopwatch.startNew();
@@ -289,6 +289,129 @@ async function main() {
     deleteOneOfKindUndefinedRecursive(definitions, "$");
     for (const defKey in definitions) {
         filterSchema(definitions[defKey]);
+    }
+
+    console.log("\n" + cyanBright("Processing Zod schemas..."));
+    try {
+        const z = require("zod");
+        require("module-alias/register");
+
+        const schemasBaseDir = path.join(__dirname, "..", "dist", "schemas");
+        const schemaDirs = [
+            path.join(schemasBaseDir, "uncategorised"),
+            path.join(schemasBaseDir, "api", "bots"),
+            path.join(schemasBaseDir, "api", "developers"),
+            path.join(schemasBaseDir, "api", "users"),
+            path.join(schemasBaseDir, "api", "reports"),
+            path.join(schemasBaseDir, "webrtc"),
+        ];
+
+        const schemasModule = {};
+        for (const schemasDir of schemaDirs) {
+            if (!fs.existsSync(schemasDir)) continue;
+            const schemaFiles = fs.readdirSync(schemasDir).filter((f) => f.endsWith(".js") && f !== "index.js");
+
+            for (const file of schemaFiles) {
+                try {
+                    const mod = require(path.join(schemasDir, file));
+                    Object.assign(schemasModule, mod);
+                } catch (e) {}
+            }
+        }
+
+        let zodCount = 0;
+        let zodReplaced = 0;
+        for (const [name, value] of Object.entries(schemasModule)) {
+            if (value instanceof z.ZodType) {
+                zodCount++;
+                try {
+                    const jsonSchema = z.toJSONSchema(value, {
+                        target: "openApi3",
+                        unrepresentable: "any",
+                        override: (ctx) => {
+                            const def = ctx.zodSchema._zod.def;
+                            if (def.type === "date") {
+                                ctx.jsonSchema.type = "string";
+                                ctx.jsonSchema.format = "date-time";
+                            }
+                        },
+                    });
+
+                    let schemaObj = jsonSchema;
+                    if (jsonSchema.definitions && jsonSchema.definitions[name]) {
+                        schemaObj = jsonSchema.definitions[name];
+                    }
+                    delete schemaObj.$schema;
+                    delete schemaObj.definitions;
+
+                    delete schemaObj.$schema;
+
+                    if (definitions[name]) {
+                        zodReplaced++;
+                    }
+                    definitions[name] = schemaObj;
+                } catch (e) {
+                    console.log(redBright("[WARN]"), "Failed to convert Zod schema", name, ":", e.message);
+                }
+            }
+        }
+        console.log(greenBright("Processed"), zodCount, "Zod schemas (" + zodReplaced + " replaced existing TJS definitions).");
+
+        const zodInternalPattern =
+            /^\$Zod|^Zod[A-Z]|^_Zod|^Standard|^LoosePartial|^PrimitiveSet|^PropValues|^Primitive$|^ObjectSchema$|^ArraySchema$|^NumberSchema$|^IntegerSchema$|^NullSchema$|^StringSchema$|^BooleanSchema$/;
+        let removedCount = 0;
+        for (const key of Object.keys(definitions)) {
+            if (zodInternalPattern.test(key)) {
+                delete definitions[key];
+                removedCount++;
+            }
+        }
+        if (removedCount > 0) {
+            console.log(yellowBright("Removed"), removedCount, "Zod internal definitions.");
+        }
+
+        const invalidNamePattern = /[{}<>()]/;
+        let removedInvalid = 0;
+        for (const key of Object.keys(definitions)) {
+            if (invalidNamePattern.test(key)) {
+                delete definitions[key];
+                removedInvalid++;
+            }
+        }
+        if (removedInvalid > 0) {
+            console.log(yellowBright("Removed"), removedInvalid, "anonymous inline type definitions.");
+        }
+
+        function resolveRefs(obj) {
+            if (!obj || typeof obj !== "object") return;
+            if (Array.isArray(obj)) {
+                for (const item of obj) resolveRefs(item);
+                return;
+            }
+            for (const [key, value] of Object.entries(obj)) {
+                if (key === "$ref" && typeof value === "string") {
+                    const refName = value.replace("#/definitions/", "");
+                    if (!definitions[refName]) {
+                        delete obj.$ref;
+                        obj.type = "object";
+                    }
+                } else if (typeof value === "object") {
+                    resolveRefs(value);
+                }
+            }
+        }
+        let resolvedCount = 0;
+        for (const def of Object.values(definitions)) {
+            const before = JSON.stringify(def);
+            resolveRefs(def);
+            if (JSON.stringify(def) !== before) resolvedCount++;
+        }
+        if (resolvedCount > 0) {
+            console.log(yellowBright("Resolved"), resolvedCount, "schemas with broken $ref pointers.");
+        }
+    } catch (e) {
+        console.log(redBright("[ERROR]"), "Failed to process Zod schemas:", e.message);
+        console.log("Make sure 'zod-to-json-schema' is installed and the project is built.");
     }
 
     if (process.env.WRITE_SCHEMA_DIR === "true") {

@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface PasswordResetSchema {
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
-    password: string;
-    token: string;
-}
+import { z } from "zod";
+
+export const PasswordResetSchema = z.object({
+    password: z.string().min(1).max(72),
+    token: z.string(),
+});
+
+export type PasswordResetSchema = z.infer<typeof PasswordResetSchema>;

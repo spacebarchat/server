@@ -16,16 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface TotpEnableSchema {
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
-    password: string;
-    /**
-     * @minLength 6
-     * @maxLength 6
-     */
-    code?: string;
-    secret?: string;
-}
+import { z } from "zod";
+
+export const TotpEnableSchema = z.object({
+    password: z.string().min(1).max(72),
+    code: z.string().min(6).max(6).optional(),
+    secret: z.string().optional(),
+});
+
+export type TotpEnableSchema = z.infer<typeof TotpEnableSchema>;

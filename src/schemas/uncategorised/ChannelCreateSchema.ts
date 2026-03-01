@@ -16,6 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { z } from "zod";
 import { ChannelModifySchema } from "./ChannelModifySchema";
 
-export type ChannelCreateSchema = Omit<ChannelModifySchema, "available_tags">;
+export const ChannelCreateSchema = ChannelModifySchema.omit({ available_tags: true });
+
+export type ChannelCreateSchema = z.infer<typeof ChannelCreateSchema>;

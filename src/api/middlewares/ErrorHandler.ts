@@ -1,19 +1,19 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { NextFunction, Request, Response } from "express";
@@ -29,7 +29,6 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
         let httpcode = code;
         let message = error?.toString();
         let errors = undefined;
-        let _ajvErrors = undefined;
 
         if (error instanceof HTTPError && error.code) code = httpcode = error.code;
         else if (error instanceof ApiError) {
@@ -43,7 +42,6 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
             code = Number(error.code);
             message = error.message;
             errors = error.errors;
-            _ajvErrors = error._ajvErrors;
         } else if (error?.type == "entity.parse.failed") {
             // body-parser failed
             httpcode = 400;
@@ -61,7 +59,7 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
 
         if (httpcode > 511) httpcode = 400;
 
-        res.status(httpcode).json({ code, message, errors, _ajvErrors, request: `${req.method} ${req.url}` });
+        res.status(httpcode).json({ code, message, errors, request: `${req.method} ${req.url}` });
     } catch (error) {
         console.error(`[Internal Server Error] 500`, error);
         return res.status(500).json({ code: 500, message: `Internal server error while handling error`, request: `${req.method} ${req.url}` });

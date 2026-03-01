@@ -1,28 +1,29 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface UserProfileModifySchema {
-    bio?: string;
-    accent_color?: number | null;
-    banner?: string | null;
-    pronouns?: string;
-    /**
-     * @items.type integer
-     */
-    theme_colors?: [number, number];
-}
+import { z } from "zod";
+
+export const UserProfileModifySchema = z.object({
+    bio: z.string().optional(),
+    accent_color: z.number().nullish(),
+    banner: z.string().nullish(),
+    pronouns: z.string().optional(),
+    theme_colors: z.array(z.number()).nullish(),
+});
+
+export type UserProfileModifySchema = z.infer<typeof UserProfileModifySchema>;

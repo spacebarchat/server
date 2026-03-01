@@ -292,7 +292,7 @@ router.post(
         next();
     },
     route({
-        requestBody: "MessageCreateSchema",
+        requestBody: MessageCreateSchema,
         permission: "VIEW_CHANNEL",
         right: "SEND_MESSAGES",
         responses: {
@@ -525,7 +525,7 @@ router.post(
 router.delete(
     "/ack",
     route({
-        requestBody: "AcknowledgeDeleteSchema",
+        requestBody: AcknowledgeDeleteSchema,
         responses: {
             204: {},
         },

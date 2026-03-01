@@ -36,7 +36,7 @@ function toArrayBuffer(buf: Buffer) {
 router.post(
     "/",
     route({
-        requestBody: "WebAuthnTotpSchema",
+        requestBody: WebAuthnTotpSchema,
         responses: {
             200: { body: "TokenResponse" },
             400: { body: "APIErrorResponse" },

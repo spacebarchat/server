@@ -16,7 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface BulkBanSchema {
-    user_ids: string[];
-    delete_message_seconds?: number;
-}
+import { z } from "zod";
+
+export const BulkBanSchema = z.object({
+    user_ids: z.array(z.string()),
+    delete_message_seconds: z.number().optional(),
+});
+
+export type BulkBanSchema = z.infer<typeof BulkBanSchema>;

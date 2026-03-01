@@ -19,6 +19,7 @@
 import { route } from "@spacebar/api";
 import { Note, Snowflake, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { UserNoteUpdateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -55,7 +56,7 @@ router.get(
 router.put(
     "/:user_id",
     route({
-        requestBody: "UserNoteUpdateSchema",
+        requestBody: UserNoteUpdateSchema,
         responses: {
             204: {},
             404: {

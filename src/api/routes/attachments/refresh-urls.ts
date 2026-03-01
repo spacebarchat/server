@@ -25,7 +25,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "RefreshUrlsRequestSchema",
+        requestBody: RefreshUrlsRequestSchema,
         responses: {
             200: {
                 body: "RefreshUrlsResponse",

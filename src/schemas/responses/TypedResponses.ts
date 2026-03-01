@@ -18,7 +18,23 @@
 
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
-import { Application, BackupCode, Categories, Channel, Emoji, Guild, Invite, Member, Message, Role, Sticker, StickerPack, Template, Webhook } from "../../util/entities";
+import {
+    Application,
+    AutomodRule,
+    BackupCode,
+    Categories,
+    Channel,
+    Emoji,
+    Guild,
+    Invite,
+    Member,
+    Message,
+    Role,
+    Sticker,
+    StickerPack,
+    Template,
+    Webhook,
+} from "../../util/entities";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
 import { GuildBansResponse, GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
 
@@ -53,6 +69,7 @@ export type APIInviteArray = Invite[];
 
 export type APIMessageArray = Message[];
 
+export type APIWebhook = Webhook;
 export type APIWebhookArray = Webhook[];
 
 export type APIDiscoveryCategoryArray = Categories[];
@@ -88,3 +105,18 @@ export type APIConnectionsConfiguration = Record<
         enabled: boolean;
     }
 >;
+
+export interface WhoAmIResponse {
+    id: string;
+    device_id: string | null;
+    flags: number;
+    rights: number;
+    logged_in_since: string;
+}
+
+export interface ConfigObjectResponse {
+    [key: string]: unknown;
+}
+
+export type APIAutomodRule = AutomodRule;
+export type APIAutomodRuleArray = AutomodRule[];

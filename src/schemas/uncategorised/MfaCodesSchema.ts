@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface MfaCodesSchema {
-    /**
-     * @minLength 1
-     * @maxLength 72
-     */
-    password: string;
-    regenerate?: boolean;
-}
+import { z } from "zod";
+
+export const MfaCodesSchema = z.object({
+    password: z.string().min(1).max(72),
+    regenerate: z.boolean().optional(),
+});
+
+export type MfaCodesSchema = z.infer<typeof MfaCodesSchema>;

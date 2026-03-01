@@ -16,10 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface MessageThreadCreationSchema {
-    auto_archive_duration?: number;
-    rate_limit_per_user?: number;
-    name: string;
-    location?: string; //ignore it
-    type?: number;
-}
+import { z } from "zod";
+
+export const MessageThreadCreationSchema = z.object({
+    auto_archive_duration: z.number().optional(),
+    rate_limit_per_user: z.number().optional(),
+    name: z.string(),
+    location: z.string().optional(),
+    type: z.number().optional(),
+});
+
+export type MessageThreadCreationSchema = z.infer<typeof MessageThreadCreationSchema>;

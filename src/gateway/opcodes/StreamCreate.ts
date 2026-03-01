@@ -12,13 +12,11 @@ import {
     VoiceState,
     VoiceStateUpdateEvent,
 } from "@spacebar/util";
-import { check } from "./instanceOf";
 import { StreamCreateSchema } from "@spacebar/schemas";
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamCreateSchema, data.d);
-    const body = data.d as StreamCreateSchema;
+    const body = StreamCreateSchema.parse(data.d);
 
     if (body.channel_id.trim().length === 0) return;
 

@@ -58,7 +58,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 router.patch(
     "/",
     route({
-        requestBody: "ApplicationCommandCreateSchema",
+        requestBody: ApplicationCommandCreateSchema,
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });

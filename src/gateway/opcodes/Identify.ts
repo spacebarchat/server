@@ -1,19 +1,19 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
@@ -55,8 +55,9 @@ import {
     UserSettings,
     UserSettingsProtos,
     VoiceState,
+    Activity,
+    Status,
 } from "@spacebar/util";
-import { check } from "./instanceOf";
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
@@ -82,8 +83,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     clearTimeout(this.readyTimeout);
 
     // Check payload matches schema
-    check.call(this, IdentifySchema, data.d);
-    const identify: IdentifySchema = data.d;
+    const identify = IdentifySchema.parse(data.d);
 
     this.capabilities = new Capabilities(identify.capabilities || 0);
     this.large_threshold = identify.large_threshold || 250;
@@ -134,12 +134,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const { session, isNewSession } = tokenData.session
         ? { session: tokenData.session, isNewSession: false }
         : {
-              session: Session.create({
-                  user_id: this.user_id,
-                  session_id: this.session_id,
-              }),
-              isNewSession: true,
-          };
+            session: Session.create({
+                user_id: this.user_id,
+                session_id: this.session_id,
+            }),
+            isNewSession: true,
+        };
 
     if (tokenData.tokenVersion < CurrentTokenFormatVersion)
         console.warn(
@@ -153,13 +153,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         );
 
     this.session = session;
-    this.session.status = identify.presence?.status || "online";
+    this.session.status = (identify.presence?.status as Status) || "online";
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
-    this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
-    this.session.client_info.os = identify.properties?.os || identify.properties?.$os;
-    this.session.client_status = {};
-    this.session.activities = identify.presence?.activities ?? []; // TODO: validation
+    this.session.client_info.platform = identify.properties?.device;
+    this.session.client_info.os = identify.properties?.os
+    this.session.activities = (identify.presence?.activities as Activity[]) ?? []; // TODO: validation
 
     if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
         this.session.last_seen_ip = this.ipAddress;
@@ -453,20 +452,20 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const guilds: GuildOrUnavailable[] = members.map((member) => {
         member.guild.channels = member.guild.channels
             /*
-   			//TODO maybe implement this correctly, by causing create and delete events for users who can newly view and not view the channels, along with doing these checks correctly, as they don't currently take into account that the owner of the guild is always able to view channels, with potentially other issues
-   			.filter((channel) => {
-				const perms = Permissions.finalPermission({
-					user: {
-						id: member.id,
-						roles: member.roles.map((x) => x.id),
-					},
-					guild: member.guild,
-					channel,
-				});
+                    //TODO maybe implement this correctly, by causing create and delete events for users who can newly view and not view the channels, along with doing these checks correctly, as they don't currently take into account that the owner of the guild is always able to view channels, with potentially other issues
+                    .filter((channel) => {
+                const perms = Permissions.finalPermission({
+                    user: {
+                        id: member.id,
+                        roles: member.roles.map((x) => x.id),
+                    },
+                    guild: member.guild,
+                    channel,
+                });
 
-				return perms.has("VIEW_CHANNEL");
-			})
-   			*/
+                return perms.has("VIEW_CHANNEL");
+            })
+                    */
             .map((channel) => {
                 channel.position = member.guild.channel_ordering.indexOf(channel.id);
                 return channel;
@@ -785,11 +784,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     ...x,
                     members: botMemberObject
                         ? [
-                              {
-                                  ...botMemberObject.toPublicMember(),
-                                  user: user.toPublicUser(),
-                              },
-                          ]
+                            {
+                                ...botMemberObject.toPublicMember(),
+                                user: user.toPublicUser(),
+                            },
+                        ]
                         : [],
                 },
             })?.catch((e) => console.error(`[Gateway/${this.user_id}] error when sending bot guilds`, e));

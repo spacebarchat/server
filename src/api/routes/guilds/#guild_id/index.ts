@@ -55,7 +55,7 @@ router.get(
 router.patch(
     "/",
     route({
-        requestBody: "GuildUpdateSchema",
+        requestBody: GuildUpdateSchema,
         permission: "MANAGE_GUILD",
         responses: {
             200: {

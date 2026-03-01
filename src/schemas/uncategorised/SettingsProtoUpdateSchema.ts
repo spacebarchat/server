@@ -16,32 +16,16 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { JsonValue } from "@protobuf-ts/runtime";
+import { z } from "zod";
 
-export interface SettingsProtoUpdateSchema {
-    settings: string;
-    required_data_version?: number;
-}
+export const SettingsProtoUpdateSchema = z.object({
+	settings: z.string(),
+	required_data_version: z.number().optional(),
+});
 
-export interface SettingsProtoUpdateJsonSchema {
-    settings: JsonValue;
-    required_data_version?: number;
-}
+export const SettingsProtoUpdateJsonSchema = SettingsProtoUpdateSchema.extend({
+	settings: z.record(z.string(), z.any()),
+});
 
-// TODO: these dont work with schema validation
-// typed JSON schemas:
-// export interface SettingsProtoUpdatePreloadedUserSettingsSchema {
-// 	settings: PreloadedUserSettings;
-// 	required_data_version?: number;
-// }
-//
-// export interface SettingsProtoUpdateFrecencyUserSettingsSchema {
-// 	settings: FrecencyUserSettings;
-// 	required_data_version?: number;
-// }
-
-// TODO: what is this?
-// export interface SettingsProtoUpdateTestSettingsSchema {
-// 	settings: {};
-// 	required_data_version?: number;
-// }
+export type SettingsProtoUpdateSchema = z.infer<typeof SettingsProtoUpdateSchema>;
+export type SettingsProtoUpdateJsonSchema = z.infer<typeof SettingsProtoUpdateJsonSchema>;

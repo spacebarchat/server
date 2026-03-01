@@ -381,7 +381,7 @@ router.post(
         next();
     },
     route({
-        requestBody: "WebhookExecuteSchema",
+        requestBody: WebhookExecuteSchema,
         query: {
             wait: {
                 type: "boolean",

@@ -37,7 +37,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
 router.post(
     "/",
     route({
-        requestBody: "RoleModifySchema",
+        requestBody: RoleModifySchema,
         permission: "MANAGE_ROLES",
         responses: {
             200: {
@@ -111,7 +111,7 @@ router.post(
 router.patch(
     "/",
     route({
-        requestBody: "RolePositionUpdateSchema",
+        requestBody: RolePositionUpdateSchema,
         permission: "MANAGE_ROLES",
         responses: {
             200: {

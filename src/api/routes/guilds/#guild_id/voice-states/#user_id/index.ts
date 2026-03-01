@@ -1,19 +1,19 @@
 /*
-	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+    Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+    Copyright (C) 2023 Spacebar and Spacebar Contributors
 	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 	
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { route } from "@spacebar/api";
@@ -27,7 +27,7 @@ const router = Router({ mergeParams: true });
 router.patch(
     "/",
     route({
-        requestBody: "VoiceStateUpdateSchema",
+        requestBody: VoiceStateUpdateSchema,
         responses: {
             204: {},
             400: {
@@ -49,14 +49,14 @@ router.patch(
         const perms = await getPermission(req.user_id, guild_id, body.channel_id);
 
         /*
-	From https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state
-	You must have the MUTE_MEMBERS permission to unsuppress others. You can always suppress yourself.
-	You must have the REQUEST_TO_SPEAK permission to request to speak. You can always clear your own request to speak.
-	 */
+    From https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state
+    You must have the MUTE_MEMBERS permission to unsuppress others. You can always suppress yourself.
+    You must have the REQUEST_TO_SPEAK permission to request to speak. You can always clear your own request to speak.
+     */
         if (body.suppress && user_id !== req.user_id) {
             perms.hasThrow("MUTE_MEMBERS");
         }
-        if (!body.suppress) body.request_to_speak_timestamp = new Date();
+        if (!body.suppress) body.request_to_speak_timestamp = new Date().toISOString();
         if (body.request_to_speak_timestamp) perms.hasThrow("REQUEST_TO_SPEAK");
 
         const voice_state = await VoiceState.findOne({

@@ -29,7 +29,7 @@ const router: Router = Router({ mergeParams: true });
 router.put(
     "/:overwrite_id",
     route({
-        requestBody: "ChannelPermissionOverwriteSchema",
+        requestBody: ChannelPermissionOverwriteSchema,
         permission: "MANAGE_ROLES",
         responses: {
             204: {},

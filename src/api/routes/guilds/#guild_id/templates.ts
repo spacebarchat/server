@@ -20,6 +20,7 @@ import { generateCode, route } from "@spacebar/api";
 import { Guild, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
+import { TemplateCreateSchema, TemplateModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -64,7 +65,7 @@ router.get(
 router.post(
     "/",
     route({
-        requestBody: "TemplateCreateSchema",
+        requestBody: TemplateCreateSchema,
         permission: "MANAGE_GUILD",
         responses: {
             200: {
@@ -156,7 +157,7 @@ router.put(
 router.patch(
     "/:code",
     route({
-        requestBody: "TemplateModifySchema",
+        requestBody: TemplateModifySchema,
         permission: "MANAGE_GUILD",
         responses: {
             200: { body: "Template" },

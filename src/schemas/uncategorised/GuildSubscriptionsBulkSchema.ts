@@ -1,11 +1,10 @@
+import { z } from "zod";
 import { LazyRequestSchema } from "../gateway/LazyRequestSchema";
 
-export interface GuildSubscriptionsBulkSchema {
-    subscriptions: { [key: string]: GuildSubscriptionSchema };
-}
+export const GuildSubscriptionSchema = LazyRequestSchema.omit({ guild_id: true });
+export type GuildSubscriptionSchema = z.infer<typeof GuildSubscriptionSchema>;
 
-export type GuildSubscriptionSchema = Omit<LazyRequestSchema, "guild_id">;
-
-export const GuildSubscriptionsBulkSchema = {
-    $subscriptions: Object,
-};
+export const GuildSubscriptionsBulkSchema = z.object({
+    subscriptions: z.record(z.string(), GuildSubscriptionSchema),
+});
+export type GuildSubscriptionsBulkSchema = z.infer<typeof GuildSubscriptionsBulkSchema>;

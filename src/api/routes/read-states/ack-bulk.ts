@@ -25,7 +25,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "AckBulkSchema",
+        requestBody: AckBulkSchema,
         responses: {
             204: {},
             400: {

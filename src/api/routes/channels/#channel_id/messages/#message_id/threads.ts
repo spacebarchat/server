@@ -31,7 +31,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        requestBody: "MessageThreadCreationSchema",
+        requestBody: MessageThreadCreationSchema,
         permission: "CREATE_PUBLIC_THREADS",
         responses: {
             200: {},
