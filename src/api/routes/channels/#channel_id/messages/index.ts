@@ -463,7 +463,7 @@ router.post(
                 channel.save(),
                 emitEvent({
                     event: "CHANNEL_UPDATE",
-                    data: { ...channel, newly_created: false },
+                    data: { ...channel.toJSON(), newly_created: false },
                     guild_id: channel.guild_id,
                 }),
             ]);
