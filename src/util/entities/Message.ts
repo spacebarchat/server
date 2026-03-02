@@ -259,6 +259,7 @@ export class Message extends BaseClass {
     toJSON(shallow = false): Message {
         return {
             ...this,
+            channel: undefined,
             author_id: undefined,
             member_id: undefined,
             webhook_id: this.webhook_id ?? undefined,

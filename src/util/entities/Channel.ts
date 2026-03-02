@@ -710,6 +710,20 @@ export class Channel extends BaseClass {
             rate_limit_per_user: this.rate_limit_per_user || undefined,
             owner_id: this.owner_id || undefined,
             ...(this.isThread() && this.thread_members ? { member_ids_preview: this.thread_members.map((_) => _.member.id) } : {}),
+            default_auto_archive_duration: this.default_auto_archive_duration ?? undefined,
+            retention_policy_id: undefined,
+            thread_metadata: this.thread_metadata
+                ? {
+                      ...this.thread_metadata,
+                      archive_timestamp: new Date(this.thread_metadata.archive_timestamp).toISOString().replace("Z", "+00:00"),
+                      create_timestamp: new Date(this.thread_metadata.create_timestamp).toISOString().replace("Z", "+00:00"),
+                  }
+                : undefined,
+            member_count: this.member_count ?? undefined,
+            message_count: this.message_count ?? undefined,
+            total_message_sent: this.total_message_sent ?? undefined,
+            applied_tags: this.applied_tags ?? undefined,
+            permission_overwrites: this.isThread() ? undefined : this.permission_overwrites,
         };
     }
 }
