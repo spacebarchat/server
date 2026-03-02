@@ -66,6 +66,7 @@ router.post(
     },
     route({
         requestBody: "WebhookExecuteSchema",
+        stripNulls: true,
         query: {
             wait: {
                 type: "boolean",
