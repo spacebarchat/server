@@ -285,6 +285,9 @@ router.post(
     },
     route({
         requestBody: "MessageCreateSchema",
+        stripNulls: {
+            components: true,
+        },
         permission: "VIEW_CHANNEL",
         right: "SEND_MESSAGES",
         responses: {

@@ -41,7 +41,7 @@ export type RouteResponse = {
     body?: `${string}Response`;
     headers?: Record<string, string>;
 };
-
+export type stripNulls = { [key: string]: true | stripNulls };
 export interface RouteOptions {
     permission?: PermissionResolvable;
     right?: RightResolvable;
@@ -52,6 +52,7 @@ export interface RouteOptions {
             body?: string;
         };
     };
+    stripNulls?: stripNulls;
     event?: EVENT | EVENT[];
     summary?: string;
     description?: string;
@@ -73,7 +74,31 @@ export interface RouteOptions {
     // 	headers?: Record<string, string>;
     // };
 }
-
+export function stripNull(obj: object) {
+    console.log(Object.entries(obj));
+    for (const [key, value] of Object.entries(obj)) {
+        if (value instanceof Object || (value && !value.__proto__)) {
+            stripNull(value);
+        } else if (value === null) {
+            //@ts-expect-error this is fine
+            delete obj[key];
+        }
+    }
+}
+// eslint-disable-next-line
+export function followNullPath(obj1: any, nullObj: stripNulls) {
+    for (const [key, value] of Object.entries(nullObj)) {
+        if (key in obj1)
+            if (value instanceof Object) {
+                if (obj1[key] instanceof Object)
+                    //@ts-expect-error this works lol
+                    followNullPath(obj1[key], nullObj[key]);
+                else delete obj1[key];
+            } else if (obj1[key] instanceof Object) {
+                stripNull(obj1[key]);
+            }
+    }
+}
 export function route(opts: RouteOptions) {
     let validate: AnyValidateFunction | undefined;
     if (opts.requestBody) {
@@ -111,9 +136,12 @@ export function route(opts: RouteOptions) {
         }
 
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
+            if (opts.stripNulls) {
+                followNullPath(req.body, opts.stripNulls);
+            }
             const valid = validate(req.body);
             if (!valid) {
-                console.log(req.body);
+                console.log(JSON.stringify(req.body));
                 const fields: Record<string, { code?: string; message: string }> = {};
                 validate.errors?.forEach(
                     (x) =>
