@@ -295,6 +295,7 @@ router.post(
         requestBody: "MessageCreateSchema",
         stripNulls: {
             components: true,
+            embeds: true,
         },
         permission: "VIEW_CHANNEL",
         right: "SEND_MESSAGES",
