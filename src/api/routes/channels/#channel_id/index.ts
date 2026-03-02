@@ -109,7 +109,7 @@ router.delete(
                         c.save(),
                         emitEvent({
                             event: "CHANNEL_UPDATE",
-                            data: c,
+                            data: c.toJSON(),
                             channel_id: c.id,
                         } as ChannelUpdateEvent),
                     ]);
@@ -234,7 +234,7 @@ router.patch(
             channel.save(),
             emitEvent({
                 event: "CHANNEL_UPDATE",
-                data: channel,
+                data: channel.toJSON(),
                 channel_id,
             } as ChannelUpdateEvent),
         ]);
