@@ -67,6 +67,7 @@ import {
     Reaction,
     ReadStateType,
     UnfurledMediaItem,
+    BaseMessageComponents,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -201,19 +202,19 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             });
     }
 }
-export async function handleMessage(opts: MessageOptions): Promise<Message> {
+export function handleComps(components: BaseMessageComponents[], flags: number) {
     const errors: Record<string, { code?: string; message: string }> = {};
     const knownComponentIds: string[] = [];
-    const compv2 = (opts.flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
+    const compv2 = (flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
     const medias: UnfurledMediaItem[] = [];
-    for (const comp of opts.components || []) {
+    for (const comp of components || []) {
         if (comp.type === MessageComponentType.ActionRow) {
-            checkActionRow(comp, knownComponentIds, errors, opts.components!.indexOf(comp));
+            checkActionRow(comp, knownComponentIds, errors, components!.indexOf(comp));
         } else if (comp.type === MessageComponentType.Section) {
             if (!compv2) throw new HTTPError("Must be comp v2");
             const accessory = comp.accessory;
             if (comp.components.length < 1 || comp.components.length > 3) {
-                errors[`data.components[${opts.components!.indexOf(comp)}].components`] = {
+                errors[`data.components[${components!.indexOf(comp)}].components`] = {
                     code: "TOO_LONG",
                     message: "Component list is too long",
                 };
@@ -226,7 +227,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         } else if (comp.type === MessageComponentType.MediaGallery) {
             if (!compv2) throw new HTTPError("Must be comp v2");
             if (comp.items.length < 1 || comp.items.length > 10) {
-                errors[`data.components[${opts.components!.indexOf(comp)}].items`] = {
+                errors[`data.components[${components!.indexOf(comp)}].items`] = {
                     code: "TOO_LONG",
                     message: "Media list is too long",
                 };
@@ -247,7 +248,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     case MessageComponentType.Section: {
                         const accessory = elm.accessory;
                         if (elm.components.length < 1 || elm.components.length > 3) {
-                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
+                            errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
                                 code: "TOO_LONG",
                                 message: "Component list is too long",
                             };
@@ -259,7 +260,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     }
                     case MessageComponentType.MediaGallery:
                         if (elm.items.length < 1 || elm.items.length > 10) {
-                            errors[`data.components[${opts.components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
+                            errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
                                 code: "TOO_LONG",
                                 message: "Media list is too long",
                             };
@@ -271,7 +272,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                         break;
                     }
                     case MessageComponentType.ActionRow:
-                        checkActionRow(elm, knownComponentIds, errors, opts.components!.indexOf(elm));
+                        checkActionRow(elm, knownComponentIds, errors, components!.indexOf(elm));
                         break;
                     default:
                         elm satisfies never;
@@ -285,6 +286,13 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     if (Object.keys(errors).length > 0) {
         throw FieldErrors(errors);
     }
+    return async (messageId: string, user: User, channel: Channel) => {
+        const batchId = `CLOUD_compUploads_${randomString(128)}`;
+        (await Promise.all(medias.map((m, index) => processMedia(m, messageId, batchId, user, channel, index + "")))).forEach((_) => _?.());
+    };
+}
+export async function handleMessage(opts: MessageOptions): Promise<Message> {
+    const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;
 
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
@@ -334,7 +342,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
     message.channel = channel;
-    const batchId = `CLOUD_${message.author_id}_${randomString(128)}`;
 
     if (opts.author_id) {
         message.author = await User.findOneOrFail({
@@ -344,8 +351,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         const rights = await getRights(opts.author_id);
         rights.hasThrow("SEND_MESSAGES");
     }
-
-    (await Promise.all(medias.map((m, index) => processMedia(m, message.id, batchId, message.author as User, channel, index + "")))).forEach((_) => _?.());
 
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
@@ -360,6 +365,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     if (cloudAttachments && cloudAttachments.length > 0) {
         console.log("[Message] Processing attachments for message", message.id, ":", message.attachments);
+        handle?.(message.id, message.author as User, message.channel);
         const uploadedAttachments = await Promise.all(
             cloudAttachments.map(async (att) => {
                 const cAtt = att.attachment;

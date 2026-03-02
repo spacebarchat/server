@@ -17,11 +17,12 @@
 */
 
 import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageType } from "@spacebar/schemas";
-import { route } from "@spacebar/api";
+import { route, stripNull } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
-import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User } from "@spacebar/util";
-import { sendMessage } from "../../../../util/handlers/Message";
+import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User, Message, Config, MessageUpdateEvent } from "@spacebar/util";
+import { handleComps, sendMessage } from "../../../../util/handlers/Message";
+import { HTTPError } from "#util/util/lambert-server";
 
 const router = Router({ mergeParams: true });
 
@@ -45,6 +46,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             nonce: interaction?.nonce,
         },
     } as InteractionSuccessEvent);
+    console.log(body.type);
 
     switch (body.type) {
         case InteractionCallbackType.PONG:
@@ -112,9 +114,47 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             // TODO
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
-            // TODO
-            break;
         case InteractionCallbackType.UPDATE_MESSAGE:
+            {
+                if (!interaction.mesageId) throw new HTTPError("no. That was not a message");
+                const message = await Message.findOneOrFail({
+                    relations: {
+                        author: true,
+                        webhook: true,
+                        application: true,
+                        mentions: true,
+                        mention_roles: true,
+                        mention_channels: true,
+                        sticker_items: true,
+                        attachments: true,
+                        thread: {
+                            recipients: {
+                                user: true,
+                            },
+                        },
+                        channel: true,
+                    },
+                    where: {
+                        id: interaction.mesageId,
+                    },
+                });
+                if (body.data.content && body.data.content.length > Config.get().limits.message.maxCharacters) {
+                    throw new HTTPError("Content length over max character limit");
+                }
+                if (body.data.components) stripNull(body.data.components);
+                console.log(body.data.components);
+                message.embeds = body.data.embeds || [];
+                console.log(message);
+                const handle = body.data.components ? handleComps(body.data.components, message.flags) : undefined;
+                await handle?.(message.id, message.author as User, message.channel);
+                message.components = body.data.components;
+                await message.save();
+                emitEvent({
+                    event: "MESSAGE_UPDATE",
+                    channel_id: message.channel_id,
+                    data: message.toJSON(),
+                } satisfies MessageUpdateEvent);
+            }
             // TODO
             break;
         case InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT:
