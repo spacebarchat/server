@@ -321,6 +321,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     const message = Message.create({
         ...opts,
+        message_reference: opts.message_reference ?? undefined,
         poll: opts.poll,
         sticker_items: stickers,
         guild_id: channel.guild_id,
@@ -332,6 +333,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         mentions: [],
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
+    message.channel = channel;
     const batchId = `CLOUD_${message.author_id}_${randomString(128)}`;
 
     if (opts.author_id) {
@@ -461,6 +463,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         permission.hasThrow("SEND_MESSAGES");
         if (permission.cache.member) {
             message.member = permission.cache.member;
+            console.log(message.member.flags);
         }
 
         if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");

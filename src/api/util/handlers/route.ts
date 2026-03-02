@@ -113,6 +113,7 @@ export function route(opts: RouteOptions) {
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
             const valid = validate(req.body);
             if (!valid) {
+                console.log(req.body);
                 const fields: Record<string, { code?: string; message: string }> = {};
                 validate.errors?.forEach(
                     (x) =>

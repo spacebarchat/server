@@ -441,6 +441,10 @@ export class Guild extends BaseClass {
             discovery_weight: undefined,
             discovery_excluded: undefined,
             parent: undefined,
+            primary_category_id: undefined,
+            nsfw: undefined,
+            template_id: undefined,
+            presence_count: undefined,
         };
     }
 }
