@@ -52,7 +52,7 @@ export interface RouteOptions {
             body?: string;
         };
     };
-    stripNulls?: stripNulls;
+    stripNulls?: stripNulls | true;
     event?: EVENT | EVENT[];
     summary?: string;
     description?: string;
@@ -75,7 +75,6 @@ export interface RouteOptions {
     // };
 }
 export function stripNull(obj: object) {
-    console.log(Object.entries(obj));
     for (const [key, value] of Object.entries(obj)) {
         if (value instanceof Object || (value && !value.__proto__)) {
             stripNull(value);
@@ -137,11 +136,11 @@ export function route(opts: RouteOptions) {
 
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
             if (opts.stripNulls) {
-                followNullPath(req.body, opts.stripNulls);
+                if (opts.stripNulls === true) stripNull(req.body);
+                else followNullPath(req.body, opts.stripNulls);
             }
             const valid = validate(req.body);
             if (!valid) {
-                console.log(JSON.stringify(req.body));
                 const fields: Record<string, { code?: string; message: string }> = {};
                 validate.errors?.forEach(
                     (x) =>
@@ -151,6 +150,7 @@ export function route(opts: RouteOptions) {
                         }),
                 );
                 if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+                if (process.env.LOG_VALIDATION_ERROR_BODY) console.log(JSON.stringify(req.body));
                 throw FieldErrors(fields, validate.errors!);
             }
         }

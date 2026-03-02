@@ -134,17 +134,14 @@ export class Message extends BaseClass {
     mention_everyone?: boolean;
 
     @JoinTable({ name: "message_user_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => User)
     mentions: User[];
 
     @JoinTable({ name: "message_role_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => Role)
     mention_roles: Role[];
 
     @JoinTable({ name: "message_channel_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => Channel)
     mention_channels: Channel[];
 
@@ -156,11 +153,9 @@ export class Message extends BaseClass {
         cascade: true,
         orphanedRowAction: "delete",
     })
-    @JsonRemoveEmpty
     attachments?: Attachment[];
 
     @Column({ type: "simple-json" })
-    @JsonRemoveEmpty
     embeds: Embed[];
 
     @Column({ type: "simple-json" })
