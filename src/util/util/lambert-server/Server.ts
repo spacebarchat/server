@@ -131,7 +131,7 @@ export class Server {
             // if (this.options.errorHandler) router.use(this.options.errorHandler);
             this.app.use(path, <Router>router);
 
-            if (this.options.serverInitLogging) console.log(`[Server] Route ${path} registered`);
+            if (this.options.serverInitLogging && process.env.LOG_ROUTES !== "false") console.log(`[Server] Route ${path} registered`);
 
             return router;
         } catch (error) {

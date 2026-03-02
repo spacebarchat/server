@@ -35,15 +35,15 @@ public class ApplicationRpcController : ControllerBase {
 
 public class ApplicationDisclosures {
     [JsonPropertyName("disclosures")]
-    public List<ApplicationDisclosures.Type> Disclosures { get; set; }
+    public List<ApplicationDisclosureType> Disclosures { get; set; }
 
     [JsonPropertyName("acked_disclosures")]
-    public List<ApplicationDisclosures.Type> AckedDisclosures { get; set; }
+    public List<ApplicationDisclosureType> AckedDisclosures { get; set; }
 
     [JsonPropertyName("all_acked")]
     public bool AllAcked { get; set; }
 
-    public enum Type {
+    public enum ApplicationDisclosureType {
         UnspecifiedDisclosure = 0,
         IpLocation = 1,
         DisplaysAdvertisements = 2,

@@ -26,6 +26,10 @@ import { Socket } from "node:net";
 import { FSWatcher } from "node:fs";
 import { Stopwatch } from "./Stopwatch";
 import { Config } from "./Config";
+import net from "net";
+import fs from "fs";
+import { red } from "picocolors";
+
 export const events = new EventEmitter();
 let unixSocketListener: UnixSocketListener | null = null;
 let unixSocketWriter: UnixSocketWriter | null = null;
@@ -65,8 +69,8 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
         await publishEvent();
     } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
         if (!unixSocketWriter) {
-            unixSocketWriter = new UnixSocketWriter(process.env.EVENT_SOCKET_PATH);
-            await unixSocketWriter.init();
+            console.error("[Event] Unix socket writer not initialized, cannot emit event!");
+            throw new Error("Unix socket writer not initialized");
         }
         await unixSocketWriter.emit(payload);
     } else if (process.env.EVENT_TRANSMISSION === "process") {
@@ -78,6 +82,13 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 
 export async function initEvent() {
     await RabbitMQ.init(); // does nothing if rabbitmq is not setup
+
+    if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
+        if (!unixSocketWriter) {
+            unixSocketWriter = new UnixSocketWriter(process.env.EVENT_SOCKET_PATH);
+            await unixSocketWriter.init();
+        }
+    }
 
     // Set up the spacebar event listener (used for config reload, etc.)
     const setupSpacebarListener = async () => {
@@ -227,9 +238,6 @@ class UnixSocketListener {
     }
 
     async init() {
-        const net = await import("net");
-        const fs = await import("fs");
-
         // remove stale socket file if it exists
         // can happen if there's a PID conflict (across containers/PID namespaces)
         try {
@@ -312,25 +320,37 @@ class UnixSocketListener {
     }
 }
 
+function getPidCmdline(pid: number): string | null {
+    try {
+        const cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, "utf-8");
+        return cmdline.replaceAll("\0", " ").trim();
+    } catch (e) {
+        return null;
+    }
+}
+
 class UnixSocketWriter {
     socketPath: string;
     clients: { [key: string]: Socket } = {};
     watcher?: FSWatcher;
+    backlog: Event[] = [];
+    broadcastLock: Promise<void> = Promise.resolve();
+    replayLock: Promise<void> = Promise.resolve();
+    isInitializing = true;
 
     constructor(socketPath: string) {
         this.socketPath = socketPath;
     }
 
     async init() {
-        const net = await import("net");
-        const fs = await import("fs");
-
         if (!fs.opendirSync(this.socketPath)) throw new Error("Unix socket path does not exist or is not a directory: " + this.socketPath);
 
         console.log("[Events] Unix socket writer initializing for", this.socketPath);
 
         const connect = (file: string) => {
             const fullPath = path.join(this.socketPath, file);
+            const pid = Number(path.basename(file, ".sock"));
+            console.log("[Events] Attempting to connect to unix socket:", fullPath, "| proc:", getPidCmdline(pid) ?? red("No such pid: " + pid));
 
             // avoid duplicate connections
             if (this.clients[fullPath] && !this.clients[fullPath].destroyed) {
@@ -340,6 +360,7 @@ class UnixSocketWriter {
 
             // clean up old connection if it exists
             if (this.clients[fullPath]) {
+                console.log("[Events] Removing stale unix socket client for", fullPath);
                 try {
                     this.clients[fullPath].destroy();
                 } catch (e) {
@@ -425,6 +446,8 @@ class UnixSocketWriter {
         } catch (err) {
             console.error("[Events] Unix socket writer failed to read directory:", err);
         }
+
+        this.isInitializing = false;
     }
 
     async emit(event: Event) {
@@ -433,33 +456,59 @@ class UnixSocketWriter {
         // check if there are any listeners
         const clientCount = Object.entries(this.clients).length;
         if (clientCount === 0) {
-            console.warn("[Events] Unix socket writer has no connected clients to emit to");
+            console.warn("[Events] Unix socket writer has no connected clients to emit to, backlog size:", this.backlog.length + 1);
+            this.backlog.push(event);
+            if (!this.isInitializing) {
+                this.isInitializing = true;
+                console.log("[Events] Re-initializing unix socket writer due to new event with no listeners");
+                await this.close();
+                await this.init();
+            }
             return;
         }
 
-        const tsw = Stopwatch.startNew();
-        const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event }));
-        const lenBuf = Buffer.alloc(4);
-        lenBuf.writeUInt32BE(payloadBuf.length, 0);
-        const framed = Buffer.concat([lenBuf, payloadBuf]);
+        await this.replayLock;
+        await (this.replayLock = Promise.resolve().then(async () => {
+            if (this.backlog.length > 0) {
+                console.log(`[Events] Replaying ${this.backlog.length} backlog events`);
+                for (const backlogEvent of this.backlog) {
+                    await this.broadcast(backlogEvent);
+                }
+                this.backlog = [];
+            }
+        }));
 
-        for (const [socketPath, socket] of Object.entries(this.clients)) {
-            if (socket.destroyed) {
-                console.log("[Events] Unix socket writer found destroyed socket, removing:", socketPath);
-                delete this.clients[socketPath];
-                continue;
+        await this.broadcast(event);
+    }
+
+    private async broadcast(event: Event) {
+        await this.broadcastLock;
+        return await (this.broadcastLock = new Promise((res) => {
+            const tsw = Stopwatch.startNew();
+            const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event }));
+            const lenBuf = Buffer.alloc(4);
+            lenBuf.writeUInt32BE(payloadBuf.length, 0);
+            const framed = Buffer.concat([lenBuf, payloadBuf]);
+
+            for (const [socketPath, socket] of Object.entries(this.clients)) {
+                if (socket.destroyed) {
+                    console.log("[Events] Unix socket writer found destroyed socket, removing:", socketPath);
+                    delete this.clients[socketPath];
+                    continue;
+                }
+
+                try {
+                    socket.write(framed);
+                } catch (e) {
+                    console.error("[Events] Unix socket writer failed to write to socket", socketPath, ":", e);
+                }
             }
 
-            try {
-                socket.write(framed);
-            } catch (e) {
-                console.error("[Events] Unix socket writer failed to write to socket", socketPath, ":", e);
-            }
-        }
-
-        if (tsw.elapsed().totalMilliseconds > 5)
-            // else it's too noisy
-            console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
+            if (tsw.elapsed().totalMilliseconds > 5)
+                // else it's too noisy
+                console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
+            res();
+        }));
     }
 
     async close() {

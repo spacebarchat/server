@@ -23,7 +23,9 @@ import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
 import { multer } from "../util/multer";
-import { cache } from "../util/cache";
+import { cache, cacheNotFound } from "../util/cache";
+import { FileStorage } from "@spacebar/cdn*";
+import fs from "fs/promises";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -37,11 +39,11 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 const router = Router({ mergeParams: true });
 
 const pathPrefix = "stickers";
-router.post("/:guild_id", multer.single("file"), async (req: Request, res: Response) => {
+router.post("/:sticker_id", multer.single("file"), async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
     if (!req.file) throw new HTTPError("Missing file");
     const { buffer, size } = req.file;
-    const { guild_id } = req.params as { [key: string]: string };
+    const { sticker_id } = req.params as { [key: string]: string };
 
     let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
 
@@ -49,7 +51,7 @@ router.post("/:guild_id", multer.single("file"), async (req: Request, res: Respo
     if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
     if (ANIMATED_MIME_TYPES.includes(type.mime)) hash = `a_${hash}`; // animated icons have a_ infront of the hash
 
-    const path = `${pathPrefix}/${guild_id}/${hash}`;
+    const path = `${pathPrefix}/${sticker_id}`;
     const endpoint = Config.get().cdn.endpointPublic;
 
     await storage.set(path, buffer);
@@ -58,16 +60,17 @@ router.post("/:guild_id", multer.single("file"), async (req: Request, res: Respo
         id: hash,
         content_type: type.mime,
         size,
-        url: `${endpoint}${req.baseUrl}/${guild_id}/${hash}`,
+        url: `${endpoint}${req.baseUrl}/${sticker_id}`,
     });
 });
 
-router.get("/:guild_id", cache, async (req: Request, res: Response) => {
-    let { guild_id } = req.params as { [key: string]: string };
-    guild_id = guild_id.split(".")[0]; // remove .file extension
-    const path = `${pathPrefix}/${guild_id}`;
+router.get("/:sticker_id", cache, async (req: Request, res: Response) => {
+    let { sticker_id } = req.params as { [key: string]: string };
+    sticker_id = sticker_id.split(".")[0]; // remove .file extension
+    const path = `${pathPrefix}/${sticker_id}`;
 
-    const file = await getOrMoveFile(path, `avatars/${guild_id}`);
+    const file = await storage.get(path);
+    if (!file) return cacheNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -75,43 +78,14 @@ router.get("/:guild_id", cache, async (req: Request, res: Response) => {
     return res.send(file);
 });
 
-export const getAvatar = async (req: Request, res: Response) => {
-    const { guild_id } = req.params as { [key: string]: string };
-    let { hash } = req.params as { [key: string]: string };
-    hash = hash.split(".")[0]; // remove .file extension
-    const path = `${pathPrefix}/${guild_id}/${hash}`;
-
-    const file = await getOrMoveFile(path, `avatars/${guild_id}/${hash}`);
-    const type = await fileTypeFromBuffer(file);
-
-    res.set("Content-Type", type?.mime);
-
-    return res.send(file);
-};
-
-router.get("/:guild_id/:hash", cache, getAvatar);
-
-router.delete("/:guild_id/:id", async (req: Request, res: Response) => {
+router.delete("/:sticker_id/", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
-    const { guild_id, id } = req.params as { [key: string]: string };
-    const path = `${pathPrefix}/${guild_id}/${id}`;
+    const { sticker_id } = req.params as { [key: string]: string };
+    const path = `${pathPrefix}/${sticker_id}`;
 
     await storage.delete(path);
 
     return res.send({ success: true });
 });
-
-async function getOrMoveFile(newPath: string, oldPath: string) {
-    let file = await storage.get(newPath);
-    if (!file) {
-        if (await storage.exists(oldPath)) {
-            console.log(`[${pathPrefix}] found file at old path ${oldPath}, moving to new path ${newPath}`);
-            await storage.move(oldPath, newPath);
-            file = await storage.get(newPath);
-        }
-    }
-    if (!file) throw new HTTPError("not found", 404);
-    return file;
-}
 
 export default router;

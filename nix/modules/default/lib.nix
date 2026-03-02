@@ -11,4 +11,11 @@
       else
         80;
   };
+
+  mkEndpointRaw = domain: port: publicPort: ssl: {
+    host = domain;
+    localPort = port;
+    useSsl = ssl;
+    publicPort = publicPort;
+  };
 }

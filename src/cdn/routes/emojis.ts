@@ -23,7 +23,7 @@ import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
 import { multer } from "../util/multer";
-import { cache } from "../util/cache";
+import { cache, cacheNotFound } from "../util/cache";
 import { FileStorage } from "@spacebar/cdn";
 import fs from "fs/promises";
 
@@ -69,7 +69,8 @@ router.get("/:emoji_id", cache, async (req: Request, res: Response) => {
     emoji_id = emoji_id.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${emoji_id}`;
 
-    const file = await getOrMoveFile(path, `avatars/${emoji_id}`);
+    const file = await storage.get(path);
+    if (!file) return cacheNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -86,36 +87,5 @@ router.delete("/:emoji_id", async (req: Request, res: Response) => {
 
     return res.send({ success: true });
 });
-
-async function getOrMoveFile(newPath: string, oldPath: string) {
-    let file = await storage.get(newPath);
-    if (file) {
-        if (!(await storage.isFile(newPath))) {
-            console.log(`[CDN] Migrating emoji from subdirectory+fallback to direct path for ${newPath}`);
-            // noinspection SuspiciousTypeOfGuard -- not sure whats up with this
-            if (storage instanceof FileStorage) {
-                const files = await fs.readdir(storage.getFsPath(newPath));
-                if (files.length === 1) {
-                    const oldFilePath = storage.getFsPath(`${newPath}/${files[0]}`);
-                    const newFilePath = storage.getFsPath(newPath);
-                    await fs.rename(oldFilePath, newFilePath + ".tmp");
-                    await fs.rmdir(storage.getFsPath(newPath));
-                    await fs.rename(newFilePath + ".tmp", newFilePath);
-                    file = await storage.get(newPath);
-                } else console.log(`[CDN] Warning: not migrating emojis ${newPath}, as there are multiple files in the old directory`);
-            } else {
-                console.log("[CDN] Warning: no migration for s3 storage emojis, as it is not a filesystem");
-            }
-        }
-    } else {
-        if (await storage.exists(oldPath)) {
-            console.log(`[${pathPrefix}] found file at old path ${oldPath}, moving to new path ${newPath}`);
-            await storage.move(oldPath, newPath);
-            file = await storage.get(newPath);
-        }
-    }
-    if (!file) throw new HTTPError("not found", 404);
-    return file;
-}
 
 export default router;

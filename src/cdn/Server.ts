@@ -64,10 +64,10 @@ export class CDNServer extends Server {
         await registerRoutes(this, path.join(__dirname, "routes/"));
 
         this.app.use("/guilds/:guild_id/users/:user_id/avatars", guildProfilesRoute);
-        console.log("[Server] Route /guilds/:guild_id/users/:user_id/avatars registered");
+        if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/avatars registered");
 
         this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
-        console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
+        if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
         return super.start();
     }

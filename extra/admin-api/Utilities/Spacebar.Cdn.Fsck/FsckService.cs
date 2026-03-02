@@ -33,7 +33,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
     }
 
     private async Task RunFsckAsync(string name, string path, IQueryable<FsckItem> items) {
-        int i = 0, count = await items.CountAsync();
+        int i = 0, count = await items.CountAsync(), missing = 0;
         List<Task> tasks = [];
 
         await foreach (var item in items.AsAsyncEnumerable()) {
@@ -46,12 +46,16 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
 
                 i++;
                 if (!item.IsSingleSubDirFile) {
-                    if (!await fs.FileExists(item.Path))
+                    if (!await fs.FileExists(item.Path)) {
                         logger.LogWarning("{itemType} {itemId} is missing at {path}", name, item.ItemId, item.Path);
+                        missing++;
+                    }
                 }
                 else if (item.IsSingleSubDirFile && fs is FilesystemFileSource ffs) {
-                    if(!await ffs.DirectoryExists(Path.GetDirectoryName(item.Path)))
+                    if (!await ffs.DirectoryExists(Path.GetDirectoryName(item.Path))) {
                         logger.LogWarning("{itemType} {itemId} is missing at {path} (directory missing)", name, item.ItemId, item.Path);
+                        missing++;
+                    }
                 }
                 else {
                     logger.LogWarning("Unhandled case: {itemType} {itemId} -> {path} (IsSingleSubDirFile: {isSingleSubDirFile}, fstype: {fsType})", name, item.ItemId, item.Path, item.IsSingleSubDirFile, fs.GetType().Name);
@@ -62,7 +66,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
         }
 
         await Task.WhenAll(tasks);
-        logger.LogInformation("Validated {count} items for {path}.", i, path);
+        logger.LogInformation("Validated {count} items for {path}, {missing} missing.", i, path, missing);
     }
 
 #region User Assets
@@ -112,17 +116,15 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/stickers/{x.Id}",
-                ItemId = x.Id,
-                IsSingleSubDirFile = fs is FilesystemFileSource
+                ItemId = x.Id
             });
 
     public IQueryable<FsckItem> EnumerateEmojiPathsAsync() =>
         _db.Emojis
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
-                Path = $"/emojis/{x.Id}/",
-                ItemId = x.Id,
-                IsSingleSubDirFile = fs is FilesystemFileSource
+                Path = $"/emojis/{x.Id}",
+                ItemId = x.Id
             });
 
 #endregion

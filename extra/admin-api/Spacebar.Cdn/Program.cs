@@ -10,7 +10,8 @@ if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_P
     builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
 
 // Add services to the container.
-builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.server.spacebar.chat"));
+// builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.server.spacebar.chat"));
+builder.Services.AddSingleton<IFileSource>(new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")));
 builder.Services.AddSingleton<LruFileCache>(new LruFileCache(1 * 1024 * 1024 * 1024));
 builder.Services.AddSingleton<PixelArtDetectionService>();
 builder.Services.AddSingleton<DiscordImageResizeService>();

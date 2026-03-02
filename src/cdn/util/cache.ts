@@ -23,3 +23,9 @@ export function cache(req: Request, res: Response, next: NextFunction) {
     res.setHeader("Cache-Control", `public, max-age=${cacheDuration}, s-maxage=${cacheDuration}, immutable`);
     next();
 }
+
+export function cacheNotFound(req: Request, res: Response) {
+    const cacheDuration = 60; // 1 minute
+    res.setHeader("Cache-Control", `public, max-age=${cacheDuration}, s-maxage=${cacheDuration}, immutable`);
+    res.status(404).send(req.path + " not found");
+}

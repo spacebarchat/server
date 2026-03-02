@@ -61,7 +61,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
         //The event send by Discord's client on channel leave has both guild_id and channel_id as null
         //if (body.guild_id === null) body.guild_id = voiceState.guild_id;
         prevState = { ...voiceState };
-        voiceState.assign(body);
+        VoiceState.merge(voiceState, body);
     } catch (error) {
         voiceState = VoiceState.create({
             ...body,
@@ -70,6 +70,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
             mute: false,
             suppress: false,
         });
+        isChanged = true;
     }
 
     // if user left voice channel, send an update to previous channel/guild to let other people know that the user left
@@ -90,10 +91,14 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
     //TODO the member.user should only have these properties: avatar, discriminator, id, username
     //TODO this may fail
     if (body.guild_id) {
-        voiceState.member = await Member.findOneOrFail({
+        const member = await Member.findOne({
             where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
             relations: { user: true, roles: true },
         });
+
+        if (member) {
+            voiceState.member = member;
+        }
     }
 
     //If the session changed we generate a new token

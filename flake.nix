@@ -16,7 +16,7 @@
       self,
       nixpkgs,
       flake-utils,
-      pion-webrtc
+      pion-webrtc,
     }:
     nixpkgs.lib.recursiveUpdate
       (
@@ -101,7 +101,11 @@
         )
         // {
           nixosModules.default = import ./nix/modules/default self;
-          testVm = import ./nix/testVm/default.nix { inherit self nixpkgs; };
+          nixosConfigurations.testVm = import ./nix/testVm/default.nix { inherit self nixpkgs; };
+          nixosConfigurations.test = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [ ];
+          };
           checks =
             let
               pkgs = import nixpkgs { system = "x86_64-linux"; };

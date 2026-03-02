@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   nginxTestSigning = {
     addSSL = true;
@@ -11,73 +16,72 @@ let
 in
 {
   networking.hostName = "sbtest";
-  services.nginx.virtualHosts."sb.localhost" = nginxTestSigning;
-  services.nginx.virtualHosts."api.sb.localhost" = nginxTestSigning;
-  services.nginx.virtualHosts."gw.sb.localhost" = nginxTestSigning;
-  services.nginx.virtualHosts."cdn.sb.localhost" = nginxTestSigning;
-  services.nginx.virtualHosts."admin.sb.localhost" = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.serverName} = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.adminApiEndpoint.host} = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.apiEndpoint.host} = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.cdnEndpoint.host} = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.gatewayEndpoint.host} = nginxTestSigning;
+  services.nginx.virtualHosts.${config.services.spacebarchat-server.webrtcEndpoint.host} = nginxTestSigning;
 
   services.spacebarchat-server =
     let
+      sbLib = import ../modules/default/lib.nix;
       csConnectionString = "Host=127.0.0.1; Username=postgres; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
       cfg = {
         enable = true;
-        apiEndpoint = {
-          useSsl = false;
-          host = "api.sb.localhost";
-          localPort = 3001;
-          publicPort = 8080;
-        };
-        gatewayEndpoint = {
-          useSsl = false;
-          host = "gw.sb.localhost";
-          localPort = 3002;
-          publicPort = 8080;
-        };
-        cdnEndpoint = {
-          useSsl = false;
-          host = "cdn.sb.localhost";
-          localPort = 3003;
-          publicPort = 8080;
-        };
-        adminApiEndpoint = {
-          useSsl = false;
-          host = "admin.sb.localhost";
-          localPort = 3005;
-          publicPort = 8080;
-        };
+        apiEndpoint = sbLib.mkEndpointRaw "api.sb.localhost" 3001 8080 false;
+        gatewayEndpoint = sbLib.mkEndpointRaw "gw.sb.localhost" 3002 8080 false;
+        cdnEndpoint = sbLib.mkEndpointRaw "cdn.sb.localhost" 3003 8080 false;
+        adminApiEndpoint = sbLib.mkEndpointRaw "admin.sb.localhost" 3004 8080 false;
+        webrtcEndpoint = sbLib.mkEndpointRaw "voice.sb.localhost" 3005 8080 false;
         nginx.enable = true;
         serverName = "sb.localhost";
+        settings = {
+          security = {
+            requestSignature = "meow";
+            cdnSignatureDuration = "5m";
+            cdnSignatureIncludeIp = true;
+            cdnSignatureIncludeUserAgent = false;
+            cdnSignatureKey = "meow";
+          };
+        };
+
         gatewayOffload = {
           enable = true;
           enableGuildSync = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
+
         adminApi = {
           enable = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
+        
+        cdnCs = {
+          enable = false;
+          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
+        };
+
         uApi = {
           enable = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
+
+        pion-sfu = {
+          enable = true;
+          publicIp = "127.0.0.1";
+        };
+
         extraEnvironment = {
           DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";
-          #WEBRTC_PORT_RANGE=60000-61000;
-          #PUBLIC_IP=216.230.228.60;
-          LOG_REQUESTS = "-200,204,304";
+#          LOG_REQUESTS = "-200,204,304";
+          LOG_REQUESTS = "-";
           LOG_VALIDATION_ERRORS = true;
           #DB_LOGGING=true;
           #LOG_GATEWAY_TRACES=true;
           #LOG_PROTO_UPDATES=true;
           #LOG_PROTO_FRECENCY_UPDATES=true;
           #LOG_PROTO_SETTINGS_UPDATES=true;
-          #WRTC_PUBLIC_IP=webrtc.old.server.spacebar.chat;
-          WRTC_PUBLIC_IP = "216.230.228.19";
-          WRTC_PORT_MIN = 60000;
-          WRTC_PORT_MAX = 65000;
-          WRTC_LIBRARY = "@spacebarchat/medooze-webrtc";
-          #WRTC_LIBRARY=mediasoup-spacebar-wrtc;
         };
       };
     in

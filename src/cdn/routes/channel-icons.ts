@@ -23,7 +23,7 @@ import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";
 import { multer } from "../util/multer";
-import { cache } from "../util/cache";
+import { cache, cacheNotFound } from "../util/cache";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -67,7 +67,8 @@ router.get("/:guild_id", cache, async (req: Request, res: Response) => {
     guild_id = guild_id.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${guild_id}`;
 
-    const file = await getOrMoveFile(path, `avatars/${guild_id}`);
+    const file = await storage.get(path);
+    if (!file) return cacheNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -81,7 +82,8 @@ export const getAvatar = async (req: Request, res: Response) => {
     hash = hash.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${guild_id}/${hash}`;
 
-    const file = await getOrMoveFile(path, `avatars/${guild_id}/${hash}`);
+    const file = await storage.get(path);
+    if (!file) return cacheNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -100,18 +102,5 @@ router.delete("/:guild_id/:id", async (req: Request, res: Response) => {
 
     return res.send({ success: true });
 });
-
-async function getOrMoveFile(newPath: string, oldPath: string) {
-    let file = await storage.get(newPath);
-    if (!file) {
-        if (await storage.exists(oldPath)) {
-            console.log(`[${pathPrefix}] found file at old path ${oldPath}, moving to new path ${newPath}`);
-            await storage.move(oldPath, newPath);
-            file = await storage.get(newPath);
-        }
-    }
-    if (!file) throw new HTTPError("not found", 404);
-    return file;
-}
 
 export default router;

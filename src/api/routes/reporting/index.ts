@@ -65,7 +65,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
             res.sendFile(path.join(__dirname, "..", "..", "..", "..", "assets", "temp_report_menu_responses", `${type}.json`));
         },
     );
-    console.log(`[Server] Route /reporting/menu/${type} registered (reports).`);
+    if (process.env.LOG_ROUTES !== "false") console.log(`[Server] Route /reporting/menu/${type} registered (reports).`);
     router.post(
         `/${type}`,
         route({
@@ -201,6 +201,6 @@ for (const type of Object.values(ReportMenuTypeNames)) {
             throw new HTTPError("Validation success - implementation TODO", 418);
         },
     );
-    console.log(`[Server] Route /reporting/${type} registered (reports).`);
+    if (process.env.LOG_ROUTES !== "false") console.log(`[Server] Route /reporting/${type} registered (reports).`);
 }
 export default router;

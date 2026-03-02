@@ -17,6 +17,13 @@
       <entry key="_/home/Rory/git/spacebar/server-master" value="2oJ9u2nkEFq1qQW1NFF69ECjiYu" />
     </persistenceIdMap>
   </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="chat-panel" value="Gemini 3 Pro (Preview)" />
+      <entry key="agent-panel" value="Gemini 3 Pro (Preview)" />
+    </selectedModels>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -42,6 +49,9 @@
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/query-builder/SelectQueryBuilder.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/query-builder/WhereExpressionBuilder.d.ts" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/node_modules/typeorm/repository/BaseEntity.d.ts" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="src" pattern="!file[server]:*/||file[server]:src//*" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="ProjectErrors" />
@@ -84,6 +94,8 @@
     &quot;npm.Start Gateway.executor&quot;: &quot;Run&quot;,
     &quot;npm.build.executor&quot;: &quot;Run&quot;,
     &quot;npm.build:src.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build:src:tsgo.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build:tsgo.executor&quot;: &quot;Run&quot;,
     &quot;npm.start.executor&quot;: &quot;Debug&quot;,
     &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/prettier&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/home/Rory/git/spacebar/server-master/node_modules/typescript/lib&quot;
@@ -130,13 +142,15 @@
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
+              <entry key="build:src:tsgo" value="STOPPED" />
+              <entry key="build:tsgo" value="STOPPED" />
             </map>
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Compound.Start separated">
+  <component name="RunManager" selected="npm.Start API">
     <list>
       <item itemvalue="Compound.Start separated" />
       <item itemvalue="npm.Start API" />
@@ -148,7 +162,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.242" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.30387.83" />
       </set>
     </attachedChunks>
   </component>
@@ -185,6 +199,10 @@
       <workItem from="1769106282329" duration="7551000" />
       <workItem from="1769177782123" duration="8132000" />
       <workItem from="1769278836997" duration="449000" />
+      <workItem from="1771558270982" duration="82802000" />
+      <workItem from="1771818832744" duration="44139000" />
+      <workItem from="1771996450006" duration="81615000" />
+      <workItem from="1772272118101" duration="20496000" />
     </task>
     <servers />
   </component>
@@ -215,7 +233,20 @@
           <line>140</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/api/util/handlers/Message.ts</url>
+          <line>48</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

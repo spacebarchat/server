@@ -1,9 +1,12 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace Spacebar.Models.Generic;
 
 [DebuggerDisplay("{User.Id} ({User.Username}#{User.Discriminator})")]
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+[SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
 public class Member {
     [JsonPropertyName("user")]
     public required PartialUser User { get; set; }

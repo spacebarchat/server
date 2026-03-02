@@ -91,7 +91,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
     });
 
     // the server generates a unique ssrc for the audio and video stream. Must be unique among users connected to same server
-    // UDP clients will respect this ssrc, but websocket clients will generate and replace it with their own
+    // UDP clients will respect this ssrc, but webrtc clients will generate and replace it with their own
     const generatedSsrc: SSRCs = {
         audio_ssrc: generateSsrc(),
         video_ssrc: generateSsrc(),
