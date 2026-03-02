@@ -494,13 +494,12 @@ export class Channel extends BaseClass {
         } else {
             await emitEvent({
                 event: "CHANNEL_CREATE",
-                data: channel_dto,
+                data: channel_dto.excludedRecipients([creator_user_id]),
                 user_id: creator_user_id,
             });
         }
 
-        if (recipients.length === 1) return channel_dto;
-        else return channel_dto.excludedRecipients([creator_user_id]);
+        if (recipients.length === 1) return channel_dto.excludedRecipients([creator_user_id]);
     }
 
     static async removeRecipientFromChannel(channel: Channel, user_id: string) {
