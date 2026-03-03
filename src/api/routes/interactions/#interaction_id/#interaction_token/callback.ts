@@ -111,7 +111,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             // TODO
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
-            //I think this is just ignored ish at least
+            //TODO keep track of state of this
             interaction.timeout = setTimeout(() => {
                 emitEvent({
                     event: "INTERACTION_FAILURE",
