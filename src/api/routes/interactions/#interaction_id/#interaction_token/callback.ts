@@ -139,7 +139,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             }, 30000);
             pendingInteractions.delete(interactionId);
             res.sendStatus(204);
-            break;
+            return;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
                 if (!interaction.mesageId) throw new HTTPError("no. That was not a message");
