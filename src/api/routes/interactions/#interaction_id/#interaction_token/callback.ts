@@ -111,8 +111,11 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             // TODO
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
+            //I think this is just ignored ish at least
+            break;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
+                console.log(body.type);
                 if (!interaction.mesageId) throw new HTTPError("no. That was not a message");
                 const message = await Message.findOneOrFail({
                     relations: {
