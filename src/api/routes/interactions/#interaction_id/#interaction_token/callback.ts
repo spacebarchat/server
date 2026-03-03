@@ -19,7 +19,7 @@
 import { BaseMessageComponents, InteractionCallbackSchema, InteractionCallbackType, MessageType } from "@spacebar/schemas";
 import { handleComps, route, sendMessage } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Config, emitEvent, InteractionSuccessEvent, Message, MessageUpdateEvent, pendingInteractions, User } from "@spacebar/util";
+import { Config, emitEvent, InteractionSuccessEvent, Message, MessageUpdateEvent, pendingInteractions, User, InteractionFailureEvent } from "@spacebar/util";
 import { HTTPError } from "#util/util/lambert-server";
 
 const router = Router({ mergeParams: true });
@@ -112,6 +112,19 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
             //I think this is just ignored ish at least
+            interaction.timeout = setTimeout(() => {
+                emitEvent({
+                    event: "INTERACTION_FAILURE",
+                    user_id: req.user_id,
+                    data: {
+                        id: interactionId,
+                        nonce: interaction.nonce,
+                        reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+                    },
+                } as InteractionFailureEvent);
+            }, 30000);
+            pendingInteractions.delete(interactionId);
+            res.sendStatus(204);
             break;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
