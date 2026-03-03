@@ -115,7 +115,6 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             break;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
-                console.log(body.type);
                 if (!interaction.mesageId) throw new HTTPError("no. That was not a message");
                 const message = await Message.findOneOrFail({
                     relations: {
@@ -142,9 +141,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                     throw new HTTPError("Content length over max character limit");
                 }
                 if (body.data.components) stripNull(body.data.components);
-                console.log(body.data.components);
                 message.embeds = body.data.embeds || [];
-                console.log(message);
                 const handle = body.data.components ? handleComps(body.data.components, message.flags) : undefined;
                 await handle?.(message.id, message.author as User, message.channel);
                 message.components = body.data.components;
