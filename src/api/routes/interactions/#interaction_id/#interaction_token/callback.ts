@@ -20,7 +20,19 @@ import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, Messag
 import { route, stripNull } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
-import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User, Message, Config, MessageUpdateEvent } from "@spacebar/util";
+import {
+    emitEvent,
+    FieldErrors,
+    InteractionSuccessEvent,
+    uploadFile,
+    Attachment,
+    pendingInteractions,
+    User,
+    Message,
+    Config,
+    MessageUpdateEvent,
+    InteractionFailureEvent,
+} from "@spacebar/util";
 import { handleComps, sendMessage } from "../../../../util/handlers/Message";
 import { HTTPError } from "#util/util/lambert-server";
 
@@ -114,6 +126,19 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
             //I think this is just ignored ish at least
+            interaction.timeout = setTimeout(() => {
+                emitEvent({
+                    event: "INTERACTION_FAILURE",
+                    user_id: req.user_id,
+                    data: {
+                        id: interactionId,
+                        nonce: interaction.nonce,
+                        reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+                    },
+                } as InteractionFailureEvent);
+            }, 30000);
+            pendingInteractions.delete(interactionId);
+            res.sendStatus(204);
             break;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
