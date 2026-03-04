@@ -119,7 +119,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                     data: {
                         id: interactionId,
                         nonce: interaction.nonce,
-                        reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+                        reason_code: InteractionFailureReason.TIMEOUT,
                     },
                 } as InteractionFailureEvent);
             }, 30000);
