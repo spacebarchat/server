@@ -107,7 +107,7 @@ function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], er
     }
 }
 async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string): Promise<(() => void) | void> {
-    if (Object.keys(media).length > 1) throw new HTTPError("no, you can't send those");
+    if (Object.keys(media).length > 1) throw new HTTPError("Extra keys for media items are not allowed");
     if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
     const url = new URL(media.url);
     if (!["http:", "https:", "attachment:"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
