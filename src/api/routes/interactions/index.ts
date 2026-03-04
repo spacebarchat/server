@@ -139,7 +139,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         type: body.type,
         commandType: body.data.type,
         commandName: body.data.name,
-        mesageId: body.message_id,
+        messageId: body.message_id,
     });
 
     res.sendStatus(204);
