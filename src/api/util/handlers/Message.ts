@@ -468,7 +468,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         permission.hasThrow("SEND_MESSAGES");
         if (permission.cache.member) {
             message.member = permission.cache.member;
-            console.log(message.member.flags);
         }
 
         if (opts.tts) permission.hasThrow("SEND_TTS_MESSAGES");
