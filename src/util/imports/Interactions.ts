@@ -26,7 +26,7 @@ interface PendingInteraction {
     channelId?: string;
     guildId?: string;
     nonce?: string;
-    mesageId?: string;
+    messageId?: string;
     type: InteractionType;
     commandType: ApplicationCommandType;
     commandName: string;
