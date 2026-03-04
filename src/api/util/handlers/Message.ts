@@ -113,7 +113,13 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     if (!["http:", "https:", "attachment:"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
     let attEnt: CloudAttachment;
     let delWhenDone = false;
-    if (url.protocol !== "attachment") {
+    if (url.protocol === "attachment") {
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                uploadFilename: url.hostname,
+            },
+        });
+    } else {
         const res = await fetch(url);
         if (!res.ok) throw new HTTPError("URL did not return OK");
         const blob = await res.blob();
@@ -144,12 +150,6 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             },
         });
         delWhenDone = true;
-    } else {
-        attEnt = await CloudAttachment.findOneOrFail({
-            where: {
-                uploadFilename: url.hostname,
-            },
-        });
     }
 
     const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
