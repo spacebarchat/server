@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageType } from "@spacebar/schemas";
+import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, InteractionFailureReason, MessageComponentType, MessageType } from "@spacebar/schemas";
 import { route, stripNull } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
@@ -133,7 +133,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                     data: {
                         id: interactionId,
                         nonce: interaction.nonce,
-                        reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+                        reason_code: InteractionFailureReason.TIMEOUT,
                     },
                 } as InteractionFailureEvent);
             }, 30000);
