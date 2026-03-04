@@ -348,6 +348,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         });
 		message.author.clean_data();
         const rights = await getRights(opts.author_id);
+        message.author.clean_data();
         rights.hasThrow("SEND_MESSAGES");
     }
 

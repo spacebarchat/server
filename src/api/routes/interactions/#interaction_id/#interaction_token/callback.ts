@@ -142,7 +142,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             return;
         case InteractionCallbackType.UPDATE_MESSAGE:
             {
-                if (!interaction.mesageId) throw new HTTPError("no. That was not a message");
+                if (!interaction.messageId) throw new HTTPError("no. That was not a message");
                 const message = await Message.findOneOrFail({
                     relations: {
                         author: true,
@@ -161,7 +161,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                         channel: true,
                     },
                     where: {
-                        id: interaction.mesageId,
+                        id: interaction.messageId,
                     },
                 });
                 if (body.data.content && body.data.content.length > Config.get().limits.message.maxCharacters) {
