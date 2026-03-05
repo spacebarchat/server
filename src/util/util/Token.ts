@@ -42,8 +42,10 @@ export type UserTokenData = {
     decoded: {
         id: string;
         iat: number;
-        ver?: number; // token format version
-        did?: string; // device id
+        // token format version
+        ver?: number;
+        // device id
+        did?: string;
     };
 };
 

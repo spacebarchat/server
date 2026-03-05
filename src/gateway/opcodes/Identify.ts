@@ -141,6 +141,18 @@ export async function onIdentify(this: WebSocket, data: Payload) {
               isNewSession: true,
           };
 
+    if (isNewSession)
+        console.warn(
+            "[Identify/WARN] Created new session",
+            session.session_id,
+            "for user",
+            tokenData.user.id,
+            `(${tokenData.user.tag})! - Access token version`,
+            tokenData.tokenVersion,
+            "- Access token session ID:",
+            tokenData.decoded.did ?? "(undefined)",
+        );
+
     if (tokenData.tokenVersion < CurrentTokenFormatVersion)
         console.warn(
             "[Identify/WARN] Access token version",
