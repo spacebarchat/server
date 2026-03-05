@@ -28,7 +28,6 @@ import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "url";
 import { Config, ErlpackType } from "@spacebar/util";
-import zlib from "node:zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 
 let erlpack: ErlpackType | null = null;
@@ -75,8 +74,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
     }
 
     //Create session ID when the connection is opened. This allows gateway dump to group the initial websocket messages with the rest of the conversation.
-    const session_id = "TEMP_" + genSessionId();
-    socket.session_id = session_id; //Set the session of the WebSocket object
+    socket.session_id = "TEMP_" + genSessionId(); //Set the session of the WebSocket object
 
     try {
         // @ts-ignore
