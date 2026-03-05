@@ -19,6 +19,7 @@
 import {
     ApiConfiguration,
     CdnConfiguration,
+    ComponentConfiguration,
     DefaultsConfiguration,
     EmailConfiguration,
     EndpointConfiguration,
@@ -59,4 +60,5 @@ export class ConfigValue {
     passwordReset: PasswordResetConfiguration = new PasswordResetConfiguration();
     user: UserConfiguration = new UserConfiguration();
     offload: OffloadConfiguration = new OffloadConfiguration();
+    components = new ComponentConfiguration();
 }

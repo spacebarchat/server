@@ -104,7 +104,7 @@ export interface ButtonComponent extends MessageComponent {
     disabled?: boolean;
 }
 
-export enum ButtonStyle {
+export const enum ButtonStyle {
     Primary = 1,
     Secondary = 2,
     Success = 3,
@@ -159,12 +159,12 @@ export interface TextInputComponent extends MessageComponent {
     placeholder?: string;
 }
 
-export enum TextInputStyle {
+export const enum TextInputStyle {
     Short = 1,
     Paragraph = 2,
 }
 
-export enum MessageComponentType {
+export const enum MessageComponentType {
     ActionRow = 1,
     Button = 2,
     StringSelect = 3,
@@ -189,3 +189,5 @@ export enum MessageComponentType {
     CheckboxGroup = 22,
     Checkbox = 23,
 }
+
+export const v1CompTypes = new Set([MessageComponentType.ActionRow]);
