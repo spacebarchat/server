@@ -164,6 +164,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             "opt for token refresh.",
         );
 
+    this.session_id = session.session_id;
     this.session = session;
     this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();
