@@ -68,6 +68,7 @@ import {
     ReadStateType,
     UnfurledMediaItem,
     BaseMessageComponents,
+    v1CompTypes,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -202,17 +203,24 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
     }
 }
 export function handleComps(components: BaseMessageComponents[], flags: number) {
+    const conf = Config.get();
+    const mediaGalleryLimit = conf.components.mediaGalleryLimit ?? 10;
+    const actionRowLimit = conf.components.actionRowLimit ?? 5;
+
     const errors: Record<string, { code?: string; message: string }> = {};
     const knownComponentIds: string[] = [];
     const compv2 = (flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
+    if (!compv2) {
+        const bad = components.reduce((bad, comp) => bad || !v1CompTypes.has(comp.type), false);
+        if (bad) throw new HTTPError("Must be comp v2");
+    }
     const medias: UnfurledMediaItem[] = [];
     for (const comp of components || []) {
         if (comp.type === MessageComponentType.ActionRow) {
             checkActionRow(comp, knownComponentIds, errors, components!.indexOf(comp));
         } else if (comp.type === MessageComponentType.Section) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
             const accessory = comp.accessory;
-            if (comp.components.length < 1 || comp.components.length > 3) {
+            if (comp.components.length < 1 || comp.components.length > actionRowLimit) {
                 errors[`data.components[${components!.indexOf(comp)}].components`] = {
                     code: "TOO_LONG",
                     message: "Component list is too long",
@@ -222,10 +230,9 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
                 medias.push(accessory.media);
             }
         } else if (comp.type === MessageComponentType.TextDisplay) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
+            //Here to make sure everything is checked
         } else if (comp.type === MessageComponentType.MediaGallery) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
-            if (comp.items.length < 1 || comp.items.length > 10) {
+            if (comp.items.length < 1 || comp.items.length > mediaGalleryLimit) {
                 errors[`data.components[${components!.indexOf(comp)}].items`] = {
                     code: "TOO_LONG",
                     message: "Media list is too long",
@@ -233,12 +240,10 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
             }
             medias.push(...comp.items.map(({ media }) => media));
         } else if (comp.type === MessageComponentType.File) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
             medias.push(comp.file);
         } else if (comp.type === MessageComponentType.Separator) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
+            //Here to make sure everything is checked
         } else if (comp.type === MessageComponentType.Container) {
-            if (!compv2) throw new HTTPError("Must be comp v2");
             for (const elm of comp.components) {
                 switch (elm.type) {
                     case MessageComponentType.Separator:
@@ -246,7 +251,7 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
                         break;
                     case MessageComponentType.Section: {
                         const accessory = elm.accessory;
-                        if (elm.components.length < 1 || elm.components.length > 3) {
+                        if (elm.components.length < 1 || elm.components.length > actionRowLimit) {
                             errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
                                 code: "TOO_LONG",
                                 message: "Component list is too long",
@@ -258,7 +263,7 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
                         break;
                     }
                     case MessageComponentType.MediaGallery:
-                        if (elm.items.length < 1 || elm.items.length > 10) {
+                        if (elm.items.length < 1 || elm.items.length > mediaGalleryLimit) {
                             errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
                                 code: "TOO_LONG",
                                 message: "Media list is too long",
@@ -291,6 +296,7 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
     };
 }
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
+    const conf = Config.get();
     const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;
 
     const channel = await Channel.findOneOrFail({
@@ -375,10 +381,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     },
                 });
 
-                const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
+                const cloneResponse = await fetch(`${conf.cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
                     method: "POST",
                     headers: {
-                        signature: Config.get().security.requestSignature || "",
+                        signature: conf.security.requestSignature || "",
                     },
                 });
 
@@ -391,8 +397,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
                 const realAtt = Attachment.create({
                     filename: attEnt.userFilename,
-                    url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
-                    proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+                    url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
+                    proxy_url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
                     size: attEnt.size,
                     height: attEnt.height,
                     width: attEnt.width,
@@ -410,7 +416,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
     // else console.log("[Message] No cloud attachments to process for message", message.id, ":", message.attachments);
 
-    if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
+    if (message.content && message.content.length > conf.limits.message.maxCharacters) {
         throw new HTTPError("Content length over max character limit");
     }
 
@@ -767,6 +773,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
+    const conf = Config.get();
     const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
 
     const linkMatches = content?.match(LINK_REGEX) || [];
@@ -861,7 +868,7 @@ export async function postHandleMessage(message: Message) {
         }
 
         // bit gross, but whatever!
-        const endpointPublic = Config.get().cdn.endpointPublic; // lol
+        const endpointPublic = conf.cdn.endpointPublic; // lol
         const handler = url.hostname === new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
         try {
