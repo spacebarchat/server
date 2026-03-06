@@ -28,7 +28,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     this.removeAllListeners();
 
     if (this.session_id) {
-        await Session.delete({ session_id: this.session_id });
+        // await Session.delete({ session_id: this.session_id });
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
