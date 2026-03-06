@@ -123,11 +123,18 @@ export interface Reaction {
     user_ids: Snowflake[];
 }
 
-export interface PartialEmoji {
-    id?: string;
-    name: string;
-    animated?: boolean;
-}
+// aka { animated } & OneOf<{id},{name}>
+export type PartialEmoji =
+    | {
+          id?: string;
+          name: string;
+          animated?: boolean;
+      }
+    | {
+          id: string;
+          name?: string;
+          animated?: boolean;
+      };
 
 export interface AllowedMentions {
     parse?: ("users" | "roles" | "everyone")[];
