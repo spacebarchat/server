@@ -438,6 +438,8 @@ export class Guild extends BaseClass {
             ...this,
             unavailable: this.unavailable == false ? undefined : true,
             channel_ordering: undefined,
+            discovery_weight: undefined,
+            discovery_excluded: undefined,
         };
     }
 }
