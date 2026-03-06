@@ -353,7 +353,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                     }),
                 ).attachments;
             if (data["components"]) {
-                data["components"] = Message.prototype.withSignedComponents.call(
+                data["components"] = Message.prototype.withSignedAttachments.call(
                     data,
                     new NewUrlUserSignatureData({
                         ip: this.ipAddress,

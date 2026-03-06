@@ -306,58 +306,54 @@ export class Message extends BaseClass {
     }
 
     withSignedAttachments(data: NewUrlUserSignatureData) {
-        return {
-            ...this,
-            attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
-        };
-    }
-    withSignedComponents(data: NewUrlUserSignatureData) {
-        if (!this.components || !(this.flags & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2))) return { ...this };
         function signMedia(media: UnfurledMediaItem) {
             Object.assign(media, Attachment.prototype.signUrls.call(media, data));
         }
         return {
             ...this,
-            components: this.components.map((comp) => {
-                comp = structuredClone(comp);
-                if (comp.type === MessageComponentType.Section) {
-                    const accessory = comp.accessory;
-                    if (accessory.type === MessageComponentType.Thumbnail) {
-                        signMedia(accessory.media);
-                    }
-                } else if (comp.type === MessageComponentType.MediaGallery) {
-                    comp.items.forEach(({ media }) => signMedia(media));
-                } else if (comp.type === MessageComponentType.File) {
-                    signMedia(comp.file);
-                } else if (comp.type === MessageComponentType.Container) {
-                    for (const elm of comp.components) {
-                        switch (elm.type) {
-                            case MessageComponentType.Separator:
-                            case MessageComponentType.TextDisplay:
-                            case MessageComponentType.ActionRow:
-                                break;
-                            case MessageComponentType.Section: {
-                                const accessory = elm.accessory;
-                                if (accessory.type === MessageComponentType.Thumbnail) {
-                                    signMedia(accessory.media);
-                                }
-                                break;
-                            }
-                            case MessageComponentType.MediaGallery:
-                                elm.items.forEach(({ media }) => signMedia(media));
-                                break;
-                            case MessageComponentType.File: {
-                                signMedia(elm.file);
-                                break;
-                            }
+            attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
+            components: this.components
+                ? this.components.map((comp) => {
+                      comp = structuredClone(comp);
+                      if (comp.type === MessageComponentType.Section) {
+                          const accessory = comp.accessory;
+                          if (accessory.type === MessageComponentType.Thumbnail) {
+                              signMedia(accessory.media);
+                          }
+                      } else if (comp.type === MessageComponentType.MediaGallery) {
+                          comp.items.forEach(({ media }) => signMedia(media));
+                      } else if (comp.type === MessageComponentType.File) {
+                          signMedia(comp.file);
+                      } else if (comp.type === MessageComponentType.Container) {
+                          for (const elm of comp.components) {
+                              switch (elm.type) {
+                                  case MessageComponentType.Separator:
+                                  case MessageComponentType.TextDisplay:
+                                  case MessageComponentType.ActionRow:
+                                      break;
+                                  case MessageComponentType.Section: {
+                                      const accessory = elm.accessory;
+                                      if (accessory.type === MessageComponentType.Thumbnail) {
+                                          signMedia(accessory.media);
+                                      }
+                                      break;
+                                  }
+                                  case MessageComponentType.MediaGallery:
+                                      elm.items.forEach(({ media }) => signMedia(media));
+                                      break;
+                                  case MessageComponentType.File: {
+                                      signMedia(elm.file);
+                                      break;
+                                  }
 
-                            default:
-                                elm satisfies never;
-                        }
-                    }
-                }
-                return comp;
-            }),
+                                  default:
+                                      elm satisfies never;
+                              }
+                          }
+                      }
+                      return comp;
+                  })
+                : this.components,
         };
     }
 
