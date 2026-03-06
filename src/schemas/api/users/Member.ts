@@ -69,7 +69,8 @@ export type PublicMemberKeys =
     | "bio"
     | "theme_colors"
     | "pronouns"
-    | "communication_disabled_until";
+    | "communication_disabled_until"
+    | "flags";
 
 export const PublicMemberProjection: PublicMemberKeys[] = [
     "id",
@@ -87,6 +88,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
     "theme_colors",
     "pronouns",
     "communication_disabled_until",
+    "flags",
 ];
 
 export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
