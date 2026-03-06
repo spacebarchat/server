@@ -43,7 +43,7 @@ export async function initTranslation(router: Router) {
             },
             load: "all",
             showSupportNotice: false,
-        });
+        } as any);
 
     router.use(i18nextMiddleware.handle(i18next, {}));
 }
