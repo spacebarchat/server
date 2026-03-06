@@ -43,18 +43,18 @@ export interface MessageCreateSchema {
     embed?: Embed | null;
     // TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
     allowed_mentions?: {
-        parse?: string[];
-        roles?: string[];
-        users?: string[];
+        parse?: string[] | null;
+        roles?: string[] | null;
+        users?: string[] | null;
         replied_user?: boolean;
-    };
+    } | null;
     message_reference?: {
         message_id?: string;
         channel_id?: string;
         guild_id?: string;
         fail_if_not_exists?: boolean;
         type?: number;
-    };
+    } | null;
     payload_json?: string;
     file?: { filename: string };
     /**
