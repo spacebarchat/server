@@ -81,7 +81,8 @@ export const checkToken = (
                 return rejectAndLog(reject, 401, "Invalid Token meow " + err);
             }
 
-            const [user, session] = await Promise.all([
+            // eslint-disable-next-line prefer-const
+            let [user, session] = await Promise.all([
                 User.findOne({
                     where: { id: decoded.id },
                     select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
@@ -96,6 +97,15 @@ export const checkToken = (
             }
 
             if (decoded.did && !session) {
+                // temporary hack: create new session
+                session = Session.create({
+                    session_id: randomUpperString(10), // readable at a glance
+                    user_id: user.id,
+                    is_admin_session: false,
+                    client_status: {},
+                    status: "online",
+                    client_info: {},
+                });
                 logAuth("validateUser rejected: Session not found");
                 return rejectAndLog(reject, 401, "Invalid Token");
             }
