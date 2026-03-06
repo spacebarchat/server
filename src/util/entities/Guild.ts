@@ -440,6 +440,7 @@ export class Guild extends BaseClass {
             channel_ordering: undefined,
             discovery_weight: undefined,
             discovery_excluded: undefined,
+            parent: undefined,
         };
     }
 }
