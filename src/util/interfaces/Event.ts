@@ -38,7 +38,17 @@ import {
     Snowflake,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { ApplicationCommand, GuildCreateResponse, PartialEmoji, PublicMember, PublicUser, PublicVoiceState, RelationshipType, UserPrivate } from "@spacebar/schemas";
+import {
+    ApplicationCommand,
+    GuildCreateResponse,
+    InteractionFailureReason,
+    PartialEmoji,
+    PublicMember,
+    PublicUser,
+    PublicVoiceState,
+    RelationshipType,
+    UserPrivate,
+} from "@spacebar/schemas";
 import { ThreadMember } from "../entities/ThreadMember";
 
 export interface Event {
@@ -536,7 +546,7 @@ export interface InteractionFailureEvent extends Event {
     data: {
         id: Snowflake;
         nonce?: string;
-        reason_code: number; // TODO: types?
+        reason_code: InteractionFailureReason;
     };
 }
 

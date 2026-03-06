@@ -17,7 +17,7 @@
 */
 
 import { randomBytes } from "crypto";
-import { InteractionSchema } from "@spacebar/schemas";
+import { InteractionFailureReason, InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Config, emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake, User } from "@spacebar/util";
@@ -107,7 +107,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             data: {
                 id: interactionId,
                 nonce: body.nonce,
-                reason_code: 2, // when types are done: InteractionFailureReason.TIMEOUT,
+                reason_code: InteractionFailureReason.TIMEOUT,
             },
         } as InteractionFailureEvent);
     }, 3000);

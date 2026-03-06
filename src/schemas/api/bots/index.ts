@@ -24,3 +24,4 @@ export * from "./InteractionCreateSchema";
 export * from "./SendableApplicationCommandDataSchema";
 export * from "./SendableMessageComponentDataSchema";
 export * from "./SendableModalSubmitDataSchema";
+export * from "./InteractionFailureReason";
