@@ -106,6 +106,7 @@ export const checkToken = (
                     status: "online",
                     client_info: {},
                 });
+                await session.save();
                 logAuth("validateUser rejected: Session not found");
                 return rejectAndLog(reject, 401, "Invalid Token");
             }
