@@ -99,7 +99,7 @@ export const checkToken = (
             if (decoded.did && !session) {
                 // temporary hack: create new session
                 session = Session.create({
-                    session_id: randomUpperString(10), // readable at a glance
+                    session_id: decoded.did,
                     user_id: user.id,
                     is_admin_session: false,
                     client_status: {},
