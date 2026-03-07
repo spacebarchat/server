@@ -403,6 +403,7 @@ export interface MessageReactionRemoveEvent extends Event {
         message_id: string;
         guild_id?: string;
         emoji: PartialEmoji;
+        type: ReactionType;
     };
 }
 
