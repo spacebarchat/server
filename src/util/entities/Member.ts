@@ -244,7 +244,7 @@ export class Member extends BaseClassWithoutId {
                     roles: member.roles.map((x) => x.id),
                 },
                 guild_id,
-            } as GuildMemberUpdateEvent),
+            } satisfies GuildMemberUpdateEvent),
         ]);
     }
 
@@ -274,7 +274,7 @@ export class Member extends BaseClassWithoutId {
                     roles: member.roles.map((x) => x.id),
                 },
                 guild_id,
-            } as GuildMemberUpdateEvent),
+            } satisfies GuildMemberUpdateEvent),
         ]);
     }
 
@@ -284,7 +284,7 @@ export class Member extends BaseClassWithoutId {
                 id: user_id,
                 guild_id,
             },
-            relations: { user: true },
+            relations: { user: true, roles: true },
         });
 
         // @ts-expect-error Member nickname is nullable
@@ -298,10 +298,11 @@ export class Member extends BaseClassWithoutId {
                 data: {
                     guild_id,
                     user: member.user,
-                    nick: nickname || null,
+                    nick: nickname || undefined,
+                    roles: member.roles.map((x) => x.id),
                 },
                 guild_id,
-            } as GuildMemberUpdateEvent),
+            } satisfies GuildMemberUpdateEvent),
         ]);
     }
 
