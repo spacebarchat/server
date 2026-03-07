@@ -104,6 +104,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         type: opts.type ?? 0,
         mentions: [],
         components: opts.components ?? undefined, // Fix Discord-Go?
+        message_reference: opts.message_reference ?? undefined,
     });
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
