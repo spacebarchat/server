@@ -376,7 +376,10 @@ export interface MessageDeleteBulkEvent extends Event {
         guild_id?: string;
     };
 }
-
+export const enum ReactionType {
+    normal = 0,
+    burst = 1,
+}
 export interface MessageReactionAddEvent extends Event {
     event: "MESSAGE_REACTION_ADD";
     data: {
@@ -386,6 +389,7 @@ export interface MessageReactionAddEvent extends Event {
         guild_id?: string;
         member?: PublicMember;
         emoji: PartialEmoji;
+        type: ReactionType;
     };
 }
 
