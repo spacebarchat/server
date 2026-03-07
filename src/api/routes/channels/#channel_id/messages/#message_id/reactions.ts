@@ -30,6 +30,7 @@ import {
     MessageReactionRemoveEvent,
     User,
     arrayRemove,
+    ReactionType,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -224,14 +225,12 @@ router.put(
 
         await message.save();
 
-        const member =
-            channel.guild_id &&
-            (
-                await Member.findOneOrFail({
-                    where: { id: req.user_id },
-                    select: PublicMemberProjection,
-                })
-            ).toPublicMember();
+        const member = (
+            await Member.findOneOrFail({
+                where: { id: req.user_id },
+                select: PublicMemberProjection,
+            })
+        ).toPublicMember();
 
         await emitEvent({
             event: "MESSAGE_REACTION_ADD",
@@ -243,8 +242,9 @@ router.put(
                 guild_id: channel.guild_id,
                 emoji,
                 member,
+                type: ReactionType.normal,
             },
-        } as MessageReactionAddEvent);
+        } satisfies MessageReactionAddEvent);
 
         res.sendStatus(204);
     },
