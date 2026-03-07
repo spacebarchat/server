@@ -61,7 +61,17 @@ router.post(
         if (req.body.payload_json) {
             req.body = JSON.parse(req.body.payload_json);
         }
-
+        const body = req.body as unknown;
+        //TODO remove this
+        // This is before *any* type checking has happened
+        if (body && body instanceof Object && "embeds" in body && body.embeds instanceof Object && !(body.embeds instanceof Array)) {
+            for (const [key, value] of Object.entries(body.embeds)) {
+                if (value instanceof Object && !(value instanceof Array) && Object.keys(value).length === 0) {
+                    //@ts-expect-error this is safe :P
+                    delete body.embeds[key];
+                }
+            }
+        }
         next();
     },
     route({
