@@ -300,8 +300,9 @@ router.delete(
                 message_id,
                 guild_id: channel.guild_id,
                 emoji,
+                type: ReactionType.normal,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
@@ -357,8 +358,9 @@ router.delete(
                 message_id,
                 guild_id: channel.guild_id,
                 emoji,
+                type: ReactionType.normal,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
