@@ -127,11 +127,21 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
             where: { id: voiceState.guild_id },
         });
         const regions = Config.get().regions;
-        let guildRegion: Region;
+        let guildRegion: Region | undefined;
+
+        const defaultRegion = regions.available.find((r) => r.id === regions.default);
+
         if (guild && guild.region) {
-            guildRegion = regions.available.filter((r) => r.id === guild.region)[0];
+            // in case the configured guild region does not exist (which can
+            // happen when server regions config is updated after guild creation),
+            // fallback to default region
+            guildRegion = regions.available.find((r) => r.id === guild.region) ?? defaultRegion;
         } else {
-            guildRegion = regions.available.filter((r) => r.id === regions.default)[0];
+            guildRegion = defaultRegion;
+        }
+
+        if (!guildRegion) {
+            throw new Error("Unable to find suitable region due to misconfiguration of regions");
         }
 
         await emitEvent({
