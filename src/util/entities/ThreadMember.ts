@@ -138,7 +138,7 @@ export class ThreadMember extends BaseClassWithoutId {
     // 				roles: member.roles.map((x) => x.id)
     // 			},
     // 			guild_id
-    // 		} as GuildMemberUpdateEvent)
+    // 		} satisfies GuildMemberUpdateEvent)
     // 	]);
     // }
 
@@ -164,7 +164,7 @@ export class ThreadMember extends BaseClassWithoutId {
     // 				roles: member.roles.map((x) => x.id)
     // 			},
     // 			guild_id
-    // 		} as GuildMemberUpdateEvent)
+    // 		} satisfies GuildMemberUpdateEvent)
     // 	]);
     // }
 
@@ -189,7 +189,7 @@ export class ThreadMember extends BaseClassWithoutId {
     // 				nick: nickname
     // 			},
     // 			guild_id
-    // 		} as GuildMemberUpdateEvent)
+    // 		} satisfies GuildMemberUpdateEvent)
     // 	]);
     // }
 }
