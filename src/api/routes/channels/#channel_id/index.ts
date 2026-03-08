@@ -91,7 +91,7 @@ router.delete(
                     event: "CHANNEL_DELETE",
                     data: channel,
                     user_id: req.user_id,
-                } as ChannelDeleteEvent),
+                } satisfies ChannelDeleteEvent),
             ]);
         } else if (channel.type === ChannelType.GROUP_DM) {
             await Channel.removeRecipientFromChannel(channel, req.user_id);
@@ -134,7 +134,7 @@ router.delete(
                     event: "CHANNEL_DELETE",
                     data: channel,
                     channel_id,
-                } as ChannelDeleteEvent),
+                } satisfies ChannelDeleteEvent),
             ]);
         }
 
