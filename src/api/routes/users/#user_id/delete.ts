@@ -73,7 +73,7 @@ router.post(
                 event: "CHANNEL_DELETE",
                 data: channel.toJSON(),
                 channel_id: channel.id,
-            } as ChannelDeleteEvent);
+            } satisfies ChannelDeleteEvent);
             await Recipient.delete({ channel_id: channel.id });
             await Channel.deleteChannel(channel);
         }
@@ -115,7 +115,7 @@ router.post(
                         event: "CHANNEL_DELETE",
                         data: channel.toJSON(),
                         channel_id: channel.id,
-                    } as ChannelDeleteEvent);
+                    } satisfies ChannelDeleteEvent);
                     await Channel.deleteChannel(channel);
                     console.log(`[Instance ban] Deleted empty group channel ${channel.id}`);
                 } else {
