@@ -146,7 +146,7 @@ router.delete(
                     guild_id: guild_id,
                     code: invite_code,
                 },
-            } as InviteDeleteEvent),
+            } satisfies InviteDeleteEvent),
         ]);
 
         res.json({ invite: invite });

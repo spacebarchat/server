@@ -80,7 +80,7 @@ router.post(
             event: "INVITE_CREATE",
             data,
             guild_id,
-        } as InviteCreateEvent);
+        } satisfies InviteCreateEvent);
 
         res.status(201).send(data);
     },
