@@ -39,10 +39,10 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
         data: {
             user: await User.getPublicUser(this.user_id),
             status: session.getPublicStatus(),
-            activities: presence.activities,
+            activities: presence.activities ?? [],
             client_status: session.client_status,
         },
-    } as PresenceUpdateEvent);
+    } satisfies PresenceUpdateEvent);
 
     console.log(`Presence update for user ${this.user_id} processed in ${Date.now() - startTime}ms`);
 }
