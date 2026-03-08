@@ -82,9 +82,9 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         user_id: interaction?.userId,
         data: {
             id: interactionId,
-            nonce: interaction?.nonce,
+            nonce: interaction.nonce ?? "", // TODO: did i do this right?
         },
-    } as InteractionSuccessEvent);
+    } satisfies InteractionSuccessEvent);
 
     switch (body.type) {
         case InteractionCallbackType.PONG:
