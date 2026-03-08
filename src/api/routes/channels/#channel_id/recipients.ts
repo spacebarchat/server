@@ -61,13 +61,15 @@ router.put(
                 event: "CHANNEL_RECIPIENT_ADD",
                 data: {
                     channel_id: channel_id,
-                    user: await User.findOneOrFail({
-                        where: { id: user_id },
-                        select: PublicUserProjection,
-                    }),
+                    user: (
+                        await User.findOneOrFail({
+                            where: { id: user_id },
+                            select: PublicUserProjection,
+                        })
+                    ).toPublicUser(),
                 },
                 channel_id: channel_id,
-            } as ChannelRecipientAddEvent);
+            } satisfies ChannelRecipientAddEvent);
             return res.sendStatus(204);
         }
     },

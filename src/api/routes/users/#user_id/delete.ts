@@ -104,7 +104,7 @@ router.post(
                             channel_id: channel.id,
                         },
                         channel_id: channel.id,
-                    } as ChannelRecipientRemoveEvent);
+                    } satisfies ChannelRecipientRemoveEvent);
                     console.log(`[Instance ban] Removed user ${user.id} from group channel ${channel.id}`);
                 }
 
