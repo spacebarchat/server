@@ -412,10 +412,10 @@ export class Member extends BaseClassWithoutId {
                     stage_instances: [],
                     threads: [],
                     embedded_activities: [],
-                    voice_states: guild.voice_states,
+                    voice_states: guild.voice_states.map((x) => x.toPublicVoiceState()),
                 },
                 user_id,
-            } as GuildCreateEvent),
+            } satisfies GuildCreateEvent),
         ]);
 
         if (guild.system_channel_id) {
