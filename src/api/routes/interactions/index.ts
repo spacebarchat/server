@@ -130,7 +130,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                 nonce: body.nonce,
                 reason_code: InteractionFailureReason.TIMEOUT,
             },
-        } as InteractionFailureEvent);
+        } satisfies InteractionFailureEvent);
     }, 3000);
 
     pendingInteractions.set(interactionId, {
