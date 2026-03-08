@@ -32,7 +32,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
                 stream_key: body.stream_key,
             },
             user_id: this.user_id,
-        } as StreamDeleteEvent);
+        } satisfies StreamDeleteEvent);
         return;
     }
 
@@ -71,7 +71,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
         },
         guild_id: guildId,
         channel_id: channelId,
-    } as StreamDeleteEvent);
+    } satisfies StreamDeleteEvent);
 
     console.log(`[Gateway/${this.user_id}] STREAM_DELETE for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`);
 }

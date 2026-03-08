@@ -69,7 +69,7 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
         },
         channel_id: channelId,
         user_id: this.user_id,
-    } as StreamCreateEvent);
+    } satisfies StreamCreateEvent);
 
     await emitEvent({
         event: "STREAM_SERVER_UPDATE",
@@ -80,7 +80,7 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
             endpoint: stream.endpoint,
         },
         user_id: this.user_id,
-    } as StreamServerUpdateEvent);
+    } satisfies StreamServerUpdateEvent);
 
     console.log(`[Gateway/${this.user_id}] STREAM_WATCH for user ${this.user_id} in channel ${channelId} with stream key ${body.stream_key} in ${Date.now() - startTime}ms`);
 }

@@ -90,7 +90,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
             paused: false,
         },
         user_id: this.user_id,
-    } as StreamCreateEvent);
+    } satisfies StreamCreateEvent);
 
     await emitEvent({
         event: "STREAM_SERVER_UPDATE",
@@ -101,7 +101,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
             endpoint: stream.endpoint,
         },
         user_id: this.user_id,
-    } as StreamServerUpdateEvent);
+    } satisfies StreamServerUpdateEvent);
 
     voiceState.self_stream = true;
     await voiceState.save();
