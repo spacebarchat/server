@@ -288,9 +288,9 @@ export class Channel extends BaseClass {
             !opts?.skipEventEmit
                 ? emitEvent({
                       event: "CHANNEL_CREATE",
-                      data: channel,
+                      data: ret.toJSON(),
                       guild_id: channel.guild_id,
-                  } as ChannelCreateEvent)
+                  } satisfies ChannelCreateEvent)
                 : Promise.resolve(),
             Guild.insertChannelInOrder(guild.id, ret.id, position, guild),
         ]);

@@ -62,7 +62,7 @@ router.post(
                 event: "CHANNEL_UPDATE",
                 data: channel.toJSON(),
                 channel_id,
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         res.json(channel.toJSON());
@@ -103,7 +103,7 @@ router.put(
                 event: "CHANNEL_UPDATE",
                 data: channel.toJSON(),
                 channel_id,
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         res.json(channel.toJSON());
@@ -142,7 +142,7 @@ router.delete(
                 event: "CHANNEL_UPDATE",
                 data: channel.toJSON(),
                 channel_id,
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         res.json(channel.toJSON());

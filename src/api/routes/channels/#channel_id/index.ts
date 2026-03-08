@@ -123,7 +123,7 @@ router.delete(
                             event: "CHANNEL_UPDATE",
                             data: c,
                             channel_id: c.id,
-                        } as ChannelUpdateEvent),
+                        } satisfies ChannelUpdateEvent),
                     ]);
                 }
             }
@@ -248,7 +248,7 @@ router.patch(
                 event: "CHANNEL_UPDATE",
                 data: channel,
                 channel_id,
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         res.send(channel);
