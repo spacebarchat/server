@@ -280,7 +280,7 @@ export interface GuildMemberRemoveEvent extends Event {
     event: "GUILD_MEMBER_REMOVE";
     data: {
         guild_id: string;
-        user: User;
+        user: PublicUser;
     };
 }
 
@@ -289,7 +289,7 @@ export interface GuildMemberUpdateEvent extends Event {
     data: {
         guild_id: string;
         roles: string[];
-        user: User;
+        user: PublicUser;
         nick?: string;
         joined_at?: Date;
         premium_since?: number;

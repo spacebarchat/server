@@ -209,7 +209,7 @@ export class Member extends BaseClassWithoutId {
                 event: "GUILD_MEMBER_REMOVE",
                 data: { guild_id, user: member.user.toPublicUser() },
                 guild_id,
-            } as GuildMemberRemoveEvent),
+            } satisfies GuildMemberRemoveEvent),
         ]);
     }
 
@@ -364,48 +364,50 @@ export class Member extends BaseClassWithoutId {
             bio: "",
         };
 
+        const newMember = Member.create({
+            ...member,
+            roles: [Role.create({ id: guild_id })],
+            // read_state: {},
+            settings: {
+                guild_id: null,
+                mute_config: null,
+                mute_scheduled_events: false,
+                flags: 0,
+                hide_muted_channels: false,
+                notify_highlights: 0,
+                channel_overrides: {},
+                message_notifications: guild.default_message_notifications,
+                mobile_push: true,
+                muted: false,
+                suppress_everyone: false,
+                suppress_roles: false,
+                version: 0,
+            },
+            // Member.save is needed because else the roles relations wouldn't be updated
+        });
+
         await Promise.all([
-            Member.create({
-                ...member,
-                roles: [Role.create({ id: guild_id })],
-                // read_state: {},
-                settings: {
-                    guild_id: null,
-                    mute_config: null,
-                    mute_scheduled_events: false,
-                    flags: 0,
-                    hide_muted_channels: false,
-                    notify_highlights: 0,
-                    channel_overrides: {},
-                    message_notifications: guild.default_message_notifications,
-                    mobile_push: true,
-                    muted: false,
-                    suppress_everyone: false,
-                    suppress_roles: false,
-                    version: 0,
-                },
-                // Member.save is needed because else the roles relations wouldn't be updated
-            }).save(),
+            newMember.save(),
             Guild.increment({ id: guild_id }, "member_count", 1),
             emitEvent({
                 event: "GUILD_MEMBER_ADD",
                 data: {
-                    ...member,
+                    ...newMember.toPublicMember(),
                     user: user,
                     guild_id,
                 },
                 guild_id,
                 origin: "util/entities/Member.ts:377/addToGuild(user_id, guild_id)",
-            } as GuildMemberAddEvent),
+            } satisfies GuildMemberAddEvent),
             emitEvent({
                 event: "GUILD_CREATE",
                 data: {
                     ...new ReadyGuildDTO(guild).toJSON(),
-                    members: [...memberPreview, { ...member, user }],
+                    members: [...memberPreview, { ...newMember.toPublicMember(), user }],
                     member_count: memberCount + 1,
                     guild_hashes: {},
                     guild_scheduled_events: [],
-                    joined_at: member.joined_at,
+                    joined_at: newMember.joined_at,
                     presences: [],
                     stage_instances: [],
                     threads: [],
