@@ -188,7 +188,7 @@ export interface ChannelRecipientAddEvent extends Event {
     event: "CHANNEL_RECIPIENT_ADD";
     data: {
         channel_id: string;
-        user: User;
+        user: PublicUser;
     };
 }
 
@@ -196,7 +196,7 @@ export interface ChannelRecipientRemoveEvent extends Event {
     event: "CHANNEL_RECIPIENT_REMOVE";
     data: {
         channel_id: string;
-        user: User;
+        user: PublicUser;
     };
 }
 

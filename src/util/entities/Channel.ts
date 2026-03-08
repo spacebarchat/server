@@ -545,7 +545,7 @@ export class Channel extends BaseClass {
                 }),
             },
             channel_id: channel.id,
-        } as ChannelRecipientRemoveEvent);
+        } satisfies ChannelRecipientRemoveEvent);
     }
 
     static async deleteChannel(channel: Channel) {
