@@ -95,7 +95,7 @@ router.put(
                     guild_id: message.guild_id,
                     last_pin_timestamp: undefined,
                 },
-            } as ChannelPinsUpdateEvent),
+            } satisfies ChannelPinsUpdateEvent),
             systemPinMessage.save(),
             emitEvent({
                 event: "MESSAGE_CREATE",
@@ -148,7 +148,7 @@ router.delete(
                     guild_id: message.guild_id,
                     last_pin_timestamp: undefined,
                 },
-            } as ChannelPinsUpdateEvent),
+            } satisfies ChannelPinsUpdateEvent),
         ]);
 
         res.sendStatus(204);
