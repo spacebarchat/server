@@ -55,7 +55,7 @@ router.post(
                     id: guild_id,
                 },
                 guild_id: guild_id,
-            } as GuildDeleteEvent),
+            } satisfies GuildDeleteEvent),
         ]);
 
         return res.sendStatus(204);
