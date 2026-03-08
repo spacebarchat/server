@@ -47,7 +47,7 @@ router.get(
 
         res.json({
             settings: PreloadedUserSettings.toBase64(userSettings.userSettings!),
-        } as SettingsProtoResponse);
+        } satisfies SettingsProtoResponse);
     },
 );
 
@@ -93,7 +93,7 @@ router.get(
 
         res.json({
             settings: PreloadedUserSettings.toJson(userSettings.userSettings!),
-        } as SettingsProtoJsonResponse);
+        } satisfies SettingsProtoJsonResponse);
     },
 );
 
