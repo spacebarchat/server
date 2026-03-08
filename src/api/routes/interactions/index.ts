@@ -114,8 +114,12 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     await emitEvent({
         event: "INTERACTION_CREATE",
         user_id: body.application_id,
-        data: interactionData,
-    } as InteractionCreateEvent);
+        data: {
+            ...interactionData,
+            member_id: req.user_id, // TODO: is this correct?
+            id: interactionId, // TODO: is this correct?
+        },
+    } satisfies InteractionCreateEvent);
 
     const interactionTimeout = setTimeout(() => {
         emitEvent({
