@@ -123,7 +123,7 @@ router.patch(
                 data: channel.toJSON(),
                 channel_id: channel.id,
                 guild_id,
-            } as ChannelUpdateEvent);
+            } satisfies ChannelUpdateEvent);
         }
         // Due to this also being able to change the order, this needs to be done in order
         // have to do the parents after the positions
@@ -158,7 +158,7 @@ router.patch(
                 data: channel.toJSON(),
                 channel_id: channel.id,
                 guild_id,
-            } as ChannelUpdateEvent);
+            } satisfies ChannelUpdateEvent);
         }
 
         await Guild.update({ id: guild_id }, { channel_ordering: notMentioned });

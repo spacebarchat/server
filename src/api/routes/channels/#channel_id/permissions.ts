@@ -73,7 +73,7 @@ router.put(
                 event: "CHANNEL_UPDATE",
                 channel_id,
                 data: channel.toJSON(),
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         return res.sendStatus(204);
@@ -97,7 +97,7 @@ router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES", responses: {
             event: "CHANNEL_UPDATE",
             channel_id,
             data: channel.toJSON(),
-        } as ChannelUpdateEvent),
+        } satisfies ChannelUpdateEvent),
     ]);
 
     return res.sendStatus(204);

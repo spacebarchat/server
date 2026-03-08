@@ -111,7 +111,7 @@ router.delete(
                             event: "CHANNEL_UPDATE",
                             data: c.toJSON(),
                             channel_id: c.id,
-                        } as ChannelUpdateEvent),
+                        } satisfies ChannelUpdateEvent),
                     ]);
                 }
             }
@@ -236,7 +236,7 @@ router.patch(
                 event: "CHANNEL_UPDATE",
                 data: channel.toJSON(),
                 channel_id,
-            } as ChannelUpdateEvent),
+            } satisfies ChannelUpdateEvent),
         ]);
 
         res.send(channel);
