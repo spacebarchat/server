@@ -91,7 +91,7 @@ router.patch(
                             client_status: session?.client_status,
                             status: session.getPublicStatus(),
                         },
-                    } as PresenceUpdateEvent),
+                    } satisfies PresenceUpdateEvent),
                     session.save(),
                 ]);
             }

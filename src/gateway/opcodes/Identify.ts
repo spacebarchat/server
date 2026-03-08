@@ -585,7 +585,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     client_status: this.session!.client_status,
                     status: this.session!.getPublicStatus(),
                 },
-            } as PresenceUpdateEvent),
+            } satisfies PresenceUpdateEvent),
         ),
     ]);
 
