@@ -69,7 +69,7 @@ router.post(
             event: "MESSAGE_DELETE_BULK",
             channel_id,
             data: { ids: messages, channel_id, guild_id: channel.guild_id },
-        } as MessageDeleteBulkEvent);
+        } satisfies MessageDeleteBulkEvent);
 
         res.sendStatus(204);
     },
