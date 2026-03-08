@@ -211,6 +211,8 @@ export interface GuildCreateEvent extends Event {
         stage_instances: never[];
         threads: never[];
         embedded_activities: never[];
+        // Only when not using PRIORITISED_READY_PAYLOAD capability
+        voice_states?: PublicVoiceState[];
     };
 }
 
