@@ -47,7 +47,7 @@ router.get(
 
         res.json({
             settings: FrecencyUserSettings.toBase64(userSettings.frecencySettings!),
-        } as SettingsProtoResponse);
+        } satisfies SettingsProtoResponse);
     },
 );
 
@@ -93,7 +93,7 @@ router.get(
 
         res.json({
             settings: FrecencyUserSettings.toJson(userSettings.frecencySettings!),
-        } as SettingsProtoJsonResponse);
+        } satisfies SettingsProtoJsonResponse);
     },
 );
 
