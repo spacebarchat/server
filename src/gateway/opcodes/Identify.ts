@@ -682,7 +682,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 flags: 0,
             },
             game_relationships: [],
-        } as ReadyEventData;
+        } satisfies ReadyEventData;
     });
 
     if (this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) && tokenData.tokenVersion != CurrentTokenFormatVersion) {
