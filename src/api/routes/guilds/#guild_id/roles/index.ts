@@ -101,7 +101,7 @@ router.post(
                     guild_id,
                     role: role,
                 },
-            } as GuildRoleCreateEvent),
+            } satisfies GuildRoleCreateEvent),
         ]);
 
         res.json(role);
@@ -144,7 +144,7 @@ router.patch(
                         guild_id,
                         role: x,
                     },
-                } as GuildRoleUpdateEvent),
+                } satisfies GuildRoleUpdateEvent),
             ),
         );
 
