@@ -320,7 +320,7 @@ router.delete(
                 channel_id,
                 guild_id: channel.guild_id,
             },
-        } as MessageDeleteEvent);
+        } satisfies MessageDeleteEvent);
 
         res.sendStatus(204);
     },
