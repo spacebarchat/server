@@ -132,7 +132,7 @@ router.post(
                 guild_id: guild_id,
                 emojis: await Emoji.find({ where: { guild_id: guild_id } }),
             },
-        } as GuildEmojisUpdateEvent);
+        } satisfies GuildEmojisUpdateEvent);
 
         return res.status(201).json(emoji);
     },
@@ -171,7 +171,7 @@ router.patch(
                 guild_id: guild_id,
                 emojis: await Emoji.find({ where: { guild_id: guild_id } }),
             },
-        } as GuildEmojisUpdateEvent);
+        } satisfies GuildEmojisUpdateEvent);
 
         return res.json(emoji);
     },
@@ -203,7 +203,7 @@ router.delete(
                 guild_id: guild_id,
                 emojis: await Emoji.find({ where: { guild_id: guild_id } }),
             },
-        } as GuildEmojisUpdateEvent);
+        } satisfies GuildEmojisUpdateEvent);
 
         res.sendStatus(204);
     },
