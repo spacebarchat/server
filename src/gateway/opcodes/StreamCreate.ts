@@ -108,10 +108,13 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 
     await emitEvent({
         event: "VOICE_STATE_UPDATE",
-        data: voiceState.toPublicVoiceState(),
+        data: {
+            ...voiceState.toPublicVoiceState(),
+            member: voiceState.member.toPublicMember(),
+        },
         guild_id: voiceState.guild_id,
         channel_id: voiceState.channel_id,
-    } as VoiceStateUpdateEvent);
+    } satisfies VoiceStateUpdateEvent);
 
     console.log(`[Gateway/${this.user_id}] STREAM_CREATE for user ${this.user_id} in channel ${body.channel_id} with stream key ${streamKey} in ${Date.now() - startTime}ms`);
 }

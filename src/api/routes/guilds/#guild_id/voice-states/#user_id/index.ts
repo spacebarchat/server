@@ -65,6 +65,7 @@ router.patch(
                 channel_id: body.channel_id,
                 user_id,
             },
+            relations: { member: true },
         });
         if (!voice_state) throw DiscordApiErrors.UNKNOWN_VOICE_STATE;
 
@@ -80,9 +81,12 @@ router.patch(
             voice_state.save(),
             emitEvent({
                 event: "VOICE_STATE_UPDATE",
-                data: voice_state.toPublicVoiceState(),
+                data: {
+                    ...voice_state.toPublicVoiceState(),
+                    member: voice_state.member.toPublicMember(),
+                },
                 guild_id,
-            } as VoiceStateUpdateEvent),
+            } satisfies VoiceStateUpdateEvent),
         ]);
         return res.sendStatus(204);
     },

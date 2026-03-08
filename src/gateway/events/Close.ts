@@ -32,6 +32,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
+            relations: { member: true },
         });
 
         // clear the voice state for this session if user was in voice channel
@@ -53,10 +54,11 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                 data: {
                     ...voiceState.toPublicVoiceState(),
                     guild_id: prevGuildId, // have to send the previous guild_id because that's what client expects for disconnect messages
+                    member: voiceState.member.toPublicMember(),
                 },
                 guild_id: prevGuildId,
                 channel_id: prevChannelId,
-            } as VoiceStateUpdateEvent);
+            } satisfies VoiceStateUpdateEvent);
         }
     }
 
