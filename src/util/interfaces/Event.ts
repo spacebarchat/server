@@ -233,7 +233,7 @@ export interface GuildBanAddEvent extends Event {
     event: "GUILD_BAN_ADD";
     data: {
         guild_id: string;
-        user: User;
+        user: PublicUser;
         delete_message_secs?: number;
     };
 }
@@ -242,7 +242,7 @@ export interface GuildBanRemoveEvent extends Event {
     event: "GUILD_BAN_REMOVE";
     data: {
         guild_id: string;
-        user: User;
+        user: PublicUser;
     };
 }
 

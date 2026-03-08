@@ -97,7 +97,7 @@ router.post(
                             user: banned_user,
                         },
                         guild_id: guild_id,
-                    } as GuildBanAddEvent),
+                    } satisfies GuildBanAddEvent),
                 ]);
                 banned_users.push(banned_user_id);
             } catch {
