@@ -44,6 +44,7 @@ import {
     GuildCreateResponse,
     InteractionFailureReason,
     PartialEmoji,
+    PublicChannel,
     PublicMember,
     PublicUser,
     PublicVoiceState,
@@ -161,17 +162,17 @@ export interface ReadyEvent extends Event {
 
 export interface ChannelCreateEvent extends Event {
     event: "CHANNEL_CREATE";
-    data: Channel;
+    data: PublicChannel;
 }
 
 export interface ChannelUpdateEvent extends Event {
     event: "CHANNEL_UPDATE";
-    data: Channel;
+    data: PublicChannel;
 }
 
 export interface ChannelDeleteEvent extends Event {
     event: "CHANNEL_DELETE";
-    data: Channel;
+    data: PublicChannel;
 }
 
 export interface ChannelPinsUpdateEvent extends Event {
@@ -630,17 +631,17 @@ export interface GuildMemberListUpdate extends Event {
 
 export interface ThreadCreateEvent extends Event {
     event: "THREAD_CREATE";
-    data: Channel & { newly_created: boolean };
+    data: PublicChannel & { newly_created: boolean };
 }
 
 export interface ThreadUpdatEvent extends Event {
     event: "THREAD_UPDATE";
-    data: Channel;
+    data: PublicChannel;
 }
 
 export interface ThreadDeleteEvent extends Event {
     event: "THREAD_DELETE";
-    data: Pick<Channel, "id" | "guild_id" | "parent_id" | "type">;
+    data: Pick<PublicChannel, "id" | "guild_id" | "parent_id" | "type">;
 }
 
 export interface ThreadListSyncEvent extends Event {

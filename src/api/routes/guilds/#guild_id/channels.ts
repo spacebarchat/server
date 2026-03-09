@@ -155,7 +155,7 @@ router.patch(
 
             await emitEvent({
                 event: "CHANNEL_UPDATE",
-                data: channel.toJSON(),
+                data: channel?.toJSON(),
                 channel_id: channel.id,
                 guild_id,
             } satisfies ChannelUpdateEvent);

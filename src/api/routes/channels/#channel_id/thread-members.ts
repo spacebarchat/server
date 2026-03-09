@@ -102,17 +102,17 @@ router.post(
             data: {
                 guild_id: thread.guild_id!,
                 id: thread.id,
-                member_count: thread.member_count,
+                member_count: thread.member_count ?? 0, //TODO: is this the right fix?
                 added_members: [{ user_id: user_id, ...threadMember.toJSON() }],
             },
             channel_id: thread.id,
-        } as ThreadMembersUpdateEvent);
+        } satisfies ThreadMembersUpdateEvent);
 
         await emitEvent({
             event: "THREAD_CREATE",
             data: { ...thread.toJSON(), newly_created: false },
             user_id: user_id,
-        } as ThreadCreateEvent);
+        } satisfies ThreadCreateEvent);
 
         return res.status(204).send();
     },
@@ -151,11 +151,11 @@ router.delete(
             data: {
                 guild_id: thread.guild_id!,
                 id: thread.id,
-                member_count: thread.member_count,
+                member_count: thread.member_count ?? 0, // TODO: is this the right fix?
                 removed_member_ids: [user_id],
             },
             channel_id: thread.id,
-        } as ThreadMembersUpdateEvent);
+        } satisfies ThreadMembersUpdateEvent);
         if (thread.type === ChannelType.GUILD_PRIVATE_THREAD)
             await emitEvent({
                 event: "THREAD_DELETE",
@@ -166,7 +166,7 @@ router.delete(
                     type: thread.type,
                 },
                 user_id: user_id,
-            } as ThreadDeleteEvent);
+            } satisfies ThreadDeleteEvent);
 
         return res.status(204).send();
     },
@@ -193,7 +193,7 @@ router.patch(
         //     event: "THREAD_MEMBER_UPDATE",
         //     data: ,
         //     user_id: user_id,
-        // } as ThreadMemberUpdateEvent);
+        // } satisfies ThreadMemberUpdateEvent);
 
         return res.status(500).send("not implemented");
     },
