@@ -84,7 +84,7 @@ router.delete(
                 message_id,
                 guild_id: channel.guild_id,
             },
-        } as MessageReactionRemoveAllEvent);
+        } satisfies MessageReactionRemoveAllEvent);
 
         res.sendStatus(204);
     },
@@ -126,7 +126,7 @@ router.delete(
                     guild_id: message.guild_id,
                     emoji,
                 },
-            } as MessageReactionRemoveEmojiEvent),
+            } satisfies MessageReactionRemoveEmojiEvent),
         ]);
 
         res.sendStatus(204);
@@ -224,14 +224,14 @@ router.put(
 
         await message.save();
 
-        const member =
-            channel.guild_id &&
-            (
-                await Member.findOneOrFail({
-                    where: { id: req.user_id },
-                    select: PublicMemberProjection,
-                })
-            ).toPublicMember();
+        const member = channel.guild_id
+            ? (
+                  await Member.findOneOrFail({
+                      where: { id: req.user_id },
+                      select: PublicMemberProjection,
+                  })
+              ).toPublicMember()
+            : undefined;
 
         await emitEvent({
             event: "MESSAGE_REACTION_ADD",
@@ -244,7 +244,7 @@ router.put(
                 emoji,
                 member,
             },
-        } as MessageReactionAddEvent);
+        } satisfies MessageReactionAddEvent);
 
         res.sendStatus(204);
     },
@@ -301,7 +301,7 @@ router.delete(
                 guild_id: channel.guild_id,
                 emoji,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
@@ -358,7 +358,7 @@ router.delete(
                 guild_id: channel.guild_id,
                 emoji,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
