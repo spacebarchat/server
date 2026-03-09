@@ -342,17 +342,17 @@ router.post(
                         data: {
                             guild_id: channel.guild_id!,
                             id: channel.id,
-                            member_count: channel.member_count,
+                            member_count: channel.member_count ?? 0, // TODO: is this the right fix?
                             added_members: [{ user_id: req.user_id, ...threadMember.toJSON() }],
                         },
                         channel_id: channel.id,
-                    } as ThreadMembersUpdateEvent);
+                    } satisfies ThreadMembersUpdateEvent);
 
                     await emitEvent({
                         event: "THREAD_CREATE",
                         data: { ...channel.toJSON(), newly_created: false },
                         user_id: req.user_id,
-                    } as ThreadCreateEvent);
+                    } satisfies ThreadCreateEvent);
                 }
             }
         } else {

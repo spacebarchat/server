@@ -106,13 +106,13 @@ export class ThreadMember extends BaseClassWithoutId {
             emitEvent({
                 event: "THREAD_MEMBERS_UPDATE",
                 data: {
-                    guild_id: channel.guild_id,
+                    guild_id: channel.guild_id!, // TODO: is this the right fix?
                     id: channel.id,
-                    member_count: channel.member_count,
+                    member_count: channel.member_count ?? 0,
                     removed_member_ids: [member_id],
                 },
                 channel_id: thread_id,
-            } as ThreadMembersUpdateEvent),
+            } satisfies ThreadMembersUpdateEvent),
         ]);
     }
 

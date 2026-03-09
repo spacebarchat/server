@@ -89,7 +89,7 @@ router.delete(
                 recipient.save(),
                 emitEvent({
                     event: "CHANNEL_DELETE",
-                    data: channel,
+                    data: channel.toJSON(),
                     user_id: req.user_id,
                 } satisfies ChannelDeleteEvent),
             ]);
@@ -121,7 +121,7 @@ router.delete(
                         c.save(),
                         emitEvent({
                             event: "CHANNEL_UPDATE",
-                            data: c,
+                            data: c.toJSON(),
                             channel_id: c.id,
                         } satisfies ChannelUpdateEvent),
                     ]);
@@ -132,7 +132,7 @@ router.delete(
                 Channel.deleteChannel(channel),
                 emitEvent({
                     event: "CHANNEL_DELETE",
-                    data: channel,
+                    data: channel.toJSON(),
                     channel_id,
                 } satisfies ChannelDeleteEvent),
             ]);
@@ -246,7 +246,7 @@ router.patch(
             channel.save(),
             emitEvent({
                 event: "CHANNEL_UPDATE",
-                data: channel,
+                data: channel.toJSON(),
                 channel_id,
             } satisfies ChannelUpdateEvent),
         ]);
