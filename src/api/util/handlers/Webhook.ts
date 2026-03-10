@@ -124,7 +124,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
             event: "MESSAGE_CREATE",
             channel_id: sendChannel.id,
             data: message,
-        } as MessageCreateEvent),
+        } satisfies MessageCreateEvent),
     ]);
 
     // no await as it shouldnt block the message send function and silently catch error

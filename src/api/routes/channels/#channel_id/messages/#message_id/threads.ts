@@ -113,7 +113,7 @@ router.post(
                 event: "MESSAGE_UPDATE",
                 channel_id: message.channel_id,
                 data: message.toJSON(),
-            } as MessageUpdateEvent),
+            } satisfies MessageUpdateEvent),
         ]);
 
         return res.json(thread.toJSON());

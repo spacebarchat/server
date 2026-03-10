@@ -86,7 +86,7 @@ router.put(
                 event: "MESSAGE_UPDATE",
                 channel_id,
                 data: message,
-            } as MessageUpdateEvent),
+            } satisfies MessageUpdateEvent),
             emitEvent({
                 event: "CHANNEL_PINS_UPDATE",
                 channel_id,
@@ -101,7 +101,7 @@ router.put(
                 event: "MESSAGE_CREATE",
                 channel_id: message.channel_id,
                 data: systemPinMessage,
-            } as MessageCreateEvent),
+            } satisfies MessageCreateEvent),
         ]);
 
         res.sendStatus(204);
@@ -139,7 +139,7 @@ router.delete(
                 event: "MESSAGE_UPDATE",
                 channel_id,
                 data: message,
-            } as MessageUpdateEvent),
+            } satisfies MessageUpdateEvent),
             emitEvent({
                 event: "CHANNEL_PINS_UPDATE",
                 channel_id,

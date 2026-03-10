@@ -110,7 +110,7 @@ router.patch(
                     nonce: undefined,
                     member: new_message.member?.toPublicMember(),
                 },
-            } as MessageUpdateEvent),
+            } satisfies MessageUpdateEvent),
         ]);
 
         postHandleMessage(new_message).catch((e) => console.error("[Message] post-message handler failed", e));
@@ -227,7 +227,7 @@ router.put(
                 event: "MESSAGE_CREATE",
                 channel_id: channel_id,
                 data: message,
-            } as MessageCreateEvent),
+            } satisfies MessageCreateEvent),
             channel.save(),
         ]);
 

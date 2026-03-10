@@ -448,7 +448,7 @@ export class Member extends BaseClassWithoutId {
                     event: "MESSAGE_CREATE",
                     channel_id: message.channel_id,
                     data: message,
-                } as MessageCreateEvent),
+                } satisfies MessageCreateEvent),
                 channel.save(),
             ]);
         }

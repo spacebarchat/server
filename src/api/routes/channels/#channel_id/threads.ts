@@ -190,7 +190,7 @@ router.post(
                     event: "MESSAGE_CREATE",
                     channel_id: channel_id,
                     data: message,
-                } as MessageCreateEvent),
+                } satisfies MessageCreateEvent),
                 message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
             ]);
             postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));

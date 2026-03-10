@@ -833,8 +833,11 @@ export async function postHandleMessage(message: Message) {
         const event = {
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
-            data,
-        } as MessageUpdateEvent;
+            data: {
+                ...data,
+                author,
+            },
+        } satisfies MessageUpdateEvent;
         const embeds = data.embeds == undefined ? [] : data.embeds;
         await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds })]);
         return;
@@ -898,7 +901,7 @@ export async function postHandleMessage(message: Message) {
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
             data,
-        } as MessageUpdateEvent),
+        } satisfies MessageUpdateEvent),
         Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds }),
         ...cachePromises,
     ]);
@@ -915,7 +918,7 @@ export async function sendMessage(opts: MessageOptions) {
             event: "MESSAGE_CREATE",
             ...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),
             data: message.toJSON(),
-        } as MessageCreateEvent),
+        } satisfies MessageCreateEvent),
     ]);
 
     // no await as it should catch error non-blockingly
