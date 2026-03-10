@@ -118,6 +118,17 @@ describe("JsonSerializer", () => {
 
     // TODO: broken
     // it("should be able to stream large file", async () => {
+
+    it("should load the rust addon if requested", () => {
+        if (process.env.TEST_RUST_JSON !== "true") {
+            // skip unless env asks rust
+            return;
+        }
+        const rust = require("../../../native/json-rust/index.js");
+        assert.ok(rust);
+        assert.equal(typeof rust.serialize, "function");
+        assert.equal(typeof rust.deserialize, "function");
+    });
     //     // write a massive json file
     //     const sw = Stopwatch.startNew();
     //     const jsonfile = await fs.open("large.json", "w");

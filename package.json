@@ -18,6 +18,7 @@
         "test": "node scripts/test.js",
         "lint": "eslint .",
         "setup": "npm run build && npm run generate:schema",
+        "build:rust": "cd native/json-rust && cargo build --release && mkdir -p ../dist/json-rust && cp target/release/libjson_rust.so ../dist/json-rust/index.node 2>/dev/null || cp target/release/json_rust.node ../dist/json-rust/index.node 2>/dev/null || true",
         "sync:db": "npm run build && node scripts/syncronise.js",
         "generate:rights": "node scripts/rights.js",
         "generate:schema": "node scripts/schema.js",

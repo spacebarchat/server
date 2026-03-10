@@ -25,6 +25,7 @@ import http from "http";
 import { cleanupOnStartup } from "./util/Utils";
 import { randomString } from "@spacebar/api";
 import { setInterval } from "timers";
+import { JsonSerializer } from "../util/json/JsonSerializer";
 
 export class Server {
     public ws: ws.Server;
@@ -81,7 +82,7 @@ export class Server {
                     res.setHeader("Content-Type", "application/json")
                         .writeHead(200)
                         .end(
-                            JSON.stringify(
+                            JsonSerializer.Serialize(
                                 {
                                     uptime: process.uptime(),
                                     resourceUsage: process.resourceUsage(),

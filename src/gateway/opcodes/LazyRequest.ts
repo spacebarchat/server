@@ -80,25 +80,36 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
     const groups = [];
     const items = [];
-    const member_roles = [
-        ...new Map(
-            members
-                .map((m) => m.roles)
-                .flat()
-                .map((role) => [role.id, role] as [string, Role]),
-        ).values(),
-    ];
-    member_roles.push(
-        member_roles.splice(
-            member_roles.findIndex((x) => x.id === x.guild_id),
-            1,
-        )[0],
-    );
+    const membersByRole = new Map<string, Member[]>();
+    for (const m of members) {
+        for (const r of m.roles) {
+            const arr = membersByRole.get(r.id);
+            if (arr) arr.push(m);
+            else membersByRole.set(r.id, [m]);
+        }
+    }
 
-    const offlineItems = [];
+    const member_roles: Role[] = [];
+    const seenRoles = new Set<string>();
+    for (const m of members) {
+        for (const r of m.roles) {
+            if (!seenRoles.has(r.id)) {
+                seenRoles.add(r.id);
+                member_roles.push(r);
+            }
+        }
+    }
+
+    const defaultIndex = member_roles.findIndex((x) => x.id === x.guild_id);
+    if (defaultIndex !== -1) {
+        const [defRole] = member_roles.splice(defaultIndex, 1);
+        member_roles.push(defRole);
+    }
+
+    const offlineItems: any[] = [];
 
     for (const role of member_roles) {
-        const [role_members, other_members] = arrayPartition(members, (m: Member) => !!m.roles.find((r) => r.id === role.id));
+        const role_members = membersByRole.get(role.id) || [];
         const group = {
             count: role_members.length,
             id: role.id === guild_id ? "online" : role.id,
@@ -111,7 +122,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
             const roles = member.roles.filter((x: Role) => x.id !== guild_id).map((x: Role) => x.id);
 
             const session: Session | undefined = getMostRelevantSession(member.user.sessions);
-
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             if (session?.status == "unknown") {
@@ -141,7 +151,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
 
             items.push(item);
         }
-        members = other_members;
     }
 
     if (offlineItems.length) {
@@ -248,12 +257,16 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
 
     // TODO: unsubscribe member_events that are not in op.members
 
+    const memberIds: string[] = [];
     ops.forEach((op) => {
-        op.members.forEach(async (member) => {
-            if (!member?.user.id) return;
-            return subscribeToMemberEvents.call(this, member.user.id);
+        op.members.forEach((member) => {
+            if (member?.user?.id) memberIds.push(member.user.id);
         });
     });
+    const uniqueIds = [...new Set(memberIds)];
+    for (const id of uniqueIds) {
+        await subscribeToMemberEvents.call(this, id);
+    }
 
     const groups = [...new Set(ops.map((x) => x.groups).flat())];
 

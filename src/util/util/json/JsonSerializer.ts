@@ -5,6 +5,11 @@ import os from "os";
 import Stream from "node:stream";
 import { ReadStream, WriteStream } from "node:fs";
 
+let rustJson: { serialize?: (value: any) => string; deserialize?: (s: string) => any } | null = null;
+try {
+    rustJson = require("../../../../native/json-rust/index.js");
+} catch {}
+
 // const worker = new Worker(join(process.cwd(), 'dist', 'util', 'util', 'json', 'jsonWorker.js'));
 const workerPool: Worker[] = [];
 const numWorkers = process.env.JSON_WORKERS ? parseInt(process.env.JSON_WORKERS) : os.cpus().length;
@@ -25,6 +30,13 @@ function getNextWorker(): Worker {
 
 export class JsonSerializer {
     public static Serialize<T>(value: T, opts?: JsonSerializerOptions): string {
+        if (rustJson && rustJson.serialize) {
+            try {
+                return rustJson.serialize(value);
+            } catch {
+                // fall through to JS
+            }
+        }
         return JSON.stringify(value);
     }
     public static async SerializeAsync<T>(value: T, opts?: JsonSerializerOptions): Promise<string> {
@@ -48,6 +60,13 @@ export class JsonSerializer {
         });
     }
     public static Deserialize<T>(json: string, opts?: JsonSerializerOptions): T {
+        if (rustJson && rustJson.deserialize) {
+            try {
+                return rustJson.deserialize(json) as T;
+            } catch {
+                // fall through to JS
+            }
+        }
         return JSON.parse(json) as T;
     }
     public static async DeserializeAsync<T>(json: string | ReadableStream | ReadStream, opts?: JsonSerializerOptions): Promise<T> {
