@@ -3,10 +3,6 @@ using ArcaneLibs;
 namespace Spacebar.Interop.Cdn.Abstractions;
 
 public class FilesystemFileSource(string baseUrl) : IFileSource {
-    private readonly StreamingHttpClient _httpClient = new() {
-        BaseAddress = new Uri(baseUrl)
-    };
-
     public string BaseUrl => baseUrl;
 
     public async Task Init(CancellationToken? cancellationToken = null) {

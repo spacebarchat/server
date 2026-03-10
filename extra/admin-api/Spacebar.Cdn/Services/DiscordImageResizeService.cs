@@ -13,6 +13,10 @@ public class DiscordImageResizeParams {
 
     public bool SpacebarAllowUpscale { get; set; } = false;
     public bool SpacebarOptimiseGif { get; set; } = true;
+
+    public string ToSerializedName() {
+        return $"{(Animated ? "a_" : "")}{Size}px_{Quality.ToString()}_u.{SpacebarAllowUpscale}_o.{SpacebarOptimiseGif}";
+    }
 }
 
 public enum DiscordImageResizeQuality {

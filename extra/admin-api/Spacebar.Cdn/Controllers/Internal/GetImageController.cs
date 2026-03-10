@@ -1,3 +1,4 @@
+using ArcaneLibs;
 using ArcaneLibs.Collections;
 using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Spacebar.Cdn.Extensions;
 using Spacebar.Interop.Cdn.Abstractions;
 
 namespace Spacebar.Cdn.Controllers.Internal;
-/*
+
 [ApiController]
 public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDetectionService pads, DiscordImageResizeService dirs) : ControllerBase {
     private static readonly LruCache<bool> _isPixelArtCache = new(100_000);
@@ -20,7 +21,7 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
             return pads.IsPixelArt(img);
         });
     }
-    
+
     [HttpGet("/isCartoonArt/{*_:required}")]
     public async Task<bool> IsCartoonArt() {
         return await _isPixelArtCache.GetOrAddAsync(Request.Path.ToString(), async () => {
@@ -34,18 +35,19 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
     public async Task<FileContentResult> GetEdges([FromQuery] string applyMode = "pre") {
         return await _edgeCache.GetOrAdd(Request.Path.ToString() + Request.QueryString, async () => {
             var original = await fs.GetFile(Request.Path.ToString().Replace("/edges", ""));
-        
+
             DiscordImageResizeParams resizeParams = new() {
                 Size = Request.Query.ContainsKey("size") && uint.TryParse(Request.Query["size"], out uint size) ? size : null,
-                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality) ? quality : DiscordImageResizeQuality.High,
+                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality)
+                    ? quality
+                    : DiscordImageResizeQuality.High,
                 KeepAspectRatio = !Request.Query.ContainsKey("keepAspectRatio") || !bool.TryParse(Request.Query["keepAspectRatio"], out bool kar) || kar,
                 Passthrough = Request.Query.ContainsKey("passthrough") && bool.TryParse(Request.Query["passthrough"], out bool pt) && pt,
                 Animated = Request.Query.ContainsKey("animated") && bool.TryParse(Request.Query["animated"], out bool an) && an,
                 SpacebarAllowUpscale = Request.Query.ContainsKey("allowUpscale") && bool.TryParse(Request.Query["allowUpscale"], out bool au) && au,
                 SpacebarOptimiseGif = Request.Query.ContainsKey("optimiseGif") && bool.TryParse(Request.Query["optimiseGif"], out bool og) && og
             };
-            
-            
+
             double radius = 1;
             if (Request.Query.ContainsKey("radius")) double.TryParse(Request.Query["radius"], out radius);
 
@@ -65,26 +67,26 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
             };
         }).ContinueWith(t => File(t.Result.Data, t.Result.MimeType));
     }
-    
-        [HttpGet("/posterize/{*_:required}")]
+
+    [HttpGet("/posterize/{*_:required}")]
     public async Task<FileContentResult> Posterize() {
         return await _edgeCache.GetOrAdd(Request.Path.ToString() + Request.QueryString, async () => {
             var original = await fs.GetFile(Request.Path.ToString().Replace("/posterize", ""));
             DiscordImageResizeParams resizeParams = new() {
                 Size = Request.Query.ContainsKey("size") && uint.TryParse(Request.Query["size"], out uint size) ? size : null,
-                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality) ? quality : DiscordImageResizeQuality.High,
+                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality)
+                    ? quality
+                    : DiscordImageResizeQuality.High,
                 KeepAspectRatio = !Request.Query.ContainsKey("keepAspectRatio") || !bool.TryParse(Request.Query["keepAspectRatio"], out bool kar) || kar,
                 Passthrough = Request.Query.ContainsKey("passthrough") && bool.TryParse(Request.Query["passthrough"], out bool pt) && pt,
                 Animated = Request.Query.ContainsKey("animated") && bool.TryParse(Request.Query["animated"], out bool an) && an,
                 SpacebarAllowUpscale = Request.Query.ContainsKey("allowUpscale") && bool.TryParse(Request.Query["allowUpscale"], out bool au) && au
             };
-            
-            
+
             double radius = 1;
             if (Request.Query.ContainsKey("radius")) double.TryParse(Request.Query["radius"], out radius);
 
             var img = await original.ToMagickImageCollectionAsync();
-
 
             int inFrames = img.Count;
             // using var edged = pads.RenderEdges(img, radius);
@@ -94,9 +96,9 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
                 frame.Posterize(16, DitherMethod.No);
                 frame.ColorFuzz = new Percentage(0);
             }
-            
-            if(resizeParams.Size.HasValue)
-                img = dirs.Apply(img,resizeParams);
+
+            if (resizeParams.Size.HasValue)
+                img = dirs.Apply(img, resizeParams);
 
             Console.WriteLine($"Generated edges for {Request.Path}, radius={radius}, inFrames={inFrames}, outFrames={img.Count}");
             return new LruFileCache.Entry {
@@ -106,26 +108,28 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
             };
         }).ContinueWith(t => File(t.Result.Data, t.Result.MimeType));
     }
-    
+
     [HttpGet("/colorFuzz/{*_:required}")]
     public async Task<FileContentResult> ColorFuzz() {
         return await _edgeCache.GetOrAdd(Request.Path.ToString() + Request.QueryString, async () => {
             var original = await fs.GetFile(Request.Path.ToString().Replace("/colorFuzz", ""));
             DiscordImageResizeParams resizeParams = new() {
-                Size = Request.Query.ContainsKey("size") && uint.TryParse(Request.Query["size"], out uint size) ? size : null,
-                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality) ? quality : DiscordImageResizeQuality.High,
+                Size = Request.Query.ContainsKey("size") && uint.TryParse(Request.Query["size"], out uint size)
+                    ? size
+                    : null,
+                Quality = Request.Query.ContainsKey("quality") && Enum.TryParse<DiscordImageResizeQuality>(Request.Query["quality"], true, out var quality)
+                    ? quality
+                    : DiscordImageResizeQuality.High,
                 KeepAspectRatio = !Request.Query.ContainsKey("keepAspectRatio") || !bool.TryParse(Request.Query["keepAspectRatio"], out bool kar) || kar,
                 Passthrough = Request.Query.ContainsKey("passthrough") && bool.TryParse(Request.Query["passthrough"], out bool pt) && pt,
                 Animated = Request.Query.ContainsKey("animated") && bool.TryParse(Request.Query["animated"], out bool an) && an,
-                SpacebarAllowUpscale = Request.Query.ContainsKey("allowUpscale") && bool.TryParse(Request.Query["allowUpscale"], out bool au) && au
+                SpacebarAllowUpscale = Request.Query.ContainsKey("allowUpscale") && bool.TryParse(Request.Query["allowUpscale"], out bool au) && au,
             };
-            
-            
+
             double colorFuzz = 1;
             if (Request.Query.ContainsKey("colorFuzz")) double.TryParse(Request.Query["colorFuzz"], out colorFuzz);
 
             var img = await original.ToMagickImageCollectionAsync();
-
 
             int inFrames = img.Count;
             // using var edged = pads.RenderEdges(img, radius);
@@ -133,9 +137,9 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
                 // get major color count
                 frame.ColorFuzz = new Percentage(colorFuzz);
             }
-            
-            if(resizeParams.Size.HasValue)
-                img = dirs.Apply(img,resizeParams);
+
+            if (resizeParams.Size.HasValue)
+                img = dirs.Apply(img, resizeParams);
 
             Console.WriteLine($"Generated colorFuzz for {Request.Path}, fuzz={colorFuzz}, inFrames={inFrames}, outFrames={img.Count}");
             return new LruFileCache.Entry {
@@ -145,5 +149,14 @@ public class IsPixelArtController(LruFileCache lfc, IFileSource fs, PixelArtDete
             };
         }).ContinueWith(t => File(t.Result.Data, t.Result.MimeType));
     }
+
+    [HttpGet("/defaultAvatar")]
+    public async Task<FileContentResult> DefaultAvatar() {
+        var re = new RainbowEnumerator();
+        var img = new MagickImageCollection();
+
+        var ms = new MemoryStream();
+        
+        return new FileContentResult(ms.ToArray(), "image/gif");
+    }
 }
-*/

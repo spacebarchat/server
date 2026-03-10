@@ -1,6 +1,6 @@
-using System.Collections.Immutable;
 using ArcaneLibs.Extensions.Streams;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
 using Spacebar.AdminApi.TestClient.Services.Services;
 using Spacebar.Cdn.Extensions;
 using Spacebar.Interop.Cdn.Abstractions;
@@ -28,8 +28,39 @@ public class StaticAssetController(LruFileCache lfc, IFileSource fs, DiscordImag
         { "6", "1276374a404452756f3c9cc2601508a5" },
         { "7", "904bf9f1b61f53ef4a3b7a893afeabe3" },
     };
-    // [HttpGet("/embed/avatars/{userIndex}")]
-    // public async Task<IActionResult> GetDefaultUserAvatar(string userIndex) {
-    //     
-    // }
+    
+    // png only
+    [HttpGet("/embed/avatars/{userIndex}.{ext}")]
+    public async Task<IActionResult> GetDefaultUserAvatar(string userIndex, string ext) {
+        
+        var cacheKey = Request.Path + Request.QueryString;
+
+        DiscordImageResizeParams resizeParams = GetResizeParams();
+
+        var entry = await lfc.GetOrAdd(cacheKey, async () => {
+            var original = await fs.GetFile(Request.Path);
+
+            if (Request.Query.Any()) {
+                using var img = await original.ToMagickImageCollectionAsync();
+                dirs.Apply(img, resizeParams);
+
+                var outStream = new MemoryStream();
+                await img.WriteAsync(outStream, img.First().Format);
+                outStream.Position = 0;
+
+                return new LruFileCache.Entry() {
+                    Data = outStream.ReadToEnd().ToArray(),
+                    MimeType = original.MimeType
+                };
+            }
+
+            return new LruFileCache.Entry() {
+                Data = original.Stream.ReadToEnd().ToArray(),
+                MimeType = original.MimeType
+            };
+        });
+
+        // byte array with mime type result
+        return new FileContentResult(entry.Data, entry.MimeType);
+    }
 }

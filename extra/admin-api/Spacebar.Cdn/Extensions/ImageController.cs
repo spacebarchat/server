@@ -14,7 +14,7 @@ public class ImageController : ControllerBase {
             Passthrough = Request.Query.ContainsKey("passthrough") && bool.TryParse(Request.Query["passthrough"], out bool pt) && pt,
             Animated = Request.Query.ContainsKey("animated") && bool.TryParse(Request.Query["animated"], out bool an) && an,
             SpacebarAllowUpscale = Request.Query.ContainsKey("allowUpscale") && bool.TryParse(Request.Query["allowUpscale"], out bool au) && au,
-            SpacebarOptimiseGif = Request.Query.ContainsKey("optimiseGif") && bool.TryParse(Request.Query["optimiseGif"], out bool og) && og
+            SpacebarOptimiseGif = Request.Query.ContainsKey("optimiseGif") && bool.TryParse(Request.Query["optimiseGif"], out bool og) && og,
         };
     }
 

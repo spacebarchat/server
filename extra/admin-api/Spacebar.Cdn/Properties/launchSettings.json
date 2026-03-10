@@ -18,7 +18,8 @@
       "applicationUrl": "http://localhost:5114",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local",
-        "LD_LIBRARY_PATH": "/home/Rory/git/spacebar/server-master/extra/admin-api/Spacebar.Cdn/result-lib/lib/"
+//        "LD_LIBRARY_PATH": "/home/Rory/git/spacebar/server-master/extra/admin-api/Spacebar.Cdn/result-lib/lib/",
+        "STORAGE_PATH": "./files"
       }
     }
   }
