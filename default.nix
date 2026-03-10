@@ -44,6 +44,8 @@ pkgs.stdenv.mkDerivation {
     nodejs
     makeWrapper
     (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
+    rustc
+    cargo
   ];
 
   configurePhase = ''
@@ -53,6 +55,7 @@ pkgs.stdenv.mkDerivation {
   '';
 
   buildPhase = ''
+    npm run build:rust
     npm run build:tsgo
   '';
 
