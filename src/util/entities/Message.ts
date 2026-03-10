@@ -33,12 +33,7 @@ import {
     ApplicationCommandType,
     BaseMessageComponents,
     Embed,
-    MessageComponentType,
-    MessageSnapshot,
-    MessageType,
-    PartialMessage,
-    Poll,
-    Reaction,
+    MessageComponentType, MessageSnapshot, MessageType, PartialMessage, Poll, PublicMessage, Reaction,
     UnfurledMediaItem,
 } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
@@ -251,9 +246,10 @@ export class Message extends BaseClass {
         }
     }
 
-    toJSON(shallow = false): Message {
+    toJSON(shallow = false): PublicMessage {
         return {
             ...this,
+            channel_id: this.channel_id ?? this.channel.id,
             channel: undefined,
             author_id: undefined,
             member_id: undefined,
@@ -276,8 +272,8 @@ export class Message extends BaseClass {
             author: {
                 ...(this.author?.toPublicUser() ?? undefined),
                 // Webhooks
-                username: this.username ?? this.author?.username,
-                avatar: this.avatar ?? this.author?.avatar,
+                username: this.username ?? this.author?.username ?? null,
+                avatar: this.avatar ?? this.author?.avatar ?? null,
             },
             activity: this.activity ?? undefined,
             application: this.application ?? undefined,
