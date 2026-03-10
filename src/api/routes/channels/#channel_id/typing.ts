@@ -60,7 +60,7 @@ router.post(
                 user_id,
                 guild_id: channel.guild_id,
             },
-        } as TypingStartEvent);
+        } satisfies TypingStartEvent);
 
         res.sendStatus(204);
     },

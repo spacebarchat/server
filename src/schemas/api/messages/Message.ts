@@ -17,7 +17,7 @@
 */
 
 import { Attachment, Sticker } from "@spacebar/util";
-import { Embed, MessageComponent, PartialUser, Snowflake } from "@spacebar/schemas";
+import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake } from "@spacebar/schemas";
 
 export enum MessageType {
     DEFAULT = 0,
@@ -159,4 +159,82 @@ export interface MessageSnapshot {
         sticker_items?: Sticker[];
         // soundboard_sounds?: object[]; // TODO: when soundboard is done
     };
+}
+
+export interface PublicMessage {
+    id: Snowflake;
+    channel_id: Snowflake;
+    lobby_id?: Snowflake;
+    author: PartialUser;
+    content: string;
+    timestamp: string;
+    edited_timestamp: string | null;
+    tts: boolean;
+    mention_everyone: boolean;
+    mentions: PartialUser[];
+    mention_roles: Snowflake[];
+    mention_channels?: PublicChannel[]; // TODO: PartialPublicChannel
+    attachments: Attachment[];
+    embeds: Embed[];
+    reactions?: Reaction[];
+    nonce?: number | string;
+    pinned: boolean;
+    webhook_id?: Snowflake;
+    type: number;
+    activity?: MessageActivity;
+    // application?: IntegrationApplication; // TODO
+    application_id?: Snowflake;
+    flags: number;
+    message_reference?: MessageReference;
+    referenced_message?: PublicMessage | null;
+    message_snapshots?: MessageSnapshot[];
+    // call?: MessageCall;
+    // interaction?: PartialMessageInteraction; // TODO
+    // interaction_metadata?: MessageInteraction; // TODO
+    // resolved?: ResolvedData; // TODO
+    thread?: PublicChannel;
+    // role_subscription_data?: MessageRoleSubscription;
+    // purchase_notification?: MessagePurchaseNotification;
+    // gift_info?: MessageGiftInfo;
+    components: MessageComponent[];
+    // sticker_items?: StickerItem[]; // TODO: ???
+    stickers?: Sticker[]; // TODO: dont use db entity
+    poll?: Poll;
+    changelog_id?: Snowflake;
+    // soundboard_sounds?: SoundboardSound[];
+    potions?: Potion[];
+    shared_client_theme?: SharedClientTheme;
+}
+
+export interface SharedClientTheme {
+    colors: string[]; // hex encoded colors, max 5
+    gradient_angle: number; // int, degrees
+    base_mix: number; //int, 0-100
+    base_theme?: ClientBaseThemeType;
+}
+
+export enum ClientBaseThemeType {
+    DARK = 1,
+    LIGHT = 2,
+    DARKER = 3,
+    MIDNIGHT = 4,
+}
+
+export interface Potion {
+    used_by: Snowflake;
+    type: PotionType;
+    emoji: PartialEmoji[];
+    created_at: string;
+}
+
+export enum PotionType {
+    CONFETTI = 0,
+}
+
+export interface MessageReference {
+    message_id?: string;
+    channel_id?: string;
+    guild_id?: string;
+    fail_if_not_exists?: boolean;
+    type?: number;
 }

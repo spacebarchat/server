@@ -90,7 +90,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
             paused: false,
         },
         user_id: this.user_id,
-    } as StreamCreateEvent);
+    } satisfies StreamCreateEvent);
 
     await emitEvent({
         event: "STREAM_SERVER_UPDATE",
@@ -101,17 +101,20 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
             endpoint: stream.endpoint,
         },
         user_id: this.user_id,
-    } as StreamServerUpdateEvent);
+    } satisfies StreamServerUpdateEvent);
 
     voiceState.self_stream = true;
     await voiceState.save();
 
     await emitEvent({
         event: "VOICE_STATE_UPDATE",
-        data: voiceState.toPublicVoiceState(),
+        data: {
+            ...voiceState.toPublicVoiceState(),
+            member: voiceState.member.toPublicMember(),
+        },
         guild_id: voiceState.guild_id,
         channel_id: voiceState.channel_id,
-    } as VoiceStateUpdateEvent);
+    } satisfies VoiceStateUpdateEvent);
 
     console.log(`[Gateway/${this.user_id}] STREAM_CREATE for user ${this.user_id} in channel ${body.channel_id} with stream key ${streamKey} in ${Date.now() - startTime}ms`);
 }

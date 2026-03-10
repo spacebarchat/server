@@ -94,7 +94,7 @@ router.post(
                 channel_id,
                 guild_id: channel.guild_id,
             },
-        } as MessageDeleteBulkEvent);
+        } satisfies MessageDeleteBulkEvent);
 
         res.sendStatus(204);
     },

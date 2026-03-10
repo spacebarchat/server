@@ -39,7 +39,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             id: interactionId,
             nonce: body.nonce,
         },
-    } as InteractionCreateEvent);
+    } satisfies InteractionCreateEvent);
 
     const user = req.user;
 
@@ -97,8 +97,12 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     emitEvent({
         event: "INTERACTION_CREATE",
         user_id: body.application_id,
-        data: interactionData,
-    } as InteractionCreateEvent);
+        data: {
+            ...interactionData,
+            member_id: req.user_id, // TODO: is this correct?
+            id: interactionId, // TODO: is this correct?
+        },
+    } satisfies InteractionCreateEvent);
 
     const interactionTimeout = setTimeout(() => {
         emitEvent({
@@ -109,7 +113,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
                 nonce: body.nonce,
                 reason_code: InteractionFailureReason.TIMEOUT,
             },
-        } as InteractionFailureEvent);
+        } satisfies InteractionFailureEvent);
     }, 3000);
 
     pendingInteractions.set(interactionId, {

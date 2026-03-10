@@ -1,5 +1,8 @@
-import { Channel, Recipient } from "@spacebar/util";
+import { Channel, Guild, Invite, Message, ReadState, Recipient, Tag, ThreadMember, User, VoiceState, Webhook } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
+import { Column, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Snowflake } from "../../Identifiers";
+import { PartialUser, PublicMember } from "../users";
 
 export enum ChannelType {
     GUILD_TEXT = 0, // a text channel within a guild
@@ -71,4 +74,61 @@ export function isTextChannel(type: ChannelType): boolean {
         default:
             throw new HTTPError("unimplemented", 400);
     }
+}
+
+// TODO: split up by channel type?
+export interface PublicChannel {
+    id: Snowflake;
+    type: ChannelType;
+    guild_id?: Snowflake;
+    position?: number;
+    permission_overwrites?: ChannelPermissionOverwrite[];
+    name?: string | null;
+    topic?: string | null;
+    nsfw?: boolean;
+    last_message_id?: Snowflake | null;
+    last_pin_timestamp?: string | null;
+    bitrate?: number;
+    user_limit?: number;
+    rate_limit_per_user?: number;
+    recipients?: PartialUser[];
+    recipient_flags?: number;
+    icon?: string | null;
+    // nicks?: ChannelNick[]; // TODO
+    managed?: boolean;
+    blocked_user_warning_dismissed?: boolean;
+    // safety_warnings?: SafetyWarning[]; // TODO
+    application_id?: Snowflake;
+    owner_id?: Snowflake;
+    owner?: PublicMember | null;
+    parent_id?: Snowflake | null;
+    rtc_region?: string | null;
+    video_quality_mode?: number;
+    total_message_sent?: number;
+    message_count?: number;
+    member_count?: number;
+    member_ids_preview?: Snowflake[];
+    thread_metadata?: ThreadMetadata;
+    member?: ThreadMember;
+    default_auto_archive_duration?: number | null;
+    default_thread_rate_limit_per_user?: number;
+    permissions?: string;
+    flags?: number;
+    available_tags?: Tag[];
+    applied_tags?: Snowflake[];
+    default_reaction_emoji?: string | null; // DefaultReaction type..? this is supposed to be an object apparently
+    default_forum_layout?: number;
+    default_sort_order?: number | null;
+    default_tag_setting?: string;
+    // icon_emoji?: IconEmoji | null; // TODO
+    is_message_request?: boolean;
+    is_message_request_timestamp?: string | null;
+    is_spam?: boolean;
+    theme_color?: number | null;
+    status?: string | null;
+    hd_streaming_until?: string | null;
+    hd_streaming_buyer_id?: Snowflake | null;
+    // linked_lobby?: LinkedLobby | null; // TODO
+    is_linkable?: boolean;
+    is_viewable_and_writeable_by_all_members?: boolean;
 }

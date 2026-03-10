@@ -82,7 +82,7 @@ router.delete(
                     guild_id,
                     role_id,
                 },
-            } as GuildRoleDeleteEvent),
+            } satisfies GuildRoleDeleteEvent),
         ]);
 
         res.sendStatus(204);
@@ -135,7 +135,7 @@ router.patch(
                     guild_id,
                     role,
                 },
-            } as GuildRoleUpdateEvent),
+            } satisfies GuildRoleUpdateEvent),
         ]);
 
         res.json(role);

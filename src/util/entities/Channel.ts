@@ -32,7 +32,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Member } from "./Member";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, PublicChannel, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
 import { OrmUtils } from "../imports";
 import { ThreadMember } from "./ThreadMember";
 
@@ -288,9 +288,9 @@ export class Channel extends BaseClass {
             !opts?.skipEventEmit
                 ? emitEvent({
                       event: "CHANNEL_CREATE",
-                      data: channel,
+                      data: ret.toJSON(),
                       guild_id: channel.guild_id,
-                  } as ChannelCreateEvent)
+                  } satisfies ChannelCreateEvent)
                 : Promise.resolve(),
             Guild.insertChannelInOrder(guild.id, ret.id, position, guild),
         ]);
@@ -405,18 +405,18 @@ export class Channel extends BaseClass {
                         newly_created: true,
                     },
                     guild_id: channel.guild_id,
-                } as ThreadCreateEvent),
+                } satisfies ThreadCreateEvent),
                 emitEvent({
                     event: "THREAD_MEMBERS_UPDATE",
                     data: {
-                        guild_id: channel.guild_id,
+                        guild_id: channel.guild_id!, // TODO: is this the right fix?
                         id: thread.id,
-                        member_count: channel.member_count,
+                        member_count: channel.member_count ?? 0, //TODO: is this the right fix?
                         added_members: [threadMember],
                         removed_member_ids: [],
                     },
                     guild_id: channel.guild_id,
-                } as ThreadMembersUpdateEvent),
+                } satisfies ThreadMembersUpdateEvent),
             ]);
         }
 
@@ -545,7 +545,7 @@ export class Channel extends BaseClass {
                 }),
             },
             channel_id: channel.id,
-        } as ChannelRecipientRemoveEvent);
+        } satisfies ChannelRecipientRemoveEvent);
     }
 
     static async deleteChannel(channel: Channel) {
@@ -699,9 +699,12 @@ export class Channel extends BaseClass {
         }
     }
 
-    toJSON() {
+    toJSON(): PublicChannel {
         return {
             ...this,
+            last_pin_timestamp: this.last_pin_timestamp?.toISOString(),
+            recipients: undefined, //this.recipients?.map(x=>x.user.toPublicUser()), // TODO: fix me
+            owner: undefined, // TODO: fix me - this is thread owner
 
             // these fields are not returned depending on the type of channel
             bitrate: this.bitrate || undefined,

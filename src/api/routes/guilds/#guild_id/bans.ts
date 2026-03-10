@@ -240,7 +240,7 @@ router.put(
                     delete_message_secs: Math.floor(deleteMessagesMs / 1000),
                 },
                 guild_id: guild_id,
-            } as GuildBanAddEvent),
+            } satisfies GuildBanAddEvent),
         ]);
 
         return res.status(204).send();
@@ -283,7 +283,7 @@ router.delete(
                     user: banned_user,
                 },
                 guild_id,
-            } as GuildBanRemoveEvent),
+            } satisfies GuildBanRemoveEvent),
         ]);
 
         return res.status(204).send();

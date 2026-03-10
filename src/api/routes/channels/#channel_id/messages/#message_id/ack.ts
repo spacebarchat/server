@@ -57,9 +57,9 @@ router.post(
             data: {
                 channel_id,
                 message_id,
-                version: 3763,
+                version: 3763, // what is this number?
             },
-        } as MessageAckEvent);
+        } satisfies MessageAckEvent);
 
         res.json({ token: null });
     },

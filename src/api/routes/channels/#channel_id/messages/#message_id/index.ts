@@ -110,7 +110,7 @@ router.patch(
                     nonce: undefined,
                     member: new_message.member?.toPublicMember(),
                 },
-            } as MessageUpdateEvent),
+            } satisfies MessageUpdateEvent),
         ]);
 
         postHandleMessage(new_message);
@@ -212,7 +212,7 @@ router.put(
             author_id: req.user_id,
             id: message_id,
             embeds,
-            channel_id,
+            channel_id: channel_id!,
             attachments,
             edited_timestamp: undefined,
             timestamp: new Date(snowflake.timestamp),
@@ -227,7 +227,7 @@ router.put(
                 event: "MESSAGE_CREATE",
                 channel_id: channel_id,
                 data: message,
-            } as MessageCreateEvent),
+            } satisfies MessageCreateEvent),
             channel.save(),
         ]);
 
@@ -320,7 +320,7 @@ router.delete(
                 channel_id,
                 guild_id: channel.guild_id,
             },
-        } as MessageDeleteEvent);
+        } satisfies MessageDeleteEvent);
 
         res.sendStatus(204);
     },

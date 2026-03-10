@@ -73,7 +73,7 @@ router.post(
                 event: "CHANNEL_DELETE",
                 data: channel.toJSON(),
                 channel_id: channel.id,
-            } as ChannelDeleteEvent);
+            } satisfies ChannelDeleteEvent);
             await Recipient.delete({ channel_id: channel.id });
             await Channel.deleteChannel(channel);
         }
@@ -104,7 +104,7 @@ router.post(
                             channel_id: channel.id,
                         },
                         channel_id: channel.id,
-                    } as ChannelRecipientRemoveEvent);
+                    } satisfies ChannelRecipientRemoveEvent);
                     console.log(`[Instance ban] Removed user ${user.id} from group channel ${channel.id}`);
                 }
 
@@ -115,7 +115,7 @@ router.post(
                         event: "CHANNEL_DELETE",
                         data: channel.toJSON(),
                         channel_id: channel.id,
-                    } as ChannelDeleteEvent);
+                    } satisfies ChannelDeleteEvent);
                     await Channel.deleteChannel(channel);
                     console.log(`[Instance ban] Deleted empty group channel ${channel.id}`);
                 } else {
@@ -187,7 +187,7 @@ router.post(
             event: "USER_DELETE",
             user_id: req.user_id,
             data: { user_id: req.params.user_id as string },
-        } as UserDeleteEvent);
+        } satisfies UserDeleteEvent);
 
         console.log(`[Instance ban] Deleted user ${user.id} from instance in ${sw.elapsed().toString()}`);
         res.sendStatus(204);

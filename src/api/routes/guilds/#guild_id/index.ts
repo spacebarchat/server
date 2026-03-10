@@ -17,10 +17,23 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, DiscordApiErrors, Guild, GuildUpdateEvent, Member, Permissions, SpacebarApiErrors, emitEvent, getPermission, getRights, handleFile } from "@spacebar/util";
+import {
+    Channel,
+    DiscordApiErrors,
+    Guild,
+    GuildUpdateEvent,
+    Member,
+    Permissions,
+    SpacebarApiErrors,
+    emitEvent,
+    getPermission,
+    getRights,
+    handleFile,
+    Config,
+} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { GuildUpdateSchema } from "@spacebar/schemas";
+import { GuildCreateResponse, GuildUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -200,9 +213,16 @@ router.patch(
             guild.save(),
             emitEvent({
                 event: "GUILD_UPDATE",
-                data,
+                data: {
+                    ...data,
+                    // TODO: did i do this right?
+                    afk_channel_id: data.afk_channel_id ?? undefined,
+                    public_updates_channel_id: data.public_updates_channel_id ?? undefined,
+                    rules_channel_id: data.rules_channel_id ?? undefined,
+                    system_channel_id: data.system_channel_id ?? undefined,
+                } satisfies GuildCreateResponse, // apparently we dont have a separate schema for this
                 guild_id,
-            } as GuildUpdateEvent),
+            } satisfies GuildUpdateEvent),
         ]);
 
         return res.json(data);

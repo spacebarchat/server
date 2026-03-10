@@ -162,7 +162,7 @@ router.patch("/", route({ requestBody: "UserProfileModifySchema" }), async (req:
         event: "USER_UPDATE",
         user_id: req.user_id,
         data: user,
-    } as UserUpdateEvent);
+    } satisfies UserUpdateEvent);
 
     res.json({
         accent_color: user.accent_color,

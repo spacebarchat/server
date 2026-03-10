@@ -183,7 +183,7 @@ async function sendStickerUpdateEvent(guild_id: string) {
             guild_id: guild_id,
             stickers: await Sticker.find({ where: { guild_id: guild_id } }),
         },
-    } as GuildStickersUpdateEvent);
+    } satisfies GuildStickersUpdateEvent);
 }
 
 router.delete(

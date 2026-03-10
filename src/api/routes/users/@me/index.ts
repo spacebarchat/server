@@ -228,7 +228,7 @@ router.patch(
             event: "USER_UPDATE",
             user_id: req.user_id,
             data: user,
-        } as UserUpdateEvent);
+        } satisfies UserUpdateEvent);
 
         res.json({
             ...user,

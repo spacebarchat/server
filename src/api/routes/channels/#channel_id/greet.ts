@@ -96,7 +96,7 @@ router.post(
                 event: "MESSAGE_CREATE",
                 data: message,
                 channel_id,
-            } as MessageCreateEvent),
+            } satisfies MessageCreateEvent),
             channel.save(),
         ]);
 

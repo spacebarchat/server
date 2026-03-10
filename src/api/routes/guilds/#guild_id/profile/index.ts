@@ -76,7 +76,7 @@ router.patch(
             event: "GUILD_MEMBER_UPDATE",
             guild_id,
             data: { ...member, roles: member.roles.map((x) => x.id) },
-        } as GuildMemberUpdateEvent);
+        } satisfies GuildMemberUpdateEvent);
 
         res.json(member);
     },
