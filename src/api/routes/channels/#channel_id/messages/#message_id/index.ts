@@ -212,7 +212,7 @@ router.put(
             author_id: req.user_id,
             id: message_id,
             embeds,
-            channel_id,
+            channel_id: channel_id!,
             attachments,
             edited_timestamp: undefined,
             timestamp: new Date(snowflake.timestamp),
