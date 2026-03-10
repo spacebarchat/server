@@ -17,7 +17,7 @@
 */
 
 import { InteractionType, Snowflake } from "@spacebar/util";
-import { ApplicationCommandType, BaseMessageComponents, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
+import { AllowedMentions, MessageReference, ApplicationCommandType, BaseMessageComponents, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
 
 export type MessageCreateAttachment = {
     id: string;
@@ -42,19 +42,8 @@ export interface MessageCreateSchema {
     embeds?: Embed[] | null;
     embed?: Embed | null;
     // TODO: ^ embed is deprecated in favor of embeds (https://discord.com/developers/docs/resources/channel#message-object)
-    allowed_mentions?: {
-        parse?: string[] | null;
-        roles?: string[] | null;
-        users?: string[] | null;
-        replied_user?: boolean;
-    } | null;
-    message_reference?: {
-        message_id?: string;
-        channel_id?: string;
-        guild_id?: string;
-        fail_if_not_exists?: boolean;
-        type?: number;
-    } | null;
+    allowed_mentions?: AllowedMentions | null;
+    message_reference?: MessageReference | null;
     payload_json?: string;
     file?: { filename: string };
     // TODO: we should create an interface for attachments
