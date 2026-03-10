@@ -127,21 +127,27 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         nonce,
     };
 
-    const chunkCount = Math.ceil(members.length / 1000);
+    const initialLength = members.length;
+    const chunkCount = Math.ceil(initialLength / 1000);
 
     let notFound: string[] = [];
     if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
 
     const chunks: GuildMembersChunkEvent["data"][] = [];
-    while (members.length > 0) {
-        const chunk: Member[] = members.splice(0, 1000);
+
+    for (let offset = 0; offset < initialLength; offset += 1000) {
+        const chunkMembers = members.slice(offset, offset + 1000);
 
         const presenceList: Presence[] = [];
         if (presences) {
-            for await (const member of chunk) {
-                const session = await Session.findOne({
-                    where: { user_id: member.id },
-                });
+            const userIds = chunkMembers.map((m) => m.id);
+            const sessions = await Session.find({
+                where: { user_id: In(userIds) },
+            });
+            const sessionMap = new Map(sessions.map((s) => [s.user_id, s] as [string, Session]));
+
+            for (const member of chunkMembers) {
+                const session = sessionMap.get(member.id);
                 if (session)
                     presenceList.push({
                         user: member.user.toPublicUser(),
@@ -154,7 +160,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
         chunks.push({
             ...baseData,
-            members: chunk.map((member) => member.toPublicMember()),
+            members: chunkMembers.map((member) => member.toPublicMember()),
             presences: presences ? presenceList : undefined,
             chunk_index: chunks.length,
             chunk_count: chunkCount,
@@ -184,5 +190,5 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
     });
 
-    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`);
+    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${initialLength} members`);
 }
