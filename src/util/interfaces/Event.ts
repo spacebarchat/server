@@ -45,6 +45,7 @@ import {
     PartialEmoji,
     PublicChannel,
     PublicMember,
+    PublicMessage,
     PublicUser,
     PublicVoiceState,
     RelationshipType,
@@ -354,12 +355,12 @@ export interface InviteDeleteEvent extends Event {
 
 export interface MessageCreateEvent extends Event {
     event: "MESSAGE_CREATE";
-    data: Message;
+    data: PublicMessage;
 }
 
 export interface MessageUpdateEvent extends Event {
     event: "MESSAGE_UPDATE";
-    data: Message;
+    data: PublicMessage;
 }
 
 export interface MessageDeleteEvent extends Event {
