@@ -25,7 +25,7 @@ import http from "http";
 import { cleanupOnStartup } from "./util/Utils";
 import { randomString } from "@spacebar/api";
 import { setInterval } from "timers";
-import { JsonSerializer } from "../util/json/JsonSerializer";
+import { JsonSerializer } from "../util/util/json/JsonSerializer";
 
 export class Server {
     public ws: ws.Server;
@@ -137,13 +137,15 @@ export class Server {
                                         }),
                                     },
                                 },
-                                (key, value) => {
+                                (key: string, value: string | number | boolean | bigint | null | object) => {
                                     if (value === null || value === undefined) return value;
-                                    if (Object.getPrototypeOf(value)?.constructor?.name === "Timeout") return `[Timeout] ${value._idleTimeout}ms, repeat: ${value._repeat}`;
-                                    if (Object.getPrototypeOf(value)?.constructor?.name === "BigInt") return value.toString() + "n";
+                                    if (Object.getPrototypeOf(value)?.constructor?.name === "Timeout") {
+                                        const t = value as { _idleTimeout: number; _repeat: number | null };
+                                        return `[Timeout] ${t._idleTimeout}ms, repeat: ${t._repeat}`;
+                                    }
+                                    if (Object.getPrototypeOf(value)?.constructor?.name === "BigInt") return String(value) + "n";
                                     return value;
                                 },
-                                2,
                             ),
                         );
                     return;
