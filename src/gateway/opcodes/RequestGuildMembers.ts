@@ -150,6 +150,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
                     activities: true,
                     client_status: true,
                 },
+                relations: { user: true },
             });
 
             const foundUids = new Set<string>();
