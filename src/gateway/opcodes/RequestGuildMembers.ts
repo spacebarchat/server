@@ -144,8 +144,14 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         if (presences) {
             const sessions = await Session.find({
                 where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false, last_seen: MoreThan(recentlyActiveSince) },
+                select: {
+                    user_id: true,
+                    user: true,
+                    status: true,
+                    activities: true,
+                    client_status: true,
+                },
             });
-
             for (const member of chunk) {
                 const session = sessions.find((x) => x.user_id == member.id);
                 if (session)
