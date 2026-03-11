@@ -444,12 +444,13 @@ export class Member extends BaseClassWithoutId {
 
             channel.last_message_id = message.id;
 
+            await message.save();
+            const publicMsg = message.toJSON();
             await Promise.all([
-                message.save(),
                 emitEvent({
                     event: "MESSAGE_CREATE",
                     channel_id: message.channel_id,
-                    data: message,
+                    data: publicMsg,
                 } satisfies MessageCreateEvent),
                 channel.save(),
             ]);

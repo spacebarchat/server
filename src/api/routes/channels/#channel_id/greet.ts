@@ -90,11 +90,12 @@ router.post(
 
         channel.last_message_id = message.id;
 
+        await message.save();
+        const publicMsg = message.toJSON();
         await Promise.all([
-            message.save(),
             emitEvent({
                 event: "MESSAGE_CREATE",
-                data: message,
+                data: publicMsg,
                 channel_id,
             } satisfies MessageCreateEvent),
             channel.save(),
