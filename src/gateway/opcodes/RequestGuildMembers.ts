@@ -127,7 +127,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         nonce,
     };
 
-    const memberCount = members.length;
+    const memberResultCount = members.length;
     const chunkSize = 1000;
     const chunkCount = Math.ceil(members.length / chunkSize);
 
@@ -140,28 +140,31 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     while (members.length > 0) {
         const chunk: Member[] = members.splice(0, chunkSize);
 
-        const presenceList: Presence[] = [];
+        let presenceList: Presence[] = [];
         if (presences) {
             const sessions = await Session.find({
                 where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false, last_seen: MoreThan(recentlyActiveSince) },
                 select: {
-                    user_id: true,
                     user: true,
                     status: true,
                     activities: true,
                     client_status: true,
                 },
             });
-            for (const member of chunk) {
-                const session = sessions.find((x) => x.user_id == member.id);
-                if (session)
-                    presenceList.push({
-                        user: member.user.toPublicUser(),
-                        status: session.status,
-                        activities: session.activities,
-                        client_status: session.client_status,
-                    });
-            }
+
+            const foundUids = new Set<string>();
+            presenceList = sessions
+                .filter((s) => {
+                    if (foundUids.has(s.user.id)) return false;
+                    foundUids.add(s.user.id);
+                    return true;
+                })
+                .map((session) => ({
+                    user: session.user.toPublicUser(),
+                    status: session.getPublicStatus(),
+                    activities: session.activities,
+                    client_status: session.client_status,
+                }));
         }
 
         chunks.push({
@@ -173,7 +176,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
 
         console.log(
-            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${memberCount} total members considered)`,
+            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${memberResultCount} total members considered)`,
         );
     }
 
@@ -200,5 +203,5 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
     });
 
-    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${membersCount} members`);
+    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${memberResultCount} (${memberCount}) members`);
 }
