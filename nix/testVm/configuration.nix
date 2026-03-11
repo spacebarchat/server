@@ -31,6 +31,7 @@ in
         enable = true;
         apiEndpoint = sbLib.mkEndpointRaw "api.sb.localhost" 3001 8080 false;
         gatewayEndpoint = sbLib.mkEndpointRaw "gw.sb.localhost" 3002 8080 false;
+        extraGatewayPorts = lib.range 3100 3116;
         cdnEndpoint = sbLib.mkEndpointRaw "cdn.sb.localhost" 3003 8080 false;
         adminApiEndpoint = sbLib.mkEndpointRaw "admin.sb.localhost" 3004 8080 false;
         webrtcEndpoint = sbLib.mkEndpointRaw "voice.sb.localhost" 3005 8080 false;

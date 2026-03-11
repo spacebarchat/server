@@ -17,6 +17,7 @@ in
   imports = [
     ./integration-nginx.nix
     ./users.nix
+    (import ./gw-sharding.nix self)
     (import ./pion-sfu.nix self)
     (import ./cs/cdn-cs.nix self)
     (import ./cs/gateway-offload-cs.nix self)

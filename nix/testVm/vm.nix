@@ -17,8 +17,8 @@
       "-display gtk,zoom-to-fit=off,show-cursor=on"
       "-device virtio-balloon"
     ];
-    virtualisation.memorySize = 4096;
-    virtualisation.cores = 6;
+    virtualisation.memorySize = 8192;
+    virtualisation.cores = 10;
     virtualisation.forwardPorts = [
         # { hostPort = 2222; guestPort = 22; } # Probably shouldn't do this with root:root lol
         { from = "host"; host.port = 8080; guest.port = 80; }
