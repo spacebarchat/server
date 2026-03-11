@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { DateBuilder, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
 import { check } from "./instanceOf";
-import { FindManyOptions, ILike, In } from "typeorm";
+import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
@@ -132,16 +132,20 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     let notFound: string[] = [];
     if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
 
+    const recentlyActiveSince = new DateBuilder().addMinutes(-15).build();
+
     const chunks: GuildMembersChunkEvent["data"][] = [];
     while (members.length > 0) {
         const chunk: Member[] = members.splice(0, 1000);
 
         const presenceList: Presence[] = [];
         if (presences) {
+            const sessions = await Session.find({
+                where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false, last_seen: MoreThan(recentlyActiveSince) },
+            });
+
             for await (const member of chunk) {
-                const session = await Session.findOne({
-                    where: { user_id: member.id },
-                });
+                const session = sessions.find((x) => x.user_id == member.id);
                 if (session)
                     presenceList.push({
                         user: member.user.toPublicUser(),
