@@ -127,6 +127,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         nonce,
     };
 
+    const memberCount = members.length;
     const chunkSize = 1000;
     const chunkCount = Math.ceil(members.length / chunkSize);
 
@@ -145,7 +146,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
                 where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false, last_seen: MoreThan(recentlyActiveSince) },
             });
 
-            for await (const member of chunk) {
+            for (const member of chunk) {
                 const session = sessions.find((x) => x.user_id == member.id);
                 if (session)
                     presenceList.push({
@@ -166,7 +167,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
 
         console.log(
-            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${members.length} total members considered)`,
+            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${memberCount} total members considered)`,
         );
     }
 
@@ -193,5 +194,5 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         });
     });
 
-    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${members.length} members`);
+    console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${membersCount} members`);
 }
