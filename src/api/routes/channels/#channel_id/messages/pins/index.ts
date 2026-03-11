@@ -80,12 +80,14 @@ router.put(
             mention_everyone: false,
         });
 
+        await message.save();
+        const publicMsg = message.toJSON();
+        const publicSystem = systemPinMessage.toJSON();
         await Promise.all([
-            message.save(),
             emitEvent({
                 event: "MESSAGE_UPDATE",
                 channel_id,
-                data: message,
+                data: publicMsg,
             } satisfies MessageUpdateEvent),
             emitEvent({
                 event: "CHANNEL_PINS_UPDATE",
@@ -100,7 +102,7 @@ router.put(
             emitEvent({
                 event: "MESSAGE_CREATE",
                 channel_id: message.channel_id,
-                data: systemPinMessage,
+                data: publicSystem,
             } satisfies MessageCreateEvent),
         ]);
 
@@ -133,12 +135,13 @@ router.delete(
 
         message.pinned_at = null;
 
+        await message.save();
+        const publicMsg2 = message.toJSON();
         await Promise.all([
-            message.save(),
             emitEvent({
                 event: "MESSAGE_UPDATE",
                 channel_id,
-                data: message,
+                data: publicMsg2,
             } satisfies MessageUpdateEvent),
             emitEvent({
                 event: "CHANNEL_PINS_UPDATE",

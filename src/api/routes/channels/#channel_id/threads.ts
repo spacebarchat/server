@@ -148,8 +148,17 @@ router.post(
                 }
             }
             const embeds = body.message.embeds || [];
-            const message = await handleMessage({
+            const bodyMsg = {
                 ...body.message,
+                allowed_mentions: body.message.allowed_mentions
+                    ? {
+                          ...body.message.allowed_mentions,
+                          parse: body.message.allowed_mentions.parse as ("users" | "roles" | "everyone")[],
+                      }
+                    : undefined,
+            } as Parameters<typeof handleMessage>[0];
+            const message = await handleMessage({
+                ...bodyMsg,
                 id: thread.id,
                 type: 0,
                 pinned: false,
@@ -190,7 +199,7 @@ router.post(
                 emitEvent({
                     event: "MESSAGE_CREATE",
                     channel_id: channel_id,
-                    data: message,
+                    data: message.toJSON(),
                 } satisfies MessageCreateEvent),
                 message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
             ]);
