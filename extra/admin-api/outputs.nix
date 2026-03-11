@@ -47,7 +47,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           "--include-source"
           "--version-suffix ${rVersion}"
         ];
-        dotnetFlags = [ "-v:n" ]; # diag
+        # dotnetFlags = [ "-v:n" ]; # diag
         dotnet-sdk = pkgs.dotnet-sdk_10;
         dotnet-runtime = pkgs.dotnet-aspnetcore_10;
         src = pkgs.lib.cleanSource srcRoot;
