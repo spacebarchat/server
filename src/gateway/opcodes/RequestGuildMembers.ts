@@ -127,7 +127,8 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         nonce,
     };
 
-    const chunkCount = Math.ceil(members.length / 1000);
+    const chunkSize = 1000;
+    const chunkCount = Math.ceil(members.length / chunkSize);
 
     let notFound: string[] = [];
     if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
@@ -136,7 +137,7 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
 
     const chunks: GuildMembersChunkEvent["data"][] = [];
     while (members.length > 0) {
-        const chunk: Member[] = members.splice(0, 1000);
+        const chunk: Member[] = members.splice(0, chunkSize);
 
         const presenceList: Presence[] = [];
         if (presences) {
@@ -163,6 +164,10 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
             chunk_index: chunks.length,
             chunk_count: chunkCount,
         });
+
+        console.log(
+            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${members.length} total members considered)`,
+        );
     }
 
     if (chunks.length == 0) {
