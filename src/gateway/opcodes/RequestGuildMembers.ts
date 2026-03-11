@@ -130,13 +130,13 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     const memberResultCount = members.length;
     const chunkSize = 1000;
     const chunkCount = Math.ceil(members.length / chunkSize);
+    let sentChunkCount = 0;
 
     let notFound: string[] = [];
     if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
 
     const recentlyActiveSince = new DateBuilder().addMinutes(-15).build();
 
-    const chunks: GuildMembersChunkEvent["data"][] = [];
     while (members.length > 0) {
         const chunk: Member[] = members.splice(0, chunkSize);
 
@@ -168,41 +168,41 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
                 }));
         }
 
-        chunks.push({
-            ...baseData,
-            members: chunk.map((member) => member.toPublicMember()),
-            presences: presences ? presenceList : undefined,
-            chunk_index: chunks.length,
-            chunk_count: chunkCount,
-        });
-
-        console.log(
-            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${chunks.length}/${chunkCount} chunks (${memberResultCount} total members considered)`,
-        );
-    }
-
-    if (chunks.length == 0) {
-        chunks.push({
-            ...baseData,
-            members: [],
-            presences: presences ? [] : undefined,
-            chunk_index: 0,
-            chunk_count: 1,
-        });
-    }
-
-    if (notFound.length > 0) {
-        chunks[0].not_found = notFound;
-    }
-
-    chunks.forEach((chunk) => {
-        Send(this, {
+        await Send(this, {
             op: OPCODES.Dispatch,
             s: this.sequence++,
             t: "GUILD_MEMBERS_CHUNK",
-            d: chunk,
+            d: {
+                ...baseData,
+                members: chunk.map((member) => member.toPublicMember()),
+                presences: presences ? presenceList : undefined,
+                chunk_index: sentChunkCount,
+                chunk_count: chunkCount,
+
+                ...(sentChunkCount == 0 ? { not_found: notFound } : {}),
+            } satisfies GuildMembersChunkEvent["data"],
         });
-    });
+        sentChunkCount++;
+
+        console.log(
+            `[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS @ ${Date.now() - startTime}ms for guild ${guild_id}: pushed ${sentChunkCount}/${chunkCount} chunks (${memberResultCount} total members considered)`,
+        );
+    }
+
+    if (sentChunkCount == 0)
+        await Send(this, {
+            op: OPCODES.Dispatch,
+            s: this.sequence++,
+            t: "GUILD_MEMBERS_CHUNK",
+            d: {
+                ...baseData,
+                members: [],
+                presences: presences ? [] : undefined,
+                chunk_index: 0,
+                chunk_count: 1,
+                not_found: notFound,
+            } satisfies GuildMembersChunkEvent["data"],
+        });
 
     console.log(`[Gateway/${this.user_id}] REQUEST_GUILD_MEMBERS took ${Date.now() - startTime}ms for guild ${guild_id} with ${memberResultCount} (${memberCount}) members`);
 }
