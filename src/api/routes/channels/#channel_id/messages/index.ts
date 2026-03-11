@@ -54,6 +54,8 @@ import {
     MessageCreateAttachment,
     MessageCreateCloudAttachment,
     MessageCreateSchema,
+    PartialUser,
+    PublicMessage,
     Reaction,
     ReadStateType,
     RelationshipType,
@@ -178,8 +180,8 @@ router.get(
         await Message.fillReplies(messages);
         const endpoint = Config.get().cdn.endpointPublic;
 
-        const ret = messages.map((x: Message) => {
-            x = x.toJSON();
+        const ret = messages.map((msg) => {
+            const x = msg.toJSON();
 
             (x.reactions || []).forEach((y: Partial<Reaction>) => {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -188,12 +190,13 @@ router.get(
                 delete y.user_ids;
             });
             if (!x.author)
-                x.author = User.create({
+                x.author = {
                     id: "4",
                     discriminator: "0000",
                     username: "Spacebar Ghost",
                     public_flags: 0,
-                });
+                    avatar: null,
+                } as PartialUser;
             x.attachments?.forEach((y: Attachment) => {
                 // dynamically set attachment proxy_url in case the endpoint changed
                 const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
@@ -243,11 +246,15 @@ router.get(
         });
         //console.log(ret);
 
+        type MessageWithInteraction = PublicMessage & {
+            interaction_metadata?: { user?: User; user_id: string };
+            interaction?: { user?: User };
+        };
         await Promise.all(
-            ret
-                .filter((x: MessageCreateSchema) => x.interaction_metadata && !x.interaction_metadata.user)
-                .map(async (x: MessageCreateSchema) => {
-                    x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: (x as Message).interaction_metadata!.user_id } });
+            (ret as MessageWithInteraction[])
+                .filter((x) => x.interaction_metadata && !x.interaction_metadata.user)
+                .map(async (x) => {
+                    x.interaction_metadata!.user = x.interaction!.user = await User.findOneOrFail({ where: { id: x.interaction_metadata!.user_id } });
                 }),
         );
 

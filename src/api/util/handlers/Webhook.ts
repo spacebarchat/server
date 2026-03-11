@@ -96,8 +96,17 @@ export const executeWebhook = async (req: Request, res: Response) => {
     }
 
     const embeds = body.embeds || [];
-    const message = await handleMessage({
+    const bodyMsg = {
         ...body,
+        allowed_mentions: body.allowed_mentions
+            ? {
+                  ...body.allowed_mentions,
+                  parse: body.allowed_mentions.parse as ("users" | "roles" | "everyone")[],
+              }
+            : undefined,
+    } as Parameters<typeof handleMessage>[0];
+    const message = await handleMessage({
+        ...bodyMsg,
         username: body.username || webhook.name,
         avatar_url: body.avatar_url || webhook.avatar,
         type: 0,
@@ -123,7 +132,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
         emitEvent({
             event: "MESSAGE_CREATE",
             channel_id: sendChannel.id,
-            data: message,
+            data: message.toJSON(),
         } satisfies MessageCreateEvent),
     ]);
 

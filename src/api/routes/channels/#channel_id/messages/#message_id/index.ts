@@ -100,18 +100,15 @@ router.patch(
             edited_timestamp: new Date(),
         });
 
-        await Promise.all([
-            new_message.save(),
-            await emitEvent({
-                event: "MESSAGE_UPDATE",
-                channel_id,
-                data: {
-                    ...new_message.toJSON(),
-                    nonce: undefined,
-                    member: new_message.member?.toPublicMember(),
-                },
-            } satisfies MessageUpdateEvent),
-        ]);
+        await new_message.save();
+        await emitEvent({
+            event: "MESSAGE_UPDATE",
+            channel_id,
+            data: {
+                ...new_message.toJSON(),
+                nonce: undefined,
+            },
+        } satisfies MessageUpdateEvent);
 
         postHandleMessage(new_message).catch((e) => console.error("[Message] post-message handler failed", e));
 
@@ -221,12 +218,13 @@ router.put(
         //Fix for the client bug
         delete message.member;
 
+        await message.save();
+        const publicMsg = message.toJSON();
         await Promise.all([
-            message.save(),
             emitEvent({
                 event: "MESSAGE_CREATE",
                 channel_id: channel_id,
-                data: message,
+                data: publicMsg,
             } satisfies MessageCreateEvent),
             channel.save(),
         ]);

@@ -36,6 +36,7 @@ import {
     MessageComponentType, MessageSnapshot, MessageType, PartialMessage, Poll, PublicMessage, Reaction,
     UnfurledMediaItem,
 } from "@spacebar/schemas";
+import { PartialUser } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
 
@@ -251,14 +252,22 @@ export class Message extends BaseClass {
             ...this,
             channel_id: this.channel_id ?? this.channel.id,
             channel: undefined,
+
+            timestamp: this.timestamp.toISOString(),
+            edited_timestamp: this.edited_timestamp ? this.edited_timestamp.toISOString() : null,
+
             author_id: undefined,
             member_id: undefined,
             webhook_id: this.webhook_id ?? undefined,
             application_id: undefined,
             mentions: this.mentions?.map((user) => {
                 if (user && !user.toPublicUser) console.trace("toPublic user missing!!!");
-                return user?.toPublicUser?.() ?? user ?? undefined;
+                return (user?.toPublicUser?.() ?? user ?? undefined) as unknown as PartialUser;
             }),
+
+            mention_roles: this.mention_roles?.map((role) => role.id) ?? [],
+            mention_channels: this.mention_channels?.map((ch) => ch.toJSON()) ?? [],
+            attachments: this.attachments ?? [],
 
             nonce: this.nonce ?? undefined,
             tts: this.tts ?? false,
@@ -269,6 +278,7 @@ export class Message extends BaseClass {
             reactions: this.reactions ?? undefined,
             sticker_items: this.sticker_items ?? undefined,
             message_reference: this.message_reference ?? undefined,
+            mention_everyone: this.mention_everyone ?? false,
             author: {
                 ...(this.author?.toPublicUser() ?? undefined),
                 // Webhooks
@@ -277,7 +287,7 @@ export class Message extends BaseClass {
             },
             activity: this.activity ?? undefined,
             application: this.application ?? undefined,
-            components: this.components ?? undefined,
+            components: this.components ?? [],
             poll: this.poll ?? undefined,
             content: this.content ?? "",
             pinned: this.pinned,

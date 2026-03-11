@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Channel, Member, Message } from "@spacebar/util";
-import { PostDataSchema } from "@spacebar/schemas";
+import { PostDataSchema, PublicMessage } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
@@ -83,7 +83,7 @@ router.post(
             }),
         ]);
         await Message.fillReplies(messages);
-        const objRet: { threads: Record<string, { first_message: null | Message; owner: null | Member }> } = { threads: {} };
+        const objRet: { threads: Record<string, { first_message: null | PublicMessage; owner: null | Member }> } = { threads: {} };
         for (const thread of threads) {
             const owner = members.find(({ id }) => id === thread.owner_id)?.toJSON() || null;
             const first_message = messages.find(({ channel_id }) => channel_id === thread.id)?.toJSON() || null;

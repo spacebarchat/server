@@ -58,11 +58,9 @@ router.post(
         const filteredMessages = messages.map((message) => {
             const x = message.toJSON();
             // https://docs.discord.food/resources/message#preload-messages - reactions are not included in the response
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
             x.reactions = undefined;
             return x;
-        }) as PreloadMessagesResponseSchema;
+        }) as unknown as PreloadMessagesResponseSchema;
 
         return res.status(200).send(filteredMessages);
     },

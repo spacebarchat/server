@@ -69,6 +69,7 @@ import {
     UnfurledMediaItem,
     BaseMessageComponents,
     v1CompTypes,
+    PartialUser
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -830,12 +831,13 @@ export async function postHandleMessage(message: Message) {
         if (data.embeds != undefined) {
             data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
         }
+        // author value is already included in message.toJSON()
         const event = {
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
             data: {
-                ...data,
-                author,
+                ...message.toJSON(),
+                embeds: data.embeds == undefined ? message.embeds || [] : data.embeds,
             },
         } satisfies MessageUpdateEvent;
         const embeds = data.embeds == undefined ? [] : data.embeds;
@@ -900,7 +902,7 @@ export async function postHandleMessage(message: Message) {
         emitEvent({
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
-            data,
+            data: message.toJSON(),
         } satisfies MessageUpdateEvent),
         Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds }),
         ...cachePromises,
