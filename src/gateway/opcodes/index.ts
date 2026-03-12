@@ -30,6 +30,7 @@ import { onStreamDelete } from "./StreamDelete";
 import { onStreamWatch } from "./StreamWatch";
 import { onGuildSync } from "./GuildSync";
 import { onRequestChannelStatuses } from "./RequestChannelStatuses";
+import { onRequestChannelInfo } from "./RequestChannelInfo";
 
 export type OPCodeHandler = (this: WebSocket, data: Payload) => unknown;
 
@@ -54,4 +55,5 @@ export default {
     37: onGuildSubscriptionsBulk,
     40: onHeartbeat, // same as 1, except with extra data
     41: () => {}, // "Update Time Spent Session ID", just tracking nonsense
+    43: onRequestChannelInfo, // extended op36...?
 } as { [key: number]: OPCodeHandler };

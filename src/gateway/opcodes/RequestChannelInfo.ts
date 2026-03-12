@@ -17,18 +17,33 @@
 */
 
 import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
+import { ChannelType } from "@spacebar/schemas";
+import { Channel } from "@spacebar/util";
 
-export async function onRequestChannelStatuses(this: WebSocket, { d }: Payload) {
+export async function onRequestChannelInfo(this: WebSocket, { d }: Payload) {
     // Schema validation can only accept either string or array, so transforming it here to support both
     if (!d.guild_id) throw new Error('"guild_id" is required');
+    if (!d.fields) throw new Error('"fields" is required');
 
-    // TODO: implement
+    const channels = (
+        await Channel.find({
+            where: { type: ChannelType.GUILD_VOICE },
+            relations: {
+                voice_states: true,
+            },
+        })
+    ).filter((c) => c.voice_states && c.voice_states.length > 0);
+
     await Send(this, {
         op: OPCODES.Dispatch,
-        t: "CHANNEL_STATUSES",
+        t: "CHANNEL_INFO", // This is an educated guess...
         d: {
             guild_id: d.guild_id,
-            channels: [],
+            channels: channels.map((c) => ({
+                id: c.id,
+                status: null, // TODO: we dont track this
+                voice_start_time: new Date().toISOString(), // TODO: we dont track this
+            })),
         },
     });
 }
