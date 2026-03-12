@@ -27,7 +27,7 @@ export async function onRequestChannelInfo(this: WebSocket, { d }: Payload) {
 
     const channels = (
         await Channel.find({
-            where: { type: ChannelType.GUILD_VOICE },
+            where: { guild_id: d.guild_id, type: ChannelType.GUILD_VOICE },
             relations: {
                 voice_states: true,
             },
@@ -41,8 +41,8 @@ export async function onRequestChannelInfo(this: WebSocket, { d }: Payload) {
             guild_id: d.guild_id,
             channels: channels.map((c) => ({
                 id: c.id,
-                status: null, // TODO: we dont track this
-                voice_start_time: new Date().toISOString(), // TODO: we dont track this
+                status: d.fields.includes("status") ? null : undefined, // TODO: we dont track this
+                voice_start_time: d.fields.includes("voice_start_time") ? new Date().toISOString() : undefined, // TODO: we dont track this
             })),
         },
     });
