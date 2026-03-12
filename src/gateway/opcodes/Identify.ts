@@ -376,23 +376,23 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
             //channels
             g.channels = memberGuildChannels.filter((c) => c.guild_id === m.guild_id);
-            trace.calls.push("filterChannels", { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`filterChannels(${g.channels.length}/${memberGuildChannels.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //emojis
             g.emojis = memberGuildEmojis.filter((e) => e.guild_id === m.guild_id);
-            trace.calls.push("filterEmojis", { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`filterEmojis(${g.emojis.length}/${memberGuildEmojis.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //roles
             g.roles = memberGuildRoles.filter((r) => r.guild_id === m.guild_id);
-            trace.calls.push("filterRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`filterRoles(${g.roles.length}/${memberGuildRoles.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //stickers
             g.stickers = memberGuildStickers.filter((s) => s.guild_id === m.guild_id);
-            trace.calls.push("filterStickers", { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`filterStickers(${g.stickers.length}/${memberGuildStickers.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //voice states
             g.voice_states = memberGuildVoiceStates.filter((v) => v.guild_id === m.guild_id);
-            trace.calls.push("filterVoiceStates", { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`filterVoiceStates(${g.voice_states.length}/${memberGuildVoiceStates.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             //total
             trace.micros = totalSw.elapsed().totalMicroseconds;
