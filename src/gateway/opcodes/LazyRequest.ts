@@ -17,7 +17,7 @@
 */
 
 import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition } from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, getMostRelevantSession } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 import { LazyRequestSchema } from "@spacebar/schemas";
@@ -25,22 +25,6 @@ import { LazyRequestSchema } from "@spacebar/schemas";
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
 // TODO: rewrite typeorm
-
-function getMostRelevantSession(sessions: Session[]) {
-    const statusMap = {
-        online: 0,
-        idle: 1,
-        dnd: 2,
-        invisible: 3,
-        offline: 4,
-    };
-    // sort sessions by relevance
-    sessions = sessions.sort((a, b) => {
-        return statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2;
-    });
-
-    return sessions[0];
-}
 
 async function getMembers(guild_id: string, range: [number, number]) {
     if (!Array.isArray(range) || range.length !== 2) {

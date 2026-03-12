@@ -12,18 +12,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CopilotPersistence">
-    <persistenceIdMap>
-      <entry key="_/home/Rory/git/spacebar/server-master" value="2oJ9u2nkEFq1qQW1NFF69ECjiYu" />
-    </persistenceIdMap>
-  </component>
-  <component name="CopilotUserSelectedModel">
-    <selectedModels>
-      <entry key="edit-panel" value="GPT-5 mini" />
-      <entry key="chat-panel" value="Gemini 3 Pro (Preview)" />
-      <entry key="agent-panel" value="Gemini 3 Pro (Preview)" />
-    </selectedModels>
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -202,7 +190,10 @@
       <workItem from="1771558270982" duration="82802000" />
       <workItem from="1771818832744" duration="44139000" />
       <workItem from="1771996450006" duration="81615000" />
-      <workItem from="1772272118101" duration="20496000" />
+      <workItem from="1772272118101" duration="30395000" />
+      <workItem from="1772714447261" duration="12025000" />
+      <workItem from="1772830175841" duration="4576000" />
+      <workItem from="1772918744394" duration="70646000" />
     </task>
     <servers />
   </component>
@@ -240,13 +231,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="github-copilot-workspace">
-    <instructionFileLocations>
-      <option value=".github/instructions" />
-    </instructionFileLocations>
-    <promptFileLocations>
-      <option value=".github/prompts" />
-    </promptFileLocations>
   </component>
 </project>
