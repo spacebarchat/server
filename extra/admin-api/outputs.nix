@@ -190,6 +190,8 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-Models-AdminApi
             proj.Spacebar-Models-Config
             proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
           ];
         };
         Spacebar-Cdn = makeNupkg {
