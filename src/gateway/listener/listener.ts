@@ -17,25 +17,24 @@
 */
 
 import {
-    getPermission,
-    Permissions,
-    RabbitMQ,
-    listenEvent,
+    Ban,
+    EVENTEnum,
     EventOpts,
+    getPermission,
+    listenEvent,
     ListenEventOpts,
     Member,
-    EVENTEnum,
-    Relationship,
     Message,
     NewUrlUserSignatureData,
-    GuildMemberAddEvent,
-    Ban,
+    Permissions,
+    RabbitMQ,
+    Recipient,
+    Relationship,
 } from "@spacebar/util";
-import { OPCODES } from "../util/Constants";
+import { CLOSECODES, OPCODES } from "../util/Constants";
 import { Send } from "../util/Send";
 import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
-import { Recipient } from "@spacebar/util";
 import * as console from "node:console";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
@@ -207,6 +206,27 @@ async function consume(this: WebSocket, opts: EventOpts) {
     const listenOpts = opts as ListenEventOpts;
     opts.acknowledge?.();
     // console.log("event", event);
+
+    // special codes
+    switch (event) {
+        case "SB_SESSION_CLOSE":
+            // TODO: what do we even send here?
+            await Send(this, {
+                op: OPCODES.Reconnect,
+                s: this.sequence++,
+                d: opts.reconnect_delay ?? opts.data ?? 1000,
+            });
+            this.close(1000); // not a discord close code, standard WS "Normal Closure"
+            return;
+        case "SB_SESSION_REMOVE":
+            // TODO: what do we even send here?
+            await Send(this, {
+                op: OPCODES.Invalid_Session,
+                s: this.sequence++,
+            });
+            this.close(CLOSECODES.Invalid_session); // TODO: this is deprecated?
+            return;
+    }
 
     // subscription managment
     switch (event) {

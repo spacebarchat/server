@@ -60,6 +60,7 @@ export interface Event {
     event: EVENT;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data?: any;
+    reconnect_delay?: number;
     origin?: string;
 }
 
@@ -848,4 +849,4 @@ export type EVENT =
     | "THREAD_MEMBERS_UPDATE"
     | CUSTOMEVENTS;
 
-export type CUSTOMEVENTS = "INVALIDATED" | "RATELIMIT";
+export type CUSTOMEVENTS = "INVALIDATED" | "RATELIMIT" | "SB_SESSION_REMOVE" | "SB_SESSION_CLOSE";

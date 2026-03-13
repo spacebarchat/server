@@ -42,7 +42,7 @@ export enum OPCODES {
     Stream_Set_Paused = 22,
     Request_Application_Commands = 24,
     // We don't know the names for these:
-    ThirtySix = 36, // this is just a guild id?
+    Request_Channel_Statuses = 36, // this is just a guild id?
     Guild_Subscriptions_Bulk = 37, // Already implemented it seems?
     SetQoS = 40,
     ClientInitSession = 41,
