@@ -6,6 +6,7 @@ using Spacebar.Models.AdminApi;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
+using Spacebar.Models.Gateway;
 
 namespace Spacebar.AdminApi.Controllers;
 
@@ -18,15 +19,15 @@ public class ChannelController(
     SpacebarAspNetAuthenticationService auth,
     ISpacebarReplication replication
 ) : ControllerBase {
-
     [HttpDelete("{id}")]
     public async Task DeleteById(string id) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
-        replication.SendAsync(new() {
+        // TODO: proper type
+        await replication.SendAsync<Channel>(new() {
             Origin = "AdminApi/DeleteChannelById",
             ChannelId = id,
             Event = "CHANNEL_DELETE",
-            Payload = await db.Channels.SingleAsync (x=>x.Id == id)
+            Payload = await db.Channels.SingleAsync(x => x.Id == id)
         });
 
         await db.Channels.Where(x => x.Id == id).ExecuteDeleteAsync();
@@ -58,13 +59,13 @@ public class ChannelController(
                     break;
                 }
 
-                await replication.SendAsync(new() {
+                await replication.SendAsync<BulkMessageDeleteResponse>(new() {
                     ChannelId = channelId,
                     Event = "MESSAGE_BULK_DELETE",
-                    Payload = new {
-                        ids = messageIds,
-                        channel_id = channelId,
-                        guild_id = guildId,
+                    Payload = new BulkMessageDeleteResponse() {
+                        GuildId = guildId,
+                        ChannelId = channelId,
+                        MessageIds = messageIds,
                     },
                     Origin = "Admin API (GuildController.DeleteUser)",
                 });

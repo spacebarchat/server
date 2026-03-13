@@ -17,7 +17,7 @@ namespace Spacebar.GatewayOffload.Controllers;
 
 [ApiController]
 [Route("/_spacebar/offload/gateway/GuildSync")]
-public class Op12Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase
+public class Op8Controller(ILogger<Op8Controller> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase
 {
     [HttpPost("")]
     public async IAsyncEnumerable<ReplicationMessage<GuildSyncResponse>> DoGuildSync(List<string> guildIds)

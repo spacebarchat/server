@@ -11,7 +11,7 @@ namespace Spacebar.GatewayOffload.Controllers;
 [Route("/_spacebar/offload/gateway/Identify")]
 public class IdentifyController(ILogger<IdentifyController> logger, SpacebarAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase {
     [HttpPost("")]
-    public async IAsyncEnumerable<ReplicationMessage> DoIdentify(IdentifyRequest payload) {
+    public async IAsyncEnumerable<ContentlessReplicationMessage> DoIdentify(IdentifyRequest payload) {
         var user = await TraceResult.TraceAsync("getAuthUser", () => authService.GetCurrentUserAsync(payload.Token));
         var session = await TraceResult.TraceAsync("getAuthSession", () => authService.GetCurrentSessionAsync(payload.Token));
 
@@ -37,12 +37,13 @@ public class IdentifyController(ILogger<IdentifyController> logger, SpacebarAuth
             }
         }
 
-        yield return new() {
-            Payload = new ReadyResponse { },
+        yield return new ReplicationMessage<ReadyResponse>() {
+            Payload = new() { },
         };
     }
 
-    private ReplicationMessage Close(CloseCode closeCode) => new() {
+    // TODO: type? also, implement this in gateway lol
+    private ReplicationMessage<object?> Close(CloseCode closeCode) => new() {
         Origin = "IdentifyController",
         Event = "SB_GW_CLOSE",
         Payload = new {

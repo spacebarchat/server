@@ -14,7 +14,8 @@ namespace Spacebar.GatewayOffload.Controllers;
 [Route("/_spacebar/offload/gateway/LazyRequest")]
 public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase {
     [HttpPost]
-    public async IAsyncEnumerable<ReplicationMessage> DoLazyRequest([FromBody] LazyRequest payload) {
+    // TODO: actually return something?
+    public async IAsyncEnumerable<ContentlessReplicationMessage> DoLazyRequest([FromBody] LazyRequest payload) {
         var user = await TraceResult.TraceAsync("getAuthUser", () => authService.GetCurrentUserAsync(Request));
         var session = await TraceResult.TraceAsync("getAuthSession", () => authService.GetCurrentSessionAsync(Request));
 

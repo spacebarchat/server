@@ -22,16 +22,17 @@ public class RabbitMqSpacebarReplication : ISpacebarReplication {
         _mqChannel = await _mqConnection.CreateChannelAsync();
     }
 
-    public async Task SendAsync(ReplicationMessage message) {
+    // HACK: body is required in rabbitmq...
+    private async Task SendAsyncInternal(ContentlessReplicationMessage message, object? body = null) {
         var exchangeId = message.GuildId ?? message.ChannelId ?? message.UserId ?? "global";
         await _mqChannel.ExchangeDeclareAsync(exchange: exchangeId, type: ExchangeType.Fanout, durable: false);
         var props = new BasicProperties() { Type = message.Event };
         var publishSuccess = false;
-        var body = message.Payload.ToJson().AsBytes().ToArray(); // TODO: byte array payloads etc someday?
+        var encodedBody = body.ToJson().AsBytes().ToArray(); // TODO: byte array payloads etc someday?
 
         do {
             try {
-                await _mqChannel.BasicPublishAsync(exchange: exchangeId, routingKey: "", mandatory: true, basicProperties: props, body: body);
+                await _mqChannel.BasicPublishAsync(exchange: exchangeId, routingKey: "", mandatory: true, basicProperties: props, body: encodedBody);
                 publishSuccess = true;
             }
             catch (Exception e) {
@@ -40,4 +41,7 @@ public class RabbitMqSpacebarReplication : ISpacebarReplication {
             }
         } while (!publishSuccess);
     }
+
+    public async Task SendAsync(ContentlessReplicationMessage message) => await SendAsyncInternal(message);
+    public async Task SendAsync<TPayload>(ReplicationMessage<TPayload> message) => await SendAsyncInternal(message, message.Payload);
 }

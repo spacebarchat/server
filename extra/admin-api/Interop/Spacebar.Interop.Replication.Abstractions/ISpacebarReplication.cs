@@ -2,5 +2,6 @@
 
 public interface ISpacebarReplication {
     public Task InitializeAsync();
-    public Task SendAsync(ReplicationMessage message);
+    public Task SendAsync(ContentlessReplicationMessage message);
+    public Task SendAsync<TPayload>(ReplicationMessage<TPayload> message);
 }

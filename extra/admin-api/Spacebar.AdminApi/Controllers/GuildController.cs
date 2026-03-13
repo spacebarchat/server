@@ -6,6 +6,7 @@ using Spacebar.Models.AdminApi;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
+using Spacebar.Models.Gateway;
 
 namespace Spacebar.AdminApi.Controllers;
 
@@ -218,13 +219,13 @@ public class GuildController(
                     break;
                 }
 
-                await replication.SendAsync(new() {
+                await replication.SendAsync<BulkMessageDeleteResponse>(new() {
                     ChannelId = channelId,
                     Event = "MESSAGE_BULK_DELETE",
-                    Payload = new {
-                        ids = messageIds,
-                        channel_id = channelId,
-                        guild_id = guildId,
+                    Payload = new() {
+                        GuildId = guildId,
+                        ChannelId = channelId,
+                        MessageIds = messageIds,
                     },
                     Origin = "Admin API (GuildController.DeleteUser)",
                 });

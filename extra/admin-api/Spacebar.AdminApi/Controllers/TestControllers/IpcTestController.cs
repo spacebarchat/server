@@ -40,7 +40,8 @@ public class IpcTestController(
         while (true) {
             var clr = re.Next();
             color = clr.r << 16 | clr.g << 8 | clr.b;
-            await replication.SendAsync(new() {
+            // TODO: create type
+            await replication.SendAsync<object>(new() {
                 Event = "GUILD_ROLE_UPDATE",
                 GuildId = guildId,
                 Origin = "Admin API (GET /users/test)",

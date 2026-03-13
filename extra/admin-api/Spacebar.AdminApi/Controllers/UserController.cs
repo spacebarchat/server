@@ -6,6 +6,7 @@ using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.Models.AdminApi;
 using Spacebar.Models.Db.Contexts;
+using Spacebar.Models.Gateway;
 
 namespace Spacebar.AdminApi.Controllers;
 
@@ -218,13 +219,13 @@ public class UserController(
                     break;
                 }
 
-                await replication.SendAsync(new() {
+                await replication.SendAsync<BulkMessageDeleteResponse>(new() {
                     Event = "MESSAGE_BULK_DELETE",
                     ChannelId = channelId,
-                    Payload = new {
-                        channel_id = channelId,
-                        guild_id = guildId,
-                        ids = messageIds,
+                    Payload = new() {
+                        GuildId = guildId,
+                        ChannelId = channelId,
+                        MessageIds = messageIds,
                     },
                     Origin = "AdminApi/DeleteMessagesForChannel"
                 });
