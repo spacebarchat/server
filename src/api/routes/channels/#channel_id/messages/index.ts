@@ -159,7 +159,7 @@ router.get(
                     }),
                 ]);
                 left.push(...right);
-                messages = left.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+                messages = left.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
             } else {
                 query.take = 1;
                 const message = await Message.findOne({
