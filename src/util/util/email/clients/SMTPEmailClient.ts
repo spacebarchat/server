@@ -34,7 +34,7 @@ export class SMTPEmailClient extends BaseEmailClient {
             return;
         }
         // get configuration
-        const { host, port, secure, username, password } = Config.get().email.smtp;
+        const { host, port, secure, starttls, allowInsecure, username, password } = Config.get().email.smtp;
 
         // ensure all required configuration values are set
         if (!host || !port || secure === null) return console.error("[Email] SMTP has not been configured correctly.");
@@ -45,24 +45,27 @@ export class SMTPEmailClient extends BaseEmailClient {
             );
 
         /* Allow for SMTP relays with and without username/passwords (IE: Smarthosts/Local Relays, etc) */
-        let nodemailer_opts: unknown;
-        if(!username || !password) {
-            nodemailer_opts = {
-                host,
-                port,
-                secure,
-            };
-        } else {
-            nodemailer_opts = {
-                host,
-                port,
-                secure,
-                auth: {
-                    user: username,
-                    pass: password,
-                },
-            };
-        }
+        const nodemailer_opts = {
+            host: host,
+            port: port,
+            secure: secure,
+            ...(starttls ? { requireTLS: true } : { ignoreTLS: true }),
+            ...(allowInsecure
+                ? {
+                      tls: {
+                          rejectUnauthorized: false,
+                      },
+                  }
+                : {}),
+            ...(username && password
+                ? {
+                      auth: {
+                          user: username,
+                          pass: password,
+                      },
+                  }
+                : {}),
+        };
 
         // construct the transporter
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
