@@ -11,6 +11,9 @@ public class ReplicationMessage {
 
     [JsonPropertyName("user_id")]
     public string? UserId { get; set; }
+    
+    [JsonPropertyName("session_id")]
+    public string? SessionId { get; set; }
 
     [JsonPropertyName("created_at")]
     public DateTime? CreatedAt { get; set; }
@@ -23,4 +26,7 @@ public class ReplicationMessage {
 
     [JsonPropertyName("data")]
     public object Payload { get; set; } = null!;
+    
+    [JsonPropertyName("reconnect_delay")]
+    public int? ReconnectDelay { get; set; }
 }
