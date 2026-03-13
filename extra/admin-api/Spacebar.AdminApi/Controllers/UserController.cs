@@ -152,6 +152,12 @@ public class UserController(
         user.Rights = 0;
         db.Users.Update(user);
         await db.SaveChangesAsync();
+        await replication.SendAsync(new() {
+            UserId = user.Id,
+            Event = "SB_SESSION_REMOVE",
+            Origin = "AdminAPI/User Delete",
+            CreatedAt = DateTime.UtcNow
+        });
 
         var messages = db.Messages
             .AsNoTracking()
