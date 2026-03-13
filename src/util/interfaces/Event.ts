@@ -36,6 +36,7 @@ import {
     ReadyPrivateChannel,
     GuildOrUnavailable,
     Snowflake,
+    ThreadMember,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
 import {
@@ -49,11 +50,11 @@ import {
     RelationshipType,
     UserPrivate,
 } from "@spacebar/schemas";
-import { ThreadMember } from "../entities/ThreadMember";
 
 export interface Event {
     guild_id?: string;
     user_id?: string;
+    session_id?: string;
     channel_id?: string;
     created_at?: Date;
     event: EVENT;

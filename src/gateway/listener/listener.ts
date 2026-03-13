@@ -106,6 +106,7 @@ export async function setupListener(this: WebSocket) {
         }
 
         this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
+        this.events[this.session_id] = await listenEvent(this.session_id, consumer, opts);
 
         await Promise.all(
             relationships.map(async (relationship) => {

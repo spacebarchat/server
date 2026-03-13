@@ -35,7 +35,7 @@ let unixSocketListener: UnixSocketListener | null = null;
 let unixSocketWriter: UnixSocketWriter | null = null;
 
 export async function emitEvent(payload: Omit<Event, "created_at">) {
-    const id = (payload.guild_id || payload.channel_id || payload.user_id) as string;
+    const id = (payload.guild_id || payload.channel_id || payload.user_id || payload.session_id) as string;
     if (!id) return console.error("event doesn't contain any id", payload);
 
     if (RabbitMQ.connection) {
@@ -485,7 +485,7 @@ class UnixSocketWriter {
         await this.broadcastLock;
         return await (this.broadcastLock = new Promise((res) => {
             const tsw = Stopwatch.startNew();
-            const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id) as string, event }));
+            const payloadBuf = Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id || event.session_id) as string, event }));
             const lenBuf = Buffer.alloc(4);
             lenBuf.writeUInt32BE(payloadBuf.length, 0);
             const framed = Buffer.concat([lenBuf, payloadBuf]);
