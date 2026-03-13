@@ -29,7 +29,18 @@ import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
-import { ActionRowComponent, ApplicationCommandType, Embed, MessageSnapshot, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
+import {
+    ApplicationCommandType,
+    BaseMessageComponents,
+    Embed,
+    MessageComponentType,
+    MessageSnapshot,
+    MessageType,
+    PartialMessage,
+    Poll,
+    Reaction,
+    UnfurledMediaItem,
+} from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
 
@@ -123,17 +134,14 @@ export class Message extends BaseClass {
     mention_everyone?: boolean;
 
     @JoinTable({ name: "message_user_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => User)
     mentions: User[];
 
     @JoinTable({ name: "message_role_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => Role)
     mention_roles: Role[];
 
     @JoinTable({ name: "message_channel_mentions" })
-    @JsonRemoveEmpty
     @ManyToMany(() => Channel)
     mention_channels: Channel[];
 
@@ -145,11 +153,9 @@ export class Message extends BaseClass {
         cascade: true,
         orphanedRowAction: "delete",
     })
-    @JsonRemoveEmpty
     attachments?: Attachment[];
 
     @Column({ type: "simple-json" })
-    @JsonRemoveEmpty
     embeds: Embed[];
 
     @Column({ type: "simple-json" })
@@ -208,8 +214,7 @@ export class Message extends BaseClass {
     };
 
     @Column({ type: "simple-json", nullable: true })
-    @JsonRemoveEmpty
-    components?: ActionRowComponent[];
+    components?: BaseMessageComponents[];
 
     @Column({ type: "simple-json", nullable: true })
     @JsonRemoveEmpty
@@ -248,6 +253,7 @@ export class Message extends BaseClass {
     toJSON(shallow = false): Message {
         return {
             ...this,
+            channel: undefined,
             author_id: undefined,
             member_id: undefined,
             webhook_id: this.webhook_id ?? undefined,
@@ -299,9 +305,54 @@ export class Message extends BaseClass {
     }
 
     withSignedAttachments(data: NewUrlUserSignatureData) {
+        function signMedia(media: UnfurledMediaItem) {
+            Object.assign(media, Attachment.prototype.signUrls.call(media, data));
+        }
         return {
             ...this,
             attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
+            components: this.components
+                ? this.components.map((comp) => {
+                      comp = structuredClone(comp);
+                      if (comp.type === MessageComponentType.Section) {
+                          const accessory = comp.accessory;
+                          if (accessory.type === MessageComponentType.Thumbnail) {
+                              signMedia(accessory.media);
+                          }
+                      } else if (comp.type === MessageComponentType.MediaGallery) {
+                          comp.items.forEach(({ media }) => signMedia(media));
+                      } else if (comp.type === MessageComponentType.File) {
+                          signMedia(comp.file);
+                      } else if (comp.type === MessageComponentType.Container) {
+                          for (const elm of comp.components) {
+                              switch (elm.type) {
+                                  case MessageComponentType.Separator:
+                                  case MessageComponentType.TextDisplay:
+                                  case MessageComponentType.ActionRow:
+                                      break;
+                                  case MessageComponentType.Section: {
+                                      const accessory = elm.accessory;
+                                      if (accessory.type === MessageComponentType.Thumbnail) {
+                                          signMedia(accessory.media);
+                                      }
+                                      break;
+                                  }
+                                  case MessageComponentType.MediaGallery:
+                                      elm.items.forEach(({ media }) => signMedia(media));
+                                      break;
+                                  case MessageComponentType.File: {
+                                      signMedia(elm.file);
+                                      break;
+                                  }
+
+                                  default:
+                                      elm satisfies never;
+                              }
+                          }
+                      }
+                      return comp;
+                  })
+                : this.components,
         };
     }
 

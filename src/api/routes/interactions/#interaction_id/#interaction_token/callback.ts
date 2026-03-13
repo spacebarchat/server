@@ -16,57 +16,30 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, MessageComponentType, MessageType } from "@spacebar/schemas";
-import { route } from "@spacebar/api";
+import { ButtonStyle, InteractionCallbackSchema, InteractionCallbackType, InteractionFailureReason, MessageComponentType, MessageType } from "@spacebar/schemas";
+import { route, stripNull } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
-import { emitEvent, FieldErrors, InteractionSuccessEvent, uploadFile, Attachment, pendingInteractions, User } from "@spacebar/util";
-import { sendMessage } from "../../../../util/handlers/Message";
+import {
+    emitEvent,
+    FieldErrors,
+    InteractionSuccessEvent,
+    uploadFile,
+    Attachment,
+    pendingInteractions,
+    User,
+    Message,
+    Config,
+    MessageUpdateEvent,
+    InteractionFailureEvent,
+} from "@spacebar/util";
+import { handleComps, sendMessage } from "../../../../util/handlers/Message";
+import { HTTPError } from "#util/util/lambert-server";
 
 const router = Router({ mergeParams: true });
 
 router.post("/", route({}), async (req: Request, res: Response) => {
     const body = req.body as InteractionCallbackSchema;
-
-    const errors: Record<string, { code?: string; message: string }> = {};
-    const knownComponentIds: string[] = [];
-
-    for (const row of body.data.components || []) {
-        if (!row.components) {
-            continue;
-        }
-
-        if (row.components.length < 1 || row.components.length > 5) {
-            errors[`data.components[${body.data.components!.indexOf(row)}].components`] = {
-                code: "BASE_TYPE_BAD_LENGTH",
-                message: `Must be between 1 and 5 in length.`,
-            };
-        }
-
-        for (const component of row.components) {
-            if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
-                if (component.custom_id?.trim() === "") {
-                    errors[`data.components[${body.data.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
-                        code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
-                        message: "A custom id required",
-                    };
-                }
-
-                if (knownComponentIds.includes(component.custom_id!)) {
-                    errors[`data.components[${body.data.components!.indexOf(row)}].components[${row.components.indexOf(component)}].custom_id`] = {
-                        code: "COMPONENT_CUSTOM_ID_DUPLICATED",
-                        message: "Component custom id cannot be duplicated",
-                    };
-                } else {
-                    knownComponentIds.push(component.custom_id!);
-                }
-            }
-        }
-    }
-
-    if (Object.keys(errors).length > 0) {
-        throw FieldErrors(errors);
-    }
 
     const interactionId = req.params.interaction_id as string;
     const interaction = pendingInteractions.get(req.params.interaction_id);
@@ -152,9 +125,60 @@ router.post("/", route({}), async (req: Request, res: Response) => {
             // TODO
             break;
         case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
-            // TODO
-            break;
+            //TODO keep track of state of this
+            interaction.timeout = setTimeout(() => {
+                emitEvent({
+                    event: "INTERACTION_FAILURE",
+                    user_id: req.user_id,
+                    data: {
+                        id: interactionId,
+                        nonce: interaction.nonce,
+                        reason_code: InteractionFailureReason.TIMEOUT,
+                    },
+                } as InteractionFailureEvent);
+            }, 30000);
+            pendingInteractions.delete(interactionId);
+            res.sendStatus(204);
+            return;
         case InteractionCallbackType.UPDATE_MESSAGE:
+            {
+                if (!interaction.messageId) throw new HTTPError("no. That was not a message");
+                const message = await Message.findOneOrFail({
+                    relations: {
+                        author: true,
+                        webhook: true,
+                        application: true,
+                        mentions: true,
+                        mention_roles: true,
+                        mention_channels: true,
+                        sticker_items: true,
+                        attachments: true,
+                        thread: {
+                            recipients: {
+                                user: true,
+                            },
+                        },
+                        channel: true,
+                    },
+                    where: {
+                        id: interaction.messageId,
+                    },
+                });
+                if (body.data.content && body.data.content.length > Config.get().limits.message.maxCharacters) {
+                    throw new HTTPError("Content length over max character limit");
+                }
+                if (body.data.components) stripNull(body.data.components);
+                message.embeds = body.data.embeds || [];
+                const handle = body.data.components ? handleComps(body.data.components, message.flags) : undefined;
+                await handle?.(message.id, message.author as User, message.channel);
+                message.components = body.data.components;
+                await message.save();
+                emitEvent({
+                    event: "MESSAGE_UPDATE",
+                    channel_id: message.channel_id,
+                    data: message.toJSON(),
+                } satisfies MessageUpdateEvent);
+            }
             // TODO
             break;
         case InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT:

@@ -121,7 +121,7 @@ router.patch(
 
             await emitEvent({
                 event: "CHANNEL_UPDATE",
-                data: channel,
+                data: channel.toJSON(),
                 channel_id: channel.id,
                 guild_id,
             } as ChannelUpdateEvent);
@@ -156,7 +156,7 @@ router.patch(
 
             await emitEvent({
                 event: "CHANNEL_UPDATE",
-                data: channel,
+                data: channel.toJSON(),
                 channel_id: channel.id,
                 guild_id,
             } as ChannelUpdateEvent);

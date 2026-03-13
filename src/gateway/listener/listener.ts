@@ -354,6 +354,15 @@ async function consume(this: WebSocket, opts: EventOpts) {
                         userAgent: this.userAgent,
                     }),
                 ).attachments;
+            if (data["components"]) {
+                data["components"] = Message.prototype.withSignedAttachments.call(
+                    data,
+                    new NewUrlUserSignatureData({
+                        ip: this.ipAddress,
+                        userAgent: this.userAgent,
+                    }),
+                ).components;
+            }
             break;
         default:
             break;

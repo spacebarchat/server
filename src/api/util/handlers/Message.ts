@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EmbedHandlers } from "@spacebar/api";
+import { EmbedHandlers, randomString } from "@spacebar/api";
 import {
     Application,
     Attachment,
@@ -48,17 +48,257 @@ import {
     Member,
     Session,
     MessageFlags,
+    FieldErrors,
+    Snowflake,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
-import { ChannelType, Embed, EmbedType, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageType, Reaction, ReadStateType } from "@spacebar/schemas";
+import {
+    ActionRowComponent,
+    ButtonStyle,
+    ChannelType,
+    Embed,
+    EmbedType,
+    MessageComponentType,
+    MessageCreateAttachment,
+    MessageCreateCloudAttachment,
+    MessageCreateSchema,
+    MessageType,
+    Reaction,
+    ReadStateType,
+    UnfurledMediaItem,
+    BaseMessageComponents,
+    v1CompTypes,
+} from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
 const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)>?/g;
+function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], errors: Record<string, { code?: string; message: string }>, rowIndex: number) {
+    if (!row.components) {
+        return;
+    }
 
+    if (row.components.length < 1 || row.components.length > 5) {
+        errors[`data.components[${rowIndex}].components`] = {
+            code: "BASE_TYPE_BAD_LENGTH",
+            message: `Must be between 1 and 5 in length.`,
+        };
+    }
+
+    for (const component of row.components) {
+        if (component.type == MessageComponentType.Button && component.style != ButtonStyle.Link) {
+            if (component.custom_id?.trim() === "") {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "BUTTON_COMPONENT_CUSTOM_ID_REQUIRED",
+                    message: "A custom id required",
+                };
+            }
+
+            if (knownComponentIds.includes(component.custom_id!)) {
+                errors[`data.components[${rowIndex}].components[${row.components.indexOf(component)}].custom_id`] = {
+                    code: "COMPONENT_CUSTOM_ID_DUPLICATED",
+                    message: "Component custom id cannot be duplicated",
+                };
+            } else {
+                knownComponentIds.push(component.custom_id!);
+            }
+        }
+    }
+}
+async function processMedia(media: UnfurledMediaItem, messageId: string, batchId: string, user: User, channel: Channel, id: string): Promise<(() => void) | void> {
+    if (Object.keys(media).length > 1) throw new HTTPError("Extra keys for media items are not allowed");
+    if (!URL.canParse(media.url)) throw new HTTPError("media URL must be a URI");
+    const url = new URL(media.url);
+    if (!["http:", "https:", "attachment:"].includes(url.protocol)) throw new HTTPError("invalid media protocol");
+    let attEnt: CloudAttachment;
+    let delWhenDone = false;
+    if (url.protocol === "attachment") {
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                uploadFilename: url.hostname,
+            },
+        });
+    } else {
+        const res = await fetch(url);
+        if (!res.ok) throw new HTTPError("URL did not return OK");
+        const blob = await res.blob();
+        const name = url.pathname.split("/").findLast((_) => _) || id;
+        const uploadFilename = `${channel.id}/${batchId}/${id ?? "0"}/${name}`;
+        attEnt = CloudAttachment.create({
+            user: user,
+            channel: channel,
+            uploadFilename: uploadFilename,
+            userAttachmentId: id ?? "0",
+            userFilename: name,
+            userFileSize: blob.size,
+            userIsClip: false,
+        });
+        await attEnt.save();
+        const cdnUrl = Config.get().cdn.endpointPublic;
+        const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
+        await (
+            await fetch(fetchUrl, {
+                method: "PUT",
+                body: blob,
+            })
+        ).text();
+        // re-fetch due to changed DB entry
+        attEnt = await CloudAttachment.findOneOrFail({
+            where: {
+                id: attEnt.id,
+            },
+        });
+        delWhenDone = true;
+    }
+
+    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
+        method: "POST",
+        headers: {
+            signature: Config.get().security.requestSignature || "",
+        },
+    });
+
+    if (!cloneResponse.ok) {
+        console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${messageId}`);
+        throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
+    }
+
+    const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
+    media.proxy_url = `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`;
+    if (url.protocol === "attachment:") media.url = media.proxy_url;
+
+    const realAtt = Attachment.create({
+        filename: attEnt.userFilename,
+        url: media.url,
+        proxy_url: media.proxy_url,
+        size: attEnt.size,
+        height: attEnt.height,
+        width: attEnt.width,
+        content_type: attEnt.contentType || attEnt.userOriginalContentType,
+    });
+    await realAtt.save();
+
+    //TODO maybe this needs to be a new DB object? I don't see a reason to do this rn though, though this id *should* technically be different from the id of the attachment
+    media.id = realAtt.id;
+
+    media.height = attEnt.height;
+    media.width = attEnt.width;
+    media.content_type = attEnt.contentType;
+    //TODO flags?
+    media.attachment_id = attEnt.id;
+    //TODO preview stuff
+
+    if (delWhenDone) {
+        return () =>
+            fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
+                headers: {
+                    signature: Config.get().security.requestSignature,
+                },
+                method: "DELETE",
+            }).then(() => {
+                attEnt.remove();
+            });
+    }
+}
+export function handleComps(components: BaseMessageComponents[], flags: number) {
+    const conf = Config.get();
+    const mediaGalleryLimit = conf.components.mediaGalleryLimit ?? 10;
+    const actionRowLimit = conf.components.actionRowLimit ?? 5;
+
+    const errors: Record<string, { code?: string; message: string }> = {};
+    const knownComponentIds: string[] = [];
+    const compv2 = (flags || 0) & Number(MessageFlags.FLAGS.IS_COMPONENTS_V2);
+    if (!compv2) {
+        const bad = components.reduce((bad, comp) => bad || !v1CompTypes.has(comp.type), false);
+        if (bad) throw new HTTPError("Must be comp v2");
+    }
+    const medias: UnfurledMediaItem[] = [];
+    for (const comp of components || []) {
+        if (comp.type === MessageComponentType.ActionRow) {
+            checkActionRow(comp, knownComponentIds, errors, components!.indexOf(comp));
+        } else if (comp.type === MessageComponentType.Section) {
+            const accessory = comp.accessory;
+            if (comp.components.length < 1 || comp.components.length > actionRowLimit) {
+                errors[`data.components[${components!.indexOf(comp)}].components`] = {
+                    code: "TOO_LONG",
+                    message: "Component list is too long",
+                };
+            }
+            if (accessory.type === MessageComponentType.Thumbnail) {
+                medias.push(accessory.media);
+            }
+        } else if (comp.type === MessageComponentType.TextDisplay) {
+            //Here to make sure everything is checked
+        } else if (comp.type === MessageComponentType.MediaGallery) {
+            if (comp.items.length < 1 || comp.items.length > mediaGalleryLimit) {
+                errors[`data.components[${components!.indexOf(comp)}].items`] = {
+                    code: "TOO_LONG",
+                    message: "Media list is too long",
+                };
+            }
+            medias.push(...comp.items.map(({ media }) => media));
+        } else if (comp.type === MessageComponentType.File) {
+            medias.push(comp.file);
+        } else if (comp.type === MessageComponentType.Separator) {
+            //Here to make sure everything is checked
+        } else if (comp.type === MessageComponentType.Container) {
+            for (const elm of comp.components) {
+                switch (elm.type) {
+                    case MessageComponentType.Separator:
+                    case MessageComponentType.TextDisplay:
+                        break;
+                    case MessageComponentType.Section: {
+                        const accessory = elm.accessory;
+                        if (elm.components.length < 1 || elm.components.length > actionRowLimit) {
+                            errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].components`] = {
+                                code: "TOO_LONG",
+                                message: "Component list is too long",
+                            };
+                        }
+                        if (accessory.type === MessageComponentType.Thumbnail) {
+                            medias.push(accessory.media);
+                        }
+                        break;
+                    }
+                    case MessageComponentType.MediaGallery:
+                        if (elm.items.length < 1 || elm.items.length > mediaGalleryLimit) {
+                            errors[`data.components[${components!.indexOf(comp)}].components[${comp.components!.indexOf(elm)}].items`] = {
+                                code: "TOO_LONG",
+                                message: "Media list is too long",
+                            };
+                        }
+                        medias.push(...elm.items.map(({ media }) => media));
+                        break;
+                    case MessageComponentType.File: {
+                        medias.push(elm.file);
+                        break;
+                    }
+                    case MessageComponentType.ActionRow:
+                        checkActionRow(elm, knownComponentIds, errors, components!.indexOf(elm));
+                        break;
+                    default:
+                        elm satisfies never;
+                }
+            }
+        } else {
+            comp satisfies never;
+        }
+    }
+
+    if (Object.keys(errors).length > 0) {
+        throw FieldErrors(errors);
+    }
+    return async (messageId: string, user: User, channel: Channel) => {
+        const batchId = `CLOUD_compUploads_${randomString(128)}`;
+        (await Promise.all(medias.map((m, index) => processMedia(m, messageId, batchId, user, channel, index + "")))).forEach((_) => _?.());
+    };
+}
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
+    const conf = Config.get();
+    const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;
+
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
         relations: { recipients: true },
@@ -94,6 +334,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     const message = Message.create({
         ...opts,
+        message_reference: opts.message_reference ?? undefined,
         poll: opts.poll,
         sticker_items: stickers,
         guild_id: channel.guild_id,
@@ -106,10 +347,21 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         components: opts.components ?? undefined, // Fix Discord-Go?
         message_reference: opts.message_reference ?? undefined,
     });
+    message.channel = channel;
+
+    if (opts.author_id) {
+        message.author = await User.findOneOrFail({
+            where: { id: opts.author_id },
+        });
+		message.author.clean_data();
+        const rights = await getRights(opts.author_id);
+        message.author.clean_data();
+        rights.hasThrow("SEND_MESSAGES");
+    }
+
     const ephermal = (message.flags & (1 << 6)) !== 0;
     if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
         const rep = Channel.getRepository();
-        console.log(channel.id);
         await rep.increment({ id: channel.id }, "message_count", 1);
         await rep.increment({ id: channel.id }, "total_message_sent", 1);
     }
@@ -120,6 +372,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     if (cloudAttachments && cloudAttachments.length > 0) {
         console.log("[Message] Processing attachments for message", message.id, ":", message.attachments);
+        handle?.(message.id, message.author as User, message.channel);
         const uploadedAttachments = await Promise.all(
             cloudAttachments.map(async (att) => {
                 const cAtt = att.attachment;
@@ -129,10 +382,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     },
                 });
 
-                const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
+                const cloneResponse = await fetch(`${conf.cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${message.id}`, {
                     method: "POST",
                     headers: {
-                        signature: Config.get().security.requestSignature || "",
+                        signature: conf.security.requestSignature || "",
                     },
                 });
 
@@ -145,8 +398,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
                 const realAtt = Attachment.create({
                     filename: attEnt.userFilename,
-                    url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
-                    proxy_url: `${Config.get().cdn.endpointPublic}/${cloneRespBody.new_path}`,
+                    url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
+                    proxy_url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
                     size: attEnt.size,
                     height: attEnt.height,
                     width: attEnt.width,
@@ -164,18 +417,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
     // else console.log("[Message] No cloud attachments to process for message", message.id, ":", message.attachments);
 
-    if (message.content && message.content.length > Config.get().limits.message.maxCharacters) {
+    if (message.content && message.content.length > conf.limits.message.maxCharacters) {
         throw new HTTPError("Content length over max character limit");
     }
 
-    if (opts.author_id) {
-        message.author = await User.findOneOrFail({
-            where: { id: opts.author_id },
-        });
-        message.author.clean_data();
-        const rights = await getRights(opts.author_id);
-        rights.hasThrow("SEND_MESSAGES");
-    }
     if (opts.application_id) {
         message.application = await Application.findOneOrFail({
             where: { id: opts.application_id },
@@ -442,7 +687,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                 await fillInMissingIDs(channel.recipients.map(({ user_id }) => user_id));
             }
         } else {
-            console.log(channel.guild_id);
             await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
         }
         const repository = ReadState.getRepository();
@@ -530,11 +774,12 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
+    const conf = Config.get();
     const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
 
     const linkMatches = content?.match(LINK_REGEX) || [];
     message.clean_data();
-    const data = { ...message };
+    const data = { ...message.toJSON() };
 
     const currentNormalizedUrls = new Set<string>();
     for (const link of linkMatches) {
@@ -587,14 +832,10 @@ export async function postHandleMessage(message: Message) {
         if (data.embeds != undefined) {
             data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
         }
-        const author = data.author?.toPublicUser();
         const event = {
             event: "MESSAGE_UPDATE",
             channel_id: message.channel_id,
-            data: {
-                ...data,
-                author,
-            },
+            data,
         } as MessageUpdateEvent;
         const embeds = data.embeds == undefined ? [] : data.embeds;
         await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds })]);
@@ -628,7 +869,7 @@ export async function postHandleMessage(message: Message) {
         }
 
         // bit gross, but whatever!
-        const endpointPublic = Config.get().cdn.endpointPublic; // lol
+        const endpointPublic = conf.cdn.endpointPublic; // lol
         const handler = url.hostname === new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
 
         try {
@@ -670,8 +911,8 @@ export async function sendMessage(opts: MessageOptions) {
 
     const ephemeral = (message.flags & Number(MessageFlags.FLAGS.EPHEMERAL)) !== 0;
     await Promise.all([
-        Message.insert(message),
-        Channel.update(message.channel.id, message.channel),
+        message.insert(),
+        message.channel.save(),
         emitEvent({
             event: "MESSAGE_CREATE",
             ...(ephemeral ? { user_id: message.interaction_metadata?.user_id } : { channel_id: message.channel_id }),

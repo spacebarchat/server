@@ -20,12 +20,78 @@ import { PartialEmoji } from "@spacebar/schemas";
 
 export interface MessageComponent {
     type: MessageComponentType;
+    id?: number;
+}
+
+export interface SectionComponent extends MessageComponent {
+    type: MessageComponentType.Section;
+    components: TextDisplayComponent[];
+    accessory: ThumbnailComponent | ButtonComponent;
+}
+
+export interface ThumbnailComponent extends MessageComponent {
+    type: MessageComponentType.Thumbnail;
+    description?: string;
+    media: UnfurledMediaItem;
+    spoiler?: boolean;
+}
+export interface UnfurledMediaItem {
+    id?: string;
+    url: string;
+    proxy_url?: string;
+    height?: number;
+    width?: number;
+    flags?: number;
+    content_type?: string;
+    content_scan_metadata?: unknown; //TODO deal with this lol
+    placeholder_version?: number;
+    placeholder?: string;
+    loading_state?: number;
+    attachment_id?: string;
+}
+export interface TextDisplayComponent extends MessageComponent {
+    type: MessageComponentType.TextDisplay;
+    content: string;
+}
+export interface MediaGalleryComponent extends MessageComponent {
+    type: MessageComponentType.MediaGallery;
+    items: {
+        media: UnfurledMediaItem;
+        description?: string;
+        spoiler?: boolean;
+    }[];
+}
+
+export interface FileComponent extends MessageComponent {
+    type: MessageComponentType.File;
+    file: UnfurledMediaItem;
+    spoiler: boolean;
+    name: string;
+    size: number;
+}
+export const enum SeparatorSpacing {
+    Small = 1,
+    Large = 2,
+}
+export interface SeparatorComponent extends MessageComponent {
+    type: MessageComponentType.Separator;
+    divider?: boolean;
+    spacing?: SeparatorSpacing;
 }
 
 export interface ActionRowComponent extends MessageComponent {
     type: MessageComponentType.ActionRow;
     components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
 }
+
+export interface ContainerComponent extends MessageComponent {
+    type: MessageComponentType.Container;
+    components: (ActionRowComponent | TextDisplayComponent | SectionComponent | MediaGalleryComponent | SeparatorComponent | FileComponent)[];
+    accent_color?: number;
+    spoiler?: boolean;
+}
+
+export type BaseMessageComponents = ActionRowComponent | SectionComponent | TextDisplayComponent | MediaGalleryComponent | FileComponent | SeparatorComponent | ContainerComponent;
 
 export interface ButtonComponent extends MessageComponent {
     type: MessageComponentType.Button;
@@ -38,7 +104,7 @@ export interface ButtonComponent extends MessageComponent {
     disabled?: boolean;
 }
 
-export enum ButtonStyle {
+export const enum ButtonStyle {
     Primary = 1,
     Secondary = 2,
     Success = 3,
@@ -93,12 +159,12 @@ export interface TextInputComponent extends MessageComponent {
     placeholder?: string;
 }
 
-export enum TextInputStyle {
+export const enum TextInputStyle {
     Short = 1,
     Paragraph = 2,
 }
 
-export enum MessageComponentType {
+export const enum MessageComponentType {
     ActionRow = 1,
     Button = 2,
     StringSelect = 3,
@@ -123,3 +189,5 @@ export enum MessageComponentType {
     CheckboxGroup = 22,
     Checkbox = 23,
 }
+
+export const v1CompTypes = new Set([MessageComponentType.ActionRow]);

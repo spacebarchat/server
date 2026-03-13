@@ -293,6 +293,10 @@ router.post(
     },
     route({
         requestBody: "MessageCreateSchema",
+        stripNulls: {
+            components: true,
+            embeds: true,
+        },
         permission: "VIEW_CHANNEL",
         right: "SEND_MESSAGES",
         responses: {
@@ -467,7 +471,7 @@ router.post(
                 channel.save(),
                 emitEvent({
                     event: "CHANNEL_UPDATE",
-                    data: { ...channel, newly_created: false },
+                    data: { ...channel.toJSON(), newly_created: false },
                     guild_id: channel.guild_id,
                 }),
             ]);
@@ -503,14 +507,13 @@ router.post(
             emitEvent({
                 event: "MESSAGE_CREATE",
                 channel_id: channel_id,
-                data: message,
+                data: message.toJSON(),
             } as MessageCreateEvent),
             message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
         ]);
 
         // no await as it shouldnt block the message send function and silently catch error
         postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
-
         return res.json(
             message.withSignedAttachments(
                 new NewUrlUserSignatureData({
