@@ -811,7 +811,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => {
         return {
-            voice_states: guild.voice_states.map((state) => state.toPublicVoiceState()),
+            voice_states: guild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
             id: guild.id,
             embedded_activities: [],
         };
