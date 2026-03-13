@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Session } from "@spacebar/util";
+import { emitEvent, Session } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 export default router;
@@ -42,5 +42,12 @@ router.post(
         if (req.session) await Session.remove(req.session);
 
         res.status(204).send();
+
+        if (req.session)
+            await emitEvent({
+                session_id: req.session.session_id,
+                event: "SB_SESSION_REMOVE",
+                origin: "Self logout",
+            });
     },
 );

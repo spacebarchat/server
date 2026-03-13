@@ -17,7 +17,7 @@
 */
 import { route } from "@spacebar/api";
 import { createHash } from "node:crypto";
-import { Session, Snowflake } from "@spacebar/util";
+import { emitEvent, Session, Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { SessionsLogoutSchema } from "../../../schemas/api/users/SessionsSchemas";
 import { In } from "typeorm";
@@ -69,6 +69,11 @@ router.post(
 
         for (const session of sessions) {
             await session.remove();
+            await emitEvent({
+                session_id: session.session_id,
+                event: "SB_SESSION_REMOVE",
+                origin: "Sessions logout",
+            });
         }
         res.status(204).send();
     },
