@@ -16,14 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
+import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { ChannelType } from "@spacebar/schemas";
-import { Channel } from "@spacebar/util";
+import { Channel, Config } from "@spacebar/util";
 
 export async function onRequestChannelInfo(this: WebSocket, { d }: Payload) {
     // Schema validation can only accept either string or array, so transforming it here to support both
     if (!d.guild_id) throw new Error('"guild_id" is required');
     if (!d.fields) throw new Error('"fields" is required');
+
+    if (Config.get().offload.gateway.channelInfoUrl !== null) {
+        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.channelInfoUrl!, d);
+    }
 
     const channels = (
         await Channel.find({

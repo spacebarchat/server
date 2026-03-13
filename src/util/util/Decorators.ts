@@ -1,4 +1,4 @@
-import { BaseClassWithoutId } from "@spacebar/util*";
+import { BaseClassWithoutId } from "@spacebar/util";
 
 export const annotationsKey = Symbol("Annotations");
 

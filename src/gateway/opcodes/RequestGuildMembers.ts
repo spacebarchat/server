@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { DateBuilder, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
-import { WebSocket, Payload, OPCODES, Send } from "@spacebar/gateway";
+import { Config, DateBuilder, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
@@ -29,6 +29,10 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     d.guild_id = Array.isArray(d.guild_id) ? d.guild_id[0] : d.guild_id;
 
     if (d.user_ids && !Array.isArray(d.user_ids)) d.user_ids = [d.user_ids];
+
+    if (Config.get().offload.gateway.guildMembersUrl !== null) {
+        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildMembersUrl!, d);
+    }
 
     check.call(this, RequestGuildMembersSchema, d);
 

@@ -77,6 +77,7 @@ export async function handleOffloadedGatewayRequest(socket: WebSocket, url: stri
     if (!resp.ok) {
         const text = await resp.text();
         console.error(`[Gateway] Offloaded request to ${url} failed with status ${resp.status}: ${text}`);
+        if (resp.status === 415) console.log(typeof body, body);
         throw new Error(`Offloaded request failed with status ${resp.status}: ${text}`);
     }
 

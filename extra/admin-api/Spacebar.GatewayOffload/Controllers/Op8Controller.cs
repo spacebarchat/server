@@ -16,7 +16,7 @@ using Spacebar.Models.Generic;
 namespace Spacebar.GatewayOffload.Controllers;
 
 [ApiController]
-[Route("/_spacebar/offload/gateway/GuildSync")]
+[Route("/_spacebar/offload/gateway/GuildMembers")]
 public class Op8Controller(ILogger<Op8Controller> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase
 {
     [HttpPost("")]

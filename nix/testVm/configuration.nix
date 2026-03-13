@@ -49,7 +49,12 @@ in
 
         gatewayOffload = {
           enable = true;
+          enableIdentify = true;
+          enableGuildMembers = true;
           enableGuildSync = true;
+          enableLazyRequest = true;
+          enableChannelStatuses = true;
+          enableChannelInfo = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
 

@@ -31,8 +31,9 @@ import {
     timePromise,
     Stopwatch,
     Guild,
+    Config,
 } from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, getMostRelevantSession } from "@spacebar/gateway";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, getMostRelevantSession, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 import { LazyRequestSchema, PublicMember } from "@spacebar/schemas";
@@ -45,6 +46,11 @@ import { In } from "typeorm";
 export async function onGuildSync(this: WebSocket, { d }: Payload) {
     const sw = Stopwatch.startNew();
     if (!Array.isArray(d)) throw new Error("Invalid payload for GUILD_SYNC");
+
+    if (Config.get().offload.gateway.guildSyncUrl !== null) {
+        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildSyncUrl!, d);
+    }
+
     const guild_ids = d as string[];
 
     const joinedGuildIds = await Member.find({ where: { id: this.user_id, guild_id: In(guild_ids) }, select: { guild_id: true } }).then((members) =>

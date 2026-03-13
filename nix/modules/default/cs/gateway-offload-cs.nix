@@ -31,8 +31,11 @@ in
           description = "Extra appsettings.json configuration for the gateway offload daemon.";
         };
         enableIdentify = lib.mkEnableOption "Enable offloading gateway opcode 2 (IDENTIFY).";
+        enableGuildMembers = lib.mkEnableOption "Enable offloading gateway opcode 8 (REQUEST_GUILD_MEMBERS).";
         enableGuildSync = lib.mkEnableOption "Enable offloading gateway opcode 12 (GUILD_SYNC).";
-        enableLazyRequest = lib.mkEnableOption "Enable offloading gateway opcode 12 (LAZY_REQUEST).";
+        enableLazyRequest = lib.mkEnableOption "Enable offloading gateway opcode 14 (LAZY_REQUEST).";
+        enableChannelStatuses = lib.mkEnableOption "Enable offloading gateway opcode 36 (CHANNEL_STATUSES).";
+        enableChannelInfo = lib.mkEnableOption "Enable offloading gateway opcode 43 (CHANNEL_INFO).";
       };
     };
   };
@@ -48,9 +51,12 @@ in
 
       services.spacebarchat-server.settings.offload = {
         gateway = {
-          op2BaseUrl = lib.mkIf cfg.gatewayOffload.enableIdentify "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
-          op12BaseUrl = lib.mkIf cfg.gatewayOffload.enableGuildSync "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
-          op14BaseUrl = lib.mkIf cfg.gatewayOffload.enableLazyRequest "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}";
+          identifyUrl = lib.mkIf cfg.gatewayOffload.enableIdentify "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/Identify";
+          guildMembersUrl = lib.mkIf cfg.gatewayOffload.enableGuildMembers "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/GuildMembers";
+          guildSyncUrlUrl = lib.mkIf cfg.gatewayOffload.enableGuildSync "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/GuildSync";
+          lazyRequestUrl = lib.mkIf cfg.gatewayOffload.enableLazyRequest "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/LazyRequest";
+          channelStatusesUrl = lib.mkIf cfg.gatewayOffload.enableChannelStatuses "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/ChannelStatuses";
+          channelInfoUrl = lib.mkIf cfg.gatewayOffload.enableChannelInfo "http://127.0.0.1:${builtins.toString cfg.gatewayOffload.listenPort}/_spacebar/offload/gateway/ChannelInfo";
         };
       };
 

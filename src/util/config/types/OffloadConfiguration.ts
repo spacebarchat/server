@@ -21,6 +21,9 @@ export class OffloadConfiguration {
 }
 
 export class GatewayOffloadConfiguration {
-    op12BaseUrl: string | null = null;
-    op14BaseUrl: string | null = null;
+    guildMembersUrl: string | null = null; // op8
+    guildSyncUrl: string | null = null; // op12
+    lazyRequestUrl: string | null = null; // op14
+    channelStatusesUrl: string | null = null; //op36
+    channelInfoUrl: string | null = null; //op43
 }

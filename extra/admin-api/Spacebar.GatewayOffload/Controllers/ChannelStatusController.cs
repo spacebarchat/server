@@ -15,7 +15,7 @@ namespace Spacebar.GatewayOffload.Controllers;
 [Route("/_spacebar/offload/gateway")]
 public class ChannelStatusController(ILogger<ChannelStatusController> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp)
     : ControllerBase {
-    [HttpPost("channelStatuses")]
+    [HttpPost("ChannelStatuses")]
     public async IAsyncEnumerable<ReplicationMessage<ChannelStatusesResponse>> GetChannelStatuses([FromBody] ChannelStatusesRequest req) {
         await foreach (var res in GetChannelInfos(new() {
                            Fields = ["status"],
@@ -33,7 +33,7 @@ public class ChannelStatusController(ILogger<ChannelStatusController> logger, Sp
         }
     }
 
-    [HttpPost("channelInfo")]
+    [HttpPost("ChannelInfo")]
     public async IAsyncEnumerable<ReplicationMessage<ChannelInfoResponse>> GetChannelInfos([FromBody] ChannelInfoRequest req) {
         var user = await authService.GetCurrentUserAsync(Request);
         string[] statusOptions = [
