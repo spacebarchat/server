@@ -547,7 +547,7 @@ export async function postHandleMessage(message: Message) {
             const normalized = normalizeUrl(link);
             currentNormalizedUrls.add(normalized);
         } catch (e) {
-            continue;
+            /* empty */
         }
     }
     if (data.embeds != undefined) {
@@ -579,7 +579,6 @@ export async function postHandleMessage(message: Message) {
             }
         } catch (e) {
             // Invalid URL, skip
-            continue;
         }
     }
 

@@ -102,7 +102,6 @@ router.post(
                 banned_users.push(banned_user_id);
             } catch {
                 failed_users.push(banned_user_id);
-                continue;
             }
         }
 
