@@ -18,6 +18,7 @@ in
     extraGatewayPorts = lib.mkOption {
       type = lib.types.listOf lib.types.port;
       description = "Extra gateway ports";
+      default = [];
     };
   };
 
