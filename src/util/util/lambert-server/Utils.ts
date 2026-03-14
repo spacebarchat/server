@@ -16,7 +16,7 @@ export async function traverseDirectory<T>(options: traverseDirectoryOptions, ac
 
     const routes = fs.readdirSync(options.dirname);
     const promises = <Promise<T | T[] | undefined>[]>routes
-        .sort((a, b) => (a.startsWith("#") ? 1 : -1)) // load #parameter routes last
+        .sort((a, _) => (a.startsWith("#") ? 1 : -1)) // load #parameter routes last
         .map(async (file) => {
             const path = options.dirname + file;
             const stat = fs.lstatSync(path);
