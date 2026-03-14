@@ -41,6 +41,7 @@ export class Message extends BaseClass {
     @Column({ nullable: true })
     @RelationId((message: Message) => message.channel)
     @Index()
+    @JsonRemoveEmpty
     channel_id?: string;
 
     @JoinColumn({ name: "channel_id" })
@@ -51,62 +52,75 @@ export class Message extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.thread)
+    @JsonRemoveEmpty
     thread_id?: string;
 
     @JoinColumn({ name: "thread_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
+    @JsonRemoveEmpty
     thread?: Channel;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.guild)
+    @JsonRemoveEmpty
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
+    @JsonRemoveEmpty
     guild?: Guild;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.author)
     @Index()
+    @JsonRemoveEmpty
     author_id?: string;
 
     @JoinColumn({ name: "author_id", referencedColumnName: "id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
+    @JsonRemoveEmpty
     author?: User;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.member)
+    @JsonRemoveEmpty
     member_id?: string;
 
     @JoinColumn({ name: "member_id", referencedColumnName: "id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
+    @JsonRemoveEmpty
     member?: Member;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.webhook)
+    @JsonRemoveEmpty
     webhook_id?: string;
 
     @JoinColumn({ name: "webhook_id" })
     @ManyToOne(() => Webhook)
+    @JsonRemoveEmpty
     webhook?: Webhook;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.application)
+    @JsonRemoveEmpty
     application_id?: string;
 
     @JoinColumn({ name: "application_id" })
     @ManyToOne(() => Application)
+    @JsonRemoveEmpty
     application?: Application;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     content?: string;
 
     @Column()
@@ -114,12 +128,15 @@ export class Message extends BaseClass {
     timestamp: Date;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     edited_timestamp?: Date;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     tts?: boolean;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     mention_everyone?: boolean;
 
     @JoinTable({ name: "message_user_mentions" })
@@ -157,9 +174,11 @@ export class Message extends BaseClass {
     reactions: Reaction[];
 
     @Column({ type: "text", nullable: true })
+    @JsonRemoveEmpty
     nonce?: string;
 
     @Column({ nullable: true, type: Date })
+    @JsonRemoveEmpty
     pinned_at?: Date | null;
 
     get pinned(): boolean {
@@ -179,6 +198,7 @@ export class Message extends BaseClass {
     flags: number;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     message_reference?: {
         message_id?: string;
         channel_id?: string;
@@ -191,6 +211,7 @@ export class Message extends BaseClass {
     referenced_message?: Message | null;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     interaction?: {
         id: string;
         type: InteractionType;
@@ -198,6 +219,7 @@ export class Message extends BaseClass {
     };
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     interaction_metadata?: {
         id: string;
         type: InteractionType;
@@ -216,9 +238,11 @@ export class Message extends BaseClass {
     poll?: Poll;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     username?: string;
 
     @Column({ nullable: true })
+    @JsonRemoveEmpty
     avatar?: string;
 
     @Column({ default: "[]", type: "simple-json" })
