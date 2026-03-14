@@ -124,7 +124,8 @@ export const Email: {
     },
 
     /**
-     *
+     * Generates a password reset link
+     * @param type the MailType to generate a link for
      * @param id user id
      */
     generateLink: async function (type, id) {

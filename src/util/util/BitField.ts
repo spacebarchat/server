@@ -88,7 +88,6 @@ export class BitField {
     /**
      * Gets an object mapping field names to a {@link boolean} indicating whether the
      * bit is available.
-     * @param {...*} hasParams Additional parameters for the has method, if any
      */
     serialize() {
         const serialized: Record<string, boolean> = {};

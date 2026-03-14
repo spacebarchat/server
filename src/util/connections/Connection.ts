@@ -33,7 +33,8 @@ export abstract class Connection {
 
     /**
      * Generates an authorization url for the connection.
-     * @param args
+     * @param userId the user id to generate the url for
+     * @returns the authorization url
      */
     abstract getAuthorizationUrl(userId: string): string;
 
@@ -47,7 +48,7 @@ export abstract class Connection {
 
     /**
      * Processes the callback
-     * @param args Callback arguments
+     * @param params Callback arguments
      */
     abstract handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null>;
 
@@ -63,7 +64,7 @@ export abstract class Connection {
 
     /**
      * Generates a state
-     * @param user_id The user id to generate a state for.
+     * @param userId The user id to generate a state for.
      * @returns a new state
      */
     createState(userId: string): string {
