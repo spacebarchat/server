@@ -64,11 +64,6 @@ import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, Priva
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
 
-function logAuth(message: string) {
-    if (process.env.LOG_AUTH != "true") return;
-    console.log(`[Gateway/Auth] ${message}`);
-}
-
 export async function onIdentify(this: WebSocket, data: Payload) {
     const totalSw = Stopwatch.startNew();
     const taskSw = Stopwatch.startNew();

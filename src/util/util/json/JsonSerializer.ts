@@ -23,6 +23,7 @@ function getNextWorker(): Worker {
     return worker;
 }
 
+// noinspection JSUnusedLocalSymbols - TODO: implement options
 export class JsonSerializer {
     public static Serialize<T>(value: T, opts?: JsonSerializerOptions): string {
         return JSON.stringify(value);

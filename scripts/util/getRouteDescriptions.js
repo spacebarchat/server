@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const { traverseDirectory } = require("lambert-server");
 const RouteUtility = require("../../dist/api/util/handlers/route.js");
-const { bgRedBright, greenBright, yellowBright, blueBright, redBright, underline, bold, bgYellow, black } = require("picocolors");
+const { greenBright, yellowBright, blueBright, redBright, underline, bgYellow, black } = require("picocolors");
 
 const methods = ["get", "post", "put", "delete", "patch"];
 const routes = new Map();

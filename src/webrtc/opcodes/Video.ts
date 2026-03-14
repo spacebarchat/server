@@ -53,7 +53,7 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
         if (wantsToProduceAudio) {
             try {
                 await Promise.race([
-                    new Promise<void>((resolve, reject) => {
+                    new Promise<void>((resolve, _) => {
                         this.webRtcClient?.emitter.once("connected", () => resolve());
                     }),
                     new Promise<void>((resolve, reject) => {

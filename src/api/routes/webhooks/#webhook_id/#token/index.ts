@@ -149,6 +149,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
+        // noinspection JSUnusedLocalSymbols - TODO: shouldnt token be checked?
         const { webhook_id, token } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 

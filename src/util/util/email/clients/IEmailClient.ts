@@ -33,6 +33,8 @@ export class BaseEmailClient implements IEmailClient {
         return;
     }
     sendMail(email: IEmail): Promise<void> {
+        // noinspection JSUnusedLocalSymbols - parameter exists for public API reasons
+        const _ = email;
         throw new Error("Method not implemented.");
     }
 }

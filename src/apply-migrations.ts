@@ -28,4 +28,4 @@ async function main() {
     }
 }
 
-main().then((r) => console.log("meow"));
+main().then(() => console.log("meow"));

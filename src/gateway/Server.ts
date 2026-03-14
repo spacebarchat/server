@@ -38,9 +38,9 @@ export class Server {
 
         if (server) this.server = server;
         else {
-            const elu = [1, 5, 15].map((x) => performance.eventLoopUtilization());
-            const eluP = [1, 5, 15].map((x) => performance.eventLoopUtilization());
-            const cpu = [1, 5, 15].map((x) => process.cpuUsage());
+            const elu = [1, 5, 15].map(() => performance.eventLoopUtilization());
+            const eluP = [1, 5, 15].map(() => performance.eventLoopUtilization());
+            const cpu = [1, 5, 15].map(() => process.cpuUsage());
             let sec = 0;
             setInterval(() => {
                 sec += 1;

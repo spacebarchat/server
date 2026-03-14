@@ -120,7 +120,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
     if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 
     try {
-        const { decoded, user, session, tokenVersion } = (req.tokenData = await checkToken(req.headers.authorization, {
+        const { decoded, user, session } = (req.tokenData = await checkToken(req.headers.authorization, {
             ipAddress: req.ip,
             fingerprint: req.fingerprint,
         }));

@@ -99,7 +99,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
     }
 
     static async getOrDefault(user_id: string, save: boolean = false): Promise<UserSettingsProtos> {
-        const user = await User.findOneOrFail({
+        await User.findOneOrFail({
             where: { id: user_id },
             select: { settings: true },
         });

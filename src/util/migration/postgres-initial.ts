@@ -719,7 +719,7 @@ export class initial0 implements MigrationInterface {
 		await queryRunner.query(`ALTER TABLE ONLY public.team_members ADD CONSTRAINT "FK_fdad7d5768277e60c40e01cdcea" FOREIGN KEY (team_id) REFERENCES public.teams(id) ON DELETE CASCADE;`);
 	}
 
-	public async down(queryRunner: QueryRunner): Promise<void> {
+	public async down(_: QueryRunner): Promise<void> {
 		throw new Error("Can't revert this: just throw away your database lol");
 	}
 }

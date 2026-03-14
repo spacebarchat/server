@@ -12,6 +12,18 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/home/Rory/git/spacebar/server-master" value="2oJ9u2nkEFq1qQW1NFF69ECjiYu" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="Gemini 3 Pro (Preview)" />
+      <entry key="agent-panel" value="Gemini 3 Pro (Preview)" />
+      <entry key="edit-panel" value="GPT-5 mini" />
+    </selectedModels>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -42,7 +54,7 @@
     <scope name="src" pattern="!file[server]:*/||file[server]:src//*" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -99,6 +111,24 @@
     ]
   }
 }</component>
+  <component name="QodanaHighlightedReportService">
+    <option name="localRunNotPublishedPersistedInfo">
+      <LocalReportPersistedInfo>
+        <option name="path" value="/tmp/qodana_output1/qodana.sarif.json" />
+        <option name="reportGuid" value="ffc75f9a-8af2-4039-9caf-5031bc73d78a" />
+        <option name="reportName" value="server-master/qodana/2026-03-14" />
+      </LocalReportPersistedInfo>
+    </option>
+  </component>
+  <component name="QodanaIsSelectedPersistenceService">
+    <option name="selectedOrLoading" value="true" />
+  </component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="/tmp/qodana_output/qodana.sarif.json" reportGuid="23b693fa-9bcf-42d2-b172-3372ba9c21ff" reportId="server-master/qodana/2026-03-14" />
+      <ReportDescription localRun="true" path="/tmp/qodana_output1/qodana.sarif.json" reportGuid="ffc75f9a-8af2-4039-9caf-5031bc73d78a" reportId="server-master/qodana/2026-03-14" />
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/nix/modules/default" />
@@ -130,8 +160,6 @@
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
-              <entry key="build:src:tsgo" value="STOPPED" />
-              <entry key="build:tsgo" value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -194,6 +222,7 @@
       <workItem from="1772714447261" duration="12025000" />
       <workItem from="1772830175841" duration="4576000" />
       <workItem from="1772918744394" duration="70646000" />
+      <workItem from="1773448797192" duration="8146000" />
     </task>
     <servers />
   </component>
@@ -231,5 +260,13 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

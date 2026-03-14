@@ -114,7 +114,7 @@ export class UrlSignResult {
 }
 
 export const getUrlSignature = (data: NewUrlSignatureData): UrlSignResult => {
-    const { cdnSignatureKey, cdnSignatureDuration } = Config.get().security;
+    const { cdnSignatureDuration } = Config.get().security;
 
     // calculate the expiration time
     const now = Date.now();

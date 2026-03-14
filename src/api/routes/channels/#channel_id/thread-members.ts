@@ -50,12 +50,14 @@ router.get(
             limit = undefined;
         }
 
-        return await ThreadMember.find({
-            where: { channel: { id: channel_id }, ...(after ? { user_id: MoreThan(after) } : {}) },
-            take: limit ? parseInt(limit) : 50,
-            order: { member_idx: "ASC" },
-            relations: { ...(with_member ? { member: true } : {}) },
-        });
+        return res.send(
+            await ThreadMember.find({
+                where: { channel: { id: channel_id }, ...(after ? { user_id: MoreThan(after) } : {}) },
+                take: limit ? parseInt(limit) : 50,
+                order: { member_idx: "ASC" },
+                relations: { ...(with_member ? { member: true } : {}) },
+            }),
+        );
     },
 );
 router.post(

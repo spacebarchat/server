@@ -228,6 +228,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
     } else {
         permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
+        if (permission === null) throw new HTTPError("permission was null after getPermission", 500);
         permission.hasThrow("SEND_MESSAGES");
         if (permission.cache.member) {
             message.member = permission.cache.member;
@@ -238,7 +239,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             permission.hasThrow("READ_MESSAGE_HISTORY");
             // code below has to be redone when we add custom message routing
             if (message.guild_id !== null) {
-                const guild = await Guild.findOneOrFail({
+                await Guild.findOneOrFail({
                     where: { id: channel.guild_id },
                 });
                 if (!opts.message_reference.guild_id) opts.message_reference.guild_id = channel.guild_id;

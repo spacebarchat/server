@@ -58,7 +58,7 @@ export async function cleanupOnStartup(): Promise<void> {
 
     console.log("[Gateway] Starting async voice state wipe...");
     VoiceState.clear()
-        .then((e) => console.log("[Gateway] Successfully cleaned voice states"))
+        .then(() => console.log("[Gateway] Successfully cleaned voice states"))
         .catch((e) => console.error("[Gateway] Error cleaning voice states on startup:", e));
 }
 

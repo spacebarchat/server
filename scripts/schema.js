@@ -210,11 +210,11 @@ async function main() {
                 for (const defKey in schema.definitions) {
                     if (definitions[defKey] && deepEqual(definitions[defKey], schema.definitions[defKey])) {
                         // console.log("Definition", defKey, "from schema", schemaName, "is identical to existing definition, skipping.");
-                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, v]) => k !== defKey));
+                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, _]) => k !== defKey));
                         process.stdout.write(greenBright("T"));
                     } else if (!nestedDefinitions[defKey]) {
                         nestedDefinitions[defKey] = schema.definitions[defKey];
-                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, v]) => k !== defKey));
+                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, _]) => k !== defKey));
                         // console.log("Tracking sub-definition", defKey, "from schema", schemaName);
                         process.stdout.write(green("N"));
                     } else if (!deepEqual(nestedDefinitions[defKey], schema.definitions[defKey])) {
@@ -222,7 +222,7 @@ async function main() {
                         console.log(columnizedObjectDiff(nestedDefinitions[defKey], schema.definitions[defKey], true));
                     } else {
                         // console.log("Definition", defKey, "from schema", schemaName, "is identical to existing definition, skipping.");
-                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, v]) => k !== defKey));
+                        schema.definitions = Object.fromEntries(Object.entries(schema.definitions).filter(([k, _]) => k !== defKey));
                         process.stdout.write(greenBright("M"));
                     }
                 }

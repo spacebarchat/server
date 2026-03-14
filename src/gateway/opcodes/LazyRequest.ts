@@ -158,6 +158,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();
     // TODO: check data
     check.call(this, LazyRequestSchema, d);
+    // noinspection JSUnusedLocalSymbols - TODO: implement typing/activities subscriptions
     const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
 
     if (members) {

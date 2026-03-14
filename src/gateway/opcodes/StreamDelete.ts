@@ -21,6 +21,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
         return this.close(4000, "Invalid stream key");
     }
 
+    // noinspection JSUnusedLocalSymbols - TODO: what is type here?
     const { userId, channelId, guildId, type } = parsedKey;
 
     // when a user selects to stop watching another user stream, this event gets triggered
