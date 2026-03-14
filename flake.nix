@@ -102,10 +102,6 @@
         // {
           nixosModules.default = import ./nix/modules/default self;
           nixosConfigurations.testVm = import ./nix/testVm/default.nix { inherit self nixpkgs; };
-          nixosConfigurations.test = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [ ];
-          };
           checks =
             let
               pkgs = import nixpkgs { system = "x86_64-linux"; };
