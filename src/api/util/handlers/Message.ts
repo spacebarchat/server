@@ -65,14 +65,14 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     });
     if (!channel || !opts.channel_id) throw new HTTPError("Channel not found", 404);
 
-    let permission: undefined | Permissions;
+    let permission: null | Permissions = null;
     const limit = channel.rate_limit_per_user;
 
     if (limit) {
         const lastMsgTime = (await Message.findOne({ where: { channel_id: channel.id, author_id: opts.author_id }, select: { timestamp: true }, order: { timestamp: "DESC" } }))
             ?.timestamp;
         if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
-            permission ||= await getPermission(opts.author_id, channel.guild_id, channel);
+            permission = await getPermission(opts.author_id, channel.guild_id, channel);
             //FIXME MANAGE_MESSAGES and MANAGE_CHANNELS will need to be removed once they're gone as checks
             if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS") && !permission.has("BYPASS_SLOWMODE")) {
                 throw DiscordApiErrors.SLOWMODE_RATE_LIMIT;
