@@ -50,7 +50,7 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
             code = 50109;
             message = "The request body contains invalid JSON.";
         } else {
-            console.error(`[Error] ${code} ${req.url}\n`, errors || error, "\nbody:", req.body);
+            console.error(`[Error] ${code} ${req.url}\n`, errors, "\nbody:", req.body);
 
             if (req.server?.options?.production) {
                 // don't expose internal errors to the user, instead human errors should be thrown as HTTPError
