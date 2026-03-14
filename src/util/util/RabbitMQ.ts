@@ -102,7 +102,7 @@ export class RabbitMQ {
             this.events.emit("disconnected");
 
             // Schedule reconnection
-            this.scheduleReconnect(host);
+            this.scheduleReconnect(host).catch((e) => console.error("[RabbitMQ] Failed to schedule reconnection:", e));
         });
     }
 

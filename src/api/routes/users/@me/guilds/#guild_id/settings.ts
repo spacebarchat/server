@@ -59,8 +59,9 @@ router.patch(
         const body = req.body as UserGuildSettingsSchema;
 
         if (body.channel_overrides) {
+            // TODO: rewrite to a single query?
             for (const channel in body.channel_overrides) {
-                Channel.findOneOrFail({ where: { id: channel } });
+                await Channel.findOneOrFail({ where: { id: channel } });
             }
         }
 

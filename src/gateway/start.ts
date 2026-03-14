@@ -37,4 +37,4 @@ const server = new Server({
 if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-gw-${cluster.worker ? cluster.worker.id : port}`);
 process.title = `sb-gw-${cluster.worker ? cluster.worker.id : port}`;
 
-server.start();
+server.start().then(() => {});

@@ -43,7 +43,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
         });
 
     res.json({
-        url: await connection.getAuthorizationUrl(req.user_id),
+        url: connection.getAuthorizationUrl(req.user_id),
     });
 });
 

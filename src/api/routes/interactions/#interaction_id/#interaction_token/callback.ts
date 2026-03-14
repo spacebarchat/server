@@ -77,7 +77,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
 
     clearTimeout(interaction.timeout);
 
-    emitEvent({
+    await emitEvent({
         event: "INTERACTION_SUCCESS",
         user_id: interaction?.userId,
         data: {

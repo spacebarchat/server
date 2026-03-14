@@ -32,7 +32,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     const interactionId = Snowflake.generate();
     const interactionToken = randomBytes(24).toString("base64url");
 
-    emitEvent({
+    await emitEvent({
         event: "INTERACTION_CREATE",
         user_id: req.user_id,
         data: {
@@ -94,7 +94,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         interactionData.message = await Message.findOneOrFail({ where: { id: body.message_id, flags: undefined }, relations: { author: true } });
     }
 
-    emitEvent({
+    await emitEvent({
         event: "INTERACTION_CREATE",
         user_id: body.application_id,
         data: interactionData,

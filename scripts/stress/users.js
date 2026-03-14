@@ -34,9 +34,9 @@ async function main() {
                 captcha_key: null,
             }),
             headers: { "content-type": "application/json" },
-        });
+        }).then(() => {});
         console.log(i);
     }
 }
 
-main();
+main().then(() => {});

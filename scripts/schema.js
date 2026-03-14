@@ -380,4 +380,4 @@ function columnizedObjectDiff(a, b, trackEqual = false) {
     return diffs;
 }
 
-main();
+main().then(() => {});

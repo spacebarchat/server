@@ -49,7 +49,7 @@ router.post("/", route({ requestBody: "ConnectionCallbackSchema" }), async (req:
 
     // whether we should emit a connections update event, only used when a connection doesnt already exist
     if (connectedAccnt)
-        emitEvent({
+        await emitEvent({
             event: "USER_CONNECTIONS_UPDATE",
             data: { ...connectedAccnt, token_data: undefined },
             user_id: userId,

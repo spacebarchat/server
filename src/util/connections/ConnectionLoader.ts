@@ -28,7 +28,7 @@ const connectionsLoaded = false;
 export class ConnectionLoader {
     public static async loadConnections() {
         if (connectionsLoaded) return;
-        ConnectionConfig.init();
+        await ConnectionConfig.init();
         const dirs = fs.readdirSync(root).filter((x) => {
             try {
                 fs.readdirSync(path.join(root, x));
@@ -38,7 +38,7 @@ export class ConnectionLoader {
             }
         });
 
-        dirs.forEach(async (x) => {
+        dirs.forEach((x) => {
             const modPath = path.resolve(path.join(root, x));
             const mod = new (require(modPath).default)() as Connection;
             ConnectionStore.connections.set(mod.id, mod);
@@ -54,7 +54,7 @@ export class ConnectionLoader {
             if (cfg) cfg = Object.assign({}, defaults, cfg);
             else {
                 cfg = defaults;
-                this.setConnectionConfig(id, cfg);
+                this.setConnectionConfig(id, cfg).catch((e) => console.error(`[Connections/ERROR] Failed to set default config for '${id}'!`, e));
             }
         }
 

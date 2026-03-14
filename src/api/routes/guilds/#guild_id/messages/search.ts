@@ -68,7 +68,7 @@ router.get(
         }
         if (channel_id) {
             const ids = new Set(channel_id instanceof Array ? channel_id : [channel_id]);
-            Promise.all(
+            await Promise.all(
                 [...ids].map(async (id) => {
                     const permissions = await getPermission(req.user_id, req.params.guild_id as string, id);
                     permissions.hasThrow("VIEW_CHANNEL");

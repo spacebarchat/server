@@ -89,7 +89,7 @@ router.post(
             },
             author_id: user.id,
         });
-        sendMessage({
+        await sendMessage({
             channel_id: channel.id,
             type: MessageType.THREAD_CREATED,
             content: thread.name,

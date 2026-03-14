@@ -20,9 +20,7 @@ import { Server, ServerOptions } from "lambert-server";
 import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
-import avatarsRoute from "./routes/avatars";
 import guildProfilesRoute from "./routes/guild-profiles";
-import iconsRoute from "./routes/role-icons";
 import morgan from "morgan";
 import { Like } from "typeorm";
 

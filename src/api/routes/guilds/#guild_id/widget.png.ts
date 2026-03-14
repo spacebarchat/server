@@ -83,27 +83,27 @@ router.get(
         switch (style) {
             case "shield":
                 ctx.textAlign = "center";
-                await drawText(ctx, 73, 13, "#FFFFFF", "thin 10px Verdana", presence);
+                drawText(ctx, 73, 13, "#FFFFFF", "thin 10px Verdana", presence);
                 break;
             case "banner1":
                 if (icon) await drawIcon(ctx, 20, 27, 50, icon);
-                await drawText(ctx, 83, 51, "#FFFFFF", "12px Verdana", name, 22);
-                await drawText(ctx, 83, 66, "#C9D2F0FF", "thin 11px Verdana", presence);
+                drawText(ctx, 83, 51, "#FFFFFF", "12px Verdana", name, 22);
+                drawText(ctx, 83, 66, "#C9D2F0FF", "thin 11px Verdana", presence);
                 break;
             case "banner2":
                 if (icon) await drawIcon(ctx, 13, 19, 36, icon);
-                await drawText(ctx, 62, 34, "#FFFFFF", "12px Verdana", name, 15);
-                await drawText(ctx, 62, 49, "#C9D2F0FF", "thin 11px Verdana", presence);
+                drawText(ctx, 62, 34, "#FFFFFF", "12px Verdana", name, 15);
+                drawText(ctx, 62, 49, "#C9D2F0FF", "thin 11px Verdana", presence);
                 break;
             case "banner3":
                 if (icon) await drawIcon(ctx, 20, 20, 50, icon);
-                await drawText(ctx, 83, 44, "#FFFFFF", "12px Verdana", name, 27);
-                await drawText(ctx, 83, 58, "#C9D2F0FF", "thin 11px Verdana", presence);
+                drawText(ctx, 83, 44, "#FFFFFF", "12px Verdana", name, 27);
+                drawText(ctx, 83, 58, "#C9D2F0FF", "thin 11px Verdana", presence);
                 break;
             case "banner4":
                 if (icon) await drawIcon(ctx, 21, 136, 50, icon);
-                await drawText(ctx, 84, 156, "#FFFFFF", "13px Verdana", name, 27);
-                await drawText(ctx, 84, 171, "#C9D2F0FF", "thin 12px Verdana", presence);
+                drawText(ctx, 84, 156, "#FFFFFF", "13px Verdana", name, 27);
+                drawText(ctx, 84, 171, "#C9D2F0FF", "thin 12px Verdana", presence);
                 break;
             default:
                 throw new HTTPError("Value must be one of ('shield', 'banner1', 'banner2', 'banner3', 'banner4').", 400);

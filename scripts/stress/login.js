@@ -13,4 +13,4 @@ async function main() {
     console.log((await ret.json()).token);
 }
 
-main();
+main().then(() => {});

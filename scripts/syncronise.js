@@ -34,5 +34,5 @@ const { initDatabase } = require("..");
     console.log("synchronising");
     await db.synchronize();
     console.log("done");
-    db.destroy();
+    await db.destroy();
 })();

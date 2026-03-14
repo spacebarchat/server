@@ -113,7 +113,7 @@ router.patch(
             } as MessageUpdateEvent),
         ]);
 
-        postHandleMessage(new_message);
+        postHandleMessage(new_message).catch((e) => console.error("[Message] post-message handler failed", e));
 
         // TODO: a DTO?
         return res.json({
@@ -295,7 +295,7 @@ router.delete(
         });
         if (channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
             if (channel.message_count !== undefined) channel.message_count--;
-            channel.save(); //Save async, it's fine
+            await channel.save();
         }
         const message = await Message.findOneOrFail({
             where: { id: message_id },

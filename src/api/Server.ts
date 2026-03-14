@@ -200,7 +200,7 @@ export class SpacebarServer extends Server {
 
         this.app.use(ErrorHandler);
 
-        ConnectionLoader.loadConnections();
+        await ConnectionLoader.loadConnections();
 
         if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
 

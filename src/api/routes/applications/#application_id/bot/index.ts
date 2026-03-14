@@ -122,7 +122,7 @@ router.patch(
 
         app.bot.assign(body);
 
-        app.bot.save();
+        await app.bot.save();
 
         await app.save();
         res.json(app).status(200);
