@@ -143,14 +143,12 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Spacebar-Models-Gateway = makeNupkg {
           name = "Spacebar.Models.Gateway";
           projectFile = "Spacebar.Models.Gateway.csproj";
-          nugetDeps = Models/Spacebar.Models.Gateway/deps.json;
           srcRoot = Models/Spacebar.Models.Gateway;
           projectReferences = [ proj.Spacebar-Models-Generic ];
         };
         Spacebar-Models-Generic = makeNupkg {
           name = "Spacebar.Models.Generic";
           projectFile = "Spacebar.Models.Generic.csproj";
-          # nugetDeps = Models/Spacebar.Models.Generic/deps.json;
           srcRoot = Models/Spacebar.Models.Generic;
         };
 

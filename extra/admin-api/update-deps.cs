@@ -17,6 +17,7 @@ if (args.Length > 0) {
 Console.WriteLine($"==> Updating dependencies for {outs.Length} projects...");
 
 var ss = new SemaphoreSlim(1, 1);
+var idx = 0;
 var tasks = outs.Select(outp => Task.Run(async () => {
     Console.WriteLine(ConsoleUtils.ColoredString($"  ==> Updating {outp}...", 0x80, 0x80, 0xff));
     Console.Write(ConsoleUtils.ColoredString($"    ==> Getting project root directory... ", 0x80, 0xff, 0xff));
@@ -31,6 +32,9 @@ var tasks = outs.Select(outp => Task.Run(async () => {
         return;
     }
 
+    if (idx == 1) await Task.Delay(3000); // give the first one a bit of time to eval...
+    await Task.Delay(idx++ * 1500);
+    
     var fname = $"./update-deps-{outp}";
     Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Building fetch-deps script {fname}...", 0x80, 0xff, 0x80));
     Util.RunCommandSync("nix", $"build .#{outp}.passthru.fetch-deps --out-link {fname}");
@@ -39,8 +43,8 @@ var tasks = outs.Select(outp => Task.Run(async () => {
     Util.RunCommandSync(fname, nugetDepsFilePath);
 
     var deps = JsonSerializer.Deserialize<object[]>(await File.ReadAllTextAsync(nugetDepsFilePath));
-    Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Locked {deps.Length} dependencies...", (byte)(deps.Length == 0 ? 0xff : 0x80), (byte)(deps.Length == 0 ? 0x80 : 0xff), 0x80));
-    // File.Delete(fname);
+    Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Locked {deps.Length} dependencies for {outp}...", (byte)(deps.Length == 0 ? 0xff : 0x80), (byte)(deps.Length == 0 ? 0x80 : 0xff), 0x80));
+    File.Delete(fname);
 
 
     // await Task.Delay(250);
