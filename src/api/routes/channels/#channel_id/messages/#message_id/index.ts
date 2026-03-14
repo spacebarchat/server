@@ -265,7 +265,10 @@ router.get(
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
-            relations: { attachments: true },
+            relations: {
+                attachments: true,
+                author: true,
+            },
         });
 
         const permissions = await getPermission(req.user_id, undefined, channel_id);
