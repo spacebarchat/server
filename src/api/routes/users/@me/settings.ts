@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, UserSettings, emitEvent, Session, PrivateSessionProjection, PresenceUpdateEvent } from "@spacebar/util";
+import { User, UserSettings, emitEvent, Session, PresenceUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { UserSettingsUpdateSchema } from "@spacebar/schemas";
 

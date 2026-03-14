@@ -2,7 +2,6 @@ import { JsonSerializerOptions } from "./JsonSerializerOptions";
 import { Worker } from "worker_threads";
 import { join } from "path";
 import os from "os";
-import Stream from "node:stream";
 import { ReadStream, WriteStream } from "node:fs";
 
 // const worker = new Worker(join(process.cwd(), 'dist', 'util', 'util', 'json', 'jsonWorker.js'));

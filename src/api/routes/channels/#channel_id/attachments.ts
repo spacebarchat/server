@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Config, Permissions, User } from "@spacebar/util";
+import { Channel, Config, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { CloudAttachment } from "@spacebar/util";
 import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas";

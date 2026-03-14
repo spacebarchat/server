@@ -18,7 +18,6 @@
 
 import { Fido2Lib } from "fido2-lib";
 import jwt from "jsonwebtoken";
-import { Config } from "./Config";
 import { loadOrGenerateKeypair } from "./Token";
 
 const jwtSignOptions: jwt.SignOptions = {

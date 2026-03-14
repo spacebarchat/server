@@ -16,27 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-    getDatabase,
-    getPermission,
-    listenEvent,
-    Member,
-    Role,
-    Session,
-    User,
-    Presence,
-    Channel,
-    Permissions,
-    arrayPartition,
-    timePromise,
-    Stopwatch,
-    Guild,
-    Config,
-} from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, getMostRelevantSession, handleOffloadedGatewayRequest } from "@spacebar/gateway";
-import murmur from "murmurhash-js/murmurhash3_gc";
-import { check } from "./instanceOf";
-import { LazyRequestSchema, PublicMember } from "@spacebar/schemas";
+import { Member, Session, Presence, timePromise, Stopwatch, Config } from "@spacebar/util";
+import { WebSocket, Payload, OPCODES, Send, getMostRelevantSession, handleOffloadedGatewayRequest } from "@spacebar/gateway";
+import { PublicMember } from "@spacebar/schemas";
 import { In } from "typeorm";
 
 // TODO: only show roles/members that have access to this channel

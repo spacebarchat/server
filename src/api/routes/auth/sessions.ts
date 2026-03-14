@@ -17,7 +17,7 @@
 */
 import { route } from "@spacebar/api";
 import { createHash } from "node:crypto";
-import { emitEvent, Session, Snowflake } from "@spacebar/util";
+import { emitEvent, Session } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { SessionsLogoutSchema } from "../../../schemas/api/users/SessionsSchemas";
 import { In } from "typeorm";

@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Emoji, GuildEmojisUpdateEvent, Member, Snowflake, User, emitEvent, handleFile } from "@spacebar/util";
+import { Config, DiscordApiErrors, Emoji, GuildEmojisUpdateEvent, Member, Snowflake, emitEvent, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
 

@@ -17,7 +17,7 @@
 */
 
 import { UploadAttachmentRequestSchema } from "@spacebar/schemas";
-import { Attachment, Snowflake } from "@spacebar/util";
+import { Snowflake } from "@spacebar/util";
 
 export interface SendableModalSubmitDataSchema {
     id: Snowflake;

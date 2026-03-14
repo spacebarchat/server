@@ -17,7 +17,6 @@
 */
 
 import { Session, TimeSpan } from "@spacebar/util";
-import { Like } from "typeorm";
 import { setInterval } from "timers";
 
 export async function initInstance() {

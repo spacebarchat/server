@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, Member, Session } from "@spacebar/util";
+import { Session } from "@spacebar/util";
 
 export function genSessionId() {
     return genRanHex(32);

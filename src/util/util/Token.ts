@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import jwt, { VerifyOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { Config } from "./Config";
 import { InstanceBan, Session, User } from "../entities";
 import crypto from "node:crypto";

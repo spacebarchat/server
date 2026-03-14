@@ -19,8 +19,7 @@
 import { route } from "@spacebar/api";
 import { Channel, ChannelUpdateEvent, Guild, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { ChannelModifySchema, ChannelReorderSchema } from "@spacebar/schemas";
-import { ChannelCreateSchema } from "../../../../schemas/uncategorised/ChannelCreateSchema";
+import { ChannelCreateSchema, ChannelReorderSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
 router.get(

@@ -22,8 +22,6 @@ import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
 import { ConfigEntity } from "../entities/Config";
-// noinspection ES6PreferShortImport
-import { Migration } from "../entities/Migration";
 import fs from "fs";
 
 // UUID extension option is only supported with postgres

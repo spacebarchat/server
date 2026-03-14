@@ -19,8 +19,6 @@
 import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
     Attachment,
-    AutomodRule,
-    AutomodTriggerTypes,
     Channel,
     Config,
     DiscordApiErrors,
@@ -38,10 +36,8 @@ import {
     Relationship,
     Rights,
     Snowflake,
-    stringGlobToRegexp,
     uploadFile,
     User,
-    Recipient,
     ThreadMember,
     ThreadMemberFlags,
     ThreadMembersUpdateEvent,
@@ -54,9 +50,6 @@ import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } fr
 import { URL } from "url";
 import {
     AcknowledgeDeleteSchema,
-    AutomodCustomWordsRule,
-    AutomodRuleActionType,
-    AutomodRuleEventType,
     isTextChannel,
     MessageCreateAttachment,
     MessageCreateCloudAttachment,
@@ -64,7 +57,6 @@ import {
     Reaction,
     ReadStateType,
     RelationshipType,
-    ChannelType,
 } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

@@ -16,11 +16,8 @@
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 import { route } from "@spacebar/api";
-import { createHash } from "node:crypto";
-import { Session, Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { SessionsLogoutSchema } from "../../../schemas/api/users/SessionsSchemas";
-import { In } from "typeorm";
+
 const router = Router({ mergeParams: true });
 router.get(
     "/",

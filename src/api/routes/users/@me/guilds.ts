@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, Guild, GuildDeleteEvent, GuildMemberRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
+import { Config, Guild, Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 

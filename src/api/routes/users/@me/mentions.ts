@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Snowflake, User, Message, Member, Channel, Permissions, timePromise, NewUrlUserSignatureData, Stopwatch, Attachment } from "@spacebar/util";
+import { Snowflake, Message, Member, Channel, Permissions, NewUrlUserSignatureData, Stopwatch, Attachment } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In, LessThan, FindOptionsWhere } from "typeorm";
 

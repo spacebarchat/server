@@ -22,7 +22,7 @@ import { route } from "@spacebar/api";
 import { Channel, FieldErrors, Message, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { FindManyOptions, In, Like } from "typeorm";
+import { FindManyOptions, Like } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 

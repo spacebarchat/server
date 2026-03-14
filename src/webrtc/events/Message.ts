@@ -17,7 +17,6 @@
 */
 
 import { CLOSECODES } from "@spacebar/gateway";
-import { Tuple } from "lambert-server";
 import OPCodeHandlers from "../opcodes";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
 

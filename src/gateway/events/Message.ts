@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES, Payload, WebSocket } from "@spacebar/gateway";
 import { ErlpackType } from "@spacebar/util";
 import fs from "fs/promises";
 import BigIntJson from "json-bigint";

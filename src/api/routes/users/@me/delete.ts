@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { DiscordApiErrors, Guild, Member, User, UserSettingsProtos } from "@spacebar/util";
+import { Guild, Member, User, UserSettingsProtos } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";

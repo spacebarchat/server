@@ -31,7 +31,6 @@ import {
     ThreadMember,
     Message,
     ChannelFlags,
-    DiscordApiErrors,
 } from "@spacebar/util";
 import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 

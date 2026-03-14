@@ -17,10 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { Application, DiscordApiErrors, Guild, handleFile } from "@spacebar/util";
+import { Application, Guild, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { verifyToken } from "node-2fa";
 import { ApplicationModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

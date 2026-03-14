@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// process.env.MONGOMS_DEBUG = "true";
 import moduleAlias from "module-alias";
 moduleAlias(__dirname + "../../../package.json");
 
@@ -28,10 +27,7 @@ import { initStats } from "./stats";
 import { config } from "dotenv";
 
 config({ quiet: true });
-import { execSync } from "child_process";
 import { centerString, getRevInfoOrFail, Logo } from "@spacebar/util";
-import fs from "fs";
-import path from "path";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 

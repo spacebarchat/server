@@ -2514,7 +2514,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -2715,10 +2715,15 @@
                     },
                     "discovery_excluded": {
                         "type": "boolean"
+                    },
+                    "ToGuildSource": {
+                        "type": "object",
+                        "additionalProperties": false
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "ToGuildSource",
+                    "__@annotationsKey@12309",
                     "bans",
                     "channel_ordering",
                     "channels",
@@ -3217,6 +3222,9 @@
                     "guild_id": {
                         "type": "string"
                     },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "mute": {
                         "type": "boolean"
                     },
@@ -3280,6 +3288,7 @@
                     "bio",
                     "communication_disabled_until",
                     "deaf",
+                    "flags",
                     "guild_id",
                     "id",
                     "joined_at",
@@ -5110,52 +5119,87 @@
                         ]
                     },
                     "allowed_mentions": {
-                        "type": "object",
-                        "properties": {
-                            "parse": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "parse": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "roles": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "users": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "replied_user": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false
                             },
-                            "roles": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "replied_user": {
-                                "type": "boolean"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false
+                        ]
                     },
                     "message_reference": {
-                        "type": "object",
-                        "properties": {
-                            "message_id": {
-                                "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "message_id": {
+                                        "type": "string"
+                                    },
+                                    "channel_id": {
+                                        "type": "string"
+                                    },
+                                    "guild_id": {
+                                        "type": "string"
+                                    },
+                                    "fail_if_not_exists": {
+                                        "type": "boolean"
+                                    },
+                                    "type": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false
                             },
-                            "channel_id": {
-                                "type": "string"
-                            },
-                            "guild_id": {
-                                "type": "string"
-                            },
-                            "fail_if_not_exists": {
-                                "type": "boolean"
-                            },
-                            "type": {
-                                "type": "integer"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false
+                        ]
                     },
                     "payload_json": {
                         "type": "string"
@@ -5420,52 +5464,87 @@
                         ]
                     },
                     "allowed_mentions": {
-                        "type": "object",
-                        "properties": {
-                            "parse": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "parse": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "roles": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "users": {
+                                        "anyOf": [
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            {
+                                                "type": "null"
+                                            }
+                                        ]
+                                    },
+                                    "replied_user": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false
                             },
-                            "roles": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "replied_user": {
-                                "type": "boolean"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false
+                        ]
                     },
                     "message_reference": {
-                        "type": "object",
-                        "properties": {
-                            "message_id": {
-                                "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "message_id": {
+                                        "type": "string"
+                                    },
+                                    "channel_id": {
+                                        "type": "string"
+                                    },
+                                    "guild_id": {
+                                        "type": "string"
+                                    },
+                                    "fail_if_not_exists": {
+                                        "type": "boolean"
+                                    },
+                                    "type": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false
                             },
-                            "channel_id": {
-                                "type": "string"
-                            },
-                            "guild_id": {
-                                "type": "string"
-                            },
-                            "fail_if_not_exists": {
-                                "type": "boolean"
-                            },
-                            "type": {
-                                "type": "integer"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false
+                        ]
                     },
                     "payload_json": {
                         "type": "string"
@@ -7775,7 +7854,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -7786,7 +7865,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "embeds",
                     "flags",
@@ -7963,7 +8042,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -7974,7 +8053,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "created_at",
                     "flags",
                     "id",
@@ -8031,7 +8110,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8042,7 +8121,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "channel_id",
                     "closed",
@@ -8242,7 +8321,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8253,7 +8332,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "bio",
                     "bot",
                     "connected_accounts",
@@ -8351,7 +8430,7 @@
                     "session_nickname": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8362,7 +8441,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "activities",
                     "client_info",
                     "client_status",
@@ -8654,7 +8733,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8665,7 +8744,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "from",
                     "from_id",
                     "id",
@@ -8750,7 +8829,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8761,7 +8840,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "external_id",
                     "id",
                     "name",
@@ -8964,7 +9043,7 @@
                         "type": "boolean",
                         "default": true
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -8975,7 +9054,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "afk_timeout",
                     "allow_accessibility_detection",
                     "animate_emoji",
@@ -9090,7 +9169,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9101,7 +9180,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "counter",
                     "id",
                     "key_id",
@@ -9259,7 +9338,7 @@
                     "flags": {
                         "$ref": "#/components/schemas/ThreadMemberFlags"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9270,7 +9349,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "flags",
                     "id",
@@ -9371,7 +9450,11 @@
                     "collectibles": {
                         "$ref": "#/components/schemas/Collectibles"
                     },
-                    "__@annotationsKey@12271": {
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9382,11 +9465,12 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "banner",
                     "bio",
                     "communication_disabled_until",
                     "deaf",
+                    "flags",
                     "guild",
                     "guild_id",
                     "id",
@@ -9626,7 +9710,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9637,7 +9721,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "bans",
                     "channel_ordering",
                     "channels",
@@ -9692,7 +9776,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9703,7 +9787,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "executor",
                     "executor_id",
                     "guild",
@@ -9773,7 +9857,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9784,7 +9868,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "color",
                     "colors",
                     "flags",
@@ -9857,7 +9941,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9868,7 +9952,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "code",
                     "created_at",
                     "creator",
@@ -9926,7 +10010,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -9937,7 +10021,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "animated",
                     "available",
                     "groups",
@@ -9994,7 +10078,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10005,7 +10089,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "format_type",
                     "id",
                     "name",
@@ -10040,7 +10124,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10051,7 +10135,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "id",
                     "name",
                     "stickers"
@@ -10132,7 +10216,7 @@
                     "flags": {
                         "type": "integer"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10143,7 +10227,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "channel_id",
                     "code",
@@ -10217,7 +10301,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10228,7 +10312,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "channel_id",
                     "deaf",
@@ -10303,7 +10387,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10314,7 +10398,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "application",
                     "application_id",
                     "avatar",
@@ -10471,7 +10555,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10482,7 +10566,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "description",
                     "discoverability_state",
                     "discovery_eligibility_flags",
@@ -10525,7 +10609,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10536,7 +10620,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "id",
                     "members",
                     "name",
@@ -10574,7 +10658,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10585,7 +10669,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "id",
                     "membership_state",
                     "permissions",
@@ -10865,7 +10949,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10876,7 +10960,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "badge_count",
                     "channel",
                     "channel_id",
@@ -10963,7 +11047,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -10974,7 +11058,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "channel",
                     "channel_id",
                     "id",
@@ -11015,7 +11099,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -11026,7 +11110,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "filename",
                     "id",
                     "message",
@@ -11187,20 +11271,43 @@
                 ]
             },
             "PartialEmoji": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "animated": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "name"
+                        ]
                     },
-                    "name": {
-                        "type": "string"
-                    },
-                    "animated": {
-                        "type": "boolean"
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "animated": {
+                                "type": "boolean"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "id"
+                        ]
                     }
-                },
-                "required": [
-                    "name"
                 ]
             },
             "MessageType": {
@@ -11330,7 +11437,44 @@
                         "type": "string"
                     },
                     "emoji": {
-                        "$ref": "#/components/schemas/PartialEmoji"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "name"
+                                ]
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        ]
                     },
                     "custom_id": {
                         "type": "string"
@@ -11494,7 +11638,44 @@
                         "type": "string"
                     },
                     "emoji": {
-                        "$ref": "#/components/schemas/PartialEmoji"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "name"
+                                ]
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        ]
                     },
                     "default": {
                         "type": "boolean"
@@ -11591,7 +11772,44 @@
                         "type": "string"
                     },
                     "emoji": {
-                        "$ref": "#/components/schemas/PartialEmoji"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "name"
+                                ]
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "id"
+                                ]
+                            }
+                        ]
                     }
                 }
             },
@@ -11807,6 +12025,9 @@
                     "guild_id": {
                         "type": "string"
                     },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "mute": {
                         "type": "boolean"
                     },
@@ -11870,6 +12091,7 @@
                     "bio",
                     "communication_disabled_until",
                     "deaf",
+                    "flags",
                     "guild_id",
                     "id",
                     "joined_at",
@@ -13479,7 +13701,7 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -13490,7 +13712,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "code",
                     "consumed",
                     "expired",
@@ -13601,7 +13823,7 @@
                     "icon": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -13612,7 +13834,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "id",
                     "is_primary",
                     "localizations",
@@ -13990,7 +14212,7 @@
                     "link": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12271": {
+                    "__@annotationsKey@12309": {
                         "type": "object",
                         "additionalProperties": {
                             "type": "array",
@@ -14001,7 +14223,7 @@
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12271",
+                    "__@annotationsKey@12309",
                     "description",
                     "icon",
                     "id"
@@ -17160,6 +17382,41 @@
             }
         },
         "/stickers/{sticker_id}/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Sticker"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "sticker_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "sticker_id"
+                    }
+                ],
+                "tags": [
+                    "stickers"
+                ]
+            }
+        },
+        "/stickers/{sticker_id}/guild": {
             "get": {
                 "security": [
                     {

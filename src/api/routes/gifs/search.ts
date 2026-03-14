@@ -19,7 +19,6 @@
 import { route } from "@spacebar/api";
 import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import http from "http";
 import { TenorGif, TenorMediaTypes } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
