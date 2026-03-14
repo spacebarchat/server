@@ -56,7 +56,7 @@ router.get(
         if (parsedLimit < 1 || parsedLimit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
 
         if (sort_order) {
-            if (typeof sort_order != "string" || ["desc", "asc"].indexOf(sort_order) == -1)
+            if (["desc", "asc"].indexOf(sort_order) == -1)
                 throw FieldErrors({
                     sort_order: {
                         message: "Value must be one of ('desc', 'asc').",

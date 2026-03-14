@@ -199,7 +199,7 @@ export class User extends BaseClass {
     validate() {
         if (this.discriminator) {
             const discrim = Number(this.discriminator);
-            if (isNaN(discrim) || !(typeof discrim == "number") || !Number.isInteger(discrim) || discrim <= 0 || discrim >= 10000)
+            if (isNaN(discrim) || !Number.isInteger(discrim) || discrim <= 0 || discrim >= 10000)
                 throw FieldErrors({
                     discriminator: {
                         message: "Discriminator must be a number.",

@@ -19,10 +19,7 @@
 export class DateBuilder {
     private date: Date;
     // constructors
-    constructor(date = new Date()) {
-        if (!(date instanceof Date)) {
-            throw new Error("Invalid date object.");
-        }
+    constructor(date: Date = new Date()) {
         this.date = new Date(date.getTime()); // Create a copy to avoid mutating the original date
     }
 
