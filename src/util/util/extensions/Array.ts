@@ -16,14 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-declare global {
-    interface Array<T> {
-        /**
-         * @deprecated never use, idk why but I can't get rid of this without errors
-         */
-        remove(h: T): never;
-    }
-}
 /* https://stackoverflow.com/a/50636286 */
 export function arrayPartition<T>(array: T[], filter: (elem: T) => boolean): [T[], T[]] {
     const pass: T[] = [],
@@ -38,5 +30,3 @@ export function arrayRemove<T>(array: T[], item: T): void {
         array.splice(index, 1);
     }
 }
-
-// register extensions

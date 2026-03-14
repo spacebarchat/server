@@ -197,7 +197,7 @@ export class Channel extends BaseClass {
             skipEventEmit?: boolean;
             skipNameChecks?: boolean;
         },
-    ) {
+    ): Promise<Channel> {
         if (!opts?.skipPermissionCheck) {
             // Always check if user has permission first
             const permissions = await getPermission(user_id, channel.guild_id);
@@ -281,7 +281,8 @@ export class Channel extends BaseClass {
             // total_message_sent: 0,
         };
 
-        const ret = Channel.create(channel);
+        // TODO: figure out why the generic is required here
+        const ret = Channel.create<Channel>(channel);
 
         await Promise.all([
             ret.save(),
