@@ -9,9 +9,6 @@ public class SecurityConfiguration {
     [JsonPropertyName("twoFactor")]
     public TwoFactorConfiguration TwoFactor { get; set; } = new();
 
-    [JsonPropertyName("autoUpdate")]
-    public bool AutoUpdate { get; set; } = true;
-
     [JsonPropertyName("requestSignature")] public string RequestSignature; // {get;set;}=crypto.randomBytes(32).toString("base64");
 
     [JsonPropertyName("jwtSecret")]
