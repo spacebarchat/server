@@ -30,6 +30,7 @@ import {
     MessageReactionRemoveEvent,
     User,
     arrayRemove,
+    ReactionType,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -224,14 +225,20 @@ router.put(
 
         await message.save();
 
-        const member =
-            channel.guild_id &&
-            (
-                await Member.findOneOrFail({
-                    where: { id: req.user_id },
-                    select: PublicMemberProjection,
-                })
-            ).toPublicMember();
+        const member = (
+            await Member.findOneOrFail({
+                where: { id: req.user_id },
+                relations: { roles: true, user: true },
+                select: {
+                    index: true,
+                    ...Object.fromEntries(PublicMemberProjection.map((x) => [x, true])),
+                    user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+                    roles: {
+                        id: true,
+                    },
+                },
+            })
+        ).toPublicMember();
 
         await emitEvent({
             event: "MESSAGE_REACTION_ADD",
@@ -243,8 +250,9 @@ router.put(
                 guild_id: channel.guild_id,
                 emoji,
                 member,
+                type: ReactionType.normal,
             },
-        } as MessageReactionAddEvent);
+        } satisfies MessageReactionAddEvent);
 
         res.sendStatus(204);
     },
@@ -300,8 +308,9 @@ router.delete(
                 message_id,
                 guild_id: channel.guild_id,
                 emoji,
+                type: ReactionType.normal,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
@@ -357,8 +366,9 @@ router.delete(
                 message_id,
                 guild_id: channel.guild_id,
                 emoji,
+                type: ReactionType.normal,
             },
-        } as MessageReactionRemoveEvent);
+        } satisfies MessageReactionRemoveEvent);
 
         res.sendStatus(204);
     },
