@@ -54,36 +54,6 @@ export class Snowflake {
         return bin;
     }
 
-    /**
-     * Transforms a snowflake from a bit string to a decimal string.
-     * @param  {string} num Bit string to be transformed
-     * @returns {Snowflake}
-     * @private
-     */
-    private static binaryToID(num: string): string {
-        let dec = "";
-
-        while (num.length > 50) {
-            const high = parseInt(num.slice(0, -32), 2);
-            const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
-
-            dec = (low % 10).toString() + dec;
-            num =
-                Math.floor(high / 10).toString(2) +
-                Math.floor(low / 10)
-                    .toString(2)
-                    .padStart(32, "0");
-        }
-
-        num = parseInt(num, 2);
-        while (num > 0) {
-            dec = (num % 10).toString() + dec;
-            num = Math.floor(num / 10);
-        }
-
-        return dec;
-    }
-
     static generateWorkerProcess() {
         // worker process - returns a number
         const time = BigInt(Date.now() - Snowflake.EPOCH) << BigInt(22);
