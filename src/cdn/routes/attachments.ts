@@ -21,8 +21,8 @@ import { Request, Response, Router } from "express";
 import imageSize from "image-size";
 import { HTTPError } from "lambert-server";
 import { multer } from "../util/multer";
-import { storage } from "../util/Storage";
-import { CloudAttachment } from "../../util/entities/CloudAttachment";
+import { storage } from "@spacebar/cdn";
+import { CloudAttachment } from "@spacebar/util";
 import { fileTypeFromBuffer } from "file-type";
 import { cache } from "../util/cache";
 

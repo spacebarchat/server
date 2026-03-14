@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Attachment } from "../../util/entities";
+// TODO: remove dependency on entities...
+import { Attachment } from "@spacebar/util";
 
 export enum AccountStandingState {
     ALL_GOOD = 100,

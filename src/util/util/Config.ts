@@ -20,7 +20,7 @@ import { existsSync } from "fs";
 import fs from "fs/promises";
 import { OrmUtils } from "..";
 import { ConfigValue } from "../config";
-import { ConfigEntity } from "../entities/Config";
+import { ConfigEntity } from "../entities";
 import { JsonValue } from "@protobuf-ts/runtime";
 
 // TODO: yaml instead of json

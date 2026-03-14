@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ConnectionStore, FieldErrors } from "../../../../util";
+import { ConnectionStore, FieldErrors } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 

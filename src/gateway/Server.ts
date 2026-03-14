@@ -22,7 +22,7 @@ import { checkToken, closeDatabase, Config, initDatabase, initEvent, Rights } fr
 import ws from "ws";
 import { Connection, openConnections } from "./events/Connection";
 import http from "http";
-import { cleanupOnStartup } from "./util/Utils";
+import { cleanupOnStartup } from "./util";
 import { randomString } from "@spacebar/api";
 import { setInterval } from "timers";
 

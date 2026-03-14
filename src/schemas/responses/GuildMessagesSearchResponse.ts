@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Attachment, Role } from "../../util/entities";
+// TODO: remove dependency on entities
+import { Attachment, Role } from "@spacebar/util";
 import { ActionRowComponent, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {

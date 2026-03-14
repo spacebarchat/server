@@ -18,7 +18,7 @@
 
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { URL } from "url";
-import { deleteFile } from "../util/cdn";
+import { deleteFile } from "../util";
 import { BaseClass } from "./BaseClass";
 import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "../Signing";
 

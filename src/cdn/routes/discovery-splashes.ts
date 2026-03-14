@@ -18,7 +18,7 @@
 
 import { Router, Response, Request } from "express";
 import { Config, Snowflake } from "@spacebar/util";
-import { storage } from "../util/Storage";
+import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
 import crypto from "crypto";

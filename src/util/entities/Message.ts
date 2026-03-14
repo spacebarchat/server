@@ -20,7 +20,7 @@ import { User } from "./User";
 import { Member } from "./Member";
 import { Role } from "./Role";
 import { Channel } from "./Channel";
-import { InteractionType } from "../interfaces/Interaction";
+import { InteractionType } from "../interfaces";
 import { Application } from "./Application";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId, FindOneOptions, Raw, Not, BaseEntity, In } from "typeorm";
 import { BaseClass } from "./BaseClass";

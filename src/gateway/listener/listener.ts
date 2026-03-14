@@ -31,11 +31,9 @@ import {
     Recipient,
     Relationship,
 } from "@spacebar/util";
-import { CLOSECODES, OPCODES } from "../util/Constants";
-import { Send } from "../util/Send";
+import { CLOSECODES, OPCODES, Send } from "../util";
 import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
-import * as console from "node:console";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
 

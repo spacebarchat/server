@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Guild } from "../../util/entities";
+// TODO: remove dependency on entities
+import { Guild } from "@spacebar/util";
 
 export interface DiscoverableGuildsResponse {
     total: number;

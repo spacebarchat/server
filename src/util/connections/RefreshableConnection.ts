@@ -17,8 +17,8 @@
 */
 
 import { ConnectedAccount } from "../entities";
-import { ConnectedAccountCommonOAuthTokenResponse } from "../interfaces";
 import { Connection } from "./Connection";
+import { ConnectedAccountCommonOAuthTokenResponse } from "@spacebar/schemas";
 
 /**
  * A connection that can refresh its token.

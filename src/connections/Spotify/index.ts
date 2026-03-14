@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount, ConnectedAccountCommonOAuthTokenResponse, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
+import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
 import { SpotifySettings } from "./SpotifySettings";
-import { ConnectionCallbackSchema } from "@spacebar/schemas";
+import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
     display_name: string;

@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BackupCode, UserSettings } from "../../util/entities";
+// TODO: remove dependency on entities
+import { BackupCode, UserSettings } from "@spacebar/util";
 
 export interface TokenResponse {
     token: string;
