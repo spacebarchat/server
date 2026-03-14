@@ -16,10 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseClass, BaseClassWithoutId } from "./BaseClass";
-import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
-import { User } from "./User";
-import { AutomodAction, AutomodRuleActionType, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import { Entity, Column } from "typeorm";
 import { ReportMenuType } from "../../schemas/api/reports/ReportMenu";
 
 @Entity({

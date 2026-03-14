@@ -22,7 +22,6 @@ import { BaseClassWithoutId } from "./BaseClass";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, Status } from "../interfaces";
 import { randomUpperString } from "@spacebar/api";
-import { IpDataIpLookupResponse } from "../util/networking/ipdata/IpDataSampleResponses";
 import { DateBuilder, IpDataClient, TimeSpan } from "../util";
 
 //TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them

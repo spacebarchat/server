@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, ColumnOptions, FindOptionsWhere, InsertResult, ObjectIdColumn, ObjectLiteral, PrimaryColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, BeforeUpdate, Column, ColumnOptions, FindOptionsWhere, ObjectIdColumn, PrimaryColumn } from "typeorm";
 import { Snowflake } from "../util/Snowflake";
 import { getDatabase } from "../util/Database";
 import { OrmUtils } from "../imports/OrmUtils";

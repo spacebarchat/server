@@ -17,7 +17,7 @@
 */
 
 import { Request } from "express";
-import { Column, Entity, FindOneOptions, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
 import { BaseClass } from "./BaseClass";

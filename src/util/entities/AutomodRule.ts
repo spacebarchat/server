@@ -19,7 +19,7 @@
 import { BaseClass } from "./BaseClass";
 import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
 import { User } from "./User";
-import { AutomodAction, AutomodRuleActionType, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
+import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
 
 @Entity({
     name: "automod_rules",

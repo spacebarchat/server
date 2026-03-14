@@ -16,11 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, CreateDateColumn, Entity, FindOptionsWhere, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
+import { Column, CreateDateColumn, Entity, FindOptionsWhere, JoinColumn, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Team } from "./Team";
-import { User } from "./User";
-import { Guild } from "./Guild";
 
 @Entity({
     name: "instance_bans",

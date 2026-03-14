@@ -28,8 +28,7 @@ import { Guild } from "./Guild";
 import { Message } from "./Message";
 import { Role } from "./Role";
 import { User } from "./User";
-import { AvatarDecorationData, Collectibles, DisplayNameStyle, PrimaryGuild, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
-import { JsonNumber } from "../util/Decorators";
+import { AvatarDecorationData, Collectibles, DisplayNameStyle, PublicMember, PublicMemberProjection, UserGuildSettings } from "@spacebar/schemas";
 
 export const MemberPrivateProjection: (keyof Member)[] = [
     "id",
