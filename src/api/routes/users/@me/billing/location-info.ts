@@ -18,13 +18,14 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
+import { IpDataClient } from "@spacebar/util*";
 
 const router: Router = Router({ mergeParams: true });
 
-router.get("/", route({}), (req: Request, res: Response) => {
-    //TODO
+router.get("/", route({}), async (req: Request, res: Response) => {
     // TODO: subdivision_code (optional)
-    res.json({ country_code: "US" }).status(200);
+    const country_code = (await IpDataClient.getIpInfo(req.ip!))?.country_code;
+    res.json({ country_code: country_code }).status(200);
 });
 
 export default router;

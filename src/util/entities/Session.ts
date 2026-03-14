@@ -59,7 +59,7 @@ export class Session extends BaseClassWithoutId {
     client_status: ClientStatus;
 
     @Column({ nullable: false, type: String })
-    status: Status; //TODO enum
+    status: Status;
 
     @Column({ default: false })
     is_admin_session: boolean;
