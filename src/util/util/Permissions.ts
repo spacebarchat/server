@@ -7,6 +7,7 @@ import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
 import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, UserFlags } from "@spacebar/schemas";
 import { FindOneOptions } from "typeorm";
+import { permission } from "process";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
@@ -113,12 +114,21 @@ export class Permissions extends BitField {
     overwriteChannel(overwrites: ChannelPermissionOverwrite[]) {
         if (!overwrites) return this;
         if (!this.cache) throw new Error("permission cache not available");
+        let memberPerm = undefined as ChannelPermissionOverwrite | undefined;
+
         overwrites = overwrites.filter((x) => {
             if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id)) return true;
-            if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) return true;
+            if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) {
+                memberPerm = x;
+            }
             return false;
         });
-        return new Permissions(Permissions.channelPermission(overwrites, this.bitfield));
+        let permission = Permissions.channelPermission(overwrites, this.bitfield);
+        if (memberPerm) {
+            permission &= ~BigInt(memberPerm.deny);
+            permission |= ~BigInt(memberPerm.allow);
+        }
+        return new Permissions(permission);
     }
 
     static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
@@ -163,12 +173,19 @@ export class Permissions extends BitField {
         let permission = Permissions.rolePermission(roles);
 
         if (channel?.overwrites) {
+            let memberPerm = undefined as ChannelPermissionOverwrite | undefined;
             const overwrites = channel.overwrites.filter((x) => {
                 if (x.type === ChannelPermissionOverwriteType.role && user.roles.includes(x.id)) return true;
-                if (x.type === ChannelPermissionOverwriteType.member && x.id == user.id) return true;
+                if (x.type === ChannelPermissionOverwriteType.member && x.id == user.id) {
+                    memberPerm = x;
+                }
                 return false;
             });
             permission = Permissions.channelPermission(overwrites, permission);
+            if (memberPerm) {
+                permission &= ~BigInt(memberPerm.deny);
+                permission |= ~BigInt(memberPerm.allow);
+            }
         }
 
         if (channel?.recipient_ids) {
