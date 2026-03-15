@@ -78,16 +78,23 @@ router.get("/:channel_id/:id/:filename", cache, async (req: Request, res: Respon
 
     const fullUrl = (req.headers["x-forwarded-proto"] ?? req.protocol) + "://" + (req.headers["x-forwarded-host"] ?? req.hostname) + req.originalUrl;
 
-    if (
-        Config.get().security.cdnSignUrls &&
-        !hasValidSignature(
+    let hasValidAuth = false;
+    if (req.headers.signature) {
+        hasValidAuth = req.headers.signature !== Config.get().security.requestSignature;
+        if (!hasValidAuth) console.warn("[CDN/Attachments] Client sent invalid signature header");
+    } else if (!Config.get().security.cdnSignUrls) hasValidAuth = true;
+    else {
+        hasValidAuth = hasValidSignature(
             new NewUrlUserSignatureData({
                 ip: req.ip,
                 userAgent: req.headers["user-agent"] as string,
             }),
             UrlSignResult.fromUrl(fullUrl),
-        )
-    ) {
+        );
+        console.warn("[CDN/Attachments] Client sent invalid attachment URL signature");
+    }
+
+    if (!hasValidAuth) {
         return res.status(404).send("This content is no longer available.");
     }
 
