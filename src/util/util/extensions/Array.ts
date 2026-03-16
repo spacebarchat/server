@@ -30,3 +30,15 @@ export function arrayRemove<T>(array: T[], item: T): void {
         array.splice(index, 1);
     }
 }
+
+export function arrayDistinctBy<T, M>(array: T[], selector: (elem: T) => M): T[] {
+    const mapped = new Set<M>();
+
+    return array.filter((item) => {
+        const mappedValue = selector(item);
+        if (mapped.has(mappedValue)) return false;
+
+        mapped.add(mappedValue);
+        return true;
+    });
+}
