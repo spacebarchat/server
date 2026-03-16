@@ -2489,15 +2489,6 @@
                     "id": {
                         "type": "string"
                     },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
                     "icon": {
                         "type": "string"
                     },
@@ -2690,15 +2681,9 @@
                     },
                     "discovery_excluded": {
                         "type": "boolean"
-                    },
-                    "ToGuildSource": {
-                        "type": "object",
-                        "additionalProperties": false
                     }
                 },
                 "required": [
-                    "ToGuildSource",
-                    "__@annotationsKey@12300",
                     "bans",
                     "channel_ordering",
                     "channels",
@@ -5217,7 +5202,6 @@
                         ]
                     },
                     "attachments": {
-                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                         "type": "array",
                         "items": {
                             "anyOf": [
@@ -5550,7 +5534,6 @@
                         "type": "string"
                     },
                     "attachments": {
-                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                         "type": "array",
                         "items": {
                             "anyOf": [
@@ -6584,7 +6567,6 @@
                         "type": "string"
                     },
                     "attachments": {
-                        "description": "TODO: we should create an interface for attachments\nTODO: OpenWAAO<-->attachment-style metadata conversion",
                         "type": "array",
                         "items": {
                             "type": "object",
@@ -7853,19 +7835,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "embeds",
                     "flags",
@@ -8041,19 +8013,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "created_at",
                     "flags",
                     "id",
@@ -8109,19 +8071,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "channel_id",
                     "closed",
@@ -8320,19 +8272,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "bio",
                     "bot",
                     "connected_accounts",
@@ -8429,19 +8371,9 @@
                     },
                     "session_nickname": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "activities",
                     "client_info",
                     "client_status",
@@ -8732,19 +8664,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "from",
                     "from_id",
                     "id",
@@ -8828,19 +8750,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "external_id",
                     "id",
                     "name",
@@ -9042,19 +8954,9 @@
                     "view_nsfw_guilds": {
                         "type": "boolean",
                         "default": true
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "afk_timeout",
                     "allow_accessibility_detection",
                     "animate_emoji",
@@ -9168,19 +9070,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "counter",
                     "id",
                     "key_id",
@@ -9337,19 +9229,9 @@
                     },
                     "flags": {
                         "$ref": "#/components/schemas/ThreadMemberFlags"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "flags",
                     "id",
@@ -9453,19 +9335,9 @@
                     "flags": {
                         "type": "integer",
                         "default": 0
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "banner",
                     "bio",
                     "communication_disabled_until",
@@ -9709,19 +9581,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "bans",
                     "channel_ordering",
                     "channels",
@@ -9775,19 +9637,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "executor",
                     "executor_id",
                     "guild",
@@ -9856,19 +9708,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "color",
                     "colors",
                     "flags",
@@ -9940,19 +9782,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "code",
                     "created_at",
                     "creator",
@@ -10009,19 +9841,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "animated",
                     "available",
                     "groups",
@@ -10077,19 +9899,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "format_type",
                     "id",
                     "name",
@@ -10123,19 +9935,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "id",
                     "name",
                     "stickers"
@@ -10215,19 +10017,9 @@
                     },
                     "flags": {
                         "type": "integer"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "channel_id",
                     "code",
@@ -10300,19 +10092,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "channel_id",
                     "deaf",
@@ -10386,19 +10168,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "application",
                     "application_id",
                     "avatar",
@@ -10554,19 +10326,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "description",
                     "discoverability_state",
                     "discovery_eligibility_flags",
@@ -10608,19 +10370,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "id",
                     "members",
                     "name",
@@ -10657,19 +10409,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "id",
                     "membership_state",
                     "permissions",
@@ -10948,19 +10690,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "badge_count",
                     "channel",
                     "channel_id",
@@ -11046,19 +10778,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "channel",
                     "channel_id",
                     "id",
@@ -11098,19 +10820,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "filename",
                     "id",
                     "message",
@@ -13697,19 +13409,9 @@
                     },
                     "id": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "code",
                     "consumed",
                     "expired",
@@ -13819,19 +13521,9 @@
                     },
                     "icon": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "id",
                     "is_primary",
                     "localizations",
@@ -14208,19 +13900,9 @@
                     },
                     "link": {
                         "type": "string"
-                    },
-                    "__@annotationsKey@12300": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
                     }
                 },
                 "required": [
-                    "__@annotationsKey@12300",
                     "description",
                     "icon",
                     "id"
@@ -16748,40 +16430,6 @@
                         "description": "payment_source_id"
                     }
                 ],
-                "tags": [
-                    "users"
-                ]
-            }
-        },
-        "/users/@me/billing/location-info/": {
-            "get": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "No description available"
-                    }
-                },
-                "tags": [
-                    "users"
-                ]
-            }
-        },
-        "/users/@me/billing/country-code/": {
-            "get": {
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "responses": {
-                    "default": {
-                        "description": "No description available"
-                    }
-                },
                 "tags": [
                     "users"
                 ]

@@ -35,10 +35,7 @@ export interface WebhookExecuteSchema {
     components?: any[];
     file?: { filename: string };
     payload_json?: string;
-    /**
-	TODO: we should create an interface for attachments
-	TODO: OpenWAAO<-->attachment-style metadata conversion
-	**/
+    // TODO: we should create an interface for attachments
     attachments?: MessageCreateAttachment[];
     flags?: number;
     thread_name?: string;

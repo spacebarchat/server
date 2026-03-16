@@ -57,10 +57,7 @@ export interface MessageCreateSchema {
     } | null;
     payload_json?: string;
     file?: { filename: string };
-    /**
-	TODO: we should create an interface for attachments
-	TODO: OpenWAAO<-->attachment-style metadata conversion
-	**/
+    // TODO: we should create an interface for attachments
     attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
     sticker_ids?: string[] | null; // null check: fixes Discord-Go
     components?: ActionRowComponent[] | null; // null check: fixes Discord-Go

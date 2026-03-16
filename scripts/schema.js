@@ -35,7 +35,7 @@ const fs = require("fs");
 const fsp = require("fs/promises");
 const TJS = require("typescript-json-schema");
 const walk = require("./util/walk");
-const { redBright, yellowBright, bgRedBright, yellow, greenBright, green, cyanBright } = require("picocolors");
+const { redBright, yellowBright, bgRedBright, yellow, greenBright, green, cyanBright, blueBright, blue, cyan, bgRed, gray } = require("picocolors");
 const schemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 const exclusionList = JSON.parse(fs.readFileSync(path.join(__dirname, "schemaExclusions.json"), { encoding: "utf8" }));
 
@@ -63,6 +63,8 @@ const baseClassProperties = [
     "_do_validate", // ?
     "hasId", // ?
 ];
+
+const entityMethods = ["ToGuildSource"];
 
 const ExcludeAndWarn = [...exclusionList.manualWarn, ...exclusionList.manualWarnRe.map((r) => new RegExp(r))];
 const Excluded = [...exclusionList.manual, ...exclusionList.manualRe.map((r) => new RegExp(r)), ...exclusionList.auto.map((r) => r.value)];
@@ -167,6 +169,14 @@ async function main() {
     });
     //.sort((a,b) => a.localeCompare(b));
 
+    // remove node modules once and for all
+    console.log("Removing schemas from node modules...");
+    schemas = schemas.filter((x) => !generator.getSymbols(x)[0].fullyQualifiedName.includes("/node_modules/"));
+
+    // for (const s of schemas) {
+    //     console.log(generator.getSymbols(s)[0].symbol);
+    // }
+
     const elapsedList = stepSw.getElapsedAndReset();
     process.stdout.write("Done in " + yellowBright(elapsedList.totalMilliseconds + "." + elapsedList.microseconds) + " ms\n");
     console.log("Found", yellowBright(schemas.length), "schemas to process.");
@@ -189,7 +199,7 @@ async function main() {
     const schemaSw = Stopwatch.startNew();
     for (const name of schemas) {
         process.stdout.write(`Processing schema ${name}... `);
-        const part = TJS.generateSchema(program, name, settings, [], generator);
+        let part = TJS.generateSchema(program, name, settings, [], generator);
         if (!part) continue;
 
         if (definitions[name]) {
@@ -199,6 +209,12 @@ async function main() {
         if (!includesMatch(name, Included) && excludedLambdas.some((fn) => fn(name, part))) {
             continue;
         }
+
+        // part = removeKeysMatchingRecursive(part, /^__@annotationsKey.*/, 128);
+        // part = removeArrayValuesMatchingRecursive(part, /^__@annotationsKey.*/, 128);
+        const _matchesRegex = (r) => (k, v, _) => (typeof k === "string" && k.match(r)) || (typeof v === "string" && v.match(r));
+        part = await removeAllMatchingRecursive(part, _matchesRegex(/__@annotationsKey/));
+        part = await removeAllMatchingRecursive(part, _matchesRegex(/ToGuildSource/));
 
         if (process.env.WRITE_SCHEMA_DIR === "true") writePromises.push(async () => await fsp.writeFile(path.join("schemas_orig", `${name}.json`), JSON.stringify(part, null, 4)));
 
@@ -380,4 +396,50 @@ function columnizedObjectDiff(a, b, trackEqual = false) {
     return diffs;
 }
 
+async function removeAllMatchingRecursive(o, selector, maxDepth = 32, path = "$") {
+    // process.stdout.write("S");
+    // console.log("scan @", path, "with depth", maxDepth, typeof o, o);
+    // await printEnd(path, path.length);
+    if (!o) return o;
+    for (const [k, v] of Object.entries(o)) {
+        if (selector(k, v, o)) {
+            process.stdout.write(yellowBright("R(" + gray(k) + " @ " + cyan(path) + ") "));
+            delete o[k];
+        } else if (maxDepth > 0 && typeof o != "string") {
+            process.stdout.write(gray(">"));
+            o[k] = await removeAllMatchingRecursive(o[k], selector, maxDepth - 1, path + "." + k);
+            process.stdout.write(cyan("\b \b"));
+        }
+    }
+
+    return o;
+}
+
 main().then(() => {});
+
+// this is broken, figure this out someday - would be really neat to have
+async function printEnd(str, len) {
+    const width = process.stdout.columns || 80;
+    const height = process.stdout.rows || 25;
+
+    const storePos = "\x1b[s";
+    const restPos = "\x1b[u";
+    const eraseAfter = "\x1b[0K";
+    const eraseLine = "\x1b[2K";
+    const down1 = "\x1b[1E";
+    const up1 = "\x1b[1F";
+    const setCol = (col) => `\x1b[${col}G`;
+    const setTopPos = (col) => `\x1b[1;${col}H`;
+    const setBottomPos = (col) => `\x1b[${height};${col}H`;
+
+    const startColumn = Math.max(1, width - len + 1);
+
+    process.stdout.write(`\n\n\n${up1}${up1}${up1}`);
+    // process.stdout.write(`${storePos}${down1}${eraseAfter}${setTopPos(startColumn)}${str}${restPos}`);//${up1}`);
+    process.stdout.write(`${storePos}${setCol(startColumn)}${str}${restPos}`);
+    await sleep(12);
+}
+
+async function sleep(delay) {
+    return new Promise((res, rej) => setTimeout(res, delay));
+}

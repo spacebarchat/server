@@ -24,8 +24,6 @@ import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, Statu
 import { randomUpperString } from "@spacebar/api";
 import { DateBuilder, IpDataClient, TimeSpan } from "../util";
 
-//TODO we need to remove all sessions on server start because if the server crashes without closing websockets it won't delete them
-
 @Entity({
     name: "sessions",
 })
