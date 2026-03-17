@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+process.env.LOG_ROUTES = "false";
+
 const { Stopwatch } = require("../dist/util/util/Stopwatch");
 const totalSw = Stopwatch.startNew();
 
