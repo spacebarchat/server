@@ -7267,6 +7267,50 @@
                     "video_ssrc"
                 ]
             },
+            "EmojisResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/EmojiResponse"
+                }
+            },
+            "EmojiResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "require_colons": {
+                        "type": "boolean"
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "animated": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
             "CreateReportSchema": {
                 "type": "object",
                 "properties": {
@@ -21643,7 +21687,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIEmojiArray"
+                                    "$ref": "#/components/schemas/EmojisResponse"
                                 }
                             }
                         }
