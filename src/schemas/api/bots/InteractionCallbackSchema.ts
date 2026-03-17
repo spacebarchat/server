@@ -18,8 +18,54 @@
 
 import { Message } from "@spacebar/util";
 import { InteractionCallbackType } from "./InteractionCallbackType";
+import { AllowedMentions, BaseMessageComponents, Embed, MessageComponentType } from "../messages";
+import { MessageCreateAttachment, MessageCreateCloudAttachment, PollCreationSchema } from "#schemas/uncategorised";
 
 export interface InteractionCallbackSchema {
     type: InteractionCallbackType;
-    data: Message;
+    data: unknown;
+}
+export interface PongCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.PONG;
+}
+export interface AckCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.ACKNOWLEDGE;
+}
+export interface MessageCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.CHANNEL_MESSAGE;
+}
+export interface MessageWSourceCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE;
+    data: InteractionMessage;
+}
+export interface MessageDWSourceCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
+    data: InteractionMessage;
+}
+export interface MessageUpdateCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.UPDATE_MESSAGE;
+    data: InteractionMessage;
+}
+export interface MessageDUpdateCallback extends InteractionCallbackSchema {
+    type: InteractionCallbackType.DEFERRED_UPDATE_MESSAGE;
+    data: InteractionMessage;
+}
+export type InteractionCallbacksSchema =
+    | PongCallback
+    | AckCallback
+    | MessageCallback
+    | MessageWSourceCallback
+    | MessageDWSourceCallback
+    | MessageUpdateCallback
+    | MessageDUpdateCallback;
+
+export interface InteractionMessage {
+    content?: string;
+    tts?: boolean;
+    embeds?: Embed[];
+    allowed_mentions?: AllowedMentions;
+    components?: BaseMessageComponents[];
+    flags?: number;
+    attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
+    poll?: PollCreationSchema;
 }

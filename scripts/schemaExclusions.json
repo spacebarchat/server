@@ -3,7 +3,8 @@
         "MessageInteractionSchema"
     ],
     "includeRe": [
-        "^MessageComponentType\\..*"
+        "^MessageComponentType\\..*",
+        "^InteractionCallbackType\\..*"
     ],
     "manual": [
         "DefaultSchema",

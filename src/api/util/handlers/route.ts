@@ -20,6 +20,7 @@ import { DiscordApiErrors, EVENT, FieldErrors, PermissionResolvable, Permissions
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 import { ajv } from "@spacebar/schemas";
+import { BigNumber } from "bignumber.js";
 
 const ignoredRequestSchemas = [
     // skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
@@ -98,6 +99,20 @@ export function followNullPath(obj1: any, nullObj: stripNulls) {
             }
     }
 }
+//It's pretty safe to assume numbers over the number limit aren't really meant to be numbers, so we turn them to strings.
+export function bigNumberToString(obj1: unknown) {
+    if (obj1 && typeof obj1 === "object") {
+        for (const [key, value] of Object.entries(obj1)) {
+            if (typeof value === "object") {
+                if (value instanceof BigNumber) {
+                    //@ts-expect-error this is fine lol
+                    obj1[key] = value.toString();
+                }
+                bigNumberToString(value);
+            }
+        }
+    }
+}
 export function route(opts: RouteOptions) {
     let validate: AnyValidateFunction | undefined;
     if (opts.requestBody) {
@@ -133,15 +148,16 @@ export function route(opts: RouteOptions) {
                 throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
             }
         }
+        bigNumberToString(req.body);
 
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
             if (opts.stripNulls) {
                 if (opts.stripNulls === true) stripNull(req.body);
                 else followNullPath(req.body, opts.stripNulls);
             }
+
             const valid = validate(req.body);
             if (!valid) {
-                //console.log(JSON.stringify(req.body));
                 const fields: Record<string, { code?: string; message: string }> = {};
                 validate.errors?.forEach(
                     (x) =>
