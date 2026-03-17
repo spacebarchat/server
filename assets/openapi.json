@@ -1606,6 +1606,12 @@
                 ]
             },
             "GuildBansResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/GuildBanResponse"
+                }
+            },
+            "GuildBanResponse": {
                 "type": "object",
                 "properties": {
                     "reason": {
@@ -3116,12 +3122,6 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Application"
-                }
-            },
-            "APIBansArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/GuildBansResponse"
                 }
             },
             "APIInviteArray": {
@@ -22278,7 +22278,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIBansArray"
+                                    "$ref": "#/components/schemas/GuildBansResponse"
                                 }
                             }
                         }
@@ -22324,7 +22324,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIBansArray"
+                                    "$ref": "#/components/schemas/GuildBansResponse"
                                 }
                             }
                         }
@@ -22388,7 +22388,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GuildBansResponse"
+                                    "$ref": "#/components/schemas/GuildBanResponse"
                                 }
                             }
                         }

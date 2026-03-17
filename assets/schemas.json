@@ -1666,6 +1666,13 @@
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GuildBansResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/GuildBanResponse"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildBanResponse": {
         "type": "object",
         "properties": {
             "reason": {
@@ -3267,13 +3274,6 @@
         "type": "array",
         "items": {
             "$ref": "#/definitions/Application"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "APIBansArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/GuildBansResponse"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

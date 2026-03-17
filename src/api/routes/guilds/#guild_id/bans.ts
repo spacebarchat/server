@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Ban, DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { APIBansArray, BanCreateSchema, BanRegistrySchema, GuildBansResponse, PublicUser } from "@spacebar/schemas";
+import { BanCreateSchema, BanRegistrySchema, GuildBanResponse, GuildBansResponse, PublicUser } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -32,7 +32,7 @@ router.get(
         permission: "BAN_MEMBERS",
         responses: {
             200: {
-                body: "APIBansArray",
+                body: "GuildBansResponse",
             },
             403: {
                 body: "APIErrorResponse",
@@ -44,7 +44,7 @@ router.get(
 
         let bans = await Ban.find({ where: { guild_id: guild_id } });
         const promisesToAwait: Promise<PublicUser>[] = [];
-        const bansObj: APIBansArray = [];
+        const bansObj: GuildBansResponse = [];
 
         bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
@@ -90,7 +90,7 @@ router.get(
         },
         responses: {
             200: {
-                body: "APIBansArray",
+                body: "GuildBansResponse",
             },
             403: {
                 body: "APIErrorResponse",
@@ -119,7 +119,7 @@ router.get(
 
         bans = bans.filter((ban) => ban.user_id !== ban.executor_id); // pretend self-bans don't exist to prevent victim chasing
 
-        const bansObj: APIBansArray = bans.map((ban) => {
+        const bansObj: GuildBansResponse = bans.map((ban) => {
             const user = ban.user;
             return {
                 reason: ban.reason ?? null,
@@ -143,7 +143,7 @@ router.get(
         permission: "BAN_MEMBERS",
         responses: {
             200: {
-                body: "GuildBansResponse",
+                body: "GuildBanResponse",
             },
             403: {
                 body: "APIErrorResponse",
@@ -165,7 +165,7 @@ router.get(
 
         const user = await User.getPublicUser(ban.user_id);
 
-        const banInfo: GuildBansResponse = {
+        const banInfo: GuildBanResponse = {
             user: {
                 username: user.username,
                 discriminator: user.discriminator,

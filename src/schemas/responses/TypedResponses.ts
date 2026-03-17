@@ -39,7 +39,6 @@ export type ApplicationDetectableResponse = unknown[];
 export type ApplicationEntitlementsResponse = unknown[];
 export type ApplicationSkusResponse = unknown[];
 export type APIApplicationArray = Application[];
-export type APIBansArray = GuildBansResponse[];
 export type APIInviteArray = Invite[];
 export type APIMessageArray = Message[];
 export type APIWebhookArray = Webhook[];

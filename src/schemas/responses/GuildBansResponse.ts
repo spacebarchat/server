@@ -16,7 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface GuildBansResponse {
+export type GuildBansResponse = GuildBanResponse[];
+
+export interface GuildBanResponse {
     reason: string | null;
     user: {
         username: string;
