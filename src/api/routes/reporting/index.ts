@@ -26,8 +26,7 @@ import { FieldErrors } from "@spacebar/util";
 import fs from "fs";
 
 const router = Router({ mergeParams: true });
-
-console.log("[Server] Registering reporting menu routes...");
+if (process.env.LOG_ROUTES !== "false") console.log("[Server] Registering reporting menu routes...");
 router.get(
     "/",
     route({
