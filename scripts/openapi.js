@@ -27,11 +27,14 @@ const path = require("path");
 const fs = require("fs");
 const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 require("../dist/util/util/extensions");
-const { bgRedBright } = require("picocolors");
+const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
+let missingRouteCount = 0;
+let missingResponseSchemaCount = 0;
+let missingRequestSchemaCount = 0;
 
 let specification = {
     openapi: "3.1.0",
@@ -127,6 +130,10 @@ function apiRoutes(missingRoutes) {
     specification.tags = [...new Set(tags)].map((x) => ({ name: x }));
 
     routes.forEach((route, pathAndMethod) => {
+        if (!route) {
+            missingRouteCount++;
+            return;
+        }
         const [p, method] = pathAndMethod.split("|");
         const path = p.replace(/:(\w+)/g, "{$1}");
 
@@ -159,13 +166,17 @@ function apiRoutes(missingRoutes) {
                     },
                 },
             };
+            if (!specification.components.schemas[route.requestBody]) {
+                missingRequestSchemaCount++;
+                console.log(`\x1b[91m${white("\x1b[48;5;208mERROR")}\x1b[0m\x1b[95m`, "Route", method, path, "missing request schema:", route.requestBody, "\x1b[0m");
+            }
         }
 
         if (route.responses) {
             obj.responses = {};
 
             for (const [k, v] of Object.entries(route.responses)) {
-                if (v.body)
+                if (v.body) {
                     obj.responses[k] = {
                         description: obj?.responses?.[k]?.description || "",
                         content: {
@@ -176,7 +187,20 @@ function apiRoutes(missingRoutes) {
                             },
                         },
                     };
-                else
+
+                    if (!specification.components.schemas[v.body]) {
+                        missingResponseSchemaCount++;
+                        console.log(
+                            `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[33m`,
+                            "Route",
+                            method,
+                            path,
+                            "missing response schema:",
+                            v.body,
+                            "\x1b[0m",
+                        );
+                    }
+                } else
                     obj.responses[k] = {
                         description: obj?.responses?.[k]?.description || "No description available",
                     };
@@ -256,6 +280,9 @@ async function main() {
         elapsedMs,
         "ms.",
     );
+    if (missingRouteCount) console.log("Found", missingRouteCount, "routes missing a route() middleware.");
+    if (missingRequestSchemaCount) console.log("Found", missingRequestSchemaCount, "routes missing request schemas.");
+    if (missingResponseSchemaCount) console.log("Found", missingResponseSchemaCount, "routes missing a response schemas.");
 }
 
 main().then(() => {});
