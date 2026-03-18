@@ -25,7 +25,7 @@ export interface MessageComponent {
 
 export interface SectionComponent extends MessageComponent {
     type: MessageComponentType.Section;
-    components: TextDispalyComponent[];
+    components: TextDisplayComponent[];
     accessory: ThumbnailComponent | ButtonComponent;
 }
 
@@ -49,7 +49,7 @@ export interface UnfurledMediaItem {
     loading_state?: number;
     attachment_id?: string;
 }
-export interface TextDispalyComponent extends MessageComponent {
+export interface TextDisplayComponent extends MessageComponent {
     type: MessageComponentType.TextDisplay;
     content: string;
 }
@@ -86,12 +86,12 @@ export interface ActionRowComponent extends MessageComponent {
 
 export interface ContainerComponent extends MessageComponent {
     type: MessageComponentType.Container;
-    components: (ActionRowComponent | TextDispalyComponent | SectionComponent | MediaGalleryComponent | SeperatorComponent | FileComponent)[];
+    components: (ActionRowComponent | TextDisplayComponent | SectionComponent | MediaGalleryComponent | SeperatorComponent | FileComponent)[];
     accent_color?: number;
     spoiler?: boolean;
 }
 
-export type BaseMessageComponents = ActionRowComponent | SectionComponent | TextDispalyComponent | MediaGalleryComponent | FileComponent | SeperatorComponent | ContainerComponent;
+export type BaseMessageComponents = ActionRowComponent | SectionComponent | TextDisplayComponent | MediaGalleryComponent | FileComponent | SeperatorComponent | ContainerComponent;
 
 export interface ButtonComponent extends MessageComponent {
     type: MessageComponentType.Button;
