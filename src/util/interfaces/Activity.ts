@@ -57,9 +57,11 @@ export interface Activity {
     sync_id?: string;
     metadata?: {
         // spotify
+        button_urls?: string[];
         context_uri?: string;
-        album_id: string;
-        artist_ids: string[];
+        album_id?: string;
+        artist_ids?: string[];
+        type?: "track" | "episode";
     };
     session_id: string;
 }
