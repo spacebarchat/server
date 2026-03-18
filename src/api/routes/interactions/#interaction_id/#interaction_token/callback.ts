@@ -189,6 +189,8 @@ router.post(
                 // TODO
                 break;
             */
+            default:
+                body satisfies never;
         }
 
         pendingInteractions.delete(interactionId);
