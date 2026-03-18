@@ -42,7 +42,7 @@ router.post(
 
         clearTimeout(interaction.timeout);
 
-    await emitEvent({
+        await emitEvent({
             event: "INTERACTION_SUCCESS",
             user_id: interaction?.userId,
             data: {
@@ -159,7 +159,6 @@ router.post(
                     if (body.data.content && body.data.content.length > Config.get().limits.message.maxCharacters) {
                         throw new HTTPError("Content length over max character limit");
                     }
-                    if (body.data.components) stripNull(body.data.components);
                     message.embeds = body.data.embeds || [];
                     const handle = body.data.components ? handleComps(body.data.components, message.flags) : undefined;
                     await handle?.(message.id, message.author as User, message.channel);
@@ -198,7 +197,3 @@ router.post(
 );
 
 export default router;
-function stripNull(components: BaseMessageComponents[]) {
-    throw new Error("Function not implemented.");
-}
-
