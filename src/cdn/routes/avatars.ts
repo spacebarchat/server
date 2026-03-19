@@ -42,7 +42,7 @@ router.post("/:user_id", multer.single("file"), async (req: Request, res: Respon
     const { buffer, size } = req.file;
     const { user_id } = req.params as { [key: string]: string };
 
-    let hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
+    let hash = crypto.createHash("md5").update(buffer).digest("hex");
 
     const type = await fileTypeFromBuffer(buffer);
     if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
