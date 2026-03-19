@@ -36,6 +36,6 @@
   </Folder>
   <Project Path="Spacebar.AdminApi/Spacebar.AdminApi.csproj" />
   <Project Path="Spacebar.Cdn/Spacebar.Cdn.csproj" />
-  <Project Path="Spacebar.GatewayOffload/Spacebar.GatewayOffload.csproj" />
+  <Project Path="Spacebar.Offload/Spacebar.Offload.csproj" />
   <Project Path="Spacebar.UApi/Spacebar.UApi.csproj" />
 </Solution>

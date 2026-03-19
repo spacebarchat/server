@@ -203,11 +203,11 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-Interop-Cdn-Abstractions
           ];
         };
-        Spacebar-GatewayOffload = makeNupkg {
-          name = "Spacebar.GatewayOffload";
-          nugetDeps = Spacebar.GatewayOffload/deps.json;
-          projectFile = "Spacebar.GatewayOffload.csproj";
-          srcRoot = ./Spacebar.GatewayOffload;
+        Spacebar-Offload = makeNupkg {
+          name = "Spacebar.Offload";
+          nugetDeps = Spacebar.Offload/deps.json;
+          projectFile = "Spacebar.Offload.csproj";
+          srcRoot = ./Spacebar.Offload;
           packNupkg = false;
           projectReferences = [
             proj.Spacebar-DataMappings-Generic
@@ -258,30 +258,30 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         Expose = [ "5000" ];
       };
     };
-    containers.docker.gateway-offload = pkgs.dockerTools.buildLayeredImage {
-      name = "spacebar-server-ts-gateway-offload";
-      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+    containers.docker.offload = pkgs.dockerTools.buildLayeredImage {
+      name = "spacebar-server-ts-offload";
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-Offload.version;
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
       config = {
-        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-GatewayOffload}" ];
+        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-Offload}" ];
         Expose = [ "5000" ];
       };
     };
     containers.docker.cdn-cs = pkgs.dockerTools.buildLayeredImage {
       name = "spacebar-server-ts-cdn-cs";
-      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-Cdn.version;
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
       config = {
-        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-AdminApi}" ];
+        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-Cdn}" ];
         Expose = [ "5000" ];
       };
     };
     containers.docker.uapi = pkgs.dockerTools.buildLayeredImage {
       name = "spacebar-server-ts-cdn-cs";
-      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-AdminApi.version;
+      tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-UApi.version;
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
       config = {
-        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-AdminApi}" ];
+        Cmd = [ "${lib.getExe self.outputs.packages.${system}.Spacebar-UApi}" ];
         Expose = [ "5000" ];
       };
     };
@@ -295,7 +295,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
     in
     pkgs.lib.recursiveUpdate (pkgs.lib.attrsets.unionOfDisjoint { } self.packages) {
       x86_64-linux = {
-        #            spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
+        # spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
         docker-admin-api = self.containers.x86_64-linux.docker.admin-api;
         docker-gateway-offload = self.containers.x86_64-linux.docker.gateway-offload;
         docker-cdn-cs = self.containers.x86_64-linux.docker.cdn-cs;
