@@ -91,6 +91,7 @@ export const PublicMemberProjection: PublicMemberKeys[] = [
     "flags",
 ];
 
+// TODO: make a proper schema rather than inheriting entity
 export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
     user: PublicUser;
     roles: string[]; // only role ids not objects

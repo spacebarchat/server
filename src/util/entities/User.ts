@@ -297,7 +297,7 @@ export class User extends BaseClass {
         req?: Request;
         bot?: boolean;
     }) {
-        // trim special uf8 control characters -> Backspace, Newline, ...
+        // trim special utf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
 
         const discriminator = await User.generateDiscriminator(username);
