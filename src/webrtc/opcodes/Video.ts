@@ -105,6 +105,9 @@ export async function onVideo(this: WebRtcWebSocket, payload: VoicePayload) {
     }
     // check if client has signaled that it will send video
     if (wantsToProduceVideo) {
+        // TODO: fix spacebar-webrtc-types...
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         this.webRtcClient!.videoStream = { ...stream, type: "video" }; // client sends "screen" on go live but expects "video" on response
         // check if we are already publishing video, if not, publish a new video track for it
         if (!this.webRtcClient!.isProducingVideo()) {
