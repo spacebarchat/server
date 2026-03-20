@@ -101,7 +101,7 @@ app.Use((context, next) => {
 // add some special sauce
 app.Map("/", async context => {
     var client = new StreamingHttpClient();
-    var cfg = context.RequestServices.GetService<UApiConfiguration>();
+    var cfg = context.RequestServices.GetRequiredService<UApiConfiguration>();
     var requestMessage = new HttpRequestMessage(new HttpMethod(context.Request.Method), cfg.FallbackApiEndpoint);
 
     foreach (var header in context.Request.Headers)
@@ -122,11 +122,9 @@ app.Map("/", async context => {
     await context.Response.Body.WriteAsync(data);
 });
 
-// fallback to proxy in case we dont have a specific endpoint...
-// TODO config
 app.MapFallback("{*_}", async context => {
     var client = new StreamingHttpClient();
-    var cfg = context.RequestServices.GetService<UApiConfiguration>();
+    var cfg = context.RequestServices.GetRequiredService<UApiConfiguration>();
     var requestMessage = new HttpRequestMessage(
         new HttpMethod(context.Request.Method),
         cfg.FallbackApiEndpoint + context.Request.Path + context.Request.QueryString

@@ -13,6 +13,7 @@ public class ApplicationRpcController : ControllerBase {
     //     
     // }
 
+    // TODO: implement disclosures
     [HttpGet("disclosures")]
     public ApplicationDisclosures GetApplicationDisclosures(string applicationId) {
         return new ApplicationDisclosures {
@@ -22,26 +23,21 @@ public class ApplicationRpcController : ControllerBase {
         };
     }
 
+    /// <summary>
+    ///   Marks a list of flags as acknowledged
+    /// </summary>
+    /// <param name="applicationId">ID of the application</param>
+    /// <param name="ack">The list of flags to mark as acknowledged</param>
+    /// <returns>The new list of acknowledged flags</returns>
     [HttpPost("disclosures")]
-    public ApplicationDisclosures AckApplicationDisclosures(string applicationId) {
-        // TODO: type is wrong, normally only `disclosures` is returned
-        return new ApplicationDisclosures {
-            Disclosures = [],
-            AckedDisclosures = [],
-            AllAcked = true
-        };
+    public ApplicationDisclosureAck AckApplicationDisclosures(string applicationId, ApplicationDisclosureAck ack) {
+        return ack;
     }
 }
 
-public class ApplicationDisclosures {
+public class ApplicationDisclosureAck {
     [JsonPropertyName("disclosures")]
     public List<ApplicationDisclosureType> Disclosures { get; set; }
-
-    [JsonPropertyName("acked_disclosures")]
-    public List<ApplicationDisclosureType> AckedDisclosures { get; set; }
-
-    [JsonPropertyName("all_acked")]
-    public bool AllAcked { get; set; }
 
     public enum ApplicationDisclosureType {
         UnspecifiedDisclosure = 0,
@@ -49,6 +45,14 @@ public class ApplicationDisclosures {
         DisplaysAdvertisements = 2,
         PartnerSdkDataSharingMessage = 3
     }
+}
+
+public class ApplicationDisclosures : ApplicationDisclosureAck {
+    [JsonPropertyName("acked_disclosures")]
+    public List<ApplicationDisclosureType> AckedDisclosures { get; set; }
+
+    [JsonPropertyName("all_acked")]
+    public bool AllAcked { get; set; }
 }
 
 public class RpcApplicationInfo {
@@ -66,7 +70,7 @@ public class RpcApplicationInfo {
 
     [JsonPropertyName("summary")]
     public string Summary { get; set; }
-    
+
     [JsonPropertyName("type")]
     public ApplicationType? Type { get; set; } // what is this?
 
