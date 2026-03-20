@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { User } from "./User";
-import { Stream } from "./Stream";
+import type { User } from "./User";
+import type { Stream } from "./Stream";
 
 @Entity({
     name: "stream_sessions",

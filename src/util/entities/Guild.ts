@@ -18,19 +18,19 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
-import { Ban } from "./Ban";
+import { arrayRemove } from "@spacebar/util";
 import { BaseClass } from "./BaseClass";
+import type { Ban } from "./Ban";
 import { Channel } from "./Channel";
-import { Emoji } from "./Emoji";
-import { Invite } from "./Invite";
+import type { Emoji } from "./Emoji";
+import type { Invite } from "./Invite";
 import { Member } from "./Member";
 import { Role } from "./Role";
-import { Sticker } from "./Sticker";
-import { Template } from "./Template";
-import { User } from "./User";
-import { VoiceState } from "./VoiceState";
-import { Webhook } from "./Webhook";
-import { arrayRemove } from "@spacebar/util";
+import type { Sticker } from "./Sticker";
+import type { Template } from "./Template";
+import type { User } from "./User";
+import type { VoiceState } from "./VoiceState";
+import type { Webhook } from "./Webhook";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances

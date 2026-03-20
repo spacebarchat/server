@@ -17,9 +17,9 @@
 */
 
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
 import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
 import { User } from "./User";
-import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
 
 @Entity({
     name: "user_settings_protos",

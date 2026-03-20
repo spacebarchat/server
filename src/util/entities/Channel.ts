@@ -21,19 +21,19 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "ty
 import { DmChannelDTO } from "../dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../interfaces";
 import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, Config, DiscordApiErrors } from "../util";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { Invite } from "./Invite";
-import { Message } from "./Message";
-import { Tag } from "./Tag";
-import { ReadState } from "./ReadState";
-import { Recipient } from "./Recipient";
-import { User } from "./User";
-import { VoiceState } from "./VoiceState";
-import { Webhook } from "./Webhook";
-import { Member } from "./Member";
 import { ChannelPermissionOverwrite, ChannelType, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
 import { OrmUtils } from "../imports";
+import { BaseClass } from "./BaseClass";
+import { Guild } from "./Guild";
+import type { Invite } from "./Invite";
+import type { Message } from "./Message";
+import type { Tag } from "./Tag";
+import type { ReadState } from "./ReadState";
+import { Recipient } from "./Recipient";
+import { User } from "./User";
+import type { VoiceState } from "./VoiceState";
+import type { Webhook } from "./Webhook";
+import { Member } from "./Member";
 import { ThreadMember } from "./ThreadMember";
 
 @Entity({

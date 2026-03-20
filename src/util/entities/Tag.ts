@@ -18,7 +18,7 @@
 
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Channel } from "./Channel";
+import type { Channel } from "./Channel";
 
 @Entity({
     name: "tags",

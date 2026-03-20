@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Channel } from "./Channel";
-import { Guild } from "./Guild";
-import { Member } from "./Member";
-import { User } from "./User";
 import { PublicVoiceState, PublicVoiceStateProjection } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { Channel } from "./Channel";
+import type { Guild } from "./Guild";
+import type { Member } from "./Member";
+import type { User } from "./User";
 
 //https://gist.github.com/vassjozsef/e482c65df6ee1facaace8b3c9ff66145#file-voice_state-ex
 @Entity({

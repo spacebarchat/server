@@ -18,9 +18,9 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
 import { RoleColors } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { Guild } from "./Guild";
 
 @Entity({
     name: "roles",

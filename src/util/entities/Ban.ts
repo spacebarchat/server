@@ -18,8 +18,8 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { User } from "./User";
+import type { Guild } from "./Guild";
+import type { User } from "./User";
 
 @Entity({
     name: "bans",

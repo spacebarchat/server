@@ -16,22 +16,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { User } from "./User";
-import { Member } from "./Member";
-import { Role } from "./Role";
-import { Channel } from "./Channel";
-import { InteractionType } from "../interfaces";
-import { Application } from "./Application";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId, FindOneOptions, Raw, Not, BaseEntity, In } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { Webhook } from "./Webhook";
-import { Sticker } from "./Sticker";
-import { Attachment } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
 import { ActionRowComponent, ApplicationCommandType, Embed, MessageSnapshot, MessageType, PartialMessage, Poll, Reaction } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
+import { InteractionType } from "../interfaces";
+import { BaseClass } from "./BaseClass";
+import { User } from "./User";
+import { Member } from "./Member";
+import type { Role } from "./Role";
+import { Channel } from "./Channel";
+import type { Application } from "./Application";
+import { Guild } from "./Guild";
+import type { Webhook } from "./Webhook";
+import type { Sticker } from "./Sticker";
+import { Attachment } from "./Attachment";
 
 @Entity({
     name: "messages",

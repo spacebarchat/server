@@ -18,8 +18,8 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { TeamMember } from "./TeamMember";
-import { User } from "./User";
+import type { TeamMember } from "./TeamMember";
+import type { User } from "./User";
 
 @Entity({
     name: "teams",

@@ -17,9 +17,9 @@
 */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { User } from "./User";
 import { RelationshipType } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { User } from "./User";
 
 @Entity({
     name: "relationships",

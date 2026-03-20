@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseClass } from "./BaseClass";
 import { Entity, Column } from "typeorm";
 import { Embed } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
 
 @Entity({
     name: "embed_cache",

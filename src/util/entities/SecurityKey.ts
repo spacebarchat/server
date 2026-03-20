@@ -18,7 +18,7 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { User } from "./User";
+import type { User } from "./User";
 
 @Entity({
     name: "security_keys",

@@ -17,9 +17,10 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { User } from "./User";
 import { TeamMemberRole, TeamMemberState } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { User } from "./User";
+import type { Team } from "./Team";
 
 @Entity({
     name: "team_members",
@@ -39,10 +40,10 @@ export class TeamMember extends BaseClass {
     team_id: string;
 
     @JoinColumn({ name: "team_id" })
-    @ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
+    @ManyToOne(() => require("./Team").Team, (team: Team) => team.members, {
         onDelete: "CASCADE",
     })
-    team: import("./Team").Team;
+    team: Team;
 
     @Column({ nullable: true })
     @RelationId((member: TeamMember) => member.user)

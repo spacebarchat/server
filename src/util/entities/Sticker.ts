@@ -17,10 +17,11 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
-import { User } from "./User";
 import { StickerFormatType, StickerType } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { Guild } from "./Guild";
+import type { User } from "./User";
+import type { StickerPack } from "./StickerPack";
 
 @Entity({
     name: "stickers",
@@ -47,7 +48,7 @@ export class Sticker extends BaseClass {
         onDelete: "CASCADE",
         nullable: true,
     })
-    pack: import("./StickerPack").StickerPack;
+    pack: StickerPack;
 
     @Column({ nullable: true })
     guild_id?: string;

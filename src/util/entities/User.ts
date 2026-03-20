@@ -20,14 +20,6 @@ import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
-import { BaseClass } from "./BaseClass";
-import { Channel } from "./Channel";
-import { ConnectedAccount } from "./ConnectedAccount";
-import { Member } from "./Member";
-import { Relationship } from "./Relationship";
-import { SecurityKey } from "./SecurityKey";
-import { Session } from "./Session";
-import { UserSettings } from "./UserSettings";
 import {
     AvatarDecorationData,
     ChannelType,
@@ -40,6 +32,14 @@ import {
     UserPrivate,
 } from "@spacebar/schemas";
 import { JsonNumber } from "../util/Decorators";
+import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
+import type { ConnectedAccount } from "./ConnectedAccount";
+import { Member } from "./Member";
+import type { Relationship } from "./Relationship";
+import type { SecurityKey } from "./SecurityKey";
+import type { Session } from "./Session";
+import { UserSettings } from "./UserSettings";
 
 @Entity({
     name: "users",
@@ -144,7 +144,7 @@ export class User extends BaseClass {
     @JsonNumber
     rights: string;
 
-    @OneToMany(() => Session, (session: Session) => session.user)
+    @OneToMany(() => require("./Session").Session, (session: Session) => session.user)
     sessions: Session[];
 
     @JoinColumn({ name: "relationship_ids" })

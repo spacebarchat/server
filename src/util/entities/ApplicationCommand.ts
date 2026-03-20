@@ -17,7 +17,6 @@
 */
 
 import { Column, Entity } from "typeorm";
-import { BaseClass } from "./BaseClass";
 import {
     ApplicationCommandHandlerType,
     ApplicationCommandOption,
@@ -27,6 +26,7 @@ import {
     ApplicationIntegrationType,
     InteractionContextType,
 } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
 
 @Entity({
     name: "application_commands",

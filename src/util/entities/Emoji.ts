@@ -17,9 +17,9 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { User } from "./User";
 import { BaseClass } from "./BaseClass";
-import { Guild } from "./Guild";
+import type { User } from "./User";
+import type { Guild } from "./Guild";
 
 @Entity({
     name: "emojis",

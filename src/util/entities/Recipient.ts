@@ -18,6 +18,8 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import type { Channel } from "./Channel";
+import type { User } from "./User";
 
 @Entity({
     name: "recipients",
@@ -31,7 +33,7 @@ export class Recipient extends BaseClass {
     @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
-    channel: import("./Channel").Channel;
+    channel: Channel;
 
     @Column()
     @RelationId((recipient: Recipient) => recipient.user)
@@ -41,7 +43,7 @@ export class Recipient extends BaseClass {
     @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
-    user: import("./User").User;
+    user: User;
 
     @Column({ default: false })
     closed: boolean;

@@ -17,9 +17,9 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClass } from "./BaseClass";
-import { User } from "./User";
 import { AuditLogChange, AuditLogEvents } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { User } from "./User";
 
 @Entity({
     name: "audit_logs",

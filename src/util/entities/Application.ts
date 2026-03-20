@@ -18,9 +18,9 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import { Team } from "./Team";
-import { User } from "./User";
-import { Guild } from "./Guild";
+import type { Guild } from "./Guild";
+import type { Team } from "./Team";
+import type { User } from "./User";
 
 @Entity({
     name: "applications",

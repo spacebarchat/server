@@ -17,12 +17,12 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Application } from "./Application";
-import { BaseClass } from "./BaseClass";
-import { Channel } from "./Channel";
-import { Guild } from "./Guild";
-import { User } from "./User";
 import { WebhookType } from "@spacebar/schemas";
+import { BaseClass } from "./BaseClass";
+import type { Application } from "./Application";
+import type { Channel } from "./Channel";
+import type { Guild } from "./Guild";
+import type { User } from "./User";
 
 @Entity({
     name: "webhooks",
