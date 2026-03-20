@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
-import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { BaseClassWithoutId } from "./BaseClass";
 import { User } from "./User";
 import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
 
@@ -33,7 +33,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
     @JoinColumn({ name: "user_id" })
     user: User;
 
-    @PrimaryIdColumn({ type: "text" })
+    @PrimaryColumn({ type: "text" })
     user_id: string;
 
     @Column({ nullable: true, type: String, name: "userSettings" })

@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
+import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
@@ -29,7 +29,7 @@ export const PublicInviteRelation = ["inviter", "guild", "channel"];
     name: "invites",
 })
 export class Invite extends BaseClassWithoutId {
-    @PrimaryIdColumn()
+    @PrimaryColumn()
     code: string;
 
     @Column()

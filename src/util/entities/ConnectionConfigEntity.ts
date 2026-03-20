@@ -16,14 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity } from "typeorm";
-import { BaseClassWithoutId, PrimaryIdColumn } from "./BaseClass";
+import { Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseClassWithoutId } from "./BaseClass";
 
 @Entity({
     name: "connection_config",
 })
 export class ConnectionConfigEntity extends BaseClassWithoutId {
-    @PrimaryIdColumn()
+    @PrimaryColumn()
     key: string;
 
     @Column({ type: "simple-json", nullable: true })
