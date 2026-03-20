@@ -183,6 +183,9 @@ export class Channel extends BaseClass {
     @Column("text", { array: true, nullable: true })
     applied_tags?: string[];
 
+    @Column("text", { nullable: true })
+    status?: string | null;
+
     /** Must be calculated Channel.calculatePosition */
     position: number;
 

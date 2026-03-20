@@ -139,6 +139,7 @@
     },
     "overrides": {
         "typeorm": {
+            "better-sqlite3": "../_EXCLUDED_",
             "sqlite3": "../_EXCLUDED_",
             "mongodb": "../_EXCLUDED_"
         }

@@ -37,34 +37,18 @@ if (!process.env) {
 }
 if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
-const dbConnectionString = process.env.DATABASE || path.join(process.cwd(), "database.db");
-
-export const DatabaseType = dbConnectionString.includes("://") ? dbConnectionString.split(":")[0]?.replace("+srv", "") : "sqlite";
-const isSqlite = DatabaseType.includes("sqlite");
-const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
-
-// For openapi.js...
-if (!isHeadlessProcess) {
-    let hasWarnedSqlite = false;
-    if (isSqlite && !hasWarnedSqlite) {
-        hasWarnedSqlite = true;
-        console.log(
-            `[Database] ${red(`You do not have a database configured. This implies that it will try to use SQLite, which has been broken for a while and is unlikely to see a real fix any time soon.`)}`,
-        );
-        console.log(`[Database] ${red(`Please set up a PostgreSQL database instead: https://docs.spacebar.chat/setup/server/database/.`)}`);
-        console.log(
-            `[Database] ${red(`Alternatively, if you're able to install Nix (except MacOSX), and are trying to run a quick and dirty localhost instance: nix run .\\#testVm.config.system.build.vm, then open a client and connect to http://localhost:8080`)}`,
-        );
-        console.log(`[Database] ${red(`If you would like to try *anyways*, see the error below:`)}`);
-        try {
-            // TODO: fully remove sqlite3
-            require("sqlite3");
-        } catch (e) {
-            console.log(`[Database] ${red(`Failed to load sqlite3 package. Please install it with 'npm install --no-save sqlite3', or switch to a real database like Postgres.`)}`);
-            process.exit(1);
-        }
-    }
+if (!process.env.DATABASE) {
+    console.log(
+        red(
+            "DATABASE environment variable not set! Please set it to your database connection string.\n" + "Example for postgres: postgres://user:password@localhost:5432/database",
+        ),
+    );
+    process.exit(1);
 }
+
+const dbConnectionString = process.env.DATABASE!;
+export const DatabaseType = dbConnectionString.split(":")[0]?.replace("+srv", "");
+const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
 
 export const DataSourceOptions = isHeadlessProcess
     ? (undefined as unknown as DataSource)
@@ -73,8 +57,7 @@ export const DataSourceOptions = isHeadlessProcess
           //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
           type: DatabaseType,
           charset: "utf8mb4",
-          url: isSqlite ? undefined : dbConnectionString,
-          database: isSqlite ? dbConnectionString : undefined,
+          url: process.env.DATABASE,
           entities: [path.join(__dirname, "..", "entities", "*.js")],
           synchronize: !!process.env.DB_SYNC,
           logging: !!process.env.DB_LOGGING,
@@ -96,7 +79,7 @@ export async function initDatabase(): Promise<DataSource> {
     if (dbConnection) return dbConnection;
 
     if (!process.env.DB_SYNC) {
-        const supported = ["postgres", "sqlite"];
+        const supported = ["postgres"];
         if (!supported.includes(DatabaseType)) {
             console.log(
                 "[Database]" +
@@ -112,13 +95,6 @@ export async function initDatabase(): Promise<DataSource> {
     console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
     dbConnection = await DataSourceOptions.initialize();
-
-    if (DatabaseType === "sqlite") {
-        console.log(`[Database] ${yellow("Warning: SQLite is not supported. Forcing sync, this may lead to data loss!")}`);
-        await dbConnection.synchronize();
-        console.log(`[Database] ${green("Connected")}`);
-        return dbConnection;
-    }
 
     // Crude way of detecting if the migrations table exists.
     const dbExists = async () => {
