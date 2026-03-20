@@ -26,7 +26,7 @@ import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, Automo
 })
 export class AutomodRule extends BaseClass {
     @JoinColumn({ name: "creator_id" })
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./User").User, { onDelete: "CASCADE" })
     creator: User;
 
     @Column()

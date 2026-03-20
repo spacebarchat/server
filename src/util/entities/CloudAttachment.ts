@@ -31,7 +31,7 @@ export class CloudAttachment extends BaseClass {
     userId: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, { nullable: true, onDelete: "SET NULL" })
+    @ManyToOne(() => require("./User").User, { nullable: true, onDelete: "SET NULL" })
     user?: User;
 
     @Column({ name: "channel_id", nullable: true })
@@ -39,7 +39,7 @@ export class CloudAttachment extends BaseClass {
     channelId?: string; // channel the file is uploaded to
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, { nullable: true, onDelete: "SET NULL" })
+    @ManyToOne(() => require("./Channel").Channel, { nullable: true, onDelete: "SET NULL" })
     channel?: Channel; // channel the file is uploaded to
 
     @Column({ name: "upload_filename" })

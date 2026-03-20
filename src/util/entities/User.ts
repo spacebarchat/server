@@ -148,14 +148,14 @@ export class User extends BaseClass {
     sessions: Session[];
 
     @JoinColumn({ name: "relationship_ids" })
-    @OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
+    @OneToMany(() => require("./Relationship").Relationship, (relationship: Relationship) => relationship.from, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     relationships: Relationship[];
 
     @JoinColumn({ name: "connected_account_ids" })
-    @OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
+    @OneToMany(() => require("./ConnectedAccount").ConnectedAccount, (account: ConnectedAccount) => account.user, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -170,7 +170,7 @@ export class User extends BaseClass {
     @Column({ type: "simple-array", select: false })
     fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
-    @OneToOne(() => UserSettings, {
+    @OneToOne(() => require("./UserSettings").UserSettings, {
         cascade: true,
         orphanedRowAction: "delete",
         nullable: true,
@@ -178,7 +178,7 @@ export class User extends BaseClass {
     @JoinColumn()
     settings?: UserSettings;
 
-    @OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
+    @OneToMany(() => require("./SecurityKey").SecurityKey, (key: SecurityKey) => key.user)
     security_keys: SecurityKey[];
 
     @Column({ type: "simple-array", nullable: true })

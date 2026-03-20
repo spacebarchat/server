@@ -31,7 +31,7 @@ export class Relationship extends BaseClass {
     from_id: string;
 
     @JoinColumn({ name: "from_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     from: User;
@@ -41,7 +41,7 @@ export class Relationship extends BaseClass {
     to_id: string;
 
     @JoinColumn({ name: "to_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     to: User;

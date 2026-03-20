@@ -49,7 +49,7 @@ export class TeamMember extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;

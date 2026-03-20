@@ -28,7 +28,7 @@ export class Tag extends BaseClass {
     channel_id: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, (channel) => channel.available_tags, {
+    @ManyToOne(() => require("./Channel").Channel, (channel: Channel) => channel.available_tags, {
         onDelete: "CASCADE",
     })
     channel: Channel;

@@ -68,7 +68,7 @@ export class Guild extends BaseClass {
     afk_channel_id?: string | null;
 
     @JoinColumn({ name: "afk_channel_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     afk_channel?: Channel;
 
     @Column({ nullable: true })
@@ -80,7 +80,7 @@ export class Guild extends BaseClass {
     // application?: string;
 
     @JoinColumn({ name: "ban_ids" })
-    @OneToMany(() => Ban, (ban: Ban) => ban.guild, {
+    @OneToMany(() => require("./Ban").Ban, (ban: Ban) => ban.guild, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -129,7 +129,7 @@ export class Guild extends BaseClass {
     @Column({ nullable: true })
     presence_count?: number; // users online
 
-    @OneToMany(() => Member, (member: Member) => member.guild, {
+    @OneToMany(() => require("./Member").Member, (member: Member) => member.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -137,7 +137,7 @@ export class Guild extends BaseClass {
     members: Member[];
 
     @JoinColumn({ name: "role_ids" })
-    @OneToMany(() => Role, (role: Role) => role.guild, {
+    @OneToMany(() => require("./Role").Role, (role: Role) => role.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -145,7 +145,7 @@ export class Guild extends BaseClass {
     roles: Role[];
 
     @JoinColumn({ name: "channel_ids" })
-    @OneToMany(() => Channel, (channel: Channel) => channel.guild, {
+    @OneToMany(() => require("./Channel").Channel, (channel: Channel) => channel.guild, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -156,11 +156,11 @@ export class Guild extends BaseClass {
     template_id?: string;
 
     @JoinColumn({ name: "template_id", referencedColumnName: "id" })
-    @ManyToOne(() => Template)
+    @ManyToOne(() => require("./Template").Template)
     template: Template;
 
     @JoinColumn({ name: "emoji_ids" })
-    @OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild, {
+    @OneToMany(() => require("./Emoji").Emoji, (emoji: Emoji) => emoji.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -168,7 +168,7 @@ export class Guild extends BaseClass {
     emojis: Emoji[];
 
     @JoinColumn({ name: "sticker_ids" })
-    @OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild, {
+    @OneToMany(() => require("./Sticker").Sticker, (sticker: Sticker) => sticker.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -176,7 +176,7 @@ export class Guild extends BaseClass {
     stickers: Sticker[];
 
     @JoinColumn({ name: "invite_ids" })
-    @OneToMany(() => Invite, (invite: Invite) => invite.guild, {
+    @OneToMany(() => require("./Invite").Invite, (invite: Invite) => invite.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -184,7 +184,7 @@ export class Guild extends BaseClass {
     invites: Invite[];
 
     @JoinColumn({ name: "voice_state_ids" })
-    @OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild, {
+    @OneToMany(() => require("./VoiceState").VoiceState, (voicestate: VoiceState) => voicestate.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -192,7 +192,7 @@ export class Guild extends BaseClass {
     voice_states: VoiceState[];
 
     @JoinColumn({ name: "webhook_ids" })
-    @OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild, {
+    @OneToMany(() => require("./Webhook").Webhook, (webhook: Webhook) => webhook.guild, {
         cascade: true,
         orphanedRowAction: "delete",
         onDelete: "CASCADE",
@@ -210,7 +210,7 @@ export class Guild extends BaseClass {
     owner_id?: string; // optional to allow for ownerless guilds
 
     @JoinColumn({ name: "owner_id", referencedColumnName: "id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     owner?: User; // optional to allow for ownerless guilds
 
     @Column({ nullable: true })
@@ -227,7 +227,7 @@ export class Guild extends BaseClass {
     public_updates_channel_id: string | null;
 
     @JoinColumn({ name: "public_updates_channel_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     public_updates_channel?: Channel;
 
     @Column({ type: String, nullable: true })
@@ -235,7 +235,7 @@ export class Guild extends BaseClass {
     rules_channel_id?: string | null;
 
     @JoinColumn({ name: "rules_channel_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     rules_channel?: string;
 
     @Column({ nullable: true })
@@ -249,7 +249,7 @@ export class Guild extends BaseClass {
     system_channel_id?: string | null;
 
     @JoinColumn({ name: "system_channel_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     system_channel?: Channel;
 
     @Column({ nullable: true })
@@ -272,7 +272,7 @@ export class Guild extends BaseClass {
     widget_channel_id?: string;
 
     @JoinColumn({ name: "widget_channel_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     widget_channel?: Channel;
 
     @Column()

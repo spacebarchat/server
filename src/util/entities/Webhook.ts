@@ -45,7 +45,7 @@ export class Webhook extends BaseClass {
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, {
+    @ManyToOne(() => require("./Guild").Guild, {
         onDelete: "CASCADE",
     })
     guild?: Guild;
@@ -55,7 +55,7 @@ export class Webhook extends BaseClass {
     channel_id: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
@@ -65,7 +65,7 @@ export class Webhook extends BaseClass {
     application_id: string;
 
     @JoinColumn({ name: "application_id" })
-    @ManyToOne(() => Application, {
+    @ManyToOne(() => require("./Application").Application, {
         onDelete: "CASCADE",
     })
     application: Application;
@@ -75,7 +75,7 @@ export class Webhook extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;
@@ -85,7 +85,7 @@ export class Webhook extends BaseClass {
     source_guild_id?: string;
 
     @JoinColumn({ name: "source_guild_id" })
-    @ManyToOne(() => Guild, {
+    @ManyToOne(() => require("./Guild").Guild, {
         onDelete: "CASCADE",
     })
     source_guild?: Guild;
@@ -95,7 +95,7 @@ export class Webhook extends BaseClass {
     source_channel_id: string;
 
     @JoinColumn({ name: "source_channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     source_channel: Channel;

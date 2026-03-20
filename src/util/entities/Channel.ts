@@ -52,13 +52,13 @@ export class Channel extends BaseClass {
     @Column({ type: "int" })
     type: ChannelType;
 
-    @OneToMany(() => Recipient, (recipient: Recipient) => recipient.channel, {
+    @OneToMany(() => require("./Recipient").Recipient, (recipient: Recipient) => recipient.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     recipients?: Recipient[];
 
-    @OneToMany(() => ThreadMember, (member: ThreadMember) => member.channel, {
+    @OneToMany(() => require("./ThreadMember").ThreadMember, (member: ThreadMember) => member.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -72,7 +72,7 @@ export class Channel extends BaseClass {
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.channels, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.channels, {
         onDelete: "CASCADE",
         nullable: true,
     })
@@ -83,7 +83,7 @@ export class Channel extends BaseClass {
     parent_id: string | null;
 
     @JoinColumn({ name: "parent_id" })
-    @ManyToOne(() => Channel)
+    @ManyToOne(() => require("./Channel").Channel)
     parent?: Channel;
 
     // for group DMs and owned custom channel types
@@ -92,7 +92,7 @@ export class Channel extends BaseClass {
     owner_id?: string;
 
     @JoinColumn({ name: "owner_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     owner: User;
 
     @Column({ nullable: true, type: "timestamp with time zone" })
@@ -122,7 +122,7 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     topic?: string;
 
-    @OneToMany(() => Invite, (invite: Invite) => invite.channel, {
+    @OneToMany(() => require("./Invite").Invite, (invite: Invite) => invite.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -131,25 +131,25 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     retention_policy_id?: string;
 
-    @OneToMany(() => Message, (message: Message) => message.channel, {
+    @OneToMany(() => require("./Message").Message, (message: Message) => message.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     messages?: Message[];
 
-    @OneToMany(() => VoiceState, (voice_state: VoiceState) => voice_state.channel, {
+    @OneToMany(() => require("./VoiceState").VoiceState, (voice_state: VoiceState) => voice_state.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     voice_states?: VoiceState[];
 
-    @OneToMany(() => ReadState, (read_state: ReadState) => read_state.channel, {
+    @OneToMany(() => require("./ReadState").ReadState, (read_state: ReadState) => read_state.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     read_states?: ReadState[];
 
-    @OneToMany(() => Webhook, (webhook: Webhook) => webhook.channel, {
+    @OneToMany(() => require("./Webhook").Webhook, (webhook: Webhook) => webhook.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -174,7 +174,7 @@ export class Channel extends BaseClass {
     total_message_sent?: number;
 
     @JoinColumn({ name: "available_tags_ids" })
-    @OneToMany(() => Tag, (tag: Tag) => tag.channel, {
+    @OneToMany(() => require("./Tag").Tag, (tag: Tag) => tag.channel, {
         cascade: true,
         orphanedRowAction: "delete",
     })

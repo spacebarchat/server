@@ -66,7 +66,7 @@ export class Member extends BaseClassWithoutId {
     id: string;
 
     @JoinColumn({ name: "id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;
@@ -76,7 +76,7 @@ export class Member extends BaseClassWithoutId {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, {
+    @ManyToOne(() => require("./Guild").Guild, {
         onDelete: "CASCADE",
     })
     guild: Guild;
@@ -92,7 +92,7 @@ export class Member extends BaseClassWithoutId {
             referencedColumnName: "id",
         },
     })
-    @ManyToMany(() => Role, { cascade: true })
+    @ManyToMany(() => require("./Role").Role, { cascade: true })
     roles: Role[];
 
     @Column()

@@ -50,7 +50,7 @@ export class ThreadMember extends BaseClassWithoutId {
     id: string;
 
     @JoinColumn({ name: "id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
@@ -60,7 +60,7 @@ export class ThreadMember extends BaseClassWithoutId {
     member_idx: string;
 
     @JoinColumn({ name: "member_idx" })
-    @ManyToOne(() => Member, {
+    @ManyToOne(() => require("./Member").Member, {
         onDelete: "CASCADE",
     })
     member: Member;

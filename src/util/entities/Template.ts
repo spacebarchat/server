@@ -42,7 +42,7 @@ export class Template extends BaseClass {
     creator_id: string;
 
     @JoinColumn({ name: "creator_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     creator: User;
 
     @Column()
@@ -56,7 +56,7 @@ export class Template extends BaseClass {
     source_guild_id: string;
 
     @JoinColumn({ name: "source_guild_id" })
-    @ManyToOne(() => Guild, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./Guild").Guild, { onDelete: "CASCADE" })
     source_guild: Guild;
 
     @Column({ type: "simple-json" })

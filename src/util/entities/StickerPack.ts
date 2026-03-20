@@ -33,7 +33,7 @@ export class StickerPack extends BaseClass {
     @Column({ nullable: true })
     banner_asset_id?: string;
 
-    @OneToMany(() => Sticker, (sticker: Sticker) => sticker.pack, {
+    @OneToMany(() => require("./Sticker").Sticker, (sticker: Sticker) => sticker.pack, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -45,7 +45,7 @@ export class StickerPack extends BaseClass {
     @RelationId((pack: StickerPack) => pack.cover_sticker)
     cover_sticker_id?: string;
 
-    @ManyToOne(() => Sticker, { nullable: true })
+    @ManyToOne(() => require("./Sticker").Sticker, { nullable: true })
     @JoinColumn()
     cover_sticker?: Sticker;
 }

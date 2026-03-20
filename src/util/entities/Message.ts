@@ -44,7 +44,7 @@ export class Message extends BaseClass {
     channel_id?: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
@@ -54,7 +54,7 @@ export class Message extends BaseClass {
     thread_id?: string;
 
     @JoinColumn({ name: "thread_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     thread?: Channel;
@@ -64,7 +64,7 @@ export class Message extends BaseClass {
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, {
+    @ManyToOne(() => require("./Guild").Guild, {
         onDelete: "CASCADE",
     })
     guild?: Guild;
@@ -75,7 +75,7 @@ export class Message extends BaseClass {
     author_id?: string;
 
     @JoinColumn({ name: "author_id", referencedColumnName: "id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     author?: User;
@@ -85,7 +85,7 @@ export class Message extends BaseClass {
     member_id?: string;
 
     @JoinColumn({ name: "member_id", referencedColumnName: "id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     member?: Member;
@@ -95,7 +95,7 @@ export class Message extends BaseClass {
     webhook_id?: string;
 
     @JoinColumn({ name: "webhook_id" })
-    @ManyToOne(() => Webhook)
+    @ManyToOne(() => require("./Webhook").Webhook)
     webhook?: Webhook;
 
     @Column({ nullable: true })
@@ -103,7 +103,7 @@ export class Message extends BaseClass {
     application_id?: string;
 
     @JoinColumn({ name: "application_id" })
-    @ManyToOne(() => Application)
+    @ManyToOne(() => require("./Application").Application)
     application?: Application;
 
     @Column({ nullable: true })
@@ -124,24 +124,24 @@ export class Message extends BaseClass {
 
     @JoinTable({ name: "message_user_mentions" })
     @JsonRemoveEmpty
-    @ManyToMany(() => User)
+    @ManyToMany(() => require("./User").User)
     mentions: User[];
 
     @JoinTable({ name: "message_role_mentions" })
     @JsonRemoveEmpty
-    @ManyToMany(() => Role)
+    @ManyToMany(() => require("./Role").Role)
     mention_roles: Role[];
 
     @JoinTable({ name: "message_channel_mentions" })
     @JsonRemoveEmpty
-    @ManyToMany(() => Channel)
+    @ManyToMany(() => require("./Channel").Channel)
     mention_channels: Channel[];
 
     @JoinTable({ name: "message_stickers" })
-    @ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
+    @ManyToMany(() => require("./Sticker").Sticker, { cascade: true, onDelete: "CASCADE" })
     sticker_items?: Sticker[];
 
-    @OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
+    @OneToMany(() => require("./Attachment").Attachment, (attachment: Attachment) => attachment.message, {
         cascade: true,
         orphanedRowAction: "delete",
     })
@@ -187,7 +187,7 @@ export class Message extends BaseClass {
     };
 
     @JoinColumn({ name: "message_reference_id" })
-    @ManyToOne(() => Message, { onDelete: "SET NULL" })
+    @ManyToOne(() => require("./Message").Message, { onDelete: "SET NULL" })
     referenced_message?: Message | null;
 
     @Column({ type: "simple-json", nullable: true })

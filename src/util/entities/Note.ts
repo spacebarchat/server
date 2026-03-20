@@ -26,11 +26,11 @@ import { User } from "./User";
 @Unique(["owner", "target"])
 export class Note extends BaseClass {
     @JoinColumn({ name: "owner_id" })
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./User").User, { onDelete: "CASCADE" })
     owner: User;
 
     @JoinColumn({ name: "target_id" })
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./User").User, { onDelete: "CASCADE" })
     target: User;
 
     @Column()

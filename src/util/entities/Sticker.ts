@@ -53,7 +53,7 @@ export class Sticker extends BaseClass {
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.stickers, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.stickers, {
         onDelete: "CASCADE",
     })
     guild?: Guild;
@@ -62,7 +62,7 @@ export class Sticker extends BaseClass {
     user_id?: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user?: User;

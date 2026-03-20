@@ -27,7 +27,7 @@ import { Config } from "../util";
 })
 export class BackupCode extends BaseClass {
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./User").User, { onDelete: "CASCADE" })
     user: User;
 
     @Column()

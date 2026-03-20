@@ -25,7 +25,7 @@ import { FrecencyUserSettings, PreloadedUserSettings } from "discord-protos";
     name: "user_settings_protos",
 })
 export class UserSettingsProtos extends BaseClassWithoutId {
-    @OneToOne(() => User, {
+    @OneToOne(() => require("./User").User, {
         cascade: true,
         orphanedRowAction: "delete",
         eager: false,

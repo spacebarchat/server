@@ -35,7 +35,7 @@ export class Emoji extends BaseClass {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.emojis, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.emojis, {
         onDelete: "CASCADE",
     })
     guild: Guild;
@@ -45,7 +45,7 @@ export class Emoji extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     user: User;
 
     @Column()

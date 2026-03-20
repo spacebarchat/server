@@ -12,7 +12,7 @@ export class Stream extends BaseClass {
     owner_id: string;
 
     @JoinColumn({ name: "owner_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     owner: User;
@@ -22,7 +22,7 @@ export class Stream extends BaseClass {
     channel_id: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;

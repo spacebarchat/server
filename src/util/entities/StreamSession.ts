@@ -12,7 +12,7 @@ export class StreamSession extends BaseClass {
     stream_id: string;
 
     @JoinColumn({ name: "stream_id" })
-    @ManyToOne(() => Stream, {
+    @ManyToOne(() => require("./Stream").Stream, {
         onDelete: "CASCADE",
     })
     stream: Stream;
@@ -22,7 +22,7 @@ export class StreamSession extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;

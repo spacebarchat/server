@@ -29,7 +29,7 @@ export class Team extends BaseClass {
     icon?: string;
 
     @JoinColumn({ name: "member_ids" })
-    @OneToMany(() => TeamMember, (member: TeamMember) => member.team, {
+    @OneToMany(() => require("./TeamMember").TeamMember, (member: TeamMember) => member.team, {
         orphanedRowAction: "delete",
     })
     members: TeamMember[];
@@ -42,6 +42,6 @@ export class Team extends BaseClass {
     owner_user_id: string;
 
     @JoinColumn({ name: "owner_user_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     owner_user: User;
 }

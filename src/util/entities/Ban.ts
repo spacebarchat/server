@@ -30,7 +30,7 @@ export class Ban extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;
@@ -40,7 +40,7 @@ export class Ban extends BaseClass {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, {
+    @ManyToOne(() => require("./Guild").Guild, {
         onDelete: "CASCADE",
     })
     guild: Guild;
@@ -50,7 +50,7 @@ export class Ban extends BaseClass {
     executor_id: string;
 
     @JoinColumn({ name: "executor_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     executor: User;
 
     @Column({ nullable: true })

@@ -31,7 +31,7 @@ export class Role extends BaseClass {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.roles, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.roles, {
         onDelete: "CASCADE",
     })
     guild: Guild;

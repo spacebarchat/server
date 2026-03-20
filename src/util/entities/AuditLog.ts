@@ -26,7 +26,7 @@ import { AuditLogChange, AuditLogEvents } from "@spacebar/schemas";
 })
 export class AuditLog extends BaseClass {
     @JoinColumn({ name: "target_id" })
-    @ManyToOne(() => User)
+    @ManyToOne(() => require("./User").User)
     target?: User;
 
     @Column({ nullable: true })
@@ -34,7 +34,7 @@ export class AuditLog extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, (user: User) => user.id)
+    @ManyToOne(() => require("./User").User, (user: User) => user.id)
     user: User;
 
     @Column({ type: "int" })

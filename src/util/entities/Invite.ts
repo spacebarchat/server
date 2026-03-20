@@ -55,7 +55,7 @@ export class Invite extends BaseClassWithoutId {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.invites, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.invites, {
         onDelete: "CASCADE",
     })
     guild: Guild;
@@ -65,7 +65,7 @@ export class Invite extends BaseClassWithoutId {
     channel_id: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
@@ -75,7 +75,7 @@ export class Invite extends BaseClassWithoutId {
     inviter_id?: string;
 
     @JoinColumn({ name: "inviter_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     inviter: User;
@@ -85,7 +85,7 @@ export class Invite extends BaseClassWithoutId {
     target_user_id: string;
 
     @JoinColumn({ name: "target_user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     target_user?: string; // could be used for "User specific invites" https://github.com/spacebarchat/server/issues/326

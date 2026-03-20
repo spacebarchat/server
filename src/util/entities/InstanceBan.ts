@@ -52,7 +52,7 @@ export class InstanceBan extends BaseClass {
     origin_instance_ban_id?: string;
 
     @JoinColumn({ name: "origin_instance_ban_id" })
-    @OneToOne(() => InstanceBan, { nullable: true, onDelete: "SET NULL" })
+    @OneToOne(() => require("./InstanceBan").InstanceBan, { nullable: true, onDelete: "SET NULL" })
     origin_instance_ban?: InstanceBan;
 
     static async findInstanceBans(opts: { userId?: string; ipAddress?: string; fingerprint?: string; propagateBan?: boolean }) {

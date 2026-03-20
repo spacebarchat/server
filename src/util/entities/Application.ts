@@ -54,7 +54,7 @@ export class Application extends BaseClass {
     verify_key: string;
 
     @JoinColumn({ name: "owner_id" })
-    @ManyToOne(() => User, { onDelete: "CASCADE" })
+    @ManyToOne(() => require("./User").User, { onDelete: "CASCADE" })
     owner: User;
 
     // TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
@@ -89,7 +89,7 @@ export class Application extends BaseClass {
     discovery_eligibility_flags: number = 2240;
 
     @JoinColumn({ name: "bot_user_id" })
-    @OneToOne(() => User, { onDelete: "CASCADE" })
+    @OneToOne(() => require("./User").User, { onDelete: "CASCADE" })
     bot?: User;
 
     @Column({ type: "simple-array", nullable: true })
@@ -112,7 +112,7 @@ export class Application extends BaseClass {
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild)
+    @ManyToOne(() => require("./Guild").Guild)
     guild?: Guild; // guild to which the app is linked, e.g. a developer support server
 
     @Column({ nullable: true })
@@ -130,7 +130,7 @@ export class Application extends BaseClass {
     //slug?: string; // if this application is a game sold, this field will be the URL slug that links to the store page
 
     @JoinColumn({ name: "team_id" })
-    @ManyToOne(() => Team, {
+    @ManyToOne(() => require("./Team").Team, {
         onDelete: "CASCADE",
         nullable: true,
     })

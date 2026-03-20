@@ -34,7 +34,7 @@ export class VoiceState extends BaseClass {
     guild_id: string;
 
     @JoinColumn({ name: "guild_id" })
-    @ManyToOne(() => Guild, (guild) => guild.voice_states, {
+    @ManyToOne(() => require("./Guild").Guild, (guild: Guild) => guild.voice_states, {
         onDelete: "CASCADE",
     })
     guild?: Guild;
@@ -44,7 +44,7 @@ export class VoiceState extends BaseClass {
     channel_id: string;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => Channel, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
@@ -54,7 +54,7 @@ export class VoiceState extends BaseClass {
     user_id: string;
 
     @JoinColumn({ name: "user_id" })
-    @ManyToOne(() => User, {
+    @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })
     user: User;
