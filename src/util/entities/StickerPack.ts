@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
-import { Sticker } from ".";
+import { Sticker } from "./Sticker";
 import { BaseClass } from "./BaseClass";
 
 @Entity({
