@@ -534,7 +534,7 @@ export async function postHandleMessage(message: Message) {
 
     const linkMatches = content?.match(LINK_REGEX) || [];
     message.clean_data();
-    const data = { ...message };
+    const data = { ...message.toJSON() };
 
     const currentNormalizedUrls = new Set<string>();
     for (const link of linkMatches) {
