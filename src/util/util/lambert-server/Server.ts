@@ -2,15 +2,6 @@ import express, { Application, Router } from "express";
 import { Server as HTTPServer } from "http";
 import http from "http";
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace Express {
-        interface Request {
-            server: Server;
-        }
-    }
-}
-
 export type ServerOptions = {
     port: number;
     host: string;
