@@ -46,7 +46,7 @@ export class SpacebarServer extends Server {
     constructor(opts?: Partial<SpacebarServerOptions>) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        super({ ...opts, errorHandler: false });
+        super(opts);
     }
 
     async start() {
