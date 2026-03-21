@@ -12,15 +12,6 @@ export type ServerOptions = {
     app: Application;
 };
 
-// Overwrite default options for Router with default value true for mergeParams
-const oldRouter = express.Router;
-express.Router = function (options?: express.RouterOptions | undefined): Router {
-    if (!options) options = {};
-    if (options.mergeParams == null) options.mergeParams = true;
-
-    return oldRouter(options);
-};
-
 export class Server {
     public app: Application;
     public http: HTTPServer;
