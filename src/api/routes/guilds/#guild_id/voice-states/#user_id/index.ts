@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, DiscordApiErrors, emitEvent, getPermission, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
+import { Channel, DiscordApiErrors, emitEvent, getPermission, Member, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, VoiceStateUpdateSchema } from "@spacebar/schemas";
 
@@ -59,17 +59,16 @@ router.patch(
         if (!body.suppress) body.request_to_speak_timestamp = new Date();
         if (body.request_to_speak_timestamp) perms.hasThrow("REQUEST_TO_SPEAK");
 
-        const voice_state = await VoiceState.findOne({
+        const voiceState = await VoiceState.findOne({
             where: {
                 guild_id,
                 channel_id: body.channel_id,
                 user_id,
             },
-            relations: { member: true },
         });
-        if (!voice_state) throw DiscordApiErrors.UNKNOWN_VOICE_STATE;
+        if (!voiceState) throw DiscordApiErrors.UNKNOWN_VOICE_STATE;
 
-        voice_state.assign(body);
+        voiceState.assign(body);
         const channel = await Channel.findOneOrFail({
             where: { guild_id, id: body.channel_id },
         });
@@ -77,13 +76,20 @@ router.patch(
             throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
         }
 
+        voiceState.member = await Member.findOneOrFail({
+            where: {
+                id: voiceState.user_id,
+                guild_id: voiceState.guild_id,
+            },
+        });
+
         await Promise.all([
-            voice_state.save(),
+            voiceState.save(),
             emitEvent({
                 event: "VOICE_STATE_UPDATE",
                 data: {
-                    ...voice_state.toPublicVoiceState(),
-                    member: voice_state.member.toPublicMember(),
+                    ...voiceState.toPublicVoiceState(),
+                    member: voiceState.member.toPublicMember(),
                 },
                 guild_id,
             } satisfies VoiceStateUpdateEvent),

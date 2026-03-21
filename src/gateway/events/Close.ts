@@ -17,7 +17,7 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
-import { emitEvent, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
+import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
@@ -32,7 +32,6 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
-            relations: { member: true },
         });
 
         // clear the voice state for this session if user was in voice channel
@@ -48,6 +47,12 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
             voiceState.self_video = false;
             await voiceState.save();
 
+            voiceState.member = await Member.findOneOrFail({
+                where: {
+                    id: voiceState.user_id,
+                    guild_id: prevGuildId,
+                },
+            });
             // let the users in previous guild/channel know that user disconnected
             await emitEvent({
                 event: "VOICE_STATE_UPDATE",
