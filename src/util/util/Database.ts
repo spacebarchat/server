@@ -37,7 +37,7 @@ if (!process.env) {
 }
 if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
-if (!process.env.DATABASE) {
+if (!process.env.DATABASE && !isHeadlessProcess) {
     console.log(
         red(
             "DATABASE environment variable not set! Please set it to your database connection string.\n" + "Example for postgres: postgres://user:password@localhost:5432/database",
@@ -47,7 +47,7 @@ if (!process.env.DATABASE) {
 }
 
 const dbConnectionString = process.env.DATABASE!;
-export const DatabaseType = dbConnectionString.split(":")[0]?.replace("+srv", "");
+export const DatabaseType = isHeadlessProcess ? "postgres" : dbConnectionString.split(":")[0]?.replace("+srv", "");
 const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
 
 export const DataSourceOptions = isHeadlessProcess

@@ -396,6 +396,7 @@ function columnizedObjectDiff(a, b, trackEqual = false) {
     return diffs;
 }
 
+const showScanDepth = process.env.SCHEMAS_SHOW_SCAN_DEPTH === "true";
 async function removeAllMatchingRecursive(o, selector, maxDepth = 32, path = "$") {
     // process.stdout.write("S");
     // console.log("scan @", path, "with depth", maxDepth, typeof o, o);
@@ -406,9 +407,9 @@ async function removeAllMatchingRecursive(o, selector, maxDepth = 32, path = "$"
             process.stdout.write(yellowBright("R(" + gray(k) + " @ " + cyan(path) + ") "));
             delete o[k];
         } else if (maxDepth > 0 && typeof o != "string") {
-            process.stdout.write(gray(">"));
+            if (showScanDepth) process.stdout.write(gray(">"));
             o[k] = await removeAllMatchingRecursive(o[k], selector, maxDepth - 1, path + "." + k);
-            process.stdout.write(cyan("\b \b"));
+            if (showScanDepth) process.stdout.write(cyan("\b \b"));
         }
     }
 
