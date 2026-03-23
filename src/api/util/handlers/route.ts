@@ -158,6 +158,7 @@ export function route(opts: RouteOptions) {
 
             const valid = validate(req.body);
             if (!valid) {
+                console.log(JSON.stringify(req.body));
                 const fields: Record<string, { code?: string; message: string }> = {};
                 validate.errors?.forEach(
                     (x) =>

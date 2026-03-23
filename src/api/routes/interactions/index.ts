@@ -91,24 +91,26 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     }
 
     if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
-        interactionData.message = await Message.findOneOrFail({
-            where: { id: body.message_id, flags: undefined },
-            relations: {
-                author: true,
-                webhook: true,
-                application: true,
-                mentions: true,
-                mention_roles: true,
-                mention_channels: true,
-                sticker_items: true,
-                attachments: true,
-                thread: {
-                    recipients: {
-                        user: true,
+        interactionData.message = (
+            await Message.findOneOrFail({
+                where: { id: body.message_id, flags: undefined },
+                relations: {
+                    author: true,
+                    webhook: true,
+                    application: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                    sticker_items: true,
+                    attachments: true,
+                    thread: {
+                        recipients: {
+                            user: true,
+                        },
                     },
                 },
-            },
-        });
+            })
+        ).toJSON();
     }
 
     await emitEvent({
@@ -144,6 +146,7 @@ router.post("/", route({}), async (req: Request, res: Response) => {
         commandType: body.data.type,
         commandName: body.data.name,
         messageId: body.message_id,
+        interactionId,
     });
 
     res.sendStatus(204);

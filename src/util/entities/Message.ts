@@ -33,7 +33,13 @@ import {
     ApplicationCommandType,
     BaseMessageComponents,
     Embed,
-    MessageComponentType, MessageSnapshot, MessageType, PartialMessage, Poll, PublicMessage, Reaction,
+    MessageComponentType,
+    MessageSnapshot,
+    MessageType,
+    PartialMessage,
+    Poll,
+    PublicMessage,
+    Reaction,
     UnfurledMediaItem,
 } from "@spacebar/schemas";
 import { PartialUser } from "@spacebar/schemas";
@@ -291,8 +297,9 @@ export class Message extends BaseClass {
             poll: this.poll ?? undefined,
             content: this.content ?? "",
             pinned: this.pinned,
-            thread: this.thread ? this.thread.toJSON() : this.thread,
+            thread: this.thread ? this.thread.toJSON() : undefined,
             referenced_message: this.referenced_message && !shallow ? this.referenced_message.toJSON(true) : undefined,
+            message_snapshots: (typeof this.message_snapshots === "string" ? JSON.parse(this.message_snapshots) : this.message_snapshots) ?? undefined,
         };
     }
 

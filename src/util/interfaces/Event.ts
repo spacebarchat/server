@@ -37,6 +37,7 @@ import {
     GuildOrUnavailable,
     Snowflake,
     ThreadMember,
+    Application,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
 import {
@@ -337,6 +338,7 @@ export interface GuildRoleDeleteEvent extends Event {
         role_id: string;
     };
 }
+import { ModalCallback } from "@spacebar/schemas";
 
 export interface InviteCreateEvent extends Event {
     event: "INVITE_CREATE";
@@ -543,6 +545,19 @@ export interface InteractionCreateEvent extends Event {
               nonce?: string;
           };
 }
+export interface InteractionModalCreateEvent extends Event {
+    event: "INTERACTION_MODAL_CREATE";
+    data: {
+        id: Snowflake;
+        channel_id: Snowflake;
+        custom_id: string; //TODO this needs to be corrected
+        application: Application;
+        title: string;
+        components: ModalCallback["components"];
+        nonce?: string;
+        //TODO resolved
+    };
+}
 
 export interface InteractionSuccessEvent extends Event {
     event: "INTERACTION_SUCCESS";
@@ -719,6 +734,7 @@ export type EventData =
     | InteractionCreateEvent
     | InteractionSuccessEvent
     | InteractionFailureEvent
+    | InteractionModalCreateEvent
     | MessageAckEvent
     | RelationshipAddEvent
     | RelationshipRemoveEvent
@@ -856,6 +872,7 @@ export type EVENT =
     | "THREAD_LIST_SYNC"
     | "THREAD_MEMBER_UPDATE"
     | "THREAD_MEMBERS_UPDATE"
+    | "INTERACTION_MODAL_CREATE"
     | CUSTOMEVENTS;
 
 export type CUSTOMEVENTS = "INVALIDATED" | "RATELIMIT" | "SB_SESSION_REMOVE" | "SB_SESSION_CLOSE";
