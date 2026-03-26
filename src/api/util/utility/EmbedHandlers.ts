@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { arrayDistinctBy, arrayGroupBy, arrayRemove, Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl } from "@spacebar/util";
+import { arrayDistinctBy, arrayGroupBy, arrayRemove, Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl, OrmUtils } from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
@@ -109,10 +109,7 @@ export const getMetaDescriptions = (text: string) => {
 
 const doFetch = async (url: URL, opts?: RequestInit) => {
     try {
-        const res = await fetch(url, {
-            ...DEFAULT_FETCH_OPTIONS,
-            ...opts,
-        });
+        const res = await fetch(url, OrmUtils.mergeDeep({ ...DEFAULT_FETCH_OPTIONS }, opts ?? {}));
         if (res.headers.get("content-length")) {
             const contentLength = parseInt(res.headers.get("content-length")!);
             if (Config.get().limits.message.maxEmbedDownloadSize && contentLength > Config.get().limits.message.maxEmbedDownloadSize) {
@@ -451,6 +448,7 @@ export const EmbedHandlers: {
 
     "youtu.be": (url) => EmbedHandlers["www.youtube.com"](url),
     "youtube.com": (url) => EmbedHandlers["www.youtube.com"](url),
+    "music.youtube.com": (url) => EmbedHandlers["www.youtube.com"](url),
     "www.youtube.com": async (url: URL): Promise<Embed | null> => {
         const response = await doFetch(url, { headers: { cookie: "CONSENT=PENDING+999; hl=en" } });
         if (!response) return null;
