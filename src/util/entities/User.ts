@@ -261,13 +261,12 @@ export class User extends BaseClass {
 
             // randomly generates a discriminator between 1 and 9999 and checks max five times if it already exists
             // TODO: is there any better way to generate a random discriminator only once, without checking if it already exists in the database?
-            for (let tries = 0; tries < 5; tries++) {
+            const takenDiscriminators = (await User.find({ where: { username }, select: { discriminator: true } })).map((x) => x.discriminator);
+            if (takenDiscriminators.length >= 9999) return undefined;
+
+            for (let tries = 0; tries < 15; tries++) {
                 const discriminator = Random.nextInt(1, 9999).toString().padStart(4, "0");
-                const exists = await User.findOne({
-                    where: { discriminator, username: username },
-                    select: { id: true },
-                });
-                if (!exists) return discriminator;
+                if (!takenDiscriminators.includes(discriminator)) return discriminator;
             }
 
             return undefined;
