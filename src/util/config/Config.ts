@@ -22,6 +22,7 @@ import {
     ComponentConfiguration,
     DefaultsConfiguration,
     EmailConfiguration,
+    EmbedConfiguration,
     EndpointConfiguration,
     ExternalTokensConfiguration,
     GeneralConfiguration,
@@ -61,4 +62,5 @@ export class ConfigValue {
     user: UserConfiguration = new UserConfiguration();
     offload: OffloadConfiguration = new OffloadConfiguration();
     components = new ComponentConfiguration();
+    embeds = new EmbedConfiguration();
 }
