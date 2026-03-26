@@ -24,4 +24,5 @@ export class MessageLimits {
     maxBulkDelete: number = 1000;
     maxEmbedDownloadSize: number = 1024 * 1024 * 5;
     maxPreloadCount: number = 100;
+    maxEmbeds: number = 20;
 }

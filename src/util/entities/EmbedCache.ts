@@ -29,4 +29,11 @@ export class EmbedCache extends BaseClass {
 
     @Column({ type: "simple-json" })
     embed: Embed;
+
+    // TODO: store all returned embed objects from a handler
+    // @Column({ type: "simple-json" })
+    // embeds: Embed[];
+
+    @Column({ name: "created_at", type: "timestamp with time zone" })
+    createdAt: Date;
 }

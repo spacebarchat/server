@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EmbedHandlers, randomString } from "@spacebar/api";
+import { EmbedHandlers, randomString, fillMessageUrlEmbeds } from "@spacebar/api";
 import {
     Application,
     Attachment,
@@ -69,13 +69,12 @@ import {
     UnfurledMediaItem,
     BaseMessageComponents,
     v1CompTypes,
-    PartialUser
+    PartialUser,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
 
-const LINK_REGEX = /<?https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)>?/g;
 function checkActionRow(row: ActionRowComponent, knownComponentIds: string[], errors: Record<string, { code?: string; message: string }>, rowIndex: number) {
     if (!row.components) {
         return;
@@ -774,139 +773,15 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 // TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
-    const conf = Config.get();
-    const content = message.content?.replace(/ *`[^)]*` */g, ""); // remove markdown
-
-    const linkMatches = content?.match(LINK_REGEX) || [];
     message.clean_data();
-    const data = { ...message.toJSON() };
 
-    const currentNormalizedUrls = new Set<string>();
-    for (const link of linkMatches) {
-        // Don't process links in <>
-        if (link.startsWith("<") && link.endsWith(">")) {
-            continue;
-        }
-        try {
-            const normalized = normalizeUrl(link);
-            currentNormalizedUrls.add(normalized);
-        } catch (e) {
-            /* empty */
-        }
-    }
-    if (data.embeds != undefined) {
-        data.embeds?.forEach((embed) => {
-            if (!embed.type) {
-                embed.type = EmbedType.rich;
-            }
-        });
-    }
-    // Filter out embeds that could be links, start from scratch
-    if (data.embeds != undefined) {
-        data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
-    }
+    message.embeds ??= [];
+    message.embeds.forEach((embed) => {
+        // we need to handle false-y values (empty string) here, so cant use ??=
+        embed.type ||= EmbedType.rich;
+    });
 
-    const seenNormalizedUrls = new Set<string>();
-    const uniqueLinks: string[] = [];
-
-    for (const link of linkMatches.slice(0, 20)) {
-        // embed max 20 links - TODO: make this configurable with instance policies
-        // Don't embed links in <>
-        if (link.startsWith("<") && link.endsWith(">")) continue;
-
-        try {
-            const normalized = normalizeUrl(link);
-
-            if (!seenNormalizedUrls.has(normalized)) {
-                seenNormalizedUrls.add(normalized);
-                uniqueLinks.push(link);
-            }
-        } catch (e) {
-            // Invalid URL, skip
-        }
-    }
-
-    if (uniqueLinks.length === 0) {
-        // No valid unique links found, update message to remove old embeds
-        if (data.embeds != undefined) {
-            data.embeds = data.embeds?.filter((embed) => embed.type === "rich");
-        }
-        // author value is already included in message.toJSON()
-        const event = {
-            event: "MESSAGE_UPDATE",
-            channel_id: message.channel_id,
-            data: {
-                ...message.toJSON(),
-                embeds: data.embeds == undefined ? message.embeds || [] : data.embeds,
-            },
-        } satisfies MessageUpdateEvent;
-        const embeds = data.embeds == undefined ? [] : data.embeds;
-        await Promise.all([emitEvent(event), Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds })]);
-        return;
-    }
-
-    const cachePromises = [];
-
-    for (const link of uniqueLinks) {
-        let url: URL;
-        try {
-            url = new URL(link);
-        } catch (e) {
-            // Skip invalid URLs
-            continue;
-        }
-
-        const normalizedUrl = normalizeUrl(link);
-
-        // Check cache using normalized URL
-        const cached = await EmbedCache.findOne({
-            where: { url: normalizedUrl },
-        });
-
-        if (cached) {
-            if (data.embeds == undefined) {
-                data.embeds = [];
-            }
-            data.embeds?.push(cached.embed);
-            continue;
-        }
-
-        // bit gross, but whatever!
-        const endpointPublic = conf.cdn.endpointPublic; // lol
-        const handler = url.hostname === new URL(endpointPublic!).hostname ? EmbedHandlers["self"] : EmbedHandlers[url.hostname] || EmbedHandlers["default"];
-
-        try {
-            let res = await handler(url);
-            if (!res) continue;
-            // tried to use shorthand but types didn't like me L
-            if (!Array.isArray(res)) res = [res];
-
-            for (const embed of res) {
-                // Cache with normalized URL
-                const cache = EmbedCache.create({
-                    url: normalizedUrl,
-                    embed: embed,
-                });
-                cachePromises.push(cache.save());
-                if (data.embeds == undefined) {
-                    data.embeds = [];
-                }
-                data.embeds?.push(embed);
-            }
-        } catch (e) {
-            console.error(`[Embeds] Error while generating embed for ${link}`, e);
-        }
-    }
-    const embeds = data.embeds == undefined ? [] : data.embeds;
-    await Promise.all([
-        emitEvent({
-            event: "MESSAGE_UPDATE",
-            channel_id: message.channel_id,
-            data: message.toJSON(),
-        } satisfies MessageUpdateEvent),
-        Message.update({ id: message.id, channel_id: message.channel_id }, { embeds: embeds }),
-        ...cachePromises,
-    ]);
+    if ((await getPermission(message.author_id, message.channel.guild_id, message.channel_id)).has(Permissions.FLAGS.EMBED_LINKS)) await fillMessageUrlEmbeds(message);
 }
 
 export async function sendMessage(opts: MessageOptions) {

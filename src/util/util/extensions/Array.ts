@@ -42,3 +42,16 @@ export function arrayDistinctBy<T, M>(array: T[], selector: (elem: T) => M): T[]
         return true;
     });
 }
+
+export function arrayGroupBy<T, M>(array: T[], selector: (elem: T) => M): Map<M, T[]> {
+    const map = new Map<M, T[]>();
+
+    array.forEach((item) => {
+        const mappedValue = selector(item);
+        const existing = map.get(mappedValue);
+        if (existing) existing.push(item);
+        else map.set(mappedValue, [item]);
+    });
+
+    return map;
+}
