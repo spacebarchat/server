@@ -376,12 +376,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const { result: voiceStatesByGuild, elapsed: groupVoiceStatesTime } = timeFunction(() => arrayGroupBy(memberGuildVoiceStates, (v) => v.guild_id!));
     const { result: threadsByGuild, elapsed: groupThreadsTime } = timeFunction(() => arrayGroupBy(allThreads, (t) => t.guild_id!));
 
-    const queryGuildChannelsTimeTotal = queryGuildChannelsTime.add(groupChannelsTime);
-    const queryGuildEmojisTimeTotal = queryGuildEmojisTime.add(groupEmojisTime);
-    const queryGuildRolesTimeTotal = queryGuildRolesTime.add(groupRolesTime);
-    const queryGuildStickersTimeTotal = queryGuildStickersTime.add(groupStickersTime);
-    const queryGuildVoiceStatesTimeTotal = queryGuildVoiceStatesTime.add(groupVoiceStatesTime);
-    const queryThreadsTimeTotal = queryThreadsTime.add(groupThreadsTime);
+    const queryGuildChannelsTimeTotal = new ElapsedTime(queryGuildChannelsTime.totalNanoseconds + groupChannelsTime.totalNanoseconds);
+    const queryGuildEmojisTimeTotal = new ElapsedTime(queryGuildEmojisTime.totalNanoseconds + groupEmojisTime.totalNanoseconds);
+    const queryGuildRolesTimeTotal = new ElapsedTime(queryGuildRolesTime.totalNanoseconds + groupRolesTime.totalNanoseconds);
+    const queryGuildStickersTimeTotal = new ElapsedTime(queryGuildStickersTime.totalNanoseconds + groupStickersTime.totalNanoseconds);
+    const queryGuildVoiceStatesTimeTotal = new ElapsedTime(queryGuildVoiceStatesTime.totalNanoseconds + groupVoiceStatesTime.totalNanoseconds);
+    const queryThreadsTimeTotal = new ElapsedTime(queryThreadsTime.totalNanoseconds + groupThreadsTime.totalNanoseconds);
 
     const guildMap = new Map(memberGuilds.map((g) => [g.id, g]));
 
