@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, CreateDateColumn, Entity, FindOptionsWhere, JoinColumn, OneToOne, RelationId } from "typeorm";
+import { Column, CreateDateColumn, Entity, FindOptionsWhere, Index, JoinColumn, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 
 @Entity({
@@ -30,12 +30,15 @@ export class InstanceBan extends BaseClass {
     @Column()
     reason: string;
 
+    @Index()
     @Column({ nullable: true })
     user_id?: string;
 
+    @Index()
     @Column({ nullable: true })
     fingerprint?: string;
 
+    @Index()
     @Column({ nullable: true })
     ip_address?: string;
 
