@@ -31,7 +31,8 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     if (d.user_ids && !Array.isArray(d.user_ids)) d.user_ids = [d.user_ids];
 
     if (Config.get().offload.gateway.guildMembersUrl !== null) {
-        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildMembersUrl!, d);
+        const guildIds: string[] = Array.isArray(d.guild_id) ? d.guild_id : [d.guild_id];
+        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildMembersUrl!, guildIds);
     }
 
     check.call(this, RequestGuildMembersSchema, d);
