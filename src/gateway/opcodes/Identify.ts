@@ -18,6 +18,7 @@
 
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import {
+    arrayGroupBy,
     Application,
     Channel,
     checkToken,
@@ -368,43 +369,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const allThreads = allThreadsRaw.filter(({ thread_metadata }) => thread_metadata?.archived === false);
     const threadMemberMap = new Map(threadMembers.map((member) => [member.id, member] as const));
 
-    const channelsByGuild = new Map<string, Channel[]>();
-    const emojisByGuild = new Map<string, Emoji[]>();
-    const rolesByGuild = new Map<string, Role[]>();
-    const stickersByGuild = new Map<string, Sticker[]>();
-    const voiceStatesByGuild = new Map<string, VoiceState[]>();
-    const threadsByGuild = new Map<string, Channel[]>();
+    const { result: channelsByGuild, elapsed: groupChannelsTime } = timeFunction(() => arrayGroupBy(memberGuildChannels, (c) => c.guild_id!));
+    const { result: emojisByGuild, elapsed: groupEmojisTime } = timeFunction(() => arrayGroupBy(memberGuildEmojis, (e) => e.guild_id!));
+    const { result: rolesByGuild, elapsed: groupRolesTime } = timeFunction(() => arrayGroupBy(memberGuildRoles, (r) => r.guild_id!));
+    const { result: stickersByGuild, elapsed: groupStickersTime } = timeFunction(() => arrayGroupBy(memberGuildStickers, (s) => s.guild_id!));
+    const { result: voiceStatesByGuild, elapsed: groupVoiceStatesTime } = timeFunction(() => arrayGroupBy(memberGuildVoiceStates, (v) => v.guild_id!));
+    const { result: threadsByGuild, elapsed: groupThreadsTime } = timeFunction(() => arrayGroupBy(allThreads, (t) => t.guild_id!));
 
-    for (const c of memberGuildChannels) {
-        const arr = channelsByGuild.get(c.guild_id!);
-        if (arr) arr.push(c);
-        else channelsByGuild.set(c.guild_id!, [c]);
-    }
-    for (const e of memberGuildEmojis) {
-        const arr = emojisByGuild.get(e.guild_id!);
-        if (arr) arr.push(e);
-        else emojisByGuild.set(e.guild_id!, [e]);
-    }
-    for (const r of memberGuildRoles) {
-        const arr = rolesByGuild.get(r.guild_id!);
-        if (arr) arr.push(r);
-        else rolesByGuild.set(r.guild_id!, [r]);
-    }
-    for (const s of memberGuildStickers) {
-        const arr = stickersByGuild.get(s.guild_id!);
-        if (arr) arr.push(s);
-        else stickersByGuild.set(s.guild_id!, [s]);
-    }
-    for (const v of memberGuildVoiceStates) {
-        const arr = voiceStatesByGuild.get(v.guild_id!);
-        if (arr) arr.push(v);
-        else voiceStatesByGuild.set(v.guild_id!, [v]);
-    }
-    for (const t of allThreads) {
-        const arr = threadsByGuild.get(t.guild_id!);
-        if (arr) arr.push(t);
-        else threadsByGuild.set(t.guild_id!, [t]);
-    }
+    const queryGuildChannelsTimeTotal = queryGuildChannelsTime.add(groupChannelsTime);
+    const queryGuildEmojisTimeTotal = queryGuildEmojisTime.add(groupEmojisTime);
+    const queryGuildRolesTimeTotal = queryGuildRolesTime.add(groupRolesTime);
+    const queryGuildStickersTimeTotal = queryGuildStickersTime.add(groupStickersTime);
+    const queryGuildVoiceStatesTimeTotal = queryGuildVoiceStatesTime.add(groupVoiceStatesTime);
+    const queryThreadsTimeTotal = queryThreadsTime.add(groupThreadsTime);
 
     const guildMap = new Map(memberGuilds.map((g) => [g.id, g]));
 
@@ -427,19 +404,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             trace.calls.push("findGuild", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             g.channels = channelsByGuild.get(m.guild_id) ?? [];
-            trace.calls.push(`filterChannels(${g.channels.length}/${memberGuildChannels.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`getChannels(${g.channels.length}/${memberGuildChannels.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             g.emojis = emojisByGuild.get(m.guild_id) ?? [];
-            trace.calls.push(`filterEmojis(${g.emojis.length}/${memberGuildEmojis.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`getEmojis(${g.emojis.length}/${memberGuildEmojis.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             g.roles = rolesByGuild.get(m.guild_id) ?? [];
-            trace.calls.push(`filterRoles(${g.roles.length}/${memberGuildRoles.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`getRoles(${g.roles.length}/${memberGuildRoles.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             g.stickers = stickersByGuild.get(m.guild_id) ?? [];
-            trace.calls.push(`filterStickers(${g.stickers.length}/${memberGuildStickers.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`getStickers(${g.stickers.length}/${memberGuildStickers.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             g.voice_states = voiceStatesByGuild.get(m.guild_id) ?? [];
-            trace.calls.push(`filterVoiceStates(${g.voice_states.length}/${memberGuildVoiceStates.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            trace.calls.push(`getVoiceStates(${g.voice_states.length}/${memberGuildVoiceStates.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
             trace.micros = totalSw.elapsed().totalMicroseconds;
             mergeMemberGuildsTrace.calls!.push(`guild_${m.guild_id}`, trace);
@@ -777,13 +754,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             } else if (key === "guildRelationQueryTime") {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
-                    queryGuildChannelsTime,
-                    queryGuildEmojisTime,
-                    queryGuildRolesTime,
-                    queryGuildStickersTime,
-                    queryGuildVoiceStatesTime,
+                    queryGuildChannelsTime: queryGuildChannelsTimeTotal,
+                    queryGuildEmojisTime: queryGuildEmojisTimeTotal,
+                    queryGuildRolesTime: queryGuildRolesTimeTotal,
+                    queryGuildStickersTime: queryGuildStickersTimeTotal,
+                    queryGuildVoiceStatesTime: queryGuildVoiceStatesTimeTotal,
                     threadMemberTime,
-                    queryThreadsTime,
+                    queryThreadsTime: queryThreadsTimeTotal,
                 })) {
                     if (subvalue) {
                         val.calls.push(subkey, {
