@@ -69,10 +69,6 @@ export class ElapsedTime {
         return this.totalDays;
     }
 
-    add(other: ElapsedTime): ElapsedTime {
-        return new ElapsedTime(this.timeNanos + other.totalNanoseconds);
-    }
-
     toString(): string {
         // Format: "DD.HH:MM:SS.mmmuuuNNN", with days being optional
         const daysPart = Math.floor(this.days) > 0 ? `${Math.floor(this.days)}.` : "";
