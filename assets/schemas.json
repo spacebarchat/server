@@ -15025,6 +15025,9 @@
             },
             "maxPreloadCount": {
                 "type": "integer"
+            },
+            "maxEmbeds": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
@@ -15033,6 +15036,7 @@
             "maxBulkDelete",
             "maxCharacters",
             "maxEmbedDownloadSize",
+            "maxEmbeds",
             "maxPreloadCount",
             "maxReactions",
             "maxTTSCharacters"
