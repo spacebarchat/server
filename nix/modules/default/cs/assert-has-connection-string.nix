@@ -1,4 +1,8 @@
-name: extraConfig: {
+name: cfg:
+let
+  extraConfig = cfg.cs.defaultAppsettings;
+in
+{
   assertion = extraConfig ? ConnectionStrings && extraConfig.ConnectionStrings ? Spacebar && extraConfig.ConnectionStrings.Spacebar != null;
   message = ''
     ${name}: Setting a database connection string in extraConfiguration (`extraConfiguration.ConnectionStrings.Spacebar`) is required when using C# services.

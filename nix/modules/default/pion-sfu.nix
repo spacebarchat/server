@@ -13,25 +13,21 @@ let
   configFile = (import ./config-file.nix { inherit config lib pkgs; });
 in
 {
-  options.services.spacebarchat-server.pion-sfu =
-    let
-      mkEndpointOptions = import ./options-subtypes/mkEndpointOptions.nix { inherit lib; };
-    in
-    {
-      enable = lib.mkEnableOption "Enable Spacebar Pion SFU";
-      openFirewall = lib.mkEnableOption "Allow SFU port in firewall";
-      package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "Pion SFU" { default = "pion-sfu"; };
+  options.services.spacebarchat-server.pion-sfu = {
+    enable = lib.mkEnableOption "Enable Spacebar Pion SFU";
+    openFirewall = lib.mkEnableOption "Allow SFU port in firewall";
+    package = lib.mkPackageOption self.packages.${pkgs.stdenv.hostPlatform.system} "Pion SFU" { default = "pion-sfu"; };
 
-      publicIp = lib.mkOption {
-        type = lib.types.str;
-        description = "Public IP address of the server.";
-      };
-      listenPort = lib.mkOption {
-        type = lib.types.port;
-        default = 6000;
-        description = "UDP port the SFU will listen on.";
-      };
+    publicIp = lib.mkOption {
+      type = lib.types.str;
+      description = "Public IP address of the server.";
     };
+    listenPort = lib.mkOption {
+      type = lib.types.port;
+      default = 6000;
+      description = "UDP port the SFU will listen on.";
+    };
+  };
 
   config = lib.mkIf cfg.pion-sfu.enable (
     let

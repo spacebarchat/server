@@ -13,7 +13,9 @@ let
   jsonFormat = pkgs.formats.json { };
 in
 {
-  imports = [ ];
+  imports = [
+    ./shared-config.nix
+  ];
   options.services.spacebarchat-server.cdnCs = lib.mkOption {
     default = { };
     description = "Configuration for C# cdn.";
@@ -22,7 +24,7 @@ in
         enable = lib.mkEnableOption "Enable experimental C# CDN.";
         extraConfiguration = lib.mkOption {
           type = jsonFormat.type;
-          default = import ./default-appsettings-json.nix;
+          default = { };
           description = "Extra appsettings.json configuration for the gateway offload daemon.";
         };
       };
@@ -35,7 +37,7 @@ in
     in
     {
       assertions = [
-        (import ./assert-has-connection-string.nix "Admin API" cfg.adminApi.extraConfiguration)
+        (import ./assert-has-connection-string.nix "C# CDN" cfg)
       ];
 
       systemd.services.spacebar-cdn = makeServerTsService {
@@ -53,7 +55,7 @@ in
             CONFIG_READONLY = 1;
             ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.cdnEndpoint.localPort}";
             STORAGE_LOCATION = cfg.cdnPath;
-            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-cdn.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.cdnCs.extraConfiguration);
+            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-cdn.json" (lib.recursiveUpdate cfg.cs.defaultAppsettings cfg.cdnCs.extraConfiguration);
           }
         );
         serviceConfig = {

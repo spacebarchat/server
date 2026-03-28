@@ -6,7 +6,6 @@ nixpkgs.lib.nixosSystem {
         self.nixosModules.default
         ./configuration.nix
         ./postgres.nix
-        ./perlless.nix
         ./vm.nix
     ];
     specialArgs = { inherit self nixpkgs; };

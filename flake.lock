@@ -20,11 +20,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1773436484,
-        "narHash": "sha256-SeGjOJJBrsTSa13z/Cu5ucQUo1qlIPwXfR7AeeOBoew=",
+        "lastModified": 1774704740,
+        "narHash": "sha256-8jdUhQQuUGVFHfqRouJuaPMFdT3TP6fgW0CFVIyHGxQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "97715a1ceaf42795d7eb751872f7f8e1d317e6e1",
+        "rev": "e4d1aaf1b4f61cf588bf2d02750a08d815b051be",
         "type": "github"
       },
       "original": {
@@ -44,11 +44,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773624569,
-        "narHash": "sha256-CKfTu9nDD85yv7hHxCKl8tGv4R+/Yj44ANAwvqSO2q4=",
+        "lastModified": 1774417406,
+        "narHash": "sha256-0yXitmNAqgbCFY5xeg10P83h1ExcjLKKOtpxZ6LtmTg=",
         "owner": "spacebarchat",
         "repo": "pion-webrtc",
-        "rev": "5382e83ccbb0305a91b9ae92eae2ee9f5ac39398",
+        "rev": "f69636f4fb3a08c94df68c509302def0cc6cc864",
         "type": "github"
       },
       "original": {

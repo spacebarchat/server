@@ -14,7 +14,9 @@ let
   jsonFormat = pkgs.formats.json { };
 in
 {
-  imports = [ ];
+  imports = [
+    ./shared-config.nix
+  ];
   options.services.spacebarchat-server.offload = lib.mkOption {
     default = { };
     description = "Configuration for C# offload daemon.";
@@ -28,7 +30,7 @@ in
         };
         extraConfiguration = lib.mkOption {
           type = jsonFormat.type;
-          default = import ./default-appsettings-json.nix;
+          default = { };
           description = "Extra appsettings.json configuration for the offload daemon.";
         };
         gateway = lib.mkOption {
@@ -54,7 +56,7 @@ in
     in
     {
       assertions = [
-        (import ./assert-has-connection-string.nix "Gateway Offload" offloadCfg.extraConfiguration)
+        (import ./assert-has-connection-string.nix "Gateway Offload" cfg)
       ];
 
       services.spacebarchat-server.settings.offload = {
@@ -83,9 +85,7 @@ in
             CONFIG_READONLY = 1;
             ASPNETCORE_URLS = "http://0.0.0.0:${toString offloadCfg.listenPort}";
             STORAGE_LOCATION = cfg.cdnPath;
-            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-offload.json" (
-              lib.recursiveUpdate (import ./default-appsettings-json.nix) offloadCfg.extraConfiguration
-            );
+            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-offload.json" (lib.recursiveUpdate cfg.cs.defaultAppsettings offloadCfg.extraConfiguration);
           }
         );
         serviceConfig = {

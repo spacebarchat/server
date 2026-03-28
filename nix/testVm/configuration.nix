@@ -58,6 +58,7 @@ in
           };
         };
 
+        cs.defaultAppsettings.ConnectionStrings.Spacebar = csConnectionString;
         offload = {
           enable = true;
           gateway = {
@@ -68,23 +69,11 @@ in
             enableChannelStatuses = true;
             enableChannelInfo = true;
           };
-          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
 
-        adminApi = {
-          enable = true;
-          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
-        };
-
-        cdnCs = {
-          enable = false;
-          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
-        };
-
-        uApi = {
-          enable = true;
-          extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
-        };
+        adminApi.enable = true;
+        cdnCs.enable = false;
+        uApi.enable = true;
 
         pion-sfu = {
           enable = true;
@@ -105,14 +94,17 @@ in
       };
     in
     lib.trace ("Testing with config: " + builtins.toJSON cfg) cfg;
-  services.nginx.enable = true;
-  services.nginx.recommendedOptimisation = true;
-  services.nginx.appendConfig = ''
-    worker_processes 6;
-  '';
-  services.nginx.eventsConfig = ''
-    worker_connections 512;
-  '';
+
+  services.nginx = {
+    enable = true;
+    recommendedOptimisation = true;
+    appendConfig = ''
+      worker_processes 6;
+    '';
+    eventsConfig = ''
+      worker_connections 512;
+    '';
+  };
 
   users.users.root.initialPassword = "root";
   services.getty.autologinUser = "root";

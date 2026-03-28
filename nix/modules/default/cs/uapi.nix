@@ -13,7 +13,9 @@ let
   jsonFormat = pkgs.formats.json { };
 in
 {
-  imports = [ ];
+  imports = [
+    ./shared-config.nix
+  ];
   options.services.spacebarchat-server.uApi = lib.mkOption {
     default = { };
     description = "Configuration for C# API overlay.";
@@ -27,7 +29,7 @@ in
         };
         extraConfiguration = lib.mkOption {
           type = jsonFormat.type;
-          default = import ./default-appsettings-json.nix;
+          default = { };
           description = "Extra appsettings.json configuration for the C# API overlay.";
         };
       };
@@ -40,7 +42,7 @@ in
     in
     {
       assertions = [
-        (import ./assert-has-connection-string.nix "uAPI" cfg.uApi.extraConfiguration)
+        (import ./assert-has-connection-string.nix "uAPI" cfg)
       ];
 
       systemd.services.spacebar-uapi = makeServerTsService {
@@ -59,7 +61,7 @@ in
             CONFIG_READONLY = 1;
             ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.uApi.listenPort}";
             STORAGE_LOCATION = cfg.cdnPath;
-            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-uapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.uApi.extraConfiguration);
+            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-uapi.json" (lib.recursiveUpdate cfg.cs.defaultAppsettings cfg.uApi.extraConfiguration);
           }
         );
         serviceConfig = {
