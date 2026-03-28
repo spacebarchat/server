@@ -74,6 +74,9 @@ public partial class Member
     [Column("collectibles")]
     public string? Collectibles { get; set; }
 
+    [Column("flags")]
+    public int Flags { get; set; }
+
     [ForeignKey("GuildId")]
     [InverseProperty("Members")]
     public virtual Guild Guild { get; set; } = null!;

@@ -252,6 +252,8 @@ public partial class SpacebarDbContext : DbContext
         modelBuilder.Entity<EmbedCache>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_0abb7581d4efc5a8b1361389c5e");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
         });
 
         modelBuilder.Entity<Emoji>(entity =>
@@ -285,6 +287,12 @@ public partial class SpacebarDbContext : DbContext
         modelBuilder.Entity<InstanceBan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_3aa6e80a6d325601054892b1340");
+
+            entity.HasIndex(e => e.Fingerprint, "instance_bans_fingerprint_idx").HasMethod("hash");
+
+            entity.HasIndex(e => e.IpAddress, "instance_bans_ip_address_idx").HasMethod("hash");
+
+            entity.HasIndex(e => e.UserId, "instance_bans_user_id_idx").HasMethod("hash");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
 
