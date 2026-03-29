@@ -508,7 +508,7 @@ router.post(
                 channel_id: channel_id,
                 data: message.toJSON(),
             } satisfies MessageCreateEvent),
-            message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : null,
+            message.guild_id ? Member.update({ id: req.user_id, guild_id: message.guild_id }, { last_message_id: message.id }) : undefined,
         ]);
 
         // no await as it shouldnt block the message send function and silently catch error
