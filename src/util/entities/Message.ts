@@ -33,7 +33,13 @@ import {
     ApplicationCommandType,
     BaseMessageComponents,
     Embed,
-    MessageComponentType, MessageSnapshot, MessageType, PartialMessage, Poll, PublicMessage, Reaction,
+    MessageComponentType,
+    MessageSnapshot,
+    MessageType,
+    PartialMessage,
+    Poll,
+    PublicMessage,
+    Reaction,
     UnfurledMediaItem,
 } from "@spacebar/schemas";
 import { PartialUser } from "@spacebar/schemas";
@@ -78,56 +84,46 @@ export class Message extends BaseClass {
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
-    @JsonRemoveEmpty
     guild?: Guild;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.author)
     @Index()
-    @JsonRemoveEmpty
     author_id?: string;
 
     @JoinColumn({ name: "author_id", referencedColumnName: "id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
-    @JsonRemoveEmpty
     author?: User;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.member)
-    @JsonRemoveEmpty
     member_id?: string;
 
     @JoinColumn({ name: "member_id", referencedColumnName: "id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
-    @JsonRemoveEmpty
     member?: Member;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.webhook)
-    @JsonRemoveEmpty
     webhook_id?: string;
 
     @JoinColumn({ name: "webhook_id" })
     @ManyToOne(() => Webhook)
-    @JsonRemoveEmpty
     webhook?: Webhook;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.application)
-    @JsonRemoveEmpty
     application_id?: string;
 
     @JoinColumn({ name: "application_id" })
     @ManyToOne(() => Application)
-    @JsonRemoveEmpty
     application?: Application;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     content?: string;
 
     @Column()
@@ -172,15 +168,12 @@ export class Message extends BaseClass {
     embeds: Embed[];
 
     @Column({ type: "simple-json" })
-    @JsonRemoveEmpty
     reactions: Reaction[];
 
     @Column({ type: "text", nullable: true })
-    @JsonRemoveEmpty
     nonce?: string;
 
     @Column({ nullable: true, type: Date })
-    @JsonRemoveEmpty
     pinned_at?: Date | null;
 
     get pinned(): boolean {
@@ -272,6 +265,7 @@ export class Message extends BaseClass {
     }
 
     toJSON(shallow = false): PublicMessage {
+        this.clean_data();
         return {
             ...this,
             channel_id: this.channel_id ?? this.channel.id,
