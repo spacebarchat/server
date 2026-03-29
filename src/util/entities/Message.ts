@@ -54,7 +54,6 @@ export class Message extends BaseClass {
     @Column({ nullable: true })
     @RelationId((message: Message) => message.channel)
     @Index()
-    @JsonRemoveEmpty
     channel_id?: string;
 
     @JoinColumn({ name: "channel_id" })
@@ -109,6 +108,7 @@ export class Message extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.webhook)
+    @JsonRemoveEmpty
     webhook_id?: string;
 
     @JoinColumn({ name: "webhook_id" })
@@ -131,15 +131,12 @@ export class Message extends BaseClass {
     timestamp: Date;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     edited_timestamp?: Date;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     tts?: boolean;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     mention_everyone?: boolean;
 
     @JoinTable({ name: "message_user_mentions" })
@@ -152,10 +149,12 @@ export class Message extends BaseClass {
 
     @JoinTable({ name: "message_channel_mentions" })
     @ManyToMany(() => Channel)
+    @JsonRemoveEmpty
     mention_channels: Channel[];
 
     @JoinTable({ name: "message_stickers" })
     @ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
+    @JsonRemoveEmpty
     sticker_items?: Sticker[];
 
     @OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
@@ -168,9 +167,11 @@ export class Message extends BaseClass {
     embeds: Embed[];
 
     @Column({ type: "simple-json" })
+    @JsonRemoveEmpty
     reactions: Reaction[];
 
     @Column({ type: "text", nullable: true })
+    @JsonRemoveEmpty
     nonce?: string;
 
     @Column({ nullable: true, type: Date })
@@ -184,6 +185,7 @@ export class Message extends BaseClass {
     type: MessageType;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     activity?: {
         type: number;
         party_id: string;
@@ -225,7 +227,6 @@ export class Message extends BaseClass {
     };
 
     @Column({ type: "simple-json", nullable: true })
-    @JsonRemoveEmpty
     components?: BaseMessageComponents[];
 
     @Column({ type: "simple-json", nullable: true })
@@ -233,11 +234,9 @@ export class Message extends BaseClass {
     poll?: Poll;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     username?: string;
 
     @Column({ nullable: true })
-    @JsonRemoveEmpty
     avatar?: string;
 
     @Column({ default: "[]", type: "simple-json" })
