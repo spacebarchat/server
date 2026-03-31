@@ -2,7 +2,7 @@ import { getProxyUrl, route } from "@spacebar/api";
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
-import { WebhookExecuteSchema } from "@spacebar/schemas";
+import { EmbedType, WebhookExecuteSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -25,6 +25,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -40,6 +41,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
         case "create":
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -53,6 +55,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
         case "delete":
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -66,6 +69,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
         case "fork":
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -84,6 +88,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -106,6 +111,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -129,6 +135,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -143,6 +150,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
         case "public":
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -160,6 +168,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -185,6 +194,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -204,6 +214,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -225,6 +236,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
             if (req.body.forced) {
                 discordPayload.embeds = [
                     {
+                        type: EmbedType.rich,
                         color: 16525609,
                         author: {
                             name: req.body.sender.login,
@@ -239,6 +251,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
             } else {
                 discordPayload.embeds = [
                     {
+                        type: EmbedType.rich,
                         color: 7506394,
                         author: {
                             name: req.body.sender.login,
@@ -266,6 +279,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -284,6 +298,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -302,6 +317,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     color: req.body.check_run.conclusion == "success" ? 38912 : 16525609,
                     title: `[${req.body.repository.name}] ${req.body.check_run.name} ${req.body.check_run.conclusion} on ${req.body.check_run.check_suite.head_branch}`,
                     url: req.body.check_run.html_url,
@@ -315,6 +331,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     color: req.body.check_suite.conclusion == "success" ? 38912 : 16525609,
                     title: `[${req.body.repository.name}] GitHub Actions checks ${req.body.check_suite.conclusion} on ${req.body.check_suite.head_branch}`,
                     url: `https://github.com/${req.body.repository.full_name}/commit/${req.body.check_suite.head_commit.id}`,
@@ -328,6 +345,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
@@ -348,6 +366,7 @@ const parseGitHubWebhook = (req: Request, res: Response, next: NextFunction) => 
 
             discordPayload.embeds = [
                 {
+                    type: EmbedType.rich,
                     author: {
                         name: req.body.sender.login,
                         icon_url: req.body.sender.avatar_url,
