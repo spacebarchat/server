@@ -707,6 +707,7 @@ export class Channel extends BaseClass {
         return {
             ...this,
             last_pin_timestamp: this.last_pin_timestamp?.toISOString(),
+            guild_id: this.guild_id ?? undefined,
             recipients: undefined, //this.recipients?.map(x=>x.user.toPublicUser()), // TODO: fix me
             owner: undefined, // TODO: fix me - this is thread owner
 

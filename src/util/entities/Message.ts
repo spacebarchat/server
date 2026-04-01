@@ -33,7 +33,13 @@ import {
     ApplicationCommandType,
     BaseMessageComponents,
     Embed,
-    MessageComponentType, MessageSnapshot, MessageType, PartialMessage, Poll, PublicMessage, Reaction,
+    MessageComponentType,
+    MessageSnapshot,
+    MessageType,
+    PartialMessage,
+    Poll,
+    PublicMessage,
+    Reaction,
     UnfurledMediaItem,
 } from "@spacebar/schemas";
 import { PartialUser } from "@spacebar/schemas";
@@ -58,16 +64,19 @@ export class Message extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.thread)
+    @JsonRemoveEmpty
     thread_id?: string;
 
     @JoinColumn({ name: "thread_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
+    @JsonRemoveEmpty
     thread?: Channel;
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.guild)
+    @JsonRemoveEmpty
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id" })
@@ -99,6 +108,7 @@ export class Message extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((message: Message) => message.webhook)
+    @JsonRemoveEmpty
     webhook_id?: string;
 
     @JoinColumn({ name: "webhook_id" })
@@ -139,10 +149,12 @@ export class Message extends BaseClass {
 
     @JoinTable({ name: "message_channel_mentions" })
     @ManyToMany(() => Channel)
+    @JsonRemoveEmpty
     mention_channels: Channel[];
 
     @JoinTable({ name: "message_stickers" })
     @ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
+    @JsonRemoveEmpty
     sticker_items?: Sticker[];
 
     @OneToMany(() => Attachment, (attachment: Attachment) => attachment.message, {
@@ -159,6 +171,7 @@ export class Message extends BaseClass {
     reactions: Reaction[];
 
     @Column({ type: "text", nullable: true })
+    @JsonRemoveEmpty
     nonce?: string;
 
     @Column({ nullable: true, type: Date })
@@ -172,6 +185,7 @@ export class Message extends BaseClass {
     type: MessageType;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     activity?: {
         type: number;
         party_id: string;
@@ -181,6 +195,7 @@ export class Message extends BaseClass {
     flags: number;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     message_reference?: {
         message_id?: string;
         channel_id?: string;
@@ -193,6 +208,7 @@ export class Message extends BaseClass {
     referenced_message?: Message | null;
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     interaction?: {
         id: string;
         type: InteractionType;
@@ -200,6 +216,7 @@ export class Message extends BaseClass {
     };
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     interaction_metadata?: {
         id: string;
         type: InteractionType;
@@ -210,7 +227,6 @@ export class Message extends BaseClass {
     };
 
     @Column({ type: "simple-json", nullable: true })
-    @JsonRemoveEmpty
     components?: BaseMessageComponents[];
 
     @Column({ type: "simple-json", nullable: true })
@@ -248,6 +264,7 @@ export class Message extends BaseClass {
     }
 
     toJSON(shallow = false): PublicMessage {
+        this.clean_data();
         return {
             ...this,
             channel_id: this.channel_id ?? this.channel.id,

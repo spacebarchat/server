@@ -58,7 +58,7 @@ router.post(
                 channel_id,
                 timestamp,
                 user_id,
-                guild_id: channel.guild_id,
+                guild_id: channel.guild_id ?? undefined,
             },
         } satisfies TypingStartEvent);
 
