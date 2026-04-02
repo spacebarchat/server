@@ -18,6 +18,7 @@
 
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import {
+    arrayGroupBy,
     Application,
     Channel,
     checkToken,
@@ -291,35 +292,33 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const userMetaQueryTime = taskSw.getElapsedAndReset();
 
-    const { result: memberGuilds, elapsed: queryGuildsTime } = await timePromise(() =>
-        Promise.all(
-            members.map((m) =>
-                Guild.findOneOrFail({
-                    where: { id: m.guild_id },
-                    select: Object.fromEntries(
-                        getDatabase()!
-                            .getMetadata(Guild)
-                            .columns.map((x) => [x.propertyName, true]),
-                    ),
-                }),
-            ),
-        ),
-    );
-
-    const guildIds = memberGuilds.map((g) => g.id);
+    const memberGuildIds = members.map((m) => m.guild_id);
 
     // select relations
     const [
+        { result: memberGuilds, elapsed: queryGuildsTime },
         { result: memberGuildChannels, elapsed: queryGuildChannelsTime },
         { result: memberGuildEmojis, elapsed: queryGuildEmojisTime },
         { result: memberGuildRoles, elapsed: queryGuildRolesTime },
         { result: memberGuildStickers, elapsed: queryGuildStickersTime },
         { result: memberGuildVoiceStates, elapsed: queryGuildVoiceStatesTime },
+        { result: threadMembers, elapsed: threadMemberTime },
+        { result: allThreadsRaw, elapsed: queryThreadsTime },
     ] = await Promise.all([
+        timePromise(() =>
+            Guild.find({
+                where: { id: In(memberGuildIds) },
+                select: Object.fromEntries(
+                    getDatabase()!
+                        .getMetadata(Guild)
+                        .columns.map((x) => [x.propertyName, true]),
+                ),
+            }),
+        ),
         timePromise(() =>
             Channel.find({
                 where: {
-                    guild_id: In(guildIds),
+                    guild_id: In(memberGuildIds),
                     type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
                 },
                 order: { guild_id: "ASC" },
@@ -328,34 +327,69 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ),
         timePromise(() =>
             Emoji.find({
-                where: { guild_id: In(guildIds) },
+                where: { guild_id: In(memberGuildIds) },
                 order: { guild_id: "ASC" },
             }),
         ),
         timePromise(() =>
             Role.find({
-                where: { guild_id: In(guildIds) },
+                where: { guild_id: In(memberGuildIds) },
                 order: { guild_id: "ASC" },
             }),
         ),
         timePromise(() =>
             Sticker.find({
-                where: { guild_id: In(guildIds) },
+                where: { guild_id: In(memberGuildIds) },
                 order: { guild_id: "ASC" },
             }),
         ),
         timePromise(() =>
             VoiceState.find({
-                where: { guild_id: In(guildIds) },
+                where: { guild_id: In(memberGuildIds) },
                 order: { guild_id: "ASC" },
             }),
         ),
+        timePromise(() =>
+            ThreadMember.find({
+                where: { member_idx: In(members.map(({ index }) => index)) },
+            }),
+        ),
+        timePromise(() =>
+            Channel.find({
+                where: {
+                    type: In([ChannelType.GUILD_NEWS_THREAD, ChannelType.GUILD_PUBLIC_THREAD]),
+                    guild_id: In(memberGuildIds),
+                },
+            }),
+        ),
     ]);
+
+    const guildIds = memberGuilds.map((g) => g.id);
+
+    const allThreads = allThreadsRaw.filter(({ thread_metadata }) => thread_metadata?.archived === false);
+    const threadMemberMap = new Map(threadMembers.map((member) => [member.id, member] as const));
+
+    const { result: channelsByGuild, elapsed: groupChannelsTime } = timeFunction(() => arrayGroupBy(memberGuildChannels, (c) => c.guild_id!));
+    const { result: emojisByGuild, elapsed: groupEmojisTime } = timeFunction(() => arrayGroupBy(memberGuildEmojis, (e) => e.guild_id!));
+    const { result: rolesByGuild, elapsed: groupRolesTime } = timeFunction(() => arrayGroupBy(memberGuildRoles, (r) => r.guild_id!));
+    const { result: stickersByGuild, elapsed: groupStickersTime } = timeFunction(() => arrayGroupBy(memberGuildStickers, (s) => s.guild_id!));
+    const { result: voiceStatesByGuild, elapsed: groupVoiceStatesTime } = timeFunction(() => arrayGroupBy(memberGuildVoiceStates, (v) => v.guild_id!));
+    const { result: threadsByGuild, elapsed: groupThreadsTime } = timeFunction(() => arrayGroupBy(allThreads, (t) => t.guild_id!));
+
+    const queryGuildChannelsTimeTotal = new ElapsedTime(queryGuildChannelsTime.totalNanoseconds + groupChannelsTime.totalNanoseconds);
+    const queryGuildEmojisTimeTotal = new ElapsedTime(queryGuildEmojisTime.totalNanoseconds + groupEmojisTime.totalNanoseconds);
+    const queryGuildRolesTimeTotal = new ElapsedTime(queryGuildRolesTime.totalNanoseconds + groupRolesTime.totalNanoseconds);
+    const queryGuildStickersTimeTotal = new ElapsedTime(queryGuildStickersTime.totalNanoseconds + groupStickersTime.totalNanoseconds);
+    const queryGuildVoiceStatesTimeTotal = new ElapsedTime(queryGuildVoiceStatesTime.totalNanoseconds + groupVoiceStatesTime.totalNanoseconds);
+    const queryThreadsTimeTotal = new ElapsedTime(queryThreadsTime.totalNanoseconds + groupThreadsTime.totalNanoseconds);
+
+    const guildMap = new Map(memberGuilds.map((g) => [g.id, g]));
 
     const mergeMemberGuildsTrace: TraceNode = {
         micros: 0,
         calls: [],
     };
+
     members.forEach((m) => {
         const sw = Stopwatch.startNew();
         const totalSw = Stopwatch.startNew();
@@ -364,32 +398,26 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             calls: [],
         };
 
-        const g = memberGuilds.find((mg) => mg.id === m.guild_id);
+        const g = guildMap.get(m.guild_id);
         if (g) {
             m.guild = g;
             trace.calls.push("findGuild", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //channels
-            g.channels = memberGuildChannels.filter((c) => c.guild_id === m.guild_id);
-            trace.calls.push(`filterChannels(${g.channels.length}/${memberGuildChannels.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            g.channels = channelsByGuild.get(m.guild_id) ?? [];
+            trace.calls.push(`getChannels(${g.channels.length}/${memberGuildChannels.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //emojis
-            g.emojis = memberGuildEmojis.filter((e) => e.guild_id === m.guild_id);
-            trace.calls.push(`filterEmojis(${g.emojis.length}/${memberGuildEmojis.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            g.emojis = emojisByGuild.get(m.guild_id) ?? [];
+            trace.calls.push(`getEmojis(${g.emojis.length}/${memberGuildEmojis.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //roles
-            g.roles = memberGuildRoles.filter((r) => r.guild_id === m.guild_id);
-            trace.calls.push(`filterRoles(${g.roles.length}/${memberGuildRoles.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            g.roles = rolesByGuild.get(m.guild_id) ?? [];
+            trace.calls.push(`getRoles(${g.roles.length}/${memberGuildRoles.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //stickers
-            g.stickers = memberGuildStickers.filter((s) => s.guild_id === m.guild_id);
-            trace.calls.push(`filterStickers(${g.stickers.length}/${memberGuildStickers.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            g.stickers = stickersByGuild.get(m.guild_id) ?? [];
+            trace.calls.push(`getStickers(${g.stickers.length}/${memberGuildStickers.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //voice states
-            g.voice_states = memberGuildVoiceStates.filter((v) => v.guild_id === m.guild_id);
-            trace.calls.push(`filterVoiceStates(${g.voice_states.length}/${memberGuildVoiceStates.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+            g.voice_states = voiceStatesByGuild.get(m.guild_id) ?? [];
+            trace.calls.push(`getVoiceStates(${g.voice_states.length}/${memberGuildVoiceStates.length})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-            //total
             trace.micros = totalSw.elapsed().totalMicroseconds;
             mergeMemberGuildsTrace.calls!.push(`guild_${m.guild_id}`, trace);
         } else {
@@ -435,31 +463,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ];
     });
     const mergedMembersTime = taskSw.getElapsedAndReset();
-    const member_idx = members.map(({ index }) => index);
-
-    const threadMembers = await ThreadMember.find({
-        where: { member_idx: In(member_idx) },
-    });
-    const threadMemberMap = new Map(threadMembers.map((member) => [member.id, member] as const));
-    const threadMemberTime = taskSw.getElapsedAndReset();
 
     // Populated with guilds 'unavailable' currently
     // Just for bots
     //TODO get this a better type
     const pending_guilds: { id: string }[] = [];
 
-    const allThreads = (
-        await Channel.find({
-            where: {
-                type: In([ChannelType.GUILD_NEWS_THREAD, ChannelType.GUILD_PUBLIC_THREAD]),
-                guild_id: In(members.map(({ guild }) => guild.id)),
-            },
-        })
-    ).filter(({ thread_metadata }) => thread_metadata?.archived === false);
-
     // Generate guilds list ( make them unavailable if user is bot )
     const guilds: GuildOrUnavailable[] = members.map((member) => {
-        member.guild.channels = member.guild.channels
+        member.guild.channels = (channelsByGuild.get(member.guild_id) ?? [])
             /*
    			//TODO maybe implement this correctly, by causing create and delete events for users who can newly view and not view the channels, along with doing these checks correctly, as they don't currently take into account that the owner of the guild is always able to view channels, with potentially other issues
    			.filter((channel) => {
@@ -481,7 +493,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             })
             .sort((a, b) => a.position - b.position);
 
-        const threads: Channel[] = allThreads.filter((_) => _.guild_id === member.guild_id);
+        const threads: Channel[] = threadsByGuild.get(member.guild_id) ?? [];
 
         const guildjson = {
             ...member.guild.toJSON(),
@@ -512,10 +524,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ...DefaultUserGuildSettings,
         ...x.settings,
         guild_id: x.guild_id,
-        channel_overrides: Object.entries(x.settings.channel_overrides ?? {}).map((y) => ({
-            ...y[1],
-            channel_id: y[0],
-        })),
+        channel_overrides: x.settings.channel_overrides ? Object.entries(x.settings.channel_overrides).map(([k, v]) => ({ ...v, channel_id: k })) : [],
     }));
     const generateUserGuildSettingsTime = taskSw.getElapsedAndReset();
 
@@ -745,11 +754,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
             } else if (key === "guildRelationQueryTime") {
                 val.calls = [];
                 for (const [subkey, subvalue] of Object.entries({
-                    queryGuildChannelsTime,
-                    queryGuildEmojisTime,
-                    queryGuildRolesTime,
-                    queryGuildStickersTime,
-                    queryGuildVoiceStatesTime,
+                    queryGuildChannelsTime: queryGuildChannelsTimeTotal,
+                    queryGuildEmojisTime: queryGuildEmojisTimeTotal,
+                    queryGuildRolesTime: queryGuildRolesTimeTotal,
+                    queryGuildStickersTime: queryGuildStickersTimeTotal,
+                    queryGuildVoiceStatesTime: queryGuildVoiceStatesTimeTotal,
+                    threadMemberTime,
+                    queryThreadsTime: queryThreadsTimeTotal,
                 })) {
                     if (subvalue) {
                         val.calls.push(subkey, {

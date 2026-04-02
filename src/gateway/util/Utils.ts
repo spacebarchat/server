@@ -71,6 +71,7 @@ export async function handleOffloadedGatewayRequest(socket: WebSocket, url: stri
             Authorization: `Bearer ${socket.accessToken}`,
             // because the session may not have an id in the token!
             "X-Session-Id": socket.session_id,
+            "Content-Type": "application/json",
         },
     });
 
