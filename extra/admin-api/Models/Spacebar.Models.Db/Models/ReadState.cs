@@ -23,9 +23,6 @@ public partial class ReadState
     [Column("last_message_id", TypeName = "character varying")]
     public string? LastMessageId { get; set; }
 
-    [Column("public_ack", TypeName = "character varying")]
-    public string? PublicAck { get; set; }
-
     [Column("notifications_cursor", TypeName = "character varying")]
     public string? NotificationsCursor { get; set; }
 
@@ -33,7 +30,19 @@ public partial class ReadState
     public DateTime? LastPinTimestamp { get; set; }
 
     [Column("mention_count")]
-    public int? MentionCount { get; set; }
+    public int MentionCount { get; set; }
+
+    [Column("last_acked_id", TypeName = "character varying")]
+    public string? LastAckedId { get; set; }
+
+    [Column("badge_count")]
+    public int BadgeCount { get; set; }
+
+    [Column("read_state_type")]
+    public int ReadStateType { get; set; }
+
+    [Column("flags")]
+    public int Flags { get; set; }
 
     [ForeignKey("ChannelId")]
     [InverseProperty("ReadStates")]

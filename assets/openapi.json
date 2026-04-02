@@ -14145,6 +14145,9 @@
                     },
                     "maxPreloadCount": {
                         "type": "integer"
+                    },
+                    "maxEmbeds": {
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -14152,6 +14155,7 @@
                     "maxBulkDelete",
                     "maxCharacters",
                     "maxEmbedDownloadSize",
+                    "maxEmbeds",
                     "maxPreloadCount",
                     "maxReactions",
                     "maxTTSCharacters"

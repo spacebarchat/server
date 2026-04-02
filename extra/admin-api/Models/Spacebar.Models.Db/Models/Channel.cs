@@ -37,9 +37,6 @@ public partial class Channel
     [Column("owner_id", TypeName = "character varying")]
     public string? OwnerId { get; set; }
 
-    [Column("last_pin_timestamp")]
-    public int? LastPinTimestamp { get; set; }
-
     [Column("default_auto_archive_duration")]
     public int? DefaultAutoArchiveDuration { get; set; }
 
@@ -87,6 +84,12 @@ public partial class Channel
 
     [Column("applied_tags")]
     public List<string>? AppliedTags { get; set; }
+
+    [Column("last_pin_timestamp")]
+    public DateTime? LastPinTimestamp { get; set; }
+
+    [Column("status")]
+    public string? Status { get; set; }
 
     [InverseProperty("Channel")]
     public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();

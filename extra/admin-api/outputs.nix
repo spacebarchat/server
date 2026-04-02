@@ -277,7 +277,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       };
     };
     containers.docker.uapi = pkgs.dockerTools.buildLayeredImage {
-      name = "spacebar-server-ts-cdn-cs";
+      name = "spacebar-server-ts-uapi";
       tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}.Spacebar-UApi.version;
       contents = [ self.packages.${system}.Spacebar-AdminApi ];
       config = {
@@ -297,7 +297,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       x86_64-linux = {
         # spacebar-server-tests = self.packages.x86_64-linux.default.passthru.tests;
         docker-admin-api = self.containers.x86_64-linux.docker.admin-api;
-        docker-gateway-offload = self.containers.x86_64-linux.docker.gateway-offload;
+        docker-offload = self.containers.x86_64-linux.docker.offload;
         docker-cdn-cs = self.containers.x86_64-linux.docker.cdn-cs;
       };
     };

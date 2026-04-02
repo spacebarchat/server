@@ -17,5 +17,11 @@ public partial class EmbedCache
     public string Url { get; set; } = null!;
 
     [Column("embed")]
-    public string Embed { get; set; } = null!;
+    public string? Embed { get; set; }
+
+    [Column("created_at")]
+    public DateTime? CreatedAt { get; set; }
+
+    [Column("embeds")]
+    public string? Embeds { get; set; }
 }
