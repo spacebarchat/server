@@ -19,7 +19,18 @@
 import { BaseMessageComponents, InteractionCallbackSchema, InteractionCallbacksSchema, InteractionCallbackType, InteractionFailureReason, MessageType } from "@spacebar/schemas";
 import { handleComps, route, sendMessage } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Config, emitEvent, InteractionSuccessEvent, Message, MessageUpdateEvent, pendingInteractions, User, InteractionFailureEvent } from "@spacebar/util";
+import {
+    Config,
+    emitEvent,
+    InteractionSuccessEvent,
+    Message,
+    MessageUpdateEvent,
+    pendingInteractions,
+    User,
+    InteractionFailureEvent,
+    InteractionModalCreateEvent,
+    Application,
+} from "@spacebar/util";
 import { HTTPError } from "#util/util/lambert-server";
 
 const router = Router({ mergeParams: true });
@@ -47,9 +58,9 @@ router.post(
             user_id: interaction?.userId,
             data: {
                 id: interactionId,
-            nonce: interaction.nonce ?? "", // TODO: did i do this right?
+                nonce: interaction.nonce ?? "", // TODO: did i do this right?
             },
-    } satisfies InteractionSuccessEvent);
+        } satisfies InteractionSuccessEvent);
 
         switch (body.type) {
             case InteractionCallbackType.PONG:
@@ -172,13 +183,25 @@ router.post(
                 }
                 // TODO
                 break;
+            case InteractionCallbackType.MODAL:
+                emitEvent({
+                    event: "INTERACTION_MODAL_CREATE",
+                    user_id: interaction.userId,
+                    data: {
+                        ...body.data,
+                        id: interaction.interactionId,
+                        application: await Application.findOneOrFail({ where: { id: interaction.applicationId } }),
+                        channel_id: interaction.channelId as string,
+                        nonce: interaction.nonce,
+                    },
+                } satisfies InteractionModalCreateEvent);
+                console.log(body);
+                break;
             /*
             case InteractionCallbackType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT:
                 // TODO
                 break;
-            case InteractionCallbackType.MODAL:
-                // TODO
-                break;
+
             case InteractionCallbackType.PREMIUM_REQUIRED:
                 // Deprecated
                 break;
