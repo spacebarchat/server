@@ -31,7 +31,7 @@ in
         enable = true;
         apiEndpoint = sbLib.mkEndpointRaw "api.sb.localhost" 3001 8080 false;
         gatewayEndpoint = sbLib.mkEndpointRaw "gw.sb.localhost" 3002 8080 false;
-        extraGatewayPorts = lib.range 3100 3103; # 4 gateways total
+        # extraGatewayPorts = lib.range 3100 3102; # 4 gateways total
         cdnEndpoint = sbLib.mkEndpointRaw "cdn.sb.localhost" 3003 8080 false;
         adminApiEndpoint = sbLib.mkEndpointRaw "admin.sb.localhost" 3004 8080 false;
         webrtcEndpoint = sbLib.mkEndpointRaw "voice.sb.localhost" 3005 8080 false;
@@ -108,7 +108,7 @@ in
   services.nginx.enable = true;
   services.nginx.recommendedOptimisation = true;
   services.nginx.appendConfig = ''
-    worker_processes 6;
+    worker_processes 4;
   '';
   services.nginx.eventsConfig = ''
     worker_connections 512;
