@@ -1,0 +1,47 @@
+using ArcaneLibs.Extensions;
+using ImageMagick;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+
+namespace Spacebar.AdminApi.TestClient.Services.Helpers;
+
+public class DefaultAvatarRenderer {
+    public static readonly (byte r, byte g, byte b)[] DefaultAvatarColors = [
+        (70, 73, 236),
+        (150, 150, 150),
+        (236, 52, 83),
+        (211, 52, 236),
+        (45, 202, 76),
+        (236, 103, 52)
+    ];
+
+    public static readonly (byte r, byte g, byte b) SpacebarLogoColor = (0x01, 0x85, 0xFF);
+
+    // Slower at runtime, but doesnt depend on filesystem
+    private static string GetDefaultAvatarSvg(byte r, byte g, byte b, byte rf = 0xff, byte gf = 0xff, byte bf = 0xff) {
+        return $"""
+                <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect fill="#{r:X2}{g:X2}{b:X2}" width="512" height="512"/>
+                  <path fill="#{rf:X2}{gf:X2}{bf:X2}" fill-rule="evenodd" clip-rule="evenodd" d="M419.395 296.205C424.003 317.631 418.678 339.993 404.912 357.042C391.143 374.092 370.407 384 348.497 384H163.949C142.039 384 121.303 374.092 107.536 357.042C93.7677 339.993 88.4431 317.631 93.0509 296.205L125.547 145.08C127.06 138.042 131.891 132.176 138.508 129.344C145.124 126.511 152.703 127.065 158.837 130.829L256.223 190.583L353.609 130.829C359.743 127.065 367.322 126.511 373.938 129.344C380.555 132.176 385.386 138.042 386.899 145.08L419.395 296.205ZM344.729 261.348C344.729 250.399 335.855 241.523 324.91 241.523H286.727C275.782 241.523 266.91 250.399 266.91 261.348V299.542C266.91 310.491 275.782 319.365 286.727 319.365H324.91C335.855 319.365 344.729 310.491 344.729 299.542V261.348ZM245.536 261.348C245.536 250.399 236.664 241.523 225.719 241.523H187.536C176.591 241.523 167.717 250.399 167.717 261.348V299.542C167.717 310.491 176.591 319.365 187.536 319.365H225.719C236.664 319.365 245.536 310.491 245.536 299.542V261.348Z"/>
+                </svg>
+                """;
+    }
+
+    public static async Task<MagickImageCollection> GetDefaultAvatarImage(byte r, byte g, byte b, byte rf = 0xff, byte gf = 0xff, byte bf = 0xff, int size = 4096) {
+        var img = new MagickImageCollection(GetDefaultAvatarSvg(r, g, b, rf, gf, bf).AsBytes().ToArray(), new MagickReadSettings() {
+            Width = (uint?)size,
+            Height = (uint?)size,
+            // Verbose = true,
+            // ColorSpace = ColorSpace.RGB
+        });
+        return img;
+    }
+
+    public static async Task<MemoryStream> GetDefaultAvatar(byte r, byte g, byte b, byte rf = 0xff, byte gf = 0xff, byte bf = 0xff, MagickFormat format = MagickFormat.Png,
+        int size = 4096) {
+        var img = await GetDefaultAvatarImage(r, g, b, rf, gf, bf, size);
+        var ms = new MemoryStream();
+        await img.WriteAsync(ms, format);
+        ms.Position = 0;
+        return ms;
+    }
+}

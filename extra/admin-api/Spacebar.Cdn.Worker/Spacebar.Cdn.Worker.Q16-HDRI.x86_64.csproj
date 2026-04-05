@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Spacebar.Cdn.Worker</RootNamespace>
+        <RunAOTCompilation>true</RunAOTCompilation>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260126-091403"/>
+        <PackageReference Include="Magick.NET-Q16-HDRI-OpenMP-x64" Version="14.11.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Interop\Spacebar.Interop.Cdn.Abstractions\Spacebar.Interop.Cdn.Abstractions.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Interop.Cdn.Abstractions" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Renderers\" />
+    </ItemGroup>
+</Project>
