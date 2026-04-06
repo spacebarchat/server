@@ -237,16 +237,16 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             proj.Spacebar-Models-Generic
           ];
         };
-        #            Spacebar-AdminApi-TestClient = makeNupkg {
-        #              name = "Spacebar.AdminApi.TestClient";
-        #              projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
-        #              nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
-        #              projectReferences = [
-        #                proj.Spacebar-AdminApi-Models
-        #              ];
-        ##              runtimeId = "browser-wasm";
-        ##              useAppHost = false;
-        #            };
+        # Spacebar-AdminApi-TestClient = makeNupkg {
+        #   name = "Spacebar.AdminApi.TestClient";
+        #   projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
+        #   nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
+        #   projectReferences = [
+        #     proj.Spacebar-AdminApi-Models
+        #   ];
+        ##  runtimeId = "browser-wasm";
+        ##  useAppHost = false;
+        # };
       };
 
     containers.docker.admin-api = pkgs.dockerTools.buildLayeredImage {
