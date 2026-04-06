@@ -266,6 +266,62 @@
             "status": {
                 "$ref": "#/definitions/Status"
             },
+            "client_status": {
+                "type": "object",
+                "properties": {
+                    "desktop": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
+                    "web": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
+                    "embedded": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    },
+                    "vr": {
+                        "enum": [
+                            "dnd",
+                            "idle",
+                            "invisible",
+                            "offline",
+                            "online"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
             "activities": {
                 "type": "array",
                 "items": {
@@ -10008,6 +10064,9 @@
                 "type": "string"
             },
             "embedded": {
+                "type": "string"
+            },
+            "vr": {
                 "type": "string"
             }
         },
