@@ -1,8 +1,10 @@
 {
   lib,
-  secrets,
-  cfg,
+  cfg
 }:
+let
+  secrets = import ./secrets.nix { inherit lib cfg; };
+in
 conf:
 lib.recursiveUpdate
   (lib.recursiveUpdate {

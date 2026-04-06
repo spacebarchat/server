@@ -1,7 +1,4 @@
-{ lib, config, ... }:
-let
-  cfg = config.services.spacebarchat-server;
-in
+{ lib, cfg, ... }:
 {
   options = {
     cdnSignaturePath = lib.mkOption {

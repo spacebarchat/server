@@ -25,7 +25,7 @@ in
 
   services.spacebarchat-server =
     let
-      sbLib = import ../modules/default/lib.nix;
+      sbLib = import ../lib/mkEndpoint.nix;
       csConnectionString = "Host=127.0.0.1; Username=postgres; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
       cfg = {
         enable = true;

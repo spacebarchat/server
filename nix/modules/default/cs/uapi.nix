@@ -8,9 +8,9 @@ self:
 }:
 
 let
-  secrets = import ../secrets.nix { inherit lib config; };
   cfg = config.services.spacebarchat-server;
   jsonFormat = pkgs.formats.json { };
+  makeServerTsService = import ../../../lib/makeServerTsService.nix { inherit cfg lib; };
 in
 {
   imports = [ ];
@@ -34,38 +34,33 @@ in
     };
   };
 
-  config = lib.mkIf cfg.uApi.enable (
-    let
-      makeServerTsService = import ../makeServerTsService.nix { inherit cfg lib secrets; };
-    in
-    {
-      assertions = [
-        (import ./assert-has-connection-string.nix "uAPI" cfg.uApi.extraConfiguration)
-      ];
+  config = lib.mkIf cfg.uApi.enable {
+    assertions = [
+      (import ./assert-has-connection-string.nix "uAPI" cfg.uApi.extraConfiguration)
+    ];
 
-      systemd.services.spacebar-uapi = makeServerTsService {
-        description = "Spacebar Server - C# API overlay";
-        # after = [ "spacebar-api.service" ];
-        environment = builtins.mapAttrs (_: val: builtins.toString val) (
-          {
-            # things we set by default...
-            EVENT_TRANSMISSION = "unix";
-            EVENT_SOCKET_PATH = "/run/spacebar/";
-          }
-          // cfg.extraEnvironment
-          // {
-            # things we force...
-            # CONFIG_PATH = configFile;
-            CONFIG_READONLY = 1;
-            ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.uApi.listenPort}";
-            STORAGE_LOCATION = cfg.cdnPath;
-            APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-uapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.uApi.extraConfiguration);
-          }
-        );
-        serviceConfig = {
-          ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-UApi}/bin/Spacebar.UApi";
-        };
+    systemd.services.spacebar-uapi = makeServerTsService {
+      description = "Spacebar Server - C# API overlay";
+      # after = [ "spacebar-api.service" ];
+      environment = builtins.mapAttrs (_: val: builtins.toString val) (
+        {
+          # things we set by default...
+          EVENT_TRANSMISSION = "unix";
+          EVENT_SOCKET_PATH = "/run/spacebar/";
+        }
+        // cfg.extraEnvironment
+        // {
+          # things we force...
+          # CONFIG_PATH = configFile;
+          CONFIG_READONLY = 1;
+          ASPNETCORE_URLS = "http://0.0.0.0:${toString cfg.uApi.listenPort}";
+          STORAGE_LOCATION = cfg.cdnPath;
+          APPSETTINGS_PATH = jsonFormat.generate "appsettings.spacebar-uapi.json" (lib.recursiveUpdate (import ./default-appsettings-json.nix) cfg.uApi.extraConfiguration);
+        }
+      );
+      serviceConfig = {
+        ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-UApi}/bin/Spacebar.UApi";
       };
-    }
-  );
+    };
+  };
 }
