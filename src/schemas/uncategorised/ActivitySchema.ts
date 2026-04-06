@@ -21,6 +21,13 @@ import { Activity, Status } from "@spacebar/util";
 export const ActivitySchema = {
     $afk: Boolean,
     status: String,
+    client_status: {
+        desktop: String,
+        mobile: String,
+        web: String,
+        embedded: String,
+        vr: String,
+    },
     $activities: [
         {
             name: String,
@@ -75,6 +82,13 @@ export const ActivitySchema = {
 export interface ActivitySchema {
     afk?: boolean;
     status: Status;
+    client_status?: {
+        desktop?: Status;
+        mobile?: Status;
+        web?: Status;
+        embedded?: Status;
+        vr?: Status;
+    };
     activities?: Activity[];
     since?: number; // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
 }

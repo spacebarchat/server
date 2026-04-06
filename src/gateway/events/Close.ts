@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@spacebar/gateway";
+import { WebSocket, getMostRelevantSession } from "@spacebar/gateway";
 import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
@@ -68,6 +68,17 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     }
 
     if (this.user_id) {
+        if (this.session_id) {
+            await Session.update(
+                { session_id: this.session_id },
+                {
+                    status: "offline",
+                    client_status: {},
+                    activities: [],
+                },
+            );
+        }
+
         const sessions = await Session.find({
             where: { user_id: this.user_id },
         });
@@ -76,11 +87,15 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
             user_id: this.user_id,
             data: sessions.map((x) => x.toPrivateGatewayDeviceInfo()),
         } as SessionsReplace);
-        const session = sessions[0] || {
-            activities: [],
-            client_status: {},
-            status: "offline",
-        };
+        const mostRelevantSession = getMostRelevantSession(sessions);
+        const session = mostRelevantSession
+            ? mostRelevantSession
+            : {
+                  activities: [],
+                  client_status: {},
+                  status: "offline",
+                  getPublicStatus: () => "offline",
+              };
 
         const user = await User.getPublicUser(this.user_id).catch(() => undefined);
 
@@ -93,7 +108,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                     user: user,
                     activities: session.activities,
                     client_status: session?.client_status,
-                    status: session.getPublicStatus?.() ?? session.status,
+                    status: (session.getPublicStatus?.() ?? session.status) as import("@spacebar/util").Status,
                 },
             } satisfies PresenceUpdateEvent);
     }

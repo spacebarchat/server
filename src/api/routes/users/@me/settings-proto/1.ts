@@ -18,7 +18,8 @@
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, OrmUtils, UserSettingsProtos } from "@spacebar/util";
+import { emitEvent, OrmUtils, PresenceUpdateEvent, Session, User, UserSettings, UserSettingsProtos } from "@spacebar/util";
+import { getMostRelevantSession } from "@spacebar/gateway";
 import { PreloadedUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas";
@@ -161,6 +162,46 @@ async function patchUserSettings(userId: string, updatedSettings: PreloadedUserS
     };
     userSettings.userSettings = settings;
     await userSettings.save();
+
+    const settingsJson = PreloadedUserSettings.toJson(settings);
+    const protoStatus = (settingsJson as { status?: { status?: string } } | undefined)?.status?.status;
+    const allowedStatuses = ["online", "idle", "dnd", "offline", "invisible"] as const;
+    type AllowedStatus = (typeof allowedStatuses)[number];
+
+    if (protoStatus && allowedStatuses.includes(protoStatus as AllowedStatus)) {
+        const nextStatus = protoStatus as AllowedStatus;
+
+        const user = await User.findOne({
+            where: { id: userId, bot: false },
+            relations: { settings: true },
+        });
+
+        if (user) {
+            const currentStatus = user.settings?.status;
+            if (currentStatus !== nextStatus) {
+                if (!user.settings) user.settings = UserSettings.create<UserSettings>({ status: nextStatus });
+                else user.settings.status = nextStatus;
+                await user.settings.save();
+
+                await Session.update({ user_id: userId }, { status: nextStatus });
+                const sessions = await Session.find({ where: { user_id: userId } });
+                const session = getMostRelevantSession(sessions);
+
+                if (session) {
+                    await emitEvent({
+                        event: "PRESENCE_UPDATE",
+                        user_id: userId,
+                        data: {
+                            user: user.toPublicUser(),
+                            activities: session.activities,
+                            client_status: session.client_status,
+                            status: session.getPublicStatus(),
+                        },
+                    } satisfies PresenceUpdateEvent);
+                }
+            }
+        }
+    }
 
     await emitEvent({
         user_id: userId,

@@ -23,4 +23,5 @@ export interface ClientStatus {
     mobile?: string; // e.g. iOS/Android
     web?: string; // e.g. browser, bot account, unknown
     embedded?: string; // e.g. embedded
+    vr?: string; // e.g. Meta Quest 3
 }

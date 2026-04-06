@@ -26,10 +26,23 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
     check.call(this, ActivitySchema, d);
     const presence = d as ActivitySchema;
 
-    await Session.update({ session_id: this.session_id }, { status: presence.status, activities: presence.activities });
+    const statusValues = ["online", "idle", "dnd", "invisible"] as const;
+    type StatusValue = (typeof statusValues)[number];
 
-    const session = await Session.findOneOrFail({
-        select: { client_status: true },
+    const incomingStatus = presence.status as string | undefined;
+    const nextStatus = statusValues.includes(incomingStatus as StatusValue) ? (incomingStatus as StatusValue) : undefined;
+
+    const updatePayload: { status?: StatusValue; activities?: ActivitySchema["activities"] } = {
+        activities: presence.activities,
+    };
+
+    if (incomingStatus !== "unknown" && nextStatus) {
+        updatePayload.status = nextStatus;
+    }
+
+    await Session.update({ session_id: this.session_id }, updatePayload);
+
+    const session = await Session.findOne({
         where: { session_id: this.session_id },
     });
 
@@ -38,9 +51,9 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
         user_id: this.user_id,
         data: {
             user: await User.getPublicUser(this.user_id),
-            status: session.getPublicStatus(),
-            activities: presence.activities ?? [],
-            client_status: session.client_status,
+            status: session?.getPublicStatus() ?? "offline",
+            activities: session?.activities ?? [],
+            client_status: session?.client_status ?? {},
         },
     } satisfies PresenceUpdateEvent);
 
