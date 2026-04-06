@@ -38,6 +38,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
           runtimeId
           useAppHost
           srcRoot
+          packNupkg
           ;
 
         pname = "${name}";
@@ -51,7 +52,6 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         dotnet-sdk = pkgs.dotnet-sdk_10;
         dotnet-runtime = pkgs.dotnet-aspnetcore_10;
         src = pkgs.lib.cleanSource srcRoot;
-        packNupkg = true;
         meta = with pkgs.lib; {
           description = "Spacebar Server, Typescript Edition (C# extensions)";
           homepage = "https://github.com/spacebarchat/server";
