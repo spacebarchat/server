@@ -7,7 +7,7 @@ self:
 }:
 
 let
-  sb = import ../modules/default/lib.nix;
+  sb = import ../lib/mkEndpoint.nix;
 in
 {
   name = "test-bundle-starts";

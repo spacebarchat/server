@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-#    (modulesPath + "/virtualisation/qemu-vm.nix")
+    (modulesPath + "/virtualisation/qemu-vm.nix")
   ];
 
   virtualisation.vmVariant = {
@@ -58,5 +58,14 @@
     earlySetup = true;
     font = "${pkgs.cozette}/share/consolefonts/cozette6x13.psfu";
     packages = with pkgs; [ cozette ];
+  };
+
+  system = {
+    disableInstallerTools = true;
+    copySystemConfiguration = false;
+    includeBuildDependencies = false;
+    tools.nixos-version.enable = true; # Useful...
+    switch.enable = false;
+    etc.overlay.enable = true;
   };
 }
