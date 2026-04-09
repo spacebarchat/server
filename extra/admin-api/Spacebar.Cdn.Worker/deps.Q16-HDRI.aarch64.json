@@ -1,0 +1,17 @@
+[
+  {
+    "pname": "ArcaneLibs",
+    "version": "1.0.1-preview.20260126-091403",
+    "hash": "sha256-CSmNE16nDi05qyDAcJR+8SqQQ2ReAeX0+/dRP3WpNsg="
+  },
+  {
+    "pname": "Magick.NET-Q16-HDRI-OpenMP-arm64",
+    "version": "14.11.1",
+    "hash": "sha256-kN/hpOiLTOD5jKUaWXz8nCoOTwP4lB9JczdodZZIvyc="
+  },
+  {
+    "pname": "Magick.NET.Core",
+    "version": "14.11.1",
+    "hash": "sha256-984jXKS/y2602DgaXsfDh9TFOhpyAF/gHZG8BGQXljA="
+  }
+]

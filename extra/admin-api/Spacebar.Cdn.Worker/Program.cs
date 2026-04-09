@@ -5,6 +5,7 @@ using ArcaneLibs;
 using ImageMagick;
 using Spacebar.AdminApi.TestClient.Services.Helpers;
 using Spacebar.Cdn.Worker;
+using Spacebar.Interop.Cdn.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,9 @@ MagickNET.Initialize();
 // Environment.Exit(0);
 
 // builder.WebHost.ConfigureKestrel(opts => opts.ListenUnixSocket(Environment.GetEnvironmentVariable("SOCKET_PATH")!));
+
+builder.Services.AddSingleton<IFileSource>(new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")));
+// builder.Services.AddSingleton<DiscordImageResizeService>();
 
 builder.Services.AddControllers();
 var app = builder.Build();
