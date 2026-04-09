@@ -21,194 +21,191 @@ nixpkgs.lib.recursiveUpdate (
       };
       lib = pkgs.lib;
       buildSpacebarDotnetModule = import ../../nix/lib/buildSpacebarDotnetModule.nix { inherit pkgs rVersion; };
+      proj = self.packages.${system};
     in
     {
-      packages =
-        let
-          proj = self.packages.${system};
-        in
-        {
-          # Data mappings
-          Spacebar-DataMappings-Generic = buildSpacebarDotnetModule {
-            name = "Spacebar.DataMappings.Generic";
-            projectFile = "Spacebar.DataMappings.Generic.csproj";
-            nugetDeps = DataMappings/Spacebar.DataMappings.Generic/deps.json;
-            srcRoot = DataMappings/Spacebar.DataMappings.Generic;
-            projectReferences = [
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Models-Generic
-            ];
-          };
-
-          # Interop
-          Spacebar-Interop-Authentication = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Authentication";
-            projectFile = "Spacebar.Interop.Authentication.csproj";
-            nugetDeps = Interop/Spacebar.Interop.Authentication/deps.json;
-            srcRoot = Interop/Spacebar.Interop.Authentication;
-            projectReferences = [ proj.Spacebar-Models-Db ];
-          };
-          Spacebar-Interop-Authentication-AspNetCore = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Authentication.AspNetCore";
-            projectFile = "Spacebar.Interop.Authentication.AspNetCore.csproj";
-            nugetDeps = Interop/Spacebar.Interop.Authentication.AspNetCore/deps.json;
-            srcRoot = Interop/Spacebar.Interop.Authentication.AspNetCore;
-            projectReferences = [
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Interop-Authentication
-            ];
-          };
-          Spacebar-Interop-Cdn-Abstractions = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Cdn.Abstractions";
-            projectFile = "Spacebar.Interop.Cdn.Abstractions.csproj";
-            nugetDeps = Interop/Spacebar.Interop.Cdn.Abstractions/deps.json;
-            srcRoot = Interop/Spacebar.Interop.Cdn.Abstractions;
-          };
-          Spacebar-Interop-Replication-Abstractions = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Replication.Abstractions";
-            projectFile = "Spacebar.Interop.Replication.Abstractions.csproj";
-            srcRoot = Interop/Spacebar.Interop.Replication.Abstractions;
-          };
-          Spacebar-Interop-Replication-RabbitMq = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Replication.RabbitMq";
-            projectFile = "Spacebar.Interop.Replication.RabbitMq.csproj";
-            nugetDeps = Interop/Spacebar.Interop.Replication.RabbitMq/deps.json;
-            srcRoot = Interop/Spacebar.Interop.Replication.RabbitMq;
-            projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
-          };
-          Spacebar-Interop-Replication-UnixSocket = buildSpacebarDotnetModule {
-            name = "Spacebar.Interop.Replication.UnixSocket";
-            projectFile = "Spacebar.Interop.Replication.UnixSocket.csproj";
-            nugetDeps = Interop/Spacebar.Interop.Replication.UnixSocket/deps.json;
-            srcRoot = Interop/Spacebar.Interop.Replication.UnixSocket;
-            projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
-          };
-
-          # Models
-          Spacebar-Models-AdminApi = buildSpacebarDotnetModule {
-            name = "Spacebar.Models.AdminApi";
-            projectFile = "Spacebar.Models.AdminApi.csproj";
-            srcRoot = Models/Spacebar.Models.AdminApi;
-          };
-          Spacebar-Models-Config = buildSpacebarDotnetModule {
-            name = "Spacebar.Models.Config";
-            projectFile = "Spacebar.Models.Config.csproj";
-            srcRoot = Models/Spacebar.Models.Config;
-          };
-          Spacebar-Models-Db = buildSpacebarDotnetModule {
-            name = "Spacebar.Models.Db";
-            projectFile = "Spacebar.Models.Db.csproj";
-            nugetDeps = Models/Spacebar.Models.Db/deps.json;
-            srcRoot = Models/Spacebar.Models.Db;
-          };
-          Spacebar-Models-Gateway = buildSpacebarDotnetModule {
-            name = "Spacebar.Models.Gateway";
-            projectFile = "Spacebar.Models.Gateway.csproj";
-            srcRoot = Models/Spacebar.Models.Gateway;
-            projectReferences = [ proj.Spacebar-Models-Generic ];
-          };
-          Spacebar-Models-Generic = buildSpacebarDotnetModule {
-            name = "Spacebar.Models.Generic";
-            projectFile = "Spacebar.Models.Generic.csproj";
-            srcRoot = Models/Spacebar.Models.Generic;
-          };
-
-          # Utilities
-          Spacebar-CleanSettingsRows = buildSpacebarDotnetModule {
-            name = "Spacebar.CleanSettingsRows";
-            srcRoot = Utilities/Spacebar.CleanSettingsRows;
-            projectFile = "Spacebar.CleanSettingsRows.csproj";
-            nugetDeps = Utilities/Spacebar.CleanSettingsRows/deps.json;
-            packNupkg = false;
-            projectReferences = [ proj.Spacebar-Models-Db ];
-          };
-          Spacebar-Cdn-Fsck = buildSpacebarDotnetModule {
-            name = "Spacebar.Cdn.Fsck";
-            projectFile = "Spacebar.Cdn.Fsck.csproj";
-            srcRoot = Utilities/Spacebar.Cdn.Fsck;
-            nugetDeps = Utilities/Spacebar.Cdn.Fsck/deps.json;
-            packNupkg = false;
-            projectReferences = [
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Interop-Cdn-Abstractions
-            ];
-          };
-
-          # Main projects
-          Spacebar-AdminApi = buildSpacebarDotnetModule {
-            name = "Spacebar.AdminApi";
-            nugetDeps = Spacebar.AdminApi/deps.json;
-            projectFile = "Spacebar.AdminApi.csproj";
-            srcRoot = ./Spacebar.AdminApi;
-            packNupkg = false;
-            projectReferences = [
-              proj.Spacebar-Interop-Authentication
-              proj.Spacebar-Interop-Authentication-AspNetCore
-              proj.Spacebar-Interop-Replication-Abstractions
-              proj.Spacebar-Interop-Replication-UnixSocket
-              proj.Spacebar-Models-AdminApi
-              proj.Spacebar-Models-Config
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Models-Gateway
-              proj.Spacebar-Models-Generic
-            ];
-          };
-          Spacebar-Cdn = buildSpacebarDotnetModule {
-            name = "Spacebar.Cdn";
-            nugetDeps = Spacebar.Cdn/deps.json;
-            projectFile = "Spacebar.Cdn.csproj";
-            srcRoot = ./Spacebar.Cdn;
-            packNupkg = false;
-            projectReferences = [
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Interop-Cdn-Abstractions
-            ];
-          };
-          Spacebar-Offload = buildSpacebarDotnetModule {
-            name = "Spacebar.Offload";
-            nugetDeps = Spacebar.Offload/deps.json;
-            projectFile = "Spacebar.Offload.csproj";
-            srcRoot = ./Spacebar.Offload;
-            packNupkg = false;
-            projectReferences = [
-              proj.Spacebar-DataMappings-Generic
-              proj.Spacebar-Interop-Authentication
-              proj.Spacebar-Interop-Authentication-AspNetCore
-              proj.Spacebar-Interop-Replication-Abstractions
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Models-Gateway
-              proj.Spacebar-Models-Generic
-            ];
-          };
-          Spacebar-UApi = buildSpacebarDotnetModule {
-            name = "Spacebar.UApi";
-            nugetDeps = Spacebar.UApi/deps.json;
-            projectFile = "Spacebar.UApi.csproj";
-            srcRoot = ./Spacebar.UApi;
-            packNupkg = false;
-            projectReferences = [
-              proj.Spacebar-DataMappings-Generic
-              proj.Spacebar-Interop-Authentication
-              proj.Spacebar-Interop-Authentication-AspNetCore
-              proj.Spacebar-Interop-Replication-Abstractions
-              proj.Spacebar-Interop-Replication-UnixSocket
-              proj.Spacebar-Models-Config
-              proj.Spacebar-Models-Db
-              proj.Spacebar-Models-Gateway
-              proj.Spacebar-Models-Generic
-            ];
-          };
-          # Spacebar-AdminApi-TestClient = buildSpacebarDotnetModule {
-          #   name = "Spacebar.AdminApi.TestClient";
-          #   projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
-          #   nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
-          #   projectReferences = [
-          #     proj.Spacebar-AdminApi-Models
-          #   ];
-          ##  runtimeId = "browser-wasm";
-          ##  useAppHost = false;
-          # };
+      packages = {
+        # Data mappings
+        Spacebar-DataMappings-Generic = buildSpacebarDotnetModule {
+          name = "Spacebar.DataMappings.Generic";
+          projectFile = "Spacebar.DataMappings.Generic.csproj";
+          nugetDeps = DataMappings/Spacebar.DataMappings.Generic/deps.json;
+          srcRoot = DataMappings/Spacebar.DataMappings.Generic;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Generic
+          ];
         };
+
+        # Interop
+        Spacebar-Interop-Authentication = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Authentication";
+          projectFile = "Spacebar.Interop.Authentication.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Authentication/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Authentication;
+          projectReferences = [ proj.Spacebar-Models-Db ];
+        };
+        Spacebar-Interop-Authentication-AspNetCore = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Authentication.AspNetCore";
+          projectFile = "Spacebar.Interop.Authentication.AspNetCore.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Authentication.AspNetCore/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Authentication.AspNetCore;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Authentication
+          ];
+        };
+        Spacebar-Interop-Cdn-Abstractions = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Cdn.Abstractions";
+          projectFile = "Spacebar.Interop.Cdn.Abstractions.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Cdn.Abstractions/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Cdn.Abstractions;
+        };
+        Spacebar-Interop-Replication-Abstractions = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Replication.Abstractions";
+          projectFile = "Spacebar.Interop.Replication.Abstractions.csproj";
+          srcRoot = Interop/Spacebar.Interop.Replication.Abstractions;
+        };
+        Spacebar-Interop-Replication-RabbitMq = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Replication.RabbitMq";
+          projectFile = "Spacebar.Interop.Replication.RabbitMq.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Replication.RabbitMq/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Replication.RabbitMq;
+          projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
+        };
+        Spacebar-Interop-Replication-UnixSocket = buildSpacebarDotnetModule {
+          name = "Spacebar.Interop.Replication.UnixSocket";
+          projectFile = "Spacebar.Interop.Replication.UnixSocket.csproj";
+          nugetDeps = Interop/Spacebar.Interop.Replication.UnixSocket/deps.json;
+          srcRoot = Interop/Spacebar.Interop.Replication.UnixSocket;
+          projectReferences = [ proj.Spacebar-Interop-Replication-Abstractions ];
+        };
+
+        # Models
+        Spacebar-Models-AdminApi = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.AdminApi";
+          projectFile = "Spacebar.Models.AdminApi.csproj";
+          srcRoot = Models/Spacebar.Models.AdminApi;
+        };
+        Spacebar-Models-Config = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.Config";
+          projectFile = "Spacebar.Models.Config.csproj";
+          srcRoot = Models/Spacebar.Models.Config;
+        };
+        Spacebar-Models-Db = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.Db";
+          projectFile = "Spacebar.Models.Db.csproj";
+          nugetDeps = Models/Spacebar.Models.Db/deps.json;
+          srcRoot = Models/Spacebar.Models.Db;
+        };
+        Spacebar-Models-Gateway = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.Gateway";
+          projectFile = "Spacebar.Models.Gateway.csproj";
+          srcRoot = Models/Spacebar.Models.Gateway;
+          projectReferences = [ proj.Spacebar-Models-Generic ];
+        };
+        Spacebar-Models-Generic = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.Generic";
+          projectFile = "Spacebar.Models.Generic.csproj";
+          srcRoot = Models/Spacebar.Models.Generic;
+        };
+
+        # Utilities
+        Spacebar-CleanSettingsRows = buildSpacebarDotnetModule {
+          name = "Spacebar.CleanSettingsRows";
+          srcRoot = Utilities/Spacebar.CleanSettingsRows;
+          projectFile = "Spacebar.CleanSettingsRows.csproj";
+          nugetDeps = Utilities/Spacebar.CleanSettingsRows/deps.json;
+          packNupkg = false;
+          projectReferences = [ proj.Spacebar-Models-Db ];
+        };
+        Spacebar-Cdn-Fsck = buildSpacebarDotnetModule {
+          name = "Spacebar.Cdn.Fsck";
+          projectFile = "Spacebar.Cdn.Fsck.csproj";
+          srcRoot = Utilities/Spacebar.Cdn.Fsck;
+          nugetDeps = Utilities/Spacebar.Cdn.Fsck/deps.json;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Cdn-Abstractions
+          ];
+        };
+
+        # Main projects
+        Spacebar-AdminApi = buildSpacebarDotnetModule {
+          name = "Spacebar.AdminApi";
+          nugetDeps = Spacebar.AdminApi/deps.json;
+          projectFile = "Spacebar.AdminApi.csproj";
+          srcRoot = ./Spacebar.AdminApi;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-Interop-Authentication
+            proj.Spacebar-Interop-Authentication-AspNetCore
+            proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Interop-Replication-UnixSocket
+            proj.Spacebar-Models-AdminApi
+            proj.Spacebar-Models-Config
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
+          ];
+        };
+        Spacebar-Cdn = buildSpacebarDotnetModule {
+          name = "Spacebar.Cdn";
+          nugetDeps = Spacebar.Cdn/deps.json;
+          projectFile = "Spacebar.Cdn.csproj";
+          srcRoot = ./Spacebar.Cdn;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Interop-Cdn-Abstractions
+          ];
+        };
+        Spacebar-Offload = buildSpacebarDotnetModule {
+          name = "Spacebar.Offload";
+          nugetDeps = Spacebar.Offload/deps.json;
+          projectFile = "Spacebar.Offload.csproj";
+          srcRoot = ./Spacebar.Offload;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-DataMappings-Generic
+            proj.Spacebar-Interop-Authentication
+            proj.Spacebar-Interop-Authentication-AspNetCore
+            proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
+          ];
+        };
+        Spacebar-UApi = buildSpacebarDotnetModule {
+          name = "Spacebar.UApi";
+          nugetDeps = Spacebar.UApi/deps.json;
+          projectFile = "Spacebar.UApi.csproj";
+          srcRoot = ./Spacebar.UApi;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-DataMappings-Generic
+            proj.Spacebar-Interop-Authentication
+            proj.Spacebar-Interop-Authentication-AspNetCore
+            proj.Spacebar-Interop-Replication-Abstractions
+            proj.Spacebar-Interop-Replication-UnixSocket
+            proj.Spacebar-Models-Config
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
+          ];
+        };
+        # Spacebar-AdminApi-TestClient = buildSpacebarDotnetModule {
+        #   name = "Spacebar.AdminApi.TestClient";
+        #   projectFile = "Utilities/Spacebar.AdminApi.TestClient/Spacebar.AdminApi.TestClient.csproj";
+        #   nugetDeps = Utilities/Spacebar.AdminApi.TestClient/deps.json;
+        #   projectReferences = [
+        #     proj.Spacebar-AdminApi-Models
+        #   ];
+        ##  runtimeId = "browser-wasm";
+        ##  useAppHost = false;
+        # };
+      };
 
       containers.docker.admin-api = pkgs.dockerTools.buildLayeredImage {
         name = "spacebar-server-ts-admin-api";
