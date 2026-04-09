@@ -44,9 +44,6 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             projectReferences = [
               proj.Spacebar-Interop-Cdn-Abstractions
             ];
-          }
-          // {
-            __extraProjectPrefix = "Spacebar.Cdn.Worker";
           };
       in
       {
