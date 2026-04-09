@@ -25,14 +25,6 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
     packages =
       let
         proj = self.packages.${system};
-        sysArch = (lib.systems.elaborate system).linuxArch;
-        cdnCsWorkerArch =
-          if sysArch == "x86_64" then
-            "x86_64"
-          else if sysArch == "aarch64" then
-            "aarch64"
-          else
-            "AnyCPU";
         makeWorkerPackage =
           arch: variant:
           buildSpacebarDotnetModule {
@@ -64,12 +56,22 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
       let
         makeContainer =
           variant:
+          let
+            sysArch = (lib.systems.elaborate system).linuxArch;
+            cdnCsWorkerArch =
+              if sysArch == "x86_64" then
+                "x86_64"
+              else if sysArch == "aarch64" then
+                "aarch64"
+              else
+                "AnyCPU";
+          in
           (pkgs.dockerTools.buildLayeredImage {
             name = "spacebar-server-cdn-cs-worker-${lib.toLower variant}";
-            tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}."Spacebar-Cdn-Worker-${variant}".version;
-            contents = [ self.packages.${system}."Spacebar-Cdn-Worker-${variant}" ];
+            tag = builtins.replaceStrings [ "+" ] [ "_" ] self.packages.${system}."Spacebar-Cdn-Worker-${cdnCsWorkerArch}-${variant}".version;
+            contents = [ self.packages.${system}."Spacebar-Cdn-Worker-${cdnCsWorkerArch}-${variant}" ];
             config = {
-              Cmd = [ "${self.packages.${system}."Spacebar-Cdn-Worker-${variant}"}/bin/Spacebar.Cdn.Worker" ];
+              Cmd = [ "${self.packages.${system}."Spacebar-Cdn-Worker-${cdnCsWorkerArch}-${variant}"}/bin/Spacebar.Cdn.Worker" ];
               Expose = [ "5000" ];
             };
           });
