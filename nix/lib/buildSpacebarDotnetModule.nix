@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, rVersion }:
 {
   name,
   nugetDeps ? null,
