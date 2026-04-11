@@ -28,7 +28,7 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
         makeWorkerPackage =
           arch: variant:
           buildSpacebarDotnetModule {
-            name = "Spacebar.Cdn.Worker-${variant}.${arch}";
+            name = "Spacebar.Cdn.Worker.${variant}.${arch}";
             nugetDeps = ./deps.${variant}.${arch}.json;
             projectFile = "Spacebar.Cdn.Worker.${variant}.${arch}.csproj";
             srcRoot = ./.;
@@ -36,6 +36,17 @@ flake-utils.lib.eachSystem flake-utils.lib.allSystems (
             projectReferences = [
               proj.Spacebar-Interop-Cdn-Abstractions
             ];
+            nativeBuildInputs = [
+              pkgs.autoPatchelfHook
+              pkgs.libgcc.lib
+            ];
+            runtimeDependencies = [ (lib.getLib pkgs.libgcc) ];
+            #makeWrapperArgs = [
+            #  "--prefix"
+            #  "LD_PRELOAD"
+            #  ":"
+            #  "${pkgs.libgcc}/lib/libgomp.so"
+            #];
           };
       in
       {

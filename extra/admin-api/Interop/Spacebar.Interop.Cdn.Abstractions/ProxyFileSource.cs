@@ -18,7 +18,9 @@ public class ProxyFileSource(string baseUrl) : IFileSource {
 
     public string BaseUrl => baseUrl;
 
-    public async Task Init(CancellationToken? cancellationToken = null) { }
+    public async Task<IFileSource> Init(CancellationToken? cancellationToken = null) {
+        return this;
+    }
 
     public async Task<FileInfo> GetFile(string path, CancellationToken? cancellationToken = null) {
         var res = await _cache.GetOrAdd(path, async () => {
@@ -44,6 +46,7 @@ public class ProxyFileSource(string baseUrl) : IFileSource {
             await using var s = await res.Content.ReadAsStreamAsync();
             Console.WriteLine($"Got {res.StatusCode}: ({res.Content.Headers.ContentLength}b of {res.Content.Headers.ContentType})\n{s.ReadToEnd().AsString()}");
         }
+
         return res.IsSuccessStatusCode;
     }
 

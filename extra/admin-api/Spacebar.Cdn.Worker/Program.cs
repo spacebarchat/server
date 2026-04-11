@@ -2,8 +2,11 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using ArcaneLibs;
+using ArcaneLibs.Extensions.Streams;
 using ImageMagick;
+using Microsoft.AspNetCore.Mvc;
 using Spacebar.AdminApi.TestClient.Services.Helpers;
+using Spacebar.AdminApi.TestClient.Services.Services;
 using Spacebar.Cdn.Worker;
 using Spacebar.Interop.Cdn.Abstractions;
 
@@ -57,8 +60,8 @@ MagickNET.Initialize();
 
 // builder.WebHost.ConfigureKestrel(opts => opts.ListenUnixSocket(Environment.GetEnvironmentVariable("SOCKET_PATH")!));
 
-builder.Services.AddSingleton<IFileSource>(new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")));
-// builder.Services.AddSingleton<DiscordImageResizeService>();
+builder.Services.AddSingleton<IFileSource>(await new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")).Init());
+builder.Services.AddSingleton<DiscordImageResizeService>();
 
 builder.Services.AddControllers();
 var app = builder.Build();
@@ -87,6 +90,13 @@ app.MapGet("/defaultAvatar/_{bg:length(6)}_{fg:length(6)}.{ext}", async (HttpCon
     return Results.File(res, Mimes.GetMime(Mimes.GetFormatForExtension(ext)));
 });
 
-app.MapGet("/*", async (ctx) => { });
+app.MapGet("/scale/{*path}", async (HttpContext ctx, IFileSource ifs, DiscordImageResizeService dirs, string path) => {
+    var f = await ifs.GetFile(path);
+    f.Stream.Position = 0;
+    var res = dirs.Apply(new MagickImageCollection(f.Stream), ctx.Request.GetResizeParams());
+    await ctx.Response.StartAsync();
+    await res.WriteAsync(ctx.Response.Body);
+    await ctx.Response.CompleteAsync();
+});
 
 app.Run();

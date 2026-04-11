@@ -31,8 +31,7 @@ public static class Mimes {
             or "emf" // some microsoft meta format, windows only
             or "mpr" // Magick Persistent Registry - basically a resident in-memory image
            ) throw new AccessViolationException("Disallowed extension: " + extension);
-
-        MagickFormat
+        
         var matchingFormat = Enum.GetNames<MagickFormat>().FirstOrDefault(f => f.ToLower() == extension);
         if (string.IsNullOrWhiteSpace(matchingFormat)) throw new InvalidEnumArgumentException("Unknown format: " + extension);
         return Enum.TryParse(matchingFormat, out MagickFormat fmt) ? fmt : throw new InvalidEnumArgumentException("Unknown format: " + extension);
