@@ -17,8 +17,4 @@
         <ProjectReference Include="..\Interop\Spacebar.Interop.Cdn.Abstractions\Spacebar.Interop.Cdn.Abstractions.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
         <PackageReference Include="Spacebar.Interop.Cdn.Abstractions" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Renderers\" />
-    </ItemGroup>
 </Project>

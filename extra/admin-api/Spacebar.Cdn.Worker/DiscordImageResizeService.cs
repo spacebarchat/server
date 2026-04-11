@@ -75,7 +75,7 @@ public class DiscordImageResizeService {
                         // pads.IsPixelArt(frame)
                         frame.Resize(resizeParams.Size.Value, resizeParams.Size.Value,
                             resizeParams.Quality == DiscordImageResizeQuality.Low ? FilterType.Point : FilterType.Gaussian);
-                        Console.WriteLine($"Resized frame from {oldWidth}x{oldHeight} to {frame.Width}x{frame.Height}: {img.IndexOf(frame)}/{img.Count}");
+                        Console.WriteLine($"Resized frame from {oldWidth}x{oldHeight} to {frame.Width}x{frame.Height}: {img.IndexOf(frame)+1}/{img.Count}");
                     }
                 });
             }

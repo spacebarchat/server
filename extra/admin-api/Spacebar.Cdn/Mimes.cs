@@ -39,7 +39,7 @@ public static class Mimes {
 
     public static string GetMime(MagickFormat fmt) => fmt switch {
         MagickFormat.Png => "image/png",
-        MagickFormat.Jpeg => "image/jpeg",
+        MagickFormat.Jpeg or MagickFormat.Jpg => "image/jpeg",
         MagickFormat.Gif => "image/gif",
         MagickFormat.Bmp => "image/bmp",
         MagickFormat.Tiff => "image/tiff",

@@ -1,10 +1,5 @@
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using ArcaneLibs;
-using ArcaneLibs.Extensions.Streams;
 using ImageMagick;
-using Microsoft.AspNetCore.Mvc;
 using Spacebar.AdminApi.TestClient.Services.Helpers;
 using Spacebar.AdminApi.TestClient.Services.Services;
 using Spacebar.Cdn.Worker;
@@ -12,7 +7,7 @@ using Spacebar.Interop.Cdn.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var sw = Stopwatch.StartNew();
+// var sw = Stopwatch.StartNew();
 Console.WriteLine("Pre-initializing Magick.NET...");
 // OpenCL.IsEnabled = true;
 MagickNET.Initialize();
