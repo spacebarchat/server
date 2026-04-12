@@ -55,6 +55,10 @@ MagickNET.Initialize();
 
 // builder.WebHost.ConfigureKestrel(opts => opts.ListenUnixSocket(Environment.GetEnvironmentVariable("SOCKET_PATH")!));
 
+builder.WebHost.ConfigureKestrel(o => {
+    o.UseSystemd(); // Socket activation if wanted
+});
+
 builder.Services.AddSingleton<IFileSource>(await new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")).Init());
 builder.Services.AddSingleton<DiscordImageResizeService>();
 
@@ -90,7 +94,7 @@ app.MapGet("/scale/{*path}", async (HttpContext ctx, IFileSource ifs, DiscordIma
     f.Stream.Position = 0;
     var mig = new MagickImageCollection();
     await mig.ReadAsync(f.Stream, ctx.RequestAborted);
-    var res = dirs.Apply(mig, ctx.Request.GetResizeParams());
+    var res = await dirs.Apply(mig, ctx.Request.GetResizeParams());
     await ctx.Response.StartAsync();
     await res.WriteAsync(ctx.Response.Body);
     await ctx.Response.CompleteAsync();

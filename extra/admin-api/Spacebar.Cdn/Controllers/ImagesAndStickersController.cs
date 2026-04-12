@@ -13,7 +13,7 @@ public class ImagesAndStickerController(LruFileCache lfc, IFileSource fs, CdnWor
     [HttpGet("/stickers/{id}.{ext}")]
     [HttpGet("/emojis/{id}")]
     [HttpGet("/emojis/{id}.{ext}")]
-    public async Task<IActionResult> GetUserAvatar(string id, string ext = "png") {
+    public async Task<IActionResult> GetUserAvatar(string id, string ext = "webp") {
         DiscordImageResizeParams resizeParams = Request.GetResizeParams();
         var cacheKey = Request.Path + resizeParams.ToSerializedName();
         LruFileCache.Entry? entry;

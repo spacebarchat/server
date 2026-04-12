@@ -11,7 +11,7 @@ namespace Spacebar.Cdn.Controllers;
 public class UserController(LruFileCache lfc, IFileSource fs, CdnWorkerService cws) : ControllerBase {
     [HttpGet("/avatars/{userId}/{hash}")]
     [HttpGet("/avatars/{userId}/{hash}.{ext}")]
-    public async Task<IActionResult> GetUserAvatar(string userId, string hash, string ext = "png") {
+    public async Task<IActionResult> GetUserAvatar(string userId, string hash, string ext = "webp") {
         DiscordImageResizeParams resizeParams = Request.GetResizeParams();
         var originalKey = fs.BaseUrl + Request.Path;
         var cacheKey = Request.Path + resizeParams.ToSerializedName();

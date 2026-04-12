@@ -1,10 +1,11 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
 using ArcaneLibs.Extensions;
 
 namespace Spacebar.Cdn.Services;
 
-public class CdnWorkerService(SpacebarCdnWorkerConfiguration cfg) : IDisposable {
+public class CdnWorkerService(SpacebarCdnWorkerConfiguration cfg, IHostApplicationLifetime lifetime) : IDisposable {
     private int _q8Idx = 0;
     private int _q16Idx = 0;
     private int _q16HdriIdx = 0;
@@ -24,13 +25,23 @@ public class CdnWorkerService(SpacebarCdnWorkerConfiguration cfg) : IDisposable 
         Console.WriteLine("Done initializing CDN worker store!");
     }
 
-    private static HttpClient[] GetWorkerHttpClients(List<string> urls) {
+    [SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Unix is presumed by the developers - depends on unix sockets anyhow")]
+    private HttpClient[] GetWorkerHttpClients(List<string> urls) {
         List<HttpClient> results = [];
         foreach (var url in urls) {
             Console.WriteLine("  - Handling worker URI/path: " + url);
-            if (url.StartsWith("http://unix:")) results.Add(UnixSocketHttpClientFactory.GetHttpClientForSocket(url));
-            else if (url.StartsWith("http://") || url.StartsWith("https://")) results.Add(new HttpClient() { BaseAddress = new(url) });
-            // else if (File.Exists(url)) { }
+            if (url.StartsWith("http://unix:")) results.Add(HttpClientFactory.GetHttpClientForSocket(url));
+            else if (url.StartsWith("http://") || url.StartsWith("https://")) results.Add(HttpClientFactory.GetHttpClientForUrl(url));
+            else if (File.Exists(url) && File.GetUnixFileMode(url).HasFlag(UnixFileMode.OtherExecute)) {
+                var res = HttpClientFactory.GetHttpClientForExec(url);
+                results.Add(res.client);
+                lifetime.ApplicationStopped.Register(() => {
+                    Console.WriteLine("Killing CDN worker...");
+                    res.p.Kill();
+                    res.p.WaitForExit();
+                    Console.WriteLine("CDN worker killed!");
+                });
+            }
             else throw new NotImplementedException($"Don't know how to handle worker URL \"{url}\"");
         }
 
@@ -60,7 +71,7 @@ public class CdnWorkerService(SpacebarCdnWorkerConfiguration cfg) : IDisposable 
     }
 }
 
-internal class UnixSocketHttpClientFactory {
+internal class HttpClientFactory {
     internal static HttpClient GetHttpClientForSocket(string url) {
         var socketPath = new Uri(url).LocalPath;
         var httpHandler = new SocketsHttpHandler {
@@ -73,7 +84,30 @@ internal class UnixSocketHttpClientFactory {
             }
         };
         return new HttpClient(httpHandler) {
-            BaseAddress = new Uri("http://localhost") // just a dummy value, since dotnet still wants  :)
+            BaseAddress = new Uri("http://localhost"), // just a dummy value, since dotnet still wants it :)
+            Timeout = TimeSpan.FromMinutes(15)         // because stuff can get slow, we want caching to at least attempt to succeed
         };
+    }
+
+    public static HttpClient GetHttpClientForUrl(string url) {
+        return new HttpClient {
+            BaseAddress = new(url),
+            Timeout = TimeSpan.FromMinutes(15)
+        };
+    }
+
+    public static (HttpClient client, Process p) GetHttpClientForExec(string path) {
+        var url = $"http://unix:{Path.GetTempPath()}sb-cdn-worker-{Random.Shared.GetHexString(32)}.sock";
+        var psi = new ProcessStartInfo() {
+            FileName = path,
+            RedirectStandardError = true, RedirectStandardOutput = true
+        };
+        psi.Environment["DOTNET_URLS"] = url;
+        var p = Process.Start(psi);
+        p.OutputDataReceived += (_, args) => Console.WriteLine("[CDN Worker/OUT] " + args.Data);
+        p.ErrorDataReceived += (_, args) => Console.WriteLine("[CDN Worker/ERR] " + args.Data);
+        p.BeginErrorReadLine();
+        p.BeginOutputReadLine();
+        return (GetHttpClientForSocket(url), p);
     }
 }

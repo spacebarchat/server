@@ -57,11 +57,15 @@ public enum DiscordImageResizeQuality {
 
 public class DiscordImageResizeService {
     //(PixelArtDetectionService pads) {
-    public MagickImageCollection Apply(MagickImageCollection img, DiscordImageResizeParams resizeParams) {
+    public async Task<MagickImageCollection> Apply(MagickImageCollection img, DiscordImageResizeParams resizeParams) {
         if (resizeParams.Passthrough) return img;
         if (img.First().Format == MagickFormat.Gif) {
-            Console.WriteLine("Coalescing gif for resize");
-            img.Coalesce();
+            var t = new Thread(() => {
+                Console.WriteLine("Coalescing gif for resize");
+                img.Coalesce();
+            });
+            t.Start();
+            while (t.IsAlive) await Task.Delay(100);
         }
 
         if (!resizeParams.Animated) {
@@ -75,7 +79,7 @@ public class DiscordImageResizeService {
                 resizeParams.Size = 4096;
 
             if (img.Max(x => Math.Max(x.Height, x.Width)) > resizeParams.Size || resizeParams.SpacebarAllowUpscale) {
-                Parallel.ForEach(img, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, frame => {
+                Parallel.ForEach(img, new ParallelOptions() { MaxDegreeOfParallelism = 16 }, frame => {
                     if (resizeParams.Size.HasValue) {
                         uint oldWidth = frame.Width, oldHeight = frame.Height;
                         // pads.IsPixelArt(frame)
@@ -88,8 +92,12 @@ public class DiscordImageResizeService {
         }
 
         if (img.First().Format == MagickFormat.Gif && resizeParams.SpacebarOptimiseGif) {
-            Console.WriteLine("Optimizing gif after resize");
-            img.OptimizePlus();
+            var t = new Thread(() => {
+                Console.WriteLine("Optimizing gif after resize");
+                img.OptimizePlus();
+            });
+            t.Start();
+            while (t.IsAlive) await Task.Delay(100);
         }
 
         return img;

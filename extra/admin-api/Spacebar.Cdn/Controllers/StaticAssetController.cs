@@ -12,7 +12,7 @@ namespace Spacebar.Cdn.Controllers;
 public class StaticAssetController(LruFileCache lfc, IFileSource fs, CdnWorkerService cws) : ControllerBase {
     [HttpGet("/embed/avatars/{avatarIdx}")]
     [HttpGet("/embed/avatars/{avatarIdx}.{ext}")]
-    public async Task<IActionResult> GetUserAvatar(string avatarIdx, string ext = "png") {
+    public async Task<IActionResult> GetUserAvatar(string avatarIdx, string ext = "webp") {
         DiscordImageResizeParams resizeParams = Request.GetResizeParams();
         var cacheKey = Request.Path + resizeParams.ToSerializedName();
         LruFileCache.Entry? entry;
