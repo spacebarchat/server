@@ -8,10 +8,8 @@
 //
 // [ApiController]
 // public class GetImageController(LruFileCache lfc, IFileSource fs, DiscordImageResizeService dirs) : ImageController {
-//     // [HttpGet("/avatars/{_:required}")]
 //     [HttpGet("/emojis/{emoji_id:required}.{ext:required}")]
 //     [HttpGet("/stickers/{sticker_id:required}.{ext:required}")]
-//     // [HttpGet("/avatars/{user_id:required}/{avatar_hash:required}.{ext:required}")]
 //     [HttpGet("/banners/{user_id:required}/{user_banner:required}.{ext:required}")]
 //     public async Task<IActionResult> GetImage(string? ext) {
 //         var originalKey = fs.BaseUrl + Request.Path;

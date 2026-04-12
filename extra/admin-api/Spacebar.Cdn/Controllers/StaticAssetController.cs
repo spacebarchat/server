@@ -1,66 +1,32 @@
-// using ArcaneLibs.Extensions.Streams;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.OpenApi;
-// using Spacebar.AdminApi.TestClient.Services.Services;
-// using Spacebar.Cdn.Extensions;
-// using Spacebar.Interop.Cdn.Abstractions;
-//
-// namespace Spacebar.Cdn.Controllers;
-//
-// [ApiController]
-// public class StaticAssetController(LruFileCache lfc, IFileSource fs, DiscordImageResizeService dirs) : ImageController {
-//     private static readonly Dictionary<string, string> defaultAvatarHashMap = new() {
-//         { "0", "4a8562cf00887030c416d3ec2d46385a" },
-//         { "1", "9b0bb198936784c45c72833cc426cc55" },
-//         { "2", "22341bdb500c7b63a93bbce957d1601e" },
-//         { "3", "d9977836b82058bf2f74eebd50edc095" },
-//         { "4", "9d6ddb4e4d899a533a8cc617011351c9" },
-//         { "5", "7213ab6677377974697dfdfbaf5f6a6f" },
-//     };
-//
-//     private static readonly Dictionary<string, string> defaultGroupDMAvatarHashMap = new() {
-//         { "0", "3b70bb66089c60f8be5e214bf8574c9d" },
-//         { "1", "9581acd31832465bdeaa5385b0e919a3" },
-//         { "2", "a8a4727cf2dc2939bd3c657fad4463fa" },
-//         { "3", "2e46fe14586f8e95471c0917f56726b5" },
-//         { "4", "fac7e78de9753d4a37083bba74c1d9ef" },
-//         { "5", "4ab900144b0865430dc9be825c838faa" },
-//         { "6", "1276374a404452756f3c9cc2601508a5" },
-//         { "7", "904bf9f1b61f53ef4a3b7a893afeabe3" },
-//     };
-//     
-//     // png only
-//     [HttpGet("/embed/avatars/{userIndex}.{ext}")]
-//     public async Task<IActionResult> GetDefaultUserAvatar(string userIndex, string ext) {
-//         
-//         var cacheKey = Request.Path + Request.QueryString;
-//
-//         DiscordImageResizeParams resizeParams = GetResizeParams();
-//
-//         var entry = await lfc.GetOrAdd(cacheKey, async () => {
-//             var original = await fs.GetFile(Request.Path);
-//
-//             if (Request.Query.Any()) {
-//                 using var img = await original.ToMagickImageCollectionAsync();
-//                 dirs.Apply(img, resizeParams);
-//
-//                 var outStream = new MemoryStream();
-//                 await img.WriteAsync(outStream, img.First().Format);
-//                 outStream.Position = 0;
-//
-//                 return new LruFileCache.Entry() {
-//                     Data = outStream.ReadToEnd().ToArray(),
-//                     MimeType = original.MimeType
-//                 };
-//             }
-//
-//             return new LruFileCache.Entry() {
-//                 Data = original.Stream.ReadToEnd().ToArray(),
-//                 MimeType = original.MimeType
-//             };
-//         });
-//
-//         // byte array with mime type result
-//         return new FileContentResult(entry.Data, entry.MimeType);
-//     }
-// }
+using ArcaneLibs.Extensions.Streams;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
+using Spacebar.AdminApi.TestClient.Services.Services;
+using Spacebar.Cdn.Extensions;
+using Spacebar.Cdn.Services;
+using Spacebar.Interop.Cdn.Abstractions;
+
+namespace Spacebar.Cdn.Controllers;
+
+[ApiController]
+public class StaticAssetController(LruFileCache lfc, IFileSource fs, CdnWorkerService cws) : ControllerBase {
+    [HttpGet("/embed/avatars/{avatarIdx}")]
+    [HttpGet("/embed/avatars/{avatarIdx}.{ext}")]
+    public async Task<IActionResult> GetUserAvatar(string avatarIdx, string ext = "png") {
+        DiscordImageResizeParams resizeParams = Request.GetResizeParams();
+        var cacheKey = Request.Path + resizeParams.ToSerializedName();
+        LruFileCache.Entry? entry;
+            entry = await lfc.GetOrAdd(cacheKey, async () => {
+                
+                var res = await cws.GetRawClient("q8").GetAsync(Request.Path + Request.QueryString);
+                var outStream = await res.Content.ReadAsStreamAsync();
+
+                return new LruFileCache.Entry() {
+                    Data = outStream.ReadToEnd().ToArray(),
+                    MimeType = res.Content.Headers.ContentType?.ToString() ?? Mimes.GetMime(Mimes.GetFormatForExtension(ext))
+                };
+            });
+
+        return new FileContentResult(entry.Data, entry.MimeType);
+    }
+}

@@ -62,7 +62,7 @@ builder.Services.AddControllers();
 var app = builder.Build();
 app.MapControllers();
 
-app.MapGet("/defaultAvatar/{idx:int}.{ext}", async (HttpContext ctx, int idx, string ext) => {
+app.MapGet("/embed/avatars/{idx:int}.{ext}", async (HttpContext ctx, int idx, string ext) => {
     var (r, g, b) = DefaultAvatarRenderer.DefaultAvatarColors[idx % DefaultAvatarRenderer.DefaultAvatarColors.Length];
     var res = await DefaultAvatarRenderer.GetDefaultAvatar(r, g, b, size: ctx.Request.Query.ContainsKey("size") ? int.Parse(ctx.Request.Query["size"]!) : 4096,
         format: Mimes.GetFormatForExtension(ext));
@@ -70,14 +70,14 @@ app.MapGet("/defaultAvatar/{idx:int}.{ext}", async (HttpContext ctx, int idx, st
 });
 
 // small easter egg internal stuff, maybe used someday :)
-app.MapGet("/defaultAvatar/_{bg:length(6)}.{ext}", async (HttpContext ctx, string bg, string ext) => {
+app.MapGet("/embed/avatars/_{bg:length(6)}.{ext}", async (HttpContext ctx, string bg, string ext) => {
     var (r, g, b) = (byte.Parse(bg[..2], NumberStyles.HexNumber), byte.Parse(bg[2..4], NumberStyles.HexNumber), byte.Parse(bg[4..6], NumberStyles.HexNumber));
     var res = await DefaultAvatarRenderer.GetDefaultAvatar(r, g, b, size: ctx.Request.Query.ContainsKey("size") ? int.Parse(ctx.Request.Query["size"]!) : 4096,
         format: Mimes.GetFormatForExtension(ext));
     return Results.File(res, Mimes.GetMime(Mimes.GetFormatForExtension(ext)));
 });
 
-app.MapGet("/defaultAvatar/_{bg:length(6)}_{fg:length(6)}.{ext}", async (HttpContext ctx, string bg, string fg, string ext) => {
+app.MapGet("/embed/avatars/_{bg:length(6)}_{fg:length(6)}.{ext}", async (HttpContext ctx, string bg, string fg, string ext) => {
     var (r, g, b) = (byte.Parse(bg[..2], NumberStyles.HexNumber), byte.Parse(bg[2..4], NumberStyles.HexNumber), byte.Parse(bg[4..6], NumberStyles.HexNumber));
     var (rf, gf, bf) = (byte.Parse(fg[..2], NumberStyles.HexNumber), byte.Parse(fg[2..4], NumberStyles.HexNumber), byte.Parse(fg[4..6], NumberStyles.HexNumber));
     var res = await DefaultAvatarRenderer.GetDefaultAvatar(r, g, b, rf, gf, bf, size: ctx.Request.Query.ContainsKey("size") ? int.Parse(ctx.Request.Query["size"]!) : 4096,
@@ -88,7 +88,9 @@ app.MapGet("/defaultAvatar/_{bg:length(6)}_{fg:length(6)}.{ext}", async (HttpCon
 app.MapGet("/scale/{*path}", async (HttpContext ctx, IFileSource ifs, DiscordImageResizeService dirs, string path) => {
     var f = await ifs.GetFile(path);
     f.Stream.Position = 0;
-    var res = dirs.Apply(new MagickImageCollection(f.Stream), ctx.Request.GetResizeParams());
+    var mig = new MagickImageCollection();
+    await mig.ReadAsync(f.Stream, ctx.RequestAborted);
+    var res = dirs.Apply(mig, ctx.Request.GetResizeParams());
     await ctx.Response.StartAsync();
     await res.WriteAsync(ctx.Response.Body);
     await ctx.Response.CompleteAsync();

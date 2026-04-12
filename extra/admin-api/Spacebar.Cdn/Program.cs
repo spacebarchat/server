@@ -2,19 +2,25 @@ using ArcaneLibs;
 using ImageMagick;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.TestClient.Services.Services;
+using Spacebar.Cdn.Services;
 using Spacebar.Interop.Cdn.Abstractions;
 using Spacebar.Models.Db.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
+var u = new Uri("http://unix:/var/x/y/z/x/z");
+Console.WriteLine(u.LocalPath);
 if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
     builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
 
 // Add services to the container.
 // builder.Services.AddSingleton<IFileSource>(new ProxyFileSource("http://cdn.old.server.spacebar.chat"));
-builder.Services.AddSingleton<IFileSource>(new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ?? throw new InvalidOperationException("STORAGE_PATH not set!")));
-builder.Services.AddSingleton<LruFileCache>(new LruFileCache(1 * 1024 * 1024 * 1024));
-builder.Services.AddSingleton<DiscordImageResizeService>();
+builder.Services.AddSingleton<IFileSource>(new FilesystemFileSource(Environment.GetEnvironmentVariable("STORAGE_PATH") ??
+                                                                    throw new InvalidOperationException("STORAGE_PATH not set!")));
+builder.Services.AddSingleton<LruFileCache>(sp =>
+    new LruFileCache(sp.GetRequiredService<IConfiguration>().GetSection("Spacebar:Cdn:LruFileCache:Size").Value is { } val ? int.Parse(val) : 1 * 1024 * 1024 * 1024));
 builder.Services.AddSingleton<PixelArtDetectionService>();
+builder.Services.AddSingleton<SpacebarCdnWorkerConfiguration>();
+builder.Services.AddSingleton<CdnWorkerService>();
 
 builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
     options
@@ -27,6 +33,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+app.Services.GetRequiredService<CdnWorkerService>().Initialize();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) app.MapOpenApi();

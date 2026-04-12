@@ -64,6 +64,12 @@ public class DiscordImageResizeService {
             img.Coalesce();
         }
 
+        if (!resizeParams.Animated) {
+            var oldImg = img;
+            img = new MagickImageCollection([oldImg.First()]);
+            oldImg.Dispose();
+        }
+
         if (resizeParams.Size.HasValue) {
             if (resizeParams.Size > 4096)
                 resizeParams.Size = 4096;
