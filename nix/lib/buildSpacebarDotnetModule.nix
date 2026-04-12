@@ -43,7 +43,7 @@ pkgs.buildDotnetModule (pkgs.lib.recursiveUpdate
       };
     }
     // {
-      __nugetDeps = args.nugetDeps;
+      __nugetDeps = if args ? nugetDeps then args.nugetDeps else null;
     }
   )
   (
