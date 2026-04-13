@@ -69,7 +69,7 @@ let
       # set -x
 
       # remove packages not needed for production, or at least try to...
-      npm prune --omit dev --no-save  --offline
+      npm prune --omit dev --no-save --offline
       rm -v dist/src.tsbuildinfo
       rm -rv scripts
       time ${./nix/trimNodeModules.sh}

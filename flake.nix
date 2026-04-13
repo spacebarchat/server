@@ -91,9 +91,9 @@
             devShells.default = pkgs.mkShell {
               buildInputs = with pkgs; [
                 nodejs_24
-                nodePackages.typescript
-                nodePackages.patch-package
-                nodePackages.prettier
+                typescript
+                patch-package
+                prettier
                 (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
               ];
             };
