@@ -18,6 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { User, UserSettings, emitEvent, Session, PresenceUpdateEvent } from "@spacebar/util";
+import { getMostRelevantSession } from "@spacebar/gateway";
 import { Request, Response, Router } from "express";
 import { UserSettingsUpdateSchema } from "@spacebar/schemas";
 
@@ -75,25 +76,24 @@ router.patch(
         await user.settings.save();
         await user.save();
         if (body.status) {
-            const [session] = (await Session.find({
-                where: { user_id: user.id },
-            })) as [Session | undefined];
-            if (session) {
-                session.status = body.status;
+            await Session.update({ user_id: user.id }, { status: body.status });
 
-                await Promise.all([
-                    emitEvent({
-                        event: "PRESENCE_UPDATE",
-                        user_id: user.id,
-                        data: {
-                            user: user.toPublicUser(),
-                            activities: session.activities,
-                            client_status: session?.client_status,
-                            status: session.getPublicStatus(),
-                        },
-                    } satisfies PresenceUpdateEvent),
-                    session.save(),
-                ]);
+            const sessions = await Session.find({
+                where: { user_id: user.id },
+            });
+            const session = getMostRelevantSession(sessions);
+
+            if (session) {
+                await emitEvent({
+                    event: "PRESENCE_UPDATE",
+                    user_id: user.id,
+                    data: {
+                        user: user.toPublicUser(),
+                        activities: session.activities,
+                        client_status: session.client_status,
+                        status: session.getPublicStatus(),
+                    },
+                } satisfies PresenceUpdateEvent);
             }
         }
 

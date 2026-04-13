@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, DateBuilder, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
-import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
+import { Config, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { WebSocket, Payload, OPCODES, Send, getMostRelevantSession, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { check } from "./instanceOf";
-import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
+import { FindManyOptions, ILike, In } from "typeorm";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
@@ -140,15 +140,13 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     let notFound: string[] = [];
     if (user_ids && user_ids.length > 0) notFound = user_ids.filter((id) => !members.some((member) => member.id == id));
 
-    const recentlyActiveSince = new DateBuilder().addMinutes(-15).build();
-
     while (members.length > 0) {
         const chunk: Member[] = members.splice(0, chunkSize);
 
         let presenceList: Presence[] = [];
         if (presences) {
             const sessions = await Session.find({
-                where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false, last_seen: MoreThan(recentlyActiveSince) },
+                where: { user_id: In(chunk.map((m) => m.id)), is_admin_session: false },
                 select: {
                     user: true,
                     status: true,
@@ -158,13 +156,16 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
                 relations: { user: true },
             });
 
-            const foundUids = new Set<string>();
-            presenceList = sessions
-                .filter((s) => {
-                    if (foundUids.has(s.user.id)) return false;
-                    foundUids.add(s.user.id);
-                    return true;
-                })
+            const sessionsByUserId = new Map<string, Session[]>();
+            for (const session of sessions) {
+                const uid = session.user.id;
+                if (!sessionsByUserId.has(uid)) sessionsByUserId.set(uid, []);
+                sessionsByUserId.get(uid)!.push(session);
+            }
+
+            presenceList = Array.from(sessionsByUserId.values())
+                .map((userSessions) => getMostRelevantSession(userSessions))
+                .filter((session): session is Session => !!session)
                 .map((session) => ({
                     user: session.user.toPublicUser(),
                     status: session.getPublicStatus(),

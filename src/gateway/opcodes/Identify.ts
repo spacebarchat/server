@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
+import { Capabilities, CLOSECODES, OPCODES, Payload, Send, getMostRelevantSession, setupListener, WebSocket } from "@spacebar/gateway";
 import {
     arrayGroupBy,
     Application,
@@ -162,12 +162,30 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     this.session_id = session.session_id;
     this.session = session;
-    this.session.status = identify.presence?.status || "online";
+
+    const statusValues = ["online", "idle", "dnd", "offline", "invisible"] as const;
+    type StatusValue = (typeof statusValues)[number];
+
+    const incomingStatus = identify.presence?.status as string | undefined;
+    const status = statusValues.includes(incomingStatus as StatusValue) ? (incomingStatus as StatusValue) : undefined;
+    this.session.status = incomingStatus === "unknown" ? (session.status && session.status !== "offline" ? session.status : "online") : (status ?? "online");
+
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
     this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
     this.session.client_info.os = identify.properties?.os || identify.properties?.$os;
-    this.session.client_status = {};
+
+    this.session.client_status ??= {};
+    if (identify.presence?.client_status) {
+        for (const key of ["desktop", "mobile", "web", "embedded", "vr"] as const) {
+            const value = identify.presence.client_status[key] as string | undefined;
+            if (value === undefined || value === "unknown") continue;
+            if (statusValues.includes(value as StatusValue)) {
+                this.session.client_status[key] = value as StatusValue;
+            }
+        }
+    }
+
     this.session.activities = identify.presence?.activities ?? []; // TODO: validation
 
     if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
@@ -289,6 +307,14 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     user.relationships = relationships;
     user.settings = settings;
+
+    if (incomingStatus === "unknown") {
+        const settingsStatus = user.settings?.status ?? "online";
+        if (this.session.status !== settingsStatus) {
+            this.session.status = settingsStatus;
+            await Session.update({ session_id: this.session_id }, { status: settingsStatus });
+        }
+    }
 
     const userMetaQueryTime = taskSw.getElapsedAndReset();
 
@@ -573,7 +599,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const appendRelationshipsTime = taskSw.getElapsedAndReset();
 
     // Send SESSIONS_REPLACE and PRESENCE_UPDATE
-    const allSessions = sessions.concat(this.session!).map((x) => x.toPrivateGatewayDeviceInfo());
+    const sessionsWithCurrent = sessions.concat(this.session!);
+    const allSessions = sessionsWithCurrent.map((x) => x.toPrivateGatewayDeviceInfo());
+    const mostRelevantSession = getMostRelevantSession(sessionsWithCurrent);
     const findAndGenerateSessionReplaceTime = taskSw.getElapsedAndReset();
 
     const [{ elapsed: emitSessionsReplaceTime }, { elapsed: emitPresenceUpdateTime }] = await Promise.all([
@@ -590,9 +618,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 user_id: this.user_id,
                 data: {
                     user: user.toPublicUser(),
-                    activities: this.session!.activities,
-                    client_status: this.session!.client_status,
-                    status: this.session!.getPublicStatus(),
+                    activities: mostRelevantSession.activities,
+                    client_status: mostRelevantSession.client_status,
+                    status: mostRelevantSession.getPublicStatus(),
                 },
             } satisfies PresenceUpdateEvent),
         ),

@@ -47,10 +47,12 @@ import { bgRedBright } from "picocolors";
 export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data }: EventOpts) {
     acknowledge?.();
     if (event === EVENTEnum.PresenceUpdate) {
+        const payloadData = data.user.id === this.user_id && this.session?.status === "invisible" && data.status === "offline" ? { ...data, status: "invisible" } : data;
+
         return Send(this, {
             op: OPCODES.Dispatch,
             t: event,
-            d: data,
+            d: payloadData,
             s: this.sequence++,
         });
     }
@@ -378,10 +380,15 @@ async function consume(this: WebSocket, opts: EventOpts) {
         }
     }
 
+    const payloadData =
+        event === "PRESENCE_UPDATE" && data?.user?.id === this.user_id && this.session?.status === "invisible" && data.status === "offline"
+            ? { ...data, status: "invisible" }
+            : data;
+
     await Send(this, {
         op: OPCODES.Dispatch,
         t: event,
-        d: data,
+        d: payloadData,
         s: this.sequence++,
     });
 }
