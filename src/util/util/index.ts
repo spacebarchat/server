@@ -56,3 +56,4 @@ export * from "./extensions";
 export * from "./Random";
 export * from "./Url";
 export * from "./Version";
+export * from "./Presence";

@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Member, Session, Presence, timePromise, Stopwatch, Config } from "@spacebar/util";
-import { WebSocket, Payload, OPCODES, Send, getMostRelevantSession, handleOffloadedGatewayRequest } from "@spacebar/gateway";
+import { Member, Session, Presence, timePromise, Stopwatch, Config, getMostRelevantSession } from "@spacebar/util";
+import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { PublicMember } from "@spacebar/schemas";
 import { In } from "typeorm";
 

@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition } from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, getMostRelevantSession } from "@spacebar/gateway";
+import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition, getMostRelevantSession } from "@spacebar/util";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 import { LazyRequestSchema } from "@spacebar/schemas";
