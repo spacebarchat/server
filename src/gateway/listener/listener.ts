@@ -205,6 +205,13 @@ async function consume(this: WebSocket, opts: EventOpts) {
     opts.acknowledge?.();
     // console.log("event", event);
 
+    // deduplicate gateway messages
+    if (opts.transaction_id) {
+        if (this.recentTransactions.includes(opts.transaction_id)) return;
+        this.recentTransactions.push(opts.transaction_id);
+        if (this.recentTransactions.length > 100) this.recentTransactions = this.recentTransactions.slice(1);
+    }
+
     // special codes
     switch (event) {
         case "SB_SESSION_CLOSE":

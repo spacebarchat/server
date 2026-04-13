@@ -7512,7 +7512,8 @@
                     "idle",
                     "invisible",
                     "offline",
-                    "online"
+                    "online",
+                    "unknown"
                 ],
                 "type": "string"
             },
@@ -9410,6 +9411,9 @@
                         "type": "string"
                     },
                     "embedded": {
+                        "type": "string"
+                    },
+                    "vr": {
                         "type": "string"
                     }
                 }

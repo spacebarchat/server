@@ -24,6 +24,7 @@ import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { QoSPayload } from "../opcodes/Heartbeat";
 
 export interface WebSocket extends WS {
+    recentTransactions: string[];
     version: number;
     user_id: string;
     session_id: string;

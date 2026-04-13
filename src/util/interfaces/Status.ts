@@ -16,11 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export type Status = "idle" | "dnd" | "online" | "offline" | "invisible";
+export type Status =
+    | "idle"
+    | "dnd"
+    | "online"
+    | "offline"
+    // Send only
+    | "invisible"
+    // Identify only
+    | "unknown";
 
 export interface ClientStatus {
     desktop?: string; // e.g. Windows/Linux/Mac
     mobile?: string; // e.g. iOS/Android
     web?: string; // e.g. browser, bot account, unknown
     embedded?: string; // e.g. embedded
+    vr?: string;
 }

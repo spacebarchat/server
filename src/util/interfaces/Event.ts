@@ -64,6 +64,7 @@ export interface Event {
     data?: any;
     reconnect_delay?: number;
     origin?: string;
+    transaction_id?: string;
 }
 
 // ! Custom Events that shouldn't get sent to the client but processed by the server

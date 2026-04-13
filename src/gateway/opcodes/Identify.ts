@@ -61,6 +61,7 @@ import { check } from "./instanceOf";
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
+import { randomString } from "@spacebar/api*";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -162,7 +163,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     this.session_id = session.session_id;
     this.session = session;
-    this.session.status = identify.presence?.status || "online";
+    // this.session.status = identify.presence?.status || "online";
     this.session.last_seen = new Date();
     this.session.client_info ??= {};
     this.session.client_info.platform = identify.properties?.$device ?? identify.properties?.$device;
@@ -173,6 +174,33 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     if (this.ipAddress && this.ipAddress !== this.session.last_seen_ip) {
         this.session.last_seen_ip = this.ipAddress;
         await this.session.updateIpInfo();
+    }
+
+    let mustAnnouncePresence = false;
+    let presenceUpdateEventData: PresenceUpdateEvent | undefined;
+
+    if (identify.presence?.status) {
+        let newStatus = identify.presence.status;
+        if (newStatus == "unknown") newStatus = this.session.status;
+        if (newStatus == "offline") {
+            newStatus = "online";
+            mustAnnouncePresence = true;
+        }
+
+        this.session.status = newStatus;
+        if (mustAnnouncePresence) {
+            presenceUpdateEventData = {
+                event: "PRESENCE_UPDATE",
+                data: {
+                    user: tokenData.user.toPublicUser(),
+                    status: this.session.status,
+                    client_status: this.session.client_status,
+                    activities: this.session.activities,
+                },
+                origin: "GATEWAY_IDENTIFY",
+                transaction_id: `IDENT_${this.user_id}_${randomString()}`,
+            } satisfies PresenceUpdateEvent;
+        }
     }
 
     const createSessionTime = taskSw.getElapsedAndReset();
@@ -849,4 +877,30 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         `[Gateway/${this.user_id}] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`,
         process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "",
     );
+
+    // actually send presence updates
+    if (presenceUpdateEventData) {
+        for (const rel of d.relationships ?? []) {
+            await emitEvent({
+                ...presenceUpdateEventData,
+                user_id: rel.user.id,
+            });
+        }
+        for (const guild of d.guilds) {
+            await emitEvent({
+                ...presenceUpdateEventData,
+                guild_id: guild.id,
+            });
+        }
+        for (const dmChannel of d.private_channels) {
+            // TODO: check if other side has the channel still open
+            for (const recpt of dmChannel.recipients) {
+                if (recpt.id != this.user_id)
+                    await emitEvent({
+                        ...presenceUpdateEventData,
+                        user_id: recpt.id,
+                    });
+            }
+        }
+    }
 }
