@@ -213,6 +213,7 @@ export const EmbedHandlers: {
     "tenor.com": genericImageHandler,
     "c.tenor.com": genericImageHandler,
     "media.tenor.com": genericImageHandler,
+    "media1.tenor.com": genericImageHandler,
 
     "facebook.com": (url) => EmbedHandlers["www.facebook.com"](url),
     "www.facebook.com": async (url: URL) => {
