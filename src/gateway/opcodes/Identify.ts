@@ -18,8 +18,8 @@
 
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import {
-    arrayGroupBy,
     Application,
+    arrayGroupBy,
     Channel,
     checkToken,
     Config,
@@ -60,8 +60,8 @@ import {
 import { check } from "./instanceOf";
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
-import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
-import { randomString } from "@spacebar/api*";
+import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
+import { randomString } from "@spacebar/api";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -193,7 +193,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 event: "PRESENCE_UPDATE",
                 data: {
                     user: tokenData.user.toPublicUser(),
-                    status: this.session.status,
+                    status: this.session.getPublicStatus(),
                     client_status: this.session.client_status,
                     activities: this.session.activities,
                 },
@@ -878,7 +878,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "",
     );
 
-    // actually send presence updates
+    // actually send presence updates - not using distributePresenceUpdate because we already have all of the data at hand
     if (presenceUpdateEventData) {
         for (const rel of d.relationships ?? []) {
             await emitEvent({
