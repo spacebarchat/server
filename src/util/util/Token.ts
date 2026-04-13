@@ -96,21 +96,6 @@ export const checkToken = (
                 return rejectAndLog(reject, 401, "User not found");
             }
 
-            if (decoded.did && !session) {
-                // temporary hack: create new session
-                session = Session.create({
-                    session_id: decoded.did,
-                    user_id: user.id,
-                    is_admin_session: false,
-                    client_status: {},
-                    status: "online",
-                    client_info: {},
-                });
-                await session.save();
-                logAuth("validateUser rejected: Session not found");
-                return rejectAndLog(reject, 401, "Invalid Token");
-            }
-
             // we need to round it to seconds as it saved as seconds in jwt iat and valid_tokens_since is stored in milliseconds
             if (decoded.iat * 1000 < new Date(user.data.valid_tokens_since).setSeconds(0, 0)) {
                 logAuth("validateUser rejected: Token not yet valid");
@@ -183,7 +168,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
             user_id: id,
             is_admin_session: isAdminSession,
             client_status: {},
-            status: "online",
+            status: "offline", // will be set to online upon IDENTIFY
             client_info: {},
         });
     } while (await Session.findOne({ where: { session_id: newSession.session_id } }));

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { arrayDistinctBy, arrayGroupBy, Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl, OrmUtils } from "@spacebar/util";
+import { arrayDistinctBy, arrayGroupBy, Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl, OrmUtils, sleep } from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "crypto";
@@ -570,10 +570,6 @@ export async function dropDuplicateCacheEntries(entries: EmbedCache[]): Promise<
             return e;
         }),
     );
-}
-
-async function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // hack to make nodejs not die

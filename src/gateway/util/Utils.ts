@@ -1,4 +1,4 @@
-import { Event, VoiceState } from "@spacebar/util";
+import { Event, Session, sleep, TimeSpan, VoiceState } from "@spacebar/util";
 import { WebSocket } from "./WebSocket";
 import { OPCODES } from "./Constants";
 import { Send } from "./Send";
@@ -60,6 +60,21 @@ export async function cleanupOnStartup(): Promise<void> {
     VoiceState.clear()
         .then(() => console.log("[Gateway] Successfully cleaned voice states"))
         .catch((e) => console.error("[Gateway] Error cleaning voice states on startup:", e));
+
+    console.log("[Gateway] Starting async presence expiry...");
+    expireOldPresenceStates()
+        .then(() => console.log("[Gateway] Successfully cleaned expired presence states"))
+        .catch((e) => console.error("[Gateway] Error cleaning expired presence states on startup:", e));
+}
+
+async function expireOldPresenceStates() {
+    for await (const session of await Session.createQueryBuilder("session").where("last_seen >= '2000/01/01' AND status != 'offline'").select().stream()) {
+        // session object has all fields prefixed with `session_`... thanks typeorm
+        if (TimeSpan.fromDates((session.session_last_seen as Date).getTime(), new Date().getTime()).totalMinutes > 30) {
+            console.log(`[Gateway/util/Utils.ts] Expiring presence for session ${session.session_session_id} last seen at ${session.session_last_seen}`);
+            await Session.update({ session_id: session.session_session_id }, { status: "offline" });
+        }
+    }
 }
 
 export async function handleOffloadedGatewayRequest(socket: WebSocket, url: string, body: unknown) {
