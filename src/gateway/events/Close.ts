@@ -18,6 +18,8 @@
 
 import { WebSocket } from "@spacebar/gateway";
 import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
+import { distributePresenceUpdate } from "../../util/util/Presence";
+import { randomString } from "@spacebar/api*";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
@@ -28,7 +30,34 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     this.removeAllListeners();
 
     if (this.session_id) {
-        // await Session.delete({ session_id: this.session_id });
+        const authSessionId = this.session?.session_id;
+        const closedAt = Date.now();
+
+        setTimeout(async () => {
+            try {
+                if (authSessionId && this.user_id) {
+                    const s = await Session.findOne({
+                        where: { user_id: this.user_id, session_id: authSessionId },
+                    });
+                    if (s && (s.last_seen?.getTime() ?? 0) <= closedAt) {
+                        await Session.update({ user_id: this.user_id, session_id: authSessionId }, { status: "offline", activities: [], client_status: {} });
+                        await distributePresenceUpdate(this.user_id, {
+                            event: "PRESENCE_UPDATE",
+                            data: {
+                                user: (await User.findOneOrFail({ where: { id: this.user_id } })).toPublicUser(),
+                                status: this.session!.getPublicStatus(),
+                                client_status: this.session!.client_status,
+                                activities: this.session!.activities,
+                            },
+                            origin: "GATEWAY_CLOSE",
+                            transaction_id: `IDENT_${this.user_id}_${randomString()}`,
+                        } satisfies PresenceUpdateEvent);
+                    }
+                }
+            } catch (e) {
+                console.error("[WebSocket] Close session cleanup failed", code, e);
+            }
+        }, 10_000);
 
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
