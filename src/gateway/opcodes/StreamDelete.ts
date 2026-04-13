@@ -47,7 +47,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
 
     const voiceState = await VoiceState.findOne({
         where: { user_id: this.user_id },
-        relations: { member: true },
+        // relations: { member: true }, // TODO: actually add the relation
     });
 
     if (voiceState) {
