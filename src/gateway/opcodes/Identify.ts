@@ -134,6 +134,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
               session: Session.create({
                   user_id: this.user_id,
                   session_id: this.session_id,
+                  status: "offline", // ??? why wasnt this required before
               }),
               isNewSession: true,
           };
