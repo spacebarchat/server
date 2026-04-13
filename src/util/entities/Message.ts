@@ -264,7 +264,7 @@ export class Message extends BaseClass {
     }
 
     toJSON(shallow = false): PublicMessage {
-        this.clean_data();
+        // this.clean_data();
         return {
             ...this,
             channel_id: this.channel_id ?? this.channel.id,

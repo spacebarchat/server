@@ -17,9 +17,8 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
-import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
-import { distributePresenceUpdate } from "../../util/util/Presence";
-import { randomString } from "@spacebar/api*";
+import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
+import { randomString } from "@spacebar/api";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
@@ -34,13 +33,17 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
         const closedAt = Date.now();
 
         setTimeout(async () => {
+            console.log("Handling presence update after disconnect");
             try {
                 if (authSessionId && this.user_id) {
                     const s = await Session.findOne({
                         where: { user_id: this.user_id, session_id: authSessionId },
                     });
                     if (s && (s.last_seen?.getTime() ?? 0) <= closedAt) {
+                        console.log("... updating session");
                         await Session.update({ user_id: this.user_id, session_id: authSessionId }, { status: "offline", activities: [], client_status: {} });
+                        this.session = await Session.findOneOrFail({ where: { session_id: this.session_id } });
+                        console.log("... distributing PRESENCE_UPDATE");
                         await distributePresenceUpdate(this.user_id, {
                             event: "PRESENCE_UPDATE",
                             data: {
@@ -52,7 +55,8 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                             origin: "GATEWAY_CLOSE",
                             transaction_id: `IDENT_${this.user_id}_${randomString()}`,
                         } satisfies PresenceUpdateEvent);
-                    }
+                        console.log("... done!");
+                    } else console.log("... Discarding presence update as the session reactivated");
                 }
             } catch (e) {
                 console.error("[WebSocket] Close session cleanup failed", code, e);

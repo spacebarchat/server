@@ -131,6 +131,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
             }
         }
 
+        socket.recentTransactions = [];
         socket.events = {};
         socket.member_events = {};
         socket.permissions = {};
