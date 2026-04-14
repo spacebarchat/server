@@ -21,6 +21,7 @@ import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
 import { Guild } from "./Guild";
+import { JsonRemoveEmpty } from "../util/Decorators";
 
 @Entity({
     name: "applications",
@@ -99,6 +100,7 @@ export class Application extends BaseClass {
     cover_image?: string; // the application's default rich presence invite cover image hash
 
     @Column({ type: "simple-json", nullable: true })
+    @JsonRemoveEmpty
     install_params?: { scopes: string[]; permissions: string };
 
     @Column({ nullable: true })

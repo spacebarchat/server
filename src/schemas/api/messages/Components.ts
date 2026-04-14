@@ -84,6 +84,54 @@ export interface ActionRowComponent extends MessageComponent {
     components: (ButtonComponent | StringSelectMenuComponent | SelectMenuComponent | TextInputComponent)[];
 }
 
+export interface FileUploadComponent extends MessageComponent {
+    type: MessageComponentType.FileUpload;
+    custom_id: string;
+    min_values?: number;
+    max_values?: number;
+    required?: boolean;
+}
+
+export interface CheckboxGroupComponent extends MessageComponent {
+    type: MessageComponentType.CheckboxGroup;
+    custom_id: string;
+    options: {
+        value: string;
+        label: string;
+        description?: string;
+        default?: boolean;
+    }[];
+    required: boolean;
+}
+export interface CheckboxComponent extends MessageComponent {
+    type: MessageComponentType.Checkbox;
+    custom_id: string;
+    required: boolean;
+}
+export interface LabelComponent extends MessageComponent {
+    type: MessageComponentType.Label;
+    label: string;
+    description?: string;
+    component: StringSelectMenuComponent | TextInputComponent | SelectMenuComponent | FileUploadComponent | RadioGroupComponent | CheckboxGroupComponent | CheckboxComponent;
+}
+export interface ModalCallback {
+    custom_id: string;
+    title: string;
+    components: (LabelComponent | ActionRowComponent | TextDisplayComponent)[];
+}
+
+export interface RadioGroupComponent extends MessageComponent {
+    type: MessageComponentType.RadioGroup;
+    custom_id: string;
+    options: {
+        value: string;
+        label: string;
+        description?: string;
+        default?: boolean;
+    }[];
+    required: boolean;
+}
+
 export interface ContainerComponent extends MessageComponent {
     type: MessageComponentType.Container;
     components: (ActionRowComponent | TextDisplayComponent | SectionComponent | MediaGalleryComponent | SeperatorComponent | FileComponent)[];
