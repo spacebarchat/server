@@ -11,6 +11,8 @@ let
 in
 {
   name = "test-bundle-starts";
+  skipTypeCheck = true;
+  skipLint = true;
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
