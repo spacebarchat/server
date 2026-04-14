@@ -113,7 +113,7 @@ export class BaseClassWithoutId extends BaseEntity {
 }
 
 export class BaseClass extends BaseClassWithoutId {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: "int8" })
     id: string = Snowflake.generate();
 
     @BeforeUpdate()

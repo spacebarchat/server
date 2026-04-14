@@ -4,8 +4,7 @@ export class ReconcileMigrationAttempts1760622755598 implements MigrationInterfa
     name = "ReconcileMigrationAttempts1760622755598";
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        // doesnt work because initial setup is syncDb()
-        //await queryRunner.query(`ALTER TABLE "webhooks" DROP CONSTRAINT "fk_d64f38834fa676f6caa4786ddd6"`);
+        await queryRunner.query(`ALTER TABLE "webhooks" DROP CONSTRAINT IF EXISTS "fk_d64f38834fa676f6caa4786ddd6"`);
         await queryRunner.query(`ALTER TABLE "webhooks" ALTER COLUMN "source_channel_id" TYPE character varying`);
         await queryRunner.query(`ALTER TABLE "messages" ALTER COLUMN "username" TYPE character varying`);
         await queryRunner.query(`ALTER TABLE "messages" ALTER COLUMN "avatar" TYPE character varying`);
