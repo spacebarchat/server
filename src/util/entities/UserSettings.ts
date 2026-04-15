@@ -45,7 +45,7 @@ export class UserSettings extends BaseClassWithoutId {
     @Column({ nullable: true })
     convert_emoticons: boolean = false;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     custom_status: CustomStatus | null = null;
 
     @Column({ nullable: true })
@@ -69,7 +69,7 @@ export class UserSettings extends BaseClassWithoutId {
     @Column({ nullable: true })
     friend_discovery_flags: number = 0;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     friend_source_flags: FriendSourceFlags = { all: true };
 
     @Column({ nullable: true })
@@ -78,10 +78,10 @@ export class UserSettings extends BaseClassWithoutId {
     @Column({ nullable: true })
     gif_auto_play: boolean = false;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     guild_folders: GuildFolder[] = []; // every top guild is displayed as a "folder"
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     guild_positions: string[] = []; // guild ids ordered by position
 
     @Column({ nullable: true })
@@ -105,7 +105,7 @@ export class UserSettings extends BaseClassWithoutId {
     @Column({ nullable: true })
     render_reactions: boolean = true;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     restricted_guilds: string[] = [];
 
     @Column({ nullable: true })

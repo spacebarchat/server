@@ -163,10 +163,10 @@ export class Message extends BaseClass {
     })
     attachments?: Attachment[];
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     embeds: Embed[];
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     @JsonRemoveEmpty
     reactions: Reaction[];
 
@@ -184,7 +184,7 @@ export class Message extends BaseClass {
     @Column({ type: "int" })
     type: MessageType;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     @JsonRemoveEmpty
     activity?: {
         type: number;
@@ -194,7 +194,7 @@ export class Message extends BaseClass {
     @Column({ default: 0 })
     flags: number;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     @JsonRemoveEmpty
     message_reference?: {
         message_id?: string;
@@ -207,7 +207,7 @@ export class Message extends BaseClass {
     @ManyToOne(() => Message, { onDelete: "SET NULL" })
     referenced_message?: Message | null;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     @JsonRemoveEmpty
     interaction?: {
         id: string;
@@ -215,7 +215,7 @@ export class Message extends BaseClass {
         name: string;
     };
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     @JsonRemoveEmpty
     interaction_metadata?: {
         id: string;
@@ -226,10 +226,10 @@ export class Message extends BaseClass {
         command_type: ApplicationCommandType;
     };
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     components?: BaseMessageComponents[];
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     @JsonRemoveEmpty
     poll?: Poll;
 
@@ -239,7 +239,7 @@ export class Message extends BaseClass {
     @Column({ nullable: true })
     avatar?: string;
 
-    @Column({ default: "[]", type: "simple-json" })
+    @Column({ default: "[]", type: "jsonb" })
     message_snapshots: MessageSnapshot[];
 
     static async fillReplies(messages: Message[]) {

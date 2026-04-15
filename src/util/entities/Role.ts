@@ -63,7 +63,7 @@ export class Role extends BaseClass {
     @Column({ nullable: true })
     unicode_emoji?: string;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     tags?: {
         bot_id?: string;
         integration_id?: string;
@@ -73,7 +73,7 @@ export class Role extends BaseClass {
     @Column({ default: 0 })
     flags: number;
 
-    @Column({ nullable: false, type: "simple-json" })
+    @Column({ nullable: false, type: "jsonb" })
     colors: RoleColors;
 
     toJSON(): Role {

@@ -71,7 +71,7 @@ export class ThreadMember extends BaseClassWithoutId {
     @Column()
     muted: boolean;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     mute_config?: ThreadMemberMuteConfig;
 
     @Column()

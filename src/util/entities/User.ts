@@ -160,7 +160,7 @@ export class User extends BaseClass {
     })
     connected_accounts: ConnectedAccount[];
 
-    @Column({ type: "simple-json", select: false })
+    @Column({ type: "jsonb", select: false })
     data: {
         valid_tokens_since: Date; // all tokens with a previous issue date are invalid
         hash?: string; // hash of the password, salt is saved in password (bcrypt)
@@ -183,16 +183,16 @@ export class User extends BaseClass {
     @Column({ type: "simple-array", nullable: true })
     badge_ids?: string[];
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     avatar_decoration_data?: AvatarDecorationData;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     display_name_styles?: DisplayNameStyle;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     collectibles?: Collectibles;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     primary_guild?: PrimaryGuild;
 
     // TODO: I don't like this method?

@@ -42,10 +42,10 @@ export class Session extends BaseClassWithoutId {
     })
     user: User;
 
-    @Column({ type: "simple-json", default: "[]" })
+    @Column({ type: "jsonb", default: "[]" })
     activities: Activity[];
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     client_info: {
         platform?: string;
         os?: string;
@@ -53,7 +53,7 @@ export class Session extends BaseClassWithoutId {
         location?: string;
     };
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     client_status: ClientStatus;
 
     @Column({ nullable: false, type: String })
@@ -74,7 +74,7 @@ export class Session extends BaseClassWithoutId {
     @Column({ nullable: true, type: String })
     last_seen_location?: string;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     last_seen_location_info?: ExtendedLocationInfo;
 
     @Column({ nullable: true, type: String })
