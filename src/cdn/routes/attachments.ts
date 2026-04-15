@@ -98,19 +98,7 @@ router.get("/:channel_id/:message_id/:filename", cache, async (req: Request, res
 
     if (!hasValidAuth) return res.status(404).send("This content is no longer available.");
 
-    let file = await storage.get(path);
-    // handle re-keying paths to be correct
-    if (!file) {
-        const att = await Attachment.findOne({ where: { id: message_id, channel_id: channel_id } });
-        if (att) {
-            const oldPath = `attachments/${channel_id}/${att.id}/${filename}`;
-            if (await storage.exists(oldPath)) {
-                console.log(`[CDN/Attachments] Moving ${oldPath} -> ${path}!`);
-                await storage.move(oldPath, path);
-                file = await storage.get(path);
-            }
-        }
-    }
+    const file = await storage.get(path);
     if (!file) throw new HTTPError("File not found");
     const type = await fileTypeFromBuffer(file);
     let content_type = type?.mime || "application/octet-stream";

@@ -17,11 +17,14 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import { Config, initDatabase, registerRoutes } from "@spacebar/util";
+import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import guildProfilesRoute from "./routes/guild-profiles";
 import morgan from "morgan";
+import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "@spacebar/webrtc*";
+import { green, yellow } from "picocolors";
+import { storage } from "./util";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -35,6 +38,11 @@ export class CDNServer extends Server {
     async start() {
         await initDatabase();
         await Config.init();
+
+        this.migrateAttachments().then(
+            (_) => console.log("[CDN] Successfully migrated attachments"),
+            (_) => console.log("[CDN] Attachment migration failed"),
+        );
 
         const logRequests = process.env["LOG_REQUESTS"] != undefined;
         if (logRequests) {
@@ -66,6 +74,20 @@ export class CDNServer extends Server {
         if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
         return super.start();
+    }
+
+    async migrateAttachments() {
+        if (await storage.exists(".mig_complete.attachments1")) return;
+        for await (const attachment of await Attachment.createQueryBuilder("attachments").where("message_id is not null").select().stream()) {
+            const oldPath = `attachments/${attachment.attachments_channel_id}/${attachment.attachments_id}/${attachment.attachments_filename}`;
+            const newPath = `attachments/${attachment.attachments_channel_id}/${attachment.attachments_message_id}/${attachment.attachments_filename}`;
+            if (!(await storage.exists(oldPath))) {
+                console.log(`[CDN/Attachments] Attachment migration: could not find old path, skipping migration: ` + oldPath);
+                continue;
+            }
+            await storage.move(oldPath, newPath);
+        }
+        await storage.set(".mig_complete.attachments1", Buffer.from([1]));
     }
 
     async stop() {
