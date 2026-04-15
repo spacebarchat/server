@@ -29,7 +29,7 @@ export class Int8Fixes1776283923000 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE instance_bans ALTER COLUMN user_id TYPE ${to} USING user_id::${to}`);
         await queryRunner.query(`ALTER TABLE members ALTER COLUMN last_message_id TYPE ${to} USING last_message_id::${to}`);
         // oops
-        await queryRunner.query(`UPDATE read_states SET last_message_id = NULL WHERE last_message_id = 'null' OR last_message_id = 'undefined';`);
+        await queryRunner.query(`UPDATE read_states SET last_message_id = NULL WHERE last_message_id = 'null' OR last_message_id = 'undefined' OR last_message_id ~ 'fake';`);
         await queryRunner.query(`ALTER TABLE read_states ALTER COLUMN last_message_id TYPE ${to} USING last_message_id::${to}`);
         await queryRunner.query(`ALTER TABLE read_states ALTER COLUMN last_acked_id TYPE ${to} USING last_acked_id::${to}`);
         await queryRunner.query(`ALTER TABLE security_settings ALTER COLUMN guild_id TYPE ${to} USING guild_id::${to}`);
