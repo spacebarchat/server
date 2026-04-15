@@ -47,9 +47,9 @@ router.post(
             user_id: interaction?.userId,
             data: {
                 id: interactionId,
-            nonce: interaction.nonce ?? "", // TODO: did i do this right?
+                nonce: interaction.nonce ?? "", // TODO: did i do this right?
             },
-    } satisfies InteractionSuccessEvent);
+        } satisfies InteractionSuccessEvent);
 
         switch (body.type) {
             case InteractionCallbackType.PONG:
@@ -70,7 +70,7 @@ router.post(
 			for (const currFile of files) {
 				try {
 					const file = await uploadFile(`/attachments/${interaction.channelId}`, currFile);
-					attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+					attachments.push(Attachment.create(file));
 				} catch (error) {
 					return res.status(400).json({ message: error?.toString() });
 				}

@@ -18,6 +18,7 @@
 
 import { Attachment, Sticker } from "@spacebar/util";
 import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake } from "@spacebar/schemas";
+import { PublicAttachment } from "./Attachments";
 
 export enum MessageType {
     DEFAULT = 0,
@@ -174,7 +175,7 @@ export interface PublicMessage {
     mentions: PartialUser[];
     mention_roles: Snowflake[];
     mention_channels?: PublicChannel[]; // TODO: PartialPublicChannel
-    attachments: Attachment[];
+    attachments: PublicAttachment[];
     embeds: Embed[];
     reactions?: Reaction[];
     nonce?: number | string;

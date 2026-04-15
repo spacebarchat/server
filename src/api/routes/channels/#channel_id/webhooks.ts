@@ -46,7 +46,7 @@ router.get(
         return res.json(
             webhooks.map((webhook) => ({
                 ...webhook,
-                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+                url: Config.get().api.endpointPublic + "/api/webhooks/" + webhook.id + "/" + webhook.token,
             })),
         );
     },

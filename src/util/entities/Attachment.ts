@@ -20,6 +20,7 @@ import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from 
 import { Config, deleteFile } from "../util";
 import { BaseClass } from "./BaseClass";
 import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "../Signing";
+import { PublicAttachment } from "../../schemas/api/messages/Attachments";
 
 @Entity({
     name: "attachments",
@@ -45,7 +46,7 @@ export class Attachment extends BaseClass {
     message_id: string;
 
     @Column({ nullable: true })
-    @RelationId((attachment: Attachment) => attachment.message)
+    @RelationId((attachment: Attachment) => attachment.channel)
     channel_id: string;
 
     @JoinColumn({ name: "message_id" })
@@ -55,25 +56,27 @@ export class Attachment extends BaseClass {
     message: import("./Message").Message;
 
     @JoinColumn({ name: "channel_id" })
-    @ManyToOne(() => require("./Channel").Channel, (message: import("./Message").Message) => message.attachments, {
+    @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
     channel: import("./Channel").Channel;
 
     @BeforeRemove()
     onDelete() {
-        return deleteFile(new URL(this.url).pathname);
+        return deleteFile(new URL(this.toJSON().url).pathname);
     }
 
     toJSON() {
+        const channelId = this.channel_id ?? this.channel?.id ?? this.message?.channel_id;
+        const messageId = this.message_id ?? this.message?.id;
         return {
             ...this,
-            url: `${Config.get().cdn.endpointPublic}/attachments/${this.channel_id}/${this.message_id}/${this.filename}`,
-            proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${this.channel_id}/${this.message_id}/${this.filename}`,
+            url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
+            proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
         };
     }
-    signUrls(data: NewUrlUserSignatureData): Attachment {
-        const att = this.toJSON();
+    signUrls(data: NewUrlUserSignatureData): PublicAttachment {
+        const att = Attachment.prototype.toJSON.apply(this);
         return {
             ...att,
             url: getUrlSignature(new NewUrlSignatureData({ ...data, url: att.url }))

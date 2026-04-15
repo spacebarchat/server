@@ -284,7 +284,7 @@ export class Message extends BaseClass {
 
             mention_roles: this.mention_roles?.map((role) => role.id) ?? [],
             mention_channels: this.mention_channels?.map((ch) => ch.toJSON()) ?? [],
-            attachments: this.attachments ?? [],
+            attachments: this.attachments?.map((att) => att.toJSON()) ?? [],
 
             nonce: this.nonce ?? undefined,
             tts: this.tts ?? false,
