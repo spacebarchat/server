@@ -171,12 +171,11 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
 
     const realAtt = Attachment.create({
         filename: attEnt.userFilename,
-        url: media.url,
-        proxy_url: media.proxy_url,
         size: attEnt.size,
         height: attEnt.height,
         width: attEnt.width,
         content_type: attEnt.contentType || attEnt.userOriginalContentType,
+        channel_id: channel.id,
     });
     await realAtt.save();
 
@@ -396,12 +395,11 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
                 const realAtt = Attachment.create({
                     filename: attEnt.userFilename,
-                    url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
-                    proxy_url: `${conf.cdn.endpointPublic}/${cloneRespBody.new_path}`,
                     size: attEnt.size,
                     height: attEnt.height,
                     width: attEnt.width,
                     content_type: attEnt.contentType || attEnt.userOriginalContentType,
+                    channel_id: channel.id,
                 });
                 await realAtt.save();
                 return { attachment: realAtt, index: att.index };
@@ -744,22 +742,22 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         const footer = embed.footer;
         const footerAttachment = fetchAttachment(footer?.icon_url);
         if (footerAttachment !== undefined) {
-            footer!.icon_url = footerAttachment.url;
-            footer!.proxy_icon_url = footerAttachment.proxy_url;
+            footer!.icon_url = footerAttachment.toJSON().url;
+            footer!.proxy_icon_url = footerAttachment.toJSON().proxy_url;
         }
 
         const image = embed.image;
         const imageAttachment = fetchAttachment(image?.url);
         if (imageAttachment !== undefined) {
-            image!.url = imageAttachment.url;
-            image!.proxy_url = imageAttachment.proxy_url;
+            image!.url = imageAttachment.toJSON().url;
+            image!.proxy_url = imageAttachment.toJSON().proxy_url;
         }
 
         const author = embed.author;
         const authorAttachment = fetchAttachment(author?.icon_url);
         if (authorAttachment !== undefined) {
-            author!.icon_url = authorAttachment.url;
-            author!.proxy_icon_url = authorAttachment.proxy_url;
+            author!.icon_url = authorAttachment.toJSON().url;
+            author!.proxy_icon_url = authorAttachment.toJSON().proxy_url;
         }
     }
     message.attachments = message.attachments?.filter((_, index) => {

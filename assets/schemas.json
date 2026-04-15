@@ -11890,12 +11890,6 @@
             "size": {
                 "type": "integer"
             },
-            "url": {
-                "type": "string"
-            },
-            "proxy_url": {
-                "type": "string"
-            },
             "height": {
                 "type": "integer"
             },
@@ -11908,8 +11902,14 @@
             "message_id": {
                 "type": "string"
             },
+            "channel_id": {
+                "type": "string"
+            },
             "message": {
                 "$ref": "#/definitions/Message"
+            },
+            "channel": {
+                "$ref": "#/definitions/Channel"
             },
             "id": {
                 "type": "string"
@@ -11917,13 +11917,13 @@
         },
         "additionalProperties": false,
         "required": [
+            "channel",
+            "channel_id",
             "filename",
             "id",
             "message",
             "message_id",
-            "proxy_url",
-            "size",
-            "url"
+            "size"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

@@ -17,12 +17,11 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
+import { Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import guildProfilesRoute from "./routes/guild-profiles";
 import morgan from "morgan";
-import { Like } from "typeorm";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -36,7 +35,6 @@ export class CDNServer extends Server {
     async start() {
         await initDatabase();
         await Config.init();
-        await this.cleanupSignaturesInDb();
 
         const logRequests = process.env["LOG_REQUESTS"] != undefined;
         if (logRequests) {
@@ -72,24 +70,5 @@ export class CDNServer extends Server {
 
     async stop() {
         return super.stop();
-    }
-
-    async cleanupSignaturesInDb() {
-        console.log("[CDN] Cleaning up signatures in database");
-        const attachmentsToFix = await Attachment.find({
-            where: { url: Like("%?ex=%") },
-        });
-        if (attachmentsToFix.length === 0) {
-            console.log("[CDN] No attachments to fix");
-            return;
-        }
-
-        console.log("[CDN] Found", attachmentsToFix.length, " attachments to fix");
-        for (const attachment of attachmentsToFix) {
-            attachment.url = attachment.url.split("?ex=")[0];
-            attachment.proxy_url = attachment.proxy_url?.split("?ex=")[0];
-            await attachment.save();
-            console.log(`[CDN] Fixed attachment ${attachment.id}`);
-        }
     }
 }

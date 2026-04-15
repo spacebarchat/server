@@ -1,5 +1,5 @@
 import { handleMessage, postHandleMessage } from "@spacebar/api";
-import { Attachment, Channel, Config, DiscordApiErrors, emitEvent, FieldErrors, Message, MessageCreateEvent, uploadFile, ValidateName, Webhook } from "@spacebar/util";
+import { Attachment, Channel, Config, DiscordApiErrors, emitEvent, FieldErrors, Message, MessageCreateEvent, Snowflake, uploadFile, ValidateName, Webhook } from "@spacebar/util";
 import { Request, Response } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
@@ -7,6 +7,7 @@ import { WebhookExecuteSchema } from "@spacebar/schemas";
 
 export const executeWebhook = async (req: Request, res: Response) => {
     const body = req.body as WebhookExecuteSchema;
+    const messageId = Snowflake.generate();
 
     const { webhook_id, token } = req.params as { [key: string]: string };
 
@@ -87,8 +88,8 @@ export const executeWebhook = async (req: Request, res: Response) => {
     const files = (req.files as Express.Multer.File[]) ?? [];
     for (const currFile of files) {
         try {
-            const file = await uploadFile(`/attachments/${sendChannel.id}`, currFile);
-            attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+            const file = await uploadFile(`/attachments/${sendChannel.id}/${messageId}`, currFile);
+            attachments.push(Attachment.create(file));
         } catch (error) {
             if (wait) res.status(400).json({ message: error?.toString() });
             return;
@@ -106,6 +107,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
             : undefined,
     } as Parameters<typeof handleMessage>[0];
     const message = await handleMessage({
+        id: messageId,
         ...bodyMsg,
         username: body.username || webhook.name,
         avatar_url: body.avatar_url || webhook.avatar,

@@ -11201,12 +11201,6 @@
                     "size": {
                         "type": "integer"
                     },
-                    "url": {
-                        "type": "string"
-                    },
-                    "proxy_url": {
-                        "type": "string"
-                    },
                     "height": {
                         "type": "integer"
                     },
@@ -11219,21 +11213,27 @@
                     "message_id": {
                         "type": "string"
                     },
+                    "channel_id": {
+                        "type": "string"
+                    },
                     "message": {
                         "$ref": "#/components/schemas/Message"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
                     },
                     "id": {
                         "type": "string"
                     }
                 },
                 "required": [
+                    "channel",
+                    "channel_id",
                     "filename",
                     "id",
                     "message",
                     "message_id",
-                    "proxy_url",
-                    "size",
-                    "url"
+                    "size"
                 ]
             },
             "Embed": {

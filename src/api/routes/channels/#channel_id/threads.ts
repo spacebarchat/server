@@ -31,6 +31,7 @@ import {
     ThreadMember,
     Message,
     ChannelFlags,
+    Snowflake,
 } from "@spacebar/util";
 import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
 
@@ -140,8 +141,8 @@ router.post(
             const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.message.attachments ?? [];
             for (const currFile of files) {
                 try {
-                    const file = await uploadFile(`/attachments/${channel.id}`, currFile);
-                    attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+                    const file = await uploadFile(`/attachments/${channel.id}/${thread.id}`, currFile);
+                    attachments.push(Attachment.create(file));
                 } catch (error) {
                     return res.status(400).json({ message: error?.toString() });
                 }

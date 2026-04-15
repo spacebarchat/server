@@ -178,8 +178,6 @@ router.get(
         }
 
         await Message.fillReplies(messages);
-        const endpoint = Config.get().cdn.endpointPublic;
-
         const ret = messages.map((msg) => {
             const x = msg.toJSON();
 
@@ -197,40 +195,32 @@ router.get(
                     public_flags: 0,
                     avatar: null,
                 } as PartialUser;
-            x.attachments?.forEach((y: Attachment) => {
-                // dynamically set attachment proxy_url in case the endpoint changed
-                const uri = y.proxy_url.startsWith("http") ? y.proxy_url : `https://example.org${y.proxy_url}`;
+            x.attachments =
+                msg.attachments?.map((y: Attachment) => {
+                    const att = y.toJSON();
 
-                const url = new URL(uri);
-                if (endpoint) {
-                    const newBase = new URL(endpoint);
-                    url.protocol = newBase.protocol;
-                    url.hostname = newBase.hostname;
-                    url.port = newBase.port;
-                }
+                    att.proxy_url = getUrlSignature(
+                        new NewUrlSignatureData({
+                            url: att.proxy_url,
+                            userAgent: req.headers["user-agent"],
+                            ip: req.ip,
+                        }),
+                    )
+                        .applyToUrl(att.proxy_url)
+                        .toString();
 
-                y.proxy_url = url.toString();
+                    att.url = getUrlSignature(
+                        new NewUrlSignatureData({
+                            url: att.url,
+                            userAgent: req.headers["user-agent"],
+                            ip: req.ip,
+                        }),
+                    )
+                        .applyToUrl(att.url)
+                        .toString();
 
-                y.proxy_url = getUrlSignature(
-                    new NewUrlSignatureData({
-                        url: y.proxy_url,
-                        userAgent: req.headers["user-agent"],
-                        ip: req.ip,
-                    }),
-                )
-                    .applyToUrl(y.proxy_url)
-                    .toString();
-
-                y.url = getUrlSignature(
-                    new NewUrlSignatureData({
-                        url: y.url,
-                        userAgent: req.headers["user-agent"],
-                        ip: req.ip,
-                    }),
-                )
-                    .applyToUrl(y.url)
-                    .toString();
-            });
+                    return att;
+                }) ?? [];
 
             /**
 			Some clients ( discord.js ) only check if a property exists within the response,
@@ -312,6 +302,7 @@ router.post(
     async (req: Request, res: Response) => {
         const { channel_id } = req.params as { [key: string]: string };
         const body = req.body as MessageCreateSchema;
+        const messageId = Snowflake.generate();
         const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
         const channel = await Channel.findOneOrFail({
@@ -418,8 +409,8 @@ router.post(
         const files = (req.files as Express.Multer.File[]) ?? [];
         for (const currFile of files) {
             try {
-                const file = await uploadFile(`/attachments/${channel.id}`, currFile);
-                attachments.push(Attachment.create({ ...file, proxy_url: file.url }));
+                const file = await uploadFile(`/attachments/${channel.id}/${messageId}`, currFile);
+                attachments.push(Attachment.create(file));
             } catch (error) {
                 return res.status(400).json({ message: error?.toString() });
             }
@@ -429,6 +420,7 @@ router.post(
         if (body.embed) embeds.push(body.embed);
         const message = await handleMessage({
             ...body,
+            id: messageId,
             type: 0,
             pinned: false,
             author_id: req.user_id,
