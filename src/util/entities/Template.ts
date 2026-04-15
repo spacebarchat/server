@@ -59,6 +59,6 @@ export class Template extends BaseClass {
     @ManyToOne(() => Guild, { onDelete: "CASCADE" })
     source_guild: Guild;
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     serialized_source_guild: Guild;
 }

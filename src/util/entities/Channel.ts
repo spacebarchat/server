@@ -101,7 +101,7 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     default_auto_archive_duration?: number;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     permission_overwrites?: ChannelPermissionOverwrite[];
 
     @Column({ nullable: true })
@@ -161,7 +161,7 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     default_thread_rate_limit_per_user?: number = 0;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     thread_metadata?: ThreadMetadata;
 
     @Column({ nullable: true })

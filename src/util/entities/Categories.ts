@@ -45,7 +45,7 @@ export class Categories extends BaseClassWithoutId {
     @Column({ nullable: true })
     name: string;
 
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     localizations: string;
 
     // Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)

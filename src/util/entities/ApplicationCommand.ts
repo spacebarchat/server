@@ -44,16 +44,16 @@ export class ApplicationCommand extends BaseClass {
     @Column()
     name: string;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     name_localizations?: Record<string, string>;
 
     @Column()
     description: string;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     description_localizations?: Record<string, string>;
 
-    @Column({ type: "simple-json", default: "[]" })
+    @Column({ type: "jsonb", default: [] })
     options: ApplicationCommandOption[];
 
     @Column({ nullable: true, type: String })
@@ -65,19 +65,19 @@ export class ApplicationCommand extends BaseClass {
     @Column({ default: true })
     dm_permission?: boolean;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     permissions?: ApplicationCommandIndexPermissions;
 
     @Column({ default: false })
     nsfw?: boolean;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     integration_types?: ApplicationIntegrationType[];
 
     @Column({ default: 0 })
     global_popularity_rank?: number;
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "jsonb" })
     contexts?: InteractionContextType[];
 
     @Column({ default: 0 })

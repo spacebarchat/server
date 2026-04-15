@@ -109,7 +109,7 @@ export class Member extends BaseClassWithoutId {
     @Column()
     pending: boolean;
 
-    @Column({ type: "simple-json", select: false })
+    @Column({ type: "jsonb", select: false })
     settings: UserGuildSettings;
 
     @Column({ nullable: true })
@@ -143,16 +143,16 @@ export class Member extends BaseClassWithoutId {
     communication_disabled_until: Date | null;
 
     // TODO: add this when we have proper read receipts
-    // @Column({ type: "simple-json" })
+    // @Column({ type: "jsonb" })
     // read_state: ReadState;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     avatar_decoration_data?: AvatarDecorationData;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     display_name_styles?: DisplayNameStyle;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     collectibles?: Collectibles;
 
     @Column({ type: "int", default: 0 })

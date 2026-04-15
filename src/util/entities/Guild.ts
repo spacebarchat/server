@@ -264,7 +264,7 @@ export class Guild extends BaseClass {
     /**
      * DEPRECATED: Look at the new Guild onboarding screens.
      */
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     welcome_screen: GuildWelcomeScreen;
 
     @Column({ nullable: true })

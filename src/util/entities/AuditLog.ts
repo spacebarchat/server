@@ -40,7 +40,7 @@ export class AuditLog extends BaseClass {
     @Column({ type: "int" })
     action_type: AuditLogEvents;
 
-    @Column({ type: "simple-json", nullable: true })
+    @Column({ type: "jsonb", nullable: true })
     options?: {
         delete_member_days?: string;
         members_removed?: string;
@@ -53,7 +53,7 @@ export class AuditLog extends BaseClass {
     };
 
     @Column()
-    @Column({ type: "simple-json" })
+    @Column({ type: "jsonb" })
     changes: AuditLogChange[];
 
     @Column({ nullable: true })
