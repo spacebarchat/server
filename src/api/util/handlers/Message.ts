@@ -346,6 +346,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         components: opts.components ?? undefined, // Fix Discord-Go?
     });
     message.channel = channel;
+    message.attachments?.forEach((att) => {
+        att.message_id = message.id;
+        att.save();
+    });
 
     if (opts.author_id) {
         message.author = await User.findOneOrFail({
