@@ -176,6 +176,7 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
         width: attEnt.width,
         content_type: attEnt.contentType || attEnt.userOriginalContentType,
         channel_id: channel.id,
+        message_id: messageId,
     });
     await realAtt.save();
 
@@ -404,6 +405,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
                     width: attEnt.width,
                     content_type: attEnt.contentType || attEnt.userOriginalContentType,
                     channel_id: channel.id,
+                    message_id: message.id,
                 });
                 await realAtt.save();
                 return { attachment: realAtt, index: att.index };
