@@ -6,19 +6,21 @@ using System.Text.Json.Serialization;
 namespace Spacebar.Models.Gateway;
 
 public class ChannelStatusesRequest {
-    [JsonPropertyName("guild_id")]
     [JsonRequired]
+    [JsonPropertyName("guild_id")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+
     public JsonValue GuildIdRawValue { get; set; } = null!;
 
     [JsonIgnore]
-    public string? GuildId {
-        get => GuildIdRawValue.GetValueKind() == JsonValueKind.String ? GuildIdRawValue.GetValue<string>() : null;
+    public long? GuildId {
+        get => GuildIdRawValue.GetValueKind() == JsonValueKind.String ? GuildIdRawValue.GetValue<long>() : null;
         [MemberNotNull] set => GuildIdRawValue = JsonValue.Create(value!);
     }
 
     [JsonIgnore]
-    public List<string>? GuildIds {
-        get => GuildIdRawValue.GetValueKind() == JsonValueKind.Array ? GuildIdRawValue.AsArray().Deserialize<List<string>>() : null;
+    public List<long>? GuildIds {
+        get => GuildIdRawValue.GetValueKind() == JsonValueKind.Array ? GuildIdRawValue.AsArray().Deserialize<List<long>>() : null;
         [MemberNotNull] set => GuildIdRawValue = JsonValue.Create(value!)!;
     }
 }
@@ -30,7 +32,8 @@ public class ChannelInfoRequest : ChannelStatusesRequest {
 
 public class ChannelStatus {
     [JsonPropertyName("id")]
-    public string ChannelId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long ChannelId { get; set; }
 
     [JsonPropertyName("status")]
     public string Status { get; set; }
@@ -38,7 +41,8 @@ public class ChannelStatus {
 
 public class ChannelStatusesResponse {
     [JsonPropertyName("guild_id")]
-    public string GuildId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long GuildId { get; set; }
 
     [JsonPropertyName("channels")]
     public List<ChannelStatus> Channels { get; set; }
@@ -46,7 +50,8 @@ public class ChannelStatusesResponse {
 
 public class ChannelInfo {
     [JsonPropertyName("id")]
-    public required string ChannelId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public required long ChannelId { get; set; }
 
     [JsonPropertyName("status")]
     public string? Status { get; set; }
@@ -57,7 +62,8 @@ public class ChannelInfo {
 
 public class ChannelInfoResponse {
     [JsonPropertyName("guild_id")]
-    public string GuildId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long GuildId { get; set; }
 
     [JsonPropertyName("channels")]
     public List<ChannelInfo> Channels { get; set; }

@@ -48,7 +48,13 @@ var tasks = outs.Select(outp => Task.Run(async () => {
         Console.Write(ConsoleUtils.ColoredString($"    ==> Getting project root directory... ", 0x80, 0xff, 0xff));
         var rootDir = JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.srcRoot", silent: true, stderr: false))
             .Split("/extra/admin-api/", 2)[1];
-        var depsFileStorePath = JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.__nugetDeps", silent: true, stderr: false));
+        var depsFileStorePath =
+            JsonSerializer.Deserialize<string>(Util.GetCommandOutputSync("nix", $"eval --json .#packages.x86_64-linux.{outp}.__nugetDeps", silent: true, stderr: false));
+        if (depsFileStorePath is null) {
+            Console.WriteLine(ConsoleUtils.ColoredString($"      ==> No __nugetDeps attribute, skipping!", 0xff, 0x80, 0x80));
+            return;
+        }
+
         var depsFileName = new FileInfo(depsFileStorePath).Name;
         Console.Write(ConsoleUtils.ColoredString($"{rootDir}", 0x80, 0xff, 0xff));
         Console.Write(" - ");
@@ -77,7 +83,7 @@ var tasks = outs.Select(outp => Task.Run(async () => {
         var deps = JsonSerializer.Deserialize<object[]>(await File.ReadAllTextAsync(nugetDepsFilePath));
         Console.WriteLine(ConsoleUtils.ColoredString($"      ==> Locked {deps.Length} dependencies for {outp}...", (byte)(deps.Length == 0 ? 0xff : 0x80),
             (byte)(deps.Length == 0 ? 0x80 : 0xff), 0x80));
-        // File.Delete(fname);
+        File.Delete(fname);
         // await Task.Delay(250);
     }
     finally {
@@ -89,5 +95,5 @@ await Task.WhenAll(tasks);
 
 static void RunCommandSync(string command, string args = "", bool silent = false) {
     Console.WriteLine($"Executing command (silent: {silent}): {command} {args}");
-    Util.RunCommandSync(command, args,silent);
+    Util.RunCommandSync(command, args, silent);
 }

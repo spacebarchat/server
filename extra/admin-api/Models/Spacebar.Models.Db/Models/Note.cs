@@ -11,17 +11,17 @@ namespace Spacebar.Models.Db.Models;
 public partial class Note
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("content", TypeName = "character varying")]
     public string Content { get; set; } = null!;
 
-    [Column("owner_id", TypeName = "character varying")]
-    public string? OwnerId { get; set; }
+    [Column("owner_id")]
+    public long? OwnerId { get; set; }
 
-    [Column("target_id", TypeName = "character varying")]
-    public string? TargetId { get; set; }
+    [Column("target_id")]
+    public long? TargetId { get; set; }
 
     [ForeignKey("OwnerId")]
     [InverseProperty("NoteOwners")]

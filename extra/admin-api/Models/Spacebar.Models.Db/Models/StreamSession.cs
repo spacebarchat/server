@@ -10,14 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class StreamSession
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("stream_id", TypeName = "character varying")]
-    public string StreamId { get; set; } = null!;
+    [Column("stream_id")]
+    public long StreamId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string UserId { get; set; } = null!;
+    [Column("user_id")]
+    public long UserId { get; set; }
 
     [Column("token", TypeName = "character varying")]
     public string? Token { get; set; }

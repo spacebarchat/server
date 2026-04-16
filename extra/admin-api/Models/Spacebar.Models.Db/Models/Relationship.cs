@@ -11,14 +11,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class Relationship
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("from_id", TypeName = "character varying")]
-    public string FromId { get; set; } = null!;
+    [Column("from_id")]
+    public long FromId { get; set; }
 
-    [Column("to_id", TypeName = "character varying")]
-    public string ToId { get; set; } = null!;
+    [Column("to_id")]
+    public long ToId { get; set; }
 
     [Column("nickname", TypeName = "character varying")]
     public string? Nickname { get; set; }

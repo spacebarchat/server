@@ -10,26 +10,26 @@ namespace Spacebar.Models.Db.Models;
 public partial class AuditLog
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("action_type")]
     public int ActionType { get; set; }
 
-    [Column("options")]
+    [Column("options", TypeName = "jsonb")]
     public string? Options { get; set; }
 
-    [Column("changes")]
+    [Column("changes", TypeName = "jsonb")]
     public string Changes { get; set; } = null!;
 
     [Column("reason", TypeName = "character varying")]
     public string? Reason { get; set; }
 
-    [Column("target_id", TypeName = "character varying")]
-    public string? TargetId { get; set; }
+    [Column("target_id")]
+    public long? TargetId { get; set; }
 
     [ForeignKey("TargetId")]
     [InverseProperty("AuditLogTargets")]

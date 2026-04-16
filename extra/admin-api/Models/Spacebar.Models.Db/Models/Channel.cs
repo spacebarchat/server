@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Channel
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -25,22 +25,22 @@ public partial class Channel
     [Column("type")]
     public int Type { get; set; }
 
-    [Column("last_message_id", TypeName = "character varying")]
-    public string? LastMessageId { get; set; }
+    [Column("last_message_id")]
+    public long? LastMessageId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("parent_id", TypeName = "character varying")]
-    public string? ParentId { get; set; }
+    [Column("parent_id")]
+    public long? ParentId { get; set; }
 
-    [Column("owner_id", TypeName = "character varying")]
-    public string? OwnerId { get; set; }
+    [Column("owner_id")]
+    public long? OwnerId { get; set; }
 
     [Column("default_auto_archive_duration")]
     public int? DefaultAutoArchiveDuration { get; set; }
 
-    [Column("permission_overwrites")]
+    [Column("permission_overwrites", TypeName = "jsonb")]
     public string? PermissionOverwrites { get; set; }
 
     [Column("video_quality_mode")]
@@ -70,7 +70,7 @@ public partial class Channel
     [Column("default_thread_rate_limit_per_user")]
     public int? DefaultThreadRateLimitPerUser { get; set; }
 
-    [Column("thread_metadata")]
+    [Column("thread_metadata", TypeName = "jsonb")]
     public string? ThreadMetadata { get; set; }
 
     [Column("member_count")]
@@ -90,6 +90,9 @@ public partial class Channel
 
     [Column("status")]
     public string? Status { get; set; }
+
+    [InverseProperty("Channel")]
+    public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
 
     [InverseProperty("Channel")]
     public virtual ICollection<CloudAttachment> CloudAttachments { get; set; } = new List<CloudAttachment>();

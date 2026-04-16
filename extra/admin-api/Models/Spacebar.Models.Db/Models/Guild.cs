@@ -10,11 +10,11 @@ namespace Spacebar.Models.Db.Models;
 public partial class Guild
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("afk_channel_id", TypeName = "character varying")]
-    public string? AfkChannelId { get; set; }
+    [Column("afk_channel_id")]
+    public long? AfkChannelId { get; set; }
 
     [Column("afk_timeout")]
     public int? AfkTimeout { get; set; }
@@ -37,8 +37,8 @@ public partial class Guild
     [Column("features")]
     public string Features { get; set; } = null!;
 
-    [Column("primary_category_id", TypeName = "character varying")]
-    public string? PrimaryCategoryId { get; set; }
+    [Column("primary_category_id")]
+    public long? PrimaryCategoryId { get; set; }
 
     [Column("icon", TypeName = "character varying")]
     public string? Icon { get; set; }
@@ -61,8 +61,8 @@ public partial class Guild
     [Column("presence_count")]
     public int? PresenceCount { get; set; }
 
-    [Column("template_id", TypeName = "character varying")]
-    public string? TemplateId { get; set; }
+    [Column("template_id")]
+    public long? TemplateId { get; set; }
 
     [Column("mfa_level")]
     public int? MfaLevel { get; set; }
@@ -70,8 +70,8 @@ public partial class Guild
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
 
-    [Column("owner_id", TypeName = "character varying")]
-    public string? OwnerId { get; set; }
+    [Column("owner_id")]
+    public long? OwnerId { get; set; }
 
     [Column("preferred_locale", TypeName = "character varying")]
     public string? PreferredLocale { get; set; }
@@ -82,11 +82,11 @@ public partial class Guild
     [Column("premium_tier")]
     public int PremiumTier { get; set; }
 
-    [Column("public_updates_channel_id", TypeName = "character varying")]
-    public string? PublicUpdatesChannelId { get; set; }
+    [Column("public_updates_channel_id")]
+    public long? PublicUpdatesChannelId { get; set; }
 
-    [Column("rules_channel_id", TypeName = "character varying")]
-    public string? RulesChannelId { get; set; }
+    [Column("rules_channel_id")]
+    public long? RulesChannelId { get; set; }
 
     [Column("region", TypeName = "character varying")]
     public string? Region { get; set; }
@@ -94,8 +94,8 @@ public partial class Guild
     [Column("splash", TypeName = "character varying")]
     public string? Splash { get; set; }
 
-    [Column("system_channel_id", TypeName = "character varying")]
-    public string? SystemChannelId { get; set; }
+    [Column("system_channel_id")]
+    public long? SystemChannelId { get; set; }
 
     [Column("system_channel_flags")]
     public int? SystemChannelFlags { get; set; }
@@ -106,11 +106,11 @@ public partial class Guild
     [Column("verification_level")]
     public int? VerificationLevel { get; set; }
 
-    [Column("welcome_screen")]
+    [Column("welcome_screen", TypeName = "jsonb")]
     public string WelcomeScreen { get; set; } = null!;
 
-    [Column("widget_channel_id", TypeName = "character varying")]
-    public string? WidgetChannelId { get; set; }
+    [Column("widget_channel_id")]
+    public long? WidgetChannelId { get; set; }
 
     [Column("widget_enabled")]
     public bool WidgetEnabled { get; set; }
@@ -144,6 +144,9 @@ public partial class Guild
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     [InverseProperty("Guild")]
+    public virtual ICollection<AutomodRule> AutomodRules { get; set; } = new List<AutomodRule>();
+
+    [InverseProperty("Guild")]
     public virtual ICollection<Ban> Bans { get; set; } = new List<Ban>();
 
     [InverseProperty("Guild")]
@@ -164,6 +167,10 @@ public partial class Guild
     [ForeignKey("OwnerId")]
     [InverseProperty("Guilds")]
     public virtual User? Owner { get; set; }
+
+    [ForeignKey("PrimaryCategoryId")]
+    [InverseProperty("Guilds")]
+    public virtual Category? PrimaryCategory { get; set; }
 
     [ForeignKey("PublicUpdatesChannelId")]
     [InverseProperty("GuildPublicUpdatesChannels")]

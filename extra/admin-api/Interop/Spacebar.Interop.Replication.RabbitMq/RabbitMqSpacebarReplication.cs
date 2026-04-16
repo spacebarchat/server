@@ -24,7 +24,7 @@ public class RabbitMqSpacebarReplication : ISpacebarReplication {
 
     // HACK: body is required in rabbitmq...
     private async Task SendAsyncInternal(ContentlessReplicationMessage message, object? body = null) {
-        var exchangeId = message.GuildId ?? message.ChannelId ?? message.UserId ?? "global";
+        var exchangeId = (message.GuildId ?? message.ChannelId ?? message.UserId)?.ToString() ?? "global";
         await _mqChannel.ExchangeDeclareAsync(exchange: exchangeId, type: ExchangeType.Fanout, durable: false);
         var props = new BasicProperties() { Type = message.Event };
         var publishSuccess = false;

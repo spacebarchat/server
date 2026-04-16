@@ -11,8 +11,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Template
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("code", TypeName = "character varying")]
     public string Code { get; set; } = null!;
@@ -26,8 +26,8 @@ public partial class Template
     [Column("usage_count")]
     public int? UsageCount { get; set; }
 
-    [Column("creator_id", TypeName = "character varying")]
-    public string? CreatorId { get; set; }
+    [Column("creator_id")]
+    public long? CreatorId { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -35,10 +35,10 @@ public partial class Template
     [Column("updated_at", TypeName = "timestamp without time zone")]
     public DateTime UpdatedAt { get; set; }
 
-    [Column("source_guild_id", TypeName = "character varying")]
-    public string? SourceGuildId { get; set; }
+    [Column("source_guild_id")]
+    public long? SourceGuildId { get; set; }
 
-    [Column("serialized_source_guild")]
+    [Column("serialized_source_guild", TypeName = "jsonb")]
     public string SerializedSourceGuild { get; set; } = null!;
 
     [ForeignKey("CreatorId")]

@@ -18,7 +18,7 @@ public class GuildMembersController(ILogger<GuildMembersController> logger, Spac
     /// <returns>The public member projection</returns>
     /// <exception cref="InvalidOperationException">An error has occured</exception>
     [HttpGet("{memberId}")]
-    public async Task<Member> GetMemberAsync(string guildId, string memberId) {
+    public async Task<Member> GetMemberAsync(long guildId, long memberId) {
         var user = await authService.GetCurrentUserAsync(Request);
         var cmember = db.Members.SingleOrDefault(x => x.Id == user.Id && x.GuildId == guildId);
         if (cmember is null)

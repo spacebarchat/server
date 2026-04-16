@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Team
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("icon", TypeName = "character varying")]
     public string? Icon { get; set; }
@@ -19,8 +19,8 @@ public partial class Team
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
 
-    [Column("owner_user_id", TypeName = "character varying")]
-    public string? OwnerUserId { get; set; }
+    [Column("owner_user_id")]
+    public long? OwnerUserId { get; set; }
 
     [InverseProperty("Team")]
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();

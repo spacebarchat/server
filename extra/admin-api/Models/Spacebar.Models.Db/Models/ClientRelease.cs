@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class ClientRelease
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;

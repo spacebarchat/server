@@ -5,8 +5,10 @@ namespace Spacebar.Models.Gateway;
 public class LazyRequest
 {
     [JsonPropertyName("guild_id")]
-    public string GuildId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long GuildId { get; set; }
 
+    // key is string because json...
     [JsonPropertyName("channels")]
     public Dictionary<string, List<List<int>>> Channels { get; set; }
 

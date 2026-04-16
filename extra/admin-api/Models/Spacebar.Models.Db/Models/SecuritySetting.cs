@@ -10,14 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class SecuritySetting
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
     [Column("encryption_permission_mask")]
     public int EncryptionPermissionMask { get; set; }

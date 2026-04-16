@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Sticker
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
@@ -25,14 +25,14 @@ public partial class Sticker
     [Column("tags", TypeName = "character varying")]
     public string? Tags { get; set; }
 
-    [Column("pack_id", TypeName = "character varying")]
-    public string? PackId { get; set; }
+    [Column("pack_id")]
+    public long? PackId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("type")]
     public int Type { get; set; }

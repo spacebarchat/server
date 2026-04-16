@@ -5,8 +5,8 @@ namespace Spacebar.Models.Generic;
 
 [DebuggerDisplay("{Id} ({Username}#{Discriminator})")]
 public class PartialUser {
-    [JsonPropertyName("id")]
-    public required string Id { get; set; }
+    [JsonPropertyName("id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public required long Id { get; set; }
 
     [JsonPropertyName("username")]
     public string Username { get; set; }

@@ -10,17 +10,17 @@ namespace Spacebar.Models.Db.Models;
 public partial class VoiceState
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("session_id", TypeName = "character varying")]
     public string SessionId { get; set; } = null!;

@@ -14,8 +14,8 @@ public partial class ThreadMember
     [Column("index")]
     public int Index { get; set; }
 
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("member_idx")]
     public int MemberIdx { get; set; }
@@ -26,7 +26,7 @@ public partial class ThreadMember
     [Column("muted")]
     public bool Muted { get; set; }
 
-    [Column("mute_config")]
+    [Column("mute_config", TypeName = "jsonb")]
     public string? MuteConfig { get; set; }
 
     [Column("flags")]

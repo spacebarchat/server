@@ -1,8 +1,14 @@
+using System.Text.Json.Serialization;
+
 namespace Spacebar.Models.AdminApi;
 
 public class GuildModel {
-    public string Id { get; set; } = null!;
-    public string? AfkChannelId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public required long Id { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? AfkChannelId { get; set; }
+
     public int? AfkTimeout { get; set; }
     public string? Banner { get; set; }
     public int? DefaultMessageNotifications { get; set; }
@@ -10,7 +16,10 @@ public class GuildModel {
     public string? DiscoverySplash { get; set; }
     public int? ExplicitContentFilter { get; set; }
     public string Features { get; set; } = null!;
-    public string? PrimaryCategoryId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? PrimaryCategoryId { get; set; }
+
     public string? Icon { get; set; }
     public bool Large { get; set; }
     public int? MaxMembers { get; set; }
@@ -18,23 +27,40 @@ public class GuildModel {
     public int? MaxVideoChannelUsers { get; set; }
     public int? MemberCount { get; set; }
     public int? PresenceCount { get; set; }
-    public string? TemplateId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? TemplateId { get; set; }
+
     public int? MfaLevel { get; set; }
     public string Name { get; set; } = null!;
-    public string? OwnerId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? OwnerId { get; set; }
+
     public string? PreferredLocale { get; set; }
     public int? PremiumSubscriptionCount { get; set; }
     public int PremiumTier { get; set; }
-    public string? PublicUpdatesChannelId { get; set; }
-    public string? RulesChannelId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? PublicUpdatesChannelId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? RulesChannelId { get; set; }
+
     public string? Region { get; set; }
     public string? Splash { get; set; }
-    public string? SystemChannelId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? SystemChannelId { get; set; }
+
     public int? SystemChannelFlags { get; set; }
     public bool Unavailable { get; set; }
     public int? VerificationLevel { get; set; }
     public string WelcomeScreen { get; set; } = null!;
-    public string? WidgetChannelId { get; set; }
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? WidgetChannelId { get; set; }
+
     public bool WidgetEnabled { get; set; }
     public int? NsfwLevel { get; set; }
     public bool Nsfw { get; set; }

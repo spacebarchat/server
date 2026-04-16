@@ -3,7 +3,9 @@
 namespace Spacebar.Models.AdminApi;
 
 public class UserModel {
-    public string Id { get; set; } = null!;
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public required long Id { get; set; }
+
     public string Username { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
     public string? Avatar { get; set; }

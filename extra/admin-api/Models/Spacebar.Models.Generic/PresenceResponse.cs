@@ -10,7 +10,8 @@ public class Presence {
     public required PartialUser User { get; set; }
 
     [JsonPropertyName("guild_id"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? GuildId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? GuildId { get; set; }
 
     [JsonPropertyName("status")]
     public string Status { get; set; } = "unknown";

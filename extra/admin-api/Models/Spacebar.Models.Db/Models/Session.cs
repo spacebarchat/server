@@ -10,23 +10,23 @@ namespace Spacebar.Models.Db.Models;
 [Index("UserId", Name = "IDX_085d540d9f418cfbdc7bd55bb1")]
 public partial class Session
 {
-    [Column("user_id", TypeName = "character varying")]
-    public string UserId { get; set; } = null!;
+    [Column("user_id")]
+    public long UserId { get; set; }
 
     [Key]
     [Column("session_id", TypeName = "character varying")]
     public string SessionId { get; set; } = null!;
 
-    [Column("activities")]
+    [Column("activities", TypeName = "jsonb")]
     public string Activities { get; set; } = null!;
 
-    [Column("client_info")]
+    [Column("client_info", TypeName = "jsonb")]
     public string ClientInfo { get; set; } = null!;
 
     [Column("status", TypeName = "character varying")]
     public string Status { get; set; } = null!;
 
-    [Column("client_status")]
+    [Column("client_status", TypeName = "jsonb")]
     public string ClientStatus { get; set; } = null!;
 
     [Column("is_admin_session")]
@@ -44,7 +44,7 @@ public partial class Session
     [Column("last_seen_location", TypeName = "character varying")]
     public string? LastSeenLocation { get; set; }
 
-    [Column("last_seen_location_info")]
+    [Column("last_seen_location_info", TypeName = "jsonb")]
     public string? LastSeenLocationInfo { get; set; }
 
     [Column("session_nickname", TypeName = "character varying")]

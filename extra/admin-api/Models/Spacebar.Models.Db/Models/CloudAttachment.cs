@@ -10,14 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class CloudAttachment
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
     [Column("upload_filename", TypeName = "character varying")]
     public string UploadFilename { get; set; } = null!;

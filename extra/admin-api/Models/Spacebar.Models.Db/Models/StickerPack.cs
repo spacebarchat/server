@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class StickerPack
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
@@ -25,8 +25,8 @@ public partial class StickerPack
     [Column("cover_sticker_id", TypeName = "character varying")]
     public string? CoverStickerId { get; set; }
 
-    [Column("coverStickerId", TypeName = "character varying")]
-    public string? CoverStickerId1 { get; set; }
+    [Column("coverStickerId")]
+    public long? CoverStickerId1 { get; set; }
 
     [ForeignKey("CoverStickerId1")]
     [InverseProperty("StickerPacks")]

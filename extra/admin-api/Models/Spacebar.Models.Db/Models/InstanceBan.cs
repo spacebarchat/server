@@ -11,8 +11,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class InstanceBan
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("created_at", TypeName = "timestamp without time zone")]
     public DateTime CreatedAt { get; set; }
@@ -20,8 +20,8 @@ public partial class InstanceBan
     [Column("reason", TypeName = "character varying")]
     public string Reason { get; set; } = null!;
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("fingerprint", TypeName = "character varying")]
     public string? Fingerprint { get; set; }
@@ -32,8 +32,8 @@ public partial class InstanceBan
     [Column("is_from_other_instance_ban")]
     public bool IsFromOtherInstanceBan { get; set; }
 
-    [Column("origin_instance_ban_id", TypeName = "character varying")]
-    public string? OriginInstanceBanId { get; set; }
+    [Column("origin_instance_ban_id")]
+    public long? OriginInstanceBanId { get; set; }
 
     [Column("is_allowlisted")]
     public bool IsAllowlisted { get; set; }

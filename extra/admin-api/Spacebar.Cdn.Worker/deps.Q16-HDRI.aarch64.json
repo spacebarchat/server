@@ -6,12 +6,12 @@
   },
   {
     "pname": "Magick.NET-Q16-HDRI-OpenMP-arm64",
-    "version": "14.11.1",
-    "hash": "sha256-kN/hpOiLTOD5jKUaWXz8nCoOTwP4lB9JczdodZZIvyc="
+    "version": "14.12.0",
+    "hash": "sha256-9OJxU7xqFjUz1DeFs9aPPhPtyrzCJQPHveNbqhGGIuU="
   },
   {
     "pname": "Magick.NET.Core",
-    "version": "14.11.1",
-    "hash": "sha256-984jXKS/y2602DgaXsfDh9TFOhpyAF/gHZG8BGQXljA="
+    "version": "14.12.0",
+    "hash": "sha256-mlOAmFcSL8JzBqwMBpFtWt6+48PIdb1qUc++wPqhBHM="
   }
 ]

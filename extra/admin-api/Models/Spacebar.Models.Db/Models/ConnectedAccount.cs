@@ -10,14 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class ConnectedAccount
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("external_id", TypeName = "character varying")]
     public string ExternalId { get; set; } = null!;
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("friend_sync")]
     public bool FriendSync { get; set; }
@@ -43,7 +43,7 @@ public partial class ConnectedAccount
     [Column("integrations")]
     public string Integrations { get; set; } = null!;
 
-    [Column("metadata")]
+    [Column("metadata", TypeName = "jsonb")]
     public string? Metadata { get; set; }
 
     [Column("metadata_visibility")]
@@ -52,7 +52,7 @@ public partial class ConnectedAccount
     [Column("two_way_link")]
     public bool TwoWayLink { get; set; }
 
-    [Column("token_data")]
+    [Column("token_data", TypeName = "jsonb")]
     public string? TokenData { get; set; }
 
     [ForeignKey("UserId")]

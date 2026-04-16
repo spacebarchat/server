@@ -48,7 +48,7 @@ public class ConfigController(ILogger<ConfigController> logger, SpacebarDbContex
         await Task.WhenAll(tasks);
         await replication.SendAsync(new() {
             Event = "SB_RELOAD_CONFIG",
-            GuildId = "0",
+            GuildId = 0,
             Origin = "Admin API (POST /Configuration)",
         });
 
@@ -61,7 +61,7 @@ public class ConfigController(ILogger<ConfigController> logger, SpacebarDbContex
 
         await replication.SendAsync(new() {
             Event = "SB_RELOAD_CONFIG",
-            GuildId = "0",
+            GuildId = 0,
             Origin = "Admin API (POST /Configuration/ReloadConfig)",
         });
 

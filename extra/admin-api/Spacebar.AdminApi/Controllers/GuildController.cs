@@ -80,7 +80,7 @@ public class GuildController(
     }
 
     [HttpPost("{id}/force_join")]
-    public async Task<IActionResult> ForceJoinGuild([FromBody] ForceJoinRequest request, string id) {
+    public async Task<IActionResult> ForceJoinGuild([FromBody] ForceJoinRequest request, long id) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var guild = await db.Guilds.FindAsync(id);
@@ -125,7 +125,7 @@ public class GuildController(
             var adminRole = roles.FirstOrDefault(r => r.Permissions == "8" || r.Permissions == "9"); // Administrator
             if (adminRole == null) {
                 adminRole = new Role {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Random.Shared.NextInt64(), // TODO: snowflakes
                     GuildId = id,
                     Name = "Instance administrator",
                     Color = 0,
@@ -152,7 +152,7 @@ public class GuildController(
     }
 
     [HttpGet("{id}/delete")]
-    public async IAsyncEnumerable<AsyncActionResult> DeleteUser(string id, [FromQuery] int messageDeleteChunkSize = 100) {
+    public async IAsyncEnumerable<AsyncActionResult> DeleteUser(long id, [FromQuery] int messageDeleteChunkSize = 100) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var user = await db.Users.FindAsync(id);
@@ -182,7 +182,7 @@ public class GuildController(
                 messages_per_channel = channels.ToDictionary(c => c.ChannelId, c => messages.Count(m => m.ChannelId == c.ChannelId))
             });
         var results = channels
-            .Select(ctx => DeleteMessagesForChannel(ctx.GuildId, ctx.ChannelId!, id, messageDeleteChunkSize))
+            .Select(ctx => DeleteMessagesForChannel(ctx.GuildId, ctx.ChannelId!.Value, id, messageDeleteChunkSize))
             .ToList();
         var a = AggregateAsyncEnumerablesWithoutOrder(results);
         await foreach (var result in a) {
@@ -195,7 +195,7 @@ public class GuildController(
 
     private async IAsyncEnumerable<AsyncActionResult> DeleteMessagesForChannel(
         // context
-        string? guildId, string channelId, string authorId,
+        long? guildId, long channelId, long authorId,
         // options
         int messageDeleteChunkSize = 100
     ) {
@@ -205,7 +205,7 @@ public class GuildController(
             var messagesInChannel = _db.Messages.AsNoTracking().Count(m => m.AuthorId == authorId && m.ChannelId == channelId && m.GuildId == guildId);
             var remaining = messagesInChannel;
             while (true) {
-                var messageIds = _db.Database.SqlQuery<string>($"""
+                var messageIds = _db.Database.SqlQuery<long>($"""
                                                                 DELETE FROM messages
                                                                   WHERE id IN (
                                                                     SELECT id FROM messages 

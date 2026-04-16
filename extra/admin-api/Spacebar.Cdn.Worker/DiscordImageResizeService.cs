@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,7 @@ public enum DiscordImageResizeQuality {
 
 public class DiscordImageResizeService {
     //(PixelArtDetectionService pads) {
+    [SuppressMessage("ReSharper", "AccessToModifiedClosure")]
     public async Task<MagickImageCollection> Apply(MagickImageCollection img, DiscordImageResizeParams resizeParams) {
         if (resizeParams.Passthrough) return img;
         if (img.First().Format == MagickFormat.Gif) {

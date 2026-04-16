@@ -10,14 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class Recipient
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string ChannelId { get; set; } = null!;
+    [Column("channel_id")]
+    public long ChannelId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string UserId { get; set; } = null!;
+    [Column("user_id")]
+    public long UserId { get; set; }
 
     [Column("closed")]
     public bool Closed { get; set; }

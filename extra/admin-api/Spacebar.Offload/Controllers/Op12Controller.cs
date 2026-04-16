@@ -20,7 +20,7 @@ namespace Spacebar.GatewayOffload.Controllers;
 public class Op12Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthenticationService authService, SpacebarDbContext db, IServiceProvider sp) : ControllerBase
 {
     [HttpPost("")]
-    public async IAsyncEnumerable<ReplicationMessage<GuildSyncResponse>> DoGuildSync(List<string> guildIds)
+    public async IAsyncEnumerable<ReplicationMessage<GuildSyncResponse>> DoGuildSync(List<long> guildIds)
     {
         var user = await authService.GetCurrentUserAsync(Request);
         guildIds = (await db.Members.AsNoTracking().Where(x => x.Id == user.Id).Select(x => x.GuildId).ToListAsync())
@@ -45,7 +45,7 @@ public class Op12Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
     // TODO: figure out how to abstract this to a function without EFCore complaining about not being translatable...
     private static Expression<Func<Session, bool>> IsOnline = (Session session) => session.Status != "offline" && session.Status != "invisible" && session.Status != "unknown";
 
-    private async Task<GuildSyncResponse> GetGuildSyncAsync(string guildId)
+    private async Task<GuildSyncResponse> GetGuildSyncAsync(long guildId)
     {
         await using var sc = sp.CreateAsyncScope();
         var _db = sc.ServiceProvider.GetRequiredService<SpacebarDbContext>();

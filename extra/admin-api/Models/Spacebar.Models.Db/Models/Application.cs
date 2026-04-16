@@ -11,8 +11,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Application
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
@@ -26,7 +26,7 @@ public partial class Application
     [Column("summary", TypeName = "character varying")]
     public string? Summary { get; set; }
 
-    [Column("type")]
+    [Column("type", TypeName = "jsonb")]
     public string? Type { get; set; }
 
     [Column("hook")]
@@ -77,7 +77,7 @@ public partial class Application
     [Column("cover_image", TypeName = "character varying")]
     public string? CoverImage { get; set; }
 
-    [Column("install_params")]
+    [Column("install_params", TypeName = "jsonb")]
     public string? InstallParams { get; set; }
 
     [Column("terms_of_service_url", TypeName = "character varying")]
@@ -86,20 +86,23 @@ public partial class Application
     [Column("privacy_policy_url", TypeName = "character varying")]
     public string? PrivacyPolicyUrl { get; set; }
 
-    [Column("owner_id", TypeName = "character varying")]
-    public string? OwnerId { get; set; }
+    [Column("owner_id")]
+    public long? OwnerId { get; set; }
 
-    [Column("bot_user_id", TypeName = "character varying")]
-    public string? BotUserId { get; set; }
+    [Column("bot_user_id")]
+    public long? BotUserId { get; set; }
 
-    [Column("team_id", TypeName = "character varying")]
-    public string? TeamId { get; set; }
+    [Column("team_id")]
+    public long? TeamId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
     [Column("custom_install_url", TypeName = "character varying")]
     public string? CustomInstallUrl { get; set; }
+
+    [InverseProperty("Application")]
+    public virtual ICollection<ApplicationCommand> ApplicationCommands { get; set; } = new List<ApplicationCommand>();
 
     [ForeignKey("BotUserId")]
     [InverseProperty("ApplicationBotUser")]

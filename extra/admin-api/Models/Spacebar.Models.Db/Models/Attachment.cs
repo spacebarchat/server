@@ -10,20 +10,14 @@ namespace Spacebar.Models.Db.Models;
 public partial class Attachment
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("filename", TypeName = "character varying")]
     public string Filename { get; set; } = null!;
 
     [Column("size")]
     public int Size { get; set; }
-
-    [Column("url", TypeName = "character varying")]
-    public string Url { get; set; } = null!;
-
-    [Column("proxy_url", TypeName = "character varying")]
-    public string ProxyUrl { get; set; } = null!;
 
     [Column("height")]
     public int? Height { get; set; }
@@ -34,8 +28,15 @@ public partial class Attachment
     [Column("content_type", TypeName = "character varying")]
     public string? ContentType { get; set; }
 
-    [Column("message_id", TypeName = "character varying")]
-    public string? MessageId { get; set; }
+    [Column("message_id")]
+    public long? MessageId { get; set; }
+
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
+
+    [ForeignKey("ChannelId")]
+    [InverseProperty("Attachments")]
+    public virtual Channel? Channel { get; set; }
 
     [ForeignKey("MessageId")]
     [InverseProperty("Attachments")]

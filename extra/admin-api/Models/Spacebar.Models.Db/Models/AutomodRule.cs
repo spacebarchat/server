@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class AutomodRule
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("enabled")]
     public bool Enabled { get; set; }
@@ -25,8 +25,8 @@ public partial class AutomodRule
     [Column("exempt_roles")]
     public string ExemptRoles { get; set; } = null!;
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string GuildId { get; set; } = null!;
+    [Column("guild_id")]
+    public long GuildId { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
@@ -37,16 +37,20 @@ public partial class AutomodRule
     [Column("trigger_type")]
     public int TriggerType { get; set; }
 
-    [Column("trigger_metadata")]
+    [Column("trigger_metadata", TypeName = "jsonb")]
     public string? TriggerMetadata { get; set; }
 
-    [Column("actions")]
+    [Column("actions", TypeName = "jsonb")]
     public string Actions { get; set; } = null!;
 
-    [Column("creator_id", TypeName = "character varying")]
-    public string? CreatorId { get; set; }
+    [Column("creator_id")]
+    public long? CreatorId { get; set; }
 
     [ForeignKey("CreatorId")]
     [InverseProperty("AutomodRules")]
     public virtual User? Creator { get; set; }
+
+    [ForeignKey("GuildId")]
+    [InverseProperty("AutomodRules")]
+    public virtual Guild Guild { get; set; } = null!;
 }
