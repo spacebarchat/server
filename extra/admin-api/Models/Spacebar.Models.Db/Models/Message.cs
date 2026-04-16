@@ -13,26 +13,26 @@ namespace Spacebar.Models.Db.Models;
 public partial class Message
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("author_id", TypeName = "character varying")]
-    public string? AuthorId { get; set; }
+    [Column("author_id")]
+    public long? AuthorId { get; set; }
 
-    [Column("member_id", TypeName = "character varying")]
-    public string? MemberId { get; set; }
+    [Column("member_id")]
+    public long? MemberId { get; set; }
 
-    [Column("webhook_id", TypeName = "character varying")]
-    public string? WebhookId { get; set; }
+    [Column("webhook_id")]
+    public long? WebhookId { get; set; }
 
-    [Column("application_id", TypeName = "character varying")]
-    public string? ApplicationId { get; set; }
+    [Column("application_id")]
+    public long? ApplicationId { get; set; }
 
     [Column("content", TypeName = "character varying")]
     public string? Content { get; set; }
@@ -49,10 +49,10 @@ public partial class Message
     [Column("mention_everyone")]
     public bool? MentionEveryone { get; set; }
 
-    [Column("embeds")]
+    [Column("embeds", TypeName = "jsonb")]
     public string Embeds { get; set; } = null!;
 
-    [Column("reactions")]
+    [Column("reactions", TypeName = "jsonb")]
     public string Reactions { get; set; } = null!;
 
     [Column("nonce")]
@@ -61,25 +61,25 @@ public partial class Message
     [Column("type")]
     public int Type { get; set; }
 
-    [Column("activity")]
+    [Column("activity", TypeName = "jsonb")]
     public string? Activity { get; set; }
 
-    [Column("message_reference")]
+    [Column("message_reference", TypeName = "jsonb")]
     public string? MessageReference { get; set; }
 
-    [Column("interaction")]
+    [Column("interaction", TypeName = "jsonb")]
     public string? Interaction { get; set; }
 
-    [Column("components")]
+    [Column("components", TypeName = "jsonb")]
     public string? Components { get; set; }
 
-    [Column("message_reference_id", TypeName = "character varying")]
-    public string? MessageReferenceId { get; set; }
+    [Column("message_reference_id")]
+    public long? MessageReferenceId { get; set; }
 
     [Column("flags")]
     public int Flags { get; set; }
 
-    [Column("poll")]
+    [Column("poll", TypeName = "jsonb")]
     public string? Poll { get; set; }
 
     [Column("username", TypeName = "character varying")]
@@ -91,14 +91,14 @@ public partial class Message
     [Column("pinned_at", TypeName = "timestamp without time zone")]
     public DateTime? PinnedAt { get; set; }
 
-    [Column("interaction_metadata")]
+    [Column("interaction_metadata", TypeName = "jsonb")]
     public string? InteractionMetadata { get; set; }
 
-    [Column("message_snapshots")]
+    [Column("message_snapshots", TypeName = "jsonb")]
     public string MessageSnapshots { get; set; } = null!;
 
-    [Column("thread_id", TypeName = "character varying")]
-    public string? ThreadId { get; set; }
+    [Column("thread_id")]
+    public long? ThreadId { get; set; }
 
     [ForeignKey("ApplicationId")]
     [InverseProperty("Messages")]

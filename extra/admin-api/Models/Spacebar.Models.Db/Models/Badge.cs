@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Badge
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("description", TypeName = "character varying")]
     public string Description { get; set; } = null!;

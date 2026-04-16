@@ -20,7 +20,7 @@ public class ChannelController(
     ISpacebarReplication replication
 ) : ControllerBase {
     [HttpDelete("{id}")]
-    public async Task DeleteById(string id) {
+    public async Task DeleteById(long id) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
         // TODO: proper type
         await replication.SendAsync<Channel>(new() {
@@ -35,7 +35,7 @@ public class ChannelController(
 
     private async IAsyncEnumerable<AsyncActionResult> DeleteMessagesForChannel(
         // context
-        string? guildId, string channelId, string authorId,
+        long? guildId, long channelId, long authorId,
         // options
         int messageDeleteChunkSize = 100
     ) {
@@ -45,7 +45,7 @@ public class ChannelController(
             var messagesInChannel = _db.Messages.AsNoTracking().Count(m => m.AuthorId == authorId && m.ChannelId == channelId && m.GuildId == guildId);
             var remaining = messagesInChannel;
             while (true) {
-                var messageIds = _db.Database.SqlQuery<string>($"""
+                var messageIds = _db.Database.SqlQuery<long>($"""
                                                                 DELETE FROM messages
                                                                   WHERE id IN (
                                                                     SELECT id FROM messages 
@@ -67,7 +67,7 @@ public class ChannelController(
                         ChannelId = channelId,
                         MessageIds = messageIds,
                     },
-                    Origin = "Admin API (GuildController.DeleteUser)",
+                    Origin = "Admin API (ChannelController.DeleteMessagesForChannel)",
                 });
 
                 yield return new("BULK_DELETED", new {

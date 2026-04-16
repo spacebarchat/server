@@ -10,17 +10,17 @@ namespace Spacebar.Models.Db.Models;
 public partial class Ban
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("executor_id", TypeName = "character varying")]
-    public string? ExecutorId { get; set; }
+    [Column("executor_id")]
+    public long? ExecutorId { get; set; }
 
     [Column("ip", TypeName = "character varying")]
     public string? Ip { get; set; }

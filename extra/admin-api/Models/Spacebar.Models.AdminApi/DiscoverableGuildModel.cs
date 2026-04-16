@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 namespace Spacebar.Models.AdminApi;
 
 public class DiscoverableGuildModel {
-    [JsonPropertyName("id")]
-    public string Id { get; set; } = null!;
+    [JsonPropertyName("id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public required long Id { get; set; }
 
-    [JsonPropertyName("afk_channel_id")]
-    public string? AfkChannelId { get; set; }
+    [JsonPropertyName("afk_channel_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? AfkChannelId { get; set; }
 
     [JsonPropertyName("afk_timeout")]
     public int? AfkTimeout { get; set; }
@@ -31,7 +31,7 @@ public class DiscoverableGuildModel {
     public List<string> Features { get; set; }
 
     [JsonPropertyName("primary_category_id")]
-    public string? PrimaryCategoryId { get; set; }
+    public long? PrimaryCategoryId { get; set; }
 
     [JsonPropertyName("icon")]
     public string? Icon { get; set; }
@@ -54,8 +54,8 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("presence_count")]
     public int? PresenceCount { get; set; }
 
-    [JsonPropertyName("template_id")]
-    public string? TemplateId { get; set; }
+    [JsonPropertyName("template_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? TemplateId { get; set; }
 
     [JsonPropertyName("mfa_level")]
     public int? MfaLevel { get; set; }
@@ -63,8 +63,8 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("name")]
     public string Name { get; set; } = null!;
 
-    [JsonPropertyName("owner_id")]
-    public string? OwnerId { get; set; }
+    [JsonPropertyName("owner_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? OwnerId { get; set; }
 
     [JsonPropertyName("preferred_locale")]
     public string? PreferredLocale { get; set; }
@@ -75,11 +75,11 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("premium_tier")]
     public int PremiumTier { get; set; }
 
-    [JsonPropertyName("public_updates_channel_id")]
-    public string? PublicUpdatesChannelId { get; set; }
+    [JsonPropertyName("public_updates_channel_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? PublicUpdatesChannelId { get; set; }
 
-    [JsonPropertyName("rules_channel_id")]
-    public string? RulesChannelId { get; set; }
+    [JsonPropertyName("rules_channel_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? RulesChannelId { get; set; }
 
     [JsonPropertyName("region")]
     public string? Region { get; set; }
@@ -87,8 +87,8 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("splash")]
     public string? Splash { get; set; }
 
-    [JsonPropertyName("system_channel_id")]
-    public string? SystemChannelId { get; set; }
+    [JsonPropertyName("system_channel_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? SystemChannelId { get; set; }
 
     [JsonPropertyName("system_channel_flags")]
     public int? SystemChannelFlags { get; set; }
@@ -102,8 +102,8 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("welcome_screen")]
     public string WelcomeScreen { get; set; } = null!;
 
-    [JsonPropertyName("widget_channel_id")]
-    public string? WidgetChannelId { get; set; }
+    [JsonPropertyName("widget_channel_id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long? WidgetChannelId { get; set; }
 
     [JsonPropertyName("widget_enabled")]
     public bool WidgetEnabled { get; set; }

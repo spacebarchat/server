@@ -23,7 +23,7 @@ public class IpcTestController(
     public async IAsyncEnumerable<string> Test() {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
-        var guildId = "1006649183970562092";
+        var guildId = 1006649183970562092;
         // var roleId = "1006706520514028812"; //Administrator
         var roleId = "1391303296148639051"; //Spacebar Maintainer
         // int color = 16711680; //Administrator

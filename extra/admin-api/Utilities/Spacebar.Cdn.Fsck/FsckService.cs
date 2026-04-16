@@ -77,7 +77,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/avatars/{x.Id}/{x.Avatar}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateUserBannerPathsAsync() =>
@@ -86,7 +86,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/banners/{x.Id}/{x.Banner}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
 #endregion
@@ -99,7 +99,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/icons/{x.Id}/{x.Icon}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateRoleIconPathsAsync() =>
@@ -108,7 +108,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/role-icons/{x.Id}/{x.Icon}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateStickerPathsAsync() =>
@@ -116,7 +116,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/stickers/{x.Id}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateEmojiPathsAsync() =>
@@ -124,7 +124,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/emojis/{x.Id}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
 #endregion

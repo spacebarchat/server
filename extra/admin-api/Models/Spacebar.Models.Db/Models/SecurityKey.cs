@@ -10,11 +10,11 @@ namespace Spacebar.Models.Db.Models;
 public partial class SecurityKey
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("key_id", TypeName = "character varying")]
     public string KeyId { get; set; } = null!;

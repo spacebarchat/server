@@ -38,7 +38,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             .ToListAsync();
     }
 
-    private async Task<string?> GetMemberListIdAsync(SpacebarDbContext db, string guildId, string channelId) {
+    private async Task<string?> GetMemberListIdAsync(SpacebarDbContext db, long guildId, long channelId) {
         var channel = await db.Channels.AsNoTracking().FirstOrDefaultAsync(c => c.Id == channelId && c.GuildId == guildId);
         if (channel == null) return null;
 

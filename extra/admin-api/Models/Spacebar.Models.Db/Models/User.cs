@@ -11,8 +11,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class User
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("username", TypeName = "character varying")]
     public string Username { get; set; } = null!;
@@ -104,7 +104,7 @@ public partial class User
     [Column("rights")]
     public ulong Rights { get; set; }
 
-    [Column("data")]
+    [Column("data", TypeName = "jsonb")]
     public string Data { get; set; } = null!;
 
     [Column("fingerprints")]
@@ -119,16 +119,16 @@ public partial class User
     [Column("badge_ids")]
     public string? BadgeIds { get; set; }
 
-    [Column("avatar_decoration_data")]
+    [Column("avatar_decoration_data", TypeName = "jsonb")]
     public string? AvatarDecorationData { get; set; }
 
-    [Column("display_name_styles")]
+    [Column("display_name_styles", TypeName = "jsonb")]
     public string? DisplayNameStyles { get; set; }
 
-    [Column("collectibles")]
+    [Column("collectibles", TypeName = "jsonb")]
     public string? Collectibles { get; set; }
 
-    [Column("primary_guild")]
+    [Column("primary_guild", TypeName = "jsonb")]
     public string? PrimaryGuild { get; set; }
 
     [InverseProperty("BotUser")]

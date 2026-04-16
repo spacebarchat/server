@@ -43,7 +43,7 @@ public class ChannelStatusController(ILogger<ChannelStatusController> logger, Sp
             // idk, i cant come up with more stuff, maybe suggestions welcome, or actually storing some data?
         ];
 
-        foreach (var guildId in req.GuildIds ?? [req.GuildId!]) {
+        foreach (var guildId in req.GuildIds ?? [req.GuildId!.Value]) {
             var channels = (await db.Channels.Include(x => x.VoiceStates).Where(x => x.Type == 2 && x.GuildId == guildId && x.VoiceStates.Count > 0)
                     .Select(x => x.Id)
                     .ToListAsync())

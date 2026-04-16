@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Emoji
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("animated")]
     public bool Animated { get; set; }
@@ -19,11 +19,11 @@ public partial class Emoji
     [Column("available")]
     public bool Available { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string GuildId { get; set; } = null!;
+    [Column("guild_id")]
+    public long GuildId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("managed")]
     public bool Managed { get; set; }

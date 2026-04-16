@@ -12,7 +12,7 @@ public class PermissionService(SpacebarDbContext db) {
     /// <param name="guildId">Guild ID</param>
     /// <param name="userId">Member ID</param>
     /// <exception cref="InvalidOperationException">Has one or more missing permissions</exception>
-    public async Task AssertUserHasGuildPermission(Permissions permission, string guildId, string userId) {
+    public async Task AssertUserHasGuildPermission(Permissions permission, long guildId, long userId) {
         var member = await db.Members
             .Include(x => x.Roles)
             .SingleAsync(x => x.Id == userId && x.GuildId == guildId);

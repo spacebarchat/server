@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class BackupCode
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("code", TypeName = "character varying")]
     public string Code { get; set; } = null!;
@@ -22,8 +22,8 @@ public partial class BackupCode
     [Column("expired")]
     public bool Expired { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("BackupCodes")]

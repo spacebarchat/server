@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class UserSettingsProto
 {
     [Key]
-    [Column("user_id", TypeName = "character varying")]
-    public string UserId { get; set; } = null!;
+    [Column("user_id")]
+    public long UserId { get; set; }
 
     [Column("userSettings", TypeName = "character varying")]
     public string? UserSettings { get; set; }

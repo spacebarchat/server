@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class TeamMember
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("membership_state")]
     public int MembershipState { get; set; }
@@ -19,11 +19,11 @@ public partial class TeamMember
     [Column("permissions")]
     public string Permissions { get; set; } = null!;
 
-    [Column("team_id", TypeName = "character varying")]
-    public string? TeamId { get; set; }
+    [Column("team_id")]
+    public long? TeamId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
     [Column("role", TypeName = "character varying")]
     public string Role { get; set; } = null!;

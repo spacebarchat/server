@@ -5,7 +5,8 @@ namespace Spacebar.Models.Gateway;
 
 public class GuildSyncResponse {
     [JsonPropertyName("id")]
-    public string GuildId { get; set; }
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public long GuildId { get; set; }
 
     [JsonPropertyName("presences")]
     public List<Presence> Presences { get; set; }

@@ -1,22 +1,22 @@
 [
   {
     "pname": "Microsoft.Extensions.Configuration",
-    "version": "10.0.5",
-    "hash": "sha256-6rOmJD7Jzq5MPLDd1aV+7gCQwIM9j4c+iT1pGea/daI="
+    "version": "10.0.6",
+    "hash": "sha256-CSd5RC5pMsmglpnE6Vm3JabMnbmziqtUGrZE5Rg7uF4="
   },
   {
     "pname": "Microsoft.Extensions.Configuration.Abstractions",
-    "version": "10.0.5",
-    "hash": "sha256-DNK+lL2jeHFYyd43zfgVY32UskEfQ4YsTapztuQbYwo="
+    "version": "10.0.6",
+    "hash": "sha256-jxtne26QF7bASCRmLNwYsKruY3QhsnuzN9Us11WUdSQ="
   },
   {
     "pname": "Microsoft.Extensions.Configuration.Binder",
-    "version": "10.0.5",
-    "hash": "sha256-cVG2NEW1rgLfeq/Gnh/XXqzDx2Tt8ecvgCAB4uFzcQo="
+    "version": "10.0.6",
+    "hash": "sha256-34blBlrQ3FRS7iCS7/gxPZMa9xgDW0p3iEERqwgXFMA="
   },
   {
     "pname": "Microsoft.Extensions.Primitives",
-    "version": "10.0.5",
-    "hash": "sha256-uvrur+0dg4zAAQcpLkkhPA77ST0tA3+EpGdDlCckC+E="
+    "version": "10.0.6",
+    "hash": "sha256-/iSFDryQIl8rl+TtrzunT5LcbPsQCeC2V+9CnS1P4Cc="
   }
 ]

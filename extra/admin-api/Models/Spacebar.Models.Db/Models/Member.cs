@@ -14,11 +14,11 @@ public partial class Member
     [Column("index")]
     public int Index { get; set; }
 
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string GuildId { get; set; } = null!;
+    [Column("guild_id")]
+    public long GuildId { get; set; }
 
     [Column("nick", TypeName = "character varying")]
     public string? Nick { get; set; }
@@ -38,11 +38,11 @@ public partial class Member
     [Column("pending")]
     public bool Pending { get; set; }
 
-    [Column("settings")]
+    [Column("settings", TypeName = "jsonb")]
     public string Settings { get; set; } = null!;
 
-    [Column("last_message_id", TypeName = "character varying")]
-    public string? LastMessageId { get; set; }
+    [Column("last_message_id")]
+    public long? LastMessageId { get; set; }
 
     [Column("joined_by", TypeName = "character varying")]
     public string? JoinedBy { get; set; }
@@ -65,13 +65,13 @@ public partial class Member
     [Column("communication_disabled_until", TypeName = "timestamp without time zone")]
     public DateTime? CommunicationDisabledUntil { get; set; }
 
-    [Column("avatar_decoration_data")]
+    [Column("avatar_decoration_data", TypeName = "jsonb")]
     public string? AvatarDecorationData { get; set; }
 
-    [Column("display_name_styles")]
+    [Column("display_name_styles", TypeName = "jsonb")]
     public string? DisplayNameStyles { get; set; }
 
-    [Column("collectibles")]
+    [Column("collectibles", TypeName = "jsonb")]
     public string? Collectibles { get; set; }
 
     [Column("flags")]

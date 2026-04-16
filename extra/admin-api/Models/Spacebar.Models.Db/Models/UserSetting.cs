@@ -31,7 +31,7 @@ public partial class UserSetting
     [Column("convert_emoticons")]
     public bool? ConvertEmoticons { get; set; }
 
-    [Column("custom_status")]
+    [Column("custom_status", TypeName = "jsonb")]
     public string? CustomStatus { get; set; }
 
     [Column("default_guilds_restricted")]
@@ -52,7 +52,7 @@ public partial class UserSetting
     [Column("explicit_content_filter")]
     public int? ExplicitContentFilter { get; set; }
 
-    [Column("friend_source_flags")]
+    [Column("friend_source_flags", TypeName = "jsonb")]
     public string? FriendSourceFlags { get; set; }
 
     [Column("gateway_connected")]
@@ -61,10 +61,10 @@ public partial class UserSetting
     [Column("gif_auto_play")]
     public bool? GifAutoPlay { get; set; }
 
-    [Column("guild_folders")]
+    [Column("guild_folders", TypeName = "jsonb")]
     public string? GuildFolders { get; set; }
 
-    [Column("guild_positions")]
+    [Column("guild_positions", TypeName = "jsonb")]
     public string? GuildPositions { get; set; }
 
     [Column("inline_attachment_media")]
@@ -88,7 +88,7 @@ public partial class UserSetting
     [Column("render_reactions")]
     public bool? RenderReactions { get; set; }
 
-    [Column("restricted_guilds")]
+    [Column("restricted_guilds", TypeName = "jsonb")]
     public string? RestrictedGuilds { get; set; }
 
     [Column("show_current_game")]

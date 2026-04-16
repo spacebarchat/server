@@ -3,10 +3,11 @@ using System.Text.Json.Serialization;
 namespace Spacebar.Models.Gateway;
 
 // TODO: move to interop
-public class SbWebsocketMeta
-{
+public class SbWebsocketMeta {
     [JsonPropertyName("user_id")]
-    public string UserId { get; set; } = string.Empty;
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+
+    public required long UserId { get; set; }
 
     [JsonPropertyName("session_id")]
     public string SessionId { get; set; } = string.Empty;

@@ -99,7 +99,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/avatars/{x.Id}/{x.Avatar}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateUserBannerPathsAsync() =>
@@ -108,7 +108,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/banners/{x.Id}/{x.Banner}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
 #endregion
@@ -121,7 +121,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/icons/{x.Id}/{x.Icon}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateRoleIconPathsAsync() =>
@@ -130,7 +130,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/role-icons/{x.Id}/{x.Icon}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateStickerPathsAsync() =>
@@ -138,7 +138,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/stickers/{x.Id}.png",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateEmojiPathsAsync() =>
@@ -146,7 +146,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/emojis/{x.Id}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
 #endregion
@@ -159,7 +159,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/app-icons/{x.Id}/{x.Icon}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     public IQueryable<FsckItem> EnumerateApplicationCoverPathsAsync() =>
@@ -168,7 +168,7 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = $"/app-icons/{x.Id}/{x.CoverImage}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
     // TODO: not implemented?
@@ -199,11 +199,11 @@ public class FsckService(ILogger<FsckService> logger, IServiceScopeFactory servi
             .OrderBy(x => x.Id)
             .Select(x => new FsckItem {
                 Path = sigService.Sign(new() {
-                    Path = $"/attachments/{x.Message!.ChannelId}/{x.Id}/{x.Filename}",
+                    Path = $"/attachments/{x.ChannelId}/{x.MessageId}/{x.Filename}",
                     IpAddress = "109.128.185.4"
                 }).GetSignedPath(),
                 // Path = $"/attachments/{x.Message!.ChannelId}/{x.Id}/{x.Filename}",
-                ItemId = x.Id
+                ItemId = x.Id.ToString()
             });
 
 #endregion

@@ -21,8 +21,8 @@
   },
   {
     "pname": "Microsoft.AspNetCore.OpenApi",
-    "version": "10.0.5",
-    "hash": "sha256-CQXAu6Tm8nOy/rrZksIKGaLW7USEP/N1kwKBMLoh7js="
+    "version": "10.0.6",
+    "hash": "sha256-DCNvcXajwnC+II7NMjK83YIiQDQN6uPvtSnwVUZXQMM="
   },
   {
     "pname": "Microsoft.Build.Framework",
@@ -71,8 +71,8 @@
   },
   {
     "pname": "Microsoft.EntityFrameworkCore",
-    "version": "10.0.5",
-    "hash": "sha256-SR8KBOuIx9e1j/cMwYRCO62WEB+CUrGptexl9MSgp8M="
+    "version": "10.0.6",
+    "hash": "sha256-wEA3ySJvLjAs6O9feF8vZXFM8GgyP+1ufQCaawj20dU="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Abstractions",
@@ -81,8 +81,8 @@
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Abstractions",
-    "version": "10.0.5",
-    "hash": "sha256-qMKa7YGJUfaPTRMsAYYPlLxXdhZeyAZLiOSDcNFzDnA="
+    "version": "10.0.6",
+    "hash": "sha256-izcDKxbfeMBNxXmri20mESugr7NHxJEE4Hnvia6hVS4="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Analyzers",
@@ -91,13 +91,13 @@
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Analyzers",
-    "version": "10.0.5",
-    "hash": "sha256-jPTN3RkI1J7vb7O4xiCHjMczMKh//NnKhJAGTuT7v88="
+    "version": "10.0.6",
+    "hash": "sha256-qTZ9ZhnPM7Nqy/ZWjloDTEUO91CymeJ07Yp1SKMJWiY="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Design",
-    "version": "10.0.5",
-    "hash": "sha256-+D17/sNpPhhDaLJJR4fFjSMySFU4yKQzHgzPcAJAdR0="
+    "version": "10.0.6",
+    "hash": "sha256-9WAXxXdAM0rNbGq6j7VGubHslxzmpTYKZ9gFyxh/N74="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Relational",
@@ -106,13 +106,13 @@
   },
   {
     "pname": "Microsoft.EntityFrameworkCore.Relational",
-    "version": "10.0.5",
-    "hash": "sha256-5jfkvUKSexKCbCsYZYkBAWd4BIN48dlF5pP6htfDMMQ="
+    "version": "10.0.6",
+    "hash": "sha256-gyA+zXeRaMZl9qs9WXrvc0sEnptZy1nxC6kBux5bTQ0="
   },
   {
     "pname": "Microsoft.Extensions.DependencyModel",
-    "version": "10.0.5",
-    "hash": "sha256-UfG98EJ+0JTQA8Kx8yxt9mg19s0RSIOO+pG9JJy8uB0="
+    "version": "10.0.6",
+    "hash": "sha256-WY/CGoll5mwtiG3pBN/jDpt5/g4qcQuBL62LeS8KgmM="
   },
   {
     "pname": "Microsoft.IdentityModel.Abstractions",

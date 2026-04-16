@@ -31,17 +31,17 @@ public partial class Invite
     [Column("expires_at", TypeName = "timestamp without time zone")]
     public DateTime? ExpiresAt { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
-    [Column("inviter_id", TypeName = "character varying")]
-    public string? InviterId { get; set; }
+    [Column("inviter_id")]
+    public long? InviterId { get; set; }
 
-    [Column("target_user_id", TypeName = "character varying")]
-    public string? TargetUserId { get; set; }
+    [Column("target_user_id")]
+    public long? TargetUserId { get; set; }
 
     [Column("target_user_type")]
     public int? TargetUserType { get; set; }

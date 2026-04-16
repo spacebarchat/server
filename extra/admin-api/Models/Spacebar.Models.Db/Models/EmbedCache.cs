@@ -10,18 +10,18 @@ namespace Spacebar.Models.Db.Models;
 public partial class EmbedCache
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("url", TypeName = "character varying")]
     public string Url { get; set; } = null!;
 
-    [Column("embed")]
+    [Column("embed", TypeName = "jsonb")]
     public string? Embed { get; set; }
 
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }
 
-    [Column("embeds")]
+    [Column("embeds", TypeName = "jsonb")]
     public string? Embeds { get; set; }
 }

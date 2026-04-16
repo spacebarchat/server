@@ -10,8 +10,8 @@ namespace Spacebar.Models.Db.Models;
 public partial class Webhook
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
     [Column("type")]
     public int Type { get; set; }
@@ -25,23 +25,23 @@ public partial class Webhook
     [Column("token", TypeName = "character varying")]
     public string? Token { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string? ChannelId { get; set; }
+    [Column("channel_id")]
+    public long? ChannelId { get; set; }
 
-    [Column("application_id", TypeName = "character varying")]
-    public string? ApplicationId { get; set; }
+    [Column("application_id")]
+    public long? ApplicationId { get; set; }
 
-    [Column("user_id", TypeName = "character varying")]
-    public string? UserId { get; set; }
+    [Column("user_id")]
+    public long? UserId { get; set; }
 
-    [Column("source_guild_id", TypeName = "character varying")]
-    public string? SourceGuildId { get; set; }
+    [Column("source_guild_id")]
+    public long? SourceGuildId { get; set; }
 
-    [Column("source_channel_id", TypeName = "character varying")]
-    public string? SourceChannelId { get; set; }
+    [Column("source_channel_id")]
+    public long? SourceChannelId { get; set; }
 
     [ForeignKey("ApplicationId")]
     [InverseProperty("Webhooks")]

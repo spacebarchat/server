@@ -10,11 +10,11 @@ namespace Spacebar.Models.Db.Models;
 public partial class Role
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string GuildId { get; set; } = null!;
+    [Column("guild_id")]
+    public long GuildId { get; set; }
 
     [Column("color")]
     public int Color { get; set; }
@@ -43,13 +43,13 @@ public partial class Role
     [Column("unicode_emoji", TypeName = "character varying")]
     public string? UnicodeEmoji { get; set; }
 
-    [Column("tags")]
+    [Column("tags", TypeName = "jsonb")]
     public string? Tags { get; set; }
 
     [Column("flags")]
     public int Flags { get; set; }
 
-    [Column("colors")]
+    [Column("colors", TypeName = "jsonb")]
     public string Colors { get; set; } = null!;
 
     [ForeignKey("GuildId")]

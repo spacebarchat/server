@@ -75,7 +75,7 @@ public class GuildDiscoveryController(
     }
 
     [HttpGet("{guildId}")]
-    public async Task<DiscoverableGuildModel> GetDiscoverableGuild(string guildId, bool includeExcluded = false) {
+    public async Task<DiscoverableGuildModel> GetDiscoverableGuild(long guildId, bool includeExcluded = false) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
         var discoverableGuilds = db.Guilds
             .AsNoTracking()
@@ -131,7 +131,7 @@ public class GuildDiscoveryController(
     }
 
     [HttpPatch("{guildId}")]
-    public async Task<DiscoverableGuildModel> UpdateDiscoverableGuild(string guildId, [FromBody] DiscoverableGuildUpdateModel guildUpdateModel, bool includeExcluded = false) {
+    public async Task<DiscoverableGuildModel> UpdateDiscoverableGuild(long guildId, [FromBody] DiscoverableGuildUpdateModel guildUpdateModel, bool includeExcluded = false) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
         var guild = await db.Guilds
             .AsNoTracking()

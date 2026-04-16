@@ -10,11 +10,11 @@ namespace Spacebar.Models.Db.Models;
 public partial class Tag
 {
     [Key]
-    [Column("id", TypeName = "character varying")]
-    public string Id { get; set; } = null!;
+    [Column("id")]
+    public long Id { get; set; }
 
-    [Column("channel_id", TypeName = "character varying")]
-    public string ChannelId { get; set; } = null!;
+    [Column("channel_id")]
+    public long ChannelId { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
@@ -22,8 +22,8 @@ public partial class Tag
     [Column("moderated")]
     public bool Moderated { get; set; }
 
-    [Column("emoji_id", TypeName = "character varying")]
-    public string? EmojiId { get; set; }
+    [Column("emoji_id")]
+    public long? EmojiId { get; set; }
 
     [Column("emoji_name", TypeName = "character varying")]
     public string? EmojiName { get; set; }
