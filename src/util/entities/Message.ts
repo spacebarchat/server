@@ -328,6 +328,23 @@ export class Message extends BaseClass {
         };
     }
 
+    toSnapshot(): MessageSnapshot {
+        return {
+            message: {
+                attachments: this.attachments,
+                components: this.components,
+                content: this.content!,
+                edited_timestamp: this.edited_timestamp,
+                embeds: this.embeds,
+                flags: this.flags,
+                mention_roles: this.mention_roles?.map((x) => x.id),
+                mentions: this.mentions.map((x) => x.toPublicUser() as unknown as PartialUser), // TODO: write a proper method for this
+                timestamp: this.timestamp,
+                type: this.type,
+            },
+        };
+    }
+
     withSignedAttachments(data: NewUrlUserSignatureData) {
         function signMedia(media: UnfurledMediaItem) {
             Object.assign(media, Attachment.prototype.signUrls.call(media, data));

@@ -149,7 +149,7 @@ export interface MessageSnapshot {
         content: string;
         timestamp: Date;
         edited_timestamp?: Date | null;
-        mentions: Snowflake[];
+        mentions: PartialUser[];
         mention_roles: Snowflake[];
         attachments?: Attachment[];
         embeds: Embed[];
