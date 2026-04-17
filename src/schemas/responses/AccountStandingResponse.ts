@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities...
-import { Attachment } from "@spacebar/util";
+import { PublicAttachment } from "../api/messages/Attachments";
 
 export enum AccountStandingState {
     ALL_GOOD = 100,
@@ -114,7 +113,7 @@ export interface FlaggedContent {
     type: "message";
     id: string;
     content: string;
-    attachments: Attachment[];
+    attachments: PublicAttachment[];
 }
 
 export interface Classification {
