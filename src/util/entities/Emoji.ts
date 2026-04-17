@@ -57,9 +57,9 @@ export class Emoji extends BaseClass {
     @Column()
     require_colons: boolean;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "int8", array: true })
     roles: string[]; // roles this emoji is whitelisted to (new discord feature?)
 
-    @Column({ type: "simple-array", nullable: true })
+    @Column({ type: "int8", array: true, nullable: true })
     groups: string[]; // user groups this emoji is whitelisted to (Spacebar extension)
 }

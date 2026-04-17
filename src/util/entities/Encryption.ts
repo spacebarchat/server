@@ -32,7 +32,7 @@ export class SecuritySettings extends BaseClass {
     @Column()
     encryption_permission_mask: number;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "varchar", array: true })
     allowed_algorithms: string[];
 
     @Column()

@@ -133,7 +133,7 @@ export class Member extends BaseClassWithoutId {
     @Column()
     bio: string;
 
-    @Column({ nullable: true, type: "simple-array" })
+    @Column({ nullable: true, type: "int4", array: true })
     theme_colors?: number[]; // TODO: Separate `User` and `UserProfile` models
 
     @Column({ nullable: true })
