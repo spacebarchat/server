@@ -13081,7 +13081,7 @@
                     "mentions": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/definitions/PartialUser"
                         }
                     },
                     "mention_roles": {
@@ -13144,6 +13144,102 @@
         "additionalProperties": false,
         "required": [
             "message"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PartialUser": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "avatar_decoration_data": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/AvatarDecorationData"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "collectibles": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Collectibles"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "display_name_styles": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/DisplayNameStyle"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "primary_guild": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PrimaryGuild"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "system": {
+                "type": "boolean"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "accent_color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "public_flags": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "avatar",
+            "discriminator",
+            "id",
+            "username"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -13658,102 +13754,6 @@
             "content",
             "id",
             "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PartialUser": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "global_name": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "avatar": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "avatar_decoration_data": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/AvatarDecorationData"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "collectibles": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/Collectibles"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "display_name_styles": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/DisplayNameStyle"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "primary_guild": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/PrimaryGuild"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "bot": {
-                "type": "boolean"
-            },
-            "system": {
-                "type": "boolean"
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "accent_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "public_flags": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "avatar",
-            "discriminator",
-            "id",
-            "username"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
