@@ -2006,6 +2006,97 @@
                     "valid_rules_channel"
                 ]
             },
+            "MessageSnapshot": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "edited_timestamp": {
+                                "anyOf": [
+                                    {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ]
+                            },
+                            "mentions": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/PartialUser"
+                                }
+                            },
+                            "mention_roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "attachments": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/PublicAttachment"
+                                }
+                            },
+                            "embeds": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Embed"
+                                }
+                            },
+                            "type": {
+                                "$ref": "#/components/schemas/MessageType"
+                            },
+                            "flags": {
+                                "type": "integer"
+                            },
+                            "components": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/MessageComponent"
+                                }
+                            },
+                            "resolved": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "additionalProperties": true
+                                }
+                            },
+                            "sticker_items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Sticker"
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "content",
+                            "embeds",
+                            "flags",
+                            "mention_roles",
+                            "mentions",
+                            "timestamp",
+                            "type"
+                        ]
+                    }
+                },
+                "required": [
+                    "message"
+                ]
+            },
             "GuildMessagesSearchResponse": {
                 "type": "object",
                 "properties": {
@@ -12300,97 +12391,6 @@
                     "me_voted"
                 ]
             },
-            "MessageSnapshot": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "object",
-                        "properties": {
-                            "content": {
-                                "type": "string"
-                            },
-                            "timestamp": {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            "edited_timestamp": {
-                                "anyOf": [
-                                    {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    {
-                                        "type": "null"
-                                    }
-                                ]
-                            },
-                            "mentions": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/PartialUser"
-                                }
-                            },
-                            "mention_roles": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "attachments": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Attachment"
-                                }
-                            },
-                            "embeds": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Embed"
-                                }
-                            },
-                            "type": {
-                                "$ref": "#/components/schemas/MessageType"
-                            },
-                            "flags": {
-                                "type": "integer"
-                            },
-                            "components": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/MessageComponent"
-                                }
-                            },
-                            "resolved": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {},
-                                    "additionalProperties": true
-                                }
-                            },
-                            "sticker_items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Sticker"
-                                }
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "content",
-                            "embeds",
-                            "flags",
-                            "mention_roles",
-                            "mentions",
-                            "timestamp",
-                            "type"
-                        ]
-                    }
-                },
-                "required": [
-                    "message"
-                ]
-            },
             "PartialUser": {
                 "type": "object",
                 "properties": {
@@ -12475,6 +12475,38 @@
                     "discriminator",
                     "id",
                     "username"
+                ]
+            },
+            "PublicAttachment": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "content_type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "filename",
+                    "proxy_url",
+                    "size",
+                    "url"
                 ]
             },
             "MessageComponent": {
@@ -13073,7 +13105,7 @@
                     "attachments": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/Attachment"
+                            "$ref": "#/components/schemas/PublicAttachment"
                         }
                     },
                     "embeds": {
@@ -13221,6 +13253,38 @@
                     "premium_type",
                     "public_flags",
                     "username"
+                ]
+            },
+            "PublicAttachment_1": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "content_type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "proxy_url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "filename",
+                    "proxy_url",
+                    "size",
+                    "url"
                 ]
             },
             "GuildVanityUrl": {

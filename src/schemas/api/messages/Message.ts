@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Attachment, Sticker } from "@spacebar/util";
+import { Sticker } from "@spacebar/util";
 import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake } from "@spacebar/schemas";
 import { PublicAttachment } from "./Attachments";
 
@@ -151,7 +151,7 @@ export interface MessageSnapshot {
         edited_timestamp?: Date | null;
         mentions: PartialUser[];
         mention_roles: Snowflake[];
-        attachments?: Attachment[];
+        attachments?: PublicAttachment[];
         embeds: Embed[];
         type: MessageType;
         flags: number;

@@ -331,7 +331,7 @@ export class Message extends BaseClass {
     toSnapshot(): MessageSnapshot {
         return {
             message: {
-                attachments: this.attachments,
+                attachments: this.attachments?.map((x) => x.toJSON()),
                 components: this.components,
                 content: this.content!,
                 edited_timestamp: this.edited_timestamp,

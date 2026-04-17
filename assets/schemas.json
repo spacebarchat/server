@@ -2148,6 +2148,100 @@
             "messages",
             "total_results"
         ],
+        "definitions": {
+            "MessageSnapshot": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "edited_timestamp": {
+                                "anyOf": [
+                                    {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ]
+                            },
+                            "mentions": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/PartialUser"
+                                }
+                            },
+                            "mention_roles": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "attachments": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/PublicAttachment_1"
+                                }
+                            },
+                            "embeds": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Embed"
+                                }
+                            },
+                            "type": {
+                                "$ref": "#/definitions/MessageType"
+                            },
+                            "flags": {
+                                "type": "integer"
+                            },
+                            "components": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/MessageComponent"
+                                }
+                            },
+                            "resolved": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {},
+                                    "additionalProperties": true
+                                }
+                            },
+                            "sticker_items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Sticker"
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "content",
+                            "embeds",
+                            "flags",
+                            "mention_roles",
+                            "mentions",
+                            "timestamp",
+                            "type"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "message"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GuildPruneResponse": {
@@ -13093,7 +13187,7 @@
                     "attachments": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/Attachment"
+                            "$ref": "#/definitions/PublicAttachment"
                         }
                     },
                     "embeds": {
@@ -13240,6 +13334,40 @@
             "discriminator",
             "id",
             "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicAttachment": {
+        "type": "object",
+        "properties": {
+            "filename": {
+                "type": "string"
+            },
+            "size": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "content_type": {
+                "type": "string"
+            },
+            "url": {
+                "type": "string"
+            },
+            "proxy_url": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "filename",
+            "proxy_url",
+            "size",
+            "url"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -13872,7 +14000,7 @@
             "attachments": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/Attachment"
+                    "$ref": "#/definitions/PublicAttachment"
                 }
             },
             "embeds": {
@@ -14025,6 +14153,40 @@
             "premium_type",
             "public_flags",
             "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicAttachment_1": {
+        "type": "object",
+        "properties": {
+            "filename": {
+                "type": "string"
+            },
+            "size": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "content_type": {
+                "type": "string"
+            },
+            "url": {
+                "type": "string"
+            },
+            "proxy_url": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "filename",
+            "proxy_url",
+            "size",
+            "url"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
