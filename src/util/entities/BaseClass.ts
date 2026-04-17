@@ -122,5 +122,3 @@ export class BaseClass extends BaseClassWithoutId {
         if (!this.id) this.id = Snowflake.generate();
     }
 }
-
-export const ArrayColumn = (opts: ColumnOptions) => (process.env.DATABASE?.startsWith("postgres") ? Column({ ...opts, array: true }) : Column({ ...opts, type: "simple-array" }));

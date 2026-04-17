@@ -61,7 +61,7 @@ export class Application extends BaseClass {
     @Column()
     flags: number = 0;
 
-    @Column({ type: "simple-array", nullable: true })
+    @Column({ type: "varchar", nullable: true })
     redirect_uris: string[] = [];
 
     @Column({ nullable: true })
@@ -92,7 +92,7 @@ export class Application extends BaseClass {
     @OneToOne(() => User, { onDelete: "CASCADE" })
     bot?: User;
 
-    @Column({ type: "simple-array", nullable: true })
+    @Column({ type: "varchar", array: true, nullable: true })
     tags?: string[];
 
     @Column({ nullable: true })
@@ -120,7 +120,7 @@ export class Application extends BaseClass {
 
     //just for us
 
-    //@Column({ type: "simple-array", nullable: true })
+    //@Column({ type: "varchar", array: true, nullable: true })
     //rpc_origins?: string[];
 
     //@Column({ nullable: true })

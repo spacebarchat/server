@@ -35,10 +35,10 @@ export class AutomodRule extends BaseClass {
     @Column()
     event_type: AutomodRuleEventType;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "int8", array: true })
     exempt_channels: string[];
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "int8", array: true })
     exempt_roles: string[];
 
     @Column()

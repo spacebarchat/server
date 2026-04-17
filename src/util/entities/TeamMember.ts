@@ -28,7 +28,7 @@ export class TeamMember extends BaseClass {
     @Column({ type: "int" })
     membership_state: TeamMemberState;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "varchar", array: true })
     permissions: string[];
 
     @Column()

@@ -101,7 +101,7 @@ export class Guild extends BaseClass {
     @Column({ nullable: true })
     explicit_content_filter?: number;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "varchar", array: true })
     features: string[] = []; //TODO use enum
     //TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
@@ -267,7 +267,7 @@ export class Guild extends BaseClass {
     @Column({ type: "jsonb" })
     welcome_screen: GuildWelcomeScreen;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "int8" })
     @RelationId((guild: Guild) => guild.widget_channel)
     widget_channel_id?: string;
 
@@ -295,7 +295,7 @@ export class Guild extends BaseClass {
     @Column({ nullable: true })
     premium_progress_bar_enabled: boolean = false;
 
-    @Column({ select: false, type: "simple-array" })
+    @Column({ select: false, type: "int8", array: true })
     channel_ordering: string[];
 
     @Column()

@@ -61,7 +61,7 @@ export class User extends BaseClass {
 
     // TODO: Separate `User` and `UserProfile` models
     // puyo: changed from [number, number] because it breaks openapi
-    @Column({ nullable: true, type: "simple-array" })
+    @Column({ nullable: true, type: "int4", array: true })
     theme_colors?: number[];
 
     @Column({ nullable: true })
@@ -166,7 +166,7 @@ export class User extends BaseClass {
         hash?: string; // hash of the password, salt is saved in password (bcrypt)
     };
 
-    @Column({ type: "simple-array", select: false })
+    @Column({ type: "varchar", array: true, select: false })
     fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
     @OneToOne(() => UserSettings, {
@@ -180,7 +180,7 @@ export class User extends BaseClass {
     @OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)
     security_keys: SecurityKey[];
 
-    @Column({ type: "simple-array", nullable: true })
+    @Column({ type: "int8", array: true, nullable: true })
     badge_ids?: string[];
 
     @Column({ type: "jsonb", nullable: true })

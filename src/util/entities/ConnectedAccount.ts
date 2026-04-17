@@ -59,7 +59,7 @@ export class ConnectedAccount extends BaseClass {
     @Column({ select: false })
     visibility?: number = 0;
 
-    @Column({ type: "simple-array" })
+    @Column({ type: "varchar", array: true })
     integrations?: string[] = [];
 
     @Column({ type: "jsonb", name: "metadata", nullable: true })
