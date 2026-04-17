@@ -23,7 +23,6 @@ import { join, dirname } from "path";
 import { Readable } from "stream";
 import ExifTransformer from "exif-be-gone";
 
-// TODO: split stored files into separate folders named after cloned route
 export class FileStorage implements Storage {
     getFsPath(path: string): string {
         // STORAGE_LOCATION has a default value in start.ts
