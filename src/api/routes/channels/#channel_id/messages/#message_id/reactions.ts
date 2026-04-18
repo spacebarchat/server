@@ -229,15 +229,15 @@ router.put(
             ? (
                   await Member.findOneOrFail({
                       where: { id: req.user_id },
-                relations: { roles: true, user: true },
-                select: {
-                    index: true,
-                    ...Object.fromEntries(PublicMemberProjection.map((x) => [x, true])),
-                    user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
-                    roles: {
-                        id: true,
-                    },
-                },
+                      relations: { roles: true, user: true },
+                      select: {
+                          index: true,
+                          ...Object.fromEntries(PublicMemberProjection.map((x) => [x, true])),
+                          user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+                          roles: {
+                              id: true,
+                          },
+                      },
                   })
               ).toPublicMember()
             : undefined;
