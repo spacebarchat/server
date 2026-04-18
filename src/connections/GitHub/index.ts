@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { GitHubSettings } from "./GitHubSettings";
+import { GenericOAuthSettings as GitHubSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface UserResponse {
@@ -29,6 +29,10 @@ interface UserResponse {
 
 export default class GitHubConnection extends Connection {
     public readonly id = "github";
+    public friendlyName = "GitHub";
+    public setupUrl = "https://github.com/settings/developers";
+    public requiredScopes: string[];
+
     public readonly authorizeUrl = "https://github.com/login/oauth/authorize";
     public readonly tokenUrl = "https://github.com/login/oauth/access_token";
     public readonly userInfoUrl = "https://api.github.com/user";
@@ -39,6 +43,10 @@ export default class GitHubConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<GitHubSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

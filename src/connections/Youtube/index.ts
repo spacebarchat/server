@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { YoutubeSettings } from "./YoutubeSettings";
+import { GenericOAuthSettings as YoutubeSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface YouTubeConnectionChannelListResult {
@@ -45,6 +45,10 @@ interface YouTubeConnectionChannelListResult {
 
 export default class YoutubeConnection extends Connection {
     public readonly id = "youtube";
+    public readonly friendlyName = "YouTube";
+    public readonly setupUrl = "https://console.cloud.google.com/apis/api/youtube.googleapis.com";
+    public readonly requiredScopes = ["/auth/youtube.readonly"];
+
     public readonly authorizeUrl = "https://accounts.google.com/o/oauth2/v2/auth";
     public readonly tokenUrl = "https://oauth2.googleapis.com/token";
     public readonly userInfoUrl = "https://www.googleapis.com/youtube/v3/channels?mine=true&part=snippet";
@@ -55,6 +59,10 @@ export default class YoutubeConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<YoutubeSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

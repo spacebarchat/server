@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { FacebookSettings } from "./FacebookSettings";
+import { GenericOAuthSettings as FacebookSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface FacebookErrorResponse {
@@ -37,6 +37,10 @@ interface UserResponse {
 
 export default class FacebookConnection extends Connection {
     public readonly id = "facebook";
+    public readonly friendlyName = "Facebook";
+    public readonly setupUrl = "(missing - contributions welcome)";
+    public readonly requiredScopes = [];
+
     public readonly authorizeUrl = "https://www.facebook.com/v14.0/dialog/oauth";
     public readonly tokenUrl = "https://graph.facebook.com/v14.0/oauth/access_token";
     public readonly userInfoUrl = "https://graph.facebook.com/v14.0/me";
@@ -47,6 +51,10 @@ export default class FacebookConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<FacebookSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

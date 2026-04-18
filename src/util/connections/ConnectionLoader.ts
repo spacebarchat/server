@@ -21,6 +21,7 @@ import fs from "fs";
 import path from "path";
 import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
+import { greenBright, redBright } from "picocolors";
 
 const root = path.join(__dirname, "..", "..", "connections");
 const connectionsLoaded = false;
@@ -44,7 +45,15 @@ export class ConnectionLoader {
             ConnectionStore.connections.set(mod.id, mod);
 
             mod.init();
-            // console.log(`[Connections] Loaded connection '${mod.id}'`);
+            console.log(`[Connections] Loaded connection '${mod.id}' (${mod.friendlyName}) -`, mod.settings.enabled ? greenBright("enabled") : redBright("disabled"));
+            if (mod.settings.enabled && !mod.isConfigured) {
+                console.log(`[Connections/${mod.id}] Connection is enabled, but not configured! Users will not be able to successfully link with ${mod.friendlyName}!`);
+                if (mod.requiredScopes.length > 0) {
+                    console.log(`[Connections/${mod.id}] Configuring this connection requires setting scopes, or has additional requirements:`);
+                    for (const scope in mod.requiredScopes) console.log(`[Connections/${mod.id}]   - ${scope}`);
+                    console.log(`[Connections/${mod.id}] You can obtain the required credentials here: ${mod.setupUrl}`);
+                }
+            }
         });
     }
 

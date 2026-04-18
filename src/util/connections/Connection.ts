@@ -29,7 +29,16 @@ export abstract class Connection {
     settings: { enabled: boolean };
     states: Map<string, string> = new Map();
 
+    public abstract readonly friendlyName: string;
+    public abstract readonly setupUrl: string;
+    public abstract readonly requiredScopes: string[];
+
     abstract init(): void;
+
+    /**
+     * Returns whether a connection has all the required settings
+     */
+    public abstract get isConfigured(): boolean;
 
     /**
      * Generates an authorization url for the connection.

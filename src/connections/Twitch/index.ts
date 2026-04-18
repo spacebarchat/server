@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
-import { TwitchSettings } from "./TwitchSettings";
+import { GenericOAuthSettings as TwitchSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface TwitchConnectionUserResponse {
@@ -38,6 +38,10 @@ interface TwitchConnectionUserResponse {
 
 export default class TwitchConnection extends RefreshableConnection {
     public readonly id = "twitch";
+    public friendlyName = "Twitch.tv";
+    public setupUrl = "https://dev.twitch.tv/console/apps/create";
+    public requiredScopes: string[];
+
     public readonly authorizeUrl = "https://id.twitch.tv/oauth2/authorize";
     public readonly tokenUrl = "https://id.twitch.tv/oauth2/token";
     public readonly userInfoUrl = "https://api.twitch.tv/helix/users";
@@ -48,6 +52,10 @@ export default class TwitchConnection extends RefreshableConnection {
         this.settings = ConnectionLoader.getConnectionConfig<TwitchSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

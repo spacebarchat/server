@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { EpicGamesSettings } from "./EpicGamesSettings";
+import { GenericOAuthSettings as EpicGamesSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
@@ -38,6 +38,10 @@ export interface EpicTokenResponse extends ConnectedAccountCommonOAuthTokenRespo
 
 export default class EpicGamesConnection extends Connection {
     public readonly id = "epicgames";
+    public readonly friendlyName = "Epic Games";
+    public readonly setupUrl = "https://dev.epicgames.com/portal";
+    public readonly requiredScopes = [];
+
     public readonly authorizeUrl = "https://www.epicgames.com/id/authorize";
     public readonly tokenUrl = "https://api.epicgames.dev/epic/oauth/v1/token";
     public readonly userInfoUrl = "https://api.epicgames.dev/epic/id/v1/accounts";
@@ -50,6 +54,9 @@ export default class EpicGamesConnection extends Connection {
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
     }
 
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
+    }
     getAuthorizationUrl(userId: string): string {
         const state = this.createState(userId);
         const url = new URL(this.authorizeUrl);

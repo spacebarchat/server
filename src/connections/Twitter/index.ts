@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
-import { TwitterSettings } from "./TwitterSettings";
+import { GenericOAuthSettings as TwitterSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface TwitterUserResponse {
@@ -41,6 +41,10 @@ interface TwitterUserResponse {
 
 export default class TwitterConnection extends RefreshableConnection {
     public readonly id = "twitter";
+    public friendlyName = "Twitter";
+    public setupUrl = "https://console.x.com";
+    public requiredScopes = []; //no scopes nessecary
+
     public readonly authorizeUrl = "https://twitter.com/i/oauth2/authorize";
     public readonly tokenUrl = "https://api.twitter.com/2/oauth2/token";
     public readonly userInfoUrl = "https://api.twitter.com/2/users/me?user.fields=created_at%2Cdescription%2Cid%2Cname%2Cusername%2Cverified%2Clocation%2Curl";
@@ -51,6 +55,10 @@ export default class TwitterConnection extends RefreshableConnection {
         this.settings = ConnectionLoader.getConnectionConfig<TwitterSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

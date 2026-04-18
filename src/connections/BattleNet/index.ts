@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { BattleNetSettings } from "./BattleNetSettings";
+import { GenericOAuthSettings as BattleNetSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface BattleNetConnectionUser {
@@ -34,6 +34,10 @@ interface BattleNetConnectionUser {
 
 export default class BattleNetConnection extends Connection {
     public readonly id = "battlenet";
+    public readonly friendlyName = "Battle.net";
+    public readonly setupUrl = "(missing - contributions welcome)";
+    public readonly requiredScopes = [];
+
     public readonly authorizeUrl = "https://oauth.battle.net/authorize";
     public readonly tokenUrl = "https://oauth.battle.net/token";
     public readonly userInfoUrl = "https://us.battle.net/oauth/userinfo";
@@ -44,6 +48,10 @@ export default class BattleNetConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<BattleNetSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

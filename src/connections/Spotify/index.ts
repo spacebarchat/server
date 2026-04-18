@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
-import { SpotifySettings } from "./SpotifySettings";
+import { GenericOAuthSettings as SpotifySettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
@@ -40,6 +40,10 @@ export interface ErrorResponse {
 
 export default class SpotifyConnection extends RefreshableConnection {
     public readonly id = "spotify";
+    public friendlyName = "Spotify";
+    public setupUrl = "https://developer.spotify.com";
+    public requiredScopes = ["Requires instance admin to have spotify premium"];
+
     public readonly authorizeUrl = "https://accounts.spotify.com/authorize";
     public readonly tokenUrl = "https://accounts.spotify.com/api/token";
     public readonly userInfoUrl = "https://api.spotify.com/v1/me";
@@ -56,6 +60,10 @@ export default class SpotifyConnection extends RefreshableConnection {
         this.settings = ConnectionLoader.getConnectionConfig<SpotifySettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

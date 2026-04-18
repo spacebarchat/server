@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { XboxSettings } from "./XboxSettings";
+import { GenericOAuthSettings as XboxSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface XboxUserResponse {
@@ -45,6 +45,10 @@ interface XboxUserResponse {
 
 export default class XboxConnection extends Connection {
     public readonly id = "xbox";
+    public readonly friendlyName = "Xbox Live";
+    public readonly setupUrl = "https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade";
+    public readonly requiredScopes = []; // these are part of the URL and don't need to be assigned
+
     public readonly authorizeUrl = "https://login.live.com/oauth20_authorize.srf";
     public readonly tokenUrl = "https://login.live.com/oauth20_token.srf";
     public readonly userInfoUrl = "https://xsts.auth.xboxlive.com/xsts/authorize";
@@ -56,6 +60,10 @@ export default class XboxConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<XboxSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

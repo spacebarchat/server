@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { RedditSettings } from "./RedditSettings";
+import { GenericOAuthSettings as RedditSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 export interface UserResponse {
@@ -41,6 +41,10 @@ export interface ErrorResponse {
 
 export default class RedditConnection extends Connection {
     public readonly id = "reddit";
+    public friendlyName = "Reddit";
+    public setupUrl = "https://www.reddit.com/prefs/apps";
+    public requiredScopes = []; // Does not seem to offer platform-side scope controls
+
     public readonly authorizeUrl = "https://www.reddit.com/api/v1/authorize";
     public readonly tokenUrl = "https://www.reddit.com/api/v1/access_token";
     public readonly userInfoUrl = "https://oauth.reddit.com/api/v1/me";
@@ -51,6 +55,10 @@ export default class RedditConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<RedditSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {

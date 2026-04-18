@@ -18,7 +18,7 @@
 
 import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { DiscordSettings } from "./DiscordSettings";
+import { GenericOAuthSettings as DiscordSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 
 interface UserResponse {
@@ -30,6 +30,10 @@ interface UserResponse {
 
 export default class DiscordConnection extends Connection {
     public readonly id = "discord";
+    public readonly friendlyName = "Discord";
+    public readonly setupUrl = "https://discord.com/developers/applications";
+    public readonly requiredScopes = ["identify"];
+
     public readonly authorizeUrl = "https://discord.com/api/oauth2/authorize";
     public readonly tokenUrl = "https://discord.com/api/oauth2/token";
     public readonly userInfoUrl = "https://discord.com/api/users/@me";
@@ -40,6 +44,10 @@ export default class DiscordConnection extends Connection {
         this.settings = ConnectionLoader.getConnectionConfig<DiscordSettings>(this.id, this.settings);
 
         if (this.settings.enabled && (!this.settings.clientId || !this.settings.clientSecret)) throw new Error(`Invalid settings for connection ${this.id}`);
+    }
+
+    public get isConfigured(): boolean {
+        return !!this.settings.clientId && !!this.settings.clientSecret;
     }
 
     getAuthorizationUrl(userId: string): string {
