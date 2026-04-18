@@ -22,8 +22,6 @@ import { CORS, BodyParser } from "@spacebar/api";
 import path from "path";
 import guildProfilesRoute from "./routes/guild-profiles";
 import morgan from "morgan";
-import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "@spacebar/webrtc*";
-import { green, yellow } from "picocolors";
 import { storage } from "./util";
 
 export type CDNServerOptions = ServerOptions;
