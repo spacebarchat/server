@@ -136,7 +136,7 @@
                 "pattern": "^.*Response$"
             },
             "headers": {
-                "$ref": "#/definitions/Record<string,string>"
+                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
             }
         },
         "additionalProperties": false,
@@ -3936,7 +3936,9 @@
                 "additionalProperties": false
             },
             "intents": {
-                "type": "bigint"
+                "type": "number",
+                "properties": {},
+                "additionalProperties": false
             },
             "presence": {
                 "$ref": "#/definitions/ActivitySchema"
@@ -3955,7 +3957,9 @@
                 "maxItems": 2,
                 "type": "array",
                 "items": {
-                    "type": "bigint"
+                    "type": "number",
+                    "properties": {},
+                    "additionalProperties": false
                 }
             },
             "guild_subscriptions": {
@@ -7975,10 +7979,10 @@
                 "type": "boolean"
             },
             "roles": {
-                "$ref": "#/definitions/Record<string,boolean>"
+                "$ref": "#/definitions/Record%3Cstring%2Cboolean%3E"
             },
             "channels": {
-                "$ref": "#/definitions/Record<string,boolean>"
+                "$ref": "#/definitions/Record%3Cstring%2Cboolean%3E"
             }
         },
         "additionalProperties": false,
@@ -14302,7 +14306,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@699": {
+                    "__@unscopables@698": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -14428,17 +14432,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@697": {
+                            "__@iterator@696": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@699": {
+                            "__@unscopables@698": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@699",
+                    "__@unscopables@698",
                     "length"
                 ]
             },

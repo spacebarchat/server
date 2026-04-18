@@ -157,7 +157,7 @@
                         "pattern": "^.*Response$"
                     },
                     "headers": {
-                        "$ref": "#/components/schemas/Record<string,string>"
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
                     }
                 }
             },
@@ -3714,7 +3714,9 @@
                         "additionalProperties": false
                     },
                     "intents": {
-                        "type": "number"
+                        "type": "number",
+                        "properties": {},
+                        "additionalProperties": false
                     },
                     "presence": {
                         "$ref": "#/components/schemas/ActivitySchema"
@@ -3733,7 +3735,9 @@
                         "maxItems": 2,
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "type": "number",
+                            "properties": {},
+                            "additionalProperties": false
                         }
                     },
                     "guild_subscriptions": {
@@ -7495,10 +7499,10 @@
                         "type": "boolean"
                     },
                     "roles": {
-                        "$ref": "#/components/schemas/Record<string,boolean>"
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cboolean%3E"
                     },
                     "channels": {
-                        "$ref": "#/components/schemas/Record<string,boolean>"
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cboolean%3E"
                     }
                 }
             },
@@ -13389,7 +13393,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@699": {
+                            "__@unscopables@698": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -13515,17 +13519,17 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@697": {
+                                    "__@iterator@696": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@699": {
+                                    "__@unscopables@698": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@699",
+                            "__@unscopables@698",
                             "length"
                         ]
                     },

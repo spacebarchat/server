@@ -42,7 +42,6 @@ export async function initTranslation(router: Router) {
                 loadPath: path.join(ASSET_FOLDER_PATH, "locales") + "/{{lng}}/{{ns}}.json",
             },
             load: "all",
-            showSupportNotice: false,
         });
 
     router.use(i18nextMiddleware.handle(i18next, {}));
