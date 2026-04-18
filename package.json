@@ -81,7 +81,7 @@
         "@toondepauw/node-zstd": "^1.2.0",
         "ajv": "^8.18.0",
         "ajv-formats": "^3.0.1",
-        "amqplib": "^0.10.9",
+        "amqplib": "^1.0.3",
         "badge-maker": "^5.0.2",
         "bcrypt": "^6.0.0",
         "body-parser": "^2.2.2",
