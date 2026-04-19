@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: dedicated schemas?
 import { User_DisplayNameEffect, User_DisplayNameFont } from "discord-protos";
 
 export interface UserModifySchema {
