@@ -129,7 +129,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 
     user.connected_accounts
         .filter((x) => x.visibility != 0)
-        .map((x) => {
+        .forEach((x) => {
             const publicUserConnection = {
                 id: x.id,
                 type: x.type,
