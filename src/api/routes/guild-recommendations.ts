@@ -20,7 +20,7 @@ import { Config, Guild } from "@spacebar/util";
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Like } from "typeorm";
+import { ArrayContains, Like } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -44,7 +44,7 @@ router.get(
         const guilds = showAllGuilds
             ? await Guild.find({ take: Math.abs(Number(limit || 24)) })
             : await Guild.find({
-                  where: { features: Like("%DISCOVERABLE%") },
+                  where: { features: ArrayContains(["DISCOVERABLE"]) },
                   take: Math.abs(Number(limit || 24)),
               });
         res.send({
