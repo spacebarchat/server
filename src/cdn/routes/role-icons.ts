@@ -17,7 +17,7 @@
 */
 
 import { Router, Response, Request } from "express";
-import { Config, Snowflake } from "@spacebar/util";
+import { Config } from "@spacebar/util";
 import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
@@ -42,7 +42,7 @@ router.post("/:role_id", multer.single("file"), async (req: Request, res: Respon
     const { buffer, size } = req.file;
     const { role_id } = req.params as { [key: string]: string };
 
-    const hash = crypto.createHash("md5").update(Snowflake.generate()).digest("hex");
+    const hash = crypto.createHash("md5").update(buffer).digest("hex");
 
     const type = await fileTypeFromBuffer(buffer);
     if (!type || !ALLOWED_MIME_TYPES.includes(type.mime)) throw new HTTPError("Invalid file type");
