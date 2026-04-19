@@ -43,6 +43,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
                 name: true,
                 verified: true,
                 metadata_: true,
+                metadata_visibility: true,
                 visibility: true,
             },
         },
@@ -142,7 +143,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
 
             if (x.metadata_visibility != 0) {
                 // @ts-expect-error idk
-                x.metadata = x.metadata_;
+                publicUserConnection.metadata = x.metadata_;
             }
 
             publicUserConnections.push(publicUserConnection);
