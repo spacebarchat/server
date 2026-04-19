@@ -48,6 +48,12 @@ export default defineConfig([
             "@typescript-eslint/no-unused-vars": "off",
             "@typescript-eslint/no-deprecated": "warn",
             "array-callback-return": "error",
+            "no-constructor-return": "error",
+            "no-duplicate-imports": "error",
+            // unsure what the defaults are here, but we want them to error
+            "for-direction": "error",
+            "constructor-super": "error",
+            "getter-return": "error",
             "no-restricted-imports": [
                 "error",
                 { name: "@spacebar/api*", message: "Did you mean @spacebar/api?" },

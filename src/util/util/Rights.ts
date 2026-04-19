@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BitField } from "./BitField";
-import { BitFieldResolvable, BitFlag } from "./BitField";
+import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { User } from "../entities";
 import { HTTPError } from "lambert-server";
 

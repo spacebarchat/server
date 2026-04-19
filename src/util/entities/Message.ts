@@ -41,8 +41,8 @@ import {
     PublicMessage,
     Reaction,
     UnfurledMediaItem,
+    PartialUser,
 } from "@spacebar/schemas";
-import { PartialUser } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
 

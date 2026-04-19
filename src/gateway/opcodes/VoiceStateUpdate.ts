@@ -16,9 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload, WebSocket } from "@spacebar/gateway";
+import { Payload, WebSocket, genVoiceToken } from "@spacebar/gateway";
 import { Config, emitEvent, Guild, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
-import { genVoiceToken } from "@spacebar/gateway";
 import { check } from "./instanceOf";
 import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
 // TODO: check if a voice server is setup

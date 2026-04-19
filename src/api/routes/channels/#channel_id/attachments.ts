@@ -17,9 +17,8 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Config, Permissions } from "@spacebar/util";
+import { CloudAttachment, Channel, Config, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { CloudAttachment } from "@spacebar/util";
 import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

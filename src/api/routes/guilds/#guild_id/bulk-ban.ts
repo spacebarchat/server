@@ -17,10 +17,9 @@
 */
 
 import { route } from "@spacebar/api";
-import { Ban, DiscordApiErrors, GuildBanAddEvent, Member, User, emitEvent } from "@spacebar/util";
+import { Ban, Config, DiscordApiErrors, GuildBanAddEvent, Member, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { Config } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 
