@@ -231,6 +231,9 @@ async function consume(this: WebSocket, opts: EventOpts) {
             });
             this.close(CLOSECODES.Invalid_session); // TODO: this is deprecated?
             return;
+        default:
+            // no special treatment
+            break;
     }
 
     // subscription managment
@@ -290,6 +293,9 @@ async function consume(this: WebSocket, opts: EventOpts) {
             }
             break;
         }
+        default:
+            // no special treatment
+            break;
     }
 
     // permission checking

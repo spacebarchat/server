@@ -50,6 +50,8 @@ export function instanceOf(type: any, value: any, { path = "", optional = false 
         case Object:
             if (typeof value === "object" && value !== null) return true;
             throw `${path} must be a object`;
+        default:
+            break;
     }
 
     if (typeof type === "object") {
