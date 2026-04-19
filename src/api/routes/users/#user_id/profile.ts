@@ -35,6 +35,17 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
             id: user_id,
         },
         relations: { connected_accounts: true },
+        select: {
+            // Manually select everything cause typeorm is a fuck
+            connected_accounts: {
+                id: true,
+                type: true,
+                name: true,
+                verified: true,
+                metadata_: true,
+                visibility: true,
+            },
+        },
     });
 
     const mutual_guilds: object[] = [];
