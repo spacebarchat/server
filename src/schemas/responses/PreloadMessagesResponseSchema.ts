@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: remove entity import
 import { Message } from "@spacebar/util";
 
 export type PreloadMessagesResponseSchema = Message[];

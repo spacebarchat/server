@@ -16,11 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: clean up util imports
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
-import { Application, BackupCode, Categories, Channel, Emoji, Guild, Invite, Member, Message, Role, Sticker, StickerPack, Template, Webhook } from "@spacebar/util";
+// TODO: remove entity imports
+import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Message, Role, Template, Webhook } from "@spacebar/util";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
-import { GuildBansResponse, GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
+import { GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
 
 // TODO: remove this entire file!
 // removes internal properties from the guild class

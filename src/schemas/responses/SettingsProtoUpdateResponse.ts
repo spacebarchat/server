@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: is there a better alternative for this?
 import { JsonValue } from "@protobuf-ts/runtime";
 
 export interface SettingsProtoResponse {

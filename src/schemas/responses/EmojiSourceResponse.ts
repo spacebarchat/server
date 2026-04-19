@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: remove entity import
 import { Emoji } from "@spacebar/util";
 
 export interface EmojiSourceResponse {

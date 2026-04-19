@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: remove entity imports
 import { Badge, Member, User } from "@spacebar/util";
 import { PublicConnectedAccount, PublicMember, PublicUser } from "@spacebar/schemas";
 

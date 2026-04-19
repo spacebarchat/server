@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: remove util import
 import { ClientStatus } from "@spacebar/util";
 
 export interface GuildWidgetJsonResponse {

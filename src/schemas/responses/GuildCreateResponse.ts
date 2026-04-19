@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: remove import from util
 import { GuildWelcomeScreen } from "@spacebar/util";
 import { GuildUpdateSchema } from "@spacebar/schemas";
 
