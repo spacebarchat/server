@@ -24,6 +24,14 @@ export interface MessageAcknowledgeSchema {
     token?: string;
 }
 
+export interface AckBulkSchema {
+    read_states: {
+        channel_id: string;
+        message_id: string;
+        read_state_type: ReadStateType; // WHat is this?
+    }[];
+}
+
 export interface AcknowledgeDeleteSchema {
     read_state_type?: ReadStateType;
     version?: number;
