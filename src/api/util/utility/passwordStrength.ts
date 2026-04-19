@@ -44,12 +44,12 @@ export function checkPassword(password: string): number {
     }
 
     // checks for amount of Numbers
-    if (password.match(reNUMBER)?.length ?? 0 >= minNumbers - 1) {
+    if ((password.match(reNUMBER)?.length ?? 0) >= minNumbers - 1) {
         strength += 0.05;
     }
 
     // checks for amount of Uppercase Letters
-    if (password.match(reUPPERCASELETTER)?.length ?? 0 >= minUpperCase - 1) {
+    if ((password.match(reUPPERCASELETTER)?.length ?? 0) >= minUpperCase - 1) {
         strength += 0.05;
     }
 

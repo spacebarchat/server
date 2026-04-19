@@ -18,7 +18,7 @@ export class AbuseIpDbClient {
     static async checkIpAddress(ip: string): Promise<AbuseIpDbCheckResponse | null> {
         const { ipdataApiKey } = Config.get().security;
         if (!ipdataApiKey) return null;
-        if (this.ipCheckCache.get(ip)?.expires ?? 0 > Date.now()) return this.ipCheckCache.get(ip)!.data;
+        if ((this.ipCheckCache.get(ip)?.expires ?? 0) > Date.now()) return this.ipCheckCache.get(ip)!.data;
 
         console.log(`[AbuseIPDB] Checking IP address ${ip}...`);
         const resp = (await (await fetch(`https://api.abuseipdb.com/api/v2/check?ipAddress=${ip}`)).json()) as Promise<AbuseIpDbCheckResponse>;
@@ -32,7 +32,7 @@ export class AbuseIpDbClient {
     static async getBlacklist(): Promise<AbuseIpDbBlacklistResponse | null> {
         const { abuseIpDbApiKey, abuseipdbBlacklistRatelimit } = Config.get().security;
         if (!abuseIpDbApiKey) return null;
-        if (this.blacklistCache?.expires ?? 0 > Date.now()) return this.blacklistCache!.data;
+        if ((this.blacklistCache?.expires ?? 0) > Date.now()) return this.blacklistCache!.data;
 
         console.log("[AbuseIPDB] Fetching blacklist...");
         const resp = (await (
