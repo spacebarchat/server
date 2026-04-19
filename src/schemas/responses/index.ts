@@ -49,6 +49,7 @@ export * from "./InstanceStatsResponse";
 export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
+export * from "./PartialConnectedAccountResponse";
 export * from "./PreloadMessagesResponseSchema";
 export * from "./RefreshUrlsResponse";
 export * from "./SettingsProtoUpdateResponse";
