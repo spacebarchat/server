@@ -15,9 +15,11 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 export * from "./bots";
 export * from "./channels";
 export * from "./developers";
 export * from "./guilds";
 export * from "./messages";
+export * from "./reports";
 export * from "./users";
