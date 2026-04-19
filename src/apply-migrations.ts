@@ -22,7 +22,7 @@ async function main() {
             });
         } catch (e) {
             console.error("Failed to apply migrations, retrying in 2s...", e);
-            await new Promise((res) => setTimeout(res, 2000));
+            await new Promise((res) => void setTimeout(res, 2000));
             await main();
         }
     }

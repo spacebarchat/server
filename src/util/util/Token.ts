@@ -143,7 +143,7 @@ export const checkToken = (
         };
 
         const dec = jwt.decode(token, { complete: true });
-        if (!dec) return rejectAndLog(reject, 500, "Failed to decode token");
+        if (!dec) return void rejectAndLog(reject, 500, "Failed to decode token");
         logAuth("Decoded token: " + JSON.stringify(dec));
 
         if (dec.header.alg == "HS256" && Config.get().security.jwtSecret !== null) {
@@ -153,7 +153,7 @@ export const checkToken = (
             loadOrGenerateKeypair().then((keyPair) => {
                 jwt.verify(token, keyPair.publicKey, { algorithms: ["ES512"] }, validateUser);
             });
-        } else return rejectAndLog(reject, 400, "Unsupported token algorithm: " + dec.header.alg);
+        } else return void rejectAndLog(reject, 400, "Unsupported token algorithm: " + dec.header.alg);
     });
 };
 

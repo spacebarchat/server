@@ -50,6 +50,7 @@ export default defineConfig([
             "array-callback-return": "error",
             "no-constructor-return": "error",
             "no-duplicate-imports": "error",
+            "no-promise-executor-return": ["error", { allowVoid: true }],
             // unsure what the defaults are here, but we want them to error
             "for-direction": "error",
             "constructor-super": "error",

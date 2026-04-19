@@ -123,7 +123,7 @@ export async function initDatabase(): Promise<DataSource> {
         console.log("[Database] Skipping migrations as per config.");
         while (!(await dbExists())) {
             console.log("[Database] Database does not exist, and we are not running migrations... Waiting 1 seconds...");
-            await new Promise((r) => setTimeout(r, 5000));
+            await new Promise((r) => void setTimeout(r, 5000));
         }
     }
 

@@ -76,7 +76,7 @@ export class KittyLogo {
                 });
                 process.stdout.write("\x1b_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\x1b\\\x1b[c");
 
-                await new Promise((res) => setTimeout(res, 5000));
+                await new Promise((res) => void setTimeout(res, 5000));
                 resolve(false);
             })();
         });

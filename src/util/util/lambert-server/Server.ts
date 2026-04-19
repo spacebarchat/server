@@ -65,6 +65,6 @@ export class Server {
     }
 
     stop() {
-        return new Promise<void>((res) => this.http.close(() => res()));
+        return new Promise<void>((res) => void this.http.close(() => res()));
     }
 }

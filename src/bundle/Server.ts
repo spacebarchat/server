@@ -74,7 +74,7 @@ async function main() {
         );
     }
 
-    await new Promise((resolve) => server.listen({ port }, () => resolve(undefined)));
+    await new Promise((resolve) => void server.listen({ port }, () => resolve(undefined)));
     await Promise.all([api.start(), cdn.start(), gateway.start(), webrtc.start()]);
 
     if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-bundle-${cluster.worker ? cluster.worker.id : port}`);
