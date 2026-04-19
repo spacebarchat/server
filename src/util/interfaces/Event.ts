@@ -18,8 +18,6 @@
 
 import {
     ConnectedAccount,
-    Interaction,
-    Message,
     Invite,
     Role,
     Emoji,
@@ -42,6 +40,7 @@ import { JsonValue } from "@protobuf-ts/runtime";
 import {
     ApplicationCommand,
     GuildCreateResponse,
+    Interaction,
     InteractionFailureReason,
     PartialEmoji,
     PublicChannel,

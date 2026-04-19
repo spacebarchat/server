@@ -125,44 +125,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "RouteResponse": {
-        "type": "object",
-        "properties": {
-            "status": {
-                "type": "integer"
-            },
-            "body": {
-                "type": "string",
-                "pattern": "^.*Response$"
-            },
-            "headers": {
-                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "FieldErrorResponse": {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "integer"
-            },
-            "message": {
-                "type": "string"
-            },
-            "errors": {
-                "$ref": "#/definitions/ErrorList"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "code",
-            "errors",
-            "message"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "InteractionSchema": {
         "type": "object",
         "properties": {
@@ -224,6 +186,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+<<<<<<< HEAD
     "AckBulkSchema": {
         "type": "object",
         "properties": {
@@ -249,11 +212,47 @@
                         "read_state_type"
                     ]
                 }
+=======
+    "RouteResponse": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "integer"
+            },
+            "body": {
+                "type": "string",
+                "pattern": "^.*Response$"
+            },
+            "headers": {
+                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "FieldErrorResponse": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "integer"
+            },
+            "message": {
+                "type": "string"
+            },
+            "errors": {
+                "$ref": "#/definitions/ErrorList"
+>>>>>>> 288a50d8d (Clean up imports in schemas/api/bots)
             }
         },
         "additionalProperties": false,
         "required": [
+<<<<<<< HEAD
             "read_states"
+=======
+            "code",
+            "errors",
+            "message"
+>>>>>>> 288a50d8d (Clean up imports in schemas/api/bots)
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -3222,7 +3221,8 @@
         "type": "object",
         "properties": {
             "id": {
-                "$ref": "#/definitions/Snowflake"
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
             },
             "type": {
                 "enum": [
@@ -3237,7 +3237,8 @@
                 "type": "string"
             },
             "version": {
-                "$ref": "#/definitions/Snowflake"
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
             },
             "application_command": {
                 "type": "object",
@@ -3251,8 +3252,8 @@
                 }
             },
             "target_id": {
-                "description": "A container for useful snowflake-related methods.",
-                "$ref": "#/definitions/Snowflake"
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
             },
             "attachments": {
                 "type": "array",
@@ -3314,20 +3315,10 @@
                 "type": "string"
             },
             "values": {
-                "anyOf": [
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/definitions/Snowflake"
-                        }
-                    }
-                ]
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "additionalProperties": false,
@@ -3340,7 +3331,8 @@
         "type": "object",
         "properties": {
             "id": {
-                "$ref": "#/definitions/Snowflake"
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
             },
             "custom_id": {
                 "type": "string"
@@ -8001,11 +7993,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ErrorList": {
-        "type": "object",
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "InteractionType": {
         "type": "number",
         "enum": [
@@ -8086,6 +8073,11 @@
             "file_size",
             "filename"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ErrorList": {
+        "type": "object",
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "Status": {

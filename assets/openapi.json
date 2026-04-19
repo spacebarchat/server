@@ -146,40 +146,6 @@
                     "version"
                 ]
             },
-            "RouteResponse": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "integer"
-                    },
-                    "body": {
-                        "type": "string",
-                        "pattern": "^.*Response$"
-                    },
-                    "headers": {
-                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
-                    }
-                }
-            },
-            "FieldErrorResponse": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "integer"
-                    },
-                    "message": {
-                        "type": "string"
-                    },
-                    "errors": {
-                        "$ref": "#/components/schemas/ErrorList"
-                    }
-                },
-                "required": [
-                    "code",
-                    "errors",
-                    "message"
-                ]
-            },
             "InteractionSchema": {
                 "type": "object",
                 "properties": {
@@ -239,6 +205,7 @@
                     "type"
                 ]
             },
+<<<<<<< HEAD
             "AckBulkSchema": {
                 "type": "object",
                 "properties": {
@@ -268,6 +235,40 @@
                 },
                 "required": [
                     "read_states"
+=======
+            "RouteResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string",
+                        "pattern": "^.*Response$"
+                    },
+                    "headers": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
+                    }
+                }
+            },
+            "FieldErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "errors": {
+                        "$ref": "#/components/schemas/ErrorList"
+                    }
+                },
+                "required": [
+                    "code",
+                    "errors",
+                    "message"
+>>>>>>> 288a50d8d (Clean up imports in schemas/api/bots)
                 ]
             },
             "ActivitySchema": {
@@ -3028,7 +3029,8 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "$ref": "#/components/schemas/Snowflake"
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
                     },
                     "type": {
                         "enum": [
@@ -3043,7 +3045,8 @@
                         "type": "string"
                     },
                     "version": {
-                        "$ref": "#/components/schemas/Snowflake"
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
                     },
                     "application_command": {
                         "type": "object",
@@ -3057,8 +3060,8 @@
                         }
                     },
                     "target_id": {
-                        "description": "A container for useful snowflake-related methods.",
-                        "$ref": "#/components/schemas/Snowflake"
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
                     },
                     "attachments": {
                         "type": "array",
@@ -3118,20 +3121,10 @@
                         "type": "string"
                     },
                     "values": {
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Snowflake"
-                                }
-                            }
-                        ]
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
@@ -3142,7 +3135,8 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "$ref": "#/components/schemas/Snowflake"
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
                     },
                     "custom_id": {
                         "type": "string"
@@ -7517,9 +7511,6 @@
                     2
                 ]
             },
-            "ErrorList": {
-                "type": "object"
-            },
             "InteractionType": {
                 "type": "number",
                 "enum": [
@@ -7596,6 +7587,9 @@
                     "file_size",
                     "filename"
                 ]
+            },
+            "ErrorList": {
+                "type": "object"
             },
             "Status": {
                 "enum": [

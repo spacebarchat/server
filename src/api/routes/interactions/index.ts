@@ -17,10 +17,10 @@
 */
 
 import { randomBytes } from "node:crypto";
-import { InteractionFailureReason, InteractionSchema } from "@spacebar/schemas";
+import { InteractionFailureReason, InteractionSchema, InteractionType } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Config, emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, InteractionType, Member, Message, Snowflake } from "@spacebar/util";
+import { Config, emitEvent, getPermission, Guild, InteractionCreateEvent, InteractionFailureEvent, Member, Message, Snowflake } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";
 import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionCreateSchema";
 

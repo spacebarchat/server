@@ -16,9 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Message } from "@spacebar/util";
 import { InteractionCallbackType } from "./InteractionCallbackType";
-import { AllowedMentions, BaseMessageComponents, Embed, MessageComponentType } from "../messages";
+import { AllowedMentions, BaseMessageComponents, Embed } from "../messages";
 import { MessageCreateAttachment, MessageCreateCloudAttachment, PollCreationSchema } from "#schemas/uncategorised";
 
 export interface InteractionCallbackSchema {

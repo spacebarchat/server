@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Snowflake } from "@spacebar/util";
+import { Snowflake } from "../../Identifiers";
 import { MessageComponentType } from "../messages";
 import { ApplicationCommandType } from "./ApplicationCommandSchema";
 

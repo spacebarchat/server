@@ -20,6 +20,5 @@ export * from "./Activity";
 export * from "./ConnectedAccount";
 export * from "./Event";
 export * from "./GuildWelcomeScreen";
-export * from "./Interaction";
 export * from "./Presence";
 export * from "./Status";
