@@ -17,8 +17,8 @@
 */
 
 import { Connection } from "@spacebar/util";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { ConnectionConfig } from "./ConnectionConfig";
 import { ConnectionStore } from "./ConnectionStore";
 import { greenBright, redBright } from "picocolors";

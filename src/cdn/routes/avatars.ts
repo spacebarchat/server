@@ -21,7 +21,7 @@ import { Config } from "@spacebar/util";
 import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { multer } from "../util/multer";
 import { cache } from "../util/cache";
 

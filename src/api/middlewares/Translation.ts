@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import i18next from "i18next";
 import i18nextMiddleware from "i18next-http-middleware";
 import i18nextBackend from "i18next-fs-backend";

@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import * as cluster from "cluster";
+import * as cluster from "node:cluster";
 
 // https://github.com/discordjs/discord.js/blob/master/src/util/Snowflake.js
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah

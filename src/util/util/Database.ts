@@ -17,12 +17,12 @@
 */
 
 import { config } from "dotenv";
-import path from "path";
+import path from "node:path";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
 import { ConfigEntity } from "../entities/Config";
-import fs from "fs";
+import fs from "node:fs";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class

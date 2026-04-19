@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import path from "path";
-import fs from "fs";
-import { execSync } from "child_process";
+import path from "node:path";
+import fs from "node:fs";
+import { execSync } from "node:child_process";
 import { red } from "picocolors";
 
 export function getRevInfoOrFail(): { rev: string | null; lastModified: number } {

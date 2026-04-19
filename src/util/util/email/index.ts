@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import path from "node:path";
 import { User } from "../../entities";
 import { Config } from "../Config";

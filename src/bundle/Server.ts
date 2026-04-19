@@ -21,7 +21,7 @@ import morgan from "morgan";
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
-import http from "http";
+import http from "node:http";
 import * as Api from "@spacebar/api";
 import * as Gateway from "@spacebar/gateway";
 import * as Webrtc from "@spacebar/webrtc";
@@ -29,8 +29,8 @@ import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
 import { Config, initDatabase } from "@spacebar/util";
-import fs from "fs";
-import cluster from "cluster";
+import fs from "node:fs";
+import cluster from "node:cluster";
 
 const app = express();
 const server = http.createServer();

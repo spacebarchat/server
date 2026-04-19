@@ -22,11 +22,11 @@ import { genSessionId, WebSocket } from "@spacebar/gateway";
 import { Send } from "../util/Send";
 import { CLOSECODES, OPCODES } from "../util/Constants";
 import { setHeartbeat } from "../util/Heartbeat";
-import { IncomingMessage } from "http";
+import { IncomingMessage } from "node:http";
 import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
-import { URL } from "url";
+import { URL } from "node:url";
 import { Config, ErlpackType } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 

@@ -18,8 +18,8 @@
 
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }).replaceAll("#/definitions/", ""));

@@ -19,7 +19,7 @@
 import { Server, ServerOptions } from "lambert-server";
 import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
-import path from "path";
+import path from "node:path";
 import guildProfilesRoute from "./routes/guild-profiles";
 import morgan from "morgan";
 import { storage } from "./util";

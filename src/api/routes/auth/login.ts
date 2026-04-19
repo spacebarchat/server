@@ -19,7 +19,7 @@
 import { route, verifyCaptcha } from "@spacebar/api";
 import { Config, FieldErrors, User, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { LoginSchema } from "@spacebar/schemas";
 

@@ -19,7 +19,7 @@
 import { arrayDistinctBy, arrayGroupBy, Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl, OrmUtils, sleep } from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { yellow } from "picocolors";
 import probe from "probe-image-size";
 import { FindOptionsWhere, In } from "typeorm";

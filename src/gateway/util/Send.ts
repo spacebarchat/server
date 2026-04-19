@@ -17,8 +17,8 @@
 */
 
 import { Payload, WebSocket } from "@spacebar/gateway";
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 import { ErlpackType, JSONReplacer } from "@spacebar/util";
 let erlpack: ErlpackType | null = null;

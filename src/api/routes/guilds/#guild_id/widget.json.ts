@@ -108,8 +108,8 @@ async function getWidgetJsonData(guild_id: string) {
     // Fetch voice channels, and the @everyone permissions object
     const channels: { id: string; name: string; position: number }[] = [];
 
-    (await Channel.getOrderedChannels(guild.id, guild)).filter((doc) => {
-        if (doc.type !== ChannelType.GUILD_VOICE) return false;
+    (await Channel.getOrderedChannels(guild.id, guild)).forEach((doc) => {
+        if (doc.type !== ChannelType.GUILD_VOICE) return;
         // Only return voice channels where @everyone has the CONNECT permission
         if (doc.permission_overwrites === undefined || Permissions.channelPermission(doc.permission_overwrites, Permissions.FLAGS.CONNECT) === Permissions.FLAGS.CONNECT) {
             channels.push({

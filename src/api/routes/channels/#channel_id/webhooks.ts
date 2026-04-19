@@ -18,7 +18,7 @@
 
 import { route } from "@spacebar/api";
 import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName, Application } from "@spacebar/util";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { isTextChannel, WebhookCreateSchema, WebhookType } from "@spacebar/schemas";

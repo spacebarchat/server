@@ -17,7 +17,7 @@
 */
 
 import { Snowflake } from "@spacebar/util";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 // TODO: 'random'? seriously? who named this?
 // And why is this even here? Just use cryto.randomBytes?

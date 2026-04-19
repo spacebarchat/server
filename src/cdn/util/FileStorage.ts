@@ -17,10 +17,10 @@
 */
 
 import { Storage } from "./Storage";
-import fs from "fs";
-import fsp from "fs/promises";
-import { join, dirname } from "path";
-import { Readable } from "stream";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
+import { join, dirname } from "node:path";
+import { Readable } from "node:stream";
 import ExifTransformer from "exif-be-gone";
 
 export class FileStorage implements Storage {

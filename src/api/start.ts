@@ -24,9 +24,9 @@ process.on("unhandledRejection", console.error);
 import { config } from "dotenv";
 config({ quiet: true });
 import { SpacebarServer } from "./Server";
-import cluster from "cluster";
-import os from "os";
-import fs from "fs";
+import cluster from "node:cluster";
+import os from "node:os";
+import fs from "node:fs";
 let cores = 1;
 try {
     cores = Number(process.env.THREADS) || os.cpus().length;

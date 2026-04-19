@@ -18,9 +18,9 @@
 
 import { CLOSECODES, Payload, WebSocket } from "@spacebar/gateway";
 import { ErlpackType } from "@spacebar/util";
-import fs from "fs/promises";
+import fs from "node:fs/promises";
 import BigIntJson from "json-bigint";
-import path from "path";
+import path from "node:path";
 import WS from "ws";
 import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";

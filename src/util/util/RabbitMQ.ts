@@ -18,7 +18,7 @@
 
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { Config } from "./Config";
-import EventEmitter from "events";
+import EventEmitter from "node:events";
 
 export class RabbitMQ {
     public static connection: ChannelModel | null = null;

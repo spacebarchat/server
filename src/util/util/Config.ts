@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { existsSync } from "fs";
-import fs from "fs/promises";
+import { existsSync } from "node:fs";
+import fs from "node:fs/promises";
 import { OrmUtils } from "..";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities";

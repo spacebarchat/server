@@ -20,8 +20,8 @@ import moduleAlias from "module-alias";
 moduleAlias(__dirname + "../../../package.json");
 
 import "reflect-metadata";
-import cluster, { Worker } from "cluster";
-import os from "os";
+import cluster, { Worker } from "node:cluster";
+import os from "node:os";
 import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
 import { initStats } from "./stats";
 import { config } from "dotenv";

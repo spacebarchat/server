@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomBytes } from "crypto";
+import { randomBytes } from "node:crypto";
 import { InteractionFailureReason, InteractionSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";

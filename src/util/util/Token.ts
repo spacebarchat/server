@@ -20,14 +20,14 @@ import jwt from "jsonwebtoken";
 import { Config } from "./Config";
 import { InstanceBan, Session, User } from "../entities";
 import crypto from "node:crypto";
-import fs from "fs/promises";
-import { existsSync } from "fs";
+import fs from "node:fs/promises";
+import { existsSync } from "node:fs";
 // TODO: dont use deprecated APIs lol
 import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
 import { randomUpperString } from "@spacebar/api";
 import { TimeSpan } from "./Timespan";
 import { HTTPError } from "lambert-server";
-import path from "path";
+import path from "node:path";
 
 /// Change history:
 /// 1 - Initial version with HS256

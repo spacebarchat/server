@@ -16,13 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { EmbedHandlers, randomString, fillMessageUrlEmbeds } from "@spacebar/api";
+import { randomString, fillMessageUrlEmbeds } from "@spacebar/api";
 import {
     Application,
     Attachment,
     Channel,
     Config,
-    EmbedCache,
     emitEvent,
     EVERYONE_MENTION,
     getPermission,
@@ -31,7 +30,6 @@ import {
     HERE_MENTION,
     Message,
     MessageCreateEvent,
-    MessageUpdateEvent,
     Role,
     ROLE_MENTION,
     Sticker,
@@ -41,7 +39,6 @@ import {
     Webhook,
     handleFile,
     Permissions,
-    normalizeUrl,
     DiscordApiErrors,
     CloudAttachment,
     ReadState,
@@ -49,7 +46,6 @@ import {
     Session,
     MessageFlags,
     FieldErrors,
-    Snowflake,
     getDatabase,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
@@ -70,7 +66,6 @@ import {
     UnfurledMediaItem,
     BaseMessageComponents,
     v1CompTypes,
-    PartialUser,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers

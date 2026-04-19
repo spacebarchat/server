@@ -1,6 +1,6 @@
 import express, { Application, Router } from "express";
-import { Server as HTTPServer } from "http";
-import http from "http";
+import { Server as HTTPServer } from "node:http";
+import http from "node:http";
 
 export type ServerOptions = {
     port: number;

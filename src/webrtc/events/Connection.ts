@@ -17,8 +17,8 @@
 */
 
 import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
-import { IncomingMessage } from "http";
-import { URL } from "url";
+import { IncomingMessage } from "node:http";
+import { URL } from "node:url";
 import WS from "ws";
 import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";

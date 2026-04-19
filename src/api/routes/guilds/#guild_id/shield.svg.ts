@@ -20,8 +20,8 @@ import { route } from "@spacebar/api";
 import { DiscordApiErrors, Guild, Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { makeBadge } from "badge-maker";
-import path from "path";
-import fs from "fs";
+import path from "node:path";
+import fs from "node:fs";
 
 const router: Router = Router({ mergeParams: true });
 

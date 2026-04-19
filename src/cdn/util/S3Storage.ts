@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 import { Storage } from "./Storage";
 
 const readableToBuffer = (readable: Readable): Promise<Buffer> =>

@@ -21,9 +21,9 @@
 import { route } from "@spacebar/api";
 import { DiscordApiErrors, Guild } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import fs from "fs";
+import fs from "node:fs";
 import { HTTPError } from "lambert-server";
-import path from "path";
+import path from "node:path";
 import { storage } from "@spacebar/cdn";
 
 const router: Router = Router({ mergeParams: true });

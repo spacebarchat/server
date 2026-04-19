@@ -19,11 +19,11 @@
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { ReportMenuType, ReportMenuTypeNames } from "../../../schemas/api/reports/ReportMenu";
-import path from "path";
+import path from "node:path";
 import { HTTPError } from "lambert-server";
 import { CreateReportSchema } from "../../../schemas/api/reports/CreateReport";
 import { FieldErrors } from "@spacebar/util";
-import fs from "fs";
+import fs from "node:fs";
 
 const router = Router({ mergeParams: true });
 if (process.env.LOG_ROUTES !== "false") console.log("[Server] Registering reporting menu routes...");

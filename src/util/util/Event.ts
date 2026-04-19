@@ -18,16 +18,16 @@
 
 import { Channel } from "amqplib";
 import { RabbitMQ } from "./RabbitMQ";
-import EventEmitter from "events";
+import EventEmitter from "node:events";
 import { EVENT, Event } from "../interfaces";
-import { randomUUID } from "crypto";
-import path from "path";
+import { randomUUID } from "node:crypto";
+import path from "node:path";
 import { Socket } from "node:net";
 import { FSWatcher } from "node:fs";
 import { Stopwatch } from "./Stopwatch";
 import { Config } from "./Config";
-import net from "net";
-import fs from "fs";
+import net from "node:net";
+import fs from "node:fs";
 import { red } from "picocolors";
 
 export const events = new EventEmitter();

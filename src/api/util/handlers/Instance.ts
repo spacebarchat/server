@@ -17,7 +17,7 @@
 */
 
 import { Session, TimeSpan } from "@spacebar/util";
-import { setInterval } from "timers";
+import { setInterval } from "node:timers";
 
 export async function initInstance() {
     // TODO: clean up database and delete tombstone data

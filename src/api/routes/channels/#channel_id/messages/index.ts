@@ -47,7 +47,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
-import { URL } from "url";
+import { URL } from "node:url";
 import {
     AcknowledgeDeleteSchema,
     isTextChannel,
@@ -438,19 +438,22 @@ router.post(
 
             // Only one recipients should be closed here, since in group DMs the recipient is deleted not closed
             await Promise.all(
-                channel.recipients?.map((recipient) => {
-                    if (recipient.closed) {
-                        recipient.closed = false;
-                        return Promise.all([
-                            recipient.save(),
-                            emitEvent({
-                                event: "CHANNEL_CREATE",
-                                data: channel_dto.excludedRecipients([recipient.user_id]),
-                                user_id: recipient.user_id,
-                            }),
-                        ]);
-                    }
-                }) || [],
+                channel.recipients
+                    ?.map((recipient) => {
+                        if (recipient.closed) {
+                            recipient.closed = false;
+                            return Promise.all([
+                                recipient.save(),
+                                emitEvent({
+                                    event: "CHANNEL_CREATE",
+                                    data: channel_dto.excludedRecipients([recipient.user_id]),
+                                    user_id: recipient.user_id,
+                                }),
+                            ]);
+                        }
+                        return null;
+                    })
+                    .filter((x) => x !== null) || [],
             );
         }
 

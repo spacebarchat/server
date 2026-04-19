@@ -23,8 +23,8 @@ process.on("unhandledRejection", console.error);
 
 import { Server } from "./Server";
 import { config } from "dotenv";
-import fs from "fs";
-import cluster from "cluster";
+import fs from "node:fs";
+import cluster from "node:cluster";
 config({ quiet: true });
 
 let port = Number(process.env.PORT);

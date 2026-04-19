@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import os from "os";
+import os from "node:os";
 import { readFileSync } from "node:fs";
 import { red } from "picocolors";
 
