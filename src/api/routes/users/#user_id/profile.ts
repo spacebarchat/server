@@ -124,7 +124,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         }
     }
 
-    // Only expose public propeties to response
+    // Only expose public properties to response
     const publicUserConnections: PartialConnectedAccountResponse[] = [];
 
     user.connected_accounts
