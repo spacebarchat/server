@@ -20,6 +20,7 @@
 
 import { ActivitySchema } from "@spacebar/schemas";
 
+// TODO: can we get rid of this somehow?
 export const IdentifySchema = {
     token: String,
     $intents: BigInt, // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt

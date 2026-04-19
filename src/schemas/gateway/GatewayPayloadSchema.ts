@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: should this even be in schemas?
 import { Tuple } from "lambert-server";
 
 export const PayloadSchema = {
