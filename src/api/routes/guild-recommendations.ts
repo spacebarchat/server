@@ -20,7 +20,7 @@ import { Config, Guild } from "@spacebar/util";
 
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ArrayContains, Like } from "typeorm";
+import { ArrayContains } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
