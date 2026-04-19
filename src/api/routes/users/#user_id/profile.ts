@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Badge, Config, emitEvent, FieldErrors, handleFile, Member, Relationship, User, UserUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";
+import { PartialConnectedAccountResponse, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -35,6 +35,18 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
             id: user_id,
         },
         relations: { connected_accounts: true },
+        select: {
+            // Manually select everything cause typeorm is a fuck
+            connected_accounts: {
+                id: true,
+                type: true,
+                name: true,
+                verified: true,
+                metadata_: true,
+                metadata_visibility: true,
+                visibility: true,
+            },
+        },
     });
 
     const mutual_guilds: object[] = [];
@@ -112,8 +124,29 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         }
     }
 
+    // Only expose public properties to response
+    const publicUserConnections: PartialConnectedAccountResponse[] = [];
+
+    user.connected_accounts
+        .filter((x) => x.visibility != 0)
+        .map((x) => {
+            const publicUserConnection = {
+                id: x.id,
+                type: x.type,
+                name: x.name,
+                verified: x.verified ?? false,
+            } satisfies PartialConnectedAccountResponse;
+
+            if (x.metadata_visibility != 0) {
+                // @ts-expect-error idk
+                publicUserConnection.metadata = x.metadata_;
+            }
+
+            publicUserConnections.push(publicUserConnection);
+        });
+
     res.json({
-        connected_accounts: user.connected_accounts.filter((x) => x.visibility != 0),
+        connected_accounts: publicUserConnections,
         premium_guild_since: premium_guild_since, // TODO
         premium_since: user.premium_since, // TODO
         mutual_guilds: with_mutual_guilds ? mutual_guilds : undefined, // TODO {id: "", nick: null} when ?with_mutual_guilds=true
