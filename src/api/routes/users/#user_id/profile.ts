@@ -137,10 +137,6 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
                 verified: x.verified ?? false,
             } satisfies PartialConnectedAccountResponse;
 
-            if (x.verified) {
-                publicUserConnection.verified = x.verified;
-            }
-
             if (x.metadata_visibility != 0) {
                 // @ts-expect-error idk
                 publicUserConnection.metadata = x.metadata_;
