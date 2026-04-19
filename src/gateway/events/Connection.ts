@@ -146,9 +146,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
             },
         });
 
-        socket.readyTimeout = setTimeout(() => {
-            return socket.close(CLOSECODES.Session_timed_out);
-        }, 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.close(CLOSECODES.Session_timed_out), 1000 * 30);
     } catch (error) {
         console.error(error);
         return socket.close(CLOSECODES.Unknown_error);

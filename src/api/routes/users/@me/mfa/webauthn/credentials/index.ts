@@ -25,13 +25,8 @@ import { HTTPError } from "lambert-server";
 import { CreateWebAuthnCredentialSchema, GenerateWebAuthnCredentialsSchema, WebAuthnPostSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 
-const isGenerateSchema = (body: WebAuthnPostSchema): body is GenerateWebAuthnCredentialsSchema => {
-    return "password" in body;
-};
-
-const isCreateSchema = (body: WebAuthnPostSchema): body is CreateWebAuthnCredentialSchema => {
-    return "credential" in body;
-};
+const isGenerateSchema = (body: WebAuthnPostSchema): body is GenerateWebAuthnCredentialsSchema => "password" in body;
+const isCreateSchema = (body: WebAuthnPostSchema): body is CreateWebAuthnCredentialSchema => "credential" in body;
 
 function toArrayBuffer(buf: Buffer) {
     const ab = new ArrayBuffer(buf.length);

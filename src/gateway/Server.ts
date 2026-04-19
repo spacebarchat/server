@@ -92,9 +92,9 @@ export class Server {
                                     })),
                                     socketStates: {
                                         open: openConnections.length,
-                                        sessions: openConnections.map((x) => {
+                                        sessions: openConnections.map((x) =>
                                             // console.log(x);
-                                            return useFullWsObj
+                                            useFullWsObj
                                                 ? {
                                                       ...x,
                                                       ...{
@@ -132,8 +132,8 @@ export class Server {
                                                       large_threshold: x.large_threshold,
                                                       qos: x.qos,
                                                       session: x.session,
-                                                  };
-                                        }),
+                                                  },
+                                        ),
                                     },
                                 },
                                 (key, value) => {

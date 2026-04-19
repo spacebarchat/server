@@ -475,26 +475,24 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     }
 
     // Generate merged_members
-    const merged_members = members.map((x) => {
-        return [
-            {
-                ...x,
-                // filter out @everyone role
-                roles: x.roles.filter((r) => r.id !== x.guild.id).map((x) => x.id),
+    const merged_members = members.map((x) => [
+        {
+            ...x,
+            // filter out @everyone role
+            roles: x.roles.filter((r) => r.id !== x.guild.id).map((x) => x.id),
 
-                // add back user, which we don't fetch from db
-                // TODO: For guild profiles, this may need to be changed.
-                // TODO: The only field required in the user prop is `id`,
-                // but our types are annoying so I didn't bother.
-                user: user.toPublicUser(),
+            // add back user, which we don't fetch from db
+            // TODO: For guild profiles, this may need to be changed.
+            // TODO: The only field required in the user prop is `id`,
+            // but our types are annoying so I didn't bother.
+            user: user.toPublicUser(),
 
-                guild: {
-                    id: x.guild.id,
-                },
-                settings: undefined,
+            guild: {
+                id: x.guild.id,
             },
-        ];
-    });
+            settings: undefined,
+        },
+    ]);
     const mergedMembersTime = taskSw.getElapsedAndReset();
 
     // Populated with guilds 'unavailable' currently
@@ -670,62 +668,63 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     }, 0);
 
     // const d: ReadyEventData = {
-    const { result: d, elapsed: buildReadyEventDataTime } = timeFunction<ReadyEventData>(() => {
-        return {
-            v: 9,
-            application: application ? { id: application.id, flags: application.flags } : undefined,
-            user: user.toPrivateUser(["rights"]),
-            user_settings: user.settings,
-            user_settings_proto,
-            user_settings_proto_json,
-            guilds: remappedGuilds,
-            relationships: remappedRelationships,
-            read_state: {
-                entries: read_states,
-                partial: false,
-                version: 0, // TODO
-            },
-            user_guild_settings: {
-                entries: user_guild_settings_entries,
-                partial: false,
-                version: 0, // TODO
-            },
-            private_channels: channels,
-            presences: [], // TODO: Send actual data
-            session_id: this.session_id,
-            country_code: this.session?.last_seen_location_info?.country_code ?? user.settings!.locale,
-            users: Array.from(users),
-            merged_members: merged_members,
-            sessions: allSessions,
-
-            resume_gateway_url: Config.get().gateway.endpointPublic!,
-
-            // lol hack whatever
-            required_action: Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,
-
-            consents: {
-                personalization: {
-                    consented: false, // TODO
+    const { result: d, elapsed: buildReadyEventDataTime } = timeFunction<ReadyEventData>(
+        () =>
+            ({
+                v: 9,
+                application: application ? { id: application.id, flags: application.flags } : undefined,
+                user: user.toPrivateUser(["rights"]),
+                user_settings: user.settings,
+                user_settings_proto,
+                user_settings_proto_json,
+                guilds: remappedGuilds,
+                relationships: remappedRelationships,
+                read_state: {
+                    entries: read_states,
+                    partial: false,
+                    version: 0, // TODO
                 },
-            },
-            experiments: [],
-            guild_join_requests: [],
-            connected_accounts: [],
-            guild_experiments: [],
-            geo_ordered_rtc_regions: [],
-            api_code_version: 1,
-            friend_suggestion_count: 0,
-            analytics_token: "",
-            tutorial: null,
-            session_type: "normal", // TODO
-            auth_session_id_hash: this.session!.getDiscordDeviceInfo().id_hash,
-            notification_settings: {
-                // ????
-                flags: 0,
-            },
-            game_relationships: [],
-        } satisfies ReadyEventData;
-    });
+                user_guild_settings: {
+                    entries: user_guild_settings_entries,
+                    partial: false,
+                    version: 0, // TODO
+                },
+                private_channels: channels,
+                presences: [], // TODO: Send actual data
+                session_id: this.session_id,
+                country_code: this.session?.last_seen_location_info?.country_code ?? user.settings!.locale,
+                users: Array.from(users),
+                merged_members: merged_members,
+                sessions: allSessions,
+
+                resume_gateway_url: Config.get().gateway.endpointPublic!,
+
+                // lol hack whatever
+                required_action: Config.get().login.requireVerification && !user.verified ? "REQUIRE_VERIFIED_EMAIL" : undefined,
+
+                consents: {
+                    personalization: {
+                        consented: false, // TODO
+                    },
+                },
+                experiments: [],
+                guild_join_requests: [],
+                connected_accounts: [],
+                guild_experiments: [],
+                geo_ordered_rtc_regions: [],
+                api_code_version: 1,
+                friend_suggestion_count: 0,
+                analytics_token: "",
+                tutorial: null,
+                session_type: "normal", // TODO
+                auth_session_id_hash: this.session!.getDiscordDeviceInfo().id_hash,
+                notification_settings: {
+                    // ????
+                    flags: 0,
+                },
+                game_relationships: [],
+            }) satisfies ReadyEventData,
+    );
 
     if (this.capabilities.has(Capabilities.FLAGS.AUTH_TOKEN_REFRESH) && tokenData.tokenVersion != CurrentTokenFormatVersion) {
         d.auth_token = this.accessToken = (await generateToken(this.user_id))!;
@@ -848,13 +847,11 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         }),
     );
 
-    const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => {
-        return {
-            voice_states: guild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
-            id: guild.id,
-            embedded_activities: [],
-        };
-    });
+    const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => ({
+        voice_states: guild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
+        id: guild.id,
+        embedded_activities: [],
+    }));
 
     // TODO: ready supplemental
     await Send(this, {

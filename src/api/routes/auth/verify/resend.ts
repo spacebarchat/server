@@ -52,9 +52,7 @@ router.post(
         }
 
         await Email.sendVerifyEmail(user, user.email)
-            .then(() => {
-                return res.sendStatus(204);
-            })
+            .then(() => res.sendStatus(204))
             .catch((e) => {
                 console.error(`Failed to send verification email to ${user.tag}: ${e}`);
                 throw new HTTPError("Failed to send verification email", 500);

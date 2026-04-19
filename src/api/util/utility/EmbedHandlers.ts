@@ -603,9 +603,7 @@ export async function getOrUpdateEmbedCache(urls: string[], cb?: (url: string, e
             .filter((e) => e !== undefined),
     );
 
-    const urlsToGenerate = urls.filter((url) => {
-        return !cachedEmbeds.some((e) => e.url == normalizeUrl(url));
-    });
+    const urlsToGenerate = urls.filter((url) => !cachedEmbeds.some((e) => e.url == normalizeUrl(url)));
 
     if (urlsToGenerate.length > 0) console.log("[Embeds] Need to generate embeds for urls:", urlsToGenerate);
     if (cachedEmbeds.length > 0)

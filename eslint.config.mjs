@@ -51,6 +51,11 @@ export default defineConfig([
             "no-constructor-return": "error",
             "no-duplicate-imports": "error",
             "no-promise-executor-return": ["error", { allowVoid: true }],
+            "no-self-compare": "error",
+            "no-template-curly-in-string": "error",
+            "no-unmodified-loop-condition": "error",
+            "no-unreachable-loop": "error",
+            "arrow-body-style": ["error", "as-needed"],
             // unsure what the defaults are here, but we want them to error
             "for-direction": "error",
             "constructor-super": "error",

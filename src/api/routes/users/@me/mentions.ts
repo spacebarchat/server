@@ -137,20 +137,18 @@ router.get(
                 },
                 take: limit,
             })
-        ).map((m) => {
-            return {
-                ...m.toJSON(),
-                attachments: m.attachments?.map((attachment: Attachment) =>
-                    Attachment.prototype.signUrls.call(
-                        attachment,
-                        new NewUrlUserSignatureData({
-                            ip: req.ip,
-                            userAgent: req.headers["user-agent"] as string,
-                        }),
-                    ),
+        ).map((m) => ({
+            ...m.toJSON(),
+            attachments: m.attachments?.map((attachment: Attachment) =>
+                Attachment.prototype.signUrls.call(
+                    attachment,
+                    new NewUrlUserSignatureData({
+                        ip: req.ip,
+                        userAgent: req.headers["user-agent"] as string,
+                    }),
                 ),
-            };
-        });
+            ),
+        }));
 
         console.log(`[Inbox/mentions] User ${user.id} fetched full message data for ${finalMessages.length} messages in ${sw.elapsed().totalMilliseconds}ms`);
 

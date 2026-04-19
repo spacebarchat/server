@@ -36,9 +36,7 @@ export interface ReadyPrivateChannel {
 
 export type GuildOrUnavailable = { id: string; unavailable: boolean } | (Guild & { joined_at?: Date; unavailable: undefined; threads: Channel[] });
 
-const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false; threads: Channel[] } => {
-    return guild.unavailable != true;
-};
+const guildIsAvailable = (guild: GuildOrUnavailable): guild is Guild & { joined_at: Date; unavailable: false; threads: Channel[] } => guild.unavailable != true;
 
 export interface IReadyGuildDTO {
     application_command_counts?: { 1: number; 2: number; 3: number }; // ????????????

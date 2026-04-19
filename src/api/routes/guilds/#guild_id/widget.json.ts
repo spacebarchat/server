@@ -126,20 +126,18 @@ async function getWidgetJsonData(guild_id: string) {
     const minLastSeen = Date.now() - 1000 * 60 * 5;
     const onlineMembers = members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > minLastSeen).length > 0);
     const memberData = onlineMembers
-        .map((x) => {
-            return {
-                id: x.id,
-                username: x.user.username,
-                discriminator: x.user.discriminator,
-                avatar: null,
-                status: "online", // TODO
-                avatar_url: x.avatar
-                    ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
-                    : x.user.avatar
-                      ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png`
-                      : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
-            };
-        })
+        .map((x) => ({
+            id: x.id,
+            username: x.user.username,
+            discriminator: x.user.discriminator,
+            avatar: null,
+            status: "online", // TODO
+            avatar_url: x.avatar
+                ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
+                : x.user.avatar
+                  ? `${Config.get().cdn.endpointPublic}/avatars/${x.id}/${x.user.avatar}.png`
+                  : `${Config.get().cdn.endpointPublic}/embed/avatars/${BigInt(x.id) % 6n}.png`,
+        }))
         .sort((a, b) => Number(BigInt(a.id) - BigInt(b.id)));
 
     // Construct object to respond with

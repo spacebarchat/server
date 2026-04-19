@@ -57,9 +57,7 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
 
         setHeartbeat(socket);
 
-        socket.readyTimeout = setTimeout(() => {
-            return socket.close(CLOSECODES.Session_timed_out);
-        }, 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.close(CLOSECODES.Session_timed_out), 1000 * 30);
 
         await Send(socket, {
             op: VoiceOPCodes.HELLO,

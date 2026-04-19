@@ -43,12 +43,12 @@ export class DmChannelDTO {
             await Promise.all(
                 channel.recipients
                     ?.filter((r) => !excluded_recipients.includes(r.user_id))
-                    .map((r) => {
-                        return User.findOneOrFail({
+                    .map((r) =>
+                        User.findOneOrFail({
                             where: { id: r.user_id },
                             select: PublicUserProjection,
-                        });
-                    }) || [],
+                        }),
+                    ) || [],
             )
         ).map((u) => new MinimalPublicUserDTO(u));
         return obj;

@@ -38,8 +38,8 @@ router.post(
     (req: Request, res: Response) => {
         const { attachment_urls } = req.body as RefreshUrlsRequestSchema;
 
-        const refreshed_urls = attachment_urls.map((url) => {
-            return getUrlSignature(
+        const refreshed_urls = attachment_urls.map((url) =>
+            getUrlSignature(
                 new NewUrlSignatureData({
                     url: url,
                     ip: req.ip,
@@ -47,8 +47,8 @@ router.post(
                 }),
             )
                 .applyToUrl(url)
-                .toString();
-        });
+                .toString(),
+        );
 
         return res.status(200).json({
             refreshed_urls,

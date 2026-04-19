@@ -30,9 +30,7 @@ export function getMostRelevantSession(sessions: Session[]) {
         unknown: 5,
     };
     // sort sessions by relevance
-    sessions = sessions.sort((a, b) => {
-        return statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2;
-    });
+    sessions = sessions.sort((a, b) => statusMap[a.status] - statusMap[b.status] + ((a.activities?.length ?? 0) - (b.activities?.length ?? 0)) * 2);
 
     return sessions[0];
 }

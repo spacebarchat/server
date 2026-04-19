@@ -64,8 +64,8 @@ router.put(
             },
         },
     }),
-    async (req: Request, res: Response) => {
-        return await updateRelationship(
+    async (req: Request, res: Response) =>
+        await updateRelationship(
             req,
             res,
             await User.findOneOrFail({
@@ -74,8 +74,7 @@ router.put(
                 select: userProjection,
             }),
             req.body.type ?? RelationshipType.friends,
-        );
-    },
+        ),
 );
 
 router.patch(
@@ -130,8 +129,8 @@ router.post(
             },
         },
     }),
-    async (req: Request, res: Response) => {
-        return await updateRelationship(
+    async (req: Request, res: Response) =>
+        await updateRelationship(
             req,
             res,
             await User.findOneOrFail({
@@ -143,8 +142,7 @@ router.post(
                 },
             }),
             req.body.type,
-        );
-    },
+        ),
 );
 
 router.delete(

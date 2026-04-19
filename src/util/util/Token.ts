@@ -67,8 +67,8 @@ export const checkToken = (
         ipAddress?: string;
         fingerprint?: string;
     },
-): Promise<UserTokenData> => {
-    return new Promise((resolve, reject) => {
+): Promise<UserTokenData> =>
+    new Promise((resolve, reject) => {
         token = token.replace("Bot ", ""); // there is no bot distinction in sb
         token = token.replace("Bearer ", ""); // allow bearer tokens
 
@@ -155,7 +155,6 @@ export const checkToken = (
             });
         } else return void rejectAndLog(reject, 400, "Unsupported token algorithm: " + dec.header.alg);
     });
-};
 
 export async function generateToken(id: string, isAdminSession: boolean = false): Promise<string | undefined> {
     const iat = Math.floor(Date.now() / 1000);

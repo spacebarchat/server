@@ -562,24 +562,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     /*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
-    message.mention_roles = (
-        await Promise.all(
-            mention_role_ids.map((x) => {
-                return Role.findOne({ where: { id: x } });
-            }),
-        )
-    ).filter((role) => role !== null);
+    message.mention_roles = (await Promise.all(mention_role_ids.map((x) => Role.findOne({ where: { id: x } })))).filter((role) => role !== null);
 
-    message.mentions = [
-        ...message.mentions,
-        ...(
-            await Promise.all(
-                mention_user_ids.map((x) => {
-                    return User.findOne({ where: { id: x } });
-                }),
-            )
-        ).filter((user) => user !== null),
-    ];
+    message.mentions = [...message.mentions, ...(await Promise.all(mention_user_ids.map((x) => User.findOne({ where: { id: x } })))).filter((user) => user !== null)];
 
     message.mention_everyone = mention_everyone;
     async function fillInMissingIDs(ids: string[]) {
@@ -592,11 +577,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         if (!users.size) {
             return;
         }
-        return Promise.all(
-            [...users].map((user_id) => {
-                return ReadState.create({ user_id, channel_id: channel.id }).save();
-            }),
-        );
+        return Promise.all([...users].map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
     }
     if (ephermal) {
         const id = message.interaction_metadata?.user_id;
@@ -624,11 +605,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         const users = new Set<string>([
             ...(message.mention_roles.length
                 ? await Member.find({
-                      where: [
-                          ...message.mention_roles.map((role) => {
-                              return { roles: { id: role.id } };
-                          }),
-                      ],
+                      where: [...message.mention_roles.map((role) => ({ roles: { id: role.id } }))],
                   })
                 : []
             ).map((member) => member.id),
@@ -647,11 +624,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
     }
 
-    const attachmentIndices = new Map(
-        message.attachments?.map((attachment, index) => {
-            return [`attachment://${attachment.filename}`, index];
-        }),
-    );
+    const attachmentIndices = new Map(message.attachments?.map((attachment, index) => [`attachment://${attachment.filename}`, index]));
     const attachmentsToRemove = new Set<number>();
     function fetchAttachment(url: string | undefined): Attachment | undefined {
         if (url == undefined) {
@@ -690,9 +663,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             author!.proxy_icon_url = authorAttachment.toJSON().proxy_url;
         }
     }
-    message.attachments = message.attachments?.filter((_, index) => {
-        return !attachmentsToRemove.has(index);
-    });
+    message.attachments = message.attachments?.filter((_, index) => !attachmentsToRemove.has(index));
 
     // TODO: check and put it all in the body
 
