@@ -27,15 +27,9 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
-import { Config, ErlpackType } from "@spacebar/util";
+import { Config } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
-
-let erlpack: ErlpackType | null = null;
-try {
-    erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
-} catch (e) {
-    console.log("Failed to import @yukikaze-bot/erlpack: ", e);
-}
+import { deflate } from "node:zlib";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -103,33 +97,16 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         const { searchParams } = new URL(`http://localhost${request.url}`);
         // @ts-ignore
         socket.encoding = searchParams.get("encoding") || "json";
-        if (!["json", "etf"].includes(socket.encoding)) {
-            console.error(`[Gateway/${socket.ipAddress}] Unknown encoding: ${socket.encoding}`);
-            return socket.close(CLOSECODES.Decode_error);
-        }
-
-        if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
-
+        // @ts-ignore
+        socket.compress = searchParams.get("compress") || "";
         socket.version = Number(searchParams.get("version")) || 8;
+
         if (socket.version != 8) {
             console.error(`[Gateway/${socket.ipAddress}] Invalid API version: ${socket.version}`);
             return socket.close(CLOSECODES.Invalid_API_version);
         }
 
-        // @ts-ignore
-        socket.compress = searchParams.get("compress") || "";
-        if (socket.compress) {
-            if (socket.compress === "zlib-stream") {
-                socket.deflate = new Deflate();
-                socket.inflate = new Inflate();
-            } else if (socket.compress === "zstd-stream") {
-                socket.zstdEncoder = new Encoder(6);
-                socket.zstdDecoder = new Decoder();
-            } else {
-                console.error(`[Gateway/${socket.user_id}] Unknown compression: ${socket.compress}`);
-                return socket.close(CLOSECODES.Decode_error);
-            }
-        }
+        await setupMessageEncoding(socket);
 
         socket.recentTransactions = [];
         socket.events = {};
@@ -151,4 +128,101 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         console.error(error);
         return socket.close(CLOSECODES.Unknown_error);
     }
+}
+
+export async function setupMessageEncoding(socket: WebSocket) {
+    if (!["json", "etf"].includes(socket.encoding)) {
+        console.error(`[Gateway/${socket.ipAddress}] Unknown encoding: ${socket.encoding}`);
+        return socket.close(CLOSECODES.Decode_error);
+    }
+
+    // if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
+
+    if (socket.compress) {
+        if (socket.compress === "zlib-stream") {
+            socket.encodeProcessor = new ZlibStreamDeflateOperator();
+            socket.decodeProcessor = new ZlibStreamInflateOperator();
+            // socket.deflate = new Deflate();
+            // socket.inflate = new Inflate();
+        } else if (socket.compress === "zstd-stream") {
+            // socket.zstdEncoder = new Encoder(6);
+            // socket.zstdDecoder = new Decoder();
+            socket.encodeProcessor = new ZstdStreamDeflateOperator();
+            socket.decodeProcessor = new ZstdStreamInflateOperator();
+        } else {
+            console.error(`[Gateway/${socket.user_id}] Unknown compression: ${socket.compress}`);
+            return socket.close(CLOSECODES.Decode_error);
+        }
+    }
+}
+
+// hopefully this makes stuff more extensible in the future
+export abstract class DataPipelineOperator {
+    preProcessor?: DataPipelineOperator;
+    abstract process(data: ArrayBufferLike): Promise<ArrayBufferLike>;
+    // default implementation:
+    async dispose(): Promise<void> {
+        await this.preProcessor?.dispose();
+    }
+
+    constructor(preProcessor?: DataPipelineOperator) {
+        this.preProcessor = preProcessor;
+    }
+}
+
+class ZlibStreamDeflateOperator extends DataPipelineOperator {
+    #deflater = new Deflate();
+    async process(data: ArrayBufferLike): Promise<ArrayBufferLike> {
+        if (this.preProcessor) data = await this.preProcessor.process(data);
+        return Promise.try(() => {
+            const deflatedBuffer = this.#deflater.process(data);
+            return bufferToArrayBuffer(deflatedBuffer);
+        });
+    }
+    async dispose() {
+        this.#deflater.close();
+        await super.dispose?.();
+    }
+}
+class ZlibStreamInflateOperator extends DataPipelineOperator {
+    #inflater = new Inflate();
+    async process(data: ArrayBufferLike): Promise<ArrayBufferLike> {
+        if (this.preProcessor) data = await this.preProcessor.process(data);
+        return Promise.try(() => {
+            const deflatedBuffer = this.#inflater.process(data);
+            return bufferToArrayBuffer(deflatedBuffer);
+        });
+    }
+    async dispose() {
+        this.#inflater.close();
+        await super.dispose?.();
+    }
+}
+
+class ZstdStreamDeflateOperator extends DataPipelineOperator {
+    #deflater = new Encoder(6);
+    async process(data: ArrayBufferLike): Promise<ArrayBufferLike> {
+        if (this.preProcessor) data = await this.preProcessor.process(data);
+        const deflatedBuffer = await this.#deflater.encode(arrayBufferToBuffer(data));
+        return bufferToArrayBuffer(deflatedBuffer);
+    }
+    // Dispose: the ZSTD Encoder has no dispose signature
+}
+class ZstdStreamInflateOperator extends DataPipelineOperator {
+    #inflater = new Decoder();
+    async process(data: ArrayBufferLike): Promise<ArrayBufferLike> {
+        if (this.preProcessor) data = await this.preProcessor.process(data);
+        const deflatedBuffer = await this.#inflater.decode(arrayBufferToBuffer(data));
+        return bufferToArrayBuffer(deflatedBuffer);
+    }
+    // Dispose: the ZSTD Decoder has no dispose signature
+}
+
+// Yes, this is slightly inefficient, but allows us to have a consistent API for the data pipeline operators...
+function bufferToArrayBuffer(data: Buffer): ArrayBufferLike {
+    return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+}
+
+function arrayBufferToBuffer(data: ArrayBufferLike): Buffer {
+    return Buffer.from(data);
 }

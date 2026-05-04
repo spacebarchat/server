@@ -19,9 +19,10 @@
 import { Intents, ListenEventOpts, Permissions, Session } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
-import { Capabilities } from "./Capabilities";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
+import { Capabilities } from "./Capabilities";
 import { QoSPayload } from "../opcodes/Heartbeat";
+import { DataPipelineOperator } from "../events/Connection";
 
 export interface WebSocket extends WS {
     recentTransactions: string[];
@@ -31,6 +32,8 @@ export interface WebSocket extends WS {
     accessToken: string;
     encoding: "etf" | "json";
     compress?: "zlib-stream" | "zstd-stream";
+    encodeProcessor: DataPipelineOperator;
+    decodeProcessor: DataPipelineOperator;
     ipAddress?: string;
     userAgent?: string; // for cdn request signing
     fingerprint?: string;

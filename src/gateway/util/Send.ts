@@ -20,8 +20,7 @@ import { Payload, WebSocket } from "@spacebar/gateway";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { ErlpackType, JSONReplacer } from "@spacebar/util";
-import * as erlpack from "harmony-erlpack";
+import { JSONReplacer } from "@spacebar/util";
 
 // let erlpack: ErlpackType | null = null;
 // try {
