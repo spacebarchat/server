@@ -19,6 +19,7 @@
 import { MinimalPublicUserDTO } from "./UserDTO";
 import { Channel, User } from "../entities";
 import { PublicUserProjection } from "@spacebar/schemas";
+import { excludeDmChannelRecipient } from "./DmChannelRecipients";
 
 export class DmChannelDTO {
     icon: string | null;
@@ -58,6 +59,13 @@ export class DmChannelDTO {
         return {
             ...this,
             recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id)),
+        };
+    }
+
+    forRecipient(recipient_id: string): DmChannelDTO {
+        return {
+            ...this,
+            recipients: excludeDmChannelRecipient(this.recipients, recipient_id),
         };
     }
 }
