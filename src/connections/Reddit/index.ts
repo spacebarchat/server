@@ -39,6 +39,22 @@ export interface ErrorResponse {
     error: number;
 }
 
+export interface RedditConnectionMetadata {
+    gold: string;
+    mod: string;
+    total_karma: string;
+    created_at: string;
+}
+
+export function getRedditConnectionMetadata(userInfo: UserResponse): RedditConnectionMetadata {
+    return {
+        gold: userInfo.gold_creddits.toString(),
+        mod: userInfo.is_mod ? "1" : "0",
+        total_karma: userInfo.total_karma.toString(),
+        created_at: new Date(userInfo.created_utc * 1000).toISOString().replace(".000Z", ""),
+    };
+}
+
 export default class RedditConnection extends Connection {
     public readonly id = "reddit";
     public friendlyName = "Reddit";
@@ -129,14 +145,13 @@ export default class RedditConnection extends Connection {
 
         if (exists) return null;
 
-        // TODO: connection metadata
-
         return await this.createConnection({
             user_id: userId,
             external_id: userInfo.id.toString(),
             friend_sync: params.friend_sync,
             name: userInfo.name,
             verified: userInfo.has_verified_email,
+            metadata_: getRedditConnectionMetadata(userInfo),
             type: this.id,
         });
     }
