@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { handleMessage, postHandleMessage, route } from "@spacebar/api";
+import { getMessageHistoryQueryOrder, handleMessage, postHandleMessage, route, sortMessagesNewestFirst } from "@spacebar/api";
 import {
     Attachment,
     Channel,
@@ -116,7 +116,7 @@ router.get(
             where: { id?: FindOperator<string> | FindOperator<string>[] };
         } = {
             relationLoadStrategy: "query",
-            order: { timestamp: "DESC" },
+            order: getMessageHistoryQueryOrder({}),
             take: limit,
             where: { channel_id },
             relations: {
@@ -149,11 +149,11 @@ router.get(
                     Message.find({
                         ...query,
                         where: { channel_id, id: MoreThanOrEqual(around) },
-                        order: { timestamp: "ASC" },
+                        order: getMessageHistoryQueryOrder({ after: around }),
                     }),
                 ]);
                 left.push(...right);
-                messages = left.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+                messages = sortMessagesNewestFirst(left);
             } else {
                 query.take = 1;
                 const message = await Message.findOne({
@@ -167,7 +167,7 @@ router.get(
                 if (BigInt(after) > BigInt(Snowflake.generate())) throw new HTTPError("after parameter must not be greater than current time", 422);
 
                 query.where.id = MoreThan(after);
-                query.order = { timestamp: "ASC" };
+                query.order = getMessageHistoryQueryOrder({ after });
             } else if (before) {
                 if (BigInt(before) > BigInt(Snowflake.generate())) throw new HTTPError("before parameter must not be greater than current time", 422);
 
@@ -175,6 +175,7 @@ router.get(
             }
 
             messages = await Message.find(query);
+            if (after) sortMessagesNewestFirst(messages);
         }
 
         await Message.fillReplies(messages);
