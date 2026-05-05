@@ -176,7 +176,7 @@ router.post(
         // Discord header is just the user id as string, which is not possible with npm-jsonwebtoken package
         // https://user-images.githubusercontent.com/6506416/81051916-dd8c9900-8ec2-11ea-8794-daf12d6f31f0.png
 
-        res.json({ token, settings: { ...user.settings, index: undefined } });
+        res.json({ user_id: user.id, token, settings: { ...user.settings, index: undefined }, user_settings: { locale: user.settings?.locale, theme: user.settings?.theme } });
     },
 );
 
