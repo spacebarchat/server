@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed } from "@spacebar/schemas";
+import { BaseMessageComponents, Embed } from "@spacebar/schemas";
 import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
@@ -24,15 +24,14 @@ export interface WebhookExecuteSchema {
     username?: string;
     avatar_url?: string;
     tts?: boolean;
-    embeds?: Embed[];
+    embeds?: Embed[] | null;
     allowed_mentions?: {
         parse?: string[];
         roles?: string[];
         users?: string[];
         replied_user?: boolean;
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    components?: any[];
+    components?: BaseMessageComponents[] | null;
     file?: { filename: string };
     payload_json?: string;
     // TODO: we should create an interface for attachments

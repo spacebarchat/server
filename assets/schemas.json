@@ -7254,10 +7254,17 @@
                 "type": "boolean"
             },
             "embeds": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Embed"
-                }
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Embed"
+                        }
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "allowed_mentions": {
                 "type": "object",
@@ -7287,8 +7294,17 @@
                 "additionalProperties": false
             },
             "components": {
-                "type": "array",
-                "items": {}
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/BaseMessageComponents"
+                        }
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "file": {
                 "type": "object",

@@ -66,7 +66,10 @@ router.post(
     },
     route({
         requestBody: "WebhookExecuteSchema",
-        stripNulls: true,
+        stripNulls: {
+            components: true,
+            embeds: true,
+        },
         query: {
             wait: {
                 type: "boolean",
