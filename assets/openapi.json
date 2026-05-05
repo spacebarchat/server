@@ -1634,6 +1634,58 @@
                     "type"
                 ]
             },
+            "ExperimentsResponse": {
+                "type": "object",
+                "properties": {
+                    "fingerprint": {
+                        "type": "string"
+                    },
+                    "assignments": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "guild_experiments": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "assignments",
+                    "fingerprint",
+                    "guild_experiments"
+                ]
+            },
+            "ApexExperimentsResponse": {
+                "type": "object",
+                "properties": {
+                    "assignments": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "installation": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "assignments",
+                    "installation"
+                ]
+            },
             "GatewayResponse": {
                 "type": "object",
                 "properties": {
@@ -14534,6 +14586,9 @@
             "name": "-"
         },
         {
+            "name": "apex"
+        },
+        {
             "name": "applications"
         },
         {
@@ -23550,8 +23605,15 @@
         "/experiments/": {
             "get": {
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExperimentsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -28027,6 +28089,25 @@
                 ],
                 "tags": [
                     "applications"
+                ]
+            }
+        },
+        "/apex/experiments/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApexExperimentsResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "apex"
                 ]
             }
         },

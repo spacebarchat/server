@@ -15,9 +15,7 @@
         You should have received a copy of the GNU Affero General Public License
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { route } from "@spacebar/api";
-import { createHash } from "node:crypto";
-import { Snowflake } from "@spacebar/util";
+import { createClientFingerprint, route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 router.post(
@@ -26,11 +24,9 @@ router.post(
         responses: { 200: { body: "CreateFingerprintResponse" } },
         spacebarOnly: false, // not part of public openapi
     }),
-    (req: Request, res: Response) => {
-        const snowflake = Snowflake.generate();
-        return res.json({
-            fingerprint: `${snowflake}.${createHash("sha512").update(snowflake).digest("base64")}`,
-        });
-    },
+    (req: Request, res: Response) =>
+        res.json({
+            fingerprint: createClientFingerprint(),
+        }),
 );
 export default router;

@@ -38,6 +38,7 @@ export const NO_AUTHORIZATION_ROUTES = [
     "GET /ping",
     "GET /gateway",
     "GET /experiments",
+    "GET /apex/experiments",
     "GET /updates",
     "GET /download",
     "GET /scheduled-maintenances/upcoming.json",
@@ -63,6 +64,33 @@ export const NO_AUTHORIZATION_ROUTES = [
 export const API_PREFIX = /^\/api(\/v\d+)?/;
 export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
+export function isNoAuthorizationRoute(method: string, rawUrl: string): boolean {
+    const url = rawUrl.replace(API_PREFIX, "").split("?")[0];
+
+    return NO_AUTHORIZATION_ROUTES.some((x) => {
+        if (typeof x !== "string") {
+            return x.test(method + " " + url);
+        }
+
+        const fullRoute = method + " " + url;
+
+        if (method === "HEAD") {
+            const urlPart = x.split(" ").slice(1).join(" ");
+            if (urlPart.endsWith("/")) {
+                return url.startsWith(urlPart);
+            } else {
+                return url === urlPart;
+            }
+        }
+
+        if (x.endsWith("/")) {
+            return fullRoute.startsWith(x);
+        } else {
+            return fullRoute === x;
+        }
+    });
+}
+
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Express {
@@ -81,7 +109,6 @@ declare global {
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
     if (req.method === "OPTIONS") return res.sendStatus(204);
-    const url = req.url.replace(API_PREFIX, "");
 
     if (req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid=")))
         req.fingerprint = req.headers.cookie
@@ -91,31 +118,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
     // for some reason we need to require here, else the openapi generator fails with "route is not a function"
     else res.setHeader("Set-Cookie", `__sb_sessid=${(req.fingerprint = (await require("../util")).randomString(32))}; Secure; HttpOnly; SameSite=None; Path=/`);
 
-    if (
-        NO_AUTHORIZATION_ROUTES.some((x) => {
-            if (typeof x !== "string") {
-                return x.test(req.method + " " + url);
-            }
-
-            const fullRoute = req.method + " " + url;
-
-            if (req.method === "HEAD") {
-                const urlPart = x.split(" ").slice(1).join(" ");
-                if (urlPart.endsWith("/")) {
-                    return url.startsWith(urlPart);
-                } else {
-                    return url === urlPart;
-                }
-            }
-
-            if (x.endsWith("/")) {
-                return fullRoute.startsWith(x);
-            } else {
-                return fullRoute === x;
-            }
-        })
-    )
-        return next();
+    if (isNoAuthorizationRoute(req.method, req.url)) return next();
 
     if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
 

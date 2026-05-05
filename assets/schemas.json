@@ -1733,6 +1733,62 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ExperimentsResponse": {
+        "type": "object",
+        "properties": {
+            "fingerprint": {
+                "type": "string"
+            },
+            "assignments": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "guild_experiments": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignments",
+            "fingerprint",
+            "guild_experiments"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApexExperimentsResponse": {
+        "type": "object",
+        "properties": {
+            "assignments": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "installation": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignments",
+            "installation"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GatewayResponse": {
         "type": "object",
         "properties": {
