@@ -66,7 +66,7 @@ jobs:
         run: |
           npm ci
           npm run build:src
-          node -r dotenv/config -r module-alias/register --enable-source-maps ../head/scripts/benchmarks/run.js --ci --profile --repo-root "$PWD" --suite-dir "$GITHUB_WORKSPACE/head/benchmarks/suites" --output "$RUNNER_TEMP/benchmarks/base"
+          node --expose-gc -r dotenv/config -r module-alias/register --enable-source-maps ../head/scripts/benchmarks/run.js --ci --profile --repo-root "$PWD" --suite-dir "$GITHUB_WORKSPACE/head/benchmarks/suites" --output "$RUNNER_TEMP/benchmarks/base"
 
       - name: Benchmark head
         working-directory: head

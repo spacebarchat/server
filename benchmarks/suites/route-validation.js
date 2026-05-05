@@ -3,9 +3,9 @@
 process.env.DATABASE ||= "postgres://bench:bench@127.0.0.1:1/bench";
 
 const http = require("node:http");
+const { createRequire } = require("node:module");
 const path = require("node:path");
 const { performance } = require("node:perf_hooks");
-const express = require("express");
 const { percentile } = require("../../scripts/benchmarks/lib/stats");
 
 const REQUESTS_PER_TRIAL = Number(process.env.BENCH_ROUTE_REQUESTS || 600);
@@ -131,6 +131,8 @@ module.exports = {
             throw new Error("Benchmark requires built dist files. Run npm run build:src first.");
         }
 
+        const repoRequire = createRequire(path.join(ctx.repoRoot, "package.json"));
+        const express = repoRequire("express");
         const { BodyParser } = require(bodyParserPath);
         const { route } = require(routePath);
         const app = express();
