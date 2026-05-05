@@ -45,6 +45,7 @@ export * from "./Stopwatch";
 export * from "./String";
 export * from "./Timespan";
 export * from "./Token";
+export * from "./Totp";
 export * from "./TraverseDirectory";
 export * from "./WebAuthn";
 export * from "./ChannelFlags";

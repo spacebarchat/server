@@ -16,11 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Application, DiscordApiErrors, FieldErrors, User, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
+import { requireTotpCodeIfConfigured, route } from "@spacebar/api";
+import { Application, DiscordApiErrors, FieldErrors, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
-import { verifyToken } from "node-2fa";
 import { BotModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -66,18 +64,21 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const bot = await User.findOneOrFail({ where: { id: req.params.application_id as string } });
-        const owner = req.user;
+        const app = await Application.findOneOrFail({
+            where: { id: req.params.application_id as string },
+            relations: { bot: true, owner: true },
+        });
 
-        if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+        if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+        if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
 
-        if (owner.totp_secret && (!req.body.code || verifyToken(owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        await requireTotpCodeIfConfigured(app.owner.id, req.body.code, req.t("auth:login.INVALID_TOTP_CODE"));
 
-        bot.data = { hash: undefined, valid_tokens_since: new Date() };
+        app.bot.data = { hash: undefined, valid_tokens_since: new Date() };
 
-        await bot.save();
+        await app.bot.save();
 
-        const token = await generateToken(bot.id);
+        const token = await generateToken(app.bot.id);
 
         res.json({ token }).status(200);
     },

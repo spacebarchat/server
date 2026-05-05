@@ -16,11 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
+import { requireTotpCodeIfConfigured, route } from "@spacebar/api";
 import { Application, DiscordApiErrors, FieldErrors, Guild, handleFile, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { verifyToken } from "node-2fa";
 import { ApplicationModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -62,7 +61,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const body = req.body as ApplicationModifySchema;
+        const { code, ...body } = req.body as ApplicationModifySchema;
 
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id as string },
@@ -71,7 +70,7 @@ router.patch(
 
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-        if (app.owner.totp_secret && (!req.body.code || verifyToken(app.owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        await requireTotpCodeIfConfigured(app.owner.id, code, req.t("auth:login.INVALID_TOTP_CODE"));
 
         if (body.name?.trim() == "") {
             throw FieldErrors({
@@ -127,7 +126,7 @@ router.post(
         });
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-        if (app.owner.totp_secret && (!req.body.code || verifyToken(app.owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        await requireTotpCodeIfConfigured(app.owner.id, req.body.code, req.t("auth:login.INVALID_TOTP_CODE"));
         if (app.bot) {
             await User.delete({ id: app.id });
         }
