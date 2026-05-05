@@ -35,6 +35,7 @@ export * from "./JSON";
 export * from "./KittyLogo";
 export * from "./Logo";
 export * from "./MessageFlags";
+export * from "./MessageReactions";
 export * from "./networking";
 export * from "./Permissions";
 export * from "./RabbitMQ";
