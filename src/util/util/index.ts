@@ -40,6 +40,7 @@ export * from "./Permissions";
 export * from "./RabbitMQ";
 export * from "./Regex";
 export * from "./Rights";
+export * from "./RolePermissions";
 export * from "./Snowflake";
 export * from "./Stopwatch";
 export * from "./String";

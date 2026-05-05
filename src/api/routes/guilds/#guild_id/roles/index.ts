@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Member, Role, Snowflake } from "@spacebar/util";
+import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Member, Role, Snowflake, resolveCreatedRolePermissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
 import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";
@@ -74,7 +74,11 @@ router.post(
             ...body,
             guild_id: guild_id,
             managed: false,
-            permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || everyoneRole?.permissions || 0)),
+            permissions: resolveCreatedRolePermissions({
+                requested: body.permissions,
+                everyone: everyoneRole?.permissions,
+                actor: req.permission?.bitfield,
+            }),
             tags: undefined,
             icon: undefined,
             unicode_emoji: undefined,
