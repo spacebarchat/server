@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, ChannelDeleteEvent, ChannelUpdateEvent, Recipient, emitEvent, handleFile, Config, FieldError, ErrorList, makeObjectErrorContent } from "@spacebar/util";
+import { Channel, ChannelDeleteEvent, ChannelUpdateEvent, Config, ErrorList, FieldError, Guild, Recipient, emitEvent, handleFile, makeObjectErrorContent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelModifySchema, ChannelType } from "@spacebar/schemas";
 
@@ -210,6 +210,18 @@ router.patch(
         if (payload.topic !== undefined && payload.topic.length > channelLimits.maxTopic)
             errors["topic"] = makeObjectErrorContent("BASE_TYPE_BAD_LENGTH", `Channel topic must be less than ${channelLimits.maxTopic} characters`);
         if (payload.user_limit !== undefined && payload.user_limit < 0) errors["user_limit"] = makeObjectErrorContent("BASE_TYPE_BAD_VALUE", "User limit must be 0 or higher");
+        if (payload.type !== undefined && payload.type !== channel.type) {
+            const convertibleTypes = [ChannelType.GUILD_TEXT, ChannelType.GUILD_NEWS];
+            if (!convertibleTypes.includes(channel.type) || !convertibleTypes.includes(payload.type)) {
+                errors["type"] = makeObjectErrorContent("BASE_TYPE_CHOICES", "Only text and news channels can be converted");
+            } else if (payload.type === ChannelType.GUILD_NEWS) {
+                const guild = await Guild.findOneOrFail({
+                    where: { id: channel.guild_id },
+                    select: { features: true },
+                });
+                if (!guild.features.includes("NEWS")) errors["type"] = makeObjectErrorContent("BASE_TYPE_CHOICES", "News channels require the NEWS guild feature");
+            }
+        }
 
         if (Object.keys(errors).length) {
             throw new FieldError(400, "Invalid form body", errors);
