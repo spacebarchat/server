@@ -17,15 +17,24 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { createBillingLocationInfoResponse, route } from "@spacebar/api";
 import { IpDataClient } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-    // TODO: subdivision_code (optional)
-    const country_code = (await IpDataClient.getIpInfo(req.ip!))?.country_code;
-    res.json({ country_code: country_code }).status(200);
-});
+router.get(
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "BillingLocationInfoResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const locationInfo = await IpDataClient.getIpInfo(req.ip!);
+        res.json(createBillingLocationInfoResponse(locationInfo)).status(200);
+    },
+);
 
 export default router;
