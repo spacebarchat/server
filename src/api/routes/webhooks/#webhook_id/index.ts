@@ -24,7 +24,7 @@ router.get(
         description: "Returns a webhook object for the given id. Requires the MANAGE_WEBHOOKS permission or to be the owner of the webhook.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "WebhookCreateResponse",
             },
             404: {},
         },

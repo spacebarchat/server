@@ -4919,7 +4919,7 @@
     "APIWebhookArray": {
         "type": "array",
         "items": {
-            "$ref": "#/definitions/Webhook"
+            "$ref": "#/definitions/APIWebhook"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -5547,17 +5547,81 @@
     "WebhookCreateResponse": {
         "type": "object",
         "properties": {
-            "user": {
-                "$ref": "#/definitions/User"
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
             },
-            "hook": {
-                "$ref": "#/definitions/Webhook"
+            "type": {
+                "$ref": "#/definitions/WebhookType"
+            },
+            "guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "channel_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "user": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PartialUser"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "token": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "application_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "source_guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "source_channel_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "url": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
-            "hook",
-            "user"
+            "avatar",
+            "id",
+            "name",
+            "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

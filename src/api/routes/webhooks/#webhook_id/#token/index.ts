@@ -13,7 +13,7 @@ router.get(
         description: "Returns a webhook object for the given id and token.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "WebhookCreateResponse",
             },
             404: {},
         },
