@@ -70,7 +70,7 @@ declare global {
             user_id: string;
             user_bot: boolean;
             tokenData: UserTokenData;
-            token: { id: string; iat: number; ver?: number; did?: string };
+            token: UserTokenData["decoded"];
             user: User;
             session?: Session;
             rights: Rights;
@@ -126,7 +126,7 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
         }));
 
         req.token = decoded;
-        req.user_id = decoded.id;
+        req.user_id = user.id;
         req.user_bot = user.bot;
         req.user = user;
         req.session = session;
