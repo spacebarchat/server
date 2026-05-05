@@ -1588,7 +1588,14 @@
                 "type": "object",
                 "properties": {
                     "guild": {
-                        "$ref": "#/components/schemas/Guild"
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/HubGuild"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "joined": {
                         "type": "boolean"
