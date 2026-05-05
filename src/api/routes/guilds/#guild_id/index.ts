@@ -159,8 +159,6 @@ router.patch(
                 { skipPermissionCheck: true },
             );
 
-            await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
-
             guild.public_updates_channel_id = channel.id;
         } else if (body.public_updates_channel_id != undefined) {
             // ensure channel exists in this guild
@@ -191,8 +189,6 @@ router.patch(
                 undefined,
                 { skipPermissionCheck: true },
             );
-
-            await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
             guild.rules_channel_id = channel.id;
         } else if (body.rules_channel_id != undefined) {
