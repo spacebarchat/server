@@ -8397,7 +8397,9 @@
             },
             "flagged_content": {
                 "type": "array",
-                "items": {}
+                "items": {
+                    "$ref": "#/definitions/FlaggedContent"
+                }
             },
             "appeal_status": {
                 "$ref": "#/definitions/AppealStatus"
@@ -8512,6 +8514,69 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "FlaggedContent": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "const": "message"
+            },
+            "id": {
+                "type": "string"
+            },
+            "content": {
+                "type": "string"
+            },
+            "attachments": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/PublicAttachment"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "attachments",
+            "content",
+            "id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicAttachment": {
+        "type": "object",
+        "properties": {
+            "filename": {
+                "type": "string"
+            },
+            "size": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "content_type": {
+                "type": "string"
+            },
+            "url": {
+                "type": "string"
+            },
+            "proxy_url": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "filename",
+            "proxy_url",
+            "size",
+            "url"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "AppealStatus": {
         "type": "object",
         "properties": {
@@ -8572,7 +8637,9 @@
             },
             "flagged_content": {
                 "type": "array",
-                "items": {}
+                "items": {
+                    "$ref": "#/definitions/FlaggedContent"
+                }
             },
             "appeal_status": {
                 "$ref": "#/definitions/AppealStatus"
@@ -13357,40 +13424,6 @@
             "discriminator",
             "id",
             "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PublicAttachment": {
-        "type": "object",
-        "properties": {
-            "filename": {
-                "type": "string"
-            },
-            "size": {
-                "type": "integer"
-            },
-            "height": {
-                "type": "integer"
-            },
-            "width": {
-                "type": "integer"
-            },
-            "content_type": {
-                "type": "string"
-            },
-            "url": {
-                "type": "string"
-            },
-            "proxy_url": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "filename",
-            "proxy_url",
-            "size",
-            "url"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
