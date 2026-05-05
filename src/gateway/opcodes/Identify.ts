@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
+import { Capabilities, CLOSECODES, OPCODES, Payload, Send, serializeReadyReadState, setupListener, WebSocket } from "@spacebar/gateway";
 import {
     Application,
     arrayGroupBy,
@@ -254,7 +254,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() =>
             ReadState.find({
                 where: { user_id: this.user_id },
-                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true },
+                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true, flags: true },
             }),
         ),
         timePromise(() =>
@@ -637,11 +637,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         micros: 0,
         calls: [],
     };
-    const { elapsed: remapReadStateIdsTime } = timeFunction(() =>
-        read_states.forEach((x) => {
-            x.id = x.channel_id;
-        }),
-    );
+    const { result: serializedReadStates, elapsed: remapReadStateIdsTime } = timeFunction(() => serializeReadyReadState(read_states));
     buildReadyTrace.calls!.push("remapReadStateIds", { micros: remapReadStateIdsTime.totalMicroseconds });
 
     const { result: user_settings_proto, elapsed: serialiseUserSettingsProtoTime } = timeFunction(() =>
@@ -679,11 +675,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 user_settings_proto_json,
                 guilds: remappedGuilds,
                 relationships: remappedRelationships,
-                read_state: {
-                    entries: read_states,
-                    partial: false,
-                    version: 0, // TODO
-                },
+                read_state: serializedReadStates,
                 user_guild_settings: {
                     entries: user_guild_settings_entries,
                     partial: false,
