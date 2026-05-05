@@ -36,3 +36,26 @@ export function JSONReplacer(this: { [key: string]: unknown }, key: string, valu
 
     return value;
 }
+
+export function createJSONReplacer() {
+    const ancestors: unknown[] = [];
+
+    return function jsonReplacer(this: { [key: string]: unknown }, key: string, value: unknown) {
+        const replaced = JSONReplacer.call(this, key, value);
+
+        if (typeof replaced !== "object" || replaced === null) return replaced;
+
+        while (ancestors.length > 0 && ancestors[ancestors.length - 1] !== this) {
+            ancestors.pop();
+        }
+
+        if (ancestors.includes(replaced)) return undefined;
+
+        ancestors.push(replaced);
+        return replaced;
+    };
+}
+
+export function JSONStringify(value: unknown, space?: string | number) {
+    return JSON.stringify(value, createJSONReplacer(), space);
+}

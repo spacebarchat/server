@@ -20,7 +20,7 @@ import { Payload, WebSocket } from "@spacebar/gateway";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { ErlpackType, JSONReplacer } from "@spacebar/util";
+import { ErlpackType, JSONReplacer, JSONStringify } from "@spacebar/util";
 import * as erlpack from "harmony-erlpack";
 
 // let erlpack: ErlpackType | null = null;
@@ -45,7 +45,7 @@ const recurseJsonReplace = (json: any) => {
 };
 
 export async function Send(socket: WebSocket, data: Payload) {
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSON.stringify(data)}`);
+    if (process.env.WS_VERBOSE) console.log(`[Websocket] Outgoing message: ${JSONStringify(data)}`);
 
     if (process.env.WS_DUMP) {
         const id = socket.session_id || "unknown";
@@ -53,7 +53,7 @@ export async function Send(socket: WebSocket, data: Payload) {
         await fs.mkdir(path.join("dump", id), {
             recursive: true,
         });
-        await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSON.stringify(data, null, 2));
+        await fs.writeFile(path.join("dump", id, `${Date.now()}.out.json`), JSONStringify(data, 2));
     }
 
     let buffer: Buffer | string;
@@ -61,9 +61,7 @@ export async function Send(socket: WebSocket, data: Payload) {
         // Erlpack doesn't like Date objects, encodes them as {}
         data = recurseJsonReplace(data);
         buffer = Buffer.from(erlpack.pack(data));
-    }
-    // TODO: encode circular object
-    else if (socket.encoding === "json") buffer = JSON.stringify(data, JSONReplacer);
+    } else if (socket.encoding === "json") buffer = JSONStringify(data);
     else return;
 
     // TODO: compression
