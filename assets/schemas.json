@@ -929,7 +929,12 @@
             "friend_sync": {
                 "type": "boolean"
             },
-            "openid_params": {}
+            "two_way_link_code": {
+                "type": "string"
+            },
+            "openid_params": {
+                "$ref": "#/definitions/ConnectionCallbackOpenIdParams"
+            }
         },
         "additionalProperties": false,
         "required": [
@@ -8336,6 +8341,13 @@
             "access_token",
             "fetched_at"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ConnectionCallbackOpenIdParams": {
+        "type": "object",
+        "additionalProperties": {
+            "type": "string"
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "AllowedMentions": {

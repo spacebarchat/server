@@ -901,7 +901,12 @@
                     "friend_sync": {
                         "type": "boolean"
                     },
-                    "openid_params": {}
+                    "two_way_link_code": {
+                        "type": "string"
+                    },
+                    "openid_params": {
+                        "$ref": "#/components/schemas/ConnectionCallbackOpenIdParams"
+                    }
                 },
                 "required": [
                     "friend_sync",
@@ -7833,6 +7838,9 @@
                     "access_token",
                     "fetched_at"
                 ]
+            },
+            "ConnectionCallbackOpenIdParams": {
+                "type": "object"
             },
             "AllowedMentions": {
                 "type": "object",

@@ -21,5 +21,10 @@ export interface ConnectionCallbackSchema {
     state: string;
     insecure: boolean;
     friend_sync: boolean;
-    openid_params?: unknown; // TODO: types
+    two_way_link_code?: string;
+    openid_params?: ConnectionCallbackOpenIdParams;
+}
+
+export interface ConnectionCallbackOpenIdParams {
+    [key: string]: string;
 }
