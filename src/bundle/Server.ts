@@ -58,8 +58,9 @@ process.on("SIGTERM", async () => {
 });
 
 async function main() {
+    if (process.env.CONFIG_PATH) await Config.init();
     await initDatabase();
-    await Config.init();
+    if (!process.env.CONFIG_PATH) await Config.init();
 
     const logRequests = process.env["LOG_REQUESTS"] != undefined;
     if (logRequests) {
@@ -83,4 +84,8 @@ async function main() {
     console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }
 
-main().catch(console.error);
+main().catch((error) => {
+    console.error("[Startup] Failed to start Spacebar server.");
+    console.error(error);
+    process.exitCode = 1;
+});
