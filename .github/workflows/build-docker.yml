@@ -7,46 +7,94 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runner }}
     permissions:
       contents: read
       packages: write
     strategy:
       matrix:
+        platform:
+          - system: x86_64-linux
+            runner: ubuntu-latest
+            tag: amd64
+          - system: aarch64-linux
+            runner: ubuntu-24.04-arm
+            tag: arm64
         package:
-          - default
-          - cdn
-          - api
-          - gateway
-          - webrtc
-          - admin-api
-          - cdn-cs
-          - gateway-offload
+          - attr: default
+            image: spacebar-server-ts
+            suffix: ""
+          - attr: cdn
+            image: spacebar-server-ts-cdn
+            suffix: "-cdn"
+          - attr: api
+            image: spacebar-server-ts-api
+            suffix: "-api"
+          - attr: gateway
+            image: spacebar-server-ts-gateway
+            suffix: "-gateway"
+          - attr: webrtc
+            image: spacebar-server-ts-webrtc
+            suffix: "-webrtc"
+          - attr: admin-api
+            image: spacebar-server-ts-admin-api
+            suffix: "-admin-api"
+          - attr: cdn-cs
+            image: spacebar-server-ts-cdn-cs
+            suffix: "-cdn-cs"
+          - attr: offload
+            image: spacebar-server-ts-offload
+            suffix: "-gateway-offload"
     steps:
       - uses: actions/checkout@v6
       - uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Build the docker image
-        run: nix build .#containers.x86_64-linux.docker.${{ matrix.package }}
+        run: nix build .#containers.${{ matrix.platform.system }}.docker.${{ matrix.package.attr }}
       - run: docker load < result
       - name: downcase REPO
-        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>"$GITHUB_ENV"
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Compute image suffix
-        run: |
-         if [ "${{ matrix.package }}" = "default" ]; then
-         echo "SUFFIX=" >> $GITHUB_ENV
-         else
-         echo "SUFFIX=-${{ matrix.package }}" >> $GITHUB_ENV
-         fi
       - name: Tag and push the image
         run: |
-         IMAGE_ID=$(docker images spacebar-server-ts$SUFFIX --format '{{.ID}}')
-         docker tag $IMAGE_ID ghcr.io/$REPO$SUFFIX:latest
-         docker push ghcr.io/$REPO$SUFFIX:latest
+         IMAGE_ID=$(docker images "${{ matrix.package.image }}" --format '{{.ID}}' | head -n1)
+         docker tag "$IMAGE_ID" "ghcr.io/$REPO${{ matrix.package.suffix }}:latest-${{ matrix.platform.tag }}"
+         docker push "ghcr.io/$REPO${{ matrix.package.suffix }}:latest-${{ matrix.platform.tag }}"
+
+  manifest:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package:
+          - suffix: ""
+          - suffix: "-cdn"
+          - suffix: "-api"
+          - suffix: "-gateway"
+          - suffix: "-webrtc"
+          - suffix: "-admin-api"
+          - suffix: "-cdn-cs"
+          - suffix: "-gateway-offload"
+    steps:
+      - name: downcase REPO
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >>"$GITHUB_ENV"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push multi-arch manifest
+        run: |
+         docker manifest create "ghcr.io/$REPO${{ matrix.package.suffix }}:latest" \
+           "ghcr.io/$REPO${{ matrix.package.suffix }}:latest-amd64" \
+           "ghcr.io/$REPO${{ matrix.package.suffix }}:latest-arm64"
+         docker manifest push "ghcr.io/$REPO${{ matrix.package.suffix }}:latest"
