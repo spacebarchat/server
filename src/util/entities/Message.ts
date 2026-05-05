@@ -26,7 +26,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
-import { Attachment } from "./Attachment";
+import { Attachment, signAttachmentUrl } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
 import {
     ApplicationCommandType,
@@ -45,6 +45,47 @@ import {
 } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
+
+type AttachmentUrlFields = {
+    url?: string;
+    proxy_url?: string;
+};
+
+type AttachmentIconUrlFields = {
+    icon_url?: string;
+    proxy_icon_url?: string;
+};
+
+function signAttachmentUrlFields<T extends AttachmentUrlFields>(media: T | undefined, data: NewUrlUserSignatureData): T | undefined {
+    if (!media) return media;
+
+    return {
+        ...media,
+        url: signAttachmentUrl(media.url, data),
+        proxy_url: signAttachmentUrl(media.proxy_url, data),
+    };
+}
+
+function signAttachmentIconUrlFields<T extends AttachmentIconUrlFields>(media: T | undefined, data: NewUrlUserSignatureData): T | undefined {
+    if (!media) return media;
+
+    return {
+        ...media,
+        icon_url: signAttachmentUrl(media.icon_url, data),
+        proxy_icon_url: signAttachmentUrl(media.proxy_icon_url, data),
+    };
+}
+
+function signEmbedAttachmentUrls(embed: Embed, data: NewUrlUserSignatureData): Embed {
+    return {
+        ...embed,
+        footer: signAttachmentIconUrlFields(embed.footer, data),
+        image: signAttachmentUrlFields(embed.image, data),
+        thumbnail: signAttachmentUrlFields(embed.thumbnail, data),
+        video: signAttachmentUrlFields(embed.video, data),
+        author: signAttachmentIconUrlFields(embed.author, data),
+    };
+}
 
 @Entity({
     name: "messages",
@@ -347,11 +388,12 @@ export class Message extends BaseClass {
 
     withSignedAttachments(data: NewUrlUserSignatureData) {
         function signMedia(media: UnfurledMediaItem) {
-            Object.assign(media, Attachment.prototype.signUrls.call(media, data));
+            Object.assign(media, signAttachmentUrlFields(media, data));
         }
         return {
             ...this,
             attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
+            embeds: this.embeds?.map((embed) => signEmbedAttachmentUrls(embed, data)),
             components: this.components
                 ? this.components.map((comp) => {
                       comp = structuredClone(comp);

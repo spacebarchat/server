@@ -355,26 +355,19 @@ async function consume(this: WebSocket, opts: EventOpts) {
     // data rewrites, e.g. signed attachment URLs
     switch (event) {
         case "MESSAGE_CREATE":
-        case "MESSAGE_UPDATE":
-            // console.log(this.request)
-            if (data["attachments"])
-                data["attachments"] = Message.prototype.withSignedAttachments.call(
-                    data,
-                    new NewUrlUserSignatureData({
-                        ip: this.ipAddress,
-                        userAgent: this.userAgent,
-                    }),
-                ).attachments;
-            if (data["components"]) {
-                data["components"] = Message.prototype.withSignedAttachments.call(
-                    data,
-                    new NewUrlUserSignatureData({
-                        ip: this.ipAddress,
-                        userAgent: this.userAgent,
-                    }),
-                ).components;
-            }
+        case "MESSAGE_UPDATE": {
+            const signedMessage = Message.prototype.withSignedAttachments.call(
+                data,
+                new NewUrlUserSignatureData({
+                    ip: this.ipAddress,
+                    userAgent: this.userAgent,
+                }),
+            );
+            if ("attachments" in data) data["attachments"] = signedMessage.attachments;
+            if ("embeds" in data) data["embeds"] = signedMessage.embeds;
+            if ("components" in data) data["components"] = signedMessage.components;
             break;
+        }
         default:
             break;
     }

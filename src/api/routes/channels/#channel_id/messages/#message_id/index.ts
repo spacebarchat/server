@@ -113,6 +113,12 @@ router.patch(
         postHandleMessage(new_message).catch((e) => console.error("[Message] post-message handler failed", e));
 
         // TODO: a DTO?
+        const signed = new_message.withSignedAttachments(
+            new NewUrlUserSignatureData({
+                ip: req.ip,
+                userAgent: req.headers["user-agent"] as string,
+            }),
+        );
         return res.json({
             ...new_message.toJSON(),
             id: new_message.id,
@@ -120,8 +126,9 @@ router.patch(
             channel_id: new_message.channel_id,
             member: new_message.member?.toPublicMember(),
             author: new_message.author?.toPublicUser(),
-            attachments: new_message.attachments,
-            embeds: new_message.embeds,
+            attachments: signed.attachments,
+            embeds: signed.embeds,
+            components: signed.components,
             mentions: new_message.embeds,
             mention_roles: new_message.mention_roles,
             mention_everyone: new_message.mention_everyone,
@@ -273,7 +280,14 @@ router.get(
 
         if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
 
-        return res.json(message);
+        return res.json(
+            message.withSignedAttachments(
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            ),
+        );
     },
 );
 
