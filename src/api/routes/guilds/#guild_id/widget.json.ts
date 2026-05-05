@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions, normalizeInviteCreateOptions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, GuildWidgetJsonResponse } from "@spacebar/schemas";
 
@@ -86,23 +86,14 @@ async function getWidgetJsonData(guild_id: string) {
     });
 
     if (guild.widget_channel_id && !invite) {
-        // Create invite for channel if none exists
-        // TODO: Refactor invite create code to a shared function
-        const max_age = 86400; // 24 hours
-        const expires_at = new Date(max_age * 1000 + Date.now());
-
-        invite = await Invite.create({
-            code: randomString(),
-            temporary: false,
-            uses: 0,
-            max_uses: 0,
-            max_age: max_age,
-            expires_at,
-            created_at: new Date(),
-            guild_id,
-            channel_id: guild.widget_channel_id,
-            flags: 0,
-        }).save();
+        invite = await Invite.createForChannel(
+            randomString(),
+            {
+                guild_id,
+                channel_id: guild.widget_channel_id,
+            },
+            normalizeInviteCreateOptions({}),
+        ).save();
     }
 
     // Fetch voice channels, and the @everyone permissions object

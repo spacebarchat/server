@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent } from "@spacebar/util";
+import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent, normalizeInviteCreateOptions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
@@ -31,6 +31,9 @@ router.post(
         permission: "CREATE_INSTANT_INVITE",
         right: "CREATE_INVITES",
         responses: {
+            200: {
+                body: "Invite",
+            },
             201: {
                 body: "Invite",
             },
@@ -55,21 +58,24 @@ router.post(
         }
         const { guild_id } = channel;
 
-        const expires_at = body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
-
-        const invite = await Invite.create({
-            code: randomString(),
-            temporary: body.temporary || true,
-            uses: 0,
-            max_uses: body.max_uses ? Math.max(0, body.max_uses) : 0,
-            max_age: body.max_age ? Math.max(0, body.max_age) : 0,
-            expires_at,
-            created_at: new Date(),
+        const inviteOptions = normalizeInviteCreateOptions(body);
+        const inviteContext = {
             guild_id,
-            channel_id: channel_id,
+            channel_id,
             inviter_id: user_id,
-            flags: body.flags ?? 0,
-        }).save();
+        };
+
+        const existingInvite = await Invite.findReusableForCreate(inviteContext, inviteOptions);
+        if (existingInvite) {
+            const data = existingInvite.toJSON();
+            data.inviter = await User.getPublicUser(req.user_id);
+            data.guild = await Guild.findOne({ where: { id: guild_id } });
+            data.channel = channel;
+
+            return res.status(200).send(data);
+        }
+
+        const invite = await Invite.createForChannel(randomString(), inviteContext, inviteOptions).save();
 
         const data = invite.toJSON();
         data.inviter = await User.getPublicUser(req.user_id);
