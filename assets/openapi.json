@@ -1077,6 +1077,68 @@
                     "sticker_ids"
                 ]
             },
+            "GuildCreateRoleSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "permissions": {
+                        "type": "string"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "hoist": {
+                        "type": "boolean"
+                    },
+                    "mentionable": {
+                        "type": "boolean"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "unicode_emoji": {
+                        "type": "string"
+                    },
+                    "colors": {
+                        "type": "object",
+                        "properties": {
+                            "primary_color": {
+                                "type": "integer"
+                            },
+                            "secondary_color": {
+                                "type": [
+                                    "null",
+                                    "integer"
+                                ]
+                            },
+                            "tertiary_color": {
+                                "type": [
+                                    "null",
+                                    "integer"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "primary_color"
+                        ]
+                    }
+                }
+            },
             "GuildCreateSchema": {
                 "type": "object",
                 "properties": {
@@ -1091,17 +1153,47 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "verification_level": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "default_message_notifications": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "afk_channel_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
+                    },
                     "channels": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ChannelCreateSchema"
                         }
                     },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GuildCreateRoleSchema"
+                        }
+                    },
                     "system_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "rules_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "guild_template_code": {
                         "type": "string"
@@ -1246,10 +1338,12 @@
                         "nullable": true
                     },
                     "system_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "rules_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "guild_template_code": {
                         "type": "string"
@@ -1813,11 +1907,31 @@
                         "type": "string",
                         "nullable": true
                     },
-                    "system_channel_id": {
+                    "verification_level": {
+                        "type": "integer"
+                    },
+                    "default_message_notifications": {
+                        "type": "integer"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
+                    },
+                    "afk_channel_id": {
                         "type": "string"
                     },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
+                    },
+                    "system_channel_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "rules_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "guild_template_code": {
                         "type": "string"
@@ -1842,25 +1956,7 @@
                             "type": "string"
                         }
                     },
-                    "verification_level": {
-                        "type": "integer"
-                    },
-                    "default_message_notifications": {
-                        "type": "integer"
-                    },
-                    "system_channel_flags": {
-                        "type": "integer"
-                    },
-                    "explicit_content_filter": {
-                        "type": "integer"
-                    },
                     "public_updates_channel_id": {
-                        "type": "string"
-                    },
-                    "afk_timeout": {
-                        "type": "integer"
-                    },
-                    "afk_channel_id": {
                         "type": "string"
                     },
                     "preferred_locale": {
@@ -4080,8 +4176,33 @@
                             "$ref": "#/components/schemas/Member"
                         }
                     },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Role"
+                        }
+                    },
                     "icon": {
                         "type": "string"
+                    },
+                    "verification_level": {
+                        "type": "integer"
+                    },
+                    "default_message_notifications": {
+                        "type": "integer"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
+                    },
+                    "afk_channel_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
                     },
                     "system_channel_id": {
                         "type": "string",
@@ -4106,26 +4227,7 @@
                             "type": "string"
                         }
                     },
-                    "verification_level": {
-                        "type": "integer"
-                    },
-                    "default_message_notifications": {
-                        "type": "integer"
-                    },
-                    "system_channel_flags": {
-                        "type": "integer"
-                    },
-                    "explicit_content_filter": {
-                        "type": "integer"
-                    },
                     "public_updates_channel_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "afk_timeout": {
-                        "type": "integer"
-                    },
-                    "afk_channel_id": {
                         "type": "string",
                         "nullable": true
                     },
@@ -4137,12 +4239,6 @@
                     },
                     "discovery_splash": {
                         "type": "string"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Role"
-                        }
                     },
                     "parent": {
                         "type": "string"
@@ -4883,11 +4979,31 @@
                         "type": "string",
                         "nullable": true
                     },
-                    "system_channel_id": {
+                    "verification_level": {
+                        "type": "integer"
+                    },
+                    "default_message_notifications": {
+                        "type": "integer"
+                    },
+                    "explicit_content_filter": {
+                        "type": "integer"
+                    },
+                    "afk_channel_id": {
                         "type": "string"
                     },
+                    "afk_timeout": {
+                        "type": "integer"
+                    },
+                    "system_channel_flags": {
+                        "type": "integer"
+                    },
+                    "system_channel_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "rules_channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "guild_template_code": {
                         "type": "string"
@@ -4912,25 +5028,7 @@
                             "type": "string"
                         }
                     },
-                    "verification_level": {
-                        "type": "integer"
-                    },
-                    "default_message_notifications": {
-                        "type": "integer"
-                    },
-                    "system_channel_flags": {
-                        "type": "integer"
-                    },
-                    "explicit_content_filter": {
-                        "type": "integer"
-                    },
                     "public_updates_channel_id": {
-                        "type": "string"
-                    },
-                    "afk_timeout": {
-                        "type": "integer"
-                    },
-                    "afk_channel_id": {
                         "type": "string"
                     },
                     "preferred_locale": {
