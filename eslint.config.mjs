@@ -66,7 +66,7 @@ export default defineConfig([
             // "sort-imports": ["error", {}],
             "default-case": "error",
             "default-case-last": "error",
-            "yoda": "error",
+            yoda: "error",
             // unsure what the defaults are here, but we want them to error
             "for-direction": "error",
             "constructor-super": "error",
@@ -87,6 +87,17 @@ export default defineConfig([
     {
         files: ["**/*.js", "**/*.cjs", "**/*.mjs"],
         extends: typescriptEslint.configs?.disableTypeChecked ? [typescriptEslint.configs.disableTypeChecked] : [],
+    },
+    {
+        files: ["benchmarks/**/*.js"],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+        rules: {
+            "@typescript-eslint/no-require-imports": "off",
+        },
     },
     {
         plugins: { "node-import": nodeImport },

@@ -1,0 +1,168 @@
+name: Performance Benchmarks
+
+on:
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: "Base ref for comparison"
+        required: false
+        default: "master"
+      head_ref:
+        description: "Head ref for comparison. Defaults to the dispatched ref."
+        required: false
+        default: ""
+      include_fullstack:
+        description: "Include fullstack suites and start Postgres-backed deeper tier."
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  pr-comparison:
+    name: PR benchmark comparison
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || inputs.base_ref }}
+          path: base
+
+      - name: Checkout head
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || inputs.head_ref || github.sha }}
+          path: head
+
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: npm
+          cache-dependency-path: |
+            base/package-lock.json
+            head/package-lock.json
+
+      - name: Install head benchmark harness
+        working-directory: head
+        run: npm ci
+
+      - name: Benchmark base
+        working-directory: base
+        env:
+          BENCH_ROUTE_REQUESTS: 600
+        run: |
+          npm ci
+          npm run build:src
+          node -r dotenv/config -r module-alias/register --enable-source-maps ../head/scripts/benchmarks/run.js --ci --profile --repo-root "$PWD" --suite-dir "$GITHUB_WORKSPACE/head/benchmarks/suites" --output "$RUNNER_TEMP/benchmarks/base"
+
+      - name: Benchmark head
+        working-directory: head
+        env:
+          BENCH_ROUTE_REQUESTS: 600
+        run: |
+          npm run build:src
+          npm run bench:ci -- --output "$RUNNER_TEMP/benchmarks/head"
+
+      - name: Compare benchmark summaries
+        working-directory: head
+        run: npm run bench:compare -- --base "$RUNNER_TEMP/benchmarks/base" --head "$RUNNER_TEMP/benchmarks/head" --out "$RUNNER_TEMP/benchmarks/comparison"
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: benchmark-comparison-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/benchmarks/base/summary.json
+            ${{ runner.temp }}/benchmarks/base/*.cpuprofile
+            ${{ runner.temp }}/benchmarks/base/*.heapprofile
+            ${{ runner.temp }}/benchmarks/head/summary.json
+            ${{ runner.temp }}/benchmarks/head/*.cpuprofile
+            ${{ runner.temp }}/benchmarks/head/*.heapprofile
+            ${{ runner.temp }}/benchmarks/comparison/comparison.json
+            ${{ runner.temp }}/benchmarks/comparison/comparison.md
+          if-no-files-found: error
+
+      - name: Comment benchmark comparison
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require("node:fs");
+            const marker = "<!-- spacebar-performance-benchmark -->";
+            const body = `${marker}\n${fs.readFileSync(`${process.env.RUNNER_TEMP}/benchmarks/comparison/comparison.md`, "utf8")}`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((comment) => comment.user.type === "Bot" && comment.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
+  fullstack-profile:
+    name: Scheduled/manual fullstack profile tier
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.include_fullstack)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: spacebar
+          POSTGRES_PASSWORD: spacebar
+          POSTGRES_DB: spacebar
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout benchmark ref
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.head_ref || github.sha }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24.x
+          cache: npm
+
+      - name: Run profiled benchmark tier
+        env:
+          DATABASE: postgres://spacebar:spacebar@127.0.0.1:5432/spacebar
+          BENCH_ROUTE_REQUESTS: 1000
+        run: |
+          npm ci
+          npm run build:src
+          npm run bench:profile -- --include-fullstack --suite all --output "$RUNNER_TEMP/benchmarks/fullstack"
+
+      - name: Upload fullstack benchmark artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: benchmark-fullstack-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/benchmarks/fullstack/summary.json
+            ${{ runner.temp }}/benchmarks/fullstack/*.cpuprofile
+            ${{ runner.temp }}/benchmarks/fullstack/*.heapprofile
+          if-no-files-found: error
