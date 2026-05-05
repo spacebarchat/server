@@ -16,9 +16,105 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@spacebar/gateway";
-import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
+import type { WebSocket } from "@spacebar/gateway";
+import {
+    emitEvent,
+    getMostRelevantSession,
+    Member,
+    PresenceUpdateEvent,
+    Session,
+    SessionsReplace,
+    User,
+    VoiceState,
+    VoiceStateUpdateEvent,
+    distributePresenceUpdate,
+} from "@spacebar/util";
 import { randomString } from "@spacebar/api";
+
+export interface CloseSessionRecord {
+    last_seen?: Date;
+    activities: PresenceUpdateEvent["data"]["activities"];
+    client_status: PresenceUpdateEvent["data"]["client_status"];
+    status: PresenceUpdateEvent["data"]["status"];
+    getPublicStatus(): PresenceUpdateEvent["data"]["status"];
+    toPrivateGatewayDeviceInfo(): SessionsReplace["data"][number];
+}
+
+export interface CloseSessionCleanupDependencies {
+    findSession(userId: string, sessionId: string): Promise<CloseSessionRecord | null>;
+    findSessions(userId: string): Promise<CloseSessionRecord[]>;
+    markSessionOffline(userId: string, sessionId: string): Promise<void>;
+    findPublicUser(userId: string): Promise<unknown>;
+    emitSessionsReplace(userId: string, sessions: CloseSessionRecord[]): Promise<void>;
+    distributePresenceUpdate(userId: string, event: PresenceUpdateEvent): Promise<void>;
+    getMostRelevantSession(sessions: CloseSessionRecord[]): CloseSessionRecord | undefined;
+    createTransactionId(userId: string): string;
+}
+
+const closeSessionCleanupDependencies: CloseSessionCleanupDependencies = {
+    findSession: (userId, sessionId) =>
+        Session.findOne({
+            where: { user_id: userId, session_id: sessionId },
+        }),
+    findSessions: (userId) =>
+        Session.find({
+            where: { user_id: userId, is_admin_session: false },
+        }),
+    markSessionOffline: async (userId, sessionId) => {
+        await Session.update({ user_id: userId, session_id: sessionId }, { status: "offline", activities: [], client_status: {} });
+    },
+    findPublicUser: async (userId) => (await User.findOneOrFail({ where: { id: userId } })).toPublicUser(),
+    emitSessionsReplace: async (userId, sessions) => {
+        await emitEvent({
+            event: "SESSIONS_REPLACE",
+            user_id: userId,
+            data: sessions.map((x) => x.toPrivateGatewayDeviceInfo()),
+        } as SessionsReplace);
+    },
+    distributePresenceUpdate,
+    getMostRelevantSession: (sessions) => getMostRelevantSession(sessions as Session[]),
+    createTransactionId: (userId) => `IDENT_${userId}_${randomString()}`,
+};
+
+export async function cleanupClosedSessionPresence(
+    userId: string | undefined,
+    authSessionId: string | undefined,
+    closedAt: number,
+    deps: CloseSessionCleanupDependencies = closeSessionCleanupDependencies,
+) {
+    if (!userId || !authSessionId) return false;
+
+    const session = await deps.findSession(userId, authSessionId);
+    if (!session || (session.last_seen?.getTime() ?? 0) > closedAt) return false;
+
+    await deps.markSessionOffline(userId, authSessionId);
+    session.status = "offline";
+    session.activities = [];
+    session.client_status = {};
+
+    const sessions = await deps.findSessions(userId);
+    const relevantSession = deps.getMostRelevantSession(sessions) ?? {
+        activities: [],
+        client_status: {},
+        status: "offline",
+        getPublicStatus: () => "offline",
+    };
+    await deps.emitSessionsReplace(userId, sessions);
+
+    await deps.distributePresenceUpdate(userId, {
+        event: "PRESENCE_UPDATE",
+        data: {
+            user: (await deps.findPublicUser(userId)) as PresenceUpdateEvent["data"]["user"],
+            status: relevantSession.getPublicStatus(),
+            client_status: relevantSession.client_status,
+            activities: relevantSession.activities,
+        },
+        origin: "GATEWAY_CLOSE",
+        transaction_id: deps.createTransactionId(userId),
+    } satisfies PresenceUpdateEvent);
+
+    return true;
+}
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
@@ -35,29 +131,9 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
         setTimeout(async () => {
             console.log("Handling presence update after disconnect");
             try {
-                if (authSessionId && this.user_id) {
-                    const s = await Session.findOne({
-                        where: { user_id: this.user_id, session_id: authSessionId },
-                    });
-                    if (s && (s.last_seen?.getTime() ?? 0) <= closedAt) {
-                        console.log("... updating session");
-                        await Session.update({ user_id: this.user_id, session_id: authSessionId }, { status: "offline", activities: [], client_status: {} });
-                        this.session = await Session.findOneOrFail({ where: { session_id: this.session_id } });
-                        console.log("... distributing PRESENCE_UPDATE");
-                        await distributePresenceUpdate(this.user_id, {
-                            event: "PRESENCE_UPDATE",
-                            data: {
-                                user: (await User.findOneOrFail({ where: { id: this.user_id } })).toPublicUser(),
-                                status: this.session!.getPublicStatus(),
-                                client_status: this.session!.client_status,
-                                activities: this.session!.activities,
-                            },
-                            origin: "GATEWAY_CLOSE",
-                            transaction_id: `IDENT_${this.user_id}_${randomString()}`,
-                        } satisfies PresenceUpdateEvent);
-                        console.log("... done!");
-                    } else console.log("... Discarding presence update as the session reactivated");
-                }
+                const updated = await cleanupClosedSessionPresence(this.user_id, authSessionId, closedAt);
+                if (updated) console.log("... done!");
+                else console.log("... Discarding presence update as the session reactivated");
             } catch (e) {
                 console.error("[WebSocket] Close session cleanup failed", code, e);
             }
@@ -98,36 +174,5 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                 channel_id: prevChannelId,
             } satisfies VoiceStateUpdateEvent);
         }
-    }
-
-    if (this.user_id) {
-        const sessions = await Session.find({
-            where: { user_id: this.user_id },
-        });
-        await emitEvent({
-            event: "SESSIONS_REPLACE",
-            user_id: this.user_id,
-            data: sessions.map((x) => x.toPrivateGatewayDeviceInfo()),
-        } as SessionsReplace);
-        const session = sessions[0] || {
-            activities: [],
-            client_status: {},
-            status: "offline",
-        };
-
-        const user = await User.getPublicUser(this.user_id).catch(() => undefined);
-
-        // Special case: dont emit a presence update for deleted users
-        if (user !== undefined)
-            await emitEvent({
-                event: "PRESENCE_UPDATE",
-                user_id: this.user_id,
-                data: {
-                    user: user,
-                    activities: session.activities,
-                    client_status: session?.client_status,
-                    status: session.getPublicStatus?.() ?? session.status,
-                },
-            } satisfies PresenceUpdateEvent);
     }
 }
