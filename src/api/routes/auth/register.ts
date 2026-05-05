@@ -17,7 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan } from "@spacebar/util";
+import { Config, emailMatches, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, normalizeEmail, TimeSpan } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -210,7 +210,8 @@ router.post(
         // TODO: gift_code_sku_id?
         // TODO: check password strength
 
-        const email = body.email;
+        const email = body.email ? normalizeEmail(body.email) : undefined;
+        body.email = email;
         if (email) {
             // replace all dots and chars after +, if its a gmail.com email
             if (!email) {
@@ -223,7 +224,7 @@ router.post(
             }
 
             // check if there is already an account with this email
-            const exists = await User.findOne({ where: { email: email } });
+            const exists = await User.findOne({ where: { email: emailMatches(email) } });
 
             if (exists) {
                 throw FieldErrors({

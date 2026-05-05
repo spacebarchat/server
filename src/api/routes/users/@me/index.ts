@@ -17,10 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, emitEvent, FieldErrors, generateToken, handleFile, User, UserUpdateEvent } from "@spacebar/util";
+import { Config, emailMatches, emitEvent, FieldErrors, generateToken, handleFile, normalizeEmail, User, UserUpdateEvent } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { DisplayNameStyle, PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";
+import { Not } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -90,6 +91,7 @@ router.patch(
         }
 
         if (body.email) {
+            body.email = normalizeEmail(body.email);
             if (!body.email && Config.get().register.email.required)
                 throw FieldErrors({
                     email: {
@@ -104,6 +106,14 @@ router.patch(
                         code: "INVALID_PASSWORD",
                     },
                 });
+            if (await User.findOne({ where: { email: emailMatches(body.email), id: Not(req.user_id) }, select: { id: true } })) {
+                throw FieldErrors({
+                    email: {
+                        code: "EMAIL_ALREADY_REGISTERED",
+                        message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
+                    },
+                });
+            }
         }
 
         if (body.new_password) {

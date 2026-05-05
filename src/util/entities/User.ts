@@ -18,7 +18,7 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Channel, Config, Email, FieldErrors, normalizeEmail, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
@@ -298,6 +298,7 @@ export class User extends BaseClass {
     }) {
         // trim special utf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
+        if (email) email = normalizeEmail(email);
 
         const discriminator = await User.generateDiscriminator(username);
         if (!discriminator) {
