@@ -18,6 +18,7 @@
 
 import {
     Ban,
+    Channel,
     EVENTEnum,
     EventOpts,
     getPermission,
@@ -36,6 +37,7 @@ import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
+import { unsubscribeEventIds } from "./subscriptions";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent
@@ -252,9 +254,16 @@ async function consume(this: WebSocket, opts: EventOpts) {
             break;
         case "RELATIONSHIP_REMOVE":
         case "CHANNEL_DELETE":
-        case "GUILD_DELETE":
-            this.events[id]?.();
-            delete this.events[id];
+            await unsubscribeEventIds(this.events, [id]);
+            break;
+        case "GUILD_DELETE": {
+            const guildChannelIds = await Channel.find({
+                where: { guild_id: id },
+                select: { id: true },
+            }).then((channels) => channels.map((channel) => channel.id));
+
+            delete this.permissions[id];
+            await unsubscribeEventIds(this.events, [id, ...guildChannelIds]);
             if (event === "GUILD_DELETE" && this.ipAddress) {
                 const ban = await Ban.findOne({
                     where: { guild_id: id, user_id: this.user_id },
@@ -266,6 +275,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 }
             }
             break;
+        }
         case "CHANNEL_CREATE":
             if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
             this.events[id] = await listenEvent(id, consumer, listenOpts);
