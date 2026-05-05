@@ -2875,7 +2875,7 @@
                 "type": "string"
             },
             "settings": {
-                "$ref": "#/definitions/UserSettings"
+                "$ref": "#/definitions/UserSettingsSchema"
             }
         },
         "additionalProperties": false,
@@ -2907,7 +2907,24 @@
             "backup_codes": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/BackupCode"
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "code": {
+                            "type": "string"
+                        },
+                        "consumed": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "code",
+                        "consumed",
+                        "id"
+                    ]
                 }
             }
         },
@@ -14470,35 +14487,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "BackupCode": {
-        "type": "object",
-        "properties": {
-            "user": {
-                "$ref": "#/definitions/User"
-            },
-            "code": {
-                "type": "string"
-            },
-            "consumed": {
-                "type": "boolean"
-            },
-            "expired": {
-                "type": "boolean"
-            },
-            "id": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "code",
-            "consumed",
-            "expired",
-            "id",
-            "user"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "InteractionCallbackType": {
         "type": "number",
         "enum": [
@@ -15063,6 +15051,35 @@
             "id",
             "public_flags",
             "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BackupCode": {
+        "type": "object",
+        "properties": {
+            "user": {
+                "$ref": "#/definitions/User"
+            },
+            "code": {
+                "type": "string"
+            },
+            "consumed": {
+                "type": "boolean"
+            },
+            "expired": {
+                "type": "boolean"
+            },
+            "id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "code",
+            "consumed",
+            "expired",
+            "id",
+            "user"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

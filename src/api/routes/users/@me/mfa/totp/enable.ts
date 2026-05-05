@@ -70,8 +70,9 @@ router.post(
         res.send({
             token: await generateToken(user.id),
             backup_codes: backup_codes.map((x) => ({
-                ...x,
-                expired: undefined,
+                id: x.id,
+                code: x.code,
+                consumed: x.consumed,
             })),
         });
     },
