@@ -16,17 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { Guild } from "@spacebar/util";
+import { HubGuild } from "./EmailDomainLookupResponse";
+
+export enum HubDirectoryEntryType {
+    Guild = 0,
+    GuildScheduledEvent = 1,
+}
+
+export interface HubDirectoryGuild extends HubGuild {
+    featurable_in_directory?: boolean;
+}
 
 export interface HubDirectoryEntry {
     author_id: string;
     created_at: string;
-    description: string;
+    description: string | null;
     directory_channel_id: string;
-    guild: Guild;
-    primary_category_id: number;
-    type: number; // TODO: not exactly sure what this is, channel type?
+    entity_id: string;
+    guild: HubDirectoryGuild;
+    primary_category_id?: number;
+    type: HubDirectoryEntryType;
 }
 
 export type HubDirectoryEntriesResponse = HubDirectoryEntry[];

@@ -13340,19 +13340,23 @@
                         "type": "string"
                     },
                     "description": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "directory_channel_id": {
                         "type": "string"
                     },
+                    "entity_id": {
+                        "type": "string"
+                    },
                     "guild": {
-                        "$ref": "#/components/schemas/Guild"
+                        "$ref": "#/components/schemas/HubDirectoryGuild"
                     },
                     "primary_category_id": {
                         "type": "integer"
                     },
                     "type": {
-                        "type": "integer"
+                        "$ref": "#/components/schemas/HubDirectoryEntryType"
                     }
                 },
                 "required": [
@@ -13360,9 +13364,38 @@
                     "created_at",
                     "description",
                     "directory_channel_id",
+                    "entity_id",
                     "guild",
-                    "primary_category_id",
                     "type"
+                ]
+            },
+            "HubDirectoryGuild": {
+                "type": "object",
+                "properties": {
+                    "featurable_in_directory": {
+                        "type": "boolean"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "icon",
+                    "id",
+                    "name"
+                ]
+            },
+            "HubDirectoryEntryType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1
                 ]
             },
             "RefreshedUrl": {

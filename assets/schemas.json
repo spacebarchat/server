@@ -14253,19 +14253,25 @@
                 "type": "string"
             },
             "description": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "directory_channel_id": {
                 "type": "string"
             },
+            "entity_id": {
+                "type": "string"
+            },
             "guild": {
-                "$ref": "#/definitions/Guild"
+                "$ref": "#/definitions/HubDirectoryGuild"
             },
             "primary_category_id": {
                 "type": "integer"
             },
             "type": {
-                "type": "integer"
+                "$ref": "#/definitions/HubDirectoryEntryType"
             }
         },
         "additionalProperties": false,
@@ -14274,9 +14280,41 @@
             "created_at",
             "description",
             "directory_channel_id",
+            "entity_id",
             "guild",
-            "primary_category_id",
             "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "HubDirectoryGuild": {
+        "type": "object",
+        "properties": {
+            "featurable_in_directory": {
+                "type": "boolean"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "icon",
+            "id",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "HubDirectoryEntryType": {
+        "type": "number",
+        "enum": [
+            0,
+            1
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
