@@ -1,9 +1,9 @@
 import { describe, test } from "node:test";
 import assert from "node:assert/strict";
+import { once } from "node:events";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { AddressInfo } from "node:net";
 import { Server } from "./Server";
 
 describe("Server.registerRoute", () => {
@@ -25,6 +25,7 @@ describe("Server.registerRoute", () => {
         server.registerRoute(root, routeFile);
 
         const listener = server.app.listen(0);
+        await once(listener, "listening");
         t.after(async () => {
             await new Promise<void>((resolve, reject) => {
                 listener.close((error) => (error ? reject(error) : resolve()));
@@ -32,7 +33,9 @@ describe("Server.registerRoute", () => {
             await fs.rm(root, { recursive: true, force: true });
         });
 
-        const { port } = listener.address() as AddressInfo;
+        const address = listener.address();
+        assert(address && typeof address !== "string");
+        const { port } = address;
         for (const route of ["/users/@me", "/users/%40me"]) {
             const response = await fetch(`http://127.0.0.1:${port}${route}`);
             assert.equal(response.status, 200);
