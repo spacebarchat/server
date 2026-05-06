@@ -17,47 +17,63 @@
 */
 
 import { route } from "@spacebar/api";
+import { Channel, DiscordApiErrors, Message, MessageUpdateEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { getCrosspostRejectionReason, markMessageCrossposted } from "./crosspostHelpers";
 
 const router = Router({ mergeParams: true });
 
 router.post(
     "/",
     route({
-        permission: "MANAGE_MESSAGES",
+        permission: "SEND_MESSAGES",
         responses: {
             200: {
                 body: "Message",
             },
         },
     }),
-    (req: Request, res: Response) => {
-        // TODO:
-        res.json({
-            id: "",
-            type: 0,
-            content: "",
-            channel_id: "",
-            author: {
-                id: "",
-                username: "",
-                avatar: "",
-                discriminator: "",
-                public_flags: 64,
-            },
-            attachments: [],
-            embeds: [],
-            mentions: [],
-            mention_roles: [],
-            pinned: false,
-            mention_everyone: false,
-            tts: false,
-            timestamp: "",
-            edited_timestamp: null,
-            flags: 1,
-            components: [],
-            poll: {},
-        }).status(200);
+    async (req: Request, res: Response) => {
+        const { channel_id, message_id } = req.params as { [key: string]: string };
+
+        const [channel, message] = await Promise.all([
+            Channel.findOneOrFail({ where: { id: channel_id } }),
+            Message.findOneOrFail({
+                where: { id: message_id, channel_id },
+                relations: {
+                    attachments: true,
+                    author: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                },
+            }),
+        ]);
+
+        const rejectionReason = getCrosspostRejectionReason(channel.type, message.type);
+        if (rejectionReason === "channel_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
+        if (rejectionReason === "message_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_SYSTEM_MESSAGE;
+
+        if (message.author_id !== req.user_id) {
+            const rights = await getRights(req.user_id);
+            if (!rights.has("MANAGE_MESSAGES")) {
+                const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
+                permission.hasThrow("MANAGE_MESSAGES");
+            }
+        }
+
+        const nextFlags = markMessageCrossposted(message.flags);
+        if (nextFlags !== message.flags) {
+            message.flags = nextFlags;
+            await message.save();
+            await emitEvent({
+                event: "MESSAGE_UPDATE",
+                channel_id,
+                data: message.toJSON(),
+            } satisfies MessageUpdateEvent);
+        }
+
+        return res.status(200).json(message.toJSON());
     },
 );
 
