@@ -20,7 +20,6 @@ import { HubGuild } from "./EmailDomainLookupResponse";
 
 export enum HubDirectoryEntryType {
     Guild = 0,
-    GuildScheduledEvent = 1,
 }
 
 export interface HubDirectoryGuild extends HubGuild {

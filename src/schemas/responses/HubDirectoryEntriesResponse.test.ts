@@ -19,7 +19,7 @@ test("hub directory entry schema uses directory DTOs", () => {
     assert.ok(schema.required.includes("guild"));
     assert.ok(!JSON.stringify(schema).includes("#/definitions/Guild"));
 
-    assert.deepEqual(rawSchemas.HubDirectoryEntryType.enum, [0, 1]);
+    assert.equal(rawSchemas.HubDirectoryEntryType.const, 0);
     assert.equal(rawSchemas.HubDirectoryGuild.properties.featurable_in_directory.type, "boolean");
     assert.ok(!rawSchemas.HubDirectoryGuild.required.includes("featurable_in_directory"));
 });
@@ -58,16 +58,35 @@ test("hub directory entries validate documented guild entries", () => {
     assert.equal(
         validate([
             {
-                type: 2,
+                type: 1,
                 directory_channel_id: "123",
                 entity_id: "456",
                 created_at: "2026-05-06T00:00:00.000Z",
-                description: "Invalid type",
+                description: "Scheduled events are not modeled by this schema yet",
                 author_id: "789",
                 guild: {
                     id: "456",
                     name: "Directory Guild",
                     icon: "abcdef",
+                },
+            },
+        ]),
+        false,
+    );
+
+    assert.equal(
+        validate([
+            {
+                type: 1,
+                directory_channel_id: "123",
+                entity_id: "456",
+                created_at: "2026-05-06T00:00:00.000Z",
+                description: "Scheduled event entry",
+                author_id: "789",
+                guild_scheduled_event: {
+                    id: "456",
+                    guild_id: "999",
+                    name: "Study hall",
                 },
             },
         ]),

@@ -14312,10 +14312,7 @@
     },
     "HubDirectoryEntryType": {
         "type": "number",
-        "enum": [
-            0,
-            1
-        ],
+        "const": 0,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "RefreshedUrl": {

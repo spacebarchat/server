@@ -13393,10 +13393,7 @@
             },
             "HubDirectoryEntryType": {
                 "type": "number",
-                "enum": [
-                    0,
-                    1
-                ]
+                "const": 0
             },
             "RefreshedUrl": {
                 "type": "object",
