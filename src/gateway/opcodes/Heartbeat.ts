@@ -19,7 +19,7 @@
 import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
-import { Session } from "@spacebar/util";
+import { Config, Session } from "@spacebar/util";
 import { FindOptionsWhere } from "typeorm";
 
 interface QoSData {
@@ -36,7 +36,7 @@ export interface QoSPayload {
 export async function onHeartbeat(this: WebSocket, data: Payload) {
     // TODO: validate payload
 
-    setHeartbeat(this);
+    setHeartbeat(this, Config.get().gateway.heartbeatTimeout);
 
     if (data.op === OPCODES.SetQoS) {
         this.qos = (data.d as QoSData).qos;

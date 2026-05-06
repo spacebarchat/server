@@ -137,7 +137,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         socket.permissions = {};
         socket.sequence = 0;
 
-        setHeartbeat(socket);
+        setHeartbeat(socket, Config.get().gateway.heartbeatTimeout);
 
         await Send(socket, {
             op: OPCODES.Hello,

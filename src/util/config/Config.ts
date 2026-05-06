@@ -25,6 +25,7 @@ import {
     EmbedConfiguration,
     EndpointConfiguration,
     ExternalTokensConfiguration,
+    GatewayConfiguration,
     GeneralConfiguration,
     GifConfiguration,
     GuildConfiguration,
@@ -42,7 +43,7 @@ import {
 
 export class ConfigValue {
     admin: EndpointConfiguration = new EndpointConfiguration();
-    gateway: EndpointConfiguration = new EndpointConfiguration();
+    gateway: GatewayConfiguration = new GatewayConfiguration();
     cdn: CdnConfiguration = new CdnConfiguration();
     api: ApiConfiguration = new ApiConfiguration();
     general: GeneralConfiguration = new GeneralConfiguration();
