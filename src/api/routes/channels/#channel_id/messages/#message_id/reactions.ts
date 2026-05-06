@@ -36,7 +36,16 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { In } from "typeorm";
 import { PartialEmoji, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
-import { parseReactionTypeParam } from "@spacebar/api/util/utility/ReactionTypes";
+import {
+    addReactionUser,
+    findReaction,
+    getReactionUserIds,
+    parseOptionalReactionTypeParam,
+    parseReactionTypeParam,
+    reactionEventTypeData,
+    reactionRemoveEventUserData,
+    removeReactionUser,
+} from "@spacebar/api/util/utility/ReactionTypes";
 
 const router = Router({ mergeParams: true });
 // TODO: check if emoji is really an unicode emoji or a properly encoded external emoji
@@ -119,7 +128,7 @@ router.delete(
             where: { id: message_id, channel_id },
         });
 
-        const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
+        const already_added = findReaction(message.reactions, emoji);
         if (!already_added) throw new HTTPError("Reaction not found", 404);
         arrayRemove(message.reactions, already_added);
 
@@ -145,6 +154,14 @@ router.get(
     "/:emoji",
     route({
         permission: "VIEW_CHANNEL",
+        query: {
+            type: {
+                type: "number",
+                required: false,
+                values: ["0", "1"],
+                description: "The type of reaction to return users for.",
+            },
+        },
         responses: {
             200: {
                 body: "PublicUser",
@@ -159,18 +176,22 @@ router.get(
     async (req: Request, res: Response) => {
         const { message_id, channel_id } = req.params as { [key: string]: string };
         const limit = req.query.limit ? Number(req.query.limit) : 25;
+        const type = parseOptionalReactionTypeParam(req.query.type);
+        if (type === null) throw new HTTPError("Invalid reaction type", 400);
         const emoji = getEmoji(req.params.emoji as string);
 
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
         });
-        const reaction = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
+        const reaction = findReaction(message.reactions, emoji);
         if (!reaction) throw new HTTPError("Reaction not found", 404);
+        const userIds = getReactionUserIds(reaction, type);
+        if (!userIds.length) return res.json([]);
 
         const users = (
             await User.find({
                 where: {
-                    id: In(reaction.user_ids),
+                    id: In(userIds),
                 },
                 select: PublicUserProjection,
                 take: limit,
@@ -192,7 +213,7 @@ async function addReaction(req: Request, res: Response, type: ReactionType) {
     const message = await Message.findOneOrFail({
         where: { id: message_id, channel_id },
     });
-    const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
+    const already_added = findReaction(message.reactions, emoji);
 
     if (!already_added) req.permission?.hasThrow("ADD_REACTIONS");
 
@@ -205,16 +226,8 @@ async function addReaction(req: Request, res: Response, type: ReactionType) {
         emoji.name = external_emoji.name;
     }
 
-    if (already_added) {
-        if (already_added.user_ids.includes(req.user_id)) return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
-        already_added.count++;
-        already_added.user_ids.push(req.user_id);
-    } else
-        message.reactions.push({
-            count: 1,
-            emoji,
-            user_ids: [req.user_id],
-        });
+    const result = addReactionUser(message.reactions, emoji, req.user_id, type);
+    if (!result.changed) return res.sendStatus(204); // Do not throw an error ¯\_(ツ)_/¯ as discord also doesn't throw any error
 
     await message.save();
 
@@ -245,7 +258,8 @@ async function addReaction(req: Request, res: Response, type: ReactionType) {
             guild_id: channel.guild_id,
             emoji,
             member,
-            type,
+            ...reactionEventTypeData(type),
+            burst_colors: type === ReactionType.burst ? [] : undefined,
         },
     } satisfies MessageReactionAddEvent);
 
@@ -305,13 +319,10 @@ async function removeReaction(req: Request, res: Response, type: ReactionType) {
         permissions.hasThrow("MANAGE_MESSAGES");
     }
 
-    const already_added = message.reactions.find((x) => (x.emoji.id === emoji.id && emoji.id) || x.emoji.name === emoji.name);
-    if (!already_added || !already_added.user_ids.includes(user_id)) throw new HTTPError("Reaction not found", 404);
-
-    already_added.count--;
+    const already_added = findReaction(message.reactions, emoji);
+    if (!already_added || !removeReactionUser(already_added, user_id, type)) throw new HTTPError("Reaction not found", 404);
 
     if (already_added.count <= 0) arrayRemove(message.reactions, already_added);
-    else already_added.user_ids.splice(already_added.user_ids.indexOf(user_id), 1);
 
     await message.save();
 
@@ -319,12 +330,11 @@ async function removeReaction(req: Request, res: Response, type: ReactionType) {
         event: "MESSAGE_REACTION_REMOVE",
         channel_id,
         data: {
-            user_id: req.user_id,
+            ...reactionRemoveEventUserData(user_id, type),
             channel_id,
             message_id,
             guild_id: channel.guild_id,
             emoji,
-            type,
         },
     } satisfies MessageReactionRemoveEvent);
 

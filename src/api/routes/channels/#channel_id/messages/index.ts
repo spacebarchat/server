@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { handleMessage, postHandleMessage, route } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route, toPublicReactions } from "@spacebar/api";
 import {
     Attachment,
     Channel,
@@ -56,7 +56,6 @@ import {
     MessageCreateSchema,
     PartialUser,
     PublicMessage,
-    Reaction,
     ReadStateType,
     RelationshipType,
 } from "@spacebar/schemas";
@@ -181,12 +180,7 @@ router.get(
         const ret = messages.map((msg) => {
             const x = msg.toJSON();
 
-            (x.reactions || []).forEach((y: Partial<Reaction>) => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //@ts-ignore
-                if ((y.user_ids || []).includes(req.user_id)) y.me = true;
-                delete y.user_ids;
-            });
+            x.reactions = toPublicReactions(msg.reactions, req.user_id);
             if (!x.author)
                 x.author = {
                     id: "4",

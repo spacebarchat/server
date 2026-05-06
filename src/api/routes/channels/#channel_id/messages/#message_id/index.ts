@@ -34,7 +34,7 @@ import {
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
-import { handleMessage, postHandleMessage, route } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route, toPublicReactions } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
@@ -122,6 +122,7 @@ router.patch(
             author: new_message.author?.toPublicUser(),
             attachments: new_message.attachments,
             embeds: new_message.embeds,
+            reactions: toPublicReactions(new_message.reactions, req.user_id),
             mentions: new_message.embeds,
             mention_roles: new_message.mention_roles,
             mention_everyone: new_message.mention_everyone,
@@ -273,7 +274,10 @@ router.get(
 
         if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
 
-        return res.json(message);
+        const publicMessage = message.toJSON();
+        publicMessage.reactions = toPublicReactions(message.reactions, req.user_id);
+
+        return res.json(publicMessage);
     },
 );
 

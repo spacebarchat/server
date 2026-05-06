@@ -61,8 +61,8 @@ import {
     MessageCreateCloudAttachment,
     MessageCreateSchema,
     MessageType,
-    Reaction,
     ReadStateType,
+    StoredReaction,
     UnfurledMediaItem,
     BaseMessageComponents,
     v1CompTypes,
@@ -715,7 +715,7 @@ interface MessageOptions extends MessageCreateSchema {
     webhook_id?: string;
     application_id?: string;
     embeds?: Embed[] | null;
-    reactions?: Reaction[];
+    reactions?: StoredReaction[];
     channel_id?: string;
     attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment | Attachment)[]; // why are we masking this?
     edited_timestamp?: Date;

@@ -11389,7 +11389,7 @@
             "reactions": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/Reaction"
+                    "$ref": "#/definitions/StoredReaction"
                 }
             },
             "nonce": {
@@ -12176,16 +12176,31 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "Reaction": {
+    "StoredReaction": {
         "type": "object",
         "properties": {
             "count": {
                 "type": "integer"
             },
+            "count_details": {
+                "$ref": "#/definitions/ReactionCountDetails"
+            },
             "emoji": {
                 "$ref": "#/definitions/PartialEmoji"
             },
             "user_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "burst_user_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "burst_colors": {
                 "type": "array",
                 "items": {
                     "type": "string"
@@ -12197,6 +12212,23 @@
             "count",
             "emoji",
             "user_ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReactionCountDetails": {
+        "type": "object",
+        "properties": {
+            "normal": {
+                "type": "integer"
+            },
+            "burst": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "burst",
+            "normal"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

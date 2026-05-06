@@ -120,9 +120,25 @@ export interface PartialMessage {
 
 export interface Reaction {
     count: number;
-    //// not saved in the database // me: boolean; // whether the current user reacted using this emoji
+    count_details?: ReactionCountDetails;
+    me?: boolean;
+    me_burst?: boolean;
+    emoji: PartialEmoji;
+    burst_colors?: string[];
+}
+
+export interface ReactionCountDetails {
+    normal: number;
+    burst: number;
+}
+
+export interface StoredReaction {
+    count: number;
+    count_details?: ReactionCountDetails;
     emoji: PartialEmoji;
     user_ids: Snowflake[];
+    burst_user_ids?: Snowflake[];
+    burst_colors?: string[];
 }
 
 // aka { animated } & OneOf<{id},{name}>
