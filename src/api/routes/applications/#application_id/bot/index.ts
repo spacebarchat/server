@@ -72,7 +72,7 @@ router.post(
         if (botApplication.owner_id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         const botOwner = await User.findOneOrFail({ where: { id: botApplication.owner_id } });
-        if (botOwner.totp_secret && (!req.body.code || verifyToken(botOwner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        if (botOwner.totp_secret && (!req.body.code || !verifyToken(botOwner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
         botApplication.bot!.data = { hash: undefined, valid_tokens_since: new Date() };
         await botApplication.bot!.save();
