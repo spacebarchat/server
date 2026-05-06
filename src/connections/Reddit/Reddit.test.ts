@@ -48,6 +48,7 @@ describe("RedditConnection metadata", () => {
             verified: true,
             coins: 0,
             id: "reddit-id",
+            is_gold: false,
             is_mod: true,
             has_verified_email: true,
             total_karma: 20223,
@@ -65,11 +66,12 @@ describe("RedditConnection metadata", () => {
         });
     });
 
-    test("serializes false moderator state as a string flag", () => {
+    test("serializes boolean states as string flags", () => {
         const metadata = getRedditConnectionMetadata({
             verified: false,
             coins: 0,
             id: "reddit-id",
+            is_gold: true,
             is_mod: false,
             has_verified_email: false,
             total_karma: 0,
@@ -81,6 +83,40 @@ describe("RedditConnection metadata", () => {
 
         assert.equal(metadata.mod, "0");
         assert.equal(metadata.gold, "1");
+    });
+
+    test("serializes active Reddit gold even with no unused creddits", () => {
+        const metadata = getRedditConnectionMetadata({
+            verified: false,
+            coins: 0,
+            id: "reddit-id",
+            is_gold: true,
+            is_mod: false,
+            has_verified_email: false,
+            total_karma: 0,
+            name: "alien",
+            gold_creddits: 0,
+            created_utc: 1556828917,
+        });
+
+        assert.equal(metadata.gold, "1");
+    });
+
+    test("does not treat unused creddits as active Reddit gold", () => {
+        const metadata = getRedditConnectionMetadata({
+            verified: false,
+            coins: 0,
+            id: "reddit-id",
+            is_gold: false,
+            is_mod: false,
+            has_verified_email: false,
+            total_karma: 0,
+            name: "alien",
+            gold_creddits: 2,
+            created_utc: 1556828917,
+        });
+
+        assert.equal(metadata.gold, "0");
     });
 
     test("defaults missing optional Reddit counters instead of throwing", () => {

@@ -25,6 +25,7 @@ export interface UserResponse {
     verified: boolean;
     coins: number;
     id: string;
+    is_gold?: boolean | null;
     is_mod?: boolean | null;
     has_verified_email: boolean;
     total_karma?: number | null;
@@ -59,7 +60,7 @@ function getRedditCreatedAt(userInfo: UserResponse): string {
 
 export function getRedditConnectionMetadata(userInfo: UserResponse): RedditConnectionMetadata {
     return {
-        gold: getRedditNumberMetadata(userInfo.gold_creddits),
+        gold: userInfo.is_gold ? "1" : "0",
         mod: userInfo.is_mod ? "1" : "0",
         total_karma: getRedditNumberMetadata(userInfo.total_karma),
         created_at: getRedditCreatedAt(userInfo),
