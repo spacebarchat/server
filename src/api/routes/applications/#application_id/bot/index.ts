@@ -66,18 +66,18 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const bot = await User.findOneOrFail({ where: { id: req.params.application_id as string, bot: true } });
-        const owner = req.user;
+        const botApplication = await Application.findOneOrFail({ where: { id: req.params.application_id as string }, relations: { bot: true } });
 
-        if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+        // TODO: handle teams
+        if (botApplication.owner_id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-        if (owner.totp_secret && (!req.body.code || verifyToken(owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        const botOwner = await User.findOneOrFail({ where: { id: botApplication.owner_id } });
+        if (botOwner.totp_secret && (!req.body.code || verifyToken(botOwner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-        bot.data = { hash: undefined, valid_tokens_since: new Date() };
+        botApplication.bot!.data = { hash: undefined, valid_tokens_since: new Date() };
+        await botApplication.bot!.save();
 
-        await bot.save();
-
-        const token = await generateToken(bot.id);
+        const token = await generateToken(botApplication.id);
 
         res.json({ token }).status(200);
     },
