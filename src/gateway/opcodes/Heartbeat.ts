@@ -16,23 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, OPCODES, Payload, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES, OPCODES, type Payload } from "../util/Constants";
+import type { WebSocket } from "../util/WebSocket";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
 import { Session } from "@spacebar/util";
 import { FindOptionsWhere } from "typeorm";
-import { isValidHeartbeatPayload } from "./HeartbeatValidation";
-
-interface QoSData {
-    seq: number | null;
-    qos: QoSPayload;
-}
-
-export interface QoSPayload {
-    ver: number;
-    active: boolean;
-    reasons: string[];
-}
+import { isValidHeartbeatPayload, type QoSHeartbeatData } from "./HeartbeatValidation";
 
 export async function onHeartbeat(this: WebSocket, data: Payload) {
     if (!isValidHeartbeatPayload(data)) {
@@ -42,7 +32,7 @@ export async function onHeartbeat(this: WebSocket, data: Payload) {
     setHeartbeat(this);
 
     if (data.op === OPCODES.SetQoS) {
-        this.qos = (data.d as QoSData).qos;
+        this.qos = (data.d as QoSHeartbeatData).qos;
     }
 
     const newSessionData: Partial<Session> = {

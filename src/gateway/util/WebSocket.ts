@@ -21,7 +21,7 @@ import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Capabilities } from "./Capabilities";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
-import { QoSPayload } from "../opcodes/Heartbeat";
+import type { QoSPayload } from "../opcodes/HeartbeatValidation";
 
 export interface WebSocket extends WS {
     recentTransactions: string[];
