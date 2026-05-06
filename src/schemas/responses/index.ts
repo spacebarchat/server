@@ -50,6 +50,7 @@ export * from "./LocationMetadataResponse";
 export * from "./MemberJoinGuildResponse";
 export * from "./OAuthAuthorizeResponse";
 export * from "./PartialConnectedAccountResponse";
+export * from "./PaymentSourceResponse";
 export * from "./PreloadMessagesResponseSchema";
 export * from "./RefreshUrlsResponse";
 export * from "./SettingsProtoUpdateResponse";
