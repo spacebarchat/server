@@ -1,21 +1,28 @@
 using Spacebar.Interop.Authentication;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Spacebar.AdminApi.Middleware;
 
-public class AuthenticationMiddleware(SpacebarAspNetAuthenticationService authService, SpacebarAuthenticationConfiguration config, RequestDelegate next) {
+public class AuthenticationMiddleware(ISpacebarAspNetAuthenticationService authService, SpacebarAuthenticationConfiguration config, RequestDelegate next) {
     public async Task InvokeAsync(HttpContext context, IServiceProvider sp) {
         if (context.Request.Path.StartsWithSegments("/ping") || config.DisableAuthentication) {
             await next(context);
             return;
         }
 
-        var res = await authService.ValidateTokenAsync(context.Request);
+        TokenValidationResult? res;
+        try {
+            res = await authService.ValidateTokenAsync(context.Request);
+        }
+        catch (Exception ex) when (ex is UnauthorizedAccessException or SecurityTokenException or ArgumentException) {
+            await WriteInvalidTokenResponse(context);
+            return;
+        }
 
         if (!(res?.IsValid ?? false)) {
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Invalid token");
+            await WriteInvalidTokenResponse(context);
             return;
         }
 
@@ -28,5 +35,10 @@ public class AuthenticationMiddleware(SpacebarAspNetAuthenticationService authSe
         }
 
         await next(context);
+    }
+
+    private static async Task WriteInvalidTokenResponse(HttpContext context) {
+        context.Response.StatusCode = 401;
+        await context.Response.WriteAsync("Invalid token");
     }
 }

@@ -33,6 +33,7 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
 builder.Services.AddScoped<SpacebarAuthenticationConfiguration>();
 builder.Services.AddScoped<SpacebarAuthenticationService>();
 builder.Services.AddScoped<SpacebarAspNetAuthenticationService>();
+builder.Services.AddScoped<ISpacebarAspNetAuthenticationService>(sp => sp.GetRequiredService<SpacebarAspNetAuthenticationService>());
 // builder.Services.AddSingleton<RabbitMQConfiguration>();
 // builder.Services.AddSingleton<RabbitMQService>();
 // builder.Services.AddSingleton<ISpacebarReplication, RabbitMqSpacebarReplication>();
