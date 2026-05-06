@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseMessageComponents, Embed } from "@spacebar/schemas";
+import { AllowedMentions, BaseMessageComponents, Embed, MessageReference } from "@spacebar/schemas";
 import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
@@ -25,12 +25,7 @@ export interface WebhookExecuteSchema {
     avatar_url?: string;
     tts?: boolean;
     embeds?: Embed[] | null;
-    allowed_mentions?: {
-        parse?: string[];
-        roles?: string[];
-        users?: string[];
-        replied_user?: boolean;
-    };
+    allowed_mentions?: AllowedMentions | null;
     components?: BaseMessageComponents[] | null;
     file?: { filename: string };
     payload_json?: string;
@@ -39,13 +34,8 @@ export interface WebhookExecuteSchema {
     flags?: number;
     thread_name?: string;
     applied_tags?: string[];
-    message_reference?: {
-        message_id: string;
-        channel_id?: string;
-        guild_id?: string;
-        fail_if_not_exists?: boolean;
-    };
-    sticker_ids?: string[];
+    message_reference?: MessageReference | null;
+    sticker_ids?: string[] | null;
     nonce?: string;
     enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
     poll?: PollCreationSchema;
