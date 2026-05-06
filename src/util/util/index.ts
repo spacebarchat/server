@@ -51,6 +51,7 @@ export * from "./Token";
 export * from "./TraverseDirectory";
 export * from "./WebAuthn";
 export * from "./ChannelFlags";
+export * from "./ChannelOrdering";
 export * from "./Gifs";
 export * from "./Application";
 export * from "./NameValidation";

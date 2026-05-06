@@ -30,7 +30,7 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { arrayRemove } from "@spacebar/util";
+import { insertChannelInOrdering } from "@spacebar/util";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
@@ -462,13 +462,8 @@ export class Guild extends BaseClass {
                 select: { channel_ordering: true },
             });
 
-        let position;
-        if (typeof insertPoint == "string") position = guild.channel_ordering.indexOf(insertPoint) + 1;
-        else position = insertPoint;
-
-        arrayRemove(guild.channel_ordering, channel_id);
-
-        guild.channel_ordering.splice(position, 0, channel_id);
+        const { ordering, position } = insertChannelInOrdering(guild.channel_ordering, channel_id, insertPoint);
+        guild.channel_ordering = ordering;
         await Guild.update({ id: guild_id }, { channel_ordering: guild.channel_ordering });
         return position;
     }
