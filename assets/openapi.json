@@ -909,8 +909,7 @@
                     }
                 },
                 "required": [
-                    "friend_sync",
-                    "insecure",
+                    "code",
                     "state"
                 ]
             },
@@ -7840,7 +7839,10 @@
                 ]
             },
             "ConnectionCallbackOpenIdParams": {
-                "type": "object"
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
             },
             "AllowedMentions": {
                 "type": "object",

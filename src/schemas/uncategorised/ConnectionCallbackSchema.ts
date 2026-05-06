@@ -17,10 +17,10 @@
 */
 
 export interface ConnectionCallbackSchema {
-    code?: string;
+    code: string;
     state: string;
-    insecure: boolean;
-    friend_sync: boolean;
+    insecure?: boolean;
+    friend_sync?: boolean;
     two_way_link_code?: string;
     openid_params?: ConnectionCallbackOpenIdParams;
 }
