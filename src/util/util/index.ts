@@ -54,6 +54,7 @@ export * from "./NameValidation";
 export * from "../../schemas/HelperTypes";
 export * from "./extensions";
 export * from "./Random";
+export * from "./ReadStateAck";
 export * from "./Url";
 export * from "./Version";
 export * from "./Presence";

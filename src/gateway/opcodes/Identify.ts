@@ -61,6 +61,7 @@ import { check } from "./instanceOf";
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
+import { ReadStateType } from "../../schemas/uncategorised/MessageAcknowledgeSchema";
 import { randomString } from "@spacebar/api";
 
 // TODO: user sharding
@@ -253,8 +254,8 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         ),
         timePromise(() =>
             ReadState.find({
-                where: { user_id: this.user_id },
-                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true, flags: true },
+                where: { user_id: this.user_id, read_state_type: ReadStateType.CHANNEL },
+                select: { id: true, channel_id: true, last_message_id: true, last_pin_timestamp: true, mention_count: true, last_viewed: true, flags: true },
             }),
         ),
         timePromise(() =>

@@ -83,8 +83,9 @@ export interface PublicRelationship {
 export interface ReadyReadState {
     id: string;
     mention_count: number;
+    last_viewed: number;
     last_message_id?: string | null;
-    last_pin_timestamp?: Date | string | null;
+    last_pin_timestamp: Date | string;
     flags: number;
 }
 
