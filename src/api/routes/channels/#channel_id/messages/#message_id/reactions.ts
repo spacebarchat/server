@@ -324,6 +324,7 @@ router.delete(
 router.delete(
     "/:emoji/:user_id",
     route({
+        permission: "MANAGE_MESSAGES",
         responses: {
             204: {},
             400: {
@@ -342,6 +343,7 @@ router.delete(
 router.delete(
     "/:emoji/:burst/:user_id",
     route({
+        permission: "MANAGE_MESSAGES",
         responses: {
             204: {},
             400: {

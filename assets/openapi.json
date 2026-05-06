@@ -25584,6 +25584,7 @@
         },
         "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}": {
             "delete": {
+                "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
                     {
                         "bearer": []
@@ -25655,6 +25656,7 @@
         },
         "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{burst}/{user_id}": {
             "delete": {
+                "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
                     {
                         "bearer": []
