@@ -19,9 +19,10 @@
 import { Router, Request, Response } from "express";
 import { RoleMembersUpdateSchema } from "@spacebar/schemas";
 import { DiscordApiErrors, Member } from "@spacebar/util";
-import { calculateRoleMemberReplacement, route } from "@spacebar/api";
+import { calculateRoleMemberAdditions, calculateRoleMemberReplacement, route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
+type RoleMemberUpdateMode = "add" | "replace";
 
 const routeOptions = route({
     permission: "MANAGE_ROLES",
@@ -34,8 +35,8 @@ const routeOptions = route({
     },
 });
 
-async function replaceRoleMembers(req: Request, res: Response) {
-    // Payload is JSON containing a list of member_ids, the new list of members to have the role
+async function updateRoleMembers(req: Request, res: Response, mode: RoleMemberUpdateMode) {
+    // Payload is JSON containing a list of member_ids to add (PATCH) or set as the exact role membership (PUT)
     const { guild_id, role_id } = req.params as { [key: string]: string };
     const { member_ids } = req.body as RoleMembersUpdateSchema;
 
@@ -47,7 +48,8 @@ async function replaceRoleMembers(req: Request, res: Response) {
         relations: { roles: true },
     });
 
-    const { addMemberIds, removeMemberIds } = calculateRoleMemberReplacement(members, member_ids, role_id);
+    const { addMemberIds, removeMemberIds } =
+        mode === "replace" ? calculateRoleMemberReplacement(members, member_ids, role_id) : calculateRoleMemberAdditions(members, member_ids, role_id);
 
     // TODO (erkin): have a bulk add/remove function that adds the roles in a single txn
     await Promise.all([
@@ -58,7 +60,7 @@ async function replaceRoleMembers(req: Request, res: Response) {
     res.sendStatus(204);
 }
 
-router.patch("/", routeOptions, replaceRoleMembers);
-router.put("/", routeOptions, replaceRoleMembers);
+router.patch("/", routeOptions, (req: Request, res: Response) => updateRoleMembers(req, res, "add"));
+router.put("/", routeOptions, (req: Request, res: Response) => updateRoleMembers(req, res, "replace"));
 
 export default router;

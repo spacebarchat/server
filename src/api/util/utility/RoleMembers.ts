@@ -3,23 +3,35 @@ type RoleMember = {
     roles: { id: string }[];
 };
 
-export type RoleMemberReplacement = {
+export type RoleMemberChanges = {
     addMemberIds: string[];
     removeMemberIds: string[];
 };
 
-export function calculateRoleMemberReplacement(members: RoleMember[], memberIds: string[], roleId: string): RoleMemberReplacement {
+export function calculateRoleMemberAdditions(members: RoleMember[], memberIds: string[], roleId: string): RoleMemberChanges {
     const desiredMemberIds = new Set(memberIds);
     const addMemberIds: string[] = [];
-    const removeMemberIds: string[] = [];
 
     for (const member of members) {
         const hasRole = member.roles.some((role) => role.id === roleId);
         const shouldHaveRole = desiredMemberIds.has(member.id);
 
         if (shouldHaveRole && !hasRole) addMemberIds.push(member.id);
-        if (!shouldHaveRole && hasRole) removeMemberIds.push(member.id);
     }
 
-    return { addMemberIds, removeMemberIds };
+    return { addMemberIds, removeMemberIds: [] };
+}
+
+export function calculateRoleMemberReplacement(members: RoleMember[], memberIds: string[], roleId: string): RoleMemberChanges {
+    const changes = calculateRoleMemberAdditions(members, memberIds, roleId);
+    const desiredMemberIds = new Set(memberIds);
+
+    for (const member of members) {
+        const hasRole = member.roles.some((role) => role.id === roleId);
+        const shouldHaveRole = desiredMemberIds.has(member.id);
+
+        if (!shouldHaveRole && hasRole) changes.removeMemberIds.push(member.id);
+    }
+
+    return changes;
 }
