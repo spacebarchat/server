@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { generateSecret, generateToken } from "node-2fa";
 import { HTTPError } from "lambert-server";
 import { User } from "@spacebar/util";
-import { requireTotpCodeIfConfigured } from "./Totp";
+import { requireTotpCodeIfConfigured, requireValidTotpCodeIfConfigured } from "./Totp";
 
 const originalFindOneOrFail = User.findOneOrFail;
 
@@ -55,5 +55,17 @@ describe("requireTotpCodeIfConfigured", () => {
         User.findOneOrFail = (() => Promise.resolve({ id: "user_id", totp_secret: secret })) as typeof User.findOneOrFail;
 
         await requireTotpCodeIfConfigured("user_id", generated.token, "Invalid code");
+    });
+});
+
+describe("requireValidTotpCodeIfConfigured", () => {
+    test("can validate an already-selected TOTP secret without a database lookup", () => {
+        const secret = generateSecret({ name: "Spacebar", account: "totp@example.test" }).secret;
+        const generated = generateToken(secret);
+        assert.ok(generated);
+
+        assert.doesNotThrow(() => requireValidTotpCodeIfConfigured("", undefined, "Invalid code"));
+        assert.doesNotThrow(() => requireValidTotpCodeIfConfigured(secret, generated.token, "Invalid code"));
+        assert.throws(() => requireValidTotpCodeIfConfigured(secret, "000000", "Invalid code"), HTTPError);
     });
 });

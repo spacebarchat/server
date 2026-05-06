@@ -19,13 +19,17 @@
 import { isValidTotpCode, User } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 
+export function requireValidTotpCodeIfConfigured(totpSecret: string | null | undefined, code: unknown, invalidMessage: string): void {
+    if (totpSecret && !isValidTotpCode(totpSecret, code)) {
+        throw new HTTPError(invalidMessage, 60008);
+    }
+}
+
 export async function requireTotpCodeIfConfigured(userId: string, code: unknown, invalidMessage: string): Promise<void> {
     const user = await User.findOneOrFail({
         where: { id: userId },
         select: { id: true, totp_secret: true },
     });
 
-    if (user.totp_secret && !isValidTotpCode(user.totp_secret, code)) {
-        throw new HTTPError(invalidMessage, 60008);
-    }
+    requireValidTotpCodeIfConfigured(user.totp_secret, code, invalidMessage);
 }
