@@ -14119,7 +14119,10 @@
                 ]
             },
             "CategoryLocalizations": {
-                "type": "object"
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                }
             },
             "GuildVoiceRegion": {
                 "type": "object",

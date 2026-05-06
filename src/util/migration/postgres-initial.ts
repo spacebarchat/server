@@ -94,7 +94,8 @@ export class initial0 implements MigrationInterface {
 			id integer NOT NULL,
 			name character varying,
 			localizations jsonb NOT NULL DEFAULT '{}'::jsonb,
-			is_primary boolean
+			is_primary boolean,
+			CONSTRAINT "CHK_categories_localizations_object" CHECK (jsonb_typeof(localizations) = 'object')
 		);`);
 
 		await queryRunner.query(`CREATE TABLE public.channels (
