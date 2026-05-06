@@ -18,8 +18,9 @@
 
 import { CLOSECODES } from "./Constants";
 import { WebSocket } from "./WebSocket";
+import { DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT } from "../../util/config/types/GatewayConfiguration";
 
-export const DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT = 45_000;
+export { DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT } from "../../util/config/types/GatewayConfiguration";
 
 export function setHeartbeat(socket: WebSocket, timeout = DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT) {
     if (socket.heartbeatTimeout) clearTimeout(socket.heartbeatTimeout);

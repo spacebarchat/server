@@ -27,7 +27,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
-import { Config, ErlpackType } from "@spacebar/util";
+import { Config, ErlpackType, GATEWAY_HEARTBEAT_INTERVAL } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 
 let erlpack: ErlpackType | null = null;
@@ -142,7 +142,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         await Send(socket, {
             op: OPCODES.Hello,
             d: {
-                heartbeat_interval: 1000 * 30,
+                heartbeat_interval: GATEWAY_HEARTBEAT_INTERVAL,
             },
         });
 

@@ -19,7 +19,7 @@
 import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import { OrmUtils } from "..";
-import { ConfigValue } from "../config";
+import { DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT, GATEWAY_HEARTBEAT_INTERVAL, ConfigValue, isValidGatewayHeartbeatTimeout } from "../config";
 import { ConfigEntity } from "../entities";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { bold, red, redBright } from "picocolors";
@@ -226,6 +226,11 @@ function validateFinalConfig(config: ConfigValue) {
     assertConfig("cdn_endpointPublic", (v) => v != null, 'A valid public CDN endpoint URL, eg. "http://localhost:3003/"');
     assertConfig("cdn_endpointPrivate", (v) => v != null, 'A valid private CDN endpoint URL, eg. "http://localhost:3003/" - must be routable from the API server!');
     assertConfig("gateway_endpointPublic", (v) => v != null, 'A valid public gateway endpoint URL, eg. "ws://localhost:3002/"');
+    assertConfig(
+        "gateway_heartbeatTimeout",
+        isValidGatewayHeartbeatTimeout,
+        `${DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT} (must be greater than the advertised heartbeat interval of ${GATEWAY_HEARTBEAT_INTERVAL}ms)`,
+    );
 
     if (hasErrors) {
         console.error("[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration");

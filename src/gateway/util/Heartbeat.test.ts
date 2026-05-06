@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { afterEach, describe, it, mock } from "node:test";
 import { CLOSECODES } from "./Constants";
 import { DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT, setHeartbeat } from "./Heartbeat";
 import type { WebSocket } from "./WebSocket";
+
+afterEach(() => {
+    mock.timers.reset();
+});
 
 function createSocket() {
     const closes: { code: number; reason?: string }[] = [];
@@ -15,34 +19,41 @@ function createSocket() {
     return { socket, closes };
 }
 
-function wait(ms: number) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
-
 describe("setHeartbeat", () => {
     it("uses the default gateway heartbeat timeout", () => {
-        assert.equal(DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT, 45_000);
-    });
-
-    it("closes the socket after the configured timeout", async () => {
+        mock.timers.enable({ apis: ["setTimeout"] });
         const { socket, closes } = createSocket();
 
-        setHeartbeat(socket, 5);
-        await wait(15);
+        setHeartbeat(socket);
+        mock.timers.tick(DEFAULT_GATEWAY_HEARTBEAT_TIMEOUT - 1);
+        assert.deepEqual(closes, []);
 
+        mock.timers.tick(1);
         assert.deepEqual(closes, [{ code: CLOSECODES.Session_timed_out, reason: undefined }]);
     });
 
-    it("clears the previous heartbeat timeout before scheduling a new one", async () => {
+    it("closes the socket after the configured timeout", () => {
+        mock.timers.enable({ apis: ["setTimeout"] });
         const { socket, closes } = createSocket();
 
-        setHeartbeat(socket, 5);
-        setHeartbeat(socket, 40);
-        await wait(15);
+        setHeartbeat(socket, 50);
+        mock.timers.tick(49);
+        assert.deepEqual(closes, []);
+
+        mock.timers.tick(1);
+        assert.deepEqual(closes, [{ code: CLOSECODES.Session_timed_out, reason: undefined }]);
+    });
+
+    it("clears the previous heartbeat timeout before scheduling a new one", () => {
+        mock.timers.enable({ apis: ["setTimeout"] });
+        const { socket, closes } = createSocket();
+
+        setHeartbeat(socket, 50);
+        setHeartbeat(socket, 400);
+        mock.timers.tick(399);
 
         assert.deepEqual(closes, []);
-        clearTimeout(socket.heartbeatTimeout);
+        mock.timers.tick(1);
+        assert.deepEqual(closes, [{ code: CLOSECODES.Session_timed_out, reason: undefined }]);
     });
 });
