@@ -61,6 +61,10 @@ router.patch(
             return;
         }
 
+        if (req.user_id != req.params.application_id) {
+            res.status(401).send({ code: 401, message: "You are not this application" });
+        }
+
         const body = req.body as ApplicationCommandCreateSchema;
 
         if (!body.type) {
@@ -114,6 +118,11 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
         res.status(404).send({ code: 404, message: "Unknown application command" });
         return;
     }
+
+    if (req.user_id != req.params.application_id) {
+        res.status(401).send({ code: 401, message: "You are not this application" });
+    }
+
 
     await ApplicationCommand.delete({ application_id: req.params.application_id as string, id: req.params.command_id as string });
     res.sendStatus(204);

@@ -49,6 +49,10 @@ router.post(
             return;
         }
 
+        if (req.user_id != req.params.application_id) {
+            res.status(401).send({ code: 401, message: "You are not this application" });
+        }
+
         const body = req.body as ApplicationCommandCreateSchema;
 
         if (!body.type) {
