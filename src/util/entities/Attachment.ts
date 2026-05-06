@@ -22,6 +22,14 @@ import { BaseClass } from "./BaseClass";
 import { getUrlSignature, NewUrlSignatureData, NewUrlUserSignatureData } from "../Signing";
 import { PublicAttachment } from "../../schemas/api/messages/Attachments";
 
+function normalizeCdnEndpoint(endpoint: string | null) {
+    return endpoint?.replace(/\/+$/, "") ?? "";
+}
+
+function normalizeAttachmentPathname(pathname: string) {
+    return pathname.replace(/^\/+attachments\//, "/attachments/");
+}
+
 export function signAttachmentUrl(url: string | undefined, data: NewUrlUserSignatureData) {
     if (!url) return url;
     if (!URL.canParse(url)) return url;
@@ -29,7 +37,12 @@ export function signAttachmentUrl(url: string | undefined, data: NewUrlUserSigna
     const parsed = new URL(url);
     const cdnUrl = Config.get().cdn.endpointPublic;
     if (cdnUrl && URL.canParse(cdnUrl) && parsed.origin !== new URL(cdnUrl).origin) return url;
-    if (!parsed.pathname.startsWith("/attachments/")) return url;
+    const normalizedPathname = normalizeAttachmentPathname(parsed.pathname);
+    if (!normalizedPathname.startsWith("/attachments/")) return url;
+    if (normalizedPathname !== parsed.pathname) {
+        parsed.pathname = normalizedPathname;
+        url = parsed.toString();
+    }
 
     return getUrlSignature(new NewUrlSignatureData({ ...data, url }))
         .applyToUrl(url)
@@ -83,10 +96,11 @@ export class Attachment extends BaseClass {
     toJSON() {
         const channelId = this.channel_id ?? this.channel?.id ?? this.message?.channel_id;
         const messageId = this.message_id ?? this.message?.id;
+        const url = `${normalizeCdnEndpoint(Config.get().cdn.endpointPublic)}/attachments/${channelId}/${messageId}/${this.filename}`;
         return {
             ...this,
-            url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
-            proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
+            url,
+            proxy_url: url,
         };
     }
     signUrls(data: NewUrlUserSignatureData): PublicAttachment {

@@ -307,3 +307,44 @@ describe("Message.withSignedAttachments", () => {
         assert.equal(message.message_snapshots[0].message.components[0].file.url, file);
     });
 });
+
+describe("Attachment URL signing", () => {
+    test("normalizes doubled attachment path before signing", async () => {
+        const { data } = await getMessageSigningContext();
+        const { signAttachmentUrl } = await import("./Attachment.js");
+
+        const signed = signAttachmentUrl("https://cdn.example//attachments/channel-id/message-id/file.png", data);
+
+        assertSignedAttachmentUrl(signed, "/attachments/channel-id/message-id/file.png");
+    });
+
+    test("builds attachment urls without double slash when CDN endpoint has a trailing slash", async () => {
+        process.env.DATABASE ??= "postgres://spacebar:spacebar@localhost:5432/spacebar";
+        const { Attachment } = await import("./Attachment.js");
+        const { Config } = await import("../util/Config.js");
+        const originalGet = Config.get;
+        Config.get = () =>
+            ({
+                cdn: {
+                    endpointPublic: "https://cdn.example/",
+                },
+            }) as ReturnType<typeof Config.get>;
+
+        try {
+            const attachment = new Attachment();
+            Object.assign(attachment, {
+                filename: "file.png",
+                size: 1,
+                channel_id: "channel-id",
+                message_id: "message-id",
+            });
+
+            const json = attachment.toJSON();
+
+            assert.equal(json.url, "https://cdn.example/attachments/channel-id/message-id/file.png");
+            assert.equal(json.proxy_url, "https://cdn.example/attachments/channel-id/message-id/file.png");
+        } finally {
+            Config.get = originalGet;
+        }
+    });
+});
