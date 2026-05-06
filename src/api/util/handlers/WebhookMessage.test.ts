@@ -32,6 +32,7 @@ let resolveWebhookMessageEditAttachments: typeof WebhookMessageModule.resolveWeb
 let shouldDecrementWebhookMessageChannel: typeof WebhookMessageModule.shouldDecrementWebhookMessageChannel;
 let uploadWebhookMessageFiles: typeof WebhookMessageModule.uploadWebhookMessageFiles;
 let isMessageEditOperation: typeof MessageModule.isMessageEditOperation;
+let shouldResolveMessageAuthor: typeof MessageModule.shouldResolveMessageAuthor;
 
 before(async () => {
     process.env.DATABASE ??= "postgres://user:pass@localhost:5432/test";
@@ -47,7 +48,7 @@ before(async () => {
         shouldDecrementWebhookMessageChannel,
         uploadWebhookMessageFiles,
     } = await import("./WebhookMessage.js"));
-    ({ isMessageEditOperation } = await import("./Message.js"));
+    ({ isMessageEditOperation, shouldResolveMessageAuthor } = await import("./Message.js"));
 });
 
 function attachment(id: string): Attachment {
@@ -156,6 +157,12 @@ describe("WebhookMessage handlers", () => {
         assert.equal(isMessageEditOperation({ is_edit: true }), true);
         assert.equal(isMessageEditOperation({ is_edit: false }), false);
         assert.equal(isMessageEditOperation({}), false);
+    });
+
+    it("does not run normal user author checks for webhook-authenticated message operations", () => {
+        assert.equal(shouldResolveMessageAuthor({ author_id: "user" }), true);
+        assert.equal(shouldResolveMessageAuthor({ author_id: "webhook", webhook_id: "webhook" }), false);
+        assert.equal(shouldResolveMessageAuthor({ webhook_id: "webhook" }), false);
     });
 
     it("builds webhook message edit bodies with retained and uploaded attachments", async () => {

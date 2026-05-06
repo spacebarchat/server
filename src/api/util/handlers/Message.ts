@@ -295,6 +295,10 @@ export function isMessageEditOperation(opts: Pick<MessageOptions, "is_edit">): b
     return opts.is_edit === true;
 }
 
+export function shouldResolveMessageAuthor(opts: Pick<MessageOptions, "author_id" | "webhook_id">): boolean {
+    return !!opts.author_id && !opts.webhook_id;
+}
+
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const conf = Config.get();
     const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;
@@ -340,11 +344,12 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     message.channel = channel;
     await processMessageOptionAttachments(opts, message);
 
-    if (opts.author_id) {
+    if (shouldResolveMessageAuthor(opts)) {
+        const author_id = opts.author_id!;
         message.author = await User.findOneOrFail({
-            where: { id: opts.author_id },
+            where: { id: author_id },
         });
-        const rights = await getRights(opts.author_id);
+        const rights = await getRights(author_id);
         message.author.clean_data();
         rights.hasThrow("SEND_MESSAGES");
     }
