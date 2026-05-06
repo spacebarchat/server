@@ -59,6 +59,22 @@ public class OpenApiSchemaRefConverterTests {
         Assert.Equal("string", node["additionalProperties"]!["type"]!.GetValue<string>());
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void SerializesBooleanAdditionalProperties(bool allowed) {
+        var schema = new OpenApiSchemaRef {
+            Type = "object",
+            AdditionalPropertiesAllowed = allowed,
+        };
+
+        var json = JsonSerializer.Serialize(schema);
+        var node = JsonNode.Parse(json)!;
+
+        Assert.Equal("object", node["type"]!.GetValue<string>());
+        Assert.Equal(allowed, node["additionalProperties"]!.GetValue<bool>());
+    }
+
     [Fact]
     public void DeserializesReferencedAdditionalPropertiesSchema() {
         const string json = """
@@ -73,5 +89,19 @@ public class OpenApiSchemaRefConverterTests {
         var schema = JsonSerializer.Deserialize<OpenApiSchemaRef>(json)!;
 
         Assert.Equal("#/components/schemas/LocalizedString", schema.AdditionalProperties!.Ref);
+    }
+
+    [Fact]
+    public void RejectsUnsupportedAdditionalPropertiesValue() {
+        const string json = """
+            {
+              "type": "object",
+              "additionalProperties": []
+            }
+            """;
+
+        var ex = Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<OpenApiSchemaRef>(json));
+
+        Assert.Contains("Expected bool|object in additionalProperties", ex.Message);
     }
 }
