@@ -2,33 +2,19 @@
 
 const fs = require("node:fs");
 const http = require("node:http");
-const { createRequire } = require("node:module");
 const os = require("node:os");
 const path = require("node:path");
 const { performance } = require("node:perf_hooks");
+const { closeServer, createReservedServer, overrideEnv, repoPath, repoRequire, requireRepoFile, restoreEnv } = require("../../scripts/benchmarks/lib/runtime");
 const { percentile } = require("../../scripts/benchmarks/lib/stats");
 
 const REQUESTS_PER_TRIAL = Number(process.env.BENCH_FULLSTACK_REQUESTS || 300);
 const CONCURRENCY = Number(process.env.BENCH_FULLSTACK_CONCURRENCY || 16);
 const STARTUP_SETTLE_MS = Number(process.env.BENCH_FULLSTACK_STARTUP_SETTLE_MS || 1000);
 
-function createReservedServer(repoRoot) {
-    return new Promise((resolve, reject) => {
-        const repoRequire = createRequire(path.join(repoRoot, "package.json"));
-        const express = repoRequire("express");
-        const app = express();
-        const server = http.createServer(app);
-
-        server.once("error", reject);
-        server.listen(0, "127.0.0.1", () => {
-            server.off("error", reject);
-            resolve({
-                app,
-                port: server.address().port,
-                server,
-            });
-        });
-    });
+function createReservedExpressServer(repoRoot) {
+    const express = repoRequire(repoRoot, "express");
+    return createReservedServer(express());
 }
 
 function benchmarkConfig(port) {
@@ -119,31 +105,28 @@ module.exports = {
             throw new Error("fullstack-readyz requires DATABASE to point at a Postgres database");
         }
 
-        const reserved = await createReservedServer(ctx.repoRoot);
+        const reserved = await createReservedExpressServer(ctx.repoRoot);
         const port = reserved.port;
-        const configPath = path.join(os.tmpdir(), `spacebar-benchmark-config-${process.pid}.json`);
+        const configDir = fs.mkdtempSync(path.join(os.tmpdir(), "spacebar-benchmark-config-"));
+        const configPath = path.join(configDir, "config.json");
         fs.writeFileSync(configPath, `${JSON.stringify(benchmarkConfig(port), null, 4)}\n`);
 
         ctx.fullstackReadyz = {
+            configDir,
             configPath,
-            previousEnv: {
-                CONFIG_PATH: process.env.CONFIG_PATH,
-                CONFIG_READONLY: process.env.CONFIG_READONLY,
-                LOG_REQUESTS: process.env.LOG_REQUESTS,
-                LOG_ROUTES: process.env.LOG_ROUTES,
-            },
+            previousEnv: overrideEnv({
+                CONFIG_PATH: configPath,
+                CONFIG_READONLY: "1",
+                LOG_REQUESTS: undefined,
+                LOG_ROUTES: "false",
+            }),
             reservedServer: reserved.server,
         };
 
-        process.env.CONFIG_PATH = configPath;
-        process.env.CONFIG_READONLY = "1";
-        process.env.LOG_ROUTES = "false";
-        delete process.env.LOG_REQUESTS;
-
-        const serverPath = path.join(ctx.repoRoot, "dist", "api", "Server.js");
+        const serverPath = repoPath(ctx.repoRoot, "dist", "api", "Server.js");
         if (!fs.existsSync(serverPath)) throw new Error("fullstack-readyz requires built dist files. Run npm run build:src first.");
 
-        const { SpacebarServer } = require(serverPath);
+        const { SpacebarServer } = requireRepoFile(ctx.repoRoot, "dist", "api", "Server.js");
         const server = new SpacebarServer({
             app: reserved.app,
             host: "127.0.0.1",
@@ -187,27 +170,21 @@ module.exports = {
         ctx.fullstackReadyz.agent?.destroy();
         if (ctx.fullstackReadyz.server?.http?.listening) {
             await ctx.fullstackReadyz.server.stop();
-        } else if (ctx.fullstackReadyz.reservedServer?.listening) {
-            await new Promise((resolve, reject) => {
-                ctx.fullstackReadyz.reservedServer.close((error) => {
-                    if (error) reject(error);
-                    else resolve();
-                });
-            });
+        } else {
+            await closeServer(ctx.fullstackReadyz.reservedServer);
         }
 
-        const databasePath = path.join(ctx.repoRoot, "dist", "util", "util", "Database.js");
+        const databasePath = repoPath(ctx.repoRoot, "dist", "util", "util", "Database.js");
         if (fs.existsSync(databasePath)) {
             const { closeDatabase } = require(databasePath);
             await closeDatabase();
         }
 
-        for (const [key, value] of Object.entries(ctx.fullstackReadyz.previousEnv)) {
-            if (value === undefined) delete process.env[key];
-            else process.env[key] = value;
-        }
+        restoreEnv(ctx.fullstackReadyz.previousEnv);
 
-        if (ctx.fullstackReadyz.configPath) {
+        if (ctx.fullstackReadyz.configDir) {
+            fs.rmSync(ctx.fullstackReadyz.configDir, { recursive: true, force: true });
+        } else if (ctx.fullstackReadyz.configPath) {
             fs.rmSync(ctx.fullstackReadyz.configPath, { force: true });
         }
     },

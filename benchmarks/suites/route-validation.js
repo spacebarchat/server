@@ -1,15 +1,13 @@
 "use strict";
 
-process.env.DATABASE ||= "postgres://bench:bench@127.0.0.1:1/bench";
-
 const http = require("node:http");
-const { createRequire } = require("node:module");
-const path = require("node:path");
 const { performance } = require("node:perf_hooks");
+const { closeServer, createReservedServer, defaultEnv, repoRequire, requireRepoFile, restoreEnv } = require("../../scripts/benchmarks/lib/runtime");
 const { percentile } = require("../../scripts/benchmarks/lib/stats");
 
 const REQUESTS_PER_TRIAL = Number(process.env.BENCH_ROUTE_REQUESTS || 600);
 const CONCURRENCY = Number(process.env.BENCH_ROUTE_CONCURRENCY || 32);
+const DUMMY_DATABASE_URL = "postgres://bench:bench@127.0.0.1:1/bench";
 
 function messagePayload(iteration) {
     return {
@@ -124,17 +122,19 @@ module.exports = {
         },
     },
     async setup(ctx) {
-        const bodyParserPath = path.join(ctx.repoRoot, "dist", "api", "middlewares", "BodyParser.js");
-        const routePath = path.join(ctx.repoRoot, "dist", "api", "util", "handlers", "route.js");
+        const importEnv = defaultEnv({ DATABASE: DUMMY_DATABASE_URL });
+        let express;
+        let BodyParser;
+        let route;
 
-        if (!require("node:fs").existsSync(bodyParserPath) || !require("node:fs").existsSync(routePath)) {
-            throw new Error("Benchmark requires built dist files. Run npm run build:src first.");
+        try {
+            express = repoRequire(ctx.repoRoot, "express");
+            ({ BodyParser } = requireRepoFile(ctx.repoRoot, "dist", "api", "middlewares", "BodyParser.js"));
+            ({ route } = requireRepoFile(ctx.repoRoot, "dist", "api", "util", "handlers", "route.js"));
+        } finally {
+            restoreEnv(importEnv);
         }
 
-        const repoRequire = createRequire(path.join(ctx.repoRoot, "package.json"));
-        const express = repoRequire("express");
-        const { BodyParser } = require(bodyParserPath);
-        const { route } = require(routePath);
         const app = express();
 
         app.post("/channels/:channel_id/messages", BodyParser({ inflate: true, limit: "128kb" }), route({ requestBody: "MessageCreateSchema" }), (req, res) => {
@@ -152,19 +152,13 @@ module.exports = {
             });
         });
 
-        const server = http.createServer(app);
-        await new Promise((resolve, reject) => {
-            server.once("error", reject);
-            server.listen(0, "127.0.0.1", resolve);
-        });
-
-        const address = server.address();
+        const { port, server } = await createReservedServer(app);
         const agent = new http.Agent({ keepAlive: true, maxSockets: CONCURRENCY });
 
         ctx.routeValidation = {
             agent,
             server,
-            url: `http://127.0.0.1:${address.port}/channels/123456789012345678/messages`,
+            url: `http://127.0.0.1:${port}/channels/123456789012345678/messages`,
         };
 
         await requestJson(ctx.routeValidation.url, agent, messagePayload(0));
@@ -193,11 +187,6 @@ module.exports = {
     async teardown(ctx) {
         if (!ctx.routeValidation) return;
         ctx.routeValidation.agent.destroy();
-        await new Promise((resolve, reject) => {
-            ctx.routeValidation.server.close((error) => {
-                if (error) reject(error);
-                else resolve();
-            });
-        });
+        await closeServer(ctx.routeValidation.server);
     },
 };
