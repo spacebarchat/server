@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, Webhook } from "@spacebar/util";
+import { Config, Webhook, toAPIWebhook } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 
@@ -41,10 +41,11 @@ router.get(
 
         const instanceUrl = Config.get().api.endpointPublic;
         return res.json(
-            webhooks.map((webhook) => ({
-                ...webhook,
-                url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
-            })),
+            webhooks.map((webhook) =>
+                toAPIWebhook(webhook, {
+                    url: instanceUrl + "/webhooks/" + webhook.id + "/" + webhook.token,
+                }),
+            ),
         );
     },
 );

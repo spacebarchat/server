@@ -1,5 +1,5 @@
 import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, Webhook, WebhooksUpdateEvent } from "@spacebar/util";
+import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, Webhook, WebhooksUpdateEvent, toAPIWebhook } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
@@ -35,10 +35,11 @@ router.get(
             throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
         }
 
-        return res.json({
-            ...webhook,
-            url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
-        });
+        return res.json(
+            toAPIWebhook(webhook, {
+                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+            }),
+        );
     },
 );
 
@@ -140,7 +141,7 @@ router.patch(
         requestBody: "WebhookUpdateSchema",
         responses: {
             200: {
-                body: "Message",
+                body: "WebhookCreateResponse",
             },
             400: {
                 body: "APIErrorResponse",
@@ -150,7 +151,6 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        // noinspection JSUnusedLocalSymbols - TODO: shouldnt token be checked?
         const { webhook_id, token } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 
@@ -158,6 +158,10 @@ router.patch(
             where: { id: webhook_id },
             relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
+        if (webhook.token !== token) {
+            throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+        }
+
         const channel_id = webhook.channel_id;
         if (!body.name && !body.avatar) {
             throw new HTTPError("Empty webhook updates are not allowed", 50006);
@@ -181,7 +185,11 @@ router.patch(
                 },
             } satisfies WebhooksUpdateEvent),
         ]);
-        res.status(204);
+        res.json(
+            toAPIWebhook(webhook, {
+                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+            }),
+        );
     },
 );
 
