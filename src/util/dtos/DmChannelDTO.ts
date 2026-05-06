@@ -17,9 +17,8 @@
 */
 
 import { MinimalPublicUserDTO } from "./UserDTO";
-import { Channel, User } from "../entities";
-import { PublicUserProjection } from "@spacebar/schemas";
-import { excludeDmChannelRecipient } from "./DmChannelRecipients";
+import type { Channel } from "../entities/Channel";
+import { excludeDmChannelRecipient, excludeDmChannelRecipients } from "./DmChannelRecipients";
 
 export class DmChannelDTO {
     icon: string | null;
@@ -32,6 +31,7 @@ export class DmChannelDTO {
     type: number;
 
     static async from(channel: Channel, excluded_recipients: string[] = [], origin_channel_id?: string) {
+        const [{ User }, { PublicUserProjection }] = await Promise.all([import("../entities/User.js"), import("../../schemas/api/users/User.js")]);
         const obj = new DmChannelDTO();
         obj.icon = channel.icon || null;
         obj.id = channel.id;
@@ -58,7 +58,7 @@ export class DmChannelDTO {
     excludedRecipients(excluded_recipients: string[]): DmChannelDTO {
         return {
             ...this,
-            recipients: this.recipients.filter((r) => !excluded_recipients.includes(r.id)),
+            recipients: excludeDmChannelRecipients(this.recipients, excluded_recipients),
         };
     }
 
