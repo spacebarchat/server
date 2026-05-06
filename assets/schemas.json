@@ -6991,7 +6991,10 @@
             },
             "email": {
                 "format": "email",
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "discriminator": {
                 "minLength": 4,

@@ -17,7 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, Email, User } from "@spacebar/util";
+import { Config, emailMatches, Email, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ForgotPasswordSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
@@ -62,7 +62,7 @@ router.post(
         res.sendStatus(204);
 
         const user = await User.findOne({
-            where: [{ phone: login }, { email: login }],
+            where: [{ phone: login }, { email: emailMatches(login) }],
             select: { username: true, id: true, email: true },
         }).catch(() => {});
 

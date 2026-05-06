@@ -17,7 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, FieldErrors, User, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
+import { Config, emailMatches, FieldErrors, User, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
@@ -66,7 +66,7 @@ router.post(
         }
 
         const user = await User.findOneOrFail({
-            where: [{ phone: login }, { email: login }],
+            where: [{ phone: login }, { email: emailMatches(login) }],
             select: { data: true, id: true, disabled: true, deleted: true, totp_secret: true, mfa_enabled: true, webauthn_enabled: true, security_keys: true, verified: true },
             relations: { security_keys: true, settings: true },
         }).catch(() => {

@@ -25,6 +25,7 @@ export * from "./Config";
 export * from "./Constants";
 export * from "./Database";
 export * from "./DateBuilder";
+export * from "./EmailAddress";
 export * from "./email";
 export * from "./ElapsedTime";
 export * from "./Event";
