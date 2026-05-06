@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { CloudAttachment, Channel, Config, Permissions } from "@spacebar/util";
+import { CloudAttachment, Channel, Config, getCloudAttachmentCdnUrl, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas";
 
@@ -51,7 +51,7 @@ router.post(
             });
         }
 
-        const cdnUrl = Config.get().cdn.endpointPublic;
+        const cdnUrl = Config.get().cdn.endpointPublic!;
         const batchId = `CLOUD_${user.id}_${randomString(128)}`;
 
         // validate IDs
@@ -89,7 +89,7 @@ router.post(
             attachments: attachments.map((a) => ({
                 id: a.userAttachmentId,
                 upload_filename: a.uploadFilename,
-                upload_url: `${cdnUrl}/attachments/${a.uploadFilename}`,
+                upload_url: getCloudAttachmentCdnUrl(cdnUrl, a.uploadFilename),
                 original_content_type: a.userOriginalContentType,
             })),
         } as UploadAttachmentResponseSchema);
@@ -116,7 +116,7 @@ router.delete("/:cloud_attachment_url", route({}), async (req: Request, res: Res
         });
     }
 
-    const response = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${att.uploadFilename}`, {
+    const response = await fetch(getCloudAttachmentCdnUrl(Config.get().cdn.endpointPrivate!, att.uploadFilename), {
         headers: {
             signature: Config.get().security.requestSignature,
         },

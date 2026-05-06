@@ -23,6 +23,7 @@ export * from "./BitField";
 export * from "./cdn";
 export * from "./Config";
 export * from "./Constants";
+export * from "./CdnRoutes";
 export * from "./Database";
 export * from "./DateBuilder";
 export * from "./EmailAddress";
