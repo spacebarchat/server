@@ -5561,6 +5561,41 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "WhoAmIResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "device_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "rights": {
+                "type": [
+                    "string",
+                    "integer"
+                ]
+            },
+            "logged_in_since": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "device_id",
+            "flags",
+            "id",
+            "logged_in_since",
+            "rights"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "MFAResponse": {
         "type": "object",
         "properties": {

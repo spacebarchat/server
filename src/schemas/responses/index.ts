@@ -65,3 +65,4 @@ export * from "./UserRelationsResponse";
 export * from "./UserRelationshipsResponse";
 export * from "./WebAuthnCreateResponse";
 export * from "./WebhookCreateResponse";
+export * from "./WhoAmIResponse";
