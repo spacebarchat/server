@@ -8,6 +8,7 @@ using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.Models.AdminApi;
 using Spacebar.Models.Db.Contexts;
+using Spacebar.Models.Db.Models;
 
 namespace Spacebar.AdminApi.Controllers.TestControllers;
 
@@ -24,11 +25,10 @@ public class EmptyDmsController(
     public async IAsyncEnumerable<object> GetEmptyDms() {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
-        // TODO channel type enum
         var channels = db.Channels
             .Include(x=>x.Recipients)
             .Include(x=>x.Messages)
-            .Where(x => x.Type == 1)
+            .Where(x => x.Type == ChannelType.Dm)
             .Where(x => !x.Messages.Any() && x.Recipients.Count == 1)
             ;
         

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.Abstractions;
 using Spacebar.Models.Db.Contexts;
+using Spacebar.Models.Db.Models;
 using Spacebar.Models.Gateway;
 
 namespace Spacebar.GatewayOffload.Controllers;
@@ -44,7 +45,7 @@ public class ChannelStatusController(ILogger<ChannelStatusController> logger, Sp
         ];
 
         foreach (var guildId in req.GuildIds ?? [req.GuildId!.Value]) {
-            var channels = (await db.Channels.Include(x => x.VoiceStates).Where(x => x.Type == 2 && x.GuildId == guildId && x.VoiceStates.Count > 0)
+            var channels = (await db.Channels.Include(x => x.VoiceStates).Where(x => x.Type == ChannelType.GuildVoice && x.GuildId == guildId && x.VoiceStates.Count > 0)
                     .Select(x => x.Id)
                     .ToListAsync())
                 .Select(x => new {

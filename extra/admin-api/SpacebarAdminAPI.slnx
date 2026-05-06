@@ -34,6 +34,9 @@
         <Project Path="Utilities/Spacebar.Cdn.Migration/Spacebar.Cdn.Migration.csproj"/>
         <Project Path="Utilities/Spacebar.CleanSettingsRows/Spacebar.CleanSettingsRows.csproj"/>
     </Folder>
+    <Folder Name="/Tests/">
+        <Project Path="Tests/Spacebar.Models.Db.Tests/Spacebar.Models.Db.Tests.csproj"/>
+    </Folder>
     <Project Path="Spacebar.AdminApi/Spacebar.AdminApi.csproj"/>
     <Project Path="Spacebar.Cdn.Worker/Spacebar.Cdn.Worker.Q16-HDRI.x86_64.csproj" DisplayName="Spacebar.Cdn.Worker"/>
     <Project Path="Spacebar.Cdn/Spacebar.Cdn.csproj"/>

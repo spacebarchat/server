@@ -23,7 +23,7 @@ public partial class Channel
     public string? Icon { get; set; }
 
     [Column("type")]
-    public int Type { get; set; }
+    public ChannelType Type { get; set; }
 
     [Column("last_message_id")]
     public long? LastMessageId { get; set; }
