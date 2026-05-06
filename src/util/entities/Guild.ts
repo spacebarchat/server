@@ -17,7 +17,18 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
-import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
+import {
+    Config,
+    GuildCreateRoleInput,
+    GuildWelcomeScreen,
+    Snowflake,
+    getGuildCreateCustomRoles,
+    getGuildCreateEveryoneRole,
+    handleFile,
+    normalizeGuildCreateRole,
+    resolveGuildCreateChannelReferences,
+    resolveGuildCreatePermissionOverwrites,
+} from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -345,13 +356,24 @@ export class Guild extends BaseClass {
 
     static async createGuild(body: {
         name?: string;
+        region?: string | null;
         icon?: string | null;
         owner_id?: string;
-        roles?: Partial<Role>[];
+        roles?: GuildCreateRoleInput[];
         channels?: Partial<Channel>[];
         source_guild_id: string | null;
+        verification_level?: number | null;
+        default_message_notifications?: number | null;
+        explicit_content_filter?: number | null;
+        afk_channel_id?: string | null;
+        afk_timeout?: number;
+        system_channel_id?: string | null;
+        system_channel_flags?: number;
+        rules_channel_id?: string | null;
     }) {
         const guild_id = Snowflake.generate();
+        const roleIds = new Map<string, string>([["0", guild_id]]);
+        if (body.source_guild_id) roleIds.set(body.source_guild_id, guild_id);
 
         const guild = await Guild.create({
             id: guild_id,
@@ -364,30 +386,28 @@ export class Guild extends BaseClass {
             preferred_locale: "en-US",
             premium_subscription_count: 0,
             premium_tier: 0,
-            system_channel_flags: 4, // defaults effect: suppress the setup tips to save performance
+            system_channel_flags: body.system_channel_flags ?? 4, // defaults effect: suppress the setup tips to save performance
             nsfw_level: 0,
-            verification_level: 0,
+            verification_level: body.verification_level ?? 0,
             welcome_screen: {
                 enabled: false,
                 description: "",
                 welcome_channels: [],
             },
             channel_ordering: [],
-            afk_timeout: Config.get().defaults.guild.afkTimeout,
-            default_message_notifications: Config.get().defaults.guild.defaultMessageNotifications,
-            explicit_content_filter: Config.get().defaults.guild.explicitContentFilter,
+            afk_timeout: body.afk_timeout ?? Config.get().defaults.guild.afkTimeout,
+            default_message_notifications: body.default_message_notifications ?? Config.get().defaults.guild.defaultMessageNotifications,
+            explicit_content_filter: body.explicit_content_filter ?? Config.get().defaults.guild.explicitContentFilter,
             features: Config.get().guild.defaultFeatures,
             max_members: Config.get().limits.guild.maxMembers,
             max_presences: Config.get().defaults.guild.maxPresences,
             max_video_channel_users: Config.get().defaults.guild.maxVideoChannelUsers,
-            region: Config.get().regions.default,
+            region: body.region ?? Config.get().regions.default,
         }).save();
 
         // we have to create the role _after_ the guild because else we would get a foreign key error
         // TODO: make the @everyone a pseudorole that is dynamically generated at runtime so we can save storage
-        await Role.create({
-            id: guild_id,
-            guild_id: guild_id,
+        const everyoneRole = normalizeGuildCreateRole(getGuildCreateEveryoneRole(body.roles, body.source_guild_id) ?? {}, {
             color: 0,
             colors: { primary_color: 0 },
             hoist: false,
@@ -396,28 +416,42 @@ export class Guild extends BaseClass {
             name: "@everyone",
             permissions: "2251804225",
             position: 0,
-            icon: undefined,
-            unicode_emoji: undefined,
-            flags: 0, // TODO?
+            flags: 0,
+        });
+
+        await Role.create({
+            ...everyoneRole,
+            id: guild_id,
+            guild_id: guild_id,
+            position: 0,
         }).save();
 
         // create custom roles if provided
-        if (body.roles && body.roles.length) {
+        const customRoles = getGuildCreateCustomRoles(body.roles, body.source_guild_id);
+        if (customRoles.length) {
             await Promise.all(
-                body.roles?.map(
-                    (role) =>
-                        new Promise((resolve) => {
-                            Role.create({
-                                ...role,
-                                guild_id,
-                                id:
-                                    // role.id === body.template_guild_id indicates that this is the @everyone role
-                                    role.id === body.source_guild_id || role.id == "0" ? guild_id : Snowflake.generate(),
-                            })
-                                .save()
-                                .then(resolve);
-                        }),
-                ),
+                customRoles.map((role, index) => {
+                    const id = Snowflake.generate();
+                    const normalized = normalizeGuildCreateRole(role, {
+                        color: 0,
+                        colors: { primary_color: 0 },
+                        hoist: false,
+                        managed: false,
+                        mentionable: false,
+                        name: "new role",
+                        permissions: "0",
+                        position: index + 1,
+                        flags: 0,
+                    });
+
+                    if (role.id) roleIds.set(role.id, id);
+
+                    return Role.create({
+                        ...normalized,
+                        guild_id,
+                        id,
+                    }).save();
+                }),
             );
         }
 
@@ -437,8 +471,9 @@ export class Guild extends BaseClass {
             const id = ids.get(channel.id) || Snowflake.generate();
 
             const parent_id = ids.get(channel.parent_id);
+            const permission_overwrites = resolveGuildCreatePermissionOverwrites(channel.permission_overwrites, roleIds);
 
-            const saved = await Channel.createChannel({ ...channel, guild_id, id, parent_id }, body.owner_id, {
+            const saved = await Channel.createChannel({ ...channel, guild_id, id, parent_id, permission_overwrites }, body.owner_id, {
                 keepId: true,
                 skipExistsCheck: true,
                 skipPermissionCheck: true,
@@ -446,6 +481,12 @@ export class Guild extends BaseClass {
             });
 
             await Guild.insertChannelInOrder(guild.id, saved.id, parent_id ?? channel.position ?? 0, guild);
+        }
+
+        const channelReferences = resolveGuildCreateChannelReferences(body, ids);
+        if (Object.values(channelReferences).some((channelId) => channelId !== undefined)) {
+            Object.assign(guild, channelReferences);
+            await guild.save();
         }
 
         return guild;
