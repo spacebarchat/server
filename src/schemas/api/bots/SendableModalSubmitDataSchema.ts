@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { MessageComponentType, UploadAttachmentRequestSchema } from "@spacebar/schemas";
 import { Snowflake } from "../../Identifiers";
+import { MessageComponentType } from "../messages";
 
 export interface ModalSubmitTextInputComponentData {
     type: MessageComponentType.TextInput;
-    id?: number;
+    id: number;
     custom_id: string;
     value: string;
 }
@@ -33,35 +33,35 @@ export interface ModalSubmitSelectComponentData {
         | MessageComponentType.RoleSelect
         | MessageComponentType.MentionableSelect
         | MessageComponentType.ChannelSelect;
-    id?: number;
+    id: number;
     custom_id: string;
     values: string[];
 }
 
 export interface ModalSubmitFileUploadComponentData {
     type: MessageComponentType.FileUpload;
-    id?: number;
+    id: number;
     custom_id: string;
     values: Snowflake[];
 }
 
 export interface ModalSubmitRadioGroupComponentData {
     type: MessageComponentType.RadioGroup;
-    id?: number;
+    id: number;
     custom_id: string;
-    value?: string | null;
+    value: string | null;
 }
 
 export interface ModalSubmitCheckboxGroupComponentData {
     type: MessageComponentType.CheckboxGroup;
-    id?: number;
+    id: number;
     custom_id: string;
     values: string[];
 }
 
 export interface ModalSubmitCheckboxComponentData {
     type: MessageComponentType.Checkbox;
-    id?: number;
+    id: number;
     custom_id: string;
     value: boolean;
 }
@@ -76,28 +76,34 @@ export type ModalSubmitComponentData =
 
 export interface ModalSubmitActionRowComponentData {
     type: MessageComponentType.ActionRow;
-    id?: number;
-    components: ModalSubmitComponentData[];
+    id: number;
+    components: ModalSubmitTextInputComponentData[];
 }
 
 export interface ModalSubmitLabelComponentData {
     type: MessageComponentType.Label;
-    id?: number;
+    id: number;
     component: ModalSubmitComponentData;
 }
 
 export interface ModalSubmitTextDisplayComponentData {
     type: MessageComponentType.TextDisplay;
-    id?: number;
-    content: string;
+    id: number;
 }
 
 export type ModalSubmitTopLevelComponentData = ModalSubmitActionRowComponentData | ModalSubmitLabelComponentData | ModalSubmitTextDisplayComponentData;
 
+export interface ModalSubmitResolvedData {
+    users?: { [id: string]: object };
+    members?: { [id: string]: object };
+    roles?: { [id: string]: object };
+    channels?: { [id: string]: object };
+    messages?: { [id: string]: object };
+    attachments?: { [id: string]: object };
+}
+
 export interface SendableModalSubmitDataSchema {
-    id: Snowflake;
     custom_id: string;
     components: ModalSubmitTopLevelComponentData[];
-    resolved?: object;
-    attachments?: UploadAttachmentRequestSchema[];
+    resolved?: ModalSubmitResolvedData;
 }

@@ -3124,10 +3124,6 @@
             "SendableModalSubmitDataSchema": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
                     "custom_id": {
                         "type": "string"
                     },
@@ -3138,21 +3134,12 @@
                         }
                     },
                     "resolved": {
-                        "type": "object",
-                        "properties": {},
-                        "additionalProperties": true
-                    },
-                    "attachments": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/UploadAttachmentRequestSchema"
-                        }
+                        "$ref": "#/components/schemas/ModalSubmitResolvedData"
                     }
                 },
                 "required": [
                     "components",
-                    "custom_id",
-                    "id"
+                    "custom_id"
                 ]
             },
             "InstanceUserDeleteSchema": {
@@ -13945,14 +13932,61 @@
                     "components": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ModalSubmitComponentData"
+                            "$ref": "#/components/schemas/ModalSubmitTextInputComponentData"
                         }
                     }
                 },
                 "required": [
                     "components",
+                    "id",
                     "type"
                 ]
+            },
+            "ModalSubmitTextInputComponentData": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType.TextInput"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "custom_id": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "custom_id",
+                    "id",
+                    "type",
+                    "value"
+                ]
+            },
+            "ModalSubmitLabelComponentData": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/MessageComponentType.Label"
+                    },
+                    "id": {
+                        "type": "integer"
+                    },
+                    "component": {
+                        "$ref": "#/components/schemas/ModalSubmitComponentData"
+                    }
+                },
+                "required": [
+                    "component",
+                    "id",
+                    "type"
+                ]
+            },
+            "MessageComponentType.Label": {
+                "type": "number",
+                "const": 18
             },
             "ModalSubmitComponentData": {
                 "anyOf": [
@@ -13974,28 +14008,6 @@
                     {
                         "$ref": "#/components/schemas/ModalSubmitCheckboxComponentData"
                     }
-                ]
-            },
-            "ModalSubmitTextInputComponentData": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/MessageComponentType.TextInput"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "custom_id": {
-                        "type": "string"
-                    },
-                    "value": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "custom_id",
-                    "type",
-                    "value"
                 ]
             },
             "ModalSubmitSelectComponentData": {
@@ -14026,6 +14038,7 @@
                 },
                 "required": [
                     "custom_id",
+                    "id",
                     "type",
                     "values"
                 ]
@@ -14051,6 +14064,7 @@
                 },
                 "required": [
                     "custom_id",
+                    "id",
                     "type",
                     "values"
                 ]
@@ -14078,7 +14092,9 @@
                 },
                 "required": [
                     "custom_id",
-                    "type"
+                    "id",
+                    "type",
+                    "value"
                 ]
             },
             "MessageComponentType.RadioGroup": {
@@ -14106,6 +14122,7 @@
                 },
                 "required": [
                     "custom_id",
+                    "id",
                     "type",
                     "values"
                 ]
@@ -14132,6 +14149,7 @@
                 },
                 "required": [
                     "custom_id",
+                    "id",
                     "type",
                     "value"
                 ]
@@ -14139,28 +14157,6 @@
             "MessageComponentType.Checkbox": {
                 "type": "number",
                 "const": 23
-            },
-            "ModalSubmitLabelComponentData": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/MessageComponentType.Label"
-                    },
-                    "id": {
-                        "type": "integer"
-                    },
-                    "component": {
-                        "$ref": "#/components/schemas/ModalSubmitComponentData"
-                    }
-                },
-                "required": [
-                    "component",
-                    "type"
-                ]
-            },
-            "MessageComponentType.Label": {
-                "type": "number",
-                "const": 18
             },
             "ModalSubmitTextDisplayComponentData": {
                 "type": "object",
@@ -14170,15 +14166,65 @@
                     },
                     "id": {
                         "type": "integer"
-                    },
-                    "content": {
-                        "type": "string"
                     }
                 },
                 "required": [
-                    "content",
+                    "id",
                     "type"
                 ]
+            },
+            "ModalSubmitResolvedData": {
+                "type": "object",
+                "properties": {
+                    "users": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "members": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "roles": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "messages": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    },
+                    "attachments": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {},
+                            "additionalProperties": true
+                        }
+                    }
+                }
             },
             "InstanceUserDeleteSchemaContent": {
                 "type": "object",

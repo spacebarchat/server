@@ -45,7 +45,11 @@ function resolveRef(schemas: Record<string, JsonShape>, shape: JsonShape | undef
 }
 
 function unionRefs(schemas: Record<string, JsonShape>, shape: JsonShape | undefined): string[] {
-    return (resolveRef(schemas, shape)?.anyOf ?? resolveRef(schemas, shape)?.oneOf ?? []).map((item) => item.$ref).filter((ref): ref is string => Boolean(ref));
+    const resolved = resolveRef(schemas, shape);
+    const union = resolved?.anyOf ?? resolved?.oneOf;
+    if (!union && shape?.$ref) return [shape.$ref];
+
+    return (union ?? []).map((item) => item.$ref).filter((ref): ref is string => Boolean(ref));
 }
 
 test("SendableModalSubmitDataSchema exposes submitted modal components", () => {
@@ -56,14 +60,7 @@ test("SendableModalSubmitDataSchema exposes submitted modal components", () => {
         "#/definitions/ModalSubmitLabelComponentData",
         "#/definitions/ModalSubmitTextDisplayComponentData",
     ]);
-    assert.deepEqual(unionRefs(schemas, schemas.ModalSubmitActionRowComponentData.properties?.components?.items).sort(), [
-        "#/definitions/ModalSubmitCheckboxComponentData",
-        "#/definitions/ModalSubmitCheckboxGroupComponentData",
-        "#/definitions/ModalSubmitFileUploadComponentData",
-        "#/definitions/ModalSubmitRadioGroupComponentData",
-        "#/definitions/ModalSubmitSelectComponentData",
-        "#/definitions/ModalSubmitTextInputComponentData",
-    ]);
+    assert.deepEqual(unionRefs(schemas, schemas.ModalSubmitActionRowComponentData.properties?.components?.items).sort(), ["#/definitions/ModalSubmitTextInputComponentData"]);
     assert.deepEqual(unionRefs(schemas, schemas.ModalSubmitLabelComponentData.properties?.component).sort(), [
         "#/definitions/ModalSubmitCheckboxComponentData",
         "#/definitions/ModalSubmitCheckboxGroupComponentData",
@@ -72,20 +69,29 @@ test("SendableModalSubmitDataSchema exposes submitted modal components", () => {
         "#/definitions/ModalSubmitSelectComponentData",
         "#/definitions/ModalSubmitTextInputComponentData",
     ]);
-    assert.deepEqual(schemas.ModalSubmitTextInputComponentData.required, ["custom_id", "type", "value"]);
-    assert.deepEqual(schemas.SendableModalSubmitDataSchema.required, ["components", "custom_id", "id"]);
+    assert.deepEqual(schemas.ModalSubmitTextInputComponentData.required?.toSorted(), ["custom_id", "id", "type", "value"]);
+    assert.deepEqual(schemas.ModalSubmitRadioGroupComponentData.required?.toSorted(), ["custom_id", "id", "type", "value"]);
+    assert.deepEqual(schemas.ModalSubmitActionRowComponentData.required?.toSorted(), ["components", "id", "type"]);
+    assert.deepEqual(schemas.ModalSubmitLabelComponentData.required?.toSorted(), ["component", "id", "type"]);
+    assert.equal(schemas.ModalSubmitTextDisplayComponentData.properties?.content, undefined);
+    assert.deepEqual(schemas.ModalSubmitTextDisplayComponentData.required?.toSorted(), ["id", "type"]);
+    assert.deepEqual(schemas.SendableModalSubmitDataSchema.required, ["components", "custom_id"]);
+    assert.deepEqual(Object.keys(schemas.ModalSubmitResolvedData.properties ?? {}).sort(), ["attachments", "channels", "members", "messages", "roles", "users"]);
+    assert.deepEqual(Object.keys(schemas.SendableModalSubmitDataSchema.properties ?? {}).sort(), ["components", "custom_id", "resolved"]);
+    assert.equal(schemas.SendableModalSubmitDataSchema.properties?.id, undefined);
 });
 
 test("SendableModalSubmitDataSchema validates submitted text input values", () => {
     const modalSubmit = {
-        id: "100",
         custom_id: "profile",
         components: [
             {
                 type: 1,
+                id: 1,
                 components: [
                     {
                         type: 4,
+                        id: 2,
                         custom_id: "bio",
                         value: "hello",
                     },
@@ -97,7 +103,6 @@ test("SendableModalSubmitDataSchema validates submitted text input values", () =
     assert.equal(ajv.validate("SendableModalSubmitDataSchema", modalSubmit), true);
     assert.equal(
         ajv.validate("SendableModalSubmitDataSchema", {
-            id: "100",
             custom_id: "profile",
             components: [
                 {
@@ -116,7 +121,6 @@ test("SendableModalSubmitDataSchema validates submitted text input values", () =
     );
     assert.equal(
         ajv.validate("SendableModalSubmitDataSchema", {
-            id: "100",
             custom_id: "profile",
             components: [
                 {
@@ -135,6 +139,63 @@ test("SendableModalSubmitDataSchema validates submitted text input values", () =
     );
     assert.equal(
         ajv.validate("SendableModalSubmitDataSchema", {
+            custom_id: "profile",
+            components: [
+                {
+                    type: 10,
+                    id: 1,
+                },
+                {
+                    type: 18,
+                    id: 2,
+                    component: {
+                        type: 19,
+                        id: 3,
+                        custom_id: "file_upload",
+                        values: ["111111111111111111"],
+                    },
+                },
+                {
+                    type: 18,
+                    id: 4,
+                    component: {
+                        type: 21,
+                        id: 5,
+                        custom_id: "class_radio",
+                        value: null,
+                    },
+                },
+                {
+                    type: 18,
+                    id: 6,
+                    component: {
+                        type: 22,
+                        id: 7,
+                        custom_id: "event_checkbox",
+                        values: [],
+                    },
+                },
+            ],
+            resolved: {
+                attachments: {
+                    "111111111111111111": {
+                        id: "111111111111111111",
+                        filename: "bug.png",
+                    },
+                },
+            },
+        }),
+        true,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
+            ...modalSubmit,
+            id: "100",
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
             ...modalSubmit,
             components: [{ type: 1, components: [{ type: 4, custom_id: "bio" }] }],
         }),
@@ -144,6 +205,46 @@ test("SendableModalSubmitDataSchema validates submitted text input values", () =
         ajv.validate("SendableModalSubmitDataSchema", {
             ...modalSubmit,
             components: [{ type: 1, components: [{ type: 4, custom_id: "bio", value: "hello", label: "Bio" }] }],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
+            ...modalSubmit,
+            components: [{ type: 1, components: [{ type: 3, custom_id: "favorite_bug", values: ["butterfly"] }] }],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
+            ...modalSubmit,
+            components: [{ type: 10, content: "creation payload text" }],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
+            ...modalSubmit,
+            components: [
+                {
+                    type: 18,
+                    id: 1,
+                    component: {
+                        type: 21,
+                        id: 2,
+                        custom_id: "class_radio",
+                    },
+                },
+            ],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("SendableModalSubmitDataSchema", {
+            ...modalSubmit,
+            resolved: {
+                unknown_map: {},
+            },
         }),
         false,
     );
