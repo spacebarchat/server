@@ -17,9 +17,11 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, Message } from "@spacebar/util";
+import { Channel, Config, Message } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { PreloadMessagesRequestSchema, PreloadMessagesResponseSchema } from "@spacebar/schemas";
+import { ChannelType, PreloadMessagesRequestSchema, PreloadMessagesResponseSchema } from "@spacebar/schemas";
+import { In } from "typeorm";
+
 const router = Router({ mergeParams: true });
 
 router.post(
@@ -43,6 +45,33 @@ router.post(
                 code: 400,
                 message: `Cannot preload more than ${Config.get().limits.message.maxPreloadCount} channels at once.`,
             });
+
+        const channels = await Channel.find({
+            where: { id: In(body.channels!) },
+            select: {
+                id: true,
+                type: true,
+                guild_id: true,
+                owner_id: true,
+                recipients: true,
+                thread_members: true,
+                parent_id: true,
+            },
+            relations: {
+                recipients: true,
+                thread_members: true,
+            },
+        });
+
+        const channelsToRemove: string[] = [];
+        const validChannels = await Promise.all(
+            channels.map(async (channel) => {
+                if (channel.isDm()) return { id: channel.id, valid: channel.recipients?.some((r) => r.user_id == req.user_id && !r.closed) };
+                if (channel.isThread()) {
+
+                }
+            }),
+        );
 
         const messages = (
             await Promise.all(
