@@ -20,15 +20,20 @@ import { route } from "@spacebar/api";
 import { Channel, Member, ThreadMember } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { In, LessThan } from "typeorm";
-import { getPublicArchivedThreadType, parseArchivedThreadLimit } from "../../../../../util/utility/ArchivedThreads";
+import { In } from "typeorm";
+import {
+    applyPublicArchivedThreadsQuery,
+    getPublicArchivedThreadType,
+    parseArchivedThreadLimit,
+    PUBLIC_ARCHIVED_THREAD_PERMISSIONS,
+} from "../../../../../util/utility/ArchivedThreads";
 
 const router = Router({ mergeParams: true });
 
 router.get(
     "/",
     route({
-        permission: "READ_MESSAGE_HISTORY",
+        permission: [...PUBLIC_ARCHIVED_THREAD_PERMISSIONS],
         query: {
             before: {
                 type: "string",
@@ -70,22 +75,12 @@ router.get(
         const threadType = getPublicArchivedThreadType(channel.type);
         if (threadType === undefined) throw new HTTPError("Cannot list public archived threads for this channel type", 400);
 
-        const threads = await Channel.find({
-            where: {
-                parent_id: channel_id,
-                type: threadType,
-                thread_metadata: {
-                    archived: true,
-                    ...(beforeDate ? { archive_timestamp: LessThan(beforeDate.toISOString()) } : {}),
-                },
-            },
-            order: {
-                thread_metadata: {
-                    archive_timestamp: "DESC",
-                },
-            },
+        const threads = await applyPublicArchivedThreadsQuery(Channel.createQueryBuilder("thread"), {
+            beforeDate,
+            channelId: channel_id,
             take: parsedLimit + 1,
-        });
+            threadType,
+        }).getMany();
 
         const returnedThreads = threads.slice(0, parsedLimit);
         const member = channel.guild_id ? await Member.findOne({ where: { guild_id: channel.guild_id, id: req.user_id }, select: { index: true } }) : null;
