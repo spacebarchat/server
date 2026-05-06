@@ -31,7 +31,12 @@ router.get(
         },
     }),
     (req: Request, res: Response) => {
-        res.send(createExperimentsResponse());
+        res.send(
+            createExperimentsResponse({
+                fingerprint: req.header("X-Fingerprint"),
+                hasAuthorization: Boolean(req.header("Authorization")),
+            }),
+        );
     },
 );
 

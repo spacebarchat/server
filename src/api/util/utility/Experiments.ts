@@ -19,12 +19,26 @@
 import type { ApexExperimentsResponse, ExperimentsResponse } from "@spacebar/schemas";
 import { createClientFingerprint, isClientFingerprint } from "./Fingerprint";
 
-export function createExperimentsResponse(): ExperimentsResponse {
-    return {
-        fingerprint: createClientFingerprint(),
+export type ExperimentRequestContext = {
+    fingerprint?: string;
+    hasAuthorization?: boolean;
+};
+
+export function createExperimentsResponse(context: ExperimentRequestContext = {}): ExperimentsResponse {
+    const response: ExperimentsResponse = {
         assignments: [],
         guild_experiments: [],
     };
+
+    // Discord clients send X-Fingerprint on subsequent unauthenticated
+    // experiment requests, and authenticated requests should not receive a new
+    // anonymous experiment identity. Only mint a fingerprint for first-touch
+    // unauthenticated clients with no usable existing fingerprint.
+    if (!context.hasAuthorization && !isClientFingerprint(context.fingerprint)) {
+        response.fingerprint = createClientFingerprint();
+    }
+
+    return response;
 }
 
 export function createApexExperimentsResponse(installation?: string): ApexExperimentsResponse {

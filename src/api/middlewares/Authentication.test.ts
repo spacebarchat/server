@@ -26,5 +26,6 @@ describe("unauthenticated route matching", () => {
     test("does not treat exact public routes as public prefixes", () => {
         assert.equal(isNoAuthorizationRoute("GET", "/api/v9/experiments/not-a-route"), false);
         assert.equal(isNoAuthorizationRoute("GET", "/api/v9/apex/experiments/not-a-route"), false);
+        assert.equal(isNoAuthorizationRoute("GET", "/api/v9/apex/experiments/metadata?surface=2"), false);
     });
 });

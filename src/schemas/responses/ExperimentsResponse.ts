@@ -17,14 +17,21 @@
 */
 
 export interface ExperimentsResponse {
-    fingerprint: string;
+    fingerprint?: string;
     assignments: number[][];
     guild_experiments: number[][];
 }
 
+export interface ApexExperimentUnitAssignments {
+    evaluation_id: string;
+    assignments: number[][];
+}
+
 export interface ApexExperimentsResponse {
     assignments: {
-        [experiment: string]: number[];
+        [unit_type: string]: {
+            [unit_id: string]: ApexExperimentUnitAssignments;
+        };
     };
     installation?: string;
 }
