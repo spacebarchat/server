@@ -24,6 +24,27 @@ export type ChannelFollowerWebhook = {
     source_channel_id: string;
 };
 
+export type ChannelFollowerPermission = {
+    hasThrow(permission: "VIEW_CHANNEL" | "MANAGE_WEBHOOKS"): unknown;
+};
+
+export type ChannelFollowerPermissionResolver = (userId: string, guildId: string | undefined, channel: ChannelFollowerChannel) => Promise<ChannelFollowerPermission>;
+
+export type CreatedChannelFollowerWebhook = {
+    id: string;
+    channel_id: string;
+};
+
+export type FollowAnnouncementChannelOptions = {
+    userId: string;
+    sourceChannel: ChannelFollowerChannel;
+    targetChannel: ChannelFollowerChannel;
+    getChannelPermission: ChannelFollowerPermissionResolver;
+    countTargetWebhooks: (channelId: string) => Promise<number>;
+    maxWebhooks?: number;
+    createWebhook: (payload: ChannelFollowerWebhook) => Promise<CreatedChannelFollowerWebhook>;
+};
+
 export function validateChannelFollowerChannels(source: ChannelFollowerChannel, target: ChannelFollowerChannel) {
     if (source.type !== ChannelFollowerChannelType.GuildNews || !source.guild_id) {
         throw new HTTPError("Cannot execute action on this channel type", 400);
@@ -38,6 +59,21 @@ export function assertChannelFollowerWebhookLimit(existingWebhookCount: number, 
     if (maxWebhooks && existingWebhookCount >= maxWebhooks) {
         throw new HTTPError(`Maximum number of webhooks reached (${maxWebhooks})`, 400);
     }
+}
+
+export async function assertChannelFollowerPermissions(
+    userId: string,
+    source: ChannelFollowerChannel,
+    target: ChannelFollowerChannel,
+    getChannelPermission: ChannelFollowerPermissionResolver,
+) {
+    const [sourcePermission, targetPermission] = await Promise.all([
+        getChannelPermission(userId, source.guild_id ?? undefined, source),
+        getChannelPermission(userId, target.guild_id ?? undefined, target),
+    ]);
+
+    sourcePermission.hasThrow("VIEW_CHANNEL");
+    targetPermission.hasThrow("MANAGE_WEBHOOKS");
 }
 
 export function createChannelFollowerWebhookPayload(source: ChannelFollowerChannel, target: ChannelFollowerChannel, userId: string): ChannelFollowerWebhook {
@@ -59,4 +95,24 @@ export function createFollowedChannelResponse(channelId: string, webhookId: stri
         channel_id: channelId,
         webhook_id: webhookId,
     };
+}
+
+export async function followAnnouncementChannel({
+    userId,
+    sourceChannel,
+    targetChannel,
+    getChannelPermission,
+    countTargetWebhooks,
+    maxWebhooks,
+    createWebhook,
+}: FollowAnnouncementChannelOptions) {
+    validateChannelFollowerChannels(sourceChannel, targetChannel);
+    await assertChannelFollowerPermissions(userId, sourceChannel, targetChannel, getChannelPermission);
+
+    const webhookCount = await countTargetWebhooks(targetChannel.id);
+    assertChannelFollowerWebhookLimit(webhookCount, maxWebhooks);
+
+    const hook = await createWebhook(createChannelFollowerWebhookPayload(sourceChannel, targetChannel, userId));
+
+    return createFollowedChannelResponse(hook.channel_id, hook.id);
 }

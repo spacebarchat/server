@@ -20,7 +20,7 @@ import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import { Channel, Config, getPermission, Webhook } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { assertChannelFollowerWebhookLimit, createChannelFollowerWebhookPayload, createFollowedChannelResponse } from "../../../util/utility/ChannelFollowers";
+import { ChannelFollowerChannel, followAnnouncementChannel } from "../../../util/utility/ChannelFollowers";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -47,15 +47,17 @@ router.post(
             Channel.findOneOrFail({ where: { id: webhook_channel_id } }),
         ]);
 
-        const permission = await getPermission(req.user_id, targetChannel.guild_id, targetChannel.id);
-        permission.hasThrow("MANAGE_WEBHOOKS");
+        const response = await followAnnouncementChannel({
+            userId: req.user_id,
+            sourceChannel,
+            targetChannel,
+            getChannelPermission: (userId: string, guildId: string | undefined, channel: ChannelFollowerChannel) => getPermission(userId, guildId, channel as Channel),
+            countTargetWebhooks: (channelId: string) => Webhook.count({ where: { channel_id: channelId } }),
+            maxWebhooks: Config.get().limits.channel.maxWebhooks,
+            createWebhook: (payload) => Webhook.create(payload).save(),
+        });
 
-        const webhookCount = await Webhook.count({ where: { channel_id: targetChannel.id } });
-        assertChannelFollowerWebhookLimit(webhookCount, Config.get().limits.channel.maxWebhooks);
-
-        const hook = await Webhook.create(createChannelFollowerWebhookPayload(sourceChannel, targetChannel, req.user_id)).save();
-
-        return res.json(createFollowedChannelResponse(hook.channel_id, hook.id));
+        return res.json(response);
     },
 );
 
