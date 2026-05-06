@@ -25,8 +25,9 @@ let currentWorkerIndex = 0;
 let requestId = 0;
 
 function getJsonWorkerCount() {
-    const configuredWorkers = process.env.JSON_WORKERS ? Number.parseInt(process.env.JSON_WORKERS, 10) : undefined;
-    if (configuredWorkers !== undefined) return Math.max(1, configuredWorkers);
+    const configuredWorkers = process.env.JSON_WORKERS?.trim();
+    const parsedConfiguredWorkers = configuredWorkers ? Number.parseInt(configuredWorkers, 10) : undefined;
+    if (parsedConfiguredWorkers !== undefined && Number.isFinite(parsedConfiguredWorkers)) return Math.max(1, parsedConfiguredWorkers);
 
     return Math.max(1, Math.min(os.availableParallelism?.() ?? os.cpus().length, DEFAULT_WORKER_COUNT_LIMIT));
 }
@@ -41,26 +42,45 @@ function rejectPendingRequests(worker: Worker, error: Error) {
     }
 }
 
+function removeWorkerFromPool(worker: Worker) {
+    const workerIndex = workerPool.indexOf(worker);
+    if (workerIndex === -1) return;
+
+    workerPool.splice(workerIndex, 1);
+    if (workerPool.length === 0) {
+        currentWorkerIndex = 0;
+    } else if (currentWorkerIndex > workerIndex) {
+        currentWorkerIndex--;
+    } else if (currentWorkerIndex >= workerPool.length) {
+        currentWorkerIndex = 0;
+    }
+}
+
+function createJsonWorker() {
+    const worker = new Worker(join(__dirname, "jsonWorker.js"));
+    worker.unref();
+    worker.on("message", (msg: JsonWorkerMessage) => {
+        const request = pendingRequests.get(msg.id);
+        if (!request) return;
+
+        clearTimeout(request.timeout);
+        pendingRequests.delete(msg.id);
+        if (msg.error) request.reject(new Error(msg.error));
+        else request.resolve(msg.result!);
+    });
+    worker.on("error", (error) => rejectPendingRequests(worker, error instanceof Error ? error : new Error(String(error))));
+    worker.on("exit", (code) => {
+        removeWorkerFromPool(worker);
+        rejectPendingRequests(worker, new Error(`JSON worker exited with code ${code}`));
+    });
+    return worker;
+}
+
 function initializeWorkerPool() {
     if (workerPool.length) return;
 
     for (let i = 0; i < getJsonWorkerCount(); i++) {
-        const worker = new Worker(join(__dirname, "jsonWorker.js"));
-        worker.unref();
-        worker.on("message", (msg: JsonWorkerMessage) => {
-            const request = pendingRequests.get(msg.id);
-            if (!request) return;
-
-            clearTimeout(request.timeout);
-            pendingRequests.delete(msg.id);
-            if (msg.error) request.reject(new Error(msg.error));
-            else request.resolve(msg.result!);
-        });
-        worker.on("error", (error) => rejectPendingRequests(worker, error instanceof Error ? error : new Error(String(error))));
-        worker.on("exit", (code) => {
-            if (code !== 0) rejectPendingRequests(worker, new Error(`JSON worker exited with code ${code}`));
-        });
-        workerPool.push(worker);
+        workerPool.push(createJsonWorker());
     }
 }
 
