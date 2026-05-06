@@ -17,15 +17,27 @@
 */
 
 import { Router, Request, Response } from "express";
-import { DiscordApiErrors, Member, arrayPartition } from "@spacebar/util";
-import { route } from "@spacebar/api";
+import { RoleMembersUpdateSchema } from "@spacebar/schemas";
+import { DiscordApiErrors, Member } from "@spacebar/util";
+import { calculateRoleMemberReplacement, route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
 
-router.patch("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, res: Response) => {
+const routeOptions = route({
+    permission: "MANAGE_ROLES",
+    requestBody: "RoleMembersUpdateSchema",
+    responses: {
+        204: {},
+        403: {
+            body: "APIErrorResponse",
+        },
+    },
+});
+
+async function replaceRoleMembers(req: Request, res: Response) {
     // Payload is JSON containing a list of member_ids, the new list of members to have the role
     const { guild_id, role_id } = req.params as { [key: string]: string };
-    const { member_ids } = req.body;
+    const { member_ids } = req.body as RoleMembersUpdateSchema;
 
     // don't mess with @everyone
     if (role_id == guild_id) throw DiscordApiErrors.INVALID_ROLE;
@@ -35,12 +47,18 @@ router.patch("/", route({ permission: "MANAGE_ROLES" }), async (req: Request, re
         relations: { roles: true },
     });
 
-    const [add, remove] = arrayPartition(members, (member) => member_ids.includes(member.id) && !member.roles.map((role) => role.id).includes(role_id));
+    const { addMemberIds, removeMemberIds } = calculateRoleMemberReplacement(members, member_ids, role_id);
 
     // TODO (erkin): have a bulk add/remove function that adds the roles in a single txn
-    await Promise.all([...add.map((member) => Member.addRole(member.id, guild_id, role_id)), ...remove.map((member) => Member.removeRole(member.id, guild_id, role_id))]);
+    await Promise.all([
+        ...addMemberIds.map((memberId) => Member.addRole(memberId, guild_id, role_id)),
+        ...removeMemberIds.map((memberId) => Member.removeRole(memberId, guild_id, role_id)),
+    ]);
 
     res.sendStatus(204);
-});
+}
+
+router.patch("/", routeOptions, replaceRoleMembers);
+router.put("/", routeOptions, replaceRoleMembers);
 
 export default router;

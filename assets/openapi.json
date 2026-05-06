@@ -6223,6 +6223,20 @@
                     }
                 }
             },
+            "RoleMembersUpdateSchema": {
+                "type": "object",
+                "properties": {
+                    "member_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "member_ids"
+                ]
+            },
             "RolePositionUpdateSchema": {
                 "type": "array",
                 "items": {
@@ -20845,9 +20859,85 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleMembersUpdateSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "guild_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "guild_id"
+                    },
+                    {
+                        "name": "role_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "role_id"
+                    }
+                ],
+                "tags": [
+                    "guilds"
+                ]
+            },
+            "put": {
+                "x-permission-required": "MANAGE_ROLES",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleMembersUpdateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [

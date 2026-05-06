@@ -6605,6 +6605,22 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "RoleMembersUpdateSchema": {
+        "type": "object",
+        "properties": {
+            "member_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "member_ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "RolePositionUpdateSchema": {
         "type": "array",
         "items": {

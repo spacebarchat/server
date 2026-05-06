@@ -67,6 +67,7 @@ export * from "./RelationshipPatchSchema";
 export * from "./RelationshipPutSchema";
 export * from "./RequestGuildMembersSchema";
 export * from "./RoleModifySchema";
+export * from "./RoleMembersUpdateSchema";
 export * from "./RolePositionUpdateSchema";
 export * from "./SelectProtocolSchema";
 export * from "./SettingsProtoUpdateSchema";
