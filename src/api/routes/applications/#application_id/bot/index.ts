@@ -19,7 +19,7 @@
 import { requireTotpCodeIfConfigured, route } from "@spacebar/api";
 import { Application, DiscordApiErrors, FieldErrors, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { BotModifySchema } from "@spacebar/schemas";
+import { BotModifySchema, MfaCodeSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -54,6 +54,7 @@ router.post(
 router.post(
     "/reset",
     route({
+        requestBody: "MfaCodeSchema",
         responses: {
             200: {
                 body: "TokenResponse",
@@ -64,6 +65,7 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
+        const body = (req.body ?? {}) as MfaCodeSchema;
         const app = await Application.findOneOrFail({
             where: { id: req.params.application_id as string },
             relations: { bot: true, owner: true },
@@ -72,7 +74,7 @@ router.post(
         if (app.owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
         if (!app.bot) throw DiscordApiErrors.BOT_ONLY_ENDPOINT;
 
-        await requireTotpCodeIfConfigured(app.owner.id, req.body.code, req.t("auth:login.INVALID_TOTP_CODE"));
+        await requireTotpCodeIfConfigured(app.owner.id, body.code, req.t("auth:login.INVALID_TOTP_CODE"));
 
         app.bot.data = { hash: undefined, valid_tokens_since: new Date() };
 

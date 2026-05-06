@@ -61,7 +61,7 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { code: _code, ...body } = req.body as ApplicationModifySchema;
+        const body = req.body as ApplicationModifySchema;
 
         const app = await Application.findOneOrFail({
             where: { id: req.user_id },

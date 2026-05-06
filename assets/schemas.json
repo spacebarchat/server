@@ -3156,6 +3156,64 @@
     "ApplicationModifySchema": {
         "type": "object",
         "properties": {
+            "description": {
+                "type": "string"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "cover_image": {
+                "type": "string"
+            },
+            "interactions_endpoint_url": {
+                "type": "string"
+            },
+            "max_participants": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "name": {
+                "type": "string"
+            },
+            "privacy_policy_url": {
+                "type": "string"
+            },
+            "role_connections_verification_url": {
+                "type": "string"
+            },
+            "tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "terms_of_service_url": {
+                "type": "string"
+            },
+            "bot_public": {
+                "type": "boolean"
+            },
+            "bot_require_code_grant": {
+                "type": "boolean"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "custom_install_url": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationOwnerModifySchema": {
+        "type": "object",
+        "properties": {
             "code": {
                 "type": "string"
             },
@@ -6294,6 +6352,16 @@
         "required": [
             "password"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MfaCodeSchema": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ModifyGuildStickerSchema": {
@@ -14322,7 +14390,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@698": {
+                    "__@unscopables@691": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -14448,17 +14516,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@696": {
+                            "__@iterator@689": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@691": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@698",
+                    "__@unscopables@691",
                     "length"
                 ]
             },

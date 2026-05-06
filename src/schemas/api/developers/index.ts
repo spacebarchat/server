@@ -19,4 +19,5 @@
 export * from "./Application";
 export * from "./ApplicationCreateSchema";
 export * from "./ApplicationModifySchema";
+export * from "./ApplicationOwnerModifySchema";
 export * from "./Team";

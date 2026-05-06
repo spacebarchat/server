@@ -2964,6 +2964,60 @@
             "ApplicationModifySchema": {
                 "type": "object",
                 "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "cover_image": {
+                        "type": "string"
+                    },
+                    "interactions_endpoint_url": {
+                        "type": "string"
+                    },
+                    "max_participants": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "privacy_policy_url": {
+                        "type": "string"
+                    },
+                    "role_connections_verification_url": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "terms_of_service_url": {
+                        "type": "string"
+                    },
+                    "bot_public": {
+                        "type": "boolean"
+                    },
+                    "bot_require_code_grant": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "custom_install_url": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ApplicationOwnerModifySchema": {
+                "type": "object",
+                "properties": {
                     "code": {
                         "type": "string"
                     },
@@ -5937,6 +5991,14 @@
                 "required": [
                     "password"
                 ]
+            },
+            "MfaCodeSchema": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    }
+                }
             },
             "ModifyGuildStickerSchema": {
                 "type": "object",
@@ -13405,7 +13467,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@691": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -13531,17 +13593,17 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@696": {
+                                    "__@iterator@689": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@698": {
+                                    "__@unscopables@691": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@698",
+                            "__@unscopables@691",
                             "length"
                         ]
                     },
@@ -27286,7 +27348,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ApplicationModifySchema"
+                                "$ref": "#/components/schemas/ApplicationOwnerModifySchema"
                             }
                         }
                     }
@@ -27336,6 +27398,16 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MfaCodeSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "No description available"
@@ -27995,6 +28067,16 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MfaCodeSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
