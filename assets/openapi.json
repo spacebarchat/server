@@ -6801,10 +6801,12 @@
                         "type": "string"
                     },
                     "username": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "avatar_url": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "tts": {
                         "type": "boolean"

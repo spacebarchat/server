@@ -7245,10 +7245,16 @@
                 "type": "string"
             },
             "username": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "avatar_url": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "tts": {
                 "type": "boolean"

@@ -9,16 +9,18 @@ describe("WebhookExecuteSchema", () => {
         return validate;
     }
 
-    test("accepts null message-compatible optional fields", () => {
+    test("accepts null webhook optional fields", () => {
         const validate = getWebhookExecuteValidator();
 
-        for (const field of ["embeds", "components", "allowed_mentions", "message_reference", "sticker_ids"]) {
-            const valid = validate({
+        for (const field of ["embeds", "components", "allowed_mentions", "message_reference", "sticker_ids", "username", "avatar_url"]) {
+            const body = {
                 content: "bridged message",
                 [field]: null,
-            });
+            };
+            const valid = validate(body);
 
             assert.equal(valid, true, `${field}: ${JSON.stringify(validate.errors, null, 2)}`);
+            assert.equal(body[field as keyof typeof body], null);
         }
     });
 
@@ -53,6 +55,8 @@ describe("WebhookExecuteSchema", () => {
             ["allowed_mentions", 1],
             ["message_reference", 1],
             ["sticker_ids", {}],
+            ["username", {}],
+            ["avatar_url", {}],
         ] as const) {
             const valid = validate({
                 content: "bridged message",

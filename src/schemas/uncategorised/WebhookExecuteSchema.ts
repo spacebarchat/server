@@ -21,8 +21,8 @@ import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSche
 
 export interface WebhookExecuteSchema {
     content?: string;
-    username?: string;
-    avatar_url?: string;
+    username?: string | null;
+    avatar_url?: string | null;
     tts?: boolean;
     embeds?: Embed[] | null;
     allowed_mentions?: AllowedMentions | null;
