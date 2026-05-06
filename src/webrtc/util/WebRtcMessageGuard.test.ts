@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { CLOSECODES } from "../../gateway/util/Constants";
-import { createWebRtcMessageGuard, createWebRtcMessageHandler, getRawDataByteLength, normalizeWebRtcGatewayLimits, rawDataToBuffer } from "./WebRtcMessageGuard";
+import {
+    createWebRtcMessageGuard,
+    createWebRtcMessageHandler,
+    getRawDataByteLength,
+    getWebRtcTransportMaxPayload,
+    normalizeWebRtcGatewayLimits,
+    rawDataToBuffer,
+} from "./WebRtcMessageGuard";
 import type { WebRtcWebSocket } from "./WebRtcWebSocket";
 
 function createSocket() {
@@ -23,6 +30,12 @@ describe("WebRtcMessageGuard", () => {
             rateLimitCount: 1,
             rateLimitWindow: 60_000,
         });
+    });
+
+    it("uses the normalized WebRTC message size as the transport cap", () => {
+        assert.equal(getWebRtcTransportMaxPayload(), 64 * 1024);
+        assert.equal(getWebRtcTransportMaxPayload({ maxMessageSize: 4096 }), 4096);
+        assert.equal(getWebRtcTransportMaxPayload({ rateLimitCount: 1 }), 64 * 1024);
     });
 
     it("calculates raw message sizes", () => {

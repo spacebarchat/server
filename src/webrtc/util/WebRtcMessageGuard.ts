@@ -39,6 +39,10 @@ export function normalizeWebRtcGatewayLimits(limits?: Partial<WebRtcGatewayLimit
     };
 }
 
+export function getWebRtcTransportMaxPayload(limits?: Partial<WebRtcGatewayLimits>) {
+    return normalizeWebRtcGatewayLimits(limits).maxMessageSize;
+}
+
 export function createWebRtcMessageGuard(limits?: Partial<WebRtcGatewayLimits>) {
     const normalized = normalizeWebRtcGatewayLimits(limits);
 
