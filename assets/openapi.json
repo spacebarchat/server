@@ -25882,7 +25882,7 @@
         },
         "/channels/{channel_id}/messages/{message_id}/crosspost/": {
             "post": {
-                "x-permission-required": "SEND_MESSAGES",
+                "x-permission-required": "VIEW_CHANNEL",
                 "security": [
                     {
                         "bearer": []

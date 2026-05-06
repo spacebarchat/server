@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getCrosspostRejectionReason, markMessageCrossposted, route } from "@spacebar/api";
-import { Channel, DiscordApiErrors, Message, MessageUpdateEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
+import { CROSSPOST_BASE_PERMISSION, crosspostMessage, route } from "@spacebar/api";
+import { Channel, Message, emitEvent, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });
@@ -25,7 +25,7 @@ const router = Router({ mergeParams: true });
 router.post(
     "/",
     route({
-        permission: "SEND_MESSAGES",
+        permission: CROSSPOST_BASE_PERMISSION,
         responses: {
             200: {
                 body: "Message",
@@ -49,31 +49,17 @@ router.post(
             }),
         ]);
 
-        const rejectionReason = getCrosspostRejectionReason(channel.type, message.type, message.flags);
-        if (rejectionReason === "channel_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
-        if (rejectionReason === "message_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_SYSTEM_MESSAGE;
-        if (rejectionReason === "already_crossposted") throw DiscordApiErrors.ALREADY_CROSSPOSTED;
+        const response = await crosspostMessage({
+            channel,
+            channelId: channel_id,
+            emitEvent,
+            getRights,
+            message,
+            permission: req.permission!,
+            userId: req.user_id,
+        });
 
-        if (message.author_id !== req.user_id) {
-            const rights = await getRights(req.user_id);
-            if (!rights.has("MANAGE_MESSAGES")) {
-                const permission = await getPermission(req.user_id, channel.guild_id, channel_id);
-                permission.hasThrow("MANAGE_MESSAGES");
-            }
-        }
-
-        const nextFlags = markMessageCrossposted(message.flags);
-        if (nextFlags !== message.flags) {
-            message.flags = nextFlags;
-            await message.save();
-            await emitEvent({
-                event: "MESSAGE_UPDATE",
-                channel_id,
-                data: message.toJSON(),
-            } satisfies MessageUpdateEvent);
-        }
-
-        return res.status(200).json(message.toJSON());
+        return res.status(200).json(response);
     },
 );
 
