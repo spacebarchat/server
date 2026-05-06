@@ -50,14 +50,14 @@ node scripts/benchmarks/route-validation.js
 
 Payload: 53,328 byte message-create JSON body with 10 embeds, 25 fields per embed, 10 attachments, and `allowed_mentions`. The payload intentionally uses normal string snowflakes, because the measured bottleneck was the conversion walk paid by normal request bodies.
 
-| Metric | Before | After | Change |
-| --- | ---: | ---: | ---: |
-| Requests/sec | 1082.62 | 1335.87 | +23.4% |
-| p50 latency | 35.05 ms | 29.30 ms | -16.4% |
-| p90 latency | 43.83 ms | 32.64 ms | -25.5% |
-| p99 latency | 58.94 ms | 37.84 ms | -35.8% |
-| Failed requests | 0 | 0 | no change |
-| `bigNumberToString` CPU samples | 1339 | 475 | -64.5% |
+| Metric                          |   Before |    After |    Change |
+| ------------------------------- | -------: | -------: | --------: |
+| Requests/sec                    |  1082.62 |  1335.87 |    +23.4% |
+| p50 latency                     | 35.05 ms | 29.30 ms |    -16.4% |
+| p90 latency                     | 43.83 ms | 32.64 ms |    -25.5% |
+| p99 latency                     | 58.94 ms | 37.84 ms |    -35.8% |
+| Failed requests                 |        0 |        0 | no change |
+| `bigNumberToString` CPU samples |     1339 |      475 |    -64.5% |
 
 Profile and summary artifacts:
 
@@ -67,6 +67,8 @@ Profile and summary artifacts:
 - `benchmarks/results/route-validation/after-route-validation-forin.summary.json`
 - `benchmarks/results/route-validation/after-route-validation-forin.cpuprofile`
 - `benchmarks/results/route-validation/after-route-validation-forin.heapprofile`
+
+The summary artifacts store profile filenames and repo-relative profile URLs so reruns from another checkout do not bake local absolute paths into the JSON.
 
 ## Memory Notes
 

@@ -8,8 +8,9 @@ const http = require("node:http");
 const inspector = require("node:inspector");
 const path = require("node:path");
 const { performance } = require("node:perf_hooks");
+const { fileURLToPath } = require("node:url");
 const express = require("express");
-const { BodyParser, route } = require("@spacebar/api");
+const { BodyParser, ErrorHandler, route } = require("@spacebar/api");
 
 const outputDir = path.resolve(process.env.BENCH_OUTPUT_DIR || "benchmarks/results/route-validation");
 const label = process.env.BENCH_LABEL || new Date().toISOString().replace(/[:.]/g, "-");
@@ -18,6 +19,57 @@ const concurrency = parseInt(process.env.BENCH_CONCURRENCY || "40", 10);
 const warmupRequests = parseInt(process.env.BENCH_WARMUP_REQUESTS || "1000", 10);
 const embeds = parseInt(process.env.BENCH_EMBEDS || "10", 10);
 const fieldsPerEmbed = parseInt(process.env.BENCH_FIELDS_PER_EMBED || "25", 10);
+
+function toPosixPath(value) {
+    return value.split(path.sep).join(path.posix.sep);
+}
+
+function normalizeProfileUrl(url) {
+    if (!url) return "";
+
+    let filePath;
+    if (url.startsWith("file://")) {
+        filePath = fileURLToPath(url);
+    } else if (path.isAbsolute(url)) {
+        filePath = url;
+    } else {
+        return url;
+    }
+
+    const relativePath = path.relative(process.cwd(), filePath);
+    if (!relativePath.startsWith("..") && !path.isAbsolute(relativePath)) {
+        return toPosixPath(relativePath);
+    }
+
+    const posixPath = toPosixPath(filePath);
+    for (const stableRoot of ["node_modules/", "dist/", "src/", "scripts/", "benchmarks/"]) {
+        const stableRootIndex = posixPath.lastIndexOf(stableRoot);
+        if (stableRootIndex !== -1) return posixPath.slice(stableRootIndex);
+    }
+
+    return path.posix.basename(posixPath);
+}
+
+function normalizeProfileCallFrame(callFrame) {
+    if (!callFrame?.url) return;
+    callFrame.url = normalizeProfileUrl(callFrame.url);
+}
+
+function normalizeCpuProfile(profile) {
+    for (const node of profile.nodes || []) {
+        normalizeProfileCallFrame(node.callFrame);
+    }
+}
+
+function normalizeHeapProfile(profile) {
+    function visit(node) {
+        if (!node) return;
+        normalizeProfileCallFrame(node.callFrame);
+        for (const child of node.children || []) visit(child);
+    }
+
+    visit(profile.head);
+}
 
 function makePayload() {
     const fields = Array.from({ length: fieldsPerEmbed }, (_, index) => ({
@@ -108,10 +160,11 @@ function aggregateCpu(profile, limit = 12) {
 
     for (const node of profile.nodes || []) {
         const callFrame = node.callFrame || {};
-        const key = `${callFrame.functionName || "(anonymous)"} ${callFrame.url || ""}`;
+        const url = normalizeProfileUrl(callFrame.url || "");
+        const key = `${callFrame.functionName || "(anonymous)"} ${url}`;
         const previous = totals.get(key) || {
             functionName: callFrame.functionName || "(anonymous)",
-            url: callFrame.url || "",
+            url,
             hitCount: 0,
         };
         previous.hitCount += node.hitCount || 0;
@@ -129,10 +182,11 @@ function aggregateHeap(profile, limit = 12) {
     function visit(node) {
         if (!node) return;
         const callFrame = node.callFrame || {};
-        const key = `${callFrame.functionName || "(anonymous)"} ${callFrame.url || ""}`;
+        const url = normalizeProfileUrl(callFrame.url || "");
+        const key = `${callFrame.functionName || "(anonymous)"} ${url}`;
         const previous = totals.get(key) || {
             functionName: callFrame.functionName || "(anonymous)",
-            url: callFrame.url || "",
+            url,
             selfSize: 0,
         };
         previous.selfSize += node.selfSize || 0;
@@ -163,9 +217,7 @@ async function startServer() {
             nonce: req.body.nonce,
         }),
     );
-    app.use((err, _req, res, _next) => {
-        res.status(err.status || 500).json({ message: err.message || String(err) });
-    });
+    app.use(ErrorHandler);
 
     const server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -306,12 +358,16 @@ async function main() {
     const result = await runLoad(url, body, requests);
     const heapAfter = process.memoryUsage();
     const { cpuProfile, heapProfile } = await profileSession.stop();
+    normalizeCpuProfile(cpuProfile);
+    normalizeHeapProfile(heapProfile);
 
     await new Promise((resolve) => server.close(resolve));
 
     const cpuProfilePath = path.join(outputDir, `${label}.cpuprofile`);
     const heapProfilePath = path.join(outputDir, `${label}.heapprofile`);
     const summaryPath = path.join(outputDir, `${label}.summary.json`);
+    const cpuProfileFilename = path.basename(cpuProfilePath);
+    const heapProfileFilename = path.basename(heapProfilePath);
 
     fs.writeFileSync(cpuProfilePath, JSON.stringify(cpuProfile));
     fs.writeFileSync(heapProfilePath, JSON.stringify(heapProfile));
@@ -337,8 +393,8 @@ async function main() {
             deltaArrayBuffers: heapAfter.arrayBuffers - heapBefore.arrayBuffers,
         },
         profiles: {
-            cpuProfilePath,
-            heapProfilePath,
+            cpuProfilePath: cpuProfileFilename,
+            heapProfilePath: heapProfileFilename,
             topCpu: aggregateCpu(cpuProfile),
             topHeap: aggregateHeap(heapProfile),
         },
