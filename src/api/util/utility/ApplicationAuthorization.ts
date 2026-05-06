@@ -27,6 +27,7 @@ export type ApplicationCommandAuthorizationMember = {
 
 export type ApplicationCommandAuthorizationTarget = {
     owner?: { id?: string | null } | null;
+    bot?: { id?: string | null } | null;
     team?: {
         owner_user_id?: string | null;
         members?: ApplicationCommandAuthorizationMember[] | null;
@@ -45,6 +46,7 @@ async function getApplicationCommandAuthorizationRepository(): Promise<Applicati
 }
 
 export function canManageApplicationCommands(application: ApplicationCommandAuthorizationTarget, userId: string) {
+    if (application.bot?.id === userId) return true;
     if (application.owner?.id === userId) return true;
 
     const team = application.team;
@@ -64,6 +66,7 @@ export async function requireApplicationCommandManagement(applicationId: string,
         where: { id: applicationId },
         relations: {
             owner: true,
+            bot: true,
             team: {
                 members: true,
             },

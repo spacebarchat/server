@@ -9,6 +9,19 @@ describe("application command authorization", () => {
         assert.equal(canManageApplicationCommands({ owner: { id: "owner" } }, "owner"), true);
     });
 
+    test("allows the application's bot user", () => {
+        assert.equal(
+            canManageApplicationCommands(
+                {
+                    owner: { id: "owner" },
+                    bot: { id: "application" },
+                },
+                "application",
+            ),
+            true,
+        );
+    });
+
     test("allows accepted team admins and developers", () => {
         for (const role of [TeamMemberRole.ADMIN, TeamMemberRole.DEVELOPER]) {
             assert.equal(
@@ -94,6 +107,29 @@ describe("application command authorization", () => {
             where: { id: "app" },
             relations: {
                 owner: true,
+                bot: true,
+                team: {
+                    members: true,
+                },
+            },
+        });
+    });
+
+    test("loads the application bot before allowing bot-token access", async (t) => {
+        const repository = {
+            findOne: t.mock.fn(async (_options: unknown) => ({
+                owner: { id: "owner" },
+                bot: { id: "app" },
+            })),
+        };
+
+        await requireApplicationCommandManagement("app", "app", repository);
+
+        assert.deepEqual(repository.findOne.mock.calls[0].arguments[0], {
+            where: { id: "app" },
+            relations: {
+                owner: true,
+                bot: true,
                 team: {
                     members: true,
                 },
@@ -108,6 +144,17 @@ describe("application command authorization", () => {
 
         await assert.rejects(
             () => requireApplicationCommandManagement("app", "attacker", repository),
+            (error) => error === DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION,
+        );
+    });
+
+    test("does not infer bot access from matching application and user ids without the bot relation", async (t) => {
+        const repository = {
+            findOne: t.mock.fn(async (_options: unknown) => ({ owner: { id: "owner" } })),
+        };
+
+        await assert.rejects(
+            () => requireApplicationCommandManagement("app", "app", repository),
             (error) => error === DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION,
         );
     });

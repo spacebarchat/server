@@ -77,7 +77,7 @@ export function buildApplicationCommand(scope: ApplicationCommandScope, body: Ap
         description_localizations: body.description_localizations,
         default_member_permissions: body.default_member_permissions || null,
         contexts: body.contexts,
-        dm_permission: body.dm_permission || true,
+        dm_permission: body.dm_permission ?? true,
         global_popularity_rank: 1,
         handler: body.handler,
         integration_types: body.integration_types,

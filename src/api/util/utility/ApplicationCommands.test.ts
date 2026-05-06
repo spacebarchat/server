@@ -62,9 +62,22 @@ describe("application command helpers", () => {
         assert.equal(command.guild_id, "guild");
         assert.equal(command.name, "ping");
         assert.equal(command.description, "pong");
+        assert.equal(command.dm_permission, true);
         assert.equal(command.type, ApplicationCommandType.CHAT_INPUT);
         assert.equal(command.version, "version");
         assert.equal(body.type, ApplicationCommandType.CHAT_INPUT);
+    });
+
+    test("preserves explicit false command flags", () => {
+        const command = buildApplicationCommand(
+            { applicationId: "app" },
+            {
+                name: "ping",
+                dm_permission: false,
+            },
+        );
+
+        assert.equal(command.dm_permission, false);
     });
 
     test("rejects empty and oversized command names", () => {
