@@ -3,7 +3,7 @@ import { strict as assert } from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
 import { Request } from "express";
-import { getWhoAmIResponse } from "./whoamiResponse";
+import { getWhoAmIResponse } from "../../routes/auth/whoamiResponse";
 
 describe("getWhoAmIResponse", () => {
     it("should serialize the authenticated request identity from a JWT issued-at timestamp", () => {
@@ -54,6 +54,7 @@ describe("getWhoAmIResponse", () => {
         const openApi = JSON.parse(fs.readFileSync(openApiPath, "utf8"));
 
         assert.ok(schemas.WhoAmIResponse);
+        assert.ok(openApi.components.schemas.WhoAmIResponse);
         assert.deepEqual(Object.keys(schemas.WhoAmIResponse.properties).sort(), ["device_id", "flags", "id", "logged_in_since", "rights"]);
         assert.equal(openApi.paths["/auth/whoami/"].get.responses["200"].content["application/json"].schema.$ref, "#/components/schemas/WhoAmIResponse");
     });
