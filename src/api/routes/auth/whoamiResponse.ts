@@ -7,6 +7,6 @@ export function getWhoAmIResponse(req: Request): WhoAmIResponse {
         device_id: req.session?.session_id ?? null,
         flags: req.user?.flags ?? 0,
         rights: req.user?.rights ?? 0,
-        logged_in_since: new Date(req.token.iat).toISOString(),
+        logged_in_since: new Date(req.token.iat * 1000).toISOString(),
     };
 }
