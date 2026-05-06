@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, AutomodRule } from "@spacebar/util";
+import { AutomodRule } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { AutomodRuleModifySchema, AutomodRuleSchema } from "@spacebar/schemas";
@@ -85,9 +85,6 @@ router.post(
             exempt_roles: [],
             trigger_metadata: null,
             ...data,
-            creator: await User.findOneOrFail({
-                where: { id: req.user_id },
-            }),
             creator_id: req.user_id,
             guild_id,
             position: await getNextAutomodRulePosition(guild_id),
