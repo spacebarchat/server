@@ -421,7 +421,7 @@ router.post(
                                 recipient.save(),
                                 emitEvent({
                                     event: "CHANNEL_CREATE",
-                                    data: channel_dto.excludedRecipients([recipient.user_id]),
+                                    data: channel_dto.forRecipient(recipient.user_id),
                                     user_id: recipient.user_id,
                                 }),
                             ]);
