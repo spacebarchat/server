@@ -67,13 +67,13 @@ export class User extends BaseClass {
     @Column({ nullable: true })
     pronouns?: string;
 
-    @Column({ nullable: true, select: false })
+    @Column({ nullable: true })
     phone?: string; // phone number of the user
 
-    @Column({ select: false })
+    @Column()
     desktop: boolean = false; // if the user has desktop app installed
 
-    @Column({ select: false })
+    @Column()
     mobile: boolean = false; // if the user has mobile app installed
 
     @Column()
@@ -91,19 +91,19 @@ export class User extends BaseClass {
     @Column()
     system: boolean = false; // shouldn't be used, the api sends this field type true, if the generated message comes from a system generated author
 
-    @Column({ select: false })
+    @Column()
     nsfw_allowed: boolean = true; // if the user can do age-restricted actions (NSFW channels/guilds/commands) // TODO: depending on age
 
-    @Column({ select: false })
+    @Column()
     mfa_enabled: boolean = false; // if multi factor authentication is enabled
 
-    @Column({ select: false, default: false })
+    @Column({ default: false })
     webauthn_enabled: boolean = false; // if webauthn multi factor authentication is enabled
 
-    @Column({ select: false, nullable: true })
+    @Column({ nullable: true })
     totp_secret?: string = "";
 
-    @Column({ nullable: true, select: false })
+    @Column({ nullable: true })
     totp_last_ticket?: string = "";
 
     @Column()
@@ -112,7 +112,7 @@ export class User extends BaseClass {
     @Column({ nullable: true })
     premium_since: Date; // premium date
 
-    @Column({ select: false })
+    @Column()
     verified: boolean; // email is verified
 
     @Column()
@@ -121,7 +121,7 @@ export class User extends BaseClass {
     @Column()
     deleted: boolean = false; // if the user was deleted
 
-    @Column({ nullable: true, select: false })
+    @Column({ nullable: true })
     email?: string; // email of the user
 
     @Column({ type: "bigint" })
@@ -160,13 +160,13 @@ export class User extends BaseClass {
     })
     connected_accounts: ConnectedAccount[];
 
-    @Column({ type: "jsonb", select: false })
+    @Column({ type: "jsonb" })
     data: {
         valid_tokens_since: Date; // all tokens with a previous issue date are invalid
         hash?: string; // hash of the password, salt is saved in password (bcrypt)
     };
 
-    @Column({ type: "varchar", array: true, select: false })
+    @Column({ type: "varchar", array: true })
     fingerprints: string[] = []; // array of fingerprints -> used to prevent multiple accounts
 
     @OneToOne(() => UserSettings, {
