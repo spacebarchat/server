@@ -9,7 +9,7 @@
 
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
 
 	You should have received a copy of the GNU Affero General Public License
@@ -37,20 +37,8 @@ function readAssetJson<T>(name: string): T {
     return JSON.parse(fs.readFileSync(path.join(assetsPath, name), "utf8")) as T;
 }
 
-test("GuildWidgetJsonResponse schema uses widget member status strings", () => {
-    const schemas = readAssetJson<Record<string, JsonShape>>("schemas.json");
-    const response = schemas.GuildWidgetJsonResponse;
-    const member = response.properties?.members?.items;
-    const status = member?.properties?.status;
-
-    assert.deepEqual(status, { $ref: "#/definitions/GuildWidgetMemberStatus" });
-    assert.deepEqual(schemas.GuildWidgetMemberStatus.enum?.toSorted(), ["dnd", "idle", "online"]);
-    assert.equal(schemas.GuildWidgetMemberStatus.type, "string");
-    assert.notEqual(status?.$ref, "#/definitions/ClientStatus");
-});
-
-test("GuildWidgetJsonResponse validates widget payloads", () => {
-    const response = {
+function createWidgetResponse() {
+    return {
         id: "100",
         name: "Widget guild",
         instant_invite: null,
@@ -67,14 +55,67 @@ test("GuildWidgetJsonResponse validates widget payloads", () => {
         ],
         presence_count: 1,
     };
+}
+
+test("GuildWidgetJsonResponse schema uses widget member status strings", () => {
+    const schemas = readAssetJson<Record<string, JsonShape>>("schemas.json");
+    const response = schemas.GuildWidgetJsonResponse;
+    const member = response.properties?.members?.items;
+    const status = member?.properties?.status;
+
+    assert.deepEqual(status, { $ref: "#/definitions/GuildWidgetMemberStatus" });
+    assert.deepEqual(schemas.GuildWidgetMemberStatus.enum?.toSorted(), ["dnd", "idle", "online"]);
+    assert.equal(schemas.GuildWidgetMemberStatus.type, "string");
+    assert.notEqual(status?.$ref, "#/definitions/ClientStatus");
+    assert.equal(response.properties?.member_count, undefined);
+    assert.equal(response.required?.includes("presence_count"), true);
+    assert.equal(response.required?.includes("member_count"), false);
+});
+
+test("GuildWidgetJsonResponse validates widget payloads", () => {
+    const response = createWidgetResponse();
 
     assert.equal(ajv.validate("GuildWidgetJsonResponse", response), true);
-    assert.equal(
-        ajv.validate("GuildWidgetJsonResponse", {
-            ...response,
-            members: [{ ...response.members[0], status: { web: "online" } }],
-        }),
-        false,
-    );
     assert.equal(ajv.validate("GuildWidgetJsonResponse", { ...response, member_count: 1 }), false);
+});
+
+test("GuildWidgetJsonResponse requires presence_count", () => {
+    const { presence_count: _, ...responseWithoutPresenceCount } = createWidgetResponse();
+
+    assert.equal(ajv.validate("GuildWidgetJsonResponse", responseWithoutPresenceCount), false);
+});
+
+test("GuildWidgetJsonResponse validates widget member statuses", () => {
+    const response = createWidgetResponse();
+
+    for (const status of ["online", "idle", "dnd"]) {
+        assert.equal(
+            ajv.validate("GuildWidgetJsonResponse", {
+                ...response,
+                members: [{ ...response.members[0], status }],
+            }),
+            true,
+        );
+    }
+
+    for (const status of ["offline", "invisible", { web: "online" }]) {
+        assert.equal(
+            ajv.validate("GuildWidgetJsonResponse", {
+                ...response,
+                members: [{ ...response.members[0], status }],
+            }),
+            false,
+        );
+    }
+});
+
+test("GuildWidgetJsonResponse OpenAPI schema does not document member_count", () => {
+    const openapi = readAssetJson<{
+        components?: { schemas?: Record<string, JsonShape> };
+    }>("openapi.json");
+    const response = openapi.components?.schemas?.GuildWidgetJsonResponse;
+
+    assert.ok(response, "GuildWidgetJsonResponse OpenAPI schema should exist");
+    assert.equal(response.properties?.member_count, undefined);
+    assert.equal(response.required?.includes("member_count"), false);
 });
