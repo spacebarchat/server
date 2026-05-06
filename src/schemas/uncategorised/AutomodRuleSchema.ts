@@ -66,6 +66,8 @@ export interface AutomodRuleModifySchema {
     trigger_metadata?: AutomodMentionSpamRuleSchema | AutomodSuspectedSpamRuleSchema | AutomodCommonlyFlaggedWordsRuleSchema | AutomodCustomWordsRuleSchema | null;
 }
 
-export interface AutomodRuleSchemaWithId extends AutomodRuleSchema {
+export interface AutomodRuleResponse extends AutomodRuleSchema {
     id: Snowflake;
 }
+
+export type AutomodRulesResponse = AutomodRuleResponse[];

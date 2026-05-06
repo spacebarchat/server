@@ -44,6 +44,7 @@ function resolveRef(schemas: Record<string, JsonShape>, shape: JsonShape | undef
 test("AutomodRuleSchema exposes automod actions and array trigger metadata", () => {
     const schemas = readSchemas();
     const actions = schemas.AutomodRuleSchema.properties?.actions;
+    const responseActions = schemas.AutomodRuleResponse.properties?.actions;
     const triggerMetadata = schemas.AutomodRuleSchema.properties?.trigger_metadata;
     const triggerMetadataRefs = (triggerMetadata?.anyOf ?? [])
         .map((shape) => shape.$ref)
@@ -52,7 +53,12 @@ test("AutomodRuleSchema exposes automod actions and array trigger metadata", () 
 
     assert.equal(actions?.type, "array");
     assert.equal(resolveRef(schemas, actions?.items)?.anyOf?.length, 4);
+    assert.equal(responseActions?.type, "array");
+    assert.equal(resolveRef(schemas, responseActions?.items)?.anyOf?.length, 4);
+    assert.equal(schemas.AutomodRulesResponse.type, "array");
+    assert.equal(schemas.AutomodRulesResponse.items?.$ref, "#/definitions/AutomodRuleResponse");
     assert.deepEqual(schemas.AutomodRuleSchema.required?.includes("actions"), true);
+    assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("id"), true);
     assert.equal(schemas.AutomodRuleModifySchema.required, undefined);
     assert.deepEqual(triggerMetadataRefs, [
         "#/definitions/AutomodCommonlyFlaggedWordsRuleSchema",

@@ -30,7 +30,7 @@ router.get(
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId[]",
+                body: "AutomodRulesResponse",
             },
             403: {
                 body: "APIErrorResponse",
@@ -51,7 +51,7 @@ router.post(
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId",
+                body: "AutomodRuleResponse",
             },
             400: {
                 body: "APIErrorResponse",
@@ -92,7 +92,7 @@ router.patch(
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId",
+                body: "AutomodRuleResponse",
             },
             400: {
                 body: "APIErrorResponse",
