@@ -105,10 +105,41 @@ test("AutomodRuleSchema validates action metadata", () => {
     assert.equal(
         ajv.validate("AutomodRuleSchema", {
             ...rule,
+            actions: [{ type: 1 }],
+        }),
+        true,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            actions: [{ type: 1, metadata: { channel_id: "500" } }],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
             actions: [{ type: 2, metadata: {} }],
         }),
         false,
     );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            actions: [{ type: 3, metadata: { channel_id: "500" } }],
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            actions: [{ type: 4, metadata: { duration_seconds: 60 } }],
+        }),
+        true,
+    );
+    const ruleWithoutActions: Partial<typeof rule> = { ...rule };
+    delete ruleWithoutActions.actions;
+    assert.equal(ajv.validate("AutomodRuleSchema", ruleWithoutActions), false);
     assert.equal(
         ajv.validate("AutomodRuleSchema", {
             ...rule,
@@ -123,6 +154,7 @@ test("AutomodRuleSchema validates action metadata", () => {
         }),
         true,
     );
+    assert.equal(ajv.validate("AutomodRuleModifySchema", {}), true);
     assert.equal(
         ajv.validate("AutomodRuleModifySchema", {
             actions: [{ type: 2, metadata: {} }],
