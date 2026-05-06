@@ -15076,7 +15076,7 @@
                 "type": "string"
             },
             "localizations": {
-                "type": "string"
+                "$ref": "#/definitions/CategoryLocalizations"
             },
             "is_primary": {
                 "type": "boolean"
@@ -15092,6 +15092,13 @@
             "localizations",
             "name"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CategoryLocalizations": {
+        "type": "object",
+        "additionalProperties": {
+            "type": "string"
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GuildVoiceRegion": {

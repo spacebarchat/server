@@ -19,6 +19,10 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 
+export interface CategoryLocalizations {
+    [locale: string]: string;
+}
+
 // TODO: categories:
 // [{
 // 	"id": 16,
@@ -45,8 +49,8 @@ export class Categories extends BaseClassWithoutId {
     @Column({ nullable: true })
     name: string;
 
-    @Column({ type: "jsonb" })
-    localizations: string;
+    @Column({ type: "jsonb", default: () => "'{}'::jsonb" })
+    localizations: CategoryLocalizations = {};
 
     // Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)
     @Column({ nullable: true })

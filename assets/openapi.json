@@ -14102,7 +14102,7 @@
                         "type": "string"
                     },
                     "localizations": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/CategoryLocalizations"
                     },
                     "is_primary": {
                         "type": "boolean"
@@ -14117,6 +14117,9 @@
                     "localizations",
                     "name"
                 ]
+            },
+            "CategoryLocalizations": {
+                "type": "object"
             },
             "GuildVoiceRegion": {
                 "type": "object",
