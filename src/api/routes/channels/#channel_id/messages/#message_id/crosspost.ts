@@ -16,10 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
+import { getCrosspostRejectionReason, markMessageCrossposted, route } from "@spacebar/api";
 import { Channel, DiscordApiErrors, Message, MessageUpdateEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { getCrosspostRejectionReason, markMessageCrossposted } from "./crosspostHelpers";
 
 const router = Router({ mergeParams: true });
 
@@ -50,9 +49,10 @@ router.post(
             }),
         ]);
 
-        const rejectionReason = getCrosspostRejectionReason(channel.type, message.type);
+        const rejectionReason = getCrosspostRejectionReason(channel.type, message.type, message.flags);
         if (rejectionReason === "channel_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
         if (rejectionReason === "message_type") throw DiscordApiErrors.CANNOT_EXECUTE_ON_SYSTEM_MESSAGE;
+        if (rejectionReason === "already_crossposted") throw DiscordApiErrors.ALREADY_CROSSPOSTED;
 
         if (message.author_id !== req.user_id) {
             const rights = await getRights(req.user_id);

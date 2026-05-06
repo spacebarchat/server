@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity imports
-import { Channel, Recipient, Tag, ThreadMember } from "@spacebar/util";
+import type { Channel, Recipient, Tag, ThreadMember } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { Snowflake } from "../../Identifiers";
 import { PartialUser, PublicMember } from "../users";
