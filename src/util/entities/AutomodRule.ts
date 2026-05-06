@@ -17,7 +17,7 @@
 */
 
 import { BaseClass } from "./BaseClass";
-import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, Column, RelationId } from "typeorm";
 import { User } from "./User";
 import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
 
@@ -25,6 +25,10 @@ import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, Automo
     name: "automod_rules",
 })
 export class AutomodRule extends BaseClass {
+    @Column({ nullable: true })
+    @RelationId((automodRule: AutomodRule) => automodRule.creator)
+    creator_id: string;
+
     @JoinColumn({ name: "creator_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     creator: User;

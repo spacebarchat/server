@@ -356,46 +356,20 @@
     "AutomodRuleSchema": {
         "type": "object",
         "properties": {
-            "creator_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+            "name": {
                 "type": "string"
-            },
-            "enabled": {
-                "type": "boolean"
             },
             "event_type": {
                 "$ref": "#/definitions/AutomodRuleEventType"
             },
-            "exempt_channels": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "exempt_roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "guild_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType"
             },
             "actions": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/AutomodAction"
                 }
-            },
-            "trigger_type": {
-                "$ref": "#/definitions/AutomodRuleTriggerType"
             },
             "trigger_metadata": {
                 "anyOf": [
@@ -415,19 +389,28 @@
                         "type": "null"
                     }
                 ]
+            },
+            "enabled": {
+                "type": "boolean"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "additionalProperties": false,
         "required": [
             "actions",
-            "creator_id",
-            "enabled",
             "event_type",
-            "exempt_channels",
-            "exempt_roles",
-            "guild_id",
             "name",
-            "position",
             "trigger_type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -435,12 +418,8 @@
     "AutomodRuleModifySchema": {
         "type": "object",
         "properties": {
-            "creator_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+            "name": {
                 "type": "string"
-            },
-            "enabled": {
-                "type": "boolean"
             },
             "event_type": {
                 "enum": [
@@ -449,45 +428,11 @@
                 ],
                 "type": "number"
             },
-            "exempt_channels": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "exempt_roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "guild_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
-            },
             "actions": {
                 "type": "array",
                 "items": {
                     "$ref": "#/definitions/AutomodAction"
                 }
-            },
-            "trigger_type": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7
-                ],
-                "type": "number"
             },
             "trigger_metadata": {
                 "anyOf": [
@@ -507,6 +452,21 @@
                         "type": "null"
                     }
                 ]
+            },
+            "enabled": {
+                "type": "boolean"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
             }
         },
         "additionalProperties": false,
@@ -592,6 +552,7 @@
             "id",
             "name",
             "position",
+            "trigger_metadata",
             "trigger_type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -8468,6 +8429,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "AutomodRuleTriggerType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "AutomodAction": {
         "anyOf": [
             {
@@ -8590,19 +8564,6 @@
         "required": [
             "metadata",
             "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodRuleTriggerType": {
-        "type": "number",
-        "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

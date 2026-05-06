@@ -57,8 +57,18 @@ test("AutomodRuleSchema exposes automod actions and array trigger metadata", () 
     assert.equal(resolveRef(schemas, responseActions?.items)?.anyOf?.length, 4);
     assert.equal(schemas.AutomodRulesResponse.type, "array");
     assert.equal(schemas.AutomodRulesResponse.items?.$ref, "#/definitions/AutomodRuleResponse");
-    assert.deepEqual(schemas.AutomodRuleSchema.required?.includes("actions"), true);
+    assert.deepEqual(schemas.AutomodRuleSchema.required?.sort(), ["actions", "event_type", "name", "trigger_type"]);
+    assert.equal(schemas.AutomodRuleSchema.properties?.creator_id, undefined);
+    assert.equal(schemas.AutomodRuleSchema.properties?.guild_id, undefined);
+    assert.equal(schemas.AutomodRuleSchema.properties?.position, undefined);
+    assert.equal(schemas.AutomodRuleModifySchema.properties?.creator_id, undefined);
+    assert.equal(schemas.AutomodRuleModifySchema.properties?.guild_id, undefined);
+    assert.equal(schemas.AutomodRuleModifySchema.properties?.position, undefined);
     assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("id"), true);
+    assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("creator_id"), true);
+    assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("guild_id"), true);
+    assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("position"), true);
+    assert.deepEqual(schemas.AutomodRuleResponse.required?.includes("trigger_metadata"), true);
     assert.equal(schemas.AutomodRuleModifySchema.required, undefined);
     assert.deepEqual(triggerMetadataRefs, [
         "#/definitions/AutomodCommonlyFlaggedWordsRuleSchema",
@@ -72,14 +82,8 @@ test("AutomodRuleSchema exposes automod actions and array trigger metadata", () 
 
 test("AutomodRuleSchema validates action metadata", () => {
     const rule = {
-        creator_id: "100",
-        enabled: true,
         event_type: 1,
-        exempt_channels: ["200"],
-        exempt_roles: ["300"],
-        guild_id: "400",
         name: "mention spam",
-        position: 0,
         actions: [
             {
                 type: 1,
@@ -108,6 +112,47 @@ test("AutomodRuleSchema validates action metadata", () => {
     };
 
     assert.equal(ajv.validate("AutomodRuleSchema", rule), true);
+    assert.equal(
+        ajv.validate("AutomodRuleResponse", {
+            ...rule,
+            creator_id: "100",
+            enabled: true,
+            exempt_channels: ["200"],
+            exempt_roles: ["300"],
+            guild_id: "400",
+            id: "600",
+            position: 0,
+        }),
+        true,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            creator_id: "100",
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            guild_id: "400",
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            position: 0,
+        }),
+        false,
+    );
+    assert.equal(
+        ajv.validate("AutomodRuleSchema", {
+            ...rule,
+            id: "600",
+        }),
+        false,
+    );
     assert.equal(
         ajv.validate("AutomodRuleSchema", {
             ...rule,
@@ -161,6 +206,10 @@ test("AutomodRuleSchema validates action metadata", () => {
         true,
     );
     assert.equal(ajv.validate("AutomodRuleModifySchema", {}), true);
+    assert.equal(ajv.validate("AutomodRuleModifySchema", { creator_id: "100" }), false);
+    assert.equal(ajv.validate("AutomodRuleModifySchema", { guild_id: "400" }), false);
+    assert.equal(ajv.validate("AutomodRuleModifySchema", { position: 0 }), false);
+    assert.equal(ajv.validate("AutomodRuleModifySchema", { trigger_type: 5 }), false);
     assert.equal(
         ajv.validate("AutomodRuleModifySchema", {
             actions: [{ type: 2, metadata: {} }],
