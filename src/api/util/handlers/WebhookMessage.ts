@@ -17,9 +17,21 @@
 */
 
 import { handleMessage, postHandleMessage } from "@spacebar/api";
-import { DiscordApiErrors, emitEvent, Message, MessageDeleteEvent, MessageUpdateEvent, Webhook } from "@spacebar/util";
-import { MessageEditSchema } from "@spacebar/schemas";
-import { FindOptionsWhere } from "typeorm";
+import { Attachment, Channel, DiscordApiErrors, emitEvent, Message, MessageDeleteEvent, MessageUpdateEvent, uploadFile, Webhook } from "@spacebar/util";
+import { ChannelType, WebhookMessageEditSchema } from "@spacebar/schemas";
+import { FindOptionsRelations, FindOptionsWhere } from "typeorm";
+
+type WebhookMessageUploadFile = Pick<Express.Multer.File, "buffer" | "mimetype" | "originalname">;
+type WebhookMessageUploader = (path: string, file: WebhookMessageUploadFile) => Promise<Attachment>;
+type WebhookMessageEditAttachment = NonNullable<WebhookMessageEditSchema["attachments"]>[number] | Attachment;
+
+export type PreparedWebhookMessageEdit = Omit<WebhookMessageEditSchema, "attachments" | "content" | "embeds" | "components" | "allowed_mentions"> & {
+    attachments?: WebhookMessageEditAttachment[];
+    allowed_mentions?: Exclude<WebhookMessageEditSchema["allowed_mentions"], null>;
+    components?: Exclude<WebhookMessageEditSchema["components"], null>;
+    content?: Exclude<WebhookMessageEditSchema["content"], null>;
+    embeds?: Exclude<WebhookMessageEditSchema["embeds"], null>;
+};
 
 export function assertWebhookToken(webhook: Pick<Webhook, "token"> | null | undefined, token: string): asserts webhook is Pick<Webhook, "token"> {
     if (!webhook) {
@@ -39,11 +51,12 @@ export function getWebhookMessageWhere(webhook_id: string, message_id: string, t
     };
 }
 
-export async function getWebhookForToken(webhook_id: string, token: string): Promise<Webhook> {
+export async function getWebhookForToken(webhook_id: string, token: string, relations?: FindOptionsRelations<Webhook>): Promise<Webhook> {
     const webhook = await Webhook.findOne({
         where: {
             id: webhook_id,
         },
+        ...(relations ? { relations } : {}),
     });
 
     assertWebhookToken(webhook, token);
@@ -51,17 +64,107 @@ export async function getWebhookForToken(webhook_id: string, token: string): Pro
 }
 
 export async function getWebhookMessage(webhook_id: string, message_id: string, thread_id?: string): Promise<Message> {
-    return await Message.findOneOrFail({
+    const message = await Message.findOne({
         where: getWebhookMessageWhere(webhook_id, message_id, thread_id),
         relations: {
             attachments: true,
+            application: true,
             author: true,
+            channel: true,
             member: true,
+            mention_channels: true,
+            mention_roles: true,
+            mentions: true,
+            sticker_items: true,
+            thread: true,
+            webhook: true,
         },
     });
+
+    if (!message) {
+        throw DiscordApiErrors.UNKNOWN_MESSAGE;
+    }
+
+    return message;
 }
 
-export async function editWebhookMessage(message: Message, body: MessageEditSchema): Promise<Message> {
+export async function uploadWebhookMessageFiles(
+    channel_id: string,
+    message_id: string,
+    files: readonly WebhookMessageUploadFile[] = [],
+    uploader: WebhookMessageUploader = uploadFile,
+): Promise<Attachment[]> {
+    const attachments: Attachment[] = [];
+
+    for (const file of files) {
+        attachments.push(Object.assign(new Attachment(), await uploader(`/attachments/${channel_id}/${message_id}`, file)));
+    }
+
+    return attachments;
+}
+
+export function resolveWebhookMessageEditAttachments(
+    existingAttachments: readonly Attachment[] = [],
+    requestedAttachments: WebhookMessageEditSchema["attachments"],
+    uploadedAttachments: readonly Attachment[] = [],
+): WebhookMessageEditAttachment[] {
+    const retainedAttachments: WebhookMessageEditAttachment[] = [];
+
+    if (requestedAttachments === undefined) {
+        retainedAttachments.push(...existingAttachments);
+    } else if (requestedAttachments !== null) {
+        for (const attachment of requestedAttachments) {
+            if ("uploaded_filename" in attachment) {
+                retainedAttachments.push(attachment);
+                continue;
+            }
+
+            const existing = existingAttachments.find((current) => current.id === attachment.id);
+            if (existing) {
+                retainedAttachments.push(existing);
+            }
+        }
+    }
+
+    return [...retainedAttachments, ...uploadedAttachments];
+}
+
+export function normalizeWebhookMessageEditBody(body: WebhookMessageEditSchema): Omit<PreparedWebhookMessageEdit, "attachments"> {
+    const { allowed_mentions, attachments: _attachments, components, content, embeds, ...rest } = body;
+
+    return {
+        ...rest,
+        ...(allowed_mentions !== null && allowed_mentions !== undefined ? { allowed_mentions } : {}),
+        ...(components !== null && components !== undefined ? { components } : {}),
+        ...(components === null ? { components: [] } : {}),
+        ...(content !== null && content !== undefined ? { content } : {}),
+        ...(content === null ? { content: "" } : {}),
+        ...(embeds !== null && embeds !== undefined ? { embeds } : {}),
+        ...(embeds === null ? { embeds: [] } : {}),
+    };
+}
+
+export async function buildWebhookMessageEditBody(
+    message: Pick<Message, "attachments" | "channel_id" | "id">,
+    body: WebhookMessageEditSchema,
+    files: readonly WebhookMessageUploadFile[] = [],
+    uploader: WebhookMessageUploader = uploadFile,
+): Promise<PreparedWebhookMessageEdit> {
+    if (!message.channel_id) {
+        throw DiscordApiErrors.UNKNOWN_MESSAGE;
+    }
+
+    return {
+        ...normalizeWebhookMessageEditBody(body),
+        attachments: resolveWebhookMessageEditAttachments(
+            message.attachments ?? [],
+            body.attachments,
+            await uploadWebhookMessageFiles(message.channel_id, message.id, files, uploader),
+        ),
+    };
+}
+
+export async function editWebhookMessage(message: Message, body: PreparedWebhookMessageEdit): Promise<Message> {
     const newMessage = await handleMessage({
         ...message,
         message_reference: message.message_reference,
@@ -70,6 +173,7 @@ export async function editWebhookMessage(message: Message, body: MessageEditSche
         channel_id: message.channel_id,
         id: message.id,
         edited_timestamp: new Date(),
+        is_edit: true,
     });
 
     await newMessage.save();
@@ -86,9 +190,24 @@ export async function editWebhookMessage(message: Message, body: MessageEditSche
     return newMessage;
 }
 
+export function shouldDecrementWebhookMessageChannel(channel?: Pick<Channel, "type"> | null): boolean {
+    return channel?.type === ChannelType.GUILD_PUBLIC_THREAD;
+}
+
 export async function deleteWebhookMessage(message: Message): Promise<void> {
     if (!message.channel_id || !message.webhook_id) {
         throw DiscordApiErrors.UNKNOWN_MESSAGE;
+    }
+
+    if (shouldDecrementWebhookMessageChannel(message.channel)) {
+        if (message.channel.message_count !== undefined) {
+            message.channel.message_count = Math.max(0, message.channel.message_count - 1);
+        }
+        await message.channel.save();
+    }
+
+    if (message.attachments?.length) {
+        await Attachment.remove(message.attachments);
     }
 
     await Message.delete({ id: message.id, webhook_id: message.webhook_id });

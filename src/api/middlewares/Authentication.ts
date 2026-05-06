@@ -32,7 +32,7 @@ export const NO_AUTHORIZATION_ROUTES = [
     "POST /auth/fingerprint",
     "GET /invites/",
     // Routes with a seperate auth system
-    /^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/\w+\/?/, // no token requires auth
+    /^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/[A-Za-z0-9_-]+(?:\/|$)/, // no token requires auth
     /^POST \/interactions\/\d+\/[A-Za-z0-9_-]+\/callback/,
     // Public information endpoints
     "GET /ping",

@@ -291,9 +291,14 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
         (await Promise.all(medias.map((m, index) => processMedia(m, messageId, batchId, user, channel, index + "")))).forEach((_) => _?.());
     };
 }
+export function isMessageEditOperation(opts: Pick<MessageOptions, "is_edit">): boolean {
+    return opts.is_edit === true;
+}
+
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const conf = Config.get();
     const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;
+    const isEdit = isMessageEditOperation(opts);
 
     const channel = await Channel.findOneOrFail({
         where: { id: opts.channel_id },
@@ -304,7 +309,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     let permission: null | Permissions = null;
     const limit = channel.rate_limit_per_user;
 
-    if (limit) {
+    if (!isEdit && limit) {
         const lastMsgTime = (await Message.findOne({ where: { channel_id: channel.id, author_id: opts.author_id }, select: { timestamp: true }, order: { timestamp: "DESC" } }))
             ?.timestamp;
         if (lastMsgTime && Date.now() - limit * 1000 < +lastMsgTime) {
@@ -345,12 +350,12 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     }
 
     const ephermal = (message.flags & (1 << 6)) !== 0;
-    if (!ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
+    if (!isEdit && !ephermal && channel.type === ChannelType.GUILD_PUBLIC_THREAD) {
         const rep = Channel.getRepository();
         await rep.increment({ id: channel.id }, "message_count", 1);
         await rep.increment({ id: channel.id }, "total_message_sent", 1);
     }
-    if (!ephermal) {
+    if (!isEdit && !ephermal) {
         channel.last_message_id = message.id;
         await channel.save();
     }
@@ -579,7 +584,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
         return Promise.all([...users].map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
     }
-    if (ephermal) {
+    if (isEdit) {
+        // Edits recalculate mentions for serialization but must not create new mention notifications.
+    } else if (ephermal) {
         const id = message.interaction_metadata?.user_id;
         if (id) {
             let pinged = mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM;
@@ -722,6 +729,7 @@ interface MessageOptions extends MessageCreateSchema {
     timestamp?: Date;
     username?: string;
     avatar_url?: string;
+    is_edit?: boolean;
 }
 
 // Makes for concise code, inspired by Nix' lib.trace

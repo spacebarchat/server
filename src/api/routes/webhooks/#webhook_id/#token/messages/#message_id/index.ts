@@ -18,10 +18,10 @@
 
 import { route } from "@spacebar/api";
 import { Config } from "@spacebar/util";
-import { MessageEditSchema } from "@spacebar/schemas";
+import { WebhookMessageEditSchema } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
 import multer from "multer";
-import { deleteWebhookMessage, editWebhookMessage, getWebhookForToken, getWebhookMessage } from "../../../../../../util/handlers/WebhookMessage";
+import { buildWebhookMessageEditBody, deleteWebhookMessage, editWebhookMessage, getWebhookForToken, getWebhookMessage } from "../../../../../../util/handlers/WebhookMessage";
 
 const router = Router({ mergeParams: true });
 
@@ -68,8 +68,7 @@ router.patch(
         next();
     },
     route({
-        requestBody: "MessageEditSchema",
-        stripNulls: true,
+        requestBody: "WebhookMessageEditSchema",
         query: {
             thread_id: {
                 type: "string",
@@ -89,11 +88,11 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, token, message_id } = req.params as { [key: string]: string };
-        const body = req.body as MessageEditSchema;
+        const body = req.body as WebhookMessageEditSchema;
 
         await getWebhookForToken(webhook_id, token);
         const message = await getWebhookMessage(webhook_id, message_id, getThreadId(req));
-        const updated = await editWebhookMessage(message, body);
+        const updated = await editWebhookMessage(message, await buildWebhookMessageEditBody(message, body, (req.files as Express.Multer.File[]) ?? []));
 
         return res.json(updated.toJSON());
     },

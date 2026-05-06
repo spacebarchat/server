@@ -98,6 +98,7 @@ router.patch(
             channel_id,
             id: message_id,
             edited_timestamp: new Date(),
+            is_edit: true,
         });
 
         await new_message.save();
