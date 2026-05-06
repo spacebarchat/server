@@ -65,4 +65,29 @@ public class ChannelTypeTests {
         Assert.Equal([1], directMessageIds);
         Assert.Equal([3], voiceChannelIds);
     }
+
+    [Fact]
+    public void ChannelTypeUsesExistingIntegerDatabaseColumn() {
+        using var db = new SpacebarDbContext(
+            new DbContextOptionsBuilder<SpacebarDbContext>()
+                .UseNpgsql("Host=localhost;Database=spacebar;Username=spacebar;Password=spacebar")
+                .Options
+        );
+
+        var channelTypeProperty = db.Model
+            .FindEntityType(typeof(Channel))!
+            .FindProperty(nameof(Channel.Type))!;
+        var relationalMapping = channelTypeProperty.GetRelationalTypeMapping();
+
+        Assert.Equal(typeof(ChannelType), channelTypeProperty.ClrType);
+        Assert.Equal("integer", relationalMapping.StoreType);
+        Assert.Equal(typeof(int), relationalMapping.Converter?.ProviderClrType);
+        Assert.Contains(
+            "WHERE c.type = 1",
+            db.Channels
+                .Where(channel => channel.Type == ChannelType.Dm)
+                .Select(channel => channel.Id)
+                .ToQueryString()
+        );
+    }
 }
