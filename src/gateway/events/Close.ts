@@ -41,9 +41,8 @@ export interface CloseSessionRecord {
 }
 
 export interface CloseSessionCleanupDependencies {
-    findSession(userId: string, sessionId: string): Promise<CloseSessionRecord | null>;
     findSessions(userId: string): Promise<CloseSessionRecord[]>;
-    markSessionOffline(userId: string, sessionId: string): Promise<void>;
+    markSessionOffline(userId: string, sessionId: string, closedAt: number): Promise<boolean>;
     findPublicUser(userId: string): Promise<unknown>;
     emitSessionsReplace(userId: string, sessions: CloseSessionRecord[]): Promise<void>;
     distributePresenceUpdate(userId: string, event: PresenceUpdateEvent): Promise<void>;
@@ -52,16 +51,20 @@ export interface CloseSessionCleanupDependencies {
 }
 
 const closeSessionCleanupDependencies: CloseSessionCleanupDependencies = {
-    findSession: (userId, sessionId) =>
-        Session.findOne({
-            where: { user_id: userId, session_id: sessionId },
-        }),
     findSessions: (userId) =>
         Session.find({
             where: { user_id: userId, is_admin_session: false },
         }),
-    markSessionOffline: async (userId, sessionId) => {
-        await Session.update({ user_id: userId, session_id: sessionId }, { status: "offline", activities: [], client_status: {} });
+    markSessionOffline: async (userId, sessionId, closedAt) => {
+        const result = await Session.createQueryBuilder()
+            .update(Session)
+            .set({ status: "offline", activities: [], client_status: {} })
+            .where("user_id = :userId", { userId })
+            .andWhere("session_id = :sessionId", { sessionId })
+            .andWhere("(last_seen IS NULL OR last_seen <= :closedAt)", { closedAt: new Date(closedAt) })
+            .execute();
+
+        return (result.affected ?? 0) > 0;
     },
     findPublicUser: async (userId) => (await User.findOneOrFail({ where: { id: userId } })).toPublicUser(),
     emitSessionsReplace: async (userId, sessions) => {
@@ -84,13 +87,7 @@ export async function cleanupClosedSessionPresence(
 ) {
     if (!userId || !authSessionId) return false;
 
-    const session = await deps.findSession(userId, authSessionId);
-    if (!session || (session.last_seen?.getTime() ?? 0) > closedAt) return false;
-
-    await deps.markSessionOffline(userId, authSessionId);
-    session.status = "offline";
-    session.activities = [];
-    session.client_status = {};
+    if (!(await deps.markSessionOffline(userId, authSessionId, closedAt))) return false;
 
     const sessions = await deps.findSessions(userId);
     const relevantSession = deps.getMostRelevantSession(sessions) ?? {
