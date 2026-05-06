@@ -577,36 +577,155 @@
                     "messages"
                 ]
             },
-            "ChannelModifySchema": {
+            "ChannelBaseModifySchema": {
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string"
                     },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "invitable": {
+                        "type": "boolean"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "$ref": "#/components/schemas/ChannelPermissionOverwriteType"
+                                },
+                                "allow": {
+                                    "type": "string"
+                                },
+                                "deny": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "allow",
+                                "deny",
+                                "id",
+                                "type"
+                            ]
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "parent_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "rtc_region": {
+                        "type": "string"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "default_reaction_emoji": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "archived": {
+                        "type": "boolean"
+                    },
+                    "locked": {
+                        "type": "boolean"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "additionalProperties": false,
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "moderated": {
+                                    "type": [
+                                        "null",
+                                        "boolean"
+                                    ]
+                                },
+                                "emoji_id": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "emoji_name": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                },
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ChannelModifySchema": {
+                "type": "object",
+                "properties": {
                     "type": {
                         "enum": [
                             0,
-                            1,
-                            10,
-                            11,
-                            12,
-                            13,
-                            14,
-                            15,
-                            16,
-                            17,
-                            18,
-                            2,
-                            255,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9
+                            5
                         ],
                         "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
                     },
                     "topic": {
                         "type": "string"
@@ -7319,9 +7438,6 @@
             "ChannelCreateSchema": {
                 "type": "object",
                 "properties": {
-                    "name": {
-                        "type": "string"
-                    },
                     "type": {
                         "enum": [
                             0,
@@ -7346,6 +7462,9 @@
                             9
                         ],
                         "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "string"
