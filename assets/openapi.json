@@ -6801,50 +6801,51 @@
                         "type": "string"
                     },
                     "username": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "avatar_url": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "tts": {
                         "type": "boolean"
                     },
                     "embeds": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Embed"
-                        }
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Embed"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "allowed_mentions": {
-                        "type": "object",
-                        "properties": {
-                            "parse": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/AllowedMentions"
                             },
-                            "roles": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "replied_user": {
-                                "type": "boolean"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false
+                        ]
                     },
                     "components": {
-                        "type": "array",
-                        "items": {}
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/BaseMessageComponents"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "file": {
                         "type": "object",
@@ -6893,31 +6894,27 @@
                         }
                     },
                     "message_reference": {
-                        "type": "object",
-                        "properties": {
-                            "message_id": {
-                                "type": "string"
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MessageReference"
                             },
-                            "channel_id": {
-                                "type": "string"
-                            },
-                            "guild_id": {
-                                "type": "string"
-                            },
-                            "fail_if_not_exists": {
-                                "type": "boolean"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "message_id"
                         ]
                     },
                     "sticker_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "nonce": {
                         "type": "string"
