@@ -277,7 +277,6 @@ router.post(
         if (req.body.payload_json) {
             req.body = JSON.parse(req.body.payload_json);
         }
-
         next();
     },
     route({
