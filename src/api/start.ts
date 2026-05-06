@@ -24,6 +24,7 @@ process.on("unhandledRejection", console.error);
 import { config } from "dotenv";
 config({ quiet: true });
 import { SpacebarServer } from "./Server";
+import { runStartupOrExit } from "@spacebar/util";
 import cluster from "node:cluster";
 import os from "node:os";
 import fs from "node:fs";
@@ -53,7 +54,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
     process.title = `sb-api-${cluster.worker ? cluster.worker.id : port}`;
 
     const server = new SpacebarServer({ port });
-    server.start().catch(console.error);
+    void runStartupOrExit("API server", () => server.start());
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

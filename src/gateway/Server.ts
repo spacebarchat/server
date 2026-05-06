@@ -18,7 +18,7 @@
 
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import { checkToken, closeDatabase, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
+import { checkToken, closeDatabase, initEvent, initStartupConfigAndDatabase, Rights } from "@spacebar/util";
 import ws from "ws";
 import { Connection, openConnections } from "./events/Connection";
 import http from "node:http";
@@ -167,8 +167,7 @@ export class Server {
     }
 
     async start(): Promise<void> {
-        await initDatabase();
-        await Config.init();
+        await initStartupConfigAndDatabase();
         await initEvent();
         // temporary fix
         await cleanupOnStartup();

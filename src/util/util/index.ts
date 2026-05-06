@@ -43,6 +43,7 @@ export * from "./Rights";
 export * from "./Snowflake";
 export * from "./Stopwatch";
 export * from "./String";
+export * from "./Startup";
 export * from "./Timespan";
 export * from "./Token";
 export * from "./TraverseDirectory";
