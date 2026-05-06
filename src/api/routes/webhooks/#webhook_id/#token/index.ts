@@ -150,7 +150,6 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        // noinspection JSUnusedLocalSymbols - TODO: shouldnt token be checked?
         const { webhook_id, token } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 
@@ -158,6 +157,11 @@ router.patch(
             where: { id: webhook_id },
             relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
+
+        if (webhook.token !== token) {
+            throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+        }
+
         const channel_id = webhook.channel_id;
         if (!body.name && !body.avatar) {
             throw new HTTPError("Empty webhook updates are not allowed", 50006);
