@@ -21,6 +21,7 @@ import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 import { ajv } from "@spacebar/schemas";
 import { BigNumber } from "bignumber.js";
+import { normalizeEmbedPayloadForSchema } from "../utility/EmbedPayload";
 
 const ignoredRequestSchemas = [
     // skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
@@ -151,6 +152,8 @@ export function route(opts: RouteOptions) {
         bigNumberToString(req.body);
 
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
+            normalizeEmbedPayloadForSchema(opts.requestBody!, req.body);
+
             if (opts.stripNulls) {
                 if (opts.stripNulls === true) stripNull(req.body);
                 else followNullPath(req.body, opts.stripNulls);

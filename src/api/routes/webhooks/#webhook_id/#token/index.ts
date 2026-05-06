@@ -1,4 +1,4 @@
-import { normalizeEmbedPayload, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, Webhook, WebhooksUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -61,8 +61,6 @@ router.post(
         if (req.body.payload_json) {
             req.body = JSON.parse(req.body.payload_json);
         }
-
-        normalizeEmbedPayload(req.body);
         next();
     },
     route({

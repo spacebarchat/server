@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { handleMessage, normalizeEmbedPayload, postHandleMessage, route } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import {
     Attachment,
     Channel,
@@ -277,8 +277,6 @@ router.post(
         if (req.body.payload_json) {
             req.body = JSON.parse(req.body.payload_json);
         }
-
-        normalizeEmbedPayload(req.body);
         next();
     },
     route({
