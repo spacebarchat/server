@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomString, route } from "@spacebar/api";
-import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent, normalizeInviteCreateOptions } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { Channel, Invite, PublicInviteRelation } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
+import { InviteCreateSchema } from "@spacebar/schemas";
+import { createChannelInvite } from "../../../util/handlers/ChannelInviteCreate";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -47,48 +48,9 @@ router.post(
         const { user_id } = req;
         const body = req.body as InviteCreateSchema;
         const { channel_id } = req.params as { [key: string]: string };
-        const channel = await Channel.findOneOrFail({
-            where: { id: channel_id },
-            select: { id: true, name: true, type: true, guild_id: true },
-        });
-        isTextChannel(channel.type);
+        const { status, data } = await createChannelInvite(user_id, channel_id, body);
 
-        if (!channel.guild_id) {
-            throw new HTTPError("This channel doesn't exist", 404);
-        }
-        const { guild_id } = channel;
-
-        const inviteOptions = normalizeInviteCreateOptions(body);
-        const inviteContext = {
-            guild_id,
-            channel_id,
-            inviter_id: user_id,
-        };
-
-        const existingInvite = await Invite.findReusableForCreate(inviteContext, inviteOptions);
-        if (existingInvite) {
-            const data = existingInvite.toJSON();
-            data.inviter = await User.getPublicUser(req.user_id);
-            data.guild = await Guild.findOne({ where: { id: guild_id } });
-            data.channel = channel;
-
-            return res.status(200).send(data);
-        }
-
-        const invite = await Invite.createForChannel(randomString(), inviteContext, inviteOptions).save();
-
-        const data = invite.toJSON();
-        data.inviter = await User.getPublicUser(req.user_id);
-        data.guild = await Guild.findOne({ where: { id: guild_id } });
-        data.channel = channel;
-
-        await emitEvent({
-            event: "INVITE_CREATE",
-            data,
-            guild_id,
-        } satisfies InviteCreateEvent);
-
-        res.status(201).send(data);
+        res.status(status).send(data);
     },
 );
 
