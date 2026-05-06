@@ -24,6 +24,19 @@ describe("mergeGeneratedUrlEmbeds", () => {
         assert.deepEqual(result.embeds, [generatedEmbed]);
     });
 
+    test("does not duplicate a previously generated rich URL embed", () => {
+        const generatedEmbed = {
+            type: "rich",
+            url: "https://example.com",
+            title: "Example",
+        } as Embed;
+
+        const result = mergeGeneratedUrlEmbeds([generatedEmbed], [generatedEmbed], 10);
+
+        assert.equal(result.changed, false);
+        assert.deepEqual(result.embeds, [generatedEmbed]);
+    });
+
     test("honors the max embed limit without emitting a no-op change", () => {
         const existingEmbed = {
             type: "rich",
