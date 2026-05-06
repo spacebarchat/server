@@ -16,13 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import { OrmUtils } from "..";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../entities";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { bold, red, redBright } from "picocolors";
+import { readJsonConfigFile } from "./JsonConfigFile";
 
 // TODO: yaml instead of json
 const overridePath = process.env.CONFIG_PATH ?? "";
@@ -50,10 +50,7 @@ export class Config {
             config = pairsToConfig(pairs);
         } else {
             console.log(`[Config] Using CONFIG_PATH rather than database:`, process.env.CONFIG_PATH);
-            if (existsSync(process.env.CONFIG_PATH)) {
-                const file = JSON.parse((await fs.readFile(process.env.CONFIG_PATH)).toString());
-                config = file;
-            } else config = new ConfigValue();
+            config = (await readJsonConfigFile(process.env.CONFIG_PATH)) as Partial<ConfigValue> as ConfigValue;
             pairs = generatePairs(config);
         }
 
@@ -189,8 +186,7 @@ const validateConfig = async () => {
     console.log("[Config] Total config load time:", new Date().getTime() - totalStartTime.getTime(), "ms");
 
     if (hasErrored) {
-        console.error("[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration");
-        process.exit(1);
+        throw new Error("[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration");
     }
 
     return config;
@@ -228,8 +224,9 @@ function validateFinalConfig(config: ConfigValue) {
     assertConfig("gateway_endpointPublic", (v) => v != null, 'A valid public gateway endpoint URL, eg. "ws://localhost:3002/"');
 
     if (hasErrors) {
-        console.error("[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration");
+        const message = "[Config] Your config has invalid values. Fix them first https://docs.spacebar.chat/setup/server/configuration";
+        console.error(message);
         console.error("[Config] Hint: if you're just testing with bundle (`npm run start`), you can set all endpoint URLs to [proto]://localhost:3001");
-        process.exit(1);
+        throw new Error(message);
     } else console.log("[Config] Configuration validated successfully.");
 }

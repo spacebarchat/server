@@ -23,6 +23,7 @@ import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
 import { ConfigEntity } from "../entities/Config";
 import fs from "node:fs";
+import { getDatabaseType, getDatabaseUrl } from "./DatabaseConfig";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -37,35 +38,36 @@ if (!process.env) {
 }
 if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
-if (!process.env.DATABASE && !isHeadlessProcess) {
-    console.log(
-        red(
-            "DATABASE environment variable not set! Please set it to your database connection string.\n" + "Example for postgres: postgres://user:password@localhost:5432/database",
-        ),
-    );
-    process.exit(1);
-}
+export { getDatabaseType, getDatabaseUrl };
 
-const dbConnectionString = process.env.DATABASE!;
-export const DatabaseType = isHeadlessProcess ? "postgres" : dbConnectionString.split(":")[0]?.replace("+srv", "");
 const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
+export let DatabaseType = isHeadlessProcess || !process.env.DATABASE ? "postgres" : getDatabaseType(process.env.DATABASE);
 
-export const DataSourceOptions = isHeadlessProcess
-    ? (undefined as unknown as DataSource)
-    : new DataSource({
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
-          type: DatabaseType,
-          charset: "utf8mb4",
-          url: process.env.DATABASE,
-          entities: [path.join(__dirname, "..", "entities", "*.js")],
-          synchronize: !!process.env.DB_SYNC,
-          logging: !!process.env.DB_LOGGING,
-          bigNumberStrings: false,
-          supportBigNumbers: true,
-          name: "default",
-          migrations: applyMigrations ? [path.join(__dirname, "..", "migration", DatabaseType, "*.js")] : [],
-      });
+const createDataSourceOptions = () => {
+    DatabaseType = isHeadlessProcess ? "postgres" : getDatabaseType();
+
+    return new DataSource({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
+        type: DatabaseType,
+        charset: "utf8mb4",
+        url: process.env.DATABASE,
+        entities: [path.join(__dirname, "..", "entities", "*.js")],
+        synchronize: !!process.env.DB_SYNC,
+        logging: !!process.env.DB_LOGGING,
+        bigNumberStrings: false,
+        supportBigNumbers: true,
+        name: "default",
+        migrations: applyMigrations ? [path.join(__dirname, "..", "migration", DatabaseType, "*.js")] : [],
+    });
+};
+
+export let DataSourceOptions = isHeadlessProcess || !process.env.DATABASE ? (undefined as unknown as DataSource) : createDataSourceOptions();
+
+const getDataSourceOptions = () => {
+    if (!DataSourceOptions) DataSourceOptions = createDataSourceOptions();
+    return DataSourceOptions;
+};
 
 // Gets the existing database connection
 export function getDatabase(): DataSource | null {
@@ -77,24 +79,24 @@ export function getDatabase(): DataSource | null {
 // Called once on server start
 export async function initDatabase(): Promise<DataSource> {
     if (dbConnection) return dbConnection;
+    if (!isHeadlessProcess) DatabaseType = getDatabaseType();
 
     if (!process.env.DB_SYNC) {
         const supported = ["postgres"];
         if (!supported.includes(DatabaseType)) {
-            console.log(
+            throw new Error(
                 "[Database]" +
                     red(
                         ` We don't have migrations for DB type '${DatabaseType}'` +
                             ` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
                     ),
             );
-            process.exit(1);
         }
     }
 
     console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
-    dbConnection = await DataSourceOptions.initialize();
+    dbConnection = await getDataSourceOptions().initialize();
 
     // Crude way of detecting if the migrations table exists.
     const dbExists = async () => {
