@@ -19,9 +19,14 @@
 import { Storage } from "./Storage";
 import fs from "node:fs";
 import fsp from "node:fs/promises";
-import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { Readable } from "node:stream";
 import ExifTransformer from "exif-be-gone";
+
+function isOutsideRoot(root: string, path: string): boolean {
+    const relativePath = relative(root, path);
+    return relativePath === ".." || relativePath.startsWith(`..${sep}`) || isAbsolute(relativePath);
+}
 
 export class FileStorage implements Storage {
     private getRoot(): string {
@@ -32,9 +37,8 @@ export class FileStorage implements Storage {
     getFsPath(path: string): string {
         const root = this.getRoot();
         const filename = resolve(root, path);
-        const relativePath = relative(root, filename);
 
-        if (path.indexOf("\0") !== -1 || relativePath.startsWith("..") || isAbsolute(relativePath)) throw new Error("invalid path");
+        if (path.indexOf("\0") !== -1 || isOutsideRoot(root, filename)) throw new Error("invalid path");
         return filename;
     }
 
@@ -102,8 +106,7 @@ export class FileStorage implements Storage {
         let current = resolve(path);
 
         while (current !== root) {
-            const relativePath = relative(root, current);
-            if (relativePath.startsWith("..") || isAbsolute(relativePath)) return;
+            if (isOutsideRoot(root, current)) return;
 
             try {
                 await fsp.rmdir(current);

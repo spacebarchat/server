@@ -51,6 +51,22 @@ describe("FileStorage", () => {
         });
     });
 
+    it("removes empty leaf directories while keeping non-empty ancestors", async () => {
+        await withStorageRoot(async (root, storage) => {
+            const directory = join(root, "attachments", "channel", "message");
+            await fsp.mkdir(directory, { recursive: true });
+            await fsp.writeFile(join(directory, "deleted.txt"), "data");
+            await fsp.writeFile(join(root, "attachments", "channel", "kept.txt"), "data");
+
+            await storage.delete("attachments/channel/message/deleted.txt");
+
+            assert.equal(existsSync(join(directory, "deleted.txt")), false);
+            assert.equal(existsSync(directory), false);
+            assert.equal(existsSync(join(root, "attachments", "channel", "kept.txt")), true);
+            assert.equal(existsSync(join(root, "attachments", "channel")), true);
+        });
+    });
+
     it("does not delete the storage root", async () => {
         await withStorageRoot(async (root, storage) => {
             await fsp.writeFile(join(root, "file.txt"), "data");
@@ -58,6 +74,21 @@ describe("FileStorage", () => {
             await storage.delete("file.txt");
 
             assert.equal(existsSync(join(root, "file.txt")), false);
+            assert.equal(existsSync(root), true);
+        });
+    });
+
+    it("allows storage paths whose segment merely starts with dot-dot", async () => {
+        await withStorageRoot(async (root, storage) => {
+            const filePath = join(root, "..not-traversal", "file.txt");
+            await fsp.mkdir(join(root, "..not-traversal"), { recursive: true });
+            await fsp.writeFile(filePath, "data");
+
+            assert.equal(storage.getFsPath("..not-traversal/file.txt"), filePath);
+
+            await storage.delete("..not-traversal/file.txt");
+
+            assert.equal(existsSync(filePath), false);
             assert.equal(existsSync(root), true);
         });
     });
