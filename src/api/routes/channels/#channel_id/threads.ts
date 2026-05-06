@@ -44,6 +44,7 @@ import {
     parsePrivateArchivedThreadBefore,
     parsePrivateArchivedThreadLimit,
     PRIVATE_ARCHIVED_THREAD_PERMISSIONS,
+    serializePrivateArchivedThreadMember,
 } from "../../../util/utility/PrivateArchivedThreads";
 
 const router = Router({ mergeParams: true });
@@ -277,7 +278,7 @@ router.get(
 
         return res.json({
             threads: returnedThreads.map((thread) => thread.toJSON()),
-            members: members.map((threadMember) => threadMember.toJSON()),
+            members: members.map((threadMember) => serializePrivateArchivedThreadMember(threadMember, req.user_id)),
             has_more: threads.length > parsedLimit,
         });
     },
