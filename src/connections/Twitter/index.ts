@@ -62,12 +62,11 @@ export function createTwitterAuthorizationCodeBody(params: { code: string; clien
     });
 }
 
-export function createTwitterRefreshTokenBody(params: { refreshToken: string; clientId: string; redirectUri: string }) {
+export function createTwitterRefreshTokenBody(params: { refreshToken: string; clientId: string }) {
     return new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: params.refreshToken,
         client_id: params.clientId,
-        redirect_uri: params.redirectUri,
     });
 }
 
@@ -80,9 +79,8 @@ export default class TwitterConnection extends RefreshableConnection {
     public readonly authorizeUrl = "https://twitter.com/i/oauth2/authorize";
     public readonly tokenUrl = "https://api.twitter.com/2/oauth2/token";
     public readonly userInfoUrl = "https://api.twitter.com/2/users/me?user.fields=created_at%2Cdescription%2Cid%2Cname%2Cusername%2Cverified%2Clocation%2Curl";
-    public readonly scopes = ["users.read", "tweet.read"];
+    public readonly scopes = ["users.read", "tweet.read", "offline.access"];
     settings: TwitterSettings = new TwitterSettings();
-    private pkceVerifiers: Map<string, string> = new Map();
 
     init(): void {
         this.settings = ConnectionLoader.getConnectionConfig<TwitterSettings>(this.id, this.settings);
@@ -95,9 +93,8 @@ export default class TwitterConnection extends RefreshableConnection {
     }
 
     getAuthorizationUrl(userId: string): string {
-        const state = this.createState(userId);
         const pkce = createTwitterPKCEPair();
-        this.pkceVerifiers.set(state, pkce.verifier);
+        const state = this.createState(userId, { codeVerifier: pkce.verifier });
 
         const url = new URL(this.authorizeUrl);
 
@@ -116,7 +113,6 @@ export default class TwitterConnection extends RefreshableConnection {
     }
 
     async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-        this.validateState(state);
         const code_verifier = this.consumePKCEVerifier(state);
 
         const url = this.getTokenUrl();
@@ -159,7 +155,6 @@ export default class TwitterConnection extends RefreshableConnection {
                 createTwitterRefreshTokenBody({
                     refreshToken: refresh_token,
                     clientId: this.settings.clientId as string,
-                    redirectUri: this.getRedirectUri(),
                 }),
             )
             .post()
@@ -185,9 +180,9 @@ export default class TwitterConnection extends RefreshableConnection {
     }
 
     private consumePKCEVerifier(state: string): string {
-        const verifier = this.pkceVerifiers.get(state);
-        if (!verifier) throw DiscordApiErrors.INVALID_OAUTH_STATE;
-        this.pkceVerifiers.delete(state);
+        const { data } = this.consumeState(state);
+        const verifier = data.codeVerifier;
+        if (typeof verifier !== "string") throw DiscordApiErrors.INVALID_OAUTH_STATE;
         return verifier;
     }
 
