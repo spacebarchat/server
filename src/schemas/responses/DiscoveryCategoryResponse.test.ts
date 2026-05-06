@@ -10,7 +10,7 @@ const ajv = new Ajv({ schemas: Object.entries(schemas).map(([key, schema]) => ({
 describe("APIDiscoveryCategoryArray", () => {
     const validate = ajv.compile({ ...schemas.APIDiscoveryCategoryArray, definitions: schemas });
 
-    test("accepts categories without explicit localizations", () => {
+    test("accepts categories with empty localizations", () => {
         assert.strictEqual(
             validate([
                 {

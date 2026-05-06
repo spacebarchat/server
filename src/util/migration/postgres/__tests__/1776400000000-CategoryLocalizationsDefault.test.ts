@@ -1,7 +1,7 @@
 import { describe, test } from "node:test";
 import assert from "node:assert";
 import { QueryRunner } from "typeorm";
-import { CategoryLocalizationsDefault1776400000000 } from "./1776400000000-CategoryLocalizationsDefault";
+import { CategoryLocalizationsDefault1776400000000 } from "../1776400000000-CategoryLocalizationsDefault";
 
 function createQueryRunner() {
     const queries: string[] = [];
@@ -16,14 +16,14 @@ function createQueryRunner() {
 }
 
 describe("CategoryLocalizationsDefault1776400000000", () => {
-    test("backfills and defaults category localizations", async () => {
+    test("normalizes and defaults category localizations", async () => {
         const migration = new CategoryLocalizationsDefault1776400000000();
         const { queries, queryRunner } = createQueryRunner();
 
         await migration.up(queryRunner);
 
         assert.deepStrictEqual(queries, [
-            `UPDATE categories SET localizations = '{}'::jsonb WHERE localizations IS NULL;`,
+            `UPDATE categories SET localizations = '{}'::jsonb WHERE localizations IS NULL OR jsonb_typeof(localizations) <> 'object';`,
             `ALTER TABLE categories ALTER COLUMN localizations SET DEFAULT '{}'::jsonb;`,
             `ALTER TABLE categories ALTER COLUMN localizations SET NOT NULL;`,
         ]);
