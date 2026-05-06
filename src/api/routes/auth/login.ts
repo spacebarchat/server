@@ -21,7 +21,7 @@ import { Config, FieldErrors, User, WebAuthn, generateToken, generateWebAuthnTic
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
-import { LoginSchema } from "@spacebar/schemas";
+import { LoginSchema, type MFAResponse, type WebAuthnResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 export default router;
@@ -113,12 +113,14 @@ router.post(
 
             await User.update({ id: user.id }, { totp_last_ticket: ticket });
 
-            return res.json({
+            const response = {
                 ticket: ticket,
                 mfa: true,
-                sms: false, // TODO
+                sms: false,
                 token: null,
-            });
+            } satisfies MFAResponse;
+
+            return res.json(response);
         }
 
         if (user.mfa_enabled && user.webauthn_enabled) {
@@ -144,13 +146,15 @@ router.post(
             const ticket = await generateWebAuthnTicket(challenge);
             await User.update({ id: user.id }, { totp_last_ticket: ticket });
 
-            return res.json({
+            const response = {
                 ticket: ticket,
                 mfa: true,
-                sms: false, // TODO
+                sms: false,
                 token: null,
                 webauthn: challenge,
-            });
+            } satisfies WebAuthnResponse;
+
+            return res.json(response);
         }
 
         if (undelete) {
@@ -185,10 +189,10 @@ router.post(
  * @argument { login: "email@gmail.com", password: "cleartextpassword", undelete: false, captcha_key: null, login_source: null, gift_code_sku_id: null, }
 
  * MFA required:
- * @returns {"token": null, "mfa": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
+ * @returns {"token": null, "mfa": true, "sms": false, "ticket": "SOME TICKET JWT TOKEN"}
 
  * WebAuthn MFA required:
- * @returns {"token": null, "mfa": true, "webauthn": true, "sms": true, "ticket": "SOME TICKET JWT TOKEN"}
+ * @returns {"token": null, "mfa": true, "webauthn": "SOME CHALLENGE", "sms": false, "ticket": "SOME TICKET JWT TOKEN"}
 
  * Captcha required:
  * @returns {"captcha_key": ["captcha-required"], "captcha_sitekey": null, "captcha_service": "recaptcha"}
