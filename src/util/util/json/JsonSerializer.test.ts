@@ -1,11 +1,19 @@
 import { JsonSerializer } from "./JsonSerializer";
-import { describe, it } from "node:test";
+import { after, describe, it } from "node:test";
 import { strict as assert } from "node:assert";
 import fs from "node:fs/promises";
 import { Stopwatch } from "../Stopwatch";
 import { JsonValue } from "@protobuf-ts/runtime";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 describe("JsonSerializer", () => {
+    after(async () => {
+        await JsonSerializer.ShutdownAsync();
+    });
+
     it("should serialize synchronously", () => {
         const obj = { a: 1, b: "test" };
         const result = JsonSerializer.Serialize(obj);
@@ -28,6 +36,40 @@ describe("JsonSerializer", () => {
         const json = '{"a":1,"b":"test"}';
         const result = await JsonSerializer.DeserializeAsync(json);
         assert.deepEqual(result, { a: 1, b: "test" });
+    });
+
+    it("should keep concurrent worker responses matched to their requests", async () => {
+        const values = Array.from({ length: 64 }, (_, index) => ({ index, payload: `value-${index}` }));
+        const results = await Promise.all(values.map((value) => JsonSerializer.DeserializeAsync<typeof value>(JSON.stringify(value))));
+
+        assert.deepEqual(results, values);
+    });
+
+    it("should not emit listener leak warnings with many workers", async () => {
+        const script = `
+            process.on("warning", (warning) => {
+                if (warning.name === "MaxListenersExceededWarning") {
+                    console.error(warning.stack || warning.message);
+                    process.exitCode = 2;
+                }
+            });
+
+            const { JsonSerializer } = require("./dist/util/util/json/JsonSerializer.js");
+            Promise.all(Array.from({ length: 64 }, (_, index) => JsonSerializer.DeserializeAsync(JSON.stringify({ index })))).then(async (results) => {
+                if (results.some((result, index) => result.index !== index)) process.exitCode = 3;
+                await JsonSerializer.ShutdownAsync();
+            }).catch((error) => {
+                console.error(error);
+                process.exit(4);
+            });
+        `;
+
+        const { stderr } = await execFileAsync(process.execPath, ["-e", script], {
+            cwd: process.cwd(),
+            env: { ...process.env, JSON_WORKERS: "20" },
+        });
+
+        assert.doesNotMatch(stderr, /MaxListenersExceededWarning/);
     });
 
     it("should be able to read large file", async () => {

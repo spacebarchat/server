@@ -4,48 +4,114 @@ import { join } from "node:path";
 import os from "node:os";
 import { ReadStream, WriteStream } from "node:fs";
 
-// const worker = new Worker(join(process.cwd(), 'dist', 'util', 'util', 'json', 'jsonWorker.js'));
-const workerPool: Worker[] = [];
-const numWorkers = process.env.JSON_WORKERS ? parseInt(process.env.JSON_WORKERS) : os.cpus().length;
+type JsonWorkerMessage = {
+    id: number;
+    result?: string;
+    error?: string;
+};
 
-for (let i = 0; i < numWorkers; i++) {
-    console.log("[JsonSerializer] Starting JSON worker", i);
-    workerPool.push(new Worker(join(__dirname, "jsonWorker.js")));
-    workerPool[i].unref();
-    workerPool[i].setMaxListeners(64);
-}
+type PendingJsonWorkerRequest = {
+    resolve: (value: string) => void;
+    reject: (error: Error) => void;
+    timeout: NodeJS.Timeout;
+    worker: Worker;
+};
+
+const DEFAULT_WORKER_COUNT_LIMIT = 8;
+const WORKER_TIMEOUT_MS = 60000;
+const workerPool: Worker[] = [];
+const pendingRequests = new Map<number, PendingJsonWorkerRequest>();
 let currentWorkerIndex = 0;
+let requestId = 0;
+
+function getJsonWorkerCount() {
+    const configuredWorkers = process.env.JSON_WORKERS ? Number.parseInt(process.env.JSON_WORKERS, 10) : undefined;
+    if (configuredWorkers !== undefined) return Math.max(1, configuredWorkers);
+
+    return Math.max(1, Math.min(os.availableParallelism?.() ?? os.cpus().length, DEFAULT_WORKER_COUNT_LIMIT));
+}
+
+function rejectPendingRequests(worker: Worker, error: Error) {
+    for (const [id, request] of pendingRequests) {
+        if (request.worker !== worker) continue;
+
+        clearTimeout(request.timeout);
+        pendingRequests.delete(id);
+        request.reject(error);
+    }
+}
+
+function initializeWorkerPool() {
+    if (workerPool.length) return;
+
+    for (let i = 0; i < getJsonWorkerCount(); i++) {
+        const worker = new Worker(join(__dirname, "jsonWorker.js"));
+        worker.unref();
+        worker.on("message", (msg: JsonWorkerMessage) => {
+            const request = pendingRequests.get(msg.id);
+            if (!request) return;
+
+            clearTimeout(request.timeout);
+            pendingRequests.delete(msg.id);
+            if (msg.error) request.reject(new Error(msg.error));
+            else request.resolve(msg.result!);
+        });
+        worker.on("error", (error) => rejectPendingRequests(worker, error instanceof Error ? error : new Error(String(error))));
+        worker.on("exit", (code) => {
+            if (code !== 0) rejectPendingRequests(worker, new Error(`JSON worker exited with code ${code}`));
+        });
+        workerPool.push(worker);
+    }
+}
 
 function getNextWorker(): Worker {
+    initializeWorkerPool();
     const worker = workerPool[currentWorkerIndex];
-    currentWorkerIndex = (currentWorkerIndex + 1) % numWorkers;
+    currentWorkerIndex = (currentWorkerIndex + 1) % workerPool.length;
     return worker;
+}
+
+function runWorkerTask(message: { type: "serialize"; value: unknown } | { type: "deserialize"; json: string }) {
+    const id = requestId++;
+    const worker = getNextWorker();
+
+    return new Promise<string>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            pendingRequests.delete(id);
+            reject(new Error("Worker timeout"));
+        }, WORKER_TIMEOUT_MS);
+
+        pendingRequests.set(id, { resolve, reject, timeout, worker });
+        try {
+            worker.postMessage({ ...message, id });
+        } catch (error) {
+            clearTimeout(timeout);
+            pendingRequests.delete(id);
+            reject(error instanceof Error ? error : new Error(String(error)));
+        }
+    });
 }
 
 // noinspection JSUnusedLocalSymbols - TODO: implement options
 export class JsonSerializer {
+    public static async ShutdownAsync(): Promise<void> {
+        const workers = workerPool.splice(0);
+        currentWorkerIndex = 0;
+
+        for (const [id, request] of pendingRequests) {
+            clearTimeout(request.timeout);
+            pendingRequests.delete(id);
+            request.reject(new Error("JSON serializer worker pool is shutting down"));
+        }
+
+        await Promise.all(workers.map((worker) => worker.terminate()));
+    }
+
     public static Serialize<T>(value: T, opts?: JsonSerializerOptions): string {
         return JSON.stringify(value);
     }
     public static async SerializeAsync<T>(value: T, opts?: JsonSerializerOptions): Promise<string> {
-        const worker = getNextWorker();
-        worker.postMessage({ type: "serialize", value });
-        return new Promise((resolve, reject) => {
-            const handler = (msg: { result?: string; error?: string }) => {
-                clearTimeout(timeout);
-                worker.removeListener("message", handler);
-                if (msg.error) {
-                    reject(new Error(msg.error));
-                } else {
-                    resolve(msg.result!);
-                }
-            };
-            worker.on("message", handler);
-            const timeout = setTimeout(() => {
-                worker.removeListener("message", handler);
-                reject(new Error("Worker timeout"));
-            }, 60000);
-        });
+        return runWorkerTask({ type: "serialize", value });
     }
     public static Deserialize<T>(json: string, opts?: JsonSerializerOptions): T {
         return JSON.parse(json) as T;
@@ -54,24 +120,7 @@ export class JsonSerializer {
         if (json instanceof ReadableStream) return this.DeserializeAsyncReadableStream<T>(json, opts);
         if (json instanceof ReadStream) return this.DeserializeAsyncReadStream<T>(json, opts);
 
-        const worker = getNextWorker();
-        worker.postMessage({ type: "deserialize", json });
-        return new Promise((resolve, reject) => {
-            const handler = (msg: { result?: string; error?: string }) => {
-                clearTimeout(timeout);
-                worker.removeListener("message", handler);
-                if (msg.error) {
-                    reject(new Error(msg.error));
-                } else {
-                    resolve(JSON.parse(msg.result!) as T);
-                }
-            };
-            worker.on("message", handler);
-            const timeout = setTimeout(() => {
-                worker.removeListener("message", handler);
-                reject(new Error("Worker timeout"));
-            }, 60000);
-        });
+        return JSON.parse(await runWorkerTask({ type: "deserialize", json })) as T;
     }
 
     private static async DeserializeAsyncReadableStream<T>(jsonStream: ReadableStream, opts?: JsonSerializerOptions): Promise<T> {
