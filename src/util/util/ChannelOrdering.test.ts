@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { insertChannelInOrdering, normalizeChannelOrdering } from "./ChannelOrdering";
+import { insertChannelInOrdering, normalizeChannelOrdering, removeChannelOrderingFromGuildSave } from "./ChannelOrdering";
+
+function orderingAfterGuildUpdateSave<T extends { channel_ordering?: string[] | null | undefined }>(routeGuild: T, currentDatabaseOrdering: string[]) {
+    removeChannelOrderingFromGuildSave(routeGuild);
+
+    return Object.hasOwn(routeGuild, "channel_ordering") ? routeGuild.channel_ordering : currentDatabaseOrdering;
+}
 
 describe("Channel ordering helpers", () => {
     test("normalizes missing channel ordering to an empty array", () => {
@@ -27,5 +33,37 @@ describe("Channel ordering helpers", () => {
             ordering: ["parent", "child", "sibling"],
             position: 1,
         });
+    });
+
+    test("inserts at the front when the parent channel id is absent", () => {
+        assert.deepEqual(insertChannelInOrdering(["sibling"], "child", "missing_parent"), {
+            ordering: ["child", "sibling"],
+            position: 0,
+        });
+    });
+
+    test("preserves a created public updates channel after guild update save", () => {
+        const routeGuild = { channel_ordering: ["existing"], public_updates_channel_id: "moderator" };
+
+        assert.deepEqual(orderingAfterGuildUpdateSave(routeGuild, ["moderator", "existing"]), ["moderator", "existing"]);
+        assert.equal(Object.hasOwn(routeGuild, "channel_ordering"), false);
+    });
+
+    test("preserves a created rules channel after guild update save", () => {
+        const routeGuild = { channel_ordering: ["existing"], rules_channel_id: "rules" };
+
+        assert.deepEqual(orderingAfterGuildUpdateSave(routeGuild, ["rules", "existing"]), ["rules", "existing"]);
+        assert.equal(Object.hasOwn(routeGuild, "channel_ordering"), false);
+    });
+
+    test("preserves both community setup channels after guild update save", () => {
+        const routeGuild = {
+            channel_ordering: ["existing"],
+            public_updates_channel_id: "moderator",
+            rules_channel_id: "rules",
+        };
+
+        assert.deepEqual(orderingAfterGuildUpdateSave(routeGuild, ["rules", "moderator", "existing"]), ["rules", "moderator", "existing"]);
+        assert.equal(Object.hasOwn(routeGuild, "channel_ordering"), false);
     });
 });

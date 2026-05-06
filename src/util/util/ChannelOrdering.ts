@@ -11,3 +11,8 @@ export function insertChannelInOrdering(channelOrdering: string[] | null | undef
 
     return { ordering, position: boundedPosition };
 }
+
+export function removeChannelOrderingFromGuildSave<T extends { channel_ordering?: string[] | null | undefined }>(guild: T) {
+    delete guild.channel_ordering;
+    return guild;
+}

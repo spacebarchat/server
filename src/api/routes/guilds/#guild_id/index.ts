@@ -30,6 +30,7 @@ import {
     getRights,
     handleFile,
     Config,
+    removeChannelOrderingFromGuildSave,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -98,14 +99,6 @@ router.patch(
             where: { id: guild_id },
             relations: { emojis: true, roles: true, stickers: true },
         });
-
-        // trying to `select` this fails
-        guild.channel_ordering = (
-            await Guild.findOneOrFail({
-                where: { id: guild_id },
-                select: { channel_ordering: true },
-            })
-        ).channel_ordering;
 
         // TODO: guild update check image
 
@@ -198,6 +191,10 @@ router.patch(
                 select: { id: true },
             });
         }
+
+        // Channel.createChannel owns guild.channel_ordering writes. Do not let this
+        // route's guild save overwrite ordering with a stale select:false value.
+        removeChannelOrderingFromGuildSave(guild);
 
         const data = guild.toJSON();
         // TODO: guild hashes
