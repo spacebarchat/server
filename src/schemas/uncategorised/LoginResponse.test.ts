@@ -41,6 +41,10 @@ test("LoginResponse keeps sms disabled for MFA challenges", () => {
         type: "boolean",
         const: false,
     });
+    assert.deepEqual(schemas.WebAuthnResponse.properties?.sms, {
+        type: "boolean",
+        const: false,
+    });
 });
 
 test("LoginResponse validates TOTP and WebAuthn MFA challenges", () => {
@@ -54,4 +58,5 @@ test("LoginResponse validates TOTP and WebAuthn MFA challenges", () => {
     assert.equal(ajv.validate("LoginResponse", mfaResponse), true);
     assert.equal(ajv.validate("LoginResponse", { ...mfaResponse, sms: true }), false);
     assert.equal(ajv.validate("LoginResponse", { ...mfaResponse, webauthn: "challenge" }), true);
+    assert.equal(ajv.validate("LoginResponse", { ...mfaResponse, sms: true, webauthn: "challenge" }), false);
 });
