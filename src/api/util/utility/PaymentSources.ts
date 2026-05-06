@@ -19,7 +19,7 @@
 import type { PaymentSourceResponse } from "@spacebar/schemas";
 import type { Response } from "express";
 
-export const examplePaymentSource: PaymentSourceResponse = {
+const examplePaymentSource: PaymentSourceResponse = {
     id: "1422548914485198869",
     type: 1,
     invalid: false,
@@ -44,19 +44,40 @@ export const examplePaymentSource: PaymentSourceResponse = {
     default: false,
 };
 
-export function listPaymentSources(): PaymentSourceResponse[] {
-    return [examplePaymentSource];
-}
-
-export function getPaymentSource(paymentSourceId: string): PaymentSourceResponse {
+export function createPaymentSource(paymentSourceId = examplePaymentSource.id): PaymentSourceResponse {
     return {
         ...examplePaymentSource,
         id: paymentSourceId,
+        billing_address: {
+            ...examplePaymentSource.billing_address,
+        },
+    };
+}
+
+export function listPaymentSources(): PaymentSourceResponse[] {
+    return [redactPaymentSourceForList(createPaymentSource())];
+}
+
+export function getPaymentSource(paymentSourceId: string): PaymentSourceResponse {
+    return createPaymentSource(paymentSourceId);
+}
+
+export function redactPaymentSourceForList(paymentSource: PaymentSourceResponse): PaymentSourceResponse {
+    return {
+        ...paymentSource,
+        billing_address: {
+            name: paymentSource.billing_address.name,
+            country: paymentSource.billing_address.country,
+        },
     };
 }
 
 export function sendPaymentSourcesResponse(res: Response) {
     return res.status(200).json(listPaymentSources());
+}
+
+export function sendCreatedPaymentSourceResponse(res: Response) {
+    return res.status(200).json(createPaymentSource());
 }
 
 export function sendPaymentSourceResponse(paymentSourceId: string, res: Response) {

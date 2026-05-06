@@ -2712,13 +2712,8 @@
         },
         "additionalProperties": false,
         "required": [
-            "city",
             "country",
-            "line_1",
-            "line_2",
-            "name",
-            "postal_code",
-            "state"
+            "name"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -2728,8 +2723,17 @@
             "id": {
                 "type": "string"
             },
+            "billing_address": {
+                "$ref": "#/definitions/PaymentSourceBillingAddressResponse"
+            },
             "type": {
                 "type": "integer"
+            },
+            "payment_gateway": {
+                "type": "integer"
+            },
+            "default": {
+                "type": "boolean"
             },
             "invalid": {
                 "type": "boolean"
@@ -2737,19 +2741,25 @@
             "flags": {
                 "type": "integer"
             },
-            "deleted_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
             "brand": {
                 "type": [
                     "null",
                     "string"
                 ]
             },
+            "country": {
+                "type": "string"
+            },
             "last_4": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "payment_gateway_source_id": {
+                "type": "string"
+            },
+            "deleted_at": {
                 "type": [
                     "null",
                     "string"
@@ -2761,37 +2771,24 @@
             "expires_year": {
                 "type": "integer"
             },
-            "billing_address": {
-                "$ref": "#/definitions/PaymentSourceBillingAddressResponse"
-            },
-            "country": {
+            "email": {
                 "type": "string"
             },
-            "payment_gateway": {
-                "type": "integer"
-            },
-            "payment_gateway_source_id": {
+            "bank": {
                 "type": "string"
             },
-            "default": {
-                "type": "boolean"
+            "username": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
             "billing_address",
-            "brand",
-            "country",
             "default",
-            "deleted_at",
-            "expires_month",
-            "expires_year",
             "flags",
             "id",
             "invalid",
-            "last_4",
             "payment_gateway",
-            "payment_gateway_source_id",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"

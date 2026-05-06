@@ -18,29 +18,32 @@
 
 export interface PaymentSourceBillingAddressResponse {
     name: string;
-    line_1: string;
-    line_2: string | null;
-    city: string;
-    state: string | null;
+    line_1?: string;
+    line_2?: string | null;
+    city?: string;
+    state?: string | null;
     country: string;
-    postal_code: string;
+    postal_code?: string;
 }
 
 export interface PaymentSourceResponse {
     id: string;
+    billing_address: PaymentSourceBillingAddressResponse;
     type: number;
+    payment_gateway: number;
+    default: boolean;
     invalid: boolean;
     flags: number;
-    deleted_at: string | null;
-    brand: string | null;
-    last_4: string | null;
-    expires_month: number;
-    expires_year: number;
-    billing_address: PaymentSourceBillingAddressResponse;
-    country: string;
-    payment_gateway: number;
-    payment_gateway_source_id: string;
-    default: boolean;
+    brand?: string | null;
+    country?: string;
+    last_4?: string | null;
+    payment_gateway_source_id?: string;
+    deleted_at?: string | null;
+    expires_month?: number;
+    expires_year?: number;
+    email?: string;
+    bank?: string;
+    username?: string;
 }
 
 export type PaymentSourcesResponse = PaymentSourceResponse[];

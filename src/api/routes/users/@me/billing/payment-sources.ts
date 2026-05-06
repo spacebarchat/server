@@ -17,13 +17,13 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route, sendPaymentSourceDeletedResponse, sendPaymentSourceResponse, sendPaymentSourcesResponse } from "@spacebar/api";
+import { route, sendCreatedPaymentSourceResponse, sendPaymentSourceDeletedResponse, sendPaymentSourceResponse, sendPaymentSourcesResponse } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
 
 router.get("/", route({ responses: { 200: { body: "PaymentSourcesResponse" } } }), (req: Request, res: Response) => sendPaymentSourcesResponse(res));
 
-router.post("/", route({ responses: { 200: { body: "PaymentSourcesResponse" } } }), (req: Request, res: Response) => sendPaymentSourcesResponse(res));
+router.post("/", route({ responses: { 200: { body: "PaymentSourceResponse" } } }), (req: Request, res: Response) => sendCreatedPaymentSourceResponse(res));
 
 router.get("/:payment_source_id", route({ responses: { 200: { body: "PaymentSourceResponse" } } }), (req: Request, res: Response) => {
     const { payment_source_id } = req.params as { payment_source_id: string };
@@ -35,6 +35,6 @@ router.patch("/:payment_source_id", route({ responses: { 200: { body: "PaymentSo
     return sendPaymentSourceResponse(payment_source_id, res);
 });
 
-router.delete("/:payment_source_id", route({}), (req: Request, res: Response) => sendPaymentSourceDeletedResponse(res));
+router.delete("/:payment_source_id", route({ responses: { 204: {} } }), (req: Request, res: Response) => sendPaymentSourceDeletedResponse(res));
 
 export default router;
