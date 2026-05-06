@@ -10,15 +10,29 @@ public class EmailConfigurationTests {
     public void ServerConfigurationSerializesTopLevelEmailDefaults() {
         var json = JsonSerializer.Serialize(new ServerConfiguration());
         var node = JsonNode.Parse(json)!;
+        var email = node["email"]!;
+        var smtp = email["smtp"]!;
+        var mailgun = email["mailgun"]!;
+        var mailjet = email["mailjet"]!;
+        var sendgrid = email["sendgrid"]!;
 
-        Assert.NotNull(node["email"]);
-        Assert.Null(node["email"]!["provider"]);
-        Assert.Null(node["email"]!["senderAddress"]);
-        Assert.False(node["email"]!["smtp"]!["starttls"]!.GetValue<bool>());
-        Assert.False(node["email"]!["smtp"]!["allowInsecure"]!.GetValue<bool>());
-        Assert.True(node["email"]!["mailgun"]!["isEuropean"]!.GetValue<bool>());
-        Assert.NotNull(node["email"]!["mailjet"]);
-        Assert.NotNull(node["email"]!["sendgrid"]);
+        Assert.NotNull(email);
+        Assert.Null(email["provider"]);
+        Assert.Null(email["senderAddress"]);
+        Assert.Null(smtp["host"]);
+        Assert.Null(smtp["port"]);
+        Assert.Null(smtp["secure"]);
+        Assert.False(smtp["starttls"]!.GetValue<bool>());
+        Assert.False(smtp["allowInsecure"]!.GetValue<bool>());
+        Assert.Null(smtp["username"]);
+        Assert.Null(smtp["password"]);
+        Assert.Null(mailgun["username"]);
+        Assert.Null(mailgun["apiKey"]);
+        Assert.Null(mailgun["domain"]);
+        Assert.True(mailgun["isEuropean"]!.GetValue<bool>());
+        Assert.Null(mailjet["apiKey"]);
+        Assert.Null(mailjet["apiSecret"]);
+        Assert.Null(sendgrid["apiKey"]);
     }
 
     [Fact]
@@ -57,37 +71,48 @@ public class EmailConfigurationTests {
         var config = JsonSerializer.Deserialize<ServerConfiguration>(json);
 
         Assert.NotNull(config);
-        Assert.Equal("smtp", config.Email.Provider);
-        Assert.Equal("noreply@example.com", config.Email.SenderAddress);
-        Assert.Equal("smtp.example.com", config.Email.Smtp.Host);
-        Assert.Equal(587, config.Email.Smtp.Port);
-        Assert.False(config.Email.Smtp.Secure);
-        Assert.True(config.Email.Smtp.Starttls);
-        Assert.False(config.Email.Smtp.AllowInsecure);
-        Assert.Equal("user", config.Email.Smtp.Username);
-        Assert.Equal("pass", config.Email.Smtp.Password);
-        Assert.Equal("api", config.Email.Mailgun.Username);
-        Assert.Equal("mailgun-key", config.Email.Mailgun.ApiKey);
-        Assert.Equal("mg.example.com", config.Email.Mailgun.Domain);
-        Assert.False(config.Email.Mailgun.IsEuropean);
-        Assert.Equal("mailjet-key", config.Email.Mailjet.ApiKey);
-        Assert.Equal("mailjet-secret", config.Email.Mailjet.ApiSecret);
-        Assert.Equal("sendgrid-key", config.Email.Sendgrid.ApiKey);
+        AssertConfiguredEmail(config.Email, smtpAllowInsecure: false);
+    }
+
+    [Fact]
+    public void FlatEmailConfigKeysDeserializeIntoServerConfiguration() {
+        var flat = CreateConfiguredFlatEmailKeys();
+
+        var nested = flat.ToNestedJsonObject();
+        var config = nested.Deserialize<ServerConfiguration>();
+
+        Assert.NotNull(config);
+        AssertConfiguredEmail(config.Email, smtpAllowInsecure: true);
+        Assert.True(config.Register.Email.Required);
     }
 
     [Fact]
     public void EmailConfigurationRoundTripsThroughFlatConfigKeys() {
         var nested = new JsonObject {
             ["email"] = new JsonObject {
-                ["provider"] = "mailgun",
+                ["provider"] = "smtp",
                 ["senderAddress"] = "noreply@example.com",
                 ["smtp"] = new JsonObject {
-                    ["password"] = "smtp-secret",
+                    ["host"] = "smtp.example.com",
+                    ["port"] = 587,
+                    ["secure"] = false,
                     ["starttls"] = true,
+                    ["allowInsecure"] = true,
+                    ["username"] = "user",
+                    ["password"] = "pass",
                 },
                 ["mailgun"] = new JsonObject {
+                    ["username"] = "api",
                     ["apiKey"] = "mailgun-key",
-                    ["isEuropean"] = true,
+                    ["domain"] = "mg.example.com",
+                    ["isEuropean"] = false,
+                },
+                ["mailjet"] = new JsonObject {
+                    ["apiKey"] = "mailjet-key",
+                    ["apiSecret"] = "mailjet-secret",
+                },
+                ["sendgrid"] = new JsonObject {
+                    ["apiKey"] = "sendgrid-key",
                 },
             },
             ["register"] = new JsonObject {
@@ -99,14 +124,53 @@ public class EmailConfigurationTests {
 
         var flat = nested.ToFlatKv();
         var roundTrip = flat.ToNestedJsonObject();
+        var config = roundTrip.Deserialize<ServerConfiguration>();
+        var expectedFlat = CreateConfiguredFlatEmailKeys();
 
-        Assert.Equal("\"mailgun\"", flat["email_provider"]);
-        Assert.Equal("\"smtp-secret\"", flat["email_smtp_password"]);
-        Assert.Equal("true", flat["email_mailgun_isEuropean"]);
-        Assert.Equal("true", flat["register_email_required"]);
-        Assert.Equal("mailgun", roundTrip["email"]!["provider"]!.GetValue<string>());
-        Assert.Equal("smtp-secret", roundTrip["email"]!["smtp"]!["password"]!.GetValue<string>());
-        Assert.True(roundTrip["email"]!["mailgun"]!["isEuropean"]!.GetValue<bool>());
-        Assert.True(roundTrip["register"]!["email"]!["required"]!.GetValue<bool>());
+        Assert.Equal(expectedFlat.OrderBy(x => x.Key), flat.OrderBy(x => x.Key));
+        Assert.NotNull(config);
+        AssertConfiguredEmail(config.Email, smtpAllowInsecure: true);
+        Assert.True(config.Register.Email.Required);
+    }
+
+    private static Dictionary<string, string?> CreateConfiguredFlatEmailKeys() {
+        return new Dictionary<string, string?> {
+            ["email_provider"] = "\"smtp\"",
+            ["email_senderAddress"] = "\"noreply@example.com\"",
+            ["email_smtp_host"] = "\"smtp.example.com\"",
+            ["email_smtp_port"] = "587",
+            ["email_smtp_secure"] = "false",
+            ["email_smtp_starttls"] = "true",
+            ["email_smtp_allowInsecure"] = "true",
+            ["email_smtp_username"] = "\"user\"",
+            ["email_smtp_password"] = "\"pass\"",
+            ["email_mailgun_username"] = "\"api\"",
+            ["email_mailgun_apiKey"] = "\"mailgun-key\"",
+            ["email_mailgun_domain"] = "\"mg.example.com\"",
+            ["email_mailgun_isEuropean"] = "false",
+            ["email_mailjet_apiKey"] = "\"mailjet-key\"",
+            ["email_mailjet_apiSecret"] = "\"mailjet-secret\"",
+            ["email_sendgrid_apiKey"] = "\"sendgrid-key\"",
+            ["register_email_required"] = "true",
+        };
+    }
+
+    private static void AssertConfiguredEmail(EmailConfiguration email, bool smtpAllowInsecure) {
+        Assert.Equal("smtp", email.Provider);
+        Assert.Equal("noreply@example.com", email.SenderAddress);
+        Assert.Equal("smtp.example.com", email.Smtp.Host);
+        Assert.Equal(587, email.Smtp.Port);
+        Assert.False(email.Smtp.Secure);
+        Assert.True(email.Smtp.Starttls);
+        Assert.Equal(smtpAllowInsecure, email.Smtp.AllowInsecure);
+        Assert.Equal("user", email.Smtp.Username);
+        Assert.Equal("pass", email.Smtp.Password);
+        Assert.Equal("api", email.Mailgun.Username);
+        Assert.Equal("mailgun-key", email.Mailgun.ApiKey);
+        Assert.Equal("mg.example.com", email.Mailgun.Domain);
+        Assert.False(email.Mailgun.IsEuropean);
+        Assert.Equal("mailjet-key", email.Mailjet.ApiKey);
+        Assert.Equal("mailjet-secret", email.Mailjet.ApiSecret);
+        Assert.Equal("sendgrid-key", email.Sendgrid.ApiKey);
     }
 }
