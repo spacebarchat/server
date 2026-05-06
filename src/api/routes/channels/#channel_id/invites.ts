@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomString, route } from "@spacebar/api";
-import { Channel, Guild, Invite, InviteCreateEvent, PublicInviteRelation, User, emitEvent } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { Channel, Invite, PublicInviteRelation } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
+import { InviteCreateSchema } from "@spacebar/schemas";
+import { createChannelInvite } from "../../../util/handlers/ChannelInviteCreate";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -31,6 +32,9 @@ router.post(
         permission: "CREATE_INSTANT_INVITE",
         right: "CREATE_INVITES",
         responses: {
+            200: {
+                body: "Invite",
+            },
             201: {
                 body: "Invite",
             },
@@ -44,45 +48,9 @@ router.post(
         const { user_id } = req;
         const body = req.body as InviteCreateSchema;
         const { channel_id } = req.params as { [key: string]: string };
-        const channel = await Channel.findOneOrFail({
-            where: { id: channel_id },
-            select: { id: true, name: true, type: true, guild_id: true },
-        });
-        isTextChannel(channel.type);
+        const { status, data } = await createChannelInvite(user_id, channel_id, body);
 
-        if (!channel.guild_id) {
-            throw new HTTPError("This channel doesn't exist", 404);
-        }
-        const { guild_id } = channel;
-
-        const expires_at = body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
-
-        const invite = await Invite.create({
-            code: randomString(),
-            temporary: body.temporary || true,
-            uses: 0,
-            max_uses: body.max_uses ? Math.max(0, body.max_uses) : 0,
-            max_age: body.max_age ? Math.max(0, body.max_age) : 0,
-            expires_at,
-            created_at: new Date(),
-            guild_id,
-            channel_id: channel_id,
-            inviter_id: user_id,
-            flags: body.flags ?? 0,
-        }).save();
-
-        const data = invite.toJSON();
-        data.inviter = await User.getPublicUser(req.user_id);
-        data.guild = await Guild.findOne({ where: { id: guild_id } });
-        data.channel = channel;
-
-        await emitEvent({
-            event: "INVITE_CREATE",
-            data,
-            guild_id,
-        } satisfies InviteCreateEvent);
-
-        res.status(201).send(data);
+        res.status(status).send(data);
     },
 );
 

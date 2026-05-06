@@ -26042,6 +26042,16 @@
                     }
                 },
                 "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Invite"
+                                }
+                            }
+                        }
+                    },
                     "201": {
                         "description": "",
                         "content": {
