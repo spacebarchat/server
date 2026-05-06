@@ -30,6 +30,15 @@ describe("role member update helpers", () => {
         });
     });
 
+    test("PATCH additions deduplicate desired member ids through set semantics", () => {
+        const changes = calculateRoleMemberAdditions(members, ["needs-add", "needs-add"], roleId);
+
+        assert.deepEqual(changes, {
+            addMemberIds: ["needs-add"],
+            removeMemberIds: [],
+        });
+    });
+
     test("PUT replacement adds missing desired members and removes omitted current holders", () => {
         const changes = calculateRoleMemberReplacement(members, ["already-desired", "needs-add"], roleId);
 
