@@ -34,12 +34,12 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        res.json(
-            await User.findOne({
-                select: PrivateUserProjection,
-                where: { id: req.user_id },
-            }),
-        );
+        const user = await User.findOneOrFail({
+            select: PrivateUserProjection,
+            where: { id: req.user_id },
+        });
+
+        res.json(user.toPrivateUser());
     },
 );
 
@@ -231,7 +231,7 @@ router.patch(
         } satisfies UserUpdateEvent);
 
         res.json({
-            ...user,
+            ...user.toPrivateUser(),
             newToken,
         });
     },

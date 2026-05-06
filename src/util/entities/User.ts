@@ -20,6 +20,7 @@ import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
+import { profilePronouns } from "../util/UserProfile";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
@@ -218,6 +219,7 @@ export class User extends BaseClass {
         PublicUserProjection.forEach((x) => {
             user[x] = this[x];
         });
+        user.pronouns = profilePronouns(this.pronouns);
         return user as PublicUser;
     }
 
@@ -228,6 +230,7 @@ export class User extends BaseClass {
         [...PrivateUserProjection, ...extraFields].forEach((x) => {
             user[x] = this[x];
         });
+        user.pronouns = profilePronouns(this.pronouns);
         return user as UserPrivate;
     }
 
