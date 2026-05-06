@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { initStartupConfigAndDatabase, runStartupOrExit } from "./Startup";
+import { handleClusterStartupFailure, initStartupConfigAndDatabase, runStartupOrExit, STARTUP_FAILURE_MESSAGE } from "./Startup";
 
 describe("startup helpers", () => {
     it("initializes CONFIG_PATH configuration before the database", async () => {
@@ -66,5 +66,41 @@ describe("startup helpers", () => {
 
         assert.equal(exitCode, 1);
         assert.deepEqual(logs, [["[Startup] Failed to start test service."], [error]]);
+    });
+
+    it("exits a primary process on startup failure messages from cluster workers", () => {
+        const logs: unknown[][] = [];
+        let exitCode: number | undefined;
+
+        const handled = handleClusterStartupFailure(
+            { type: STARTUP_FAILURE_MESSAGE, serviceName: "test service" },
+            {
+                exit: (code) => {
+                    exitCode = code;
+                },
+                logError: (...args) => logs.push(args),
+                workerPid: 123,
+            },
+        );
+
+        assert.equal(handled, true);
+        assert.equal(exitCode, 1);
+        assert.deepEqual(logs, [["[Startup] test service failed to start in worker 123; shutting down primary process."]]);
+    });
+
+    it("ignores unrelated cluster worker messages", () => {
+        let exitCode: number | undefined;
+
+        const handled = handleClusterStartupFailure(
+            { type: "not-startup" },
+            {
+                exit: (code) => {
+                    exitCode = code;
+                },
+            },
+        );
+
+        assert.equal(handled, false);
+        assert.equal(exitCode, undefined);
     });
 });

@@ -79,3 +79,32 @@ describe("standalone startup entrypoints", () => {
         });
     }
 });
+
+describe("clustered startup entrypoints", () => {
+    const clusteredEntrypoints: { entrypoint: Entrypoint; env: NodeJS.ProcessEnv; name: string }[] = [
+        { entrypoint: "api", env: { NODE_ENV: "production", THREADS: "1" }, name: "api production primary" },
+        { entrypoint: "bundle", env: { THREADS: "2" }, name: "bundle primary" },
+    ];
+
+    for (const { entrypoint, env, name } of clusteredEntrypoints) {
+        it(`${name} exits non-zero when a worker startup fails`, async () => {
+            const result = await runEntrypoint(entrypoint, env);
+
+            assert.equal(result.timedOut, false, `${name} did not exit before timeout. Output:\n${result.output}`);
+            assert.equal(result.code, 1, `${name} should exit 1. Signal: ${result.signal ?? "none"} Output:\n${result.output}`);
+            assert.match(result.output, /DATABASE environment variable not set!/, result.output);
+            assert.match(result.output, /shutting down primary process/, result.output);
+        });
+
+        it(`${name} reports worker CONFIG_PATH errors before DATABASE errors`, async () => {
+            const missingConfigPath = path.join(repoRoot, "files", `missing-${entrypoint}-cluster-config.json`);
+            const result = await runEntrypoint(entrypoint, { ...env, CONFIG_PATH: missingConfigPath });
+
+            assert.equal(result.timedOut, false, `${name} did not exit before timeout. Output:\n${result.output}`);
+            assert.equal(result.code, 1, `${name} should exit 1. Signal: ${result.signal ?? "none"} Output:\n${result.output}`);
+            assert.match(result.output, new RegExp(`CONFIG_PATH file does not exist: ${missingConfigPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`), result.output);
+            assert.doesNotMatch(result.output, /DATABASE environment variable not set!/, result.output);
+            assert.match(result.output, /shutting down primary process/, result.output);
+        });
+    }
+});
