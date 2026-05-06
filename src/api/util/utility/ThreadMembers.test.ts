@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
+import { HTTPError } from "lambert-server";
 import {
     applyThreadMemberListQuery,
     assertThreadIsNotArchived,
@@ -21,10 +22,10 @@ describe("thread member helpers", () => {
     });
 
     test("rejects invalid thread member limits", () => {
-        assert.throws(() => parseThreadMemberLimit("0"), RangeError);
-        assert.throws(() => parseThreadMemberLimit(String(MAX_THREAD_MEMBER_LIMIT + 1)), RangeError);
-        assert.throws(() => parseThreadMemberLimit("1.5"), RangeError);
-        assert.throws(() => parseThreadMemberLimit("not-a-number"), RangeError);
+        assertInvalidThreadMemberLimit("0");
+        assertInvalidThreadMemberLimit(String(MAX_THREAD_MEMBER_LIMIT + 1));
+        assertInvalidThreadMemberLimit("1.5");
+        assertInvalidThreadMemberLimit("not-a-number");
     });
 
     test("parses with_member as an explicit true flag", () => {
@@ -88,6 +89,20 @@ describe("thread member helpers", () => {
         assert.deepEqual(builder.calls.at(-1), ["take", 100]);
     });
 });
+
+function assertInvalidThreadMemberLimit(value: string) {
+    let error: unknown;
+
+    try {
+        parseThreadMemberLimit(value);
+    } catch (caught) {
+        error = caught;
+    }
+
+    assert.ok(error instanceof HTTPError);
+    assert.equal(error.code, 422);
+    assert.equal(error.message, `limit must be between 1 and ${MAX_THREAD_MEMBER_LIMIT}`);
+}
 
 type FakeQueryBuilderCall = [string, string, string] | [string, string, Record<string, unknown>?] | [string, number];
 

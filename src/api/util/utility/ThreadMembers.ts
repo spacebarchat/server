@@ -1,3 +1,5 @@
+import { HTTPError } from "lambert-server";
+
 export const DEFAULT_THREAD_MEMBER_LIMIT = 100;
 export const MAX_THREAD_MEMBER_LIMIT = 100;
 
@@ -6,7 +8,7 @@ export function parseThreadMemberLimit(value: string | undefined) {
 
     const limit = Number(value);
     if (!Number.isInteger(limit) || limit < 1 || limit > MAX_THREAD_MEMBER_LIMIT) {
-        throw new RangeError(`limit must be between 1 and ${MAX_THREAD_MEMBER_LIMIT}`);
+        throw new HTTPError(`limit must be between 1 and ${MAX_THREAD_MEMBER_LIMIT}`, 422);
     }
 
     return limit;
