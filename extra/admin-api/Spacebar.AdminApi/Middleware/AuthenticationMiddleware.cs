@@ -20,15 +20,10 @@ public class AuthenticationMiddleware(SpacebarAspNetAuthenticationService authSe
         }
 
         User user = await authService.GetCurrentUserAsync(context.Request);
-        if (user.Disabled) {
+        var failure = AdminAuthenticationPolicy.GetFailure(user);
+        if (failure is not null) {
             context.Response.StatusCode = 403;
-            await context.Response.WriteAsync("User is disabled");
-            return;
-        }
-
-        if (user.Deleted) {
-            context.Response.StatusCode = 403;
-            await context.Response.WriteAsync("User is deleted");
+            await context.Response.WriteAsync(AdminAuthenticationPolicy.GetFailureMessage(failure.Value));
             return;
         }
 
