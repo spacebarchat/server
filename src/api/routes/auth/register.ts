@@ -17,7 +17,20 @@
 */
 
 import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, emailMatches, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, normalizeEmail, TimeSpan } from "@spacebar/util";
+import {
+    Config,
+    emailAlreadyRegisteredFieldError,
+    emailMatches,
+    FieldErrors,
+    Invite,
+    User,
+    ValidRegistrationToken,
+    generateToken,
+    IpDataClient,
+    AbuseIpDbClient,
+    normalizeOptionalEmail,
+    TimeSpan,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -210,29 +223,14 @@ router.post(
         // TODO: gift_code_sku_id?
         // TODO: check password strength
 
-        const email = body.email ? normalizeEmail(body.email) : undefined;
+        const email = normalizeOptionalEmail(body.email);
         body.email = email;
         if (email) {
-            // replace all dots and chars after +, if its a gmail.com email
-            if (!email) {
-                throw FieldErrors({
-                    email: {
-                        code: "INVALID_EMAIL",
-                        message: req?.t("auth:register.INVALID_EMAIL"),
-                    },
-                });
-            }
-
             // check if there is already an account with this email
             const exists = await User.findOne({ where: { email: emailMatches(email) } });
 
             if (exists) {
-                throw FieldErrors({
-                    email: {
-                        code: "EMAIL_ALREADY_REGISTERED",
-                        message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
-                    },
-                });
+                throw emailAlreadyRegisteredFieldError(req.t("auth:register.EMAIL_ALREADY_REGISTERED"));
             }
         } else if (register.email.required) {
             throw FieldErrors({

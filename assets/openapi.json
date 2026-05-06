@@ -6574,7 +6574,8 @@
                     },
                     "email": {
                         "format": "email",
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "discriminator": {
                         "minLength": 4,

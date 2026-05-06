@@ -46,7 +46,7 @@ export interface UserModifySchema {
     /**
      * @TJS-format email
      */
-    email?: string;
+    email?: string | null;
     /**
      * @minLength 4
      * @maxLength 4

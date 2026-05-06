@@ -17,7 +17,19 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, emailMatches, emitEvent, FieldErrors, generateToken, handleFile, normalizeEmail, User, UserUpdateEvent } from "@spacebar/util";
+import {
+    Config,
+    emailAlreadyRegisteredFieldError,
+    emailMatches,
+    emitEvent,
+    FieldErrors,
+    generateToken,
+    handleFile,
+    isNormalizedEmailUniqueViolation,
+    normalizeOptionalEmail,
+    User,
+    UserUpdateEvent,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { DisplayNameStyle, PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";
@@ -90,9 +102,9 @@ router.patch(
             }
         }
 
-        if (body.email) {
-            body.email = normalizeEmail(body.email);
-            if (!body.email && Config.get().register.email.required)
+        if ("email" in body) {
+            const email = normalizeOptionalEmail(body.email);
+            if (!email && Config.get().register.email.required)
                 throw FieldErrors({
                     email: {
                         message: req.t("auth:register.EMAIL_INVALID"),
@@ -106,14 +118,10 @@ router.patch(
                         code: "INVALID_PASSWORD",
                     },
                 });
-            if (await User.findOne({ where: { email: emailMatches(body.email), id: Not(req.user_id) }, select: { id: true } })) {
-                throw FieldErrors({
-                    email: {
-                        code: "EMAIL_ALREADY_REGISTERED",
-                        message: req.t("auth:register.EMAIL_ALREADY_REGISTERED"),
-                    },
-                });
+            if (email && (await User.findOne({ where: { email: emailMatches(email), id: Not(req.user_id) }, select: { id: true } }))) {
+                throw emailAlreadyRegisteredFieldError(req.t("auth:register.EMAIL_ALREADY_REGISTERED"));
             }
+            body.email = email ?? null;
         }
 
         if (body.new_password) {
@@ -227,7 +235,14 @@ router.patch(
 
         user.assign(body);
         user.validate();
-        await user.save();
+        try {
+            await user.save();
+        } catch (error) {
+            if (isNormalizedEmailUniqueViolation(error)) {
+                throw emailAlreadyRegisteredFieldError(req.t("auth:register.EMAIL_ALREADY_REGISTERED"));
+            }
+            throw error;
+        }
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore

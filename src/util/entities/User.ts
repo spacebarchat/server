@@ -18,7 +18,7 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, Config, Email, FieldErrors, normalizeEmail, Snowflake, trimSpecial } from "..";
+import { Channel, Config, emailAlreadyRegisteredFieldError, Email, FieldErrors, isNormalizedEmailUniqueViolation, normalizeOptionalEmail, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
@@ -298,7 +298,7 @@ export class User extends BaseClass {
     }) {
         // trim special utf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
-        if (email) email = normalizeEmail(email);
+        email = normalizeOptionalEmail(email);
 
         const discriminator = await User.generateDiscriminator(username);
         if (!discriminator) {
@@ -341,7 +341,14 @@ export class User extends BaseClass {
         });
 
         user.validate();
-        await Promise.all([user.save(), settings.save()]);
+        try {
+            await user.save();
+        } catch (error) {
+            if (isNormalizedEmailUniqueViolation(error)) {
+                throw emailAlreadyRegisteredFieldError(req?.t("auth:register.EMAIL_ALREADY_REGISTERED"));
+            }
+            throw error;
+        }
 
         // send verification email if users aren't verified by default and we have an email
         if (!Config.get().defaults.user.verified && email) {
