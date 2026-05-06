@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { getGuildCreateCustomRoles, getGuildCreateEveryoneRole, normalizeGuildCreateRole, resolveGuildCreateChannelReferences } from "./GuildCreate";
+import {
+    getGuildCreateCustomRoles,
+    getGuildCreateEveryoneRole,
+    normalizeGuildCreateRole,
+    resolveGuildCreateChannelReferences,
+    resolveGuildCreatePermissionOverwrites,
+} from "./GuildCreate";
+
+const rolePermissionOverwriteType = 0;
+const memberPermissionOverwriteType = 1;
 
 describe("guild create normalization", () => {
     test("separates @everyone role overrides from custom roles", () => {
@@ -53,6 +62,43 @@ describe("guild create normalization", () => {
         );
     });
 
+    test("uses modern primary role color as the legacy color when color is omitted", () => {
+        assert.deepEqual(
+            normalizeGuildCreateRole(
+                {
+                    name: "Gradient",
+                    colors: {
+                        primary_color: 123,
+                        secondary_color: null,
+                        tertiary_color: 456,
+                    },
+                },
+                {
+                    name: "fallback",
+                    permissions: "0",
+                    color: 0,
+                    colors: { primary_color: 0 },
+                    hoist: false,
+                    managed: false,
+                    mentionable: false,
+                    position: 1,
+                    flags: 0,
+                },
+            ),
+            {
+                name: "Gradient",
+                permissions: "0",
+                color: 123,
+                colors: { primary_color: 123, tertiary_color: 456 },
+                hoist: false,
+                managed: false,
+                mentionable: false,
+                position: 1,
+                flags: 0,
+            },
+        );
+    });
+
     test("remaps guild create channel references from client ids", () => {
         const ids = new Map([
             ["client-general", "server-general"],
@@ -74,5 +120,32 @@ describe("guild create normalization", () => {
                 afk_channel_id: undefined,
             },
         );
+    });
+
+    test("remaps guild create role permission overwrites from client ids", () => {
+        const roleIds = new Map([
+            ["0", "server-guild"],
+            ["template-guild", "server-guild"],
+            ["client-moderator", "server-moderator"],
+        ]);
+
+        const permissionOverwrites = [
+            { id: "0", type: rolePermissionOverwriteType, allow: "1", deny: "0" },
+            { id: "template-guild", type: rolePermissionOverwriteType, allow: "2", deny: "0" },
+            { id: "client-moderator", type: rolePermissionOverwriteType, allow: "4", deny: "0" },
+            { id: "user-id", type: memberPermissionOverwriteType, allow: "8", deny: "0" },
+            { id: "external-role", type: rolePermissionOverwriteType, allow: "16", deny: "0" },
+        ];
+
+        assert.deepEqual(resolveGuildCreatePermissionOverwrites(permissionOverwrites, roleIds), [
+            { id: "server-guild", type: rolePermissionOverwriteType, allow: "1", deny: "0" },
+            { id: "server-guild", type: rolePermissionOverwriteType, allow: "2", deny: "0" },
+            { id: "server-moderator", type: rolePermissionOverwriteType, allow: "4", deny: "0" },
+            { id: "user-id", type: memberPermissionOverwriteType, allow: "8", deny: "0" },
+            { id: "external-role", type: rolePermissionOverwriteType, allow: "16", deny: "0" },
+        ]);
+
+        assert.equal(permissionOverwrites[0].id, "0");
+        assert.equal(permissionOverwrites[2].id, "client-moderator");
     });
 });

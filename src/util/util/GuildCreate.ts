@@ -42,6 +42,15 @@ export interface GuildCreateChannelReferenceInput {
     system_channel_id?: string | null;
 }
 
+export interface GuildCreatePermissionOverwriteInput {
+    allow: string;
+    deny: string;
+    id: string;
+    type: number;
+}
+
+const rolePermissionOverwriteType = 0;
+
 export function isGuildCreateEveryoneRole(role: GuildCreateRoleInput, sourceGuildId: string | null): boolean {
     return role.id === "0" || (!!sourceGuildId && role.id === sourceGuildId);
 }
@@ -55,7 +64,7 @@ export function getGuildCreateCustomRoles(roles: GuildCreateRoleInput[] | undefi
 }
 
 export function normalizeGuildCreateRole(role: GuildCreateRoleInput, fallback: NormalizedGuildCreateRole): NormalizedGuildCreateRole {
-    const color = role.color ?? fallback.color;
+    const color = role.color ?? role.colors?.primary_color ?? fallback.color;
     const colors = role.colors ?? { primary_color: color };
     const normalizedColors: NormalizedGuildCreateRole["colors"] = {
         primary_color: colors.primary_color,
@@ -91,6 +100,25 @@ export function resolveGuildCreateChannelReferences(body: GuildCreateChannelRefe
         rules_channel_id: resolveGuildCreateChannelReference(body.rules_channel_id, ids),
         system_channel_id: resolveGuildCreateChannelReference(body.system_channel_id, ids),
     };
+}
+
+export function resolveGuildCreatePermissionOverwrites(
+    permissionOverwrites: GuildCreatePermissionOverwriteInput[] | undefined,
+    roleIds: Map<string, string>,
+): GuildCreatePermissionOverwriteInput[] | undefined {
+    if (!permissionOverwrites) return permissionOverwrites;
+
+    return permissionOverwrites.map((overwrite) => {
+        if (overwrite.type !== rolePermissionOverwriteType) return overwrite;
+
+        const id = roleIds.get(overwrite.id);
+        if (!id) return overwrite;
+
+        return {
+            ...overwrite,
+            id,
+        };
+    });
 }
 
 function resolveGuildCreateChannelReference(channelId: string | null | undefined, ids: Map<string, string>): string | null | undefined {

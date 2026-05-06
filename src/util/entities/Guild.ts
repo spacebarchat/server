@@ -27,6 +27,7 @@ import {
     handleFile,
     normalizeGuildCreateRole,
     resolveGuildCreateChannelReferences,
+    resolveGuildCreatePermissionOverwrites,
 } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -371,6 +372,8 @@ export class Guild extends BaseClass {
         rules_channel_id?: string | null;
     }) {
         const guild_id = Snowflake.generate();
+        const roleIds = new Map<string, string>([["0", guild_id]]);
+        if (body.source_guild_id) roleIds.set(body.source_guild_id, guild_id);
 
         const guild = await Guild.create({
             id: guild_id,
@@ -428,6 +431,7 @@ export class Guild extends BaseClass {
         if (customRoles.length) {
             await Promise.all(
                 customRoles.map((role, index) => {
+                    const id = Snowflake.generate();
                     const normalized = normalizeGuildCreateRole(role, {
                         color: 0,
                         colors: { primary_color: 0 },
@@ -440,10 +444,12 @@ export class Guild extends BaseClass {
                         flags: 0,
                     });
 
+                    if (role.id) roleIds.set(role.id, id);
+
                     return Role.create({
                         ...normalized,
                         guild_id,
-                        id: Snowflake.generate(),
+                        id,
                     }).save();
                 }),
             );
@@ -465,8 +471,9 @@ export class Guild extends BaseClass {
             const id = ids.get(channel.id) || Snowflake.generate();
 
             const parent_id = ids.get(channel.parent_id);
+            const permission_overwrites = resolveGuildCreatePermissionOverwrites(channel.permission_overwrites, roleIds);
 
-            const saved = await Channel.createChannel({ ...channel, guild_id, id, parent_id }, body.owner_id, {
+            const saved = await Channel.createChannel({ ...channel, guild_id, id, parent_id, permission_overwrites }, body.owner_id, {
                 keepId: true,
                 skipExistsCheck: true,
                 skipPermissionCheck: true,
