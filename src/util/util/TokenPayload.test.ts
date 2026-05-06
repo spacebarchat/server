@@ -23,6 +23,14 @@ describe("TokenPayload", () => {
         assert.equal(getTokenUserId({ id: "legacy-user-id", iat: 123, ver: 3 }), "legacy-user-id");
     });
 
+    test("still reads the user id from id for legacy tokens without a version claim", () => {
+        assert.equal(getTokenUserId({ id: "legacy-user-id", iat: 123 }), "legacy-user-id");
+    });
+
+    test("rejects current-version tokens that only use the legacy id claim", () => {
+        assert.equal(getTokenUserId({ id: "legacy-user-id", iat: 123, ver: CurrentTokenFormatVersion }), undefined);
+    });
+
     test("prefers sub when both claims are present", () => {
         assert.equal(getTokenUserId({ sub: "user-id", id: "user-id", iat: 123, ver: 4 }), "user-id");
     });

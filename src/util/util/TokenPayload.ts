@@ -17,8 +17,9 @@ export type TokenPayload = {
     did?: string;
 };
 
-export function getTokenUserId(decoded: TokenPayload) {
+export function getTokenUserId(decoded: TokenPayload): string | undefined {
     if (decoded.sub && decoded.id && decoded.sub !== decoded.id) return undefined;
+    if (decoded.id && !decoded.sub && (decoded.ver ?? 0) >= CurrentTokenFormatVersion) return undefined;
     return decoded.sub ?? decoded.id;
 }
 
