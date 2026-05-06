@@ -12824,6 +12824,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "last_viewed": {
+                        "type": "integer"
+                    },
                     "read_state_type": {
                         "$ref": "#/components/schemas/ReadStateType"
                     },
@@ -12840,6 +12843,7 @@
                     "channel_id",
                     "flags",
                     "id",
+                    "last_viewed",
                     "mention_count",
                     "notifications_cursor",
                     "read_state_type",

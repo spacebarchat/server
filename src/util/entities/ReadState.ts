@@ -69,6 +69,9 @@ export class ReadState extends BaseClass {
     @Column({ nullable: true })
     last_pin_timestamp?: Date;
 
+    @Column({ default: 0 })
+    last_viewed: number;
+
     @Column({ default: ReadStateType.CHANNEL })
     read_state_type: ReadStateType;
 

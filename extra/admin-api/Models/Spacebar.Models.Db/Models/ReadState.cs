@@ -32,6 +32,9 @@ public partial class ReadState
     [Column("mention_count")]
     public int MentionCount { get; set; }
 
+    [Column("last_viewed")]
+    public int LastViewed { get; set; }
+
     [Column("last_acked_id")]
     public long? LastAckedId { get; set; }
 
