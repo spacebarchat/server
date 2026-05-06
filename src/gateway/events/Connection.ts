@@ -134,6 +134,9 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         socket.recentTransactions = [];
         socket.events = {};
         socket.member_events = {};
+        socket.guild_event_ids = {};
+        socket.guild_member_event_ids = {};
+        socket.member_event_guild_ids = {};
         socket.permissions = {};
         socket.sequence = 0;
 
