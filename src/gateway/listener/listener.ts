@@ -363,9 +363,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                     userAgent: this.userAgent,
                 }),
             );
-            if ("attachments" in data) data["attachments"] = signedMessage.attachments;
-            if ("embeds" in data) data["embeds"] = signedMessage.embeds;
-            if ("components" in data) data["components"] = signedMessage.components;
+            Object.assign(data, signedMessage);
             break;
         }
         default:

@@ -192,17 +192,6 @@ router.get(
                     public_flags: 0,
                     avatar: null,
                 } as PartialUser;
-            const signed = Message.prototype.withSignedAttachments.call(
-                x,
-                new NewUrlUserSignatureData({
-                    ip: req.ip,
-                    userAgent: req.headers["user-agent"] as string,
-                }),
-            );
-            x.attachments = signed.attachments ?? [];
-            x.embeds = signed.embeds ?? [];
-            x.components = signed.components ?? [];
-
             /**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
@@ -213,7 +202,13 @@ router.get(
             // 		delete x[curr];
             // }
 
-            return x;
+            return Message.prototype.withSignedAttachments.call(
+                x,
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            );
         });
         //console.log(ret);
 
