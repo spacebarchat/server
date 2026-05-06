@@ -65,32 +65,38 @@ export enum AutomodRuleActionType {
     QUARANTINE_USER = 4,
 }
 
-export type AutomodAction =
-    | {
-          type: AutomodRuleActionType.BLOCK_MESSAGE;
-          metadata: {
-              custom_message?: string;
-          };
-      }
-    | {
-          type: AutomodRuleActionType.SEND_ALERT_MESSAGE;
-          metadata: {
-              channel_id: Snowflake;
-          };
-      }
-    | {
-          type: AutomodRuleActionType.TIMEOUT_USER;
-          metadata: {
-              duration_seconds: number;
-          };
-      }
-    | {
-          type: AutomodRuleActionType.QUARANTINE_USER;
-          metadata: {
-              duration_seconds: number;
-          };
-      };
+export type AutomodAction = AutomodBlockMessageAction | AutomodSendAlertMessageAction | AutomodTimeoutUserAction | AutomodQuarantineUserAction;
 
-// TODO
-// eslint-disable-next-line
-export interface AutomodRuleActionMetadata {}
+export interface AutomodBlockMessageAction {
+    type: 1;
+    metadata?: AutomodBlockMessageActionMetadata;
+}
+
+export interface AutomodSendAlertMessageAction {
+    type: 2;
+    metadata: AutomodSendAlertMessageActionMetadata;
+}
+
+export interface AutomodTimeoutUserAction {
+    type: 3;
+    metadata: AutomodTimeoutUserActionMetadata;
+}
+
+export interface AutomodQuarantineUserAction {
+    type: 4;
+    metadata: AutomodTimeoutUserActionMetadata;
+}
+
+export interface AutomodBlockMessageActionMetadata {
+    custom_message?: string;
+}
+
+export interface AutomodSendAlertMessageActionMetadata {
+    channel_id: Snowflake;
+}
+
+export interface AutomodTimeoutUserActionMetadata {
+    duration_seconds: number;
+}
+
+export type AutomodRuleActionMetadata = AutomodBlockMessageActionMetadata | AutomodSendAlertMessageActionMetadata | AutomodTimeoutUserActionMetadata;

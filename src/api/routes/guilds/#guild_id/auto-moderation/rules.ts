@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { User, AutomodRule } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { AutomodRuleSchema } from "@spacebar/schemas";
+import { AutomodRuleModifySchema, AutomodRuleSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -47,7 +47,7 @@ router.get(
 router.post(
     "/",
     route({
-        // requestBody: "AutomodRuleSchema",
+        requestBody: "AutomodRuleSchema",
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
@@ -88,7 +88,7 @@ router.post(
 router.patch(
     "/:rule_id",
     route({
-        // requestBody: "AutomodRuleSchema
+        requestBody: "AutomodRuleModifySchema",
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
@@ -108,7 +108,7 @@ router.patch(
             where: { id: rule_id },
         });
 
-        const data = req.body as AutomodRuleSchema;
+        const data = req.body as AutomodRuleModifySchema;
 
         AutomodRule.merge(rule, data);
         const savedRule = await AutomodRule.save(rule);

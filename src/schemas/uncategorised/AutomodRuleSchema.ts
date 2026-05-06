@@ -16,6 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { AutomodAction, AutomodKeywordPresetType, AutomodRuleEventType, AutomodRuleTriggerType } from "../api/guilds/Automod";
+import { Snowflake } from "../Identifiers";
+
 export interface AutomodMentionSpamRuleSchema {
     mention_total_limit: number;
     mention_raid_protection_enabled: boolean;
@@ -25,29 +28,44 @@ export interface AutomodMentionSpamRuleSchema {
 export type AutomodSuspectedSpamRuleSchema = Record<string, never>; // hack to represent an empty object
 
 export interface AutomodCommonlyFlaggedWordsRuleSchema {
-    allow_list: [string];
-    presets: [number];
+    allow_list: string[];
+    presets: AutomodKeywordPresetType[];
 }
 
 export interface AutomodCustomWordsRuleSchema {
-    allow_list: [string];
-    keyword_filter: [string];
-    regex_patterns: [string];
+    allow_list: string[];
+    keyword_filter: string[];
+    regex_patterns: string[];
 }
 
 export interface AutomodRuleSchema {
-    creator_id: string;
+    creator_id: Snowflake;
     enabled: boolean;
-    event_type: number; // No idea...
-    exempt_channels: [string];
-    exempt_roles: [string];
-    guild_id: string;
+    event_type: AutomodRuleEventType;
+    exempt_channels: Snowflake[];
+    exempt_roles: Snowflake[];
+    guild_id: Snowflake;
     name: string;
     position: number;
-    trigger_type: number; //AutomodTriggerTypes
-    trigger_metadata: AutomodMentionSpamRuleSchema | AutomodSuspectedSpamRuleSchema | AutomodCommonlyFlaggedWordsRuleSchema | AutomodCustomWordsRuleSchema;
+    actions: AutomodAction[];
+    trigger_type: AutomodRuleTriggerType;
+    trigger_metadata?: AutomodMentionSpamRuleSchema | AutomodSuspectedSpamRuleSchema | AutomodCommonlyFlaggedWordsRuleSchema | AutomodCustomWordsRuleSchema | null;
+}
+
+export interface AutomodRuleModifySchema {
+    creator_id?: Snowflake;
+    enabled?: boolean;
+    event_type?: AutomodRuleEventType;
+    exempt_channels?: Snowflake[];
+    exempt_roles?: Snowflake[];
+    guild_id?: Snowflake;
+    name?: string;
+    position?: number;
+    actions?: AutomodAction[];
+    trigger_type?: AutomodRuleTriggerType;
+    trigger_metadata?: AutomodMentionSpamRuleSchema | AutomodSuspectedSpamRuleSchema | AutomodCommonlyFlaggedWordsRuleSchema | AutomodCustomWordsRuleSchema | null;
 }
 
 export interface AutomodRuleSchemaWithId extends AutomodRuleSchema {
-    id: string;
+    id: Snowflake;
 }
