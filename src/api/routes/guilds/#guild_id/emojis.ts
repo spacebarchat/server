@@ -20,6 +20,7 @@ import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Emoji, GuildEmojisUpdateEvent, Member, Snowflake, emitEvent, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
+import { buildGuildEmojiPatchEvents } from "../../../util/utility/EmojiEvents";
 
 const router = Router({ mergeParams: true });
 
@@ -163,15 +164,14 @@ router.patch(
             id: emoji_id,
             guild_id: guild_id,
         }).save();
+        const eventEmoji = await Emoji.findOneOrFail({
+            where: { id: emoji_id, guild_id },
+        });
+        const emojis = await Emoji.find({ where: { guild_id: guild_id } });
 
-        await emitEvent({
-            event: "GUILD_EMOJIS_UPDATE",
-            guild_id: guild_id,
-            data: {
-                guild_id: guild_id,
-                emojis: await Emoji.find({ where: { guild_id: guild_id } }),
-            },
-        } satisfies GuildEmojisUpdateEvent);
+        for (const event of buildGuildEmojiPatchEvents(eventEmoji, emojis)) {
+            await emitEvent(event);
+        }
 
         return res.json(emoji);
     },
