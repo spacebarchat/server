@@ -1733,6 +1733,60 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ExperimentsResponse": {
+        "type": "object",
+        "properties": {
+            "fingerprint": {
+                "type": "string"
+            },
+            "assignments": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "guild_experiments": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignments",
+            "guild_experiments"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApexExperimentsResponse": {
+        "type": "object",
+        "properties": {
+            "assignments": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ApexExperimentUnitAssignments"
+                    }
+                }
+            },
+            "installation": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignments"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GatewayResponse": {
         "type": "object",
         "properties": {
@@ -14003,6 +14057,29 @@
         "required": [
             "id",
             "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApexExperimentUnitAssignments": {
+        "type": "object",
+        "properties": {
+            "evaluation_id": {
+                "type": "string"
+            },
+            "assignments": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "assignments",
+            "evaluation_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

@@ -1,23 +1,23 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	MERCHANTIBILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
-import { createExperimentsResponse, route } from "@spacebar/api";
+import { createApexExperimentsResponse, route } from "@spacebar/api";
+import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });
 
@@ -26,17 +26,12 @@ router.get(
     route({
         responses: {
             200: {
-                body: "ExperimentsResponse",
+                body: "ApexExperimentsResponse",
             },
         },
     }),
     (req: Request, res: Response) => {
-        res.send(
-            createExperimentsResponse({
-                fingerprint: req.header("X-Fingerprint"),
-                hasAuthorization: Boolean(req.header("Authorization")),
-            }),
-        );
+        res.send(createApexExperimentsResponse(req.header("X-Installation-ID")));
     },
 );
 

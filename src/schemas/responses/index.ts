@@ -29,6 +29,7 @@ export * from "./DmMessagesResponseSchema";
 export * from "./EmailDomainLookupResponse";
 export * from "./EmailDomainLookupVerifyCodeResponse";
 export * from "./EmojiSourceResponse";
+export * from "./ExperimentsResponse";
 export * from "./GatewayResponse";
 export * from "./GenerateRegistrationTokensResponse";
 export * from "./GuildBansResponse";
