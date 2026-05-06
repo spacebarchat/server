@@ -66,7 +66,7 @@ export default defineConfig([
             // "sort-imports": ["error", {}],
             "default-case": "error",
             "default-case-last": "error",
-            "yoda": "error",
+            yoda: "error",
             // unsure what the defaults are here, but we want them to error
             "for-direction": "error",
             "constructor-super": "error",
