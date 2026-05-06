@@ -2161,7 +2161,8 @@
                         "type": "string"
                     },
                     "instant_invite": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "channels": {
                         "type": "array",
@@ -2207,7 +2208,7 @@
                                     ]
                                 },
                                 "status": {
-                                    "$ref": "#/components/schemas/ClientStatus"
+                                    "$ref": "#/components/schemas/GuildWidgetMemberStatus"
                                 },
                                 "avatar_url": {
                                     "type": "string"
@@ -13329,6 +13330,14 @@
                 "required": [
                     "code"
                 ]
+            },
+            "GuildWidgetMemberStatus": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "online"
+                ],
+                "type": "string"
             },
             "HubDirectoryEntry": {
                 "type": "object",
