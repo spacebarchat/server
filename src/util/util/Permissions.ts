@@ -129,7 +129,7 @@ export class Permissions extends BitField {
     static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
         const basePermissions = init ?? BigInt(0);
         if ((basePermissions & Permissions.FLAGS.ADMINISTRATOR) === Permissions.FLAGS.ADMINISTRATOR) {
-            return basePermissions | Permissions.ALL_PERMISSIONS;
+            return basePermissions;
         }
 
         return overwrites.reduce(
