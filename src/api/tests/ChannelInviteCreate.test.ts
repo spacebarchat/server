@@ -152,7 +152,7 @@ async function postInvite(body: InviteBody) {
 }
 
 describe("createChannelInvite", () => {
-    test("reuses a matching active invite when unique is omitted and does not emit INVITE_CREATE", async () => {
+    test("reuses a matching active invite when unique is omitted or false and does not emit INVITE_CREATE", async () => {
         const harness = installInviteRouteHarness();
 
         const first = await postInvite({});
@@ -160,7 +160,7 @@ describe("createChannelInvite", () => {
         assert.equal(harness.invites.length, 1);
         assert.equal(harness.emittedEvents.length, 1);
 
-        const second = await postInvite({});
+        const second = await postInvite({ unique: false });
         assert.equal(second.status, 200);
         assert.equal(second.data.code, first.data.code);
         assert.equal(harness.invites.length, 1);
