@@ -91,10 +91,12 @@ public class GuildTemplateTests {
         Assert.Null(template.SerializedSourceGuild.Description);
         Assert.Null(template.SerializedSourceGuild.AfkChannelId);
         Assert.Equal(333333333333333333L, template.SerializedSourceGuild.SystemChannelId);
-        Assert.Single(template.SerializedSourceGuild.Roles);
-        Assert.Single(template.SerializedSourceGuild.Channels);
-        Assert.Equal(444444444444444444L, template.SerializedSourceGuild.Channels[0].Id);
-        Assert.Single(template.SerializedSourceGuild.Channels[0].PermissionOverwrites);
+        var role = Assert.Single(template.SerializedSourceGuild.Roles);
+        Assert.Equal(222222222222222222L, role.Id);
+        var channel = Assert.Single(template.SerializedSourceGuild.Channels);
+        Assert.Equal(444444444444444444L, channel.Id);
+        var overwrite = Assert.Single(channel.PermissionOverwrites);
+        Assert.Equal(222222222222222222L, overwrite.Id);
     }
 
     [Fact]
@@ -125,6 +127,7 @@ public class GuildTemplateTests {
                         Id = 444444444444444444L,
                         Type = 0,
                         Name = "general",
+                        ParentId = 555555555555555555L,
                         PermissionOverwrites = [
                             new GuildTemplateChannelPermissionOverwrite {
                                 Id = 222222222222222222L,
@@ -142,9 +145,14 @@ public class GuildTemplateTests {
         Assert.Contains("\"creator_id\":\"111111111111111111\"", json);
         Assert.Contains("\"source_guild_id\":\"222222222222222222\"", json);
         Assert.Contains("\"serialized_source_guild\":", json);
+        Assert.Contains("\"id\":\"222222222222222222\"", json);
         Assert.Contains("\"preferred_locale\":\"en-US\"", json);
         Assert.Contains("\"system_channel_id\":\"333333333333333333\"", json);
+        Assert.Contains("\"roles\":[{\"id\":\"222222222222222222\"", json);
+        Assert.Contains("\"channels\":[{\"id\":\"444444444444444444\"", json);
+        Assert.Contains("\"parent_id\":\"555555555555555555\"", json);
         Assert.Contains("\"permission_overwrites\":", json);
+        Assert.Contains("\"permission_overwrites\":[{\"id\":\"222222222222222222\"", json);
         Assert.DoesNotContain("\"serialized_source_guild\":{}", json);
     }
 }
