@@ -1682,8 +1682,7 @@
                     }
                 },
                 "required": [
-                    "assignments",
-                    "installation"
+                    "assignments"
                 ]
             },
             "GatewayResponse": {

@@ -17,7 +17,7 @@
 */
 
 import type { ApexExperimentsResponse, ExperimentsResponse } from "@spacebar/schemas";
-import { createClientFingerprint } from "./Fingerprint";
+import { createClientFingerprint, isClientFingerprint } from "./Fingerprint";
 
 export function createExperimentsResponse(): ExperimentsResponse {
     return {
@@ -28,8 +28,16 @@ export function createExperimentsResponse(): ExperimentsResponse {
 }
 
 export function createApexExperimentsResponse(installation?: string): ApexExperimentsResponse {
-    return {
+    const response: ApexExperimentsResponse = {
         assignments: {},
-        installation: installation || createClientFingerprint(),
     };
+
+    // Discord clients send X-Installation-ID after receiving one. Apex only
+    // returns a new installation when the client has not supplied a usable id;
+    // empty assignments are still a valid no-experiment fallback.
+    if (!isClientFingerprint(installation)) {
+        response.installation = createClientFingerprint();
+    }
+
+    return response;
 }

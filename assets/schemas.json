@@ -1784,8 +1784,7 @@
         },
         "additionalProperties": false,
         "required": [
-            "assignments",
-            "installation"
+            "assignments"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

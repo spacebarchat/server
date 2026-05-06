@@ -26,5 +26,5 @@ export interface ApexExperimentsResponse {
     assignments: {
         [experiment: string]: number[];
     };
-    installation: string;
+    installation?: string;
 }

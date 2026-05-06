@@ -64,8 +64,14 @@ export const NO_AUTHORIZATION_ROUTES = [
 export const API_PREFIX = /^\/api(\/v\d+)?/;
 export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
+function stripOptionalTrailingSlash(url: string): string {
+    if (url.length <= 1) return url;
+    return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
 export function isNoAuthorizationRoute(method: string, rawUrl: string): boolean {
     const url = rawUrl.replace(API_PREFIX, "").split("?")[0];
+    const exactUrl = stripOptionalTrailingSlash(url);
 
     return NO_AUTHORIZATION_ROUTES.some((x) => {
         if (typeof x !== "string") {
@@ -73,20 +79,21 @@ export function isNoAuthorizationRoute(method: string, rawUrl: string): boolean 
         }
 
         const fullRoute = method + " " + url;
+        const exactFullRoute = method + " " + exactUrl;
 
         if (method === "HEAD") {
             const urlPart = x.split(" ").slice(1).join(" ");
             if (urlPart.endsWith("/")) {
                 return url.startsWith(urlPart);
             } else {
-                return url === urlPart;
+                return exactUrl === urlPart;
             }
         }
 
         if (x.endsWith("/")) {
             return fullRoute.startsWith(x);
         } else {
-            return fullRoute === x;
+            return exactFullRoute === x;
         }
     });
 }

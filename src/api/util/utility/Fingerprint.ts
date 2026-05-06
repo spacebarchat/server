@@ -19,6 +19,12 @@
 import { createHash } from "node:crypto";
 import { Snowflake } from "@spacebar/util";
 
+export const CLIENT_FINGERPRINT_PATTERN = /^\d+\.[A-Za-z0-9+/=]+$/;
+
+export function isClientFingerprint(value: unknown): value is string {
+    return typeof value === "string" && CLIENT_FINGERPRINT_PATTERN.test(value);
+}
+
 export function createClientFingerprint() {
     const snowflake = Snowflake.generate();
     return `${snowflake}.${createHash("sha512").update(snowflake).digest("base64")}`;
