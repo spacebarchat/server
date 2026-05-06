@@ -1,6 +1,6 @@
-import { JSONStringify } from "@spacebar/util";
-import { VoicePayload } from "./Constants";
-import { WebRtcWebSocket } from "./WebRtcWebSocket";
+import { JSONStringify } from "../../util/util/JSON";
+import type { VoicePayload } from "./Constants";
+import type { WebRtcWebSocket } from "./WebRtcWebSocket";
 
 export function Send(socket: WebRtcWebSocket, data: VoicePayload) {
     if (process.env.WRTC_WS_VERBOSE) console.log(`[WebRTC] Outgoing message: ${JSONStringify(data)}`);
