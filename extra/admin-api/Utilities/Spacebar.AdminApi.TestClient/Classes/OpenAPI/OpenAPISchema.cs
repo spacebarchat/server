@@ -2,7 +2,6 @@ using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using ArcaneLibs.Extensions;
 
 namespace Spacebar.AdminApi.TestClient.Classes.OpenAPI;
 
@@ -190,6 +189,8 @@ public class OpenApiSchemaRef {
     public List<object>? Enum { get; set; }
     public string? Format { get; set; }
     public List<OpenApiSchemaRef>? Items { get; set; }
+    public bool? AdditionalPropertiesAllowed { get; set; }
+    public OpenApiSchemaRef? AdditionalProperties { get; set; }
     public Regex? Pattern { get; set; }
 
     public OpenApiSchemaRef? GetReferencedSchema(OpenApiSchema schema) {
@@ -275,7 +276,7 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
                     else if (property.Value.ValueKind == JsonValueKind.Null)
                         schemaRef.Default = null;
                     else if (property.Value.ValueKind == JsonValueKind.Array)
-                        if (property.Value.GetArrayLength() > 0) throw new JsonException($"Expected empty array in default, got: {property.Value.ToJson()}");
+                        if (property.Value.GetArrayLength() > 0) throw new JsonException($"Expected empty array in default, got: {property.Value.GetRawText()}");
                         else schemaRef.Default = Array.Empty<object>();
                     else throw new JsonException($"Expected string|int|bool|null in default, got {property.Value.ValueKind}");
                     break;
@@ -304,15 +305,28 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
                 case "format":
                     schemaRef.Format = property.Value.GetString();
                     break;
-                case "additionalProperties": //TODO
+                case "additionalProperties":
+                    switch (property.Value.ValueKind) {
+                        case JsonValueKind.True:
+                        case JsonValueKind.False:
+                            schemaRef.AdditionalPropertiesAllowed = property.Value.GetBoolean();
+                            break;
+                        case JsonValueKind.Object:
+                            schemaRef.AdditionalProperties = property.Value.Deserialize<OpenApiSchemaRef>(options);
+                            break;
+                        default:
+                            throw new JsonException($"Expected bool|object in additionalProperties, got {property.Value.ValueKind}");
+                    }
+
+                    break;
                 case "patternProperties": // Side effect of using JsonValue in typescript
                     break;
                 case "items":
-                    // Console.WriteLine($"Got 'items' property in OpenApiSchemaRef! NodeType: {property.Value.ValueKind}, Value: {property.Value.ToJson()}");
+                    // Console.WriteLine($"Got 'items' property in OpenApiSchemaRef! NodeType: {property.Value.ValueKind}, Value: {property.Value.GetRawText()}");
                     try {
                         schemaRef.Items = property.Value.ValueKind is JsonValueKind.Array ? property.Value.Deserialize<List<OpenApiSchemaRef>>(options) : [property.Value.Deserialize<OpenApiSchemaRef>(options)!];
                     } catch (Exception ex) {
-                        throw new JsonException($"Error deserializing 'items' property: {ex.Message}\nValue: {property.Value.ToJson()}", ex);
+                        throw new JsonException($"Error deserializing 'items' property: {ex.Message}\nValue: {property.Value.GetRawText()}", ex);
                     }
                     break;
                 case "pattern":
@@ -322,7 +336,7 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
                     }
                     break;
                 default:
-                    Console.WriteLine($"Got unexpected prop {property.Name} in OpenApiSchemaRef! Value: {property.Value.ToJson()}");
+                    Console.WriteLine($"Got unexpected prop {property.Name} in OpenApiSchemaRef! Value: {property.Value.GetRawText()}");
                     break;
             }
         }
@@ -363,6 +377,14 @@ public class OpenApiSchemaRefConverter : JsonConverter<OpenApiSchemaRef> {
             }
 
             writer.WriteEndObject();
+        }
+
+        if (value.AdditionalProperties != null) {
+            writer.WritePropertyName("additionalProperties");
+            JsonSerializer.Serialize(writer, value.AdditionalProperties, options);
+        }
+        else if (value.AdditionalPropertiesAllowed.HasValue) {
+            writer.WriteBoolean("additionalProperties", value.AdditionalPropertiesAllowed.Value);
         }
 
         writer.WriteEndObject();
