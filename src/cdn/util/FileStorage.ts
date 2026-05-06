@@ -19,19 +19,25 @@
 import { Storage } from "./Storage";
 import fs from "node:fs";
 import fsp from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { Readable } from "node:stream";
 import ExifTransformer from "exif-be-gone";
 
 export class FileStorage implements Storage {
-    getFsPath(path: string): string {
+    private getRoot(): string {
         // STORAGE_LOCATION has a default value in start.ts
-        const root = process.env.STORAGE_LOCATION || "../";
-        const filename = join(root, path);
+        return resolve(process.env.STORAGE_LOCATION || "../");
+    }
 
-        if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");
+    getFsPath(path: string): string {
+        const root = this.getRoot();
+        const filename = resolve(root, path);
+        const relativePath = relative(root, filename);
+
+        if (path.indexOf("\0") !== -1 || relativePath.startsWith("..") || isAbsolute(relativePath)) throw new Error("invalid path");
         return filename;
     }
+
     isFile(path: string): Promise<boolean> {
         return Promise.resolve(fs.statSync(this.getFsPath(path)).isFile());
     }
@@ -73,8 +79,9 @@ export class FileStorage implements Storage {
     }
 
     async delete(path: string) {
-        //TODO we should delete the parent directory if empty
-        fs.unlinkSync(this.getFsPath(path));
+        const fsPath = this.getFsPath(path);
+        await fsp.unlink(fsPath);
+        await this.pruneEmptyParents(dirname(fsPath));
     }
 
     async exists(path: string) {
@@ -88,5 +95,24 @@ export class FileStorage implements Storage {
         if (!fs.existsSync(dirname(newPath))) fs.mkdirSync(dirname(newPath), { recursive: true });
 
         fs.renameSync(path, newPath);
+    }
+
+    private async pruneEmptyParents(path: string) {
+        const root = this.getRoot();
+        let current = resolve(path);
+
+        while (current !== root) {
+            const relativePath = relative(root, current);
+            if (relativePath.startsWith("..") || isAbsolute(relativePath)) return;
+
+            try {
+                await fsp.rmdir(current);
+            } catch (error) {
+                if (error && typeof error === "object" && "code" in error && ["EEXIST", "ENOENT", "ENOTDIR", "ENOTEMPTY"].includes(String(error.code))) return;
+                throw error;
+            }
+
+            current = dirname(current);
+        }
     }
 }
