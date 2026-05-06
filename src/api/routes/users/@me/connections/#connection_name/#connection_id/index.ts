@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { ConnectedAccount, DiscordApiErrors, emitEvent } from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountDTO, DiscordApiErrors, emitEvent, getConnectedAccountDTOSelect } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ConnectionUpdateSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
@@ -33,7 +33,7 @@ router.patch("/", route({ requestBody: "ConnectionUpdateSchema" }), async (req: 
             external_id: connection_id,
             type: connection_name,
         },
-        select: { external_id: true, type: true, name: true, verified: true, visibility: true, show_activity: true, revoked: true, friend_sync: true, integrations: true },
+        select: getConnectedAccountDTOSelect(),
     });
 
     if (!connection) return DiscordApiErrors.UNKNOWN_CONNECTION;
@@ -59,7 +59,7 @@ router.patch("/", route({ requestBody: "ConnectionUpdateSchema" }), async (req: 
         },
         connection,
     );
-    res.json(connection.toJSON());
+    res.json(new ConnectedAccountDTO(connection));
 });
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
@@ -77,7 +77,7 @@ router.delete("/", route({}), async (req: Request, res: Response) => {
         ConnectedAccount.remove(account),
         emitEvent({
             event: "USER_CONNECTIONS_UPDATE",
-            data: account,
+            data: new ConnectedAccountDTO(account),
             user_id: req.user_id,
         }),
     ]);

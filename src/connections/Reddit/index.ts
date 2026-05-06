@@ -25,13 +25,13 @@ export interface UserResponse {
     verified: boolean;
     coins: number;
     id: string;
-    is_mod: boolean;
+    is_mod?: boolean | null;
     has_verified_email: boolean;
-    total_karma: number;
+    total_karma?: number | null;
     name: string;
-    created: number;
-    gold_creddits: number;
-    created_utc: number;
+    created?: number | null;
+    gold_creddits?: number | null;
+    created_utc?: number | null;
 }
 
 export interface ErrorResponse {
@@ -46,12 +46,23 @@ export interface RedditConnectionMetadata {
     created_at: string;
 }
 
+function getRedditNumberMetadata(value: number | null | undefined): string {
+    return (value ?? 0).toString();
+}
+
+function getRedditCreatedAt(userInfo: UserResponse): string {
+    const seconds = userInfo.created_utc ?? userInfo.created ?? 0;
+    const timestamp = Number.isFinite(seconds) ? seconds * 1000 : 0;
+
+    return new Date(timestamp).toISOString().replace(".000Z", "");
+}
+
 export function getRedditConnectionMetadata(userInfo: UserResponse): RedditConnectionMetadata {
     return {
-        gold: userInfo.gold_creddits.toString(),
+        gold: getRedditNumberMetadata(userInfo.gold_creddits),
         mod: userInfo.is_mod ? "1" : "0",
-        total_karma: userInfo.total_karma.toString(),
-        created_at: new Date(userInfo.created_utc * 1000).toISOString().replace(".000Z", ""),
+        total_karma: getRedditNumberMetadata(userInfo.total_karma),
+        created_at: getRedditCreatedAt(userInfo),
     };
 }
 

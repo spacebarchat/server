@@ -16,7 +16,33 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount } from "../entities";
+import type { ConnectedAccount } from "../entities";
+import type { FindOptionsSelect } from "typeorm";
+
+export const ConnectedAccountDTOBaseSelect = {
+    external_id: true,
+    user_id: true,
+    friend_sync: true,
+    name: true,
+    revoked: true,
+    show_activity: true,
+    type: true,
+    verified: true,
+    visibility: true,
+    integrations: true,
+    metadata_: true,
+    metadata_visibility: true,
+    two_way_link: true,
+} satisfies FindOptionsSelect<ConnectedAccount>;
+
+export function getConnectedAccountDTOSelect(withToken: boolean = false): FindOptionsSelect<ConnectedAccount> {
+    return withToken
+        ? {
+              ...ConnectedAccountDTOBaseSelect,
+              token_data: true,
+          }
+        : ConnectedAccountDTOBaseSelect;
+}
 
 export class ConnectedAccountDTO {
     id: string;
@@ -30,7 +56,7 @@ export class ConnectedAccountDTO {
     verified?: boolean;
     visibility?: number;
     integrations?: string[];
-    metadata_?: unknown;
+    metadata?: unknown;
     metadata_visibility?: number;
     two_way_link?: boolean;
 
@@ -46,7 +72,7 @@ export class ConnectedAccountDTO {
         this.verified = connectedAccount.verified;
         this.visibility = +(connectedAccount.visibility || false);
         this.integrations = connectedAccount.integrations;
-        this.metadata_ = connectedAccount.metadata_;
+        this.metadata = connectedAccount.metadata_;
         this.metadata_visibility = +(connectedAccount.metadata_visibility || false);
         this.two_way_link = connectedAccount.two_way_link;
     }
