@@ -26,11 +26,9 @@ import {
     emitEvent,
     FieldErrors,
     getPermission,
-    getUrlSignature,
     Member,
     Message,
     MessageCreateEvent,
-    NewUrlSignatureData,
     NewUrlUserSignatureData,
     ReadState,
     Relationship,
@@ -47,7 +45,6 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import multer from "multer";
 import { FindManyOptions, FindOperator, LessThan, MoreThan, MoreThanOrEqual } from "typeorm";
-import { URL } from "node:url";
 import {
     AcknowledgeDeleteSchema,
     isTextChannel,
@@ -195,33 +192,6 @@ router.get(
                     public_flags: 0,
                     avatar: null,
                 } as PartialUser;
-            x.attachments =
-                msg.attachments?.map((y: Attachment) => {
-                    const att = y.toJSON();
-
-                    att.proxy_url = getUrlSignature(
-                        new NewUrlSignatureData({
-                            url: att.proxy_url,
-                            userAgent: req.headers["user-agent"],
-                            ip: req.ip,
-                        }),
-                    )
-                        .applyToUrl(att.proxy_url)
-                        .toString();
-
-                    att.url = getUrlSignature(
-                        new NewUrlSignatureData({
-                            url: att.url,
-                            userAgent: req.headers["user-agent"],
-                            ip: req.ip,
-                        }),
-                    )
-                        .applyToUrl(att.url)
-                        .toString();
-
-                    return att;
-                }) ?? [];
-
             /**
 			Some clients ( discord.js ) only check if a property exists within the response,
 			which causes errors when, say, the `application` property is `null`.
@@ -232,7 +202,13 @@ router.get(
             // 		delete x[curr];
             // }
 
-            return x;
+            return Message.prototype.withSignedAttachments.call(
+                x,
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            );
         });
         //console.log(ret);
 

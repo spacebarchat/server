@@ -113,7 +113,7 @@ router.patch(
         postHandleMessage(new_message).catch((e) => console.error("[Message] post-message handler failed", e));
 
         // TODO: a DTO?
-        return res.json({
+        const responseMessage = {
             ...new_message.toJSON(),
             id: new_message.id,
             type: new_message.type,
@@ -131,7 +131,16 @@ router.patch(
 
             // these are not in the Discord.com response
             mention_channels: new_message.mention_channels,
-        });
+        };
+        return res.json(
+            Message.prototype.withSignedAttachments.call(
+                responseMessage,
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            ),
+        );
     },
 );
 
@@ -233,7 +242,8 @@ router.put(
         postHandleMessage(message).catch((e) => console.error("[Message] post-message handler failed", e));
 
         return res.json(
-            message.withSignedAttachments(
+            Message.prototype.withSignedAttachments.call(
+                message.toJSON(),
                 new NewUrlUserSignatureData({
                     ip: req.ip,
                     userAgent: req.headers["user-agent"] as string,
@@ -273,7 +283,14 @@ router.get(
 
         if (message.author_id !== req.user_id) permissions.hasThrow("READ_MESSAGE_HISTORY");
 
-        return res.json(message);
+        return res.json(
+            message.withSignedAttachments(
+                new NewUrlUserSignatureData({
+                    ip: req.ip,
+                    userAgent: req.headers["user-agent"] as string,
+                }),
+            ),
+        );
     },
 );
 

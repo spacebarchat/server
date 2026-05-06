@@ -656,6 +656,20 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             image!.proxy_url = imageAttachment.toJSON().proxy_url;
         }
 
+        const thumbnail = embed.thumbnail;
+        const thumbnailAttachment = fetchAttachment(thumbnail?.url);
+        if (thumbnailAttachment !== undefined) {
+            thumbnail!.url = thumbnailAttachment.toJSON().url;
+            thumbnail!.proxy_url = thumbnailAttachment.toJSON().proxy_url;
+        }
+
+        const video = embed.video;
+        const videoAttachment = fetchAttachment(video?.url);
+        if (videoAttachment !== undefined) {
+            video!.url = videoAttachment.toJSON().url;
+            video!.proxy_url = videoAttachment.toJSON().proxy_url;
+        }
+
         const author = embed.author;
         const authorAttachment = fetchAttachment(author?.icon_url);
         if (authorAttachment !== undefined) {
