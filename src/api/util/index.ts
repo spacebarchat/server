@@ -21,6 +21,7 @@ export * from "./utility/ipAddress";
 export * from "./handlers/Message";
 export * from "./utility/passwordStrength";
 export * from "./utility/RandomInviteID";
+export * from "./utility/ReactionTypes";
 export * from "./handlers/route";
 export * from "./utility/String";
 export * from "./handlers/Voice";
