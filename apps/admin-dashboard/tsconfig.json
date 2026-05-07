@@ -1,9 +1,16 @@
 {
     "extends": "../../tsconfig.base.json",
-    "include": ["src"],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules"],
     "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist",
-        "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+        "allowJs": true,
+        "noEmit": true,
+        "incremental": true,
+        "jsx": "preserve",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "isolatedModules": true,
+        "plugins": [{ "name": "next" }],
+        "tsBuildInfoFile": ".next/cache/tsconfig.tsbuildinfo"
     }
 }

@@ -32,6 +32,7 @@ import {
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
+import { createAdminRouter } from "../admin";
 import morgan from "morgan";
 import path from "node:path";
 import { red } from "picocolors";
@@ -126,6 +127,8 @@ export class SpacebarServer extends Server {
         app.use("/api/v9", api);
         app.use("/api/v10", api); // https://discord.com/developers/docs/change-log#api-v10
         app.use("/api", api); // allow unversioned requests
+
+        app.use("/_spacebar/admin/api", createAdminRouter());
 
         app.use("/imageproxy/:hash/:size/:url", ImageProxy);
 

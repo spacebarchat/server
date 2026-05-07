@@ -101,7 +101,7 @@ export class Config {
     }
     public static set(val: Partial<ConfigValue>) {
         if (!config || !val) return;
-        config = OrmUtils.mergeDeep(config);
+        config = OrmUtils.mergeDeep(config, val);
 
         return applyConfig(config);
     }

@@ -117,6 +117,21 @@ declare global {
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
     if (req.method === "OPTIONS") return res.sendStatus(204);
 
+    await hydrateRequestFingerprint(req, res);
+
+    if (isNoAuthorizationRoute(req.method, req.url)) return next();
+
+    try {
+        await authenticateRequestToken(req, res);
+        return next();
+    } catch (error) {
+        return next(error);
+    }
+}
+
+export async function hydrateRequestFingerprint(req: Request, res: Response) {
+    if (req.fingerprint) return;
+
     if (req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid=")))
         req.fingerprint = req.headers.cookie
             .split("; ")
@@ -124,10 +139,12 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
             .split("=")[1];
     // for some reason we need to require here, else the openapi generator fails with "route is not a function"
     else res.setHeader("Set-Cookie", `__sb_sessid=${(req.fingerprint = (await require("../util")).randomString(32))}; Secure; HttpOnly; SameSite=None; Path=/`);
+}
 
-    if (isNoAuthorizationRoute(req.method, req.url)) return next();
+export async function authenticateRequestToken(req: Request, res: Response) {
+    await hydrateRequestFingerprint(req, res);
 
-    if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
+    if (!req.headers.authorization) throw new HTTPError("Missing Authorization Header", 401);
 
     try {
         const { decoded, user, session } = (req.tokenData = await checkToken(req.headers.authorization, {
@@ -140,12 +157,11 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
         req.user_bot = user.bot;
         req.user = user;
         req.session = session;
-        req.rights = new Rights(Number(user.rights));
-        return next();
+        req.rights = new Rights(user.rights);
     } catch (error) {
         if (error instanceof HTTPError) {
-            return next(error);
+            throw error;
         }
-        return next(new HTTPError(error!.toString(), 400));
+        throw new HTTPError(String(error), 400);
     }
 }

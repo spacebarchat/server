@@ -9,6 +9,7 @@ using Spacebar.Interop.Replication.UnixSocket;
 using Spacebar.Models.Db.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
+Console.Error.WriteLine("[DEPRECATED] Spacebar.AdminApi is superseded by the TypeScript admin API at /_spacebar/admin/api. Keep this service only for temporary rollback during parity validation.");
 if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))
     builder.Configuration.AddJsonFile(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")!);
 
