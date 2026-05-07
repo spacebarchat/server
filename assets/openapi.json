@@ -2975,7 +2975,7 @@
                         "type": "string"
                     },
                     "settings": {
-                        "$ref": "#/components/schemas/UserSettings"
+                        "$ref": "#/components/schemas/UserSettingsSchema"
                     }
                 },
                 "required": [
@@ -3003,7 +3003,24 @@
                     "backup_codes": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/BackupCode"
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "code": {
+                                    "type": "string"
+                                },
+                                "consumed": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "code",
+                                "consumed",
+                                "id"
+                            ]
                         }
                     }
                 },
@@ -13964,33 +13981,6 @@
                     }
                 ]
             },
-            "BackupCode": {
-                "type": "object",
-                "properties": {
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "code": {
-                        "type": "string"
-                    },
-                    "consumed": {
-                        "type": "boolean"
-                    },
-                    "expired": {
-                        "type": "boolean"
-                    },
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "code",
-                    "consumed",
-                    "expired",
-                    "id",
-                    "user"
-                ]
-            },
             "InteractionCallbackType": {
                 "type": "number",
                 "enum": [
@@ -14502,6 +14492,33 @@
                     "id",
                     "public_flags",
                     "username"
+                ]
+            },
+            "BackupCode": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "consumed": {
+                        "type": "boolean"
+                    },
+                    "expired": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "consumed",
+                    "expired",
+                    "id",
+                    "user"
                 ]
             },
             "Categories": {
