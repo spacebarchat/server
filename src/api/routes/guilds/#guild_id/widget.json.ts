@@ -116,13 +116,13 @@ async function getWidgetJsonData(guild_id: string) {
     const members = await Member.find({ where: { guild_id: guild_id }, relations: { user: { sessions: true } } });
     const minLastSeen = Date.now() - 1000 * 60 * 5;
     const onlineMembers = members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > minLastSeen).length > 0);
-    const memberData = onlineMembers
+    const memberData: GuildWidgetJsonResponse["members"] = onlineMembers
         .map((x) => ({
             id: x.id,
             username: x.user.username,
             discriminator: x.user.discriminator,
             avatar: null,
-            status: "online", // TODO
+            status: "online" as const, // TODO
             avatar_url: x.avatar
                 ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
                 : x.user.avatar
@@ -135,12 +135,11 @@ async function getWidgetJsonData(guild_id: string) {
     return {
         id: guild_id,
         name: guild.name,
-        instant_invite: invite?.code,
+        instant_invite: invite?.code ?? null,
         channels: channels,
         members: memberData,
-        member_count: members.length,
         presence_count: guild.presence_count || onlineMembers.length,
-    } as GuildWidgetJsonResponse;
+    } satisfies GuildWidgetJsonResponse;
 }
 
 export default router;
