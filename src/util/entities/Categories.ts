@@ -16,8 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, type ValueTransformer } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
+import { CategoryLocalizations, normalizeCategoryLocalizations } from "../util/CategoryLocalizations";
+
+const CategoryLocalizationsTransformer: ValueTransformer = {
+    to: normalizeCategoryLocalizations,
+    from: normalizeCategoryLocalizations,
+};
 
 // TODO: categories:
 // [{
@@ -45,8 +51,8 @@ export class Categories extends BaseClassWithoutId {
     @Column({ nullable: true })
     name: string;
 
-    @Column({ type: "jsonb" })
-    localizations: string;
+    @Column({ type: "jsonb", default: () => "'{}'::jsonb", transformer: CategoryLocalizationsTransformer })
+    localizations: CategoryLocalizations = {};
 
     // Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)
     @Column({ nullable: true })
