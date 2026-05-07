@@ -17,11 +17,10 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, generateMfaBackupCodes, generateToken } from "@spacebar/util";
+import { User, generateMfaBackupCodes, generateToken, isValidTotpCode } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { verifyToken } from "node-2fa";
 import { TotpEnableSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
@@ -61,7 +60,7 @@ router.post(
 
         if (!body.code) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-        if (verifyToken(body.secret, body.code)?.delta != 0) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
+        if (!isValidTotpCode(body.secret, body.code)) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
         const backup_codes = generateMfaBackupCodes(req.user_id);
         await Promise.all(backup_codes.map((x) => x.save()));
@@ -70,8 +69,9 @@ router.post(
         res.send({
             token: await generateToken(user.id),
             backup_codes: backup_codes.map((x) => ({
-                ...x,
-                expired: undefined,
+                id: x.id,
+                code: x.code,
+                consumed: x.consumed,
             })),
         });
     },

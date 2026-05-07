@@ -16,13 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove util import
-import { ClientStatus } from "@spacebar/util";
+export type GuildWidgetMemberStatus = "online" | "idle" | "dnd";
 
 export interface GuildWidgetJsonResponse {
     id: string;
     name: string;
-    instant_invite: string;
+    instant_invite: string | null;
     channels: {
         id: string;
         name: string;
@@ -33,7 +32,7 @@ export interface GuildWidgetJsonResponse {
         username: string;
         discriminator: string;
         avatar: string | null;
-        status: ClientStatus;
+        status: GuildWidgetMemberStatus;
         avatar_url: string;
     }[];
     presence_count: number;

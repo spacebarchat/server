@@ -19,6 +19,7 @@ export * from "./AuditLog";
 export * from "./Automod";
 export * from "./GuildProfileResponse";
 export * from "./GuildSchema";
+export * from "./GuildWelcomeScreen";
 export * from "./Role";
 export * from "./Sticker";
 export * from "./VoiceState";

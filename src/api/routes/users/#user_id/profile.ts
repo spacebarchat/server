@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Badge, Config, emitEvent, FieldErrors, handleFile, Member, Relationship, User, UserUpdateEvent } from "@spacebar/util";
+import { Badge, Config, emitEvent, FieldErrors, handleFile, Member, profilePronouns, Relationship, User, UserUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
 import { PartialConnectedAccountResponse, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";
@@ -97,7 +97,7 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         bio: req.user_bot ? null : user.bio,
         accent_color: user.accent_color,
         banner: user.banner,
-        pronouns: user.pronouns,
+        pronouns: profilePronouns(user.pronouns),
         theme_colors: user.theme_colors?.map((t) => Number(t)), // these are strings for some reason, they should be numbers
     };
 
@@ -202,7 +202,7 @@ router.patch("/", route({ requestBody: "UserProfileModifySchema" }), async (req:
         bio: user.bio,
         banner: user.banner,
         theme_colors: user.theme_colors,
-        pronouns: user.pronouns,
+        pronouns: profilePronouns(user.pronouns),
     });
 });
 

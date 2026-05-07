@@ -2,15 +2,20 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-import { Channel, Guild, Member, Role, User } from "../entities";
+import type { Channel, Guild, Member, Role } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server";
-import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, UserFlags } from "@spacebar/schemas";
+import type { ChannelPermissionOverwrite } from "@spacebar/schemas";
 import { FindOneOptions } from "typeorm";
 
 export type PermissionResolvable = bigint | number | Permissions | PermissionResolvable[] | PermissionString;
 
 type PermissionString = keyof typeof Permissions.FLAGS;
+
+const CHANNEL_PERMISSION_OVERWRITE_ROLE = 0;
+const CHANNEL_PERMISSION_OVERWRITE_MEMBER = 1;
+const GUILD_PRIVATE_THREAD = 12;
+const USER_FLAG_QUARANTINED = 1n << 44n;
 
 // BigInt doesn't have a bit limit (https://stackoverflow.com/questions/53335545/whats-the-biggest-bigint-value-in-js-as-per-spec)
 // const CUSTOM_PERMISSION_OFFSET = BigInt(1) << BigInt(64); // 27 permission bits left for discord to add new ones
@@ -114,15 +119,19 @@ export class Permissions extends BitField {
         if (!overwrites) return this;
         if (!this.cache) throw new Error("permission cache not available");
         overwrites = overwrites.filter((x) => {
-            if (x.type === ChannelPermissionOverwriteType.role && this.cache.roles?.some((r) => r.id === x.id)) return true;
-            if (x.type === ChannelPermissionOverwriteType.member && x.id == this.cache.user_id) return true;
+            if (x.type === CHANNEL_PERMISSION_OVERWRITE_ROLE && this.cache.roles?.some((r) => r.id === x.id)) return true;
+            if (x.type === CHANNEL_PERMISSION_OVERWRITE_MEMBER && x.id == this.cache.user_id) return true;
             return false;
         });
         return new Permissions(Permissions.channelPermission(overwrites, this.bitfield));
     }
 
     static channelPermission(overwrites: ChannelPermissionOverwrite[], init?: bigint) {
-        // TODO: do not deny any permissions if admin
+        const basePermissions = init ?? BigInt(0);
+        if ((basePermissions & Permissions.FLAGS.ADMINISTRATOR) === Permissions.FLAGS.ADMINISTRATOR) {
+            return basePermissions;
+        }
+
         return overwrites.reduce(
             (permission, overwrite) =>
                 // apply disallowed permission
@@ -133,7 +142,7 @@ export class Permissions extends BitField {
             // ~ operator inverts deny (e.g. 011 -> 100)
             // & operator only allows 1 for both ~deny and permission (e.g. 010 & 100 -> 000)
             // | operators adds both together (e.g. 000 + 100 -> 100)
-            init || BigInt(0),
+            basePermissions,
         );
     }
 
@@ -163,8 +172,8 @@ export class Permissions extends BitField {
 
         if (channel?.overwrites) {
             const overwrites = channel.overwrites.filter((x) => {
-                if (x.type === ChannelPermissionOverwriteType.role && user.roles.includes(x.id)) return true;
-                if (x.type === ChannelPermissionOverwriteType.member && x.id == user.id) return true;
+                if (x.type === CHANNEL_PERMISSION_OVERWRITE_ROLE && user.roles.includes(x.id)) return true;
+                if (x.type === CHANNEL_PERMISSION_OVERWRITE_MEMBER && x.id == user.id) return true;
                 return false;
             });
             permission = Permissions.channelPermission(overwrites, permission);
@@ -197,12 +206,14 @@ export class Permissions extends BitField {
             if (user.communication_disabled_until > new Date()) return new Permissions(permission & Permissions.TIMED_OUT_MASK.bitfield);
             else {
                 user.communication_disabled_until = null;
-                Member.update({ id: user.id, guild_id: guild.id }, { communication_disabled_until: null }).catch((_) => {
-                    // ignored
-                });
+                void import("../entities/Member.js")
+                    .then(({ Member }) => Member.update({ id: user.id, guild_id: guild.id }, { communication_disabled_until: null }))
+                    .catch((_) => {
+                        // ignored
+                    });
             }
         }
-        if ((BigInt(user.flags) & UserFlags.FLAGS.QUARANTINED) === UserFlags.FLAGS.QUARANTINED) {
+        if ((BigInt(user.flags) & USER_FLAG_QUARANTINED) === USER_FLAG_QUARANTINED) {
             permission = permission & Permissions.QUARANTINED_MASK.bitfield;
         }
 
@@ -250,6 +261,13 @@ export async function getPermission(
         member_relations?: string[];
     } = {},
 ) {
+    const [{ User }, { Channel }, { Guild }, { Member }] = await Promise.all([
+        import("../entities/User.js"),
+        import("../entities/Channel.js"),
+        import("../entities/Guild.js"),
+        import("../entities/Member.js"),
+    ]);
+
     if (!user_id) throw new HTTPError("User not found");
     let channel: Channel | undefined;
     let member: Member | undefined;
@@ -270,7 +288,7 @@ export async function getPermission(
     }
     while (channel?.isThread() && channel.parent_id) {
         const parent = await Channel.findOneOrFail({ where: { id: channel.parent_id }, ...query });
-        if (channel.type === ChannelType.GUILD_PRIVATE_THREAD) {
+        if (channel.type === GUILD_PRIVATE_THREAD) {
             if (!parent.thread_members!.find(({ member }) => member.id === user_id)) {
                 const perms: Permissions = await getPermission(user_id, guild_id, parent, opts);
                 if (!perms.has("MANAGE_THREADS")) {

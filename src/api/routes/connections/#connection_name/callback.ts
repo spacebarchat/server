@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { ConnectionStore, emitEvent, FieldErrors } from "@spacebar/util";
+import { ConnectedAccountDTO, ConnectionStore, emitEvent, FieldErrors } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ConnectionCallbackSchema } from "@spacebar/schemas";
 
@@ -51,7 +51,7 @@ router.post("/", route({ requestBody: "ConnectionCallbackSchema" }), async (req:
     if (connectedAccnt)
         await emitEvent({
             event: "USER_CONNECTIONS_UPDATE",
-            data: { ...connectedAccnt, token_data: undefined },
+            data: new ConnectedAccountDTO(connectedAccnt),
             user_id: userId,
         });
 

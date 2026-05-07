@@ -16,7 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: check
+import { Snowflake } from "../../Identifiers";
+import { ReportMenuType } from "./ReportMenu";
+
+export type CreateReportRequiredField = keyof CreateReportSchema;
+
+export const CreateReportRequiredFields: Record<ReportMenuType, CreateReportRequiredField[]> = {
+    [ReportMenuType.GUILD]: ["guild_id"],
+    [ReportMenuType.GUILD_DISCOVERY]: ["guild_id"],
+    [ReportMenuType.GUILD_DIRECTORY_ENTRY]: ["guild_id", "channel_id"],
+    [ReportMenuType.GUILD_SCHEDULED_EVENT]: ["guild_id", "guild_scheduled_event_id"],
+    [ReportMenuType.MESSAGE]: ["channel_id", "message_id"],
+    [ReportMenuType.STAGE_CHANNEL]: ["channel_id", "guild_id", "stage_instance_id"],
+    [ReportMenuType.FIRST_DM]: ["user_id", "channel_id"],
+    [ReportMenuType.USER]: ["reported_user_id"],
+    [ReportMenuType.APPLICATION]: ["application_id"],
+    [ReportMenuType.WIDGET]: ["user_id", "widget_id"],
+};
+
 export interface CreateReportSchema {
     version: string;
     variant: string;
@@ -24,13 +41,13 @@ export interface CreateReportSchema {
     language: string;
     breadcrumbs: number[];
     elements?: { [key: string]: string[] };
-    channel_id?: string; // snowflake
-    message_id?: string; // snowflake
-    guild_id?: string; // snowflake
-    stage_instance_id?: string; // snowflake
-    guild_scheduled_event_id?: string; // snowflake
-    reported_user_id?: string; // snowflake
-    application_id?: string; // snowflake
-    user_id?: string; // snowflake
-    widget_id?: string; // snowflake
+    channel_id?: Snowflake;
+    message_id?: Snowflake;
+    guild_id?: Snowflake;
+    stage_instance_id?: Snowflake;
+    guild_scheduled_event_id?: Snowflake;
+    reported_user_id?: Snowflake;
+    application_id?: Snowflake;
+    user_id?: Snowflake;
+    widget_id?: Snowflake;
 }

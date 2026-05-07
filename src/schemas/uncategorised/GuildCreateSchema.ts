@@ -16,7 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelCreateSchema } from "@spacebar/schemas";
+import { ChannelCreateSchema, RoleModifySchema } from "@spacebar/schemas";
+
+export interface GuildCreateRoleSchema extends RoleModifySchema {
+    id?: string;
+    managed?: boolean;
+    flags?: number;
+}
 
 export interface GuildCreateSchema {
     /**
@@ -25,9 +31,16 @@ export interface GuildCreateSchema {
     name?: string;
     region?: string;
     icon?: string | null;
+    verification_level?: number | null;
+    default_message_notifications?: number | null;
+    explicit_content_filter?: number | null;
+    afk_channel_id?: string | null;
+    afk_timeout?: number;
+    system_channel_flags?: number;
     channels?: ChannelCreateSchema[];
-    system_channel_id?: string;
-    rules_channel_id?: string;
+    roles?: GuildCreateRoleSchema[];
+    system_channel_id?: string | null;
+    rules_channel_id?: string | null;
     guild_template_code?: string;
     staff_only?: boolean;
 }

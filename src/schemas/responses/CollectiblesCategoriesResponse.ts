@@ -16,10 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: Clean up
-import { StringStringDictionary } from "@spacebar/schemas";
+import type { StringStringDictionary } from "../HelperTypes";
 
-export type CollectiblesCategoriesResponse = CollectiblesCategoryItem[];
+export type CollectiblesCategoriesResponse = CollectiblesCategory[];
 
 export interface CollectiblesCategoryStyle {
     background_colors: number[];
@@ -27,7 +26,7 @@ export interface CollectiblesCategoryStyle {
     confetti_colors: number[];
 }
 
-export interface CollectiblesCategoryItem {
+export interface CollectiblesCategory {
     sku_id: string;
     name: string;
     summary: string;
@@ -45,18 +44,18 @@ export interface CollectiblesCategoryItem {
     hero_banner: string | null;
     wide_banner: string | null;
     hero_logo: string | null;
-    products: CollectiblesCategoryProductItem[];
-    banner_asset?: StaticAnimatedAsset;
-    hero_banner_asset?: StaticAnimatedAsset;
+    products: CollectiblesCategoryProduct[];
+    banner_asset?: CollectiblesStaticAnimatedAsset;
+    hero_banner_asset?: CollectiblesStaticAnimatedAsset;
 }
 
-export interface StaticAnimatedAsset {
+export interface CollectiblesStaticAnimatedAsset {
     // CDN URLs
     animated: string | null;
     static: string;
 }
 
-export interface CollectiblesCategoryProductItem {
+export interface CollectiblesCategoryProduct {
     sku_id: string;
     name: string;
     summary: string;
@@ -64,16 +63,16 @@ export interface CollectiblesCategoryProductItem {
     banner: string;
     unpublished_at: string | null;
     styles: CollectiblesCategoryStyle;
-    prices: PriceMap;
-    items: ProductItem[];
+    prices: CollectiblesPriceMap;
+    items: CollectiblesProductItem[];
     type: number;
     premium_type: number;
     category_sku_id: string;
     google_sku_ids: StringStringDictionary;
-    variants?: ProductItemVariant[];
+    variants?: CollectiblesProductVariant[];
 }
 
-export interface ProductItemVariant {
+export interface CollectiblesProductVariant {
     sku_id: string;
     name: string;
     name_localizations: null;
@@ -83,8 +82,8 @@ export interface ProductItemVariant {
     banner?: string;
     unpublished_at?: string | null;
     styles?: CollectiblesCategoryStyle;
-    prices: PriceMap;
-    items: ProductItem[];
+    prices: CollectiblesPriceMap;
+    items: CollectiblesProductItem[];
     type: number;
     premium_type: number;
     category_sku_id: string;
@@ -95,7 +94,7 @@ export interface ProductItemVariant {
     variant_value: string; // hex string
 }
 
-export interface ProductItem {
+export interface CollectiblesProductItem {
     type: number;
     id: string;
     sku_id: string;
@@ -104,16 +103,16 @@ export interface ProductItem {
     palette?: string;
 }
 
-export type PriceMap = {
-    [key: string]: { country_prices: CountryPrice };
+export type CollectiblesPriceMap = {
+    [key: string]: { country_prices: CollectiblesCountryPrice };
 };
 
-export interface CountryPrice {
+export interface CollectiblesCountryPrice {
     country_code: string;
-    prices: PriceEntry[];
+    prices: CollectiblesPriceEntry[];
 }
 
-export interface PriceEntry {
+export interface CollectiblesPriceEntry {
     amount: number;
     currency: string;
     exponent: number;

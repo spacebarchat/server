@@ -29,7 +29,6 @@ import {
     Presence,
     UserSettings,
     IReadyGuildDTO,
-    ReadState,
     ReadyUserGuildSettingsEntries,
     ReadyPrivateChannel,
     GuildOrUnavailable,
@@ -81,6 +80,15 @@ export interface PublicRelationship {
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
 
+export interface ReadyReadState {
+    id: string;
+    mention_count: number;
+    last_viewed: number;
+    last_message_id?: string | null;
+    last_pin_timestamp: Date | string;
+    flags: number;
+}
+
 export interface ReadyEventData {
     v: number;
     user: UserPrivate;
@@ -115,11 +123,7 @@ export interface ReadyEventData {
     user_settings_proto?: string;
     user_settings_proto_json?: JsonValue;
     relationships?: PublicRelationship[]; // TODO
-    read_state: {
-        entries: ReadState[]; // TODO
-        partial: boolean;
-        version: number;
-    };
+    read_state: ReadyReadState[];
     user_guild_settings?: {
         entries: ReadyUserGuildSettingsEntries[];
         version: number;
@@ -255,6 +259,14 @@ export interface GuildEmojisUpdateEvent extends Event {
     data: {
         guild_id: string;
         emojis: Emoji[];
+    };
+}
+
+export interface GuildEmojiUpdateEvent extends Event {
+    event: "GUILD_EMOJI_UPDATE";
+    data: {
+        guild_id: string;
+        emoji: Emoji;
     };
 }
 
@@ -685,6 +697,7 @@ export type EventData =
     | GuildDeleteEvent
     | GuildBanAddEvent
     | GuildBanRemoveEvent
+    | GuildEmojiUpdateEvent
     | GuildEmojisUpdateEvent
     | GuildIntegrationUpdateEvent
     | GuildMemberAddEvent
@@ -802,6 +815,7 @@ export type EVENT =
     | "GUILD_DELETE"
     | "GUILD_BAN_ADD"
     | "GUILD_BAN_REMOVE"
+    | "GUILD_EMOJI_UPDATE"
     | "GUILD_EMOJIS_UPDATE"
     | "GUILD_STICKERS_UPDATE"
     | "GUILD_INTEGRATIONS_UPDATE"

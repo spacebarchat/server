@@ -491,20 +491,19 @@ export class Channel extends BaseClass {
             for (const recipient of channel.recipients) {
                 await emitEvent({
                     event: "CHANNEL_CREATE",
-                    data: channel_dto.excludedRecipients([recipient.user_id]),
+                    data: channel_dto.forRecipient(recipient.user_id),
                     user_id: recipient.user_id,
                 });
             }
         } else {
             await emitEvent({
                 event: "CHANNEL_CREATE",
-                data: channel_dto,
+                data: channel_dto.forRecipient(creator_user_id),
                 user_id: creator_user_id,
             });
         }
 
-        if (recipients.length === 1) return channel_dto;
-        else return channel_dto.excludedRecipients([creator_user_id]);
+        return channel_dto.forRecipient(creator_user_id);
     }
 
     static async removeRecipientFromChannel(channel: Channel, user_id: string) {

@@ -21,7 +21,7 @@ import path from "node:path";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { route } from "@spacebar/api";
-import { ReportMenuType, ReportMenuTypeNames, CreateReportSchema } from "@spacebar/schemas";
+import { ReportMenuType, ReportMenuTypeNames, CreateReportSchema, CreateReportRequiredFields } from "@spacebar/schemas";
 import { FieldErrors } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
@@ -32,7 +32,7 @@ router.get(
         description: "[EXT] Get available reporting menu types.",
         responses: {
             200: {
-                body: "Array<ReportMenuTypeNames>",
+                body: "ReportingMenuTypesResponse",
             },
         },
     }),
@@ -162,40 +162,9 @@ for (const type of Object.values(ReportMenuTypeNames)) {
             };
 
             const t = Number(Object.entries(ReportMenuTypeNames).find((x) => x[1] === type)?.[0]) as ReportMenuType;
-            // TODO: did i miss anything?
-            switch (t) {
-                case ReportMenuType.GUILD:
-                case ReportMenuType.GUILD_DISCOVERY:
-                    requireFields(body, ["guild_id"]);
-                    break;
-                case ReportMenuType.GUILD_DIRECTORY_ENTRY:
-                    requireFields(body, ["guild_id", "channel_id"]);
-                    break;
-                case ReportMenuType.GUILD_SCHEDULED_EVENT:
-                    requireFields(body, ["guild_id", "scheduled_event_id"]);
-                    break;
-                case ReportMenuType.MESSAGE:
-                    requireFields(body, ["channel_id", "message_id"]);
-                    // NOTE: is body.guild_id set if the channel is in a guild? is body.user_id ever set????
-                    break;
-                case ReportMenuType.STAGE_CHANNEL:
-                    requireFields(body, ["channel_id", "guild_id", "stage_instance_id"]);
-                    break;
-                case ReportMenuType.FIRST_DM:
-                    requireFields(body, ["user_id", "channel_id"]);
-                    break;
-                case ReportMenuType.USER:
-                    requireFields(body, ["reported_user_id"]);
-                    break;
-                case ReportMenuType.APPLICATION:
-                    requireFields(body, ["application_id"]);
-                    break;
-                case ReportMenuType.WIDGET:
-                    requireFields(body, ["user_id", "widget_id"]);
-                    break;
-                default:
-                    throw new HTTPError("Unknown report menu type", 400);
-            }
+            const requiredFields = CreateReportRequiredFields[t];
+            if (!requiredFields) throw new HTTPError("Unknown report menu type", 400);
+            requireFields(body, requiredFields);
 
             throw new HTTPError("Validation success - implementation TODO", 418);
         },

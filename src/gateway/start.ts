@@ -22,6 +22,7 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 import { Server } from "./Server";
+import { runStartupOrExit } from "@spacebar/util";
 import { config } from "dotenv";
 import fs from "node:fs";
 import cluster from "node:cluster";
@@ -37,4 +38,4 @@ const server = new Server({
 if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-gw-${cluster.worker ? cluster.worker.id : port}`);
 process.title = `sb-gw-${cluster.worker ? cluster.worker.id : port}`;
 
-server.start().then(() => {});
+void runStartupOrExit("Gateway server", () => server.start());

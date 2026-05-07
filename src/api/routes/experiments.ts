@@ -17,13 +17,27 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api";
+import { createExperimentsResponse, route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), (req: Request, res: Response) => {
-    // TODO:
-    res.send({ fingerprint: "", assignments: [], guild_experiments: [] });
-});
+router.get(
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "ExperimentsResponse",
+            },
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.send(
+            createExperimentsResponse({
+                fingerprint: req.header("X-Fingerprint"),
+                hasAuthorization: Boolean(req.header("Authorization")),
+            }),
+        );
+    },
+);
 
 export default router;

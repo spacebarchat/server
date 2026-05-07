@@ -18,9 +18,10 @@
 
 import { ChannelPermissionOverwriteType, ChannelType, TagCreateSchema } from "@spacebar/schemas";
 
-export interface ChannelModifySchema {
+export type ChannelModifyType = ChannelType.GUILD_TEXT | ChannelType.GUILD_NEWS;
+
+export interface ChannelBaseModifySchema {
     name?: string;
-    type?: ChannelType;
     topic?: string;
     icon?: string | null;
     bitrate?: number;
@@ -48,4 +49,8 @@ export interface ChannelModifySchema {
     archived?: boolean;
     locked?: boolean;
     available_tags?: (TagCreateSchema & { id: string })[];
+}
+
+export interface ChannelModifySchema extends ChannelBaseModifySchema {
+    type?: ChannelModifyType;
 }

@@ -18,7 +18,7 @@
 
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import { checkToken, closeDatabase, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
+import { checkToken, closeDatabase, initEvent, initStartupConfigAndDatabase, Rights } from "@spacebar/util";
 import ws from "ws";
 import { Connection, openConnections } from "./events/Connection";
 import http from "node:http";
@@ -127,6 +127,9 @@ export class Server {
                                                       permissions: x.permissions,
                                                       events: x.events,
                                                       member_events: x.member_events,
+                                                      guild_event_ids: x.guild_event_ids,
+                                                      guild_member_event_ids: x.guild_member_event_ids,
+                                                      member_event_guild_ids: x.member_event_guild_ids,
                                                       listen_options: x.listen_options,
                                                       capabilities: x.capabilities,
                                                       large_threshold: x.large_threshold,
@@ -167,8 +170,7 @@ export class Server {
     }
 
     async start(): Promise<void> {
-        await initDatabase();
-        await Config.init();
+        await initStartupConfigAndDatabase();
         await initEvent();
         // temporary fix
         await cleanupOnStartup();

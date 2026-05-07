@@ -18,8 +18,9 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Channel, Config, emailAlreadyRegisteredFieldError, Email, FieldErrors, isNormalizedEmailUniqueViolation, normalizeOptionalEmail, Snowflake, trimSpecial } from "..";
 import { Random } from "../util";
+import { profilePronouns } from "../util/UserProfile";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
@@ -218,6 +219,7 @@ export class User extends BaseClass {
         PublicUserProjection.forEach((x) => {
             user[x] = this[x];
         });
+        user.pronouns = profilePronouns(this.pronouns);
         return user as PublicUser;
     }
 
@@ -228,6 +230,7 @@ export class User extends BaseClass {
         [...PrivateUserProjection, ...extraFields].forEach((x) => {
             user[x] = this[x];
         });
+        user.pronouns = profilePronouns(this.pronouns);
         return user as UserPrivate;
     }
 
@@ -298,6 +301,7 @@ export class User extends BaseClass {
     }) {
         // trim special utf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
+        email = normalizeOptionalEmail(email);
 
         const discriminator = await User.generateDiscriminator(username);
         if (!discriminator) {
@@ -340,7 +344,14 @@ export class User extends BaseClass {
         });
 
         user.validate();
-        await Promise.all([user.save(), settings.save()]);
+        try {
+            await user.save();
+        } catch (error) {
+            if (isNormalizedEmailUniqueViolation(error)) {
+                throw emailAlreadyRegisteredFieldError(req?.t("auth:register.EMAIL_ALREADY_REGISTERED"));
+            }
+            throw error;
+        }
 
         // send verification email if users aren't verified by default and we have an email
         if (!Config.get().defaults.user.verified && email) {

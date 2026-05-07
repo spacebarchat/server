@@ -28,25 +28,15 @@ import { randomUpperString } from "@spacebar/api";
 import { TimeSpan } from "./Timespan";
 import { HTTPError } from "lambert-server";
 import path from "node:path";
+import { createTokenPayload, CurrentTokenFormatVersion, getTokenUserId, TokenPayload } from "./TokenPayload";
 
-/// Change history:
-/// 1 - Initial version with HS256
-/// 2 - Switched to ES512
-/// 3 - Add version, device id to token payload
-export const CurrentTokenFormatVersion: number = 3;
+export { CurrentTokenFormatVersion };
 
 export type UserTokenData = {
     user: User;
     session?: Session;
     tokenVersion: number;
-    decoded: {
-        id: string;
-        iat: number;
-        // token format version
-        ver?: number;
-        // device id
-        did?: string;
-    };
+    decoded: TokenPayload;
 };
 
 function logAuth(text: string) {
@@ -80,15 +70,20 @@ export const checkToken = (
                 logAuth("validateUser rejected: " + err);
                 return rejectAndLog(reject, 401, "Invalid Token meow " + err);
             }
+            const userId = getTokenUserId(decoded);
+            if (!userId) {
+                logAuth("validateUser rejected: Missing user id claim");
+                return rejectAndLog(reject, 401, "Invalid Token");
+            }
 
             // eslint-disable-next-line prefer-const
             let [user, session] = await Promise.all([
                 User.findOne({
-                    where: { id: decoded.id },
+                    where: { id: userId },
                     select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
                     relations: opts?.relations,
                 }),
-                decoded.did ? Session.findOne({ where: { session_id: decoded.did, user_id: decoded.id } }) : undefined,
+                decoded.did ? Session.findOne({ where: { session_id: decoded.did, user_id: userId } }) : undefined,
             ]);
 
             if (!user) {
@@ -175,7 +170,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
     await newSession.save();
 
     return new Promise((res, rej) => {
-        const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentTokenFormatVersion, did: newSession.session_id } as UserTokenData["decoded"];
+        const payload = createTokenPayload(id, iat, keyPair.fingerprint, newSession.session_id);
         jwt.sign(
             payload,
             keyPair.privateKey,

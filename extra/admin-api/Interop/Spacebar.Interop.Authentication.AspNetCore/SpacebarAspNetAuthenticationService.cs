@@ -4,7 +4,7 @@ using Spacebar.Models.Db.Models;
 
 namespace Spacebar.Interop.Authentication.AspNetCore;
 
-public class SpacebarAspNetAuthenticationService(SpacebarAuthenticationService authService) {
+public class SpacebarAspNetAuthenticationService(SpacebarAuthenticationService authService) : ISpacebarAspNetAuthenticationService {
     public string GetTokenAsync(HttpRequest request) {
         if (!request.Headers.ContainsKey("Authorization")) {
             Console.WriteLine(string.Join(", ", request.Headers.Keys));

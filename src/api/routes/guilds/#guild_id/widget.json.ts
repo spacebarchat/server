@@ -17,7 +17,7 @@
 */
 
 import { randomString, route } from "@spacebar/api";
-import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, Guild, Invite, Member, Permissions, normalizeInviteCreateOptions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, GuildWidgetJsonResponse } from "@spacebar/schemas";
 
@@ -86,23 +86,14 @@ async function getWidgetJsonData(guild_id: string) {
     });
 
     if (guild.widget_channel_id && !invite) {
-        // Create invite for channel if none exists
-        // TODO: Refactor invite create code to a shared function
-        const max_age = 86400; // 24 hours
-        const expires_at = new Date(max_age * 1000 + Date.now());
-
-        invite = await Invite.create({
-            code: randomString(),
-            temporary: false,
-            uses: 0,
-            max_uses: 0,
-            max_age: max_age,
-            expires_at,
-            created_at: new Date(),
-            guild_id,
-            channel_id: guild.widget_channel_id,
-            flags: 0,
-        }).save();
+        invite = await Invite.createForChannel(
+            randomString(),
+            {
+                guild_id,
+                channel_id: guild.widget_channel_id,
+            },
+            normalizeInviteCreateOptions({}),
+        ).save();
     }
 
     // Fetch voice channels, and the @everyone permissions object
@@ -125,13 +116,13 @@ async function getWidgetJsonData(guild_id: string) {
     const members = await Member.find({ where: { guild_id: guild_id }, relations: { user: { sessions: true } } });
     const minLastSeen = Date.now() - 1000 * 60 * 5;
     const onlineMembers = members.filter((m) => m.user.sessions.filter((s) => (s.last_seen?.getTime() ?? 0) > minLastSeen).length > 0);
-    const memberData = onlineMembers
+    const memberData: GuildWidgetJsonResponse["members"] = onlineMembers
         .map((x) => ({
             id: x.id,
             username: x.user.username,
             discriminator: x.user.discriminator,
             avatar: null,
-            status: "online", // TODO
+            status: "online" as const, // TODO
             avatar_url: x.avatar
                 ? `${Config.get().cdn.endpointPublic}/guilds/${guild_id}/users/${x.id}/avatars/${x.avatar}.png`
                 : x.user.avatar
@@ -144,12 +135,11 @@ async function getWidgetJsonData(guild_id: string) {
     return {
         id: guild_id,
         name: guild.name,
-        instant_invite: invite?.code,
+        instant_invite: invite?.code ?? null,
         channels: channels,
         members: memberData,
-        member_count: members.length,
         presence_count: guild.presence_count || onlineMembers.length,
-    } as GuildWidgetJsonResponse;
+    } satisfies GuildWidgetJsonResponse;
 }
 
 export default router;

@@ -89,6 +89,17 @@ export default defineConfig([
         extends: typescriptEslint.configs?.disableTypeChecked ? [typescriptEslint.configs.disableTypeChecked] : [],
     },
     {
+        files: ["benchmarks/**/*.js"],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+        rules: {
+            "@typescript-eslint/no-require-imports": "off",
+        },
+    },
+    {
         plugins: { "node-import": nodeImport },
         rules: {
             "node-import/prefer-node-protocol": "error",

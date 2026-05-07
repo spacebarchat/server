@@ -16,6 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelModifySchema } from "./ChannelModifySchema";
+import { ChannelType } from "@spacebar/schemas";
+import { ChannelBaseModifySchema } from "./ChannelModifySchema";
 
-export type ChannelCreateSchema = Omit<ChannelModifySchema, "available_tags">;
+export interface ChannelCreateSchema extends Omit<ChannelBaseModifySchema, "available_tags"> {
+    type?: ChannelType;
+}

@@ -28,7 +28,7 @@ import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
 import express from "express";
 import { green, bold } from "picocolors";
-import { Config, initDatabase } from "@spacebar/util";
+import { initStartupConfigAndDatabase, runStartupOrExit } from "@spacebar/util";
 import fs from "node:fs";
 import cluster from "node:cluster";
 
@@ -58,8 +58,7 @@ process.on("SIGTERM", async () => {
 });
 
 async function main() {
-    await initDatabase();
-    await Config.init();
+    await initStartupConfigAndDatabase();
 
     const logRequests = process.env["LOG_REQUESTS"] != undefined;
     if (logRequests) {
@@ -83,4 +82,4 @@ async function main() {
     console.log(`[Server] ${green(`Listening on port ${bold(port)}`)}`);
 }
 
-main().catch(console.error);
+void runStartupOrExit("Spacebar server", main);

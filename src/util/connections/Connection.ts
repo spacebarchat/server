@@ -21,13 +21,20 @@ import { ConnectedAccount } from "../entities";
 import { ConnectedAccountSchema, ConnectionCallbackSchema } from "@spacebar/schemas";
 import { Config, DiscordApiErrors } from "../util";
 
+export interface ConnectionOAuthState {
+    userId: string;
+    createdAt: number;
+    data: Record<string, unknown>;
+}
+
 /**
  * A connection that can be used to connect to an external service.
  */
 export abstract class Connection {
     id: string;
     settings: { enabled: boolean };
-    states: Map<string, string> = new Map();
+    states: Map<string, ConnectionOAuthState> = new Map();
+    stateTTL = 10 * 60 * 1000;
 
     public abstract readonly friendlyName: string;
     public abstract readonly setupUrl: string;
@@ -67,18 +74,24 @@ export abstract class Connection {
      * @returns the user id associated with the state
      */
     getUserId(state: string): string {
-        if (!this.states.has(state)) throw DiscordApiErrors.INVALID_OAUTH_STATE;
-        return this.states.get(state) as string;
+        return this.getState(state).userId;
     }
 
     /**
      * Generates a state
      * @param userId The user id to generate a state for.
+     * @param data Additional data to bind to the state.
      * @returns a new state
      */
-    createState(userId: string): string {
+    createState(userId: string, data: Record<string, unknown> = {}): string {
+        this.pruneExpiredStates();
+
         const state = crypto.randomBytes(16).toString("hex");
-        this.states.set(state, userId);
+        this.states.set(state, {
+            userId,
+            createdAt: Date.now(),
+            data: { ...data },
+        });
 
         return state;
     }
@@ -88,8 +101,33 @@ export abstract class Connection {
      * @param state The state to check.
      */
     validateState(state: string): void {
-        if (!this.states.has(state)) throw DiscordApiErrors.INVALID_OAUTH_STATE;
+        this.consumeState(state);
+    }
+
+    protected getState(state: string): ConnectionOAuthState {
+        const oauthState = this.states.get(state);
+        if (!oauthState || this.isStateExpired(oauthState)) {
+            this.states.delete(state);
+            throw DiscordApiErrors.INVALID_OAUTH_STATE;
+        }
+
+        return oauthState;
+    }
+
+    protected consumeState(state: string): ConnectionOAuthState {
+        const oauthState = this.getState(state);
         this.states.delete(state);
+        return oauthState;
+    }
+
+    private isStateExpired(state: ConnectionOAuthState): boolean {
+        return Date.now() - state.createdAt > this.stateTTL;
+    }
+
+    private pruneExpiredStates(): void {
+        for (const [state, oauthState] of this.states.entries()) {
+            if (this.isStateExpired(oauthState)) this.states.delete(state);
+        }
     }
 
     /**

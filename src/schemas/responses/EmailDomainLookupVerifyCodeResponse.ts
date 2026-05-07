@@ -16,10 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { Guild } from "@spacebar/util";
+import { HubGuild } from "./EmailDomainLookupResponse";
 
 export interface EmailDomainLookupVerifyCodeResponse {
-    guild: Guild;
+    guild: HubGuild | null;
     joined: boolean;
 }

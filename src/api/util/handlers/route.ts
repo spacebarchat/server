@@ -21,6 +21,7 @@ import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
 import { ajv } from "@spacebar/schemas";
 import { BigNumber } from "bignumber.js";
+import { normalizeEmbedPayloadForSchema } from "../utility/EmbedPayload";
 
 const ignoredRequestSchemas = [
     // skip validation for settings proto JSON updates - TODO: figure out if this even possible to fix?
@@ -99,15 +100,17 @@ export function followNullPath(obj1: any, nullObj: stripNulls) {
             }
     }
 }
-//It's pretty safe to assume numbers over the number limit aren't really meant to be numbers, so we turn them to strings.
 export function bigNumberToString(obj1: unknown) {
-    if (obj1 && typeof obj1 === "object") {
-        for (const [key, value] of Object.entries(obj1)) {
-            if (typeof value === "object") {
-                if (value instanceof BigNumber) {
-                    //@ts-expect-error this is fine lol
-                    obj1[key] = value.toString();
-                }
+    if (!obj1 || typeof obj1 !== "object") return;
+
+    const obj = obj1 as Record<string, unknown>;
+    for (const key in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+        const value = obj[key];
+        if (typeof value === "object") {
+            if (value instanceof BigNumber) {
+                obj[key] = value.toString();
+            } else {
                 bigNumberToString(value);
             }
         }
@@ -148,9 +151,12 @@ export function route(opts: RouteOptions) {
                 throw SpacebarApiErrors.MISSING_RIGHTS.withParams(opts.right as string);
             }
         }
+
         bigNumberToString(req.body);
 
         if (validate && !ignoredRequestSchemas.includes(opts.requestBody!)) {
+            normalizeEmbedPayloadForSchema(opts.requestBody!, req.body);
+
             if (opts.stripNulls) {
                 if (opts.stripNulls === true) stripNull(req.body);
                 else followNullPath(req.body, opts.stripNulls);

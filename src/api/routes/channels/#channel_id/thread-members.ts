@@ -17,13 +17,86 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, emitEvent, Member, Permissions, ThreadCreateEvent, ThreadDeleteEvent, ThreadMember, ThreadMemberFlags, ThreadMembersUpdateEvent } from "@spacebar/util";
+import {
+    Channel,
+    DiscordApiErrors,
+    emitEvent,
+    Member,
+    Permissions,
+    ThreadCreateEvent,
+    ThreadDeleteEvent,
+    ThreadMember,
+    ThreadMemberFlags,
+    ThreadMembersUpdateEvent,
+} from "@spacebar/util";
 import { ChannelType, Snowflake } from "@spacebar/schemas";
 
 import { Request, Response, Router } from "express";
-import { MoreThan } from "typeorm";
+import {
+    applyThreadMemberListQuery,
+    assertThreadIsNotArchived,
+    parseThreadMemberLimit,
+    parseThreadMemberWithMember,
+    resolveThreadMemberUserId,
+} from "../../../util/utility/ThreadMembers";
 
 const router = Router({ mergeParams: true });
+
+const addThreadMemberRoute = route({
+    responses: {
+        200: {},
+        403: {},
+    },
+    permission: "VIEW_CHANNEL",
+});
+
+async function addThreadMember(req: Request, res: Response) {
+    // eslint-disable-next-line prefer-const
+    let { channel_id, user_id } = req.params as { [key: string]: string };
+    const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
+    try {
+        assertThreadIsNotArchived(thread);
+    } catch {
+        throw DiscordApiErrors.CANNOT_EDIT_ARCHIVED_THREAD;
+    }
+
+    if (user_id != "@me") (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS);
+    else user_id = req.user_id;
+
+    const member = await Member.findOneOrFail({ where: { id: user_id, guild_id: thread.guild_id! } });
+
+    if (await ThreadMember.existsBy({ member_idx: member.index, id: channel_id })) {
+        return res.status(204).send();
+    }
+
+    const threadMember = ThreadMember.create({ member_idx: member.index, id: channel_id, join_timestamp: new Date(), muted: false, flags: ThreadMemberFlags.ALL_MESSAGES });
+    await threadMember.save();
+
+    // increment member count
+    if (thread.member_count !== null && thread.member_count !== undefined) {
+        thread.member_count++;
+        await thread.save();
+    }
+
+    await emitEvent({
+        event: "THREAD_MEMBERS_UPDATE",
+        data: {
+            guild_id: thread.guild_id!,
+            id: thread.id,
+            member_count: thread.member_count ?? 0, //TODO: is this the right fix?
+            added_members: [{ user_id: user_id, ...threadMember.toJSON() }],
+        },
+        channel_id: thread.id,
+    } satisfies ThreadMembersUpdateEvent);
+
+    await emitEvent({
+        event: "THREAD_CREATE",
+        data: { ...thread.toJSON(), newly_created: false },
+        user_id: user_id,
+    } satisfies ThreadCreateEvent);
+
+    return res.status(204).send();
+}
 
 router.get(
     "/",
@@ -35,88 +108,54 @@ router.get(
         permission: "VIEW_CHANNEL",
     }),
     async (req: Request, res: Response) => {
-        // eslint-disable-next-line prefer-const
-        let { with_member, after, limit } = req.query as {
+        const { with_member, after, limit } = req.query as {
             with_member?: string;
             after?: Snowflake;
             limit?: string;
         };
-        const { id: channel_id } = req.params as { [key: string]: string };
+        const { channel_id } = req.params as { [key: string]: string };
 
-        if (limit && parseInt(limit) > 100) limit = "100";
-
-        if (with_member != "true") {
-            after = undefined;
-            limit = undefined;
-        }
+        const parsedLimit = parseThreadMemberLimit(limit);
+        const withMember = parseThreadMemberWithMember(with_member);
 
         return res.send(
-            await ThreadMember.find({
-                where: { channel: { id: channel_id }, ...(after ? { user_id: MoreThan(after) } : {}) },
-                take: limit ? parseInt(limit) : 50,
-                order: { member_idx: "ASC" },
-                relations: { ...(with_member ? { member: true } : {}) },
-            }),
+            await applyThreadMemberListQuery(ThreadMember.createQueryBuilder("thread_member"), {
+                afterUserId: after,
+                limit: parsedLimit,
+                threadId: channel_id,
+                withMember,
+            }).getMany(),
         );
     },
 );
-router.post(
+
+router.get(
     "/:user_id",
     route({
         responses: {
             200: {},
             403: {},
+            404: {},
         },
         permission: "VIEW_CHANNEL",
     }),
     async (req: Request, res: Response) => {
-        // eslint-disable-next-line prefer-const
-        let { channel_id, user_id } = req.params as { [key: string]: string };
-        const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
+        const { channel_id } = req.params as { [key: string]: string };
+        const user_id = resolveThreadMemberUserId(req.params.user_id as string, req.user_id);
+        const withMember = parseThreadMemberWithMember(req.query.with_member as string | undefined);
+        const thread = await Channel.findOneOrFail({ where: { id: channel_id }, select: { guild_id: true, id: true } });
+        const member = await Member.findOneOrFail({ where: { id: user_id, guild_id: thread.guild_id! }, select: { index: true } });
 
-        if (user_id != "@me") (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.SEND_MESSAGES);
-        else {
-            user_id = req.user_id;
-            if (thread.type === ChannelType.GUILD_PRIVATE_THREAD)
-                // TODO what's the actual permission for this?
-                (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.MANAGE_MESSAGES);
-        }
+        const threadMember = await ThreadMember.findOneOrFail({
+            where: { member_idx: member.index, id: channel_id },
+            relations: withMember ? { member: true } : undefined,
+        });
 
-        const member = await Member.findOneOrFail({ where: { id: user_id, guild_id: thread.guild_id! } });
-
-        if (await ThreadMember.existsBy({ member_idx: member.index, id: channel_id })) {
-            return res.status(204).send();
-        }
-
-        const threadMember = ThreadMember.create({ member_idx: member.index, id: channel_id, join_timestamp: new Date(), muted: false, flags: ThreadMemberFlags.ALL_MESSAGES });
-        await threadMember.save();
-
-        // increment member count
-        if (thread.member_count !== null && thread.member_count !== undefined) {
-            thread.member_count++;
-            await thread.save();
-        }
-
-        await emitEvent({
-            event: "THREAD_MEMBERS_UPDATE",
-            data: {
-                guild_id: thread.guild_id!,
-                id: thread.id,
-                member_count: thread.member_count ?? 0, //TODO: is this the right fix?
-                added_members: [{ user_id: user_id, ...threadMember.toJSON() }],
-            },
-            channel_id: thread.id,
-        } satisfies ThreadMembersUpdateEvent);
-
-        await emitEvent({
-            event: "THREAD_CREATE",
-            data: { ...thread.toJSON(), newly_created: false },
-            user_id: user_id,
-        } satisfies ThreadCreateEvent);
-
-        return res.status(204).send();
+        return res.json(threadMember);
     },
 );
+router.put("/:user_id", addThreadMemberRoute, addThreadMember);
+router.post("/:user_id", addThreadMemberRoute, addThreadMember);
 
 router.delete(
     "/:user_id",
@@ -131,10 +170,16 @@ router.delete(
         // eslint-disable-next-line prefer-const
         let { channel_id, user_id } = req.params as { [key: string]: string };
         const thread = await Channel.findOneOrFail({ where: { id: channel_id } });
+        try {
+            assertThreadIsNotArchived(thread);
+        } catch {
+            throw DiscordApiErrors.CANNOT_EDIT_ARCHIVED_THREAD;
+        }
 
-        // TODO: require thread creator for private threads
-        if (user_id != "@me") (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.MANAGE_THREADS);
-        else user_id = req.user_id;
+        if (user_id != "@me") {
+            const userCanRemovePrivateThreadMember = thread.type === ChannelType.GUILD_PRIVATE_THREAD && thread.owner_id === req.user_id;
+            if (!userCanRemovePrivateThreadMember) (await thread.getUserPermissions({ user: req.user, guild: thread.guild })).hasThrow(Permissions.FLAGS.MANAGE_THREADS);
+        } else user_id = req.user_id;
 
         const member = await Member.findOneOrFail({ where: { id: user_id, guild_id: thread.guild_id! } });
         const threadMember = await ThreadMember.findOneOrFail({ where: { member_idx: member.index, id: channel_id } });

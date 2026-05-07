@@ -17,7 +17,7 @@
 */
 
 import { Server, ServerOptions } from "lambert-server";
-import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
+import { Attachment, Config, initStartupConfigAndDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
 import path from "node:path";
 import guildProfilesRoute from "./routes/guild-profiles";
@@ -34,8 +34,7 @@ export class CDNServer extends Server {
     }
 
     async start() {
-        await initDatabase();
-        await Config.init();
+        await initStartupConfigAndDatabase();
 
         this.migrateAttachments().then(
             (_) => console.log("[CDN] Successfully migrated attachments"),

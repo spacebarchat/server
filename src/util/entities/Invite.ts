@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
+import { Column, Entity, FindOptionsWhere, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
+import { buildInviteReuseCriteria, findReusableInviteCandidate, InviteCreateContext, NormalizedInviteCreateOptions, shouldReuseInviteForCreate } from "../util/InviteCreate";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
@@ -99,8 +100,8 @@ export class Invite extends BaseClassWithoutId {
     @Column()
     flags: number;
 
-    isExpired() {
-        if (this.max_age !== 0 && this.expires_at && this.expires_at < new Date()) return true;
+    isExpired(now = new Date()) {
+        if (this.max_age !== 0 && this.expires_at && this.expires_at < now) return true;
         if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
         return false;
     }
@@ -122,5 +123,37 @@ export class Invite extends BaseClassWithoutId {
 
         await Member.addToGuild(user_id, invite.guild_id);
         return invite;
+    }
+
+    static createForChannel(code: string, context: InviteCreateContext, options: NormalizedInviteCreateOptions) {
+        const invite = new Invite();
+        invite.code = code;
+        invite.temporary = options.temporary;
+        invite.uses = 0;
+        invite.max_uses = options.max_uses;
+        invite.max_age = options.max_age;
+        invite.expires_at = options.expires_at;
+        invite.created_at = options.created_at;
+        invite.guild_id = context.guild_id;
+        invite.channel_id = context.channel_id;
+        invite.inviter_id = context.inviter_id;
+        invite.flags = options.flags;
+        if (options.target_user_id !== undefined) invite.target_user_id = options.target_user_id;
+        invite.target_user_type = options.target_user_type;
+
+        return invite;
+    }
+
+    static async findReusableForCreate(context: InviteCreateContext, options: NormalizedInviteCreateOptions, now = new Date()) {
+        if (!shouldReuseInviteForCreate(options)) return undefined;
+
+        const invites = await Invite.find({
+            where: buildInviteReuseCriteria(context, options) as FindOptionsWhere<Invite>,
+            order: {
+                created_at: "ASC",
+            },
+        });
+
+        return findReusableInviteCandidate(invites, now);
     }
 }

@@ -54,9 +54,12 @@ export class Server {
             if (router.default) router = router.default;
             if (!router || router?.prototype?.constructor?.name !== "router") throw `File doesn't export any default router`;
 
-            this.app.use(path, <Router>router);
+            const paths = new Set([path, path.replaceAll("@", "%40")]);
+            for (const routePath of paths) {
+                this.app.use(routePath, <Router>router);
 
-            if (this.options.serverInitLogging && process.env.LOG_ROUTES !== "false") console.log(`[Server] Route ${path} registered`);
+                if (this.options.serverInitLogging && process.env.LOG_ROUTES !== "false") console.log(`[Server] Route ${routePath} registered`);
+            }
 
             return router;
         } catch (error) {

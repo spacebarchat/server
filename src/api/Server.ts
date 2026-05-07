@@ -16,7 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase, getRevInfoOrFail } from "@spacebar/util";
+import {
+    Config,
+    ConnectionConfig,
+    ConnectionLoader,
+    Email,
+    JSONReplacer,
+    WebAuthn,
+    initEvent,
+    registerRoutes,
+    getDatabase,
+    getRevInfoOrFail,
+    initStartupConfigAndDatabase,
+} from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { Request, Response, Router } from "express";
 import { Server, ServerOptions } from "lambert-server";
@@ -50,8 +62,7 @@ export class SpacebarServer extends Server {
     }
 
     async start() {
-        await initDatabase();
-        await Config.init();
+        await initStartupConfigAndDatabase();
         await initEvent();
         await Email.init();
         await ConnectionConfig.init();

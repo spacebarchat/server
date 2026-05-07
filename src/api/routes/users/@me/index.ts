@@ -17,10 +17,23 @@
 */
 
 import { route } from "@spacebar/api";
-import { Config, emitEvent, FieldErrors, generateToken, handleFile, User, UserUpdateEvent } from "@spacebar/util";
+import {
+    Config,
+    emailAlreadyRegisteredFieldError,
+    emailMatches,
+    emitEvent,
+    FieldErrors,
+    generateToken,
+    handleFile,
+    isNormalizedEmailUniqueViolation,
+    normalizeOptionalEmail,
+    User,
+    UserUpdateEvent,
+} from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { DisplayNameStyle, PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";
+import { Not } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -34,12 +47,12 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        res.json(
-            await User.findOne({
-                select: PrivateUserProjection,
-                where: { id: req.user_id },
-            }),
-        );
+        const user = await User.findOneOrFail({
+            select: PrivateUserProjection,
+            where: { id: req.user_id },
+        });
+
+        res.json(user.toPrivateUser());
     },
 );
 
@@ -89,8 +102,9 @@ router.patch(
             }
         }
 
-        if (body.email) {
-            if (!body.email && Config.get().register.email.required)
+        if ("email" in body) {
+            const email = normalizeOptionalEmail(body.email);
+            if (!email && Config.get().register.email.required)
                 throw FieldErrors({
                     email: {
                         message: req.t("auth:register.EMAIL_INVALID"),
@@ -104,6 +118,10 @@ router.patch(
                         code: "INVALID_PASSWORD",
                     },
                 });
+            if (email && (await User.findOne({ where: { email: emailMatches(email), id: Not(req.user_id) }, select: { id: true } }))) {
+                throw emailAlreadyRegisteredFieldError(req.t("auth:register.EMAIL_ALREADY_REGISTERED"));
+            }
+            body.email = email ?? null;
         }
 
         if (body.new_password) {
@@ -217,7 +235,14 @@ router.patch(
 
         user.assign(body);
         user.validate();
-        await user.save();
+        try {
+            await user.save();
+        } catch (error) {
+            if (isNormalizedEmailUniqueViolation(error)) {
+                throw emailAlreadyRegisteredFieldError(req.t("auth:register.EMAIL_ALREADY_REGISTERED"));
+            }
+            throw error;
+        }
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
@@ -231,7 +256,7 @@ router.patch(
         } satisfies UserUpdateEvent);
 
         res.json({
-            ...user,
+            ...user.toPrivateUser(),
             newToken,
         });
     },

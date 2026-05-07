@@ -25,18 +25,46 @@ export interface UserResponse {
     verified: boolean;
     coins: number;
     id: string;
-    is_mod: boolean;
+    is_gold?: boolean | null;
+    is_mod?: boolean | null;
     has_verified_email: boolean;
-    total_karma: number;
+    total_karma?: number | null;
     name: string;
-    created: number;
-    gold_creddits: number;
-    created_utc: number;
+    created?: number | null;
+    gold_creddits?: number | null;
+    created_utc?: number | null;
 }
 
 export interface ErrorResponse {
     message: string;
     error: number;
+}
+
+export interface RedditConnectionMetadata {
+    gold: string;
+    mod: string;
+    total_karma: string;
+    created_at: string;
+}
+
+function getRedditNumberMetadata(value: number | null | undefined): string {
+    return (value ?? 0).toString();
+}
+
+function getRedditCreatedAt(userInfo: UserResponse): string {
+    const seconds = userInfo.created_utc ?? userInfo.created ?? 0;
+    const timestamp = Number.isFinite(seconds) ? seconds * 1000 : 0;
+
+    return new Date(timestamp).toISOString().replace(".000Z", "");
+}
+
+export function getRedditConnectionMetadata(userInfo: UserResponse): RedditConnectionMetadata {
+    return {
+        gold: userInfo.is_gold ? "1" : "0",
+        mod: userInfo.is_mod ? "1" : "0",
+        total_karma: getRedditNumberMetadata(userInfo.total_karma),
+        created_at: getRedditCreatedAt(userInfo),
+    };
 }
 
 export default class RedditConnection extends Connection {
@@ -129,14 +157,13 @@ export default class RedditConnection extends Connection {
 
         if (exists) return null;
 
-        // TODO: connection metadata
-
         return await this.createConnection({
             user_id: userId,
             external_id: userInfo.id.toString(),
             friend_sync: params.friend_sync,
             name: userInfo.name,
             verified: userInfo.has_verified_email,
+            metadata_: getRedditConnectionMetadata(userInfo),
             type: this.id,
         });
     }

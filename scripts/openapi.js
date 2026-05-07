@@ -97,7 +97,7 @@ function combineSchemas(schemas) {
         specification.components = specification.components || {};
         specification.components.schemas = specification.components.schemas || {};
         specification.components.schemas[key] = definitions[key];
-        delete definitions[key].additionalProperties;
+        if (definitions[key].additionalProperties === false) delete definitions[key].additionalProperties;
         delete definitions[key].$schema;
         const definition = definitions[key];
 

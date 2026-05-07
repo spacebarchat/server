@@ -17,12 +17,21 @@
 */
 
 import { route } from "@spacebar/api";
-import { User, AutomodRule } from "@spacebar/util";
+import { AutomodRule } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
-import { AutomodRuleSchema } from "@spacebar/schemas";
+import { AutomodRuleModifySchema, AutomodRuleSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
+
+async function getNextAutomodRulePosition(guild_id: string) {
+    const result = await AutomodRule.createQueryBuilder("automod_rule")
+        .select("COALESCE(MAX(automod_rule.position), -1) + 1", "position")
+        .where("automod_rule.guild_id = :guild_id", { guild_id })
+        .getRawOne<{ position?: number | string }>();
+
+    return Number(result?.position ?? 0);
+}
 
 router.get(
     "/",
@@ -30,7 +39,7 @@ router.get(
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId[]",
+                body: "AutomodRulesResponse",
             },
             403: {
                 body: "APIErrorResponse",
@@ -47,11 +56,11 @@ router.get(
 router.post(
     "/",
     route({
-        // requestBody: "AutomodRuleSchema",
+        requestBody: "AutomodRuleSchema",
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId",
+                body: "AutomodRuleResponse",
             },
             400: {
                 body: "APIErrorResponse",
@@ -63,9 +72,6 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };
-        if (req.user_id !== req.body.creator_id) throw new HTTPError("You can't create a rule for someone else", 403);
-
-        if (guild_id !== req.body.guild_id) throw new HTTPError("You can't create a rule for another guild", 403);
 
         if (req.body.id) {
             throw new HTTPError("You can't specify an ID for a new rule", 400);
@@ -74,10 +80,14 @@ router.post(
         const data = req.body as AutomodRuleSchema;
 
         const created = AutomodRule.create({
-            creator: await User.findOneOrFail({
-                where: { id: data.creator_id },
-            }),
+            enabled: false,
+            exempt_channels: [],
+            exempt_roles: [],
+            trigger_metadata: null,
             ...data,
+            creator_id: req.user_id,
+            guild_id,
+            position: await getNextAutomodRulePosition(guild_id),
         });
 
         const savedRule = await AutomodRule.save(created);
@@ -88,11 +98,11 @@ router.post(
 router.patch(
     "/:rule_id",
     route({
-        // requestBody: "AutomodRuleSchema
+        requestBody: "AutomodRuleModifySchema",
         permission: ["MANAGE_GUILD"],
         responses: {
             200: {
-                body: "AutomodRuleSchemaWithId",
+                body: "AutomodRuleResponse",
             },
             400: {
                 body: "APIErrorResponse",
@@ -103,12 +113,12 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        const { rule_id } = req.params as { [key: string]: string };
+        const { guild_id, rule_id } = req.params as { [key: string]: string };
         const rule = await AutomodRule.findOneOrFail({
-            where: { id: rule_id },
+            where: { guild_id, id: rule_id },
         });
 
-        const data = req.body as AutomodRuleSchema;
+        const data = req.body as AutomodRuleModifySchema;
 
         AutomodRule.merge(rule, data);
         const savedRule = await AutomodRule.save(rule);
@@ -131,8 +141,8 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { rule_id } = req.params as { [key: string]: string };
-        await AutomodRule.delete({ id: rule_id });
+        const { guild_id, rule_id } = req.params as { [key: string]: string };
+        await AutomodRule.delete({ guild_id, id: rule_id });
         return res.status(204).send();
     },
 );

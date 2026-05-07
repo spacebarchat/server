@@ -27,7 +27,7 @@ import { initStats } from "./stats";
 import { config } from "dotenv";
 
 config({ quiet: true });
-import { centerString, getRevInfoOrFail, Logo } from "@spacebar/util";
+import { centerString, getRevInfoOrFail, handleClusterStartupFailure, Logo } from "@spacebar/util";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 
@@ -69,6 +69,8 @@ if (cluster.isPrimary) {
             }
 
             cluster.on("message", (sender: Worker, message) => {
+                if (handleClusterStartupFailure(message, { workerPid: sender.process.pid ?? undefined })) return;
+
                 for (const id in cluster.workers) {
                     const worker = cluster.workers[id];
                     if (worker === sender || !worker) continue;
