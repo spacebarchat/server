@@ -22,6 +22,7 @@ export * from "./utility/Fingerprint";
 export * from "./utility/ipAddress";
 export * from "./handlers/Message";
 export * from "./utility/passwordStrength";
+export * from "./utility/PaymentSources";
 export * from "./utility/RandomInviteID";
 export * from "./utility/ApplicationAuthorization";
 export * from "./utility/ApplicationCommands";

@@ -2918,6 +2918,112 @@
                     "verified"
                 ]
             },
+            "PaymentSourceBillingAddressResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "line_1": {
+                        "type": "string"
+                    },
+                    "line_2": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "country",
+                    "name"
+                ]
+            },
+            "PaymentSourceResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "billing_address": {
+                        "$ref": "#/components/schemas/PaymentSourceBillingAddressResponse"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "payment_gateway": {
+                        "type": "integer"
+                    },
+                    "default": {
+                        "type": "boolean"
+                    },
+                    "invalid": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "brand": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "last_4": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "payment_gateway_source_id": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "expires_month": {
+                        "type": "integer"
+                    },
+                    "expires_year": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "bank": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "billing_address",
+                    "default",
+                    "flags",
+                    "id",
+                    "invalid",
+                    "payment_gateway",
+                    "type"
+                ]
+            },
+            "PaymentSourcesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PaymentSourceResponse"
+                }
+            },
             "PreloadMessagesResponseSchema": {
                 "type": "array",
                 "items": {
@@ -18049,8 +18155,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourcesResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -18064,8 +18177,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -18081,8 +18201,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -18107,8 +18234,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -18133,7 +18267,7 @@
                     }
                 ],
                 "responses": {
-                    "default": {
+                    "204": {
                         "description": "No description available"
                     }
                 },

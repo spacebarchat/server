@@ -3118,6 +3118,127 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PaymentSourceBillingAddressResponse": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "line_1": {
+                "type": "string"
+            },
+            "line_2": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "country": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "country",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PaymentSourceResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "billing_address": {
+                "$ref": "#/definitions/PaymentSourceBillingAddressResponse"
+            },
+            "type": {
+                "type": "integer"
+            },
+            "payment_gateway": {
+                "type": "integer"
+            },
+            "default": {
+                "type": "boolean"
+            },
+            "invalid": {
+                "type": "boolean"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "brand": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "country": {
+                "type": "string"
+            },
+            "last_4": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "payment_gateway_source_id": {
+                "type": "string"
+            },
+            "deleted_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "expires_month": {
+                "type": "integer"
+            },
+            "expires_year": {
+                "type": "integer"
+            },
+            "email": {
+                "type": "string"
+            },
+            "bank": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "billing_address",
+            "default",
+            "flags",
+            "id",
+            "invalid",
+            "payment_gateway",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PaymentSourcesResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PaymentSourceResponse"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "PreloadMessagesResponseSchema": {
         "type": "array",
         "items": {
