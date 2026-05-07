@@ -205,21 +205,6 @@
                     "type"
                 ]
             },
-            "RouteResponse": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "integer"
-                    },
-                    "body": {
-                        "type": "string",
-                        "pattern": "^.*Response$"
-                    },
-                    "headers": {
-                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
-                    }
-                }
-            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -238,6 +223,21 @@
                     "errors",
                     "message"
                 ]
+            },
+            "RouteResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string",
+                        "pattern": "^.*Response$"
+                    },
+                    "headers": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
+                    }
+                }
             },
             "ActivitySchema": {
                 "type": "object",
@@ -4999,39 +4999,30 @@
                     "discriminator": {
                         "type": "string"
                     },
+                    "public_flags": {
+                        "type": "integer"
+                    },
                     "avatar": {
-                        "type": "string"
-                    },
-                    "avatar_decoration_data": {
-                        "$ref": "#/components/schemas/AvatarDecorationData"
-                    },
-                    "collectibles": {
-                        "$ref": "#/components/schemas/Collectibles"
-                    },
-                    "display_name_styles": {
-                        "$ref": "#/components/schemas/DisplayNameStyle"
-                    },
-                    "primary_guild": {
-                        "$ref": "#/components/schemas/PrimaryGuild"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "banner": {
                         "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
                     },
-                    "public_flags": {
-                        "type": "integer"
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
                     },
                     "premium_since": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "bio": {
-                        "type": "string"
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -5042,14 +5033,23 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "premium_type": {
-                        "type": "integer"
-                    },
                     "badge_ids": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     }
                 },
                 "required": [
@@ -5073,51 +5073,36 @@
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
                     },
-                    "flags": {
-                        "type": "integer"
-                    },
                     "username": {
                         "type": "string"
                     },
                     "discriminator": {
                         "type": "string"
                     },
+                    "public_flags": {
+                        "type": "integer"
+                    },
                     "avatar": {
-                        "type": "string"
-                    },
-                    "avatar_decoration_data": {
-                        "$ref": "#/components/schemas/AvatarDecorationData"
-                    },
-                    "collectibles": {
-                        "$ref": "#/components/schemas/Collectibles"
-                    },
-                    "display_name_styles": {
-                        "$ref": "#/components/schemas/DisplayNameStyle"
-                    },
-                    "primary_guild": {
-                        "$ref": "#/components/schemas/PrimaryGuild"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "banner": {
                         "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
                     },
-                    "public_flags": {
-                        "type": "integer"
+                    "banner": {
+                        "type": "string"
                     },
-                    "verified": {
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
                         "type": "boolean"
                     },
                     "premium_since": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "bio": {
-                        "type": "string"
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -5128,20 +5113,35 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "premium_type": {
-                        "type": "integer"
-                    },
                     "badge_ids": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
                     },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "mfa_enabled": {
                         "type": "boolean"
                     },
                     "phone": {
                         "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
                     },
                     "nsfw_allowed": {
                         "type": "boolean"
@@ -5212,51 +5212,36 @@
                         "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                         "type": "string"
                     },
-                    "flags": {
-                        "type": "integer"
-                    },
                     "username": {
                         "type": "string"
                     },
                     "discriminator": {
                         "type": "string"
                     },
+                    "public_flags": {
+                        "type": "integer"
+                    },
                     "avatar": {
-                        "type": "string"
-                    },
-                    "avatar_decoration_data": {
-                        "$ref": "#/components/schemas/AvatarDecorationData"
-                    },
-                    "collectibles": {
-                        "$ref": "#/components/schemas/Collectibles"
-                    },
-                    "display_name_styles": {
-                        "$ref": "#/components/schemas/DisplayNameStyle"
-                    },
-                    "primary_guild": {
-                        "$ref": "#/components/schemas/PrimaryGuild"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "banner": {
                         "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
                     },
-                    "public_flags": {
-                        "type": "integer"
+                    "banner": {
+                        "type": "string"
                     },
-                    "verified": {
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
                         "type": "boolean"
                     },
                     "premium_since": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "bio": {
-                        "type": "string"
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -5267,20 +5252,35 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "premium_type": {
-                        "type": "integer"
-                    },
                     "badge_ids": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
                     },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "mfa_enabled": {
                         "type": "boolean"
                     },
                     "phone": {
                         "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
                     },
                     "nsfw_allowed": {
                         "type": "boolean"
@@ -5434,16 +5434,31 @@
                     "id": {
                         "type": "string"
                     },
-                    "guild_id": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
                         "type": "string"
                     },
                     "flags": {
                         "type": "integer"
                     },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "banner": {
+                    "guild_id": {
                         "type": "string"
                     },
                     "nick": {
@@ -5461,21 +5476,6 @@
                     },
                     "mute": {
                         "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "integer"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "communication_disabled_until": {
                         "anyOf": [
@@ -5688,6 +5688,9 @@
                     "channel": {
                         "$ref": "#/components/schemas/ChannelLimits"
                     },
+                    "webrtc": {
+                        "$ref": "#/components/schemas/WebRtcLimits"
+                    },
                     "rate": {
                         "$ref": "#/components/schemas/RateLimits"
                     },
@@ -5701,7 +5704,8 @@
                     "guild",
                     "message",
                     "rate",
-                    "user"
+                    "user",
+                    "webrtc"
                 ]
             },
             "APIConnectionsConfiguration": {
@@ -7278,6 +7282,9 @@
                     "version": {
                         "type": "integer"
                     },
+                    "flags": {
+                        "type": "integer"
+                    },
                     "message_notifications": {
                         "type": "integer"
                     },
@@ -7306,9 +7313,6 @@
                     "guild_id": {
                         "type": "string",
                         "nullable": true
-                    },
-                    "flags": {
-                        "type": "integer"
                     },
                     "mute_scheduled_events": {
                         "type": "boolean"
@@ -14191,39 +14195,30 @@
                     "discriminator": {
                         "type": "string"
                     },
+                    "public_flags": {
+                        "type": "integer"
+                    },
                     "avatar": {
-                        "type": "string"
-                    },
-                    "avatar_decoration_data": {
-                        "$ref": "#/components/schemas/AvatarDecorationData"
-                    },
-                    "collectibles": {
-                        "$ref": "#/components/schemas/Collectibles"
-                    },
-                    "display_name_styles": {
-                        "$ref": "#/components/schemas/DisplayNameStyle"
-                    },
-                    "primary_guild": {
-                        "$ref": "#/components/schemas/PrimaryGuild"
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "banner": {
                         "type": "string"
                     },
                     "accent_color": {
                         "type": "integer"
                     },
-                    "public_flags": {
-                        "type": "integer"
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "bot": {
+                        "type": "boolean"
                     },
                     "premium_since": {
                         "type": "string",
                         "format": "date-time"
                     },
-                    "bio": {
-                        "type": "string"
+                    "premium_type": {
+                        "type": "integer"
                     },
                     "theme_colors": {
                         "type": "array",
@@ -14234,14 +14229,23 @@
                     "pronouns": {
                         "type": "string"
                     },
-                    "premium_type": {
-                        "type": "integer"
-                    },
                     "badge_ids": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "avatar_decoration_data": {
+                        "$ref": "#/components/schemas/AvatarDecorationData"
+                    },
+                    "display_name_styles": {
+                        "$ref": "#/components/schemas/DisplayNameStyle"
+                    },
+                    "collectibles": {
+                        "$ref": "#/components/schemas/Collectibles"
+                    },
+                    "primary_guild": {
+                        "$ref": "#/components/schemas/PrimaryGuild"
                     }
                 },
                 "required": [
@@ -14990,16 +14994,31 @@
                     "id": {
                         "type": "string"
                     },
-                    "guild_id": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "banner": {
+                        "type": "string"
+                    },
+                    "bio": {
+                        "type": "string"
+                    },
+                    "premium_since": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "pronouns": {
                         "type": "string"
                     },
                     "flags": {
                         "type": "integer"
                     },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "banner": {
+                    "guild_id": {
                         "type": "string"
                     },
                     "nick": {
@@ -15017,21 +15036,6 @@
                     },
                     "mute": {
                         "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "integer"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
                     },
                     "communication_disabled_until": {
                         "anyOf": [
@@ -15778,6 +15782,28 @@
                     "maxWebhooks"
                 ]
             },
+            "WebRtcLimits": {
+                "type": "object",
+                "properties": {
+                    "maxMessageSize": {
+                        "description": "Maximum inbound WebRTC websocket signaling payload size, in bytes.",
+                        "type": "integer"
+                    },
+                    "rateLimitCount": {
+                        "description": "Maximum inbound WebRTC websocket messages per rateLimitWindow.",
+                        "type": "integer"
+                    },
+                    "rateLimitWindow": {
+                        "description": "WebRTC websocket message rate limit window, in milliseconds.",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "maxMessageSize",
+                    "rateLimitCount",
+                    "rateLimitWindow"
+                ]
+            },
             "RateLimits": {
                 "type": "object",
                 "properties": {
@@ -15919,11 +15945,11 @@
             "UserProfile": {
                 "type": "object",
                 "properties": {
-                    "banner": {
-                        "type": "string"
-                    },
                     "accent_color": {
                         "type": "integer"
+                    },
+                    "banner": {
+                        "type": "string"
                     },
                     "bio": {
                         "type": "string"
@@ -15945,13 +15971,13 @@
             "PublicMemberProfile": {
                 "type": "object",
                 "properties": {
-                    "guild_id": {
-                        "type": "string"
-                    },
                     "banner": {
                         "type": "string"
                     },
                     "bio": {
+                        "type": "string"
+                    },
+                    "guild_id": {
                         "type": "string"
                     },
                     "accent_color": {
@@ -25571,6 +25597,72 @@
                 ]
             }
         },
+        "/channels/{channel_id}/users/@me/threads/archived/private/": {
+            "get": {
+                "x-permission-required": [
+                    "VIEW_CHANNEL",
+                    "READ_MESSAGE_HISTORY"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "before",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Return joined private threads with ids before this thread id."
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Maximum number of joined private archived threads to return."
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
         "/channels/{channel_id}/typing/": {
             "post": {
                 "x-permission-required": "SEND_MESSAGES",
@@ -25886,6 +25978,79 @@
                 ]
             }
         },
+        "/channels/{channel_id}/threads/archived/public/": {
+            "get": {
+                "x-permission-required": [
+                    "VIEW_CHANNEL",
+                    "READ_MESSAGE_HISTORY"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArchivedThreadsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "before",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Return threads archived before this ISO8601 timestamp."
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Maximum number of archived threads to return."
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
         "/channels/{channel_id}/thread-members/": {
             "get": {
                 "x-permission-required": "VIEW_CHANNEL",
@@ -25919,6 +26084,87 @@
             }
         },
         "/channels/{channel_id}/thread-members/{user_id}": {
+            "get": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    },
+                    "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "user_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            },
+            "put": {
+                "x-permission-required": "VIEW_CHANNEL",
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "403": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "user_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            },
             "post": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -28004,6 +28250,48 @@
                         }
                     },
                     "404": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "channels"
+                ]
+            }
+        },
+        "/channels/{channel_id}/followers/": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Follows an announcement channel and creates a follower webhook in the target channel.",
+                "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
                         "description": "No description available"
                     }
                 },
