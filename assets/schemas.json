@@ -1933,7 +1933,14 @@
         "type": "object",
         "properties": {
             "guild": {
-                "$ref": "#/definitions/Guild"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/HubGuild"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "joined": {
                 "type": "boolean"
