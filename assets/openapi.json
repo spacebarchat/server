@@ -312,23 +312,15 @@
                 "properties": {
                     "allow_list": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "presets": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "integer"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodKeywordPresetType"
+                        }
                     }
                 },
                 "required": [
@@ -341,33 +333,21 @@
                 "properties": {
                     "allow_list": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "keyword_filter": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "regex_patterns": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "required": [
@@ -379,46 +359,20 @@
             "AutomodRuleSchema": {
                 "type": "object",
                 "properties": {
-                    "creator_id": {
-                        "type": "string"
-                    },
-                    "enabled": {
-                        "type": "boolean"
-                    },
-                    "event_type": {
-                        "type": "integer"
-                    },
-                    "exempt_channels": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "exempt_roles": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
                     "name": {
                         "type": "string"
                     },
-                    "position": {
-                        "type": "integer"
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
                     },
                     "trigger_type": {
-                        "type": "integer"
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
                     },
                     "trigger_metadata": {
                         "anyOf": [
@@ -433,22 +387,178 @@
                             },
                             {
                                 "$ref": "#/components/schemas/AutomodCustomWordsRuleSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "actions",
+                    "event_type",
+                    "name",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleModifySchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "event_type": {
+                        "enum": [
+                            1,
+                            2
+                        ],
+                        "type": "number"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_metadata": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/AutomodMentionSpamRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodSuspectedSpamRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodCommonlyFlaggedWordsRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodCustomWordsRuleSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "AutomodRuleResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "creator_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "guild_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType"
+                    },
+                    "trigger_metadata": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/AutomodMentionSpamRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodSuspectedSpamRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodCommonlyFlaggedWordsRuleSchema"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AutomodCustomWordsRuleSchema"
+                            },
+                            {
+                                "type": "null"
                             }
                         ]
                     }
                 },
                 "required": [
+                    "actions",
                     "creator_id",
                     "enabled",
                     "event_type",
                     "exempt_channels",
                     "exempt_roles",
                     "guild_id",
+                    "id",
                     "name",
                     "position",
                     "trigger_metadata",
                     "trigger_type"
                 ]
+            },
+            "AutomodRulesResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AutomodRuleResponse"
+                }
             },
             "BackupCodesChallengeSchema": {
                 "type": "object",
@@ -8283,6 +8393,143 @@
                     2,
                     4,
                     5
+                ]
+            },
+            "AutomodKeywordPresetType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "AutomodRuleEventType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2
+                ]
+            },
+            "AutomodRuleTriggerType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ]
+            },
+            "AutomodAction": {
+                "anyOf": [
+                    {
+                        "$ref": "#/components/schemas/AutomodBlockMessageAction"
+                    },
+                    {
+                        "$ref": "#/components/schemas/AutomodSendAlertMessageAction"
+                    },
+                    {
+                        "$ref": "#/components/schemas/AutomodTimeoutUserAction"
+                    },
+                    {
+                        "$ref": "#/components/schemas/AutomodQuarantineUserAction"
+                    }
+                ]
+            },
+            "AutomodBlockMessageAction": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer",
+                        "const": 1
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/AutomodBlockMessageActionMetadata"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "AutomodBlockMessageActionMetadata": {
+                "type": "object",
+                "properties": {
+                    "custom_message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AutomodSendAlertMessageAction": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer",
+                        "const": 2
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/AutomodSendAlertMessageActionMetadata"
+                    }
+                },
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            },
+            "AutomodSendAlertMessageActionMetadata": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel_id"
+                ]
+            },
+            "AutomodTimeoutUserAction": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer",
+                        "const": 3
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/AutomodTimeoutUserActionMetadata"
+                    }
+                },
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            },
+            "AutomodTimeoutUserActionMetadata": {
+                "type": "object",
+                "properties": {
+                    "duration_seconds": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "duration_seconds"
+                ]
+            },
+            "AutomodQuarantineUserAction": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "integer",
+                        "const": 4
+                    },
+                    "metadata": {
+                        "$ref": "#/components/schemas/AutomodTimeoutUserActionMetadata"
+                    }
+                },
+                "required": [
+                    "metadata",
+                    "type"
                 ]
             },
             "ChannelPermissionOverwriteType": {
@@ -23983,7 +24230,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AutomodRuleSchemaWithId[]"
+                                    "$ref": "#/components/schemas/AutomodRulesResponse"
                                 }
                             }
                         }
@@ -24023,13 +24270,23 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AutomodRuleSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AutomodRuleSchemaWithId"
+                                    "$ref": "#/components/schemas/AutomodRuleResponse"
                                 }
                             }
                         }
@@ -24081,13 +24338,23 @@
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AutomodRuleModifySchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AutomodRuleSchemaWithId"
+                                    "$ref": "#/components/schemas/AutomodRuleResponse"
                                 }
                             }
                         }
