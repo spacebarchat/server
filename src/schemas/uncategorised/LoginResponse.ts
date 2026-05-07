@@ -21,7 +21,7 @@ import { TokenResponse } from "../responses";
 export interface MFAResponse {
     ticket: string;
     mfa: true;
-    sms: false; // TODO
+    sms: false;
     token: null;
 }
 
