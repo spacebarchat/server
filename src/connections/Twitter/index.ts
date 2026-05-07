@@ -17,6 +17,7 @@
 */
 
 import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
+import crypto from "node:crypto";
 import wretch from "wretch";
 import { GenericOAuthSettings as TwitterSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
@@ -39,6 +40,36 @@ interface TwitterUserResponse {
 // 	error_description: string;
 // }
 
+export interface TwitterPKCEPair {
+    verifier: string;
+    challenge: string;
+}
+
+export function createTwitterPKCEPair(): TwitterPKCEPair {
+    const verifier = crypto.randomBytes(32).toString("base64url");
+    const challenge = crypto.createHash("sha256").update(verifier).digest("base64url");
+
+    return { verifier, challenge };
+}
+
+export function createTwitterAuthorizationCodeBody(params: { code: string; clientId: string; redirectUri: string; codeVerifier: string }) {
+    return new URLSearchParams({
+        grant_type: "authorization_code",
+        code: params.code,
+        client_id: params.clientId,
+        redirect_uri: params.redirectUri,
+        code_verifier: params.codeVerifier,
+    });
+}
+
+export function createTwitterRefreshTokenBody(params: { refreshToken: string; clientId: string }) {
+    return new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: params.refreshToken,
+        client_id: params.clientId,
+    });
+}
+
 export default class TwitterConnection extends RefreshableConnection {
     public readonly id = "twitter";
     public friendlyName = "Twitter";
@@ -48,7 +79,7 @@ export default class TwitterConnection extends RefreshableConnection {
     public readonly authorizeUrl = "https://twitter.com/i/oauth2/authorize";
     public readonly tokenUrl = "https://api.twitter.com/2/oauth2/token";
     public readonly userInfoUrl = "https://api.twitter.com/2/users/me?user.fields=created_at%2Cdescription%2Cid%2Cname%2Cusername%2Cverified%2Clocation%2Curl";
-    public readonly scopes = ["users.read", "tweet.read"];
+    public readonly scopes = ["users.read", "tweet.read", "offline.access"];
     settings: TwitterSettings = new TwitterSettings();
 
     init(): void {
@@ -62,7 +93,9 @@ export default class TwitterConnection extends RefreshableConnection {
     }
 
     getAuthorizationUrl(userId: string): string {
-        const state = this.createState(userId);
+        const pkce = createTwitterPKCEPair();
+        const state = this.createState(userId, { codeVerifier: pkce.verifier });
+
         const url = new URL(this.authorizeUrl);
 
         url.searchParams.append("client_id", this.settings.clientId as string);
@@ -70,8 +103,8 @@ export default class TwitterConnection extends RefreshableConnection {
         url.searchParams.append("response_type", "code");
         url.searchParams.append("scope", this.scopes.join(" "));
         url.searchParams.append("state", state);
-        url.searchParams.append("code_challenge", "challenge"); // TODO: properly use PKCE challenge
-        url.searchParams.append("code_challenge_method", "plain");
+        url.searchParams.append("code_challenge", pkce.challenge);
+        url.searchParams.append("code_challenge_method", "S256");
         return url.toString();
     }
 
@@ -80,7 +113,7 @@ export default class TwitterConnection extends RefreshableConnection {
     }
 
     async exchangeCode(state: string, code: string): Promise<ConnectedAccountCommonOAuthTokenResponse> {
-        this.validateState(state);
+        const code_verifier = this.consumePKCEVerifier(state);
 
         const url = this.getTokenUrl();
 
@@ -91,12 +124,11 @@ export default class TwitterConnection extends RefreshableConnection {
                 Authorization: `Basic ${Buffer.from(`${this.settings.clientId as string}:${this.settings.clientSecret as string}`).toString("base64")}`,
             })
             .body(
-                new URLSearchParams({
-                    grant_type: "authorization_code",
-                    code: code,
-                    client_id: this.settings.clientId as string,
-                    redirect_uri: this.getRedirectUri(),
-                    code_verifier: "challenge", // TODO: properly use PKCE challenge
+                createTwitterAuthorizationCodeBody({
+                    code,
+                    clientId: this.settings.clientId as string,
+                    redirectUri: this.getRedirectUri(),
+                    codeVerifier: code_verifier,
                 }),
             )
             .post()
@@ -120,12 +152,9 @@ export default class TwitterConnection extends RefreshableConnection {
                 Authorization: `Basic ${Buffer.from(`${this.settings.clientId as string}:${this.settings.clientSecret as string}`).toString("base64")}`,
             })
             .body(
-                new URLSearchParams({
-                    grant_type: "refresh_token",
-                    refresh_token,
-                    client_id: this.settings.clientId as string,
-                    redirect_uri: this.getRedirectUri(),
-                    code_verifier: "challenge", // TODO: properly use PKCE challenge
+                createTwitterRefreshTokenBody({
+                    refreshToken: refresh_token,
+                    clientId: this.settings.clientId as string,
                 }),
             )
             .post()
@@ -148,6 +177,13 @@ export default class TwitterConnection extends RefreshableConnection {
                 console.error(e);
                 throw DiscordApiErrors.GENERAL_ERROR;
             });
+    }
+
+    private consumePKCEVerifier(state: string): string {
+        const { data } = this.consumeState(state);
+        const verifier = data.codeVerifier;
+        if (typeof verifier !== "string") throw DiscordApiErrors.INVALID_OAUTH_STATE;
+        return verifier;
     }
 
     async handleCallback(params: ConnectionCallbackSchema): Promise<ConnectedAccount | null> {
