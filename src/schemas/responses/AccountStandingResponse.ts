@@ -123,7 +123,7 @@ export interface Classification {
     explainer_link: string;
     actions: ClassificationAction[];
     max_expiration_time: string; // ISO 8601 timestamp
-    flagged_content: unknown[]; // TODO
+    flagged_content: FlaggedContent[];
     appeal_status: AppealStatus;
     is_coppa: boolean;
     is_spam: boolean;
