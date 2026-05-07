@@ -19,7 +19,7 @@
     <img src="https://opencollective.com/spacebar/tiers/badge.svg">
   </a>
 </p>
-
+ 
 ## [About](https://spacebar.chat)
 
 Spacebar/server is a Discord backend re-implementation and extension.
