@@ -1835,7 +1835,7 @@
     "CollectiblesCategoriesResponse": {
         "type": "array",
         "items": {
-            "$ref": "#/definitions/CollectiblesCategoryItem"
+            "$ref": "#/definitions/CollectiblesCategory"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -1867,7 +1867,7 @@
             "categories": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/CollectiblesCategoryItem"
+                    "$ref": "#/definitions/CollectiblesCategory"
                 }
             }
         },
@@ -9293,7 +9293,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CollectiblesCategoryItem": {
+    "CollectiblesCategory": {
         "type": "object",
         "properties": {
             "sku_id": {
@@ -9387,14 +9387,14 @@
             "products": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/CollectiblesCategoryProductItem"
+                    "$ref": "#/definitions/CollectiblesCategoryProduct"
                 }
             },
             "banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
+                "$ref": "#/definitions/CollectiblesStaticAnimatedAsset"
             },
             "hero_banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
+                "$ref": "#/definitions/CollectiblesStaticAnimatedAsset"
             }
         },
         "additionalProperties": false,
@@ -9450,7 +9450,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CollectiblesCategoryProductItem": {
+    "CollectiblesCategoryProduct": {
         "type": "object",
         "properties": {
             "sku_id": {
@@ -9483,7 +9483,7 @@
                     "type": "object",
                     "properties": {
                         "country_prices": {
-                            "$ref": "#/definitions/CountryPrice"
+                            "$ref": "#/definitions/CollectiblesCountryPrice"
                         }
                     },
                     "additionalProperties": false,
@@ -9495,7 +9495,7 @@
             "items": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/ProductItem"
+                    "$ref": "#/definitions/CollectiblesProductItem"
                 }
             },
             "type": {
@@ -9516,7 +9516,7 @@
             "variants": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/ProductItemVariant"
+                    "$ref": "#/definitions/CollectiblesProductVariant"
                 }
             }
         },
@@ -9538,7 +9538,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "CountryPrice": {
+    "CollectiblesCountryPrice": {
         "type": "object",
         "properties": {
             "country_code": {
@@ -9547,7 +9547,7 @@
             "prices": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/PriceEntry"
+                    "$ref": "#/definitions/CollectiblesPriceEntry"
                 }
             }
         },
@@ -9558,7 +9558,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "PriceEntry": {
+    "CollectiblesPriceEntry": {
         "type": "object",
         "properties": {
             "amount": {
@@ -9579,7 +9579,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ProductItem": {
+    "CollectiblesProductItem": {
         "type": "object",
         "properties": {
             "type": {
@@ -9609,7 +9609,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ProductItemVariant": {
+    "CollectiblesProductVariant": {
         "type": "object",
         "properties": {
             "sku_id": {
@@ -9648,7 +9648,7 @@
                     "type": "object",
                     "properties": {
                         "country_prices": {
-                            "$ref": "#/definitions/CountryPrice"
+                            "$ref": "#/definitions/CollectiblesCountryPrice"
                         }
                     },
                     "additionalProperties": false,
@@ -9660,7 +9660,7 @@
             "items": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/ProductItem"
+                    "$ref": "#/definitions/CollectiblesProductItem"
                 }
             },
             "type": {
@@ -9711,7 +9711,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "StaticAnimatedAsset": {
+    "CollectiblesStaticAnimatedAsset": {
         "type": "object",
         "properties": {
             "animated": {
@@ -9787,7 +9787,7 @@
                 "type": "string"
             },
             "banner_asset": {
-                "$ref": "#/definitions/StaticAnimatedAsset"
+                "$ref": "#/definitions/CollectiblesStaticAnimatedAsset"
             },
             "logo_url": {
                 "type": "string"

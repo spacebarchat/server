@@ -1724,7 +1724,7 @@
             "CollectiblesCategoriesResponse": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/CollectiblesCategoryItem"
+                    "$ref": "#/components/schemas/CollectiblesCategory"
                 }
             },
             "CollectiblesMarketingResponse": {
@@ -1753,7 +1753,7 @@
                     "categories": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/CollectiblesCategoryItem"
+                            "$ref": "#/components/schemas/CollectiblesCategory"
                         }
                     }
                 },
@@ -8679,7 +8679,7 @@
                     3
                 ]
             },
-            "CollectiblesCategoryItem": {
+            "CollectiblesCategory": {
                 "type": "object",
                 "properties": {
                     "sku_id": {
@@ -8755,14 +8755,14 @@
                     "products": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/CollectiblesCategoryProductItem"
+                            "$ref": "#/components/schemas/CollectiblesCategoryProduct"
                         }
                     },
                     "banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
+                        "$ref": "#/components/schemas/CollectiblesStaticAnimatedAsset"
                     },
                     "hero_banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
+                        "$ref": "#/components/schemas/CollectiblesStaticAnimatedAsset"
                     }
                 },
                 "required": [
@@ -8814,7 +8814,7 @@
                     "confetti_colors"
                 ]
             },
-            "CollectiblesCategoryProductItem": {
+            "CollectiblesCategoryProduct": {
                 "type": "object",
                 "properties": {
                     "sku_id": {
@@ -8845,7 +8845,7 @@
                             "type": "object",
                             "properties": {
                                 "country_prices": {
-                                    "$ref": "#/components/schemas/CountryPrice"
+                                    "$ref": "#/components/schemas/CollectiblesCountryPrice"
                                 }
                             },
                             "additionalProperties": false,
@@ -8857,7 +8857,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ProductItem"
+                            "$ref": "#/components/schemas/CollectiblesProductItem"
                         }
                     },
                     "type": {
@@ -8878,7 +8878,7 @@
                     "variants": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ProductItemVariant"
+                            "$ref": "#/components/schemas/CollectiblesProductVariant"
                         }
                     }
                 },
@@ -8898,7 +8898,7 @@
                     "unpublished_at"
                 ]
             },
-            "CountryPrice": {
+            "CollectiblesCountryPrice": {
                 "type": "object",
                 "properties": {
                     "country_code": {
@@ -8907,7 +8907,7 @@
                     "prices": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/PriceEntry"
+                            "$ref": "#/components/schemas/CollectiblesPriceEntry"
                         }
                     }
                 },
@@ -8916,7 +8916,7 @@
                     "prices"
                 ]
             },
-            "PriceEntry": {
+            "CollectiblesPriceEntry": {
                 "type": "object",
                 "properties": {
                     "amount": {
@@ -8935,7 +8935,7 @@
                     "exponent"
                 ]
             },
-            "ProductItem": {
+            "CollectiblesProductItem": {
                 "type": "object",
                 "properties": {
                     "type": {
@@ -8963,7 +8963,7 @@
                     "type"
                 ]
             },
-            "ProductItemVariant": {
+            "CollectiblesProductVariant": {
                 "type": "object",
                 "properties": {
                     "sku_id": {
@@ -9000,7 +9000,7 @@
                             "type": "object",
                             "properties": {
                                 "country_prices": {
-                                    "$ref": "#/components/schemas/CountryPrice"
+                                    "$ref": "#/components/schemas/CollectiblesCountryPrice"
                                 }
                             },
                             "additionalProperties": false,
@@ -9012,7 +9012,7 @@
                     "items": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ProductItem"
+                            "$ref": "#/components/schemas/CollectiblesProductItem"
                         }
                     },
                     "type": {
@@ -9061,7 +9061,7 @@
                     "variant_value"
                 ]
             },
-            "StaticAnimatedAsset": {
+            "CollectiblesStaticAnimatedAsset": {
                 "type": "object",
                 "properties": {
                     "animated": {
@@ -9130,7 +9130,7 @@
                         "type": "string"
                     },
                     "banner_asset": {
-                        "$ref": "#/components/schemas/StaticAnimatedAsset"
+                        "$ref": "#/components/schemas/CollectiblesStaticAnimatedAsset"
                     },
                     "logo_url": {
                         "type": "string"
