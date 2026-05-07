@@ -3726,24 +3726,23 @@
     "SendableModalSubmitDataSchema": {
         "type": "object",
         "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
             "custom_id": {
                 "type": "string"
             },
-            "attachments": {
+            "components": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/UploadAttachmentRequestSchema"
+                    "$ref": "#/definitions/ModalSubmitTopLevelComponentData"
                 }
+            },
+            "resolved": {
+                "$ref": "#/definitions/ModalSubmitResolvedData"
             }
         },
         "additionalProperties": false,
         "required": [
-            "custom_id",
-            "id"
+            "components",
+            "custom_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -15503,6 +15502,354 @@
             "roles",
             "user"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitTopLevelComponentData": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/ModalSubmitActionRowComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitLabelComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitTextDisplayComponentData"
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitActionRowComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.ActionRow"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "components": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ModalSubmitTextInputComponentData"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "components",
+            "id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitTextInputComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.TextInput"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "value": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "value"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitLabelComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.Label"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "component": {
+                "$ref": "#/definitions/ModalSubmitComponentData"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "component",
+            "id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType.Label": {
+        "type": "number",
+        "const": 18,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitComponentData": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/ModalSubmitTextInputComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitSelectComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitFileUploadComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitRadioGroupComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitCheckboxGroupComponentData"
+            },
+            {
+                "$ref": "#/definitions/ModalSubmitCheckboxComponentData"
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitSelectComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "enum": [
+                    3,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "type": "number"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "values": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "values"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitFileUploadComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.FileUpload"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "values": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "values"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType.FileUpload": {
+        "type": "number",
+        "const": 19,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitRadioGroupComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.RadioGroup"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "value": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "value"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType.RadioGroup": {
+        "type": "number",
+        "const": 21,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitCheckboxGroupComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.CheckboxGroup"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "values": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "values"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType.CheckboxGroup": {
+        "type": "number",
+        "const": 22,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitCheckboxComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.Checkbox"
+            },
+            "id": {
+                "type": "integer"
+            },
+            "custom_id": {
+                "type": "string"
+            },
+            "value": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom_id",
+            "id",
+            "type",
+            "value"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageComponentType.Checkbox": {
+        "type": "number",
+        "const": 23,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitTextDisplayComponentData": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/MessageComponentType.TextDisplay"
+            },
+            "id": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ModalSubmitResolvedData": {
+        "type": "object",
+        "properties": {
+            "users": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "members": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "roles": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "channels": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "messages": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "attachments": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "InstanceUserDeleteSchemaContent": {
