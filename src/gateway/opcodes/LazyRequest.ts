@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition, getMostRelevantSession } from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
+import { getDatabase, getPermission, Member, Role, Session, User, Presence, Channel, Permissions, arrayPartition, getMostRelevantSession } from "@spacebar/util";
+import { WebSocket, Payload, OPCODES, Send, subscribeGuildMemberEvent } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { check } from "./instanceOf";
 import { LazyRequestSchema } from "@spacebar/schemas";
@@ -147,13 +147,6 @@ async function getMembers(guild_id: string, range: [number, number]) {
     };
 }
 
-async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
-    if (this.events[user_id]) return false; // already subscribed as friend
-    if (this.member_events[user_id]) return false; // already subscribed in member list
-    this.member_events[user_id] = await listenEvent(user_id, handlePresenceUpdate.bind(this), this.listen_options);
-    return true;
-}
-
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();
     // TODO: check data
@@ -167,7 +160,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
         await Promise.all([
             members.map(async (x) => {
                 if (!x) return;
-                const didSubscribe = await subscribeToMemberEvents.call(this, x);
+                const didSubscribe = await subscribeGuildMemberEvent.call(this, guild_id, x);
                 if (!didSubscribe) return;
 
                 // if we didn't subscribe just now, this is a new subscription
@@ -236,7 +229,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     ops.forEach((op) => {
         op.members.forEach(async (member) => {
             if (!member?.user.id) return;
-            return subscribeToMemberEvents.call(this, member.user.id);
+            return subscribeGuildMemberEvent.call(this, guild_id, member.user.id);
         });
     });
 

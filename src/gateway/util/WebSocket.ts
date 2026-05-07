@@ -47,6 +47,9 @@ export interface WebSocket extends WS {
     permissions: Record<string, Permissions>;
     events: Record<string, undefined | (() => Promise<unknown>)>;
     member_events: Record<string, () => Promise<unknown>>;
+    guild_event_ids: Record<string, Set<string>>;
+    guild_member_event_ids: Record<string, Set<string>>;
+    member_event_guild_ids: Record<string, Set<string>>;
     listen_options: ListenEventOpts;
     capabilities?: Capabilities;
     large_threshold: number;
