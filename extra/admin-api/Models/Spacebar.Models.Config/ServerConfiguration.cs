@@ -51,9 +51,8 @@ public class ServerConfiguration {
     [JsonPropertyName("external")]
     public ExternalTokensConfiguration External { get; set; } = new();
 
-    // TODO: lazy
-    // [JsonPropertyName("email")]
-    // public EmailConfiguration Email { get; set; } = new EmailConfiguration();
+    [JsonPropertyName("email")]
+    public EmailConfiguration Email { get; set; } = new();
 
     [JsonPropertyName("passwordReset")]
     public PasswordResetConfiguration PasswordReset { get; set; } = new PasswordResetConfiguration();
