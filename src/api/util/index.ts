@@ -17,13 +17,21 @@
 */
 
 export * from "./utility/Base64";
+export * from "./utility/Experiments";
+export * from "./utility/Fingerprint";
 export * from "./utility/ipAddress";
 export * from "./handlers/Message";
 export * from "./utility/passwordStrength";
+export * from "./utility/PaymentSources";
 export * from "./utility/RandomInviteID";
+export * from "./utility/ApplicationAuthorization";
+export * from "./utility/ApplicationCommands";
 export * from "./handlers/route";
 export * from "./utility/String";
+export * from "./utility/Totp";
 export * from "./handlers/Voice";
 export * from "./utility/captcha";
+export * from "./utility/BillingLocationInfo";
 export * from "./utility/EmbedHandlers";
 export * from "./utility/MessageHistoryPagination";
+export * from "./utility/EmbedPayload";

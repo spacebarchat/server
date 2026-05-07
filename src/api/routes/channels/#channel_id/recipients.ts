@@ -51,9 +51,10 @@ router.put(
             channel.recipients?.push(Recipient.create({ channel_id: channel_id, user_id: user_id }));
             await channel.save();
 
+            const channel_dto = await DmChannelDTO.from(channel);
             await emitEvent({
                 event: "CHANNEL_CREATE",
-                data: await DmChannelDTO.from(channel, [user_id]),
+                data: channel_dto.forRecipient(user_id),
                 user_id: user_id,
             });
 

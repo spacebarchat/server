@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, Guild, Invite } from "@spacebar/util";
+import { Channel, Guild, Invite, normalizeInviteCreateOptions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { ChannelType, VanityUrlSchema } from "@spacebar/schemas";
@@ -91,8 +91,8 @@ router.patch(
 
         if (!code || code.length === 0) throw new HTTPError("Code cannot be null or empty");
 
-        const invite = await Invite.findOne({ where: { code } });
-        if (invite) throw new HTTPError("Invite already exists");
+        const existingInvite = await Invite.findOne({ where: { code } });
+        if (existingInvite) throw new HTTPError("Invite already exists");
 
         const { id } = await Channel.findOneOrFail({
             where: { guild_id, type: ChannelType.GUILD_TEXT },
@@ -102,18 +102,17 @@ router.patch(
             await Invite.delete({ guild_id, vanity_url: true });
         }
 
-        await Invite.create({
-            vanity_url: true,
+        const invite = Invite.createForChannel(
             code,
-            temporary: false,
-            uses: 0,
-            max_uses: 0,
-            max_age: 0,
-            created_at: new Date(),
-            guild_id: guild_id,
-            channel_id: id,
-            flags: 0,
-        }).save();
+            {
+                guild_id,
+                channel_id: id,
+            },
+            normalizeInviteCreateOptions({ max_age: 0 }),
+        );
+        invite.vanity_url = true;
+
+        await invite.save();
 
         return res.json({ code });
     },

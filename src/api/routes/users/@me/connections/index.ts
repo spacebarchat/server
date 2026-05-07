@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
-import { ConnectedAccount, ConnectedAccountDTO } from "@spacebar/util";
+import { ConnectedAccount, ConnectedAccountDTO, getConnectedAccountDTOSelect } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -27,18 +27,7 @@ router.get("/", route({}), async (req: Request, res: Response) => {
         where: {
             user_id: req.user_id,
         },
-        select: {
-            external_id: true,
-            type: true,
-            name: true,
-            verified: true,
-            visibility: true,
-            show_activity: true,
-            revoked: true,
-            token_data: true,
-            friend_sync: true,
-            integrations: true,
-        },
+        select: getConnectedAccountDTOSelect(true),
     });
 
     res.json(connections.map((x) => new ConnectedAccountDTO(x, true)));

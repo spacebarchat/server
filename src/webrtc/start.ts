@@ -22,6 +22,7 @@ process.on("unhandledRejection", console.error);
 
 import { config } from "dotenv";
 import { Server } from "./Server";
+import { runStartupOrExit } from "@spacebar/util";
 import fs from "node:fs";
 import cluster from "node:cluster";
 config({ quiet: true });
@@ -35,4 +36,4 @@ const server = new Server({
 if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-wrtc-${cluster.worker ? cluster.worker.id : port}`);
 process.title = `sb-wrtc-${cluster.worker ? cluster.worker.id : port}`;
 
-server.start().catch((e) => console.error("Failed to start WebRTC server:", e));
+void runStartupOrExit("WebRTC server", () => server.start());

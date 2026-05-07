@@ -26,7 +26,7 @@ import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
-import { Attachment } from "./Attachment";
+import { Attachment, signAttachmentUrl } from "./Attachment";
 import { NewUrlUserSignatureData } from "../Signing";
 import {
     ApplicationCommandType,
@@ -45,6 +45,124 @@ import {
 } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
 import { JsonRemoveEmpty } from "../util/Decorators";
+
+type AttachmentUrlFields = {
+    url?: string;
+    proxy_url?: string;
+};
+
+type AttachmentIconUrlFields = {
+    icon_url?: string;
+    proxy_icon_url?: string;
+};
+
+type SignableAttachment = Attachment | { url?: string; proxy_url?: string };
+
+type SignableMessagePayload = {
+    attachments?: SignableAttachment[];
+    embeds?: Embed[];
+    components?: BaseMessageComponents[];
+    referenced_message?: SignableMessagePayload | null;
+    message_snapshots?: MessageSnapshot[];
+};
+
+function signAttachmentUrlFields<T extends AttachmentUrlFields>(media: T | undefined, data: NewUrlUserSignatureData): T | undefined {
+    if (!media) return media;
+
+    return {
+        ...media,
+        url: signAttachmentUrl(media.url, data),
+        proxy_url: signAttachmentUrl(media.proxy_url, data),
+    };
+}
+
+function signAttachmentIconUrlFields<T extends AttachmentIconUrlFields>(media: T | undefined, data: NewUrlUserSignatureData): T | undefined {
+    if (!media) return media;
+
+    return {
+        ...media,
+        icon_url: signAttachmentUrl(media.icon_url, data),
+        proxy_icon_url: signAttachmentUrl(media.proxy_icon_url, data),
+    };
+}
+
+function signEmbedAttachmentUrls(embed: Embed, data: NewUrlUserSignatureData): Embed {
+    return {
+        ...embed,
+        footer: signAttachmentIconUrlFields(embed.footer, data),
+        image: signAttachmentUrlFields(embed.image, data),
+        thumbnail: signAttachmentUrlFields(embed.thumbnail, data),
+        video: signAttachmentUrlFields(embed.video, data),
+        author: signAttachmentIconUrlFields(embed.author, data),
+    };
+}
+
+function signAttachmentUrls<T extends SignableAttachment>(attachment: T, data: NewUrlUserSignatureData): T {
+    return Attachment.prototype.signUrls.call(attachment, data) as unknown as T;
+}
+
+function signComponentAttachmentUrls(component: BaseMessageComponents, data: NewUrlUserSignatureData): BaseMessageComponents {
+    function signMedia(media: UnfurledMediaItem) {
+        Object.assign(media, signAttachmentUrlFields(media, data));
+    }
+
+    const comp = structuredClone(component);
+    if (comp.type === MessageComponentType.Section) {
+        const accessory = comp.accessory;
+        if (accessory.type === MessageComponentType.Thumbnail) {
+            signMedia(accessory.media);
+        }
+    } else if (comp.type === MessageComponentType.MediaGallery) {
+        comp.items.forEach(({ media }) => signMedia(media));
+    } else if (comp.type === MessageComponentType.File) {
+        signMedia(comp.file);
+    } else if (comp.type === MessageComponentType.Container) {
+        for (const elm of comp.components) {
+            switch (elm.type) {
+                case MessageComponentType.Separator:
+                case MessageComponentType.TextDisplay:
+                case MessageComponentType.ActionRow:
+                    break;
+                case MessageComponentType.Section: {
+                    const accessory = elm.accessory;
+                    if (accessory.type === MessageComponentType.Thumbnail) {
+                        signMedia(accessory.media);
+                    }
+                    break;
+                }
+                case MessageComponentType.MediaGallery:
+                    elm.items.forEach(({ media }) => signMedia(media));
+                    break;
+                case MessageComponentType.File: {
+                    signMedia(elm.file);
+                    break;
+                }
+
+                default:
+                    elm satisfies never;
+            }
+        }
+    }
+    return comp;
+}
+
+export function signMessageAttachmentUrls<T extends object>(message: T, data: NewUrlUserSignatureData): T {
+    const signableMessage = message as T & SignableMessagePayload;
+    const signed = { ...message } as T & SignableMessagePayload;
+
+    if (signableMessage.attachments) signed.attachments = signableMessage.attachments.map((attachment) => signAttachmentUrls(attachment, data));
+    if (signableMessage.embeds) signed.embeds = signableMessage.embeds.map((embed) => signEmbedAttachmentUrls(embed, data));
+    if (signableMessage.components) signed.components = signableMessage.components.map((component) => signComponentAttachmentUrls(component, data));
+    if (signableMessage.referenced_message) signed.referenced_message = signMessageAttachmentUrls(signableMessage.referenced_message, data);
+    if (signableMessage.message_snapshots) {
+        signed.message_snapshots = signableMessage.message_snapshots.map((snapshot) => ({
+            ...snapshot,
+            message: signMessageAttachmentUrls(snapshot.message, data),
+        }));
+    }
+
+    return signed as T;
+}
 
 @Entity({
     name: "messages",
@@ -346,55 +464,8 @@ export class Message extends BaseClass {
     }
 
     withSignedAttachments(data: NewUrlUserSignatureData) {
-        function signMedia(media: UnfurledMediaItem) {
-            Object.assign(media, Attachment.prototype.signUrls.call(media, data));
-        }
-        return {
-            ...this,
-            attachments: this.attachments?.map((attachment: Attachment) => Attachment.prototype.signUrls.call(attachment, data)),
-            components: this.components
-                ? this.components.map((comp) => {
-                      comp = structuredClone(comp);
-                      if (comp.type === MessageComponentType.Section) {
-                          const accessory = comp.accessory;
-                          if (accessory.type === MessageComponentType.Thumbnail) {
-                              signMedia(accessory.media);
-                          }
-                      } else if (comp.type === MessageComponentType.MediaGallery) {
-                          comp.items.forEach(({ media }) => signMedia(media));
-                      } else if (comp.type === MessageComponentType.File) {
-                          signMedia(comp.file);
-                      } else if (comp.type === MessageComponentType.Container) {
-                          for (const elm of comp.components) {
-                              switch (elm.type) {
-                                  case MessageComponentType.Separator:
-                                  case MessageComponentType.TextDisplay:
-                                  case MessageComponentType.ActionRow:
-                                      break;
-                                  case MessageComponentType.Section: {
-                                      const accessory = elm.accessory;
-                                      if (accessory.type === MessageComponentType.Thumbnail) {
-                                          signMedia(accessory.media);
-                                      }
-                                      break;
-                                  }
-                                  case MessageComponentType.MediaGallery:
-                                      elm.items.forEach(({ media }) => signMedia(media));
-                                      break;
-                                  case MessageComponentType.File: {
-                                      signMedia(elm.file);
-                                      break;
-                                  }
-
-                                  default:
-                                      elm satisfies never;
-                              }
-                          }
-                      }
-                      return comp;
-                  })
-                : this.components,
-        };
+        const publicMessage = this instanceof Message ? this.toJSON() : this;
+        return signMessageAttachmentUrls(publicMessage, data);
     }
 
     static async createWithDefaults(opts: Partial<Message>): Promise<Message> {

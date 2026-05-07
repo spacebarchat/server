@@ -18,7 +18,7 @@
 
 import { GuildCreateSchema } from "@spacebar/schemas";
 
-export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels"> {
+export interface GuildUpdateSchema extends Omit<GuildCreateSchema, "channels" | "roles"> {
     banner?: string | null;
     splash?: string | null;
     description?: string;

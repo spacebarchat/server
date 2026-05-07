@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName, Application } from "@spacebar/util";
+import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName, Application, toAPIWebhook } from "@spacebar/util";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -44,10 +44,11 @@ router.get(
         });
 
         return res.json(
-            webhooks.map((webhook) => ({
-                ...webhook,
-                url: Config.get().api.endpointPublic + "/api/webhooks/" + webhook.id + "/" + webhook.token,
-            })),
+            webhooks.map((webhook) =>
+                toAPIWebhook(webhook, {
+                    url: Config.get().api.endpointPublic + "/api/webhooks/" + webhook.id + "/" + webhook.token,
+                }),
+            ),
         );
     },
 );
@@ -104,10 +105,7 @@ router.post(
 
         const user = await User.getPublicUser(req.user_id);
 
-        return res.json({
-            ...hook,
-            user: user,
-        });
+        return res.json(toAPIWebhook(hook, { user }));
     },
 );
 

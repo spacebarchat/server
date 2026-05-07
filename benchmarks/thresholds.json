@@ -1,0 +1,24 @@
+{
+    "defaults": {
+        "higher": 0.15,
+        "lower": 0.2
+    },
+    "metrics": {
+        "requestsPerSecond": {
+            "direction": "higher",
+            "threshold": 0.15
+        },
+        "p95LatencyMs": {
+            "direction": "lower",
+            "threshold": 0.2
+        },
+        "p99LatencyMs": {
+            "direction": "lower",
+            "threshold": 0.2
+        },
+        "heapUsedDeltaBytes": {
+            "direction": "lower",
+            "threshold": 0.25
+        }
+    }
+}

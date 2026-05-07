@@ -87,7 +87,7 @@
           .then(data => {
             if (!data) return;
             // Update online count
-            onlineCount.textContent = data.presence_count + "/" + data.member_count;
+            onlineCount.textContent = String(data.presence_count ?? "Unknown");
 
             // Update voice channels
             vcList.innerHTML = "";

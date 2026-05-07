@@ -1,0 +1,26 @@
+{
+    "schemaVersion": 1,
+    "suite": "route-validation",
+    "commit": "base",
+    "nodeVersion": "v24.0.0",
+    "timestamp": "2026-01-01T00:00:00.000Z",
+    "metrics": {
+        "requestsPerSecond": {
+            "label": "Requests/sec",
+            "unit": "req/s",
+            "direction": "higher"
+        },
+        "p95LatencyMs": {
+            "label": "p95 latency",
+            "unit": "ms",
+            "direction": "lower"
+        }
+    },
+    "trials": [],
+    "median": {
+        "requestsPerSecond": 1000,
+        "p95LatencyMs": 10
+    },
+    "profiles": [],
+    "environment": {}
+}

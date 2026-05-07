@@ -93,8 +93,9 @@ export class initial0 implements MigrationInterface {
 		await queryRunner.query(`CREATE TABLE public.categories (
 			id integer NOT NULL,
 			name character varying,
-			localizations text NOT NULL,
-			is_primary boolean
+			localizations jsonb NOT NULL DEFAULT '{}'::jsonb,
+			is_primary boolean,
+			CONSTRAINT "CHK_categories_localizations_object" CHECK (jsonb_typeof(localizations) = 'object')
 		);`);
 
 		await queryRunner.query(`CREATE TABLE public.channels (
@@ -723,4 +724,3 @@ export class initial0 implements MigrationInterface {
 		throw new Error("Can't revert this: just throw away your database lol");
 	}
 }
-

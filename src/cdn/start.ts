@@ -22,17 +22,17 @@ import { config } from "dotenv";
 config({ quiet: true });
 
 import { CDNServer } from "./Server";
+import { runStartupOrExit } from "@spacebar/util";
 import fs from "node:fs";
 import cluster from "node:cluster";
 const server = new CDNServer({ port: Number(process.env.PORT) || 3003 });
-server
-    .start()
-    .then(() => {
-        if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-cdn-${cluster.worker ? cluster.worker.id : server.options.port}`);
-        process.title = `sb-cdn-${cluster.worker ? cluster.worker.id : server.options.port}`;
+void runStartupOrExit("CDN server", async () => {
+    await server.start();
 
-        console.log("[Server] started on :" + server.options.port);
-    })
-    .catch((e) => console.error("[Server] Error starting: ", e));
+    if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-cdn-${cluster.worker ? cluster.worker.id : server.options.port}`);
+    process.title = `sb-cdn-${cluster.worker ? cluster.worker.id : server.options.port}`;
+
+    console.log("[Server] started on :" + server.options.port);
+});
 
 module.exports = server;

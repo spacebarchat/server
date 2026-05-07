@@ -55,6 +55,7 @@ export * from "./MessageAcknowledgeSchema";
 export * from "./MessageCreateSchema";
 export * from "./MessageEditSchema";
 export * from "./MfaCodesSchema";
+export * from "./MfaCodeSchema";
 export * from "./ModifyGuildStickerSchema";
 export * from "./PasswordResetSchema";
 export * from "./PreloadMessagesRequestSchema";

@@ -25,7 +25,11 @@
         "generate:openapi": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/openapi.js",
         "add:license": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
         "node:tests": "npm run build:src:tsgo && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
-        "apply:migrations": "node --enable-source-maps dist/apply-migrations.js"
+        "apply:migrations": "node --enable-source-maps dist/apply-migrations.js",
+        "bench:ci": "node --expose-gc -r dotenv/config -r module-alias/register --enable-source-maps scripts/benchmarks/run.js --ci --profile",
+        "bench:compare": "node scripts/benchmarks/compare.js",
+        "bench:profile": "node --expose-gc -r dotenv/config -r module-alias/register --enable-source-maps scripts/benchmarks/run.js --profile",
+        "bench:test": "node --test scripts/benchmarks/*.test.js"
     },
     "main": "dist/bundle/index.js",
     "types": "src/bundle/index.ts",

@@ -1,11 +1,20 @@
 import { JsonSerializer } from "./JsonSerializer";
-import { describe, it } from "node:test";
+import { after, describe, it } from "node:test";
 import { strict as assert } from "node:assert";
 import fs from "node:fs/promises";
 import { Stopwatch } from "../Stopwatch";
 import { JsonValue } from "@protobuf-ts/runtime";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { join } from "node:path";
+
+const execFileAsync = promisify(execFile);
 
 describe("JsonSerializer", () => {
+    after(async () => {
+        await JsonSerializer.ShutdownAsync();
+    });
+
     it("should serialize synchronously", () => {
         const obj = { a: 1, b: "test" };
         const result = JsonSerializer.Serialize(obj);
@@ -28,6 +37,112 @@ describe("JsonSerializer", () => {
         const json = '{"a":1,"b":"test"}';
         const result = await JsonSerializer.DeserializeAsync(json);
         assert.deepEqual(result, { a: 1, b: "test" });
+    });
+
+    it("should keep concurrent worker responses matched to their requests", async () => {
+        const values = Array.from({ length: 64 }, (_, index) => ({ index, payload: `value-${index}` }));
+        const results = await Promise.all(values.map((value) => JsonSerializer.DeserializeAsync<typeof value>(JSON.stringify(value))));
+
+        assert.deepEqual(results, values);
+    });
+
+    it("should not emit listener leak warnings with many concurrent worker tasks", async () => {
+        const script = `
+            process.on("warning", (warning) => {
+                if (warning.name === "MaxListenersExceededWarning") {
+                    console.error(warning.stack || warning.message);
+                    process.exitCode = 2;
+                }
+            });
+
+            const { JsonSerializer } = require("./dist/util/util/json/JsonSerializer.js");
+            Promise.all(Array.from({ length: 128 }, (_, index) => JsonSerializer.DeserializeAsync(JSON.stringify({ index })))).then(async (results) => {
+                if (results.some((result, index) => result.index !== index)) process.exitCode = 3;
+                await JsonSerializer.ShutdownAsync();
+            }).catch((error) => {
+                console.error(error);
+                process.exit(4);
+            });
+        `;
+
+        const { stderr } = await execFileAsync(process.execPath, ["-e", script], {
+            cwd: process.cwd(),
+            env: { ...process.env, JSON_WORKERS: "1" },
+        });
+
+        assert.doesNotMatch(stderr, /MaxListenersExceededWarning/);
+    });
+
+    it("should fall back to the default worker count for invalid JSON_WORKERS values", async () => {
+        const script = `
+            const { JsonSerializer } = require("./dist/util/util/json/JsonSerializer.js");
+            JsonSerializer.DeserializeAsync(JSON.stringify({ ok: true })).then(async (result) => {
+                if (!result.ok) process.exitCode = 2;
+                await JsonSerializer.ShutdownAsync();
+            }).catch((error) => {
+                console.error(error);
+                process.exit(3);
+            });
+        `;
+
+        await execFileAsync(process.execPath, ["-e", script], {
+            cwd: process.cwd(),
+            env: { ...process.env, JSON_WORKERS: "not-a-number" },
+        });
+    });
+
+    it("should recover after a worker exits unexpectedly", async () => {
+        const tempDir = await fs.mkdtemp(join(process.cwd(), "json-worker-test-"));
+
+        try {
+            const tempSerializerPath = join(tempDir, "JsonSerializer.js");
+            const tempWorkerPath = join(tempDir, "jsonWorker.js");
+            const stripSourceMapReference = (code: string) => code.replace(/\n\/\/# sourceMappingURL=.*\n?$/u, "\n");
+            const healthyWorker = stripSourceMapReference(await fs.readFile(join(__dirname, "jsonWorker.js"), "utf8"));
+
+            await fs.writeFile(tempSerializerPath, stripSourceMapReference(await fs.readFile(join(__dirname, "JsonSerializer.js"), "utf8")));
+            await fs.writeFile(
+                tempWorkerPath,
+                `
+                    const { parentPort } = require("node:worker_threads");
+                    parentPort.on("message", () => process.exit(42));
+                `,
+            );
+
+            const script = `
+                const fs = require("node:fs/promises");
+                const { JsonSerializer } = require(${JSON.stringify(tempSerializerPath)});
+
+                (async () => {
+                    let rejectedExitedWorker = false;
+                    try {
+                        await JsonSerializer.DeserializeAsync(JSON.stringify({ first: true }));
+                    } catch (error) {
+                        rejectedExitedWorker = /exited with code 42/.test(error.message);
+                    }
+
+                    if (!rejectedExitedWorker) {
+                        console.error("first request did not reject with the worker exit");
+                        process.exit(2);
+                    }
+
+                    await fs.writeFile(${JSON.stringify(tempWorkerPath)}, ${JSON.stringify(healthyWorker)});
+                    const result = await JsonSerializer.DeserializeAsync(JSON.stringify({ ok: true }));
+                    if (!result.ok) process.exit(3);
+                    await JsonSerializer.ShutdownAsync();
+                })().catch((error) => {
+                    console.error(error);
+                    process.exit(4);
+                });
+            `;
+
+            await execFileAsync(process.execPath, ["-e", script], {
+                cwd: process.cwd(),
+                env: { ...process.env, JSON_WORKERS: "1" },
+            });
+        } finally {
+            await fs.rm(tempDir, { recursive: true, force: true });
+        }
     });
 
     it("should be able to read large file", async () => {

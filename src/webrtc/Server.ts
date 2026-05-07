@@ -17,15 +17,15 @@
 */
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import { closeDatabase, Config, initDatabase, initEvent, Session, TimeSpan } from "@spacebar/util";
+import { closeDatabase, Config, initEvent, initStartupConfigAndDatabase, Session, TimeSpan } from "@spacebar/util";
 import http from "node:http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
-import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "./util";
+import { getWebRtcTransportMaxPayload, loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "./util";
 import { green, yellow } from "picocolors";
 
 export class Server {
-    public ws: ws.Server;
+    public ws?: ws.Server;
     public port: number;
     public server: http.Server;
     public production: boolean;
@@ -49,9 +49,13 @@ export class Server {
         // 		this.ws.emit("connection", socket, request);
         // 	});
         // });
+    }
+
+    private initializeWebSocketServer() {
+        if (this.ws) return;
 
         this.ws = new ws.Server({
-            maxPayload: 1024 * 1024 * 100,
+            maxPayload: getWebRtcTransportMaxPayload(Config.get().limits.webrtc),
             server: this.server,
         });
         this.ws.on("connection", Connection);
@@ -59,8 +63,7 @@ export class Server {
     }
 
     async start(): Promise<void> {
-        await initDatabase();
-        await Config.init();
+        await initStartupConfigAndDatabase();
         await initEvent();
 
         // try to load webrtc library, if failed just don't start webrtc endpoint
@@ -72,6 +75,8 @@ export class Server {
             return;
         }
 
+        this.initializeWebSocketServer();
+
         if (!this.server.listening) {
             this.server.listen(this.port);
             console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
@@ -80,7 +85,12 @@ export class Server {
 
     async stop() {
         await closeDatabase();
-        this.server.close();
+        if (this.ws) {
+            this.ws.clients.forEach((socket) => socket.close());
+            this.ws.close(() => this.server.close());
+        } else {
+            this.server.close();
+        }
         mediaServer?.stop();
     }
 }

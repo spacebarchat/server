@@ -16,8 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Snowflake } from "../../Identifiers";
+import { PartialUser } from "../users";
+
 export enum WebhookType {
     Incoming = 1,
     ChannelFollower = 2,
     Application = 3,
+}
+
+export interface APIWebhook {
+    id: Snowflake;
+    type: WebhookType;
+    guild_id?: Snowflake | null;
+    channel_id?: Snowflake | null;
+    user?: PartialUser | null;
+    name: string | null;
+    avatar: string | null;
+    token?: string | null;
+    application_id?: Snowflake | null;
+    source_guild_id?: Snowflake | null;
+    source_channel_id?: Snowflake | null;
+    url?: string;
 }

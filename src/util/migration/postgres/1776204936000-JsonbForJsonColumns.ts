@@ -28,7 +28,34 @@ export class JsonbForJsonColumns1776204936000 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE automod_rules ALTER COLUMN actions TYPE ${to} USING actions::${to};`);
         await queryRunner.query(`ALTER TABLE automod_rules ALTER COLUMN trigger_metadata TYPE ${to} USING trigger_metadata::${to};`);
 
-        await queryRunner.query(`ALTER TABLE categories ALTER COLUMN localizations TYPE ${to} USING localizations::${to};`);
+        if (to === "jsonb") {
+            await queryRunner.query(`
+CREATE OR REPLACE FUNCTION pg_temp.safe_jsonb_object_from_text(input_value text)
+RETURNS jsonb
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+    parsed jsonb;
+BEGIN
+    IF input_value IS NULL OR btrim(input_value) = '' THEN
+        RETURN '{}'::jsonb;
+    END IF;
+
+    parsed := input_value::jsonb;
+    IF jsonb_typeof(parsed) = 'object' THEN
+        RETURN parsed;
+    END IF;
+
+    RETURN '{}'::jsonb;
+EXCEPTION WHEN others THEN
+    RETURN '{}'::jsonb;
+END
+$$;`);
+            await queryRunner.query(`ALTER TABLE categories ALTER COLUMN localizations TYPE jsonb USING pg_temp.safe_jsonb_object_from_text(localizations::text);`);
+        } else {
+            await queryRunner.query(`ALTER TABLE categories ALTER COLUMN localizations TYPE ${to} USING localizations::${to};`);
+        }
 
         await queryRunner.query(`ALTER TABLE channels ALTER COLUMN permission_overwrites TYPE ${to} USING permission_overwrites::${to};`);
         await queryRunner.query(`ALTER TABLE channels ALTER COLUMN thread_metadata TYPE ${to} USING thread_metadata::${to};`);

@@ -30,7 +30,6 @@
         "MultipleValidationJobsListResponse",
         "UpdateRouteResponse",
         "MessagesSendAPIResponse",
-        "APIWebhook",
         "WebhookResponse",
         "WebhookValidationResponse",
         "MessageResponse",

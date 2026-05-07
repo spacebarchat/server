@@ -46,6 +46,8 @@ import {
     Session,
     MessageFlags,
     FieldErrors,
+    getCloudAttachmentCloneCdnUrl,
+    getCloudAttachmentCdnUrl,
     getDatabase,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
@@ -132,8 +134,7 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             userIsClip: false,
         });
         await attEnt.save();
-        const cdnUrl = Config.get().cdn.endpointPublic;
-        const fetchUrl = `${cdnUrl}/attachments/${attEnt.uploadFilename}`;
+        const fetchUrl = getCloudAttachmentCdnUrl(Config.get().cdn.endpointPublic!, attEnt.uploadFilename);
         await (
             await fetch(fetchUrl, {
                 method: "PUT",
@@ -149,7 +150,7 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
         delWhenDone = true;
     }
 
-    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${messageId}`, {
+    const cloneResponse = await fetch(getCloudAttachmentCloneCdnUrl(Config.get().cdn.endpointPrivate!, attEnt.uploadFilename, messageId), {
         method: "POST",
         headers: {
             signature: Config.get().security.requestSignature || "",
@@ -188,7 +189,7 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
 
     if (delWhenDone) {
         return () =>
-            fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}`, {
+            fetch(getCloudAttachmentCdnUrl(Config.get().cdn.endpointPrivate!, attEnt.uploadFilename), {
                 headers: {
                     signature: Config.get().security.requestSignature,
                 },
@@ -656,6 +657,20 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             image!.proxy_url = imageAttachment.toJSON().proxy_url;
         }
 
+        const thumbnail = embed.thumbnail;
+        const thumbnailAttachment = fetchAttachment(thumbnail?.url);
+        if (thumbnailAttachment !== undefined) {
+            thumbnail!.url = thumbnailAttachment.toJSON().url;
+            thumbnail!.proxy_url = thumbnailAttachment.toJSON().proxy_url;
+        }
+
+        const video = embed.video;
+        const videoAttachment = fetchAttachment(video?.url);
+        if (videoAttachment !== undefined) {
+            video!.url = videoAttachment.toJSON().url;
+            video!.proxy_url = videoAttachment.toJSON().proxy_url;
+        }
+
         const author = embed.author;
         const authorAttachment = fetchAttachment(author?.icon_url);
         if (authorAttachment !== undefined) {
@@ -757,7 +772,7 @@ export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateClou
         },
     });
 
-    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${destinationMessageId}`, {
+    const cloneResponse = await fetch(getCloudAttachmentCloneCdnUrl(Config.get().cdn.endpointPrivate!, attEnt.uploadFilename, destinationMessageId), {
         method: "POST",
         headers: {
             signature: Config.get().security.requestSignature || "",

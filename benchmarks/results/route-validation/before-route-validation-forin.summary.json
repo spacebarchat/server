@@ -1,0 +1,178 @@
+{
+    "label": "before-route-validation-forin",
+    "benchmark": "route-validation-message-create",
+    "requests": 10000,
+    "concurrency": 40,
+    "warmupRequests": 1000,
+    "payload": {
+        "bytes": 53328,
+        "embeds": 10,
+        "fieldsPerEmbed": 25
+    },
+    "unsafeIntegerCheck": {
+        "unsafeInteger": "900719925474099312345",
+        "response": {
+            "nonceType": "string",
+            "nonce": "900719925474099312345"
+        }
+    },
+    "result": {
+        "completed": 10000,
+        "failed": 0,
+        "durationMs": 9236.829125,
+        "requestsPerSecond": 1082.6226039988587,
+        "latencyMs": {
+            "p50": 35.04774999999972,
+            "p90": 43.82629100000031,
+            "p99": 58.94470900000033,
+            "max": 374.82666700000004
+        }
+    },
+    "heap": {
+        "before": {
+            "rss": 236470272,
+            "heapTotal": 129007616,
+            "heapUsed": 67405816,
+            "external": 5311878,
+            "arrayBuffers": 1564776
+        },
+        "after": {
+            "rss": 244711424,
+            "heapTotal": 129531904,
+            "heapUsed": 68234256,
+            "external": 5253526,
+            "arrayBuffers": 1506384
+        },
+        "deltaHeapUsed": 828440,
+        "deltaExternal": -58352,
+        "deltaArrayBuffers": -58392
+    },
+    "profiles": {
+        "cpuProfilePath": "before-route-validation-forin.cpuprofile",
+        "heapProfilePath": "before-route-validation-forin.heapprofile",
+        "topCpu": [
+            {
+                "functionName": "next",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "hitCount": 1499
+            },
+            {
+                "functionName": "bigNumberToString",
+                "url": "dist/api/util/handlers/route.js",
+                "hitCount": 1339
+            },
+            {
+                "functionName": "string",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "hitCount": 1039
+            },
+            {
+                "functionName": "object",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "hitCount": 713
+            },
+            {
+                "functionName": "validate11",
+                "url": "",
+                "hitCount": 310
+            },
+            {
+                "functionName": "value",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "hitCount": 219
+            },
+            {
+                "functionName": "writev",
+                "url": "",
+                "hitCount": 211
+            },
+            {
+                "functionName": "(idle)",
+                "url": "",
+                "hitCount": 207
+            },
+            {
+                "functionName": "(program)",
+                "url": "",
+                "hitCount": 194
+            },
+            {
+                "functionName": "validate10",
+                "url": "",
+                "hitCount": 113
+            },
+            {
+                "functionName": "writeLatin1String",
+                "url": "",
+                "hitCount": 96
+            },
+            {
+                "functionName": "white",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "hitCount": 95
+            }
+        ],
+        "topHeap": [
+            {
+                "functionName": "post",
+                "url": "node:inspector",
+                "selfSize": 3967000
+            },
+            {
+                "functionName": "#onMessage",
+                "url": "node:inspector",
+                "selfSize": 353600
+            },
+            {
+                "functionName": "charAt",
+                "url": "",
+                "selfSize": 200064
+            },
+            {
+                "functionName": "object",
+                "url": "node_modules/json-bigint/lib/parse.js",
+                "selfSize": 72864
+            },
+            {
+                "functionName": "(anonymous)",
+                "url": "node:internal/util",
+                "selfSize": 66408
+            },
+            {
+                "functionName": "write",
+                "url": "node:string_decoder",
+                "selfSize": 53344
+            },
+            {
+                "functionName": "bigNumberToString",
+                "url": "dist/api/util/handlers/route.js",
+                "selfSize": 37376
+            },
+            {
+                "functionName": "parserOnHeadersComplete",
+                "url": "node:_http_common",
+                "selfSize": 33600
+            },
+            {
+                "functionName": "createSocket",
+                "url": "node:_http_agent",
+                "selfSize": 33280
+            },
+            {
+                "functionName": "set",
+                "url": "node:_http_outgoing",
+                "selfSize": 33152
+            },
+            {
+                "functionName": "connect",
+                "url": "node:net",
+                "selfSize": 32928
+            },
+            {
+                "functionName": "(V8 API)",
+                "url": "",
+                "selfSize": 32832
+            }
+        ]
+    }
+}

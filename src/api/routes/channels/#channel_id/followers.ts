@@ -16,9 +16,50 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router } from "express";
+import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Channel, Config, getPermission, Webhook } from "@spacebar/util";
+import { HTTPError } from "lambert-server";
+import { ChannelFollowerChannel, followAnnouncementChannel } from "../../../util/utility/ChannelFollowers";
+
 const router: Router = Router({ mergeParams: true });
-// TODO:
+
+router.post(
+    "/",
+    route({
+        description: "Follows an announcement channel and creates a follower webhook in the target channel.",
+        responses: {
+            200: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params as { [key: string]: string };
+        const { webhook_channel_id } = req.body as { webhook_channel_id?: string };
+
+        if (!webhook_channel_id) throw new HTTPError('"webhook_channel_id" is required', 400);
+
+        const [sourceChannel, targetChannel] = await Promise.all([
+            Channel.findOneOrFail({ where: { id: channel_id } }),
+            Channel.findOneOrFail({ where: { id: webhook_channel_id } }),
+        ]);
+
+        const response = await followAnnouncementChannel({
+            userId: req.user_id,
+            sourceChannel,
+            targetChannel,
+            getChannelPermission: (userId: string, guildId: string | undefined, channel: ChannelFollowerChannel) => getPermission(userId, guildId, channel as Channel),
+            countTargetWebhooks: (channelId: string) => Webhook.count({ where: { channel_id: channelId } }),
+            maxWebhooks: Config.get().limits.channel.maxWebhooks,
+            createWebhook: (payload) => Webhook.create(payload).save(),
+        });
+
+        return res.json(response);
+    },
+);
 
 export default router;
 

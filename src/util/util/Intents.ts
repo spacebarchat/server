@@ -98,6 +98,7 @@ export class Intents extends BitField {
         2: ["GUILD_AUDIT_LOG_ENTRY_CREATE", "GUILD_BAN_ADD", "GUILD_BAN_REMOVE"],
         // GUILD_EXPRESSIONS
         3: [
+            "GUILD_EMOJI_UPDATE",
             "GUILD_EMOJIS_UPDATE",
             "GUILD_STICKERS_UPDATE",
             "GUILD_SOUNDBOARD_SOUND_CREATE",

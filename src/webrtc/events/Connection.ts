@@ -17,21 +17,21 @@
 */
 
 import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
+import { Config } from "@spacebar/util";
 import { IncomingMessage } from "node:http";
 import { URL } from "node:url";
 import WS from "ws";
-import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
+import { createWebRtcMessageHandler, VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
-
-// TODO: check rate limit
-// TODO: specify rate limit in config
-// TODO: check msg max size
 
 export async function Connection(this: WS.Server, socket: WebRtcWebSocket, request: IncomingMessage) {
     try {
         socket.on("close", onClose.bind(socket));
-        socket.on("message", onMessage.bind(socket));
+        socket.on(
+            "message",
+            createWebRtcMessageHandler(socket, (buffer) => onMessage.call(socket, buffer), Config.get().limits.webrtc),
+        );
         console.log("[WebRTC] new connection", request.url);
 
         if (process.env.WS_LOGEVENTS) {

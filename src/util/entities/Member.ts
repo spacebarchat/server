@@ -21,7 +21,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTabl
 import { Ban, Channel, PublicGuildRelations } from ".";
 import { ReadyGuildDTO } from "../dtos";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
-import { Config, emitEvent, DiscordApiErrors } from "../util";
+import { Config, emitEvent, DiscordApiErrors, profilePronouns } from "../util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";
@@ -461,6 +461,7 @@ export class Member extends BaseClassWithoutId {
         PublicMemberProjection.forEach((x) => {
             member[x] = this[x];
         });
+        member.pronouns = profilePronouns(this.pronouns);
 
         if (this.roles) member.roles = this.roles.map((x: Role) => x.id);
         if (this.user) member.user = this.user.toPublicUser();

@@ -16,10 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { User, Webhook } from "@spacebar/util";
+import { APIWebhook } from "../api/channels";
 
-export interface WebhookCreateResponse {
-    user: User;
-    hook: Webhook;
-}
+export type WebhookCreateResponse = APIWebhook;

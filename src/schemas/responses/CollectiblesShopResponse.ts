@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CollectiblesCategoryItem, StaticAnimatedAsset } from "./CollectiblesCategoriesResponse";
+import { CollectiblesCategory, CollectiblesStaticAnimatedAsset } from "./CollectiblesCategoriesResponse";
 
 export interface CollectiblesShopResponse {
     shop_blocks: AnyShopBlock[];
-    categories: CollectiblesCategoryItem[];
+    categories: CollectiblesCategory[];
 }
 
 export type AnyShopBlock = ItemRowShopBlock | BundleTileRowShopBlock | ItemCollectionShopBlock;
@@ -34,7 +34,7 @@ export interface ItemRowShopBlock extends BaseShopBlock {
     category_sku_id: string;
     name: string;
     category_store_listing_id: string;
-    banner_asset: StaticAnimatedAsset;
+    banner_asset: CollectiblesStaticAnimatedAsset;
     logo_url: string;
     unpublished_at: string | null;
     summary: string;
