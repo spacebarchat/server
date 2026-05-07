@@ -17,6 +17,7 @@
 */
 import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { getWhoAmIResponse } from "./whoamiResponse";
 
 const router = Router({ mergeParams: true });
 router.get(
@@ -42,13 +43,7 @@ router.get(
         }
      */
     async (req: Request, res: Response) => {
-        res.json({
-            id: req.user_id,
-            device_id: req.session?.session_id ?? null,
-            flags: req.user?.flags ?? 0,
-            rights: req.user?.rights ?? 0,
-            logged_in_since: new Date(req.token.iat).toISOString(),
-        });
+        res.json(getWhoAmIResponse(req));
     },
 );
 

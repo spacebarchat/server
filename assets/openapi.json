@@ -5985,6 +5985,37 @@
                     "type"
                 ]
             },
+            "WhoAmIResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "device_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "rights": {
+                        "type": [
+                            "string",
+                            "integer"
+                        ]
+                    },
+                    "logged_in_since": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "device_id",
+                    "flags",
+                    "id",
+                    "logged_in_since",
+                    "rights"
+                ]
+            },
             "MFAResponse": {
                 "type": "object",
                 "properties": {
