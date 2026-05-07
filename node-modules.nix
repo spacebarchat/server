@@ -12,6 +12,8 @@ let
         lib.fileset.unions [
           ./package.json
           ./package-lock.json
+          ./apps
+          ./packages
           ./patches
         ]
       )

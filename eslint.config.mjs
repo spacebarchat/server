@@ -18,7 +18,7 @@ const compat = new FlatCompat({
 
 export default defineConfig([
     {
-        ignores: ["./node_modules", "./dist", "**/README.md", "**/COPYING", "./scripts/", "./assets/", "./extra/", "./files/"],
+        ignores: ["**/node_modules/**", "**/dist/**", "**/README.md", "**/COPYING", "./scripts/", "./assets/", "./extra/", "./files/"],
     },
     ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended"),
     {
@@ -36,7 +36,8 @@ export default defineConfig([
             parserOptions: {
                 ecmaVersion: "latest",
                 sourceType: "module",
-                project: "./tsconfig.json",
+                projectService: true,
+                tsconfigRootDir: __dirname,
             },
         },
 

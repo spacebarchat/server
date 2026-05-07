@@ -1,7 +1,12 @@
 {
     "name": "spacebar-server",
     "version": "1.0.0",
+    "private": true,
     "description": "A Spacebar server written in Node.js",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
     "scripts": {
         "prepare": "husky install",
         "postinstall": "patch-package",
@@ -11,12 +16,15 @@
         "start:gateway": "node --enable-source-maps dist/gateway/start.js",
         "start:webrtc": "node --enable-source-maps dist/webrtc/start.js",
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
+        "build:all": "npm run build && npm run build --workspaces --if-present",
         "build:src": "tsc -b -v",
         "build:tsgo": "npm run build:src:tsgo && npm run generate:schema && npm run generate:openapi",
         "build:src:tsgo": "rm -rf dist/* tsconfig.tsbuildinfo && tsgo -b -v",
         "watch": "tsc -w -b .",
         "test": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/test.js",
+        "test:all": "npm run test && npm run test --workspaces --if-present",
         "lint": "eslint .",
+        "lint:all": "npm run lint && npm run lint --workspaces --if-present",
         "setup": "npm run build && npm run generate:schema",
         "sync:db": "npm run build && node -r dotenv/config -r module-alias/register --enable-source-maps scripts/syncronise.js",
         "generate:rights": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/rights.js",
