@@ -16,10 +16,10 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
-import { route } from "@spacebar/api";
+import { ApplicationCommandCreateSchema } from "@spacebar/schemas";
+import { applicationCommandIdWhere, buildApplicationCommand, requireApplicationCommandManagement, route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Application, ApplicationCommand, FieldErrors, Snowflake } from "@spacebar/util";
+import { Application, ApplicationCommand } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -31,7 +31,9 @@ router.get("/", route({}), async (req: Request, res: Response) => {
         return;
     }
 
-    const command = await ApplicationCommand.findOne({ where: { application_id: req.params.application_id as string, id: req.params.command_id as string } });
+    const command = await ApplicationCommand.findOne({
+        where: applicationCommandIdWhere({ applicationId: req.params.application_id as string }, req.params.command_id as string),
+    });
 
     if (!command) {
         res.status(404).send({ code: 404, message: "Unknown application command" });
@@ -47,14 +49,11 @@ router.patch(
         requestBody: "ApplicationCommandCreateSchema",
     }),
     async (req: Request, res: Response) => {
-        const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+        const scope = { applicationId: req.params.application_id as string };
+        await requireApplicationCommandManagement(scope.applicationId, req.user_id);
 
-        if (!applicationExists) {
-            res.status(404).send({ code: 404, message: "Unknown application" });
-            return;
-        }
-
-        const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id as string, id: req.params.command_id as string } });
+        const where = applicationCommandIdWhere(scope, req.params.command_id as string);
+        const commandExists = await ApplicationCommand.exists({ where });
 
         if (!commandExists) {
             res.status(404).send({ code: 404, message: "Unknown application command" });
@@ -62,60 +61,26 @@ router.patch(
         }
 
         const body = req.body as ApplicationCommandCreateSchema;
+        const commandForDb = buildApplicationCommand(scope, body);
 
-        if (!body.type) {
-            body.type = 1;
-        }
-
-        if (body.name.trim().length < 1 || body.name.trim().length > 32) {
-            // TODO: configurable?
-            throw FieldErrors({
-                name: {
-                    code: "BASE_TYPE_BAD_LENGTH",
-                    message: `Must be between 1 and 32 in length.`,
-                },
-            });
-        }
-
-        const commandForDb: ApplicationCommandSchema = {
-            application_id: req.params.application_id as string,
-            name: body.name.trim(),
-            name_localizations: body.name_localizations,
-            description: body.description?.trim() || "",
-            description_localizations: body.description_localizations,
-            default_member_permissions: body.default_member_permissions || null,
-            contexts: body.contexts,
-            dm_permission: body.dm_permission || true,
-            global_popularity_rank: 1,
-            handler: body.handler,
-            integration_types: body.integration_types,
-            nsfw: body.nsfw,
-            options: body.options,
-            type: body.type,
-            version: Snowflake.generate(),
-        };
-
-        await ApplicationCommand.update({ name: body.name.trim() }, commandForDb);
+        await ApplicationCommand.update(where, commandForDb);
         res.send(commandForDb);
     },
 );
 
 router.delete("/", route({}), async (req: Request, res: Response) => {
-    const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+    const scope = { applicationId: req.params.application_id as string };
+    await requireApplicationCommandManagement(scope.applicationId, req.user_id);
 
-    if (!applicationExists) {
-        res.status(404).send({ code: 404, message: "Unknown application" });
-        return;
-    }
-
-    const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id as string, id: req.params.command_id as string } });
+    const where = applicationCommandIdWhere(scope, req.params.command_id as string);
+    const commandExists = await ApplicationCommand.exists({ where });
 
     if (!commandExists) {
         res.status(404).send({ code: 404, message: "Unknown application command" });
         return;
     }
 
-    await ApplicationCommand.delete({ application_id: req.params.application_id as string, id: req.params.command_id as string });
+    await ApplicationCommand.delete(where);
     res.sendStatus(204);
 });
 
