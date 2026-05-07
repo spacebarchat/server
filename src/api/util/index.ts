@@ -27,5 +27,6 @@ export * from "./handlers/route";
 export * from "./utility/String";
 export * from "./handlers/Voice";
 export * from "./utility/captcha";
+export * from "./utility/BillingLocationInfo";
 export * from "./utility/EmbedHandlers";
 export * from "./utility/EmbedPayload";

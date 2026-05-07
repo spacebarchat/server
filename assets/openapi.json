@@ -1706,6 +1706,17 @@
                     "regenerate_nonce"
                 ]
             },
+            "BillingLocationInfoResponse": {
+                "type": "object",
+                "properties": {
+                    "country_code": {
+                        "type": "string"
+                    },
+                    "subdivision_code": {
+                        "type": "string"
+                    }
+                }
+            },
             "CollectiblesCategoriesResponse": {
                 "type": "array",
                 "items": {
@@ -17407,8 +17418,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BillingLocationInfoResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
