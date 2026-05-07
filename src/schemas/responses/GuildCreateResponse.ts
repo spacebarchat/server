@@ -16,9 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove import from util
-import { GuildWelcomeScreen } from "@spacebar/util";
 import { GuildUpdateSchema } from "@spacebar/schemas";
+import { GuildWelcomeScreen } from "../api/guilds/GuildWelcomeScreen";
 
 export interface GuildCreateResponse extends Omit<GuildUpdateSchema, "name"> {
     id: string;
