@@ -17,7 +17,7 @@
 */
 import dotenv from "dotenv";
 dotenv.config({ quiet: true });
-import { closeDatabase, initEvent, initStartupConfigAndDatabase, Session, TimeSpan } from "@spacebar/util";
+import { closeDatabase, Config, initEvent, initStartupConfigAndDatabase, Session, TimeSpan } from "@spacebar/util";
 import http from "node:http";
 import ws from "ws";
 import { Connection } from "./events/Connection";
