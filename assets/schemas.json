@@ -3262,6 +3262,57 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ReportingMenuTypesResponse": {
+        "type": "array",
+        "items": {
+            "type": "string"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportingMenuResponse": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "variant": {
+                "type": "string"
+            },
+            "version": {
+                "type": "string"
+            },
+            "postback_url": {
+                "type": "string"
+            },
+            "root_node_id": {
+                "type": "integer"
+            },
+            "success_node_id": {
+                "type": "integer"
+            },
+            "fail_node_id": {
+                "type": "integer"
+            },
+            "nodes": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/definitions/ReportingMenuNode"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "fail_node_id",
+            "name",
+            "nodes",
+            "postback_url",
+            "root_node_id",
+            "success_node_id",
+            "variant",
+            "version"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "SettingsProtoResponse": {
         "type": "object",
         "properties": {
@@ -15371,6 +15422,194 @@
         "required": [
             "original",
             "refreshed"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportingMenuNode": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "key": {
+                "type": "string"
+            },
+            "header": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "subheader": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "info": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "button": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ReportingMenuButton"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "elements": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ReportingMenuElement"
+                }
+            },
+            "report_type": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "children": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                }
+            },
+            "is_multi_select_required": {
+                "type": "boolean"
+            },
+            "is_auto_submit": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "button",
+            "children",
+            "elements",
+            "header",
+            "id",
+            "info",
+            "key",
+            "report_type",
+            "subheader"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportingMenuButton": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ReportButtonType"
+            },
+            "target": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "target",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportButtonType": {
+        "type": "string",
+        "enum": [
+            "submit",
+            "done",
+            "cancel",
+            "next"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportingMenuElement": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "data": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": [
+                                "null",
+                                "string",
+                                "integer",
+                                "boolean"
+                            ]
+                        }
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "header": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "body": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "exclusions": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "should_submit_data": {
+                "type": "boolean"
+            },
+            "skip_if_unlocalized": {
+                "type": "boolean"
+            },
+            "is_localized": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "is_localized",
+            "name",
+            "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

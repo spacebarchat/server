@@ -32,7 +32,7 @@ router.get(
         description: "[EXT] Get available reporting menu types.",
         responses: {
             200: {
-                body: "Array<ReportMenuTypeNames>",
+                body: "ReportingMenuTypesResponse",
             },
         },
     }),

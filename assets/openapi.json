@@ -3044,6 +3044,54 @@
                     "refreshed_urls"
                 ]
             },
+            "ReportingMenuTypesResponse": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "ReportingMenuResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "variant": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "postback_url": {
+                        "type": "string"
+                    },
+                    "root_node_id": {
+                        "type": "integer"
+                    },
+                    "success_node_id": {
+                        "type": "integer"
+                    },
+                    "fail_node_id": {
+                        "type": "integer"
+                    },
+                    "nodes": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/ReportingMenuNode"
+                        }
+                    }
+                },
+                "required": [
+                    "fail_node_id",
+                    "name",
+                    "nodes",
+                    "postback_url",
+                    "root_node_id",
+                    "success_node_id",
+                    "variant",
+                    "version"
+                ]
+            },
             "SettingsProtoResponse": {
                 "type": "object",
                 "properties": {
@@ -14322,6 +14370,173 @@
                     "refreshed"
                 ]
             },
+            "ReportingMenuNode": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "header": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subheader": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "info": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "button": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ReportingMenuButton"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "elements": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReportingMenuElement"
+                        }
+                    },
+                    "report_type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ],
+                            "minItems": 2,
+                            "maxItems": 2
+                        }
+                    },
+                    "is_multi_select_required": {
+                        "type": "boolean"
+                    },
+                    "is_auto_submit": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "button",
+                    "children",
+                    "elements",
+                    "header",
+                    "id",
+                    "info",
+                    "key",
+                    "report_type",
+                    "subheader"
+                ]
+            },
+            "ReportingMenuButton": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ReportButtonType"
+                    },
+                    "target": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "target",
+                    "type"
+                ]
+            },
+            "ReportButtonType": {
+                "type": "string",
+                "enum": [
+                    "submit",
+                    "done",
+                    "cancel",
+                    "next"
+                ]
+            },
+            "ReportingMenuElement": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": [
+                                        "null",
+                                        "string",
+                                        "integer",
+                                        "boolean"
+                                    ]
+                                }
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "header": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "body": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "exclusions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "should_submit_data": {
+                        "type": "boolean"
+                    },
+                    "skip_if_unlocalized": {
+                        "type": "boolean"
+                    },
+                    "is_localized": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "is_localized",
+                    "name",
+                    "type"
+                ]
+            },
             "JsonValue": {
                 "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
                 "anyOf": [
@@ -19142,7 +19357,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Array<ReportMenuTypeNames>"
+                                    "$ref": "#/components/schemas/ReportingMenuTypesResponse"
                                 }
                             }
                         }

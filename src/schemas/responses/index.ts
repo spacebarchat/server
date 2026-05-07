@@ -55,6 +55,7 @@ export * from "./PartialConnectedAccountResponse";
 export * from "./PaymentSourceResponse";
 export * from "./PreloadMessagesResponseSchema";
 export * from "./RefreshUrlsResponse";
+export * from "./ReportingMenuResponse";
 export * from "./SettingsProtoUpdateResponse";
 export * from "./TeamListResponse";
 export * from "./Tenor";
