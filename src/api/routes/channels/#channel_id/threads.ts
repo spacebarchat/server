@@ -39,6 +39,13 @@ import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
 import { HTTPError } from "#util/util/lambert-server";
 import { FindManyOptions, FindOptionsOrder, In, Like, ArrayContains, ArrayOverlap } from "typeorm";
+import {
+    applyPrivateArchivedThreadsQuery,
+    parsePrivateArchivedThreadBefore,
+    parsePrivateArchivedThreadLimit,
+    PRIVATE_ARCHIVED_THREAD_PERMISSIONS,
+    serializePrivateArchivedThreadMember,
+} from "../../../util/utility/PrivateArchivedThreads";
 
 const router = Router({ mergeParams: true });
 
@@ -207,6 +214,73 @@ router.post(
         }
 
         return res.json(thread.toJSON());
+    },
+);
+
+router.get(
+    "/archived/private",
+    route({
+        permission: [...PRIVATE_ARCHIVED_THREAD_PERMISSIONS],
+        query: {
+            before: {
+                type: "string",
+                required: false,
+                description: "Return private threads archived before this ISO8601 timestamp.",
+            },
+            limit: {
+                type: "number",
+                required: false,
+                description: "Maximum number of private archived threads to return.",
+            },
+        },
+        responses: {
+            200: {},
+            400: {
+                body: "APIErrorResponse",
+            },
+            403: {},
+            404: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const { channel_id } = req.params as Record<string, string>;
+        const { before, limit } = req.query as Record<string, string | undefined>;
+
+        let parsedLimit: number;
+        let beforeDate: Date | undefined;
+        try {
+            parsedLimit = parsePrivateArchivedThreadLimit(limit);
+            beforeDate = parsePrivateArchivedThreadBefore(before);
+        } catch (error) {
+            throw new HTTPError(error instanceof Error ? error.message : "Invalid private archived thread query", 400);
+        }
+
+        const channel = await Channel.findOneOrFail({ where: { id: channel_id }, select: { guild_id: true, id: true } });
+        const member = channel.guild_id ? await Member.findOne({ where: { guild_id: channel.guild_id, id: req.user_id }, select: { index: true } }) : null;
+
+        const threads = await applyPrivateArchivedThreadsQuery(Channel.createQueryBuilder("thread"), {
+            beforeDate,
+            channelId: channel_id,
+            privateThreadType: ChannelType.GUILD_PRIVATE_THREAD,
+            take: parsedLimit + 1,
+        }).getMany();
+
+        const returnedThreads = threads.slice(0, parsedLimit);
+        const members =
+            member && returnedThreads.length
+                ? await ThreadMember.find({
+                      where: {
+                          member_idx: member.index,
+                          id: In(returnedThreads.map(({ id }) => id)),
+                      },
+                  })
+                : [];
+
+        return res.json({
+            threads: returnedThreads.map((thread) => thread.toJSON()),
+            members: members.map((threadMember) => serializePrivateArchivedThreadMember(threadMember, req.user_id)),
+            has_more: threads.length > parsedLimit,
+        });
     },
 );
 
