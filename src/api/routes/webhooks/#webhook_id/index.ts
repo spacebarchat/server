@@ -11,6 +11,7 @@ import {
     ValidateName,
     Message,
     MessageDeleteBulkEvent,
+    toAPIWebhook,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -24,7 +25,7 @@ router.get(
         description: "Returns a webhook object for the given id. Requires the MANAGE_WEBHOOKS permission or to be the owner of the webhook.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "WebhookCreateResponse",
             },
             404: {},
         },
@@ -42,10 +43,11 @@ router.get(
             if (!permission.has("MANAGE_WEBHOOKS")) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
         } else if (webhook.user_id != req.user_id) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
 
-        return res.json({
-            ...webhook,
-            url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
-        });
+        return res.json(
+            toAPIWebhook(webhook, {
+                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+            }),
+        );
     },
 );
 
@@ -170,7 +172,11 @@ router.patch(
             } satisfies WebhooksUpdateEvent),
         ]);
 
-        res.json(webhook);
+        res.json(
+            toAPIWebhook(webhook, {
+                url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+            }),
+        );
     },
 );
 
