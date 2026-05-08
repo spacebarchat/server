@@ -1,0 +1,92 @@
+﻿@page "/login"
+@using ArcaneLibs.Blazor.Components
+@using ArcaneLibs.Extensions
+@using Spacebar.Client.Core
+@using Spacebar.Client.WebCore
+@inject SpacebarClientWellKnownResolverService clientWellKnownResolver
+@inject SessionStore sessionStore
+@inject SpacebarClientProviderService clientProvider
+
+<PageTitle>Log in</PageTitle>
+
+<span>Instance (server name):</span>
+<FancyTextBox @bind-Value="@ServerName"/>
+<LinkButton InlineText="true">[🧭 Discover]</LinkButton>
+<br/>
+<span>Email:</span>
+<FancyTextBox @bind-Value="@Username"/>
+<br/>
+<span>Password:</span>
+<FancyTextBox @bind-Value="@Password" IsPassword="true"/>
+<br/>
+<LinkButton OnClickAsync="LoginAsync">Log in</LinkButton>
+
+<pre>@ServerValidationStatus</pre>
+
+@code{
+
+    private string ServerName {
+        get;
+        set {
+            field = value;
+            CheckServer(value);
+        }
+    } = "spacebar.chat";
+
+    private string Username { get; set; } = "";
+    private string Password { get; set; } = "";
+
+    private string? ServerValidationStatus;
+
+    private async Task SetStatus(string? status) {
+        ServerValidationStatus = status;
+        StateHasChanged();
+        await Task.Yield();
+    }
+
+    private async Task CheckServer(string serverName) {
+        await SetStatus("Checking server: " + serverName);
+        try {
+            await clientWellKnownResolver.ResolveClientWellKnown(serverName);
+            await SetStatus($"Server {serverName} is valid!");
+        }
+        catch (Exception e) {
+            await SetStatus("Could not validate server: " + e.Message);
+        }
+    }
+
+    private async Task LoginAsync() {
+        try {
+            await SetStatus($"Looking up {ServerName}...");
+            var cwk = await clientWellKnownResolver.ResolveClientWellKnown(ServerName);
+            
+            await SetStatus($"Trying to log in to {ServerName}...");
+            var usc = await clientProvider.GetUnauthenticatedClientAsync(ServerName);
+            var lrsp = await usc.LoginAsync(new() {
+                Login = Username,
+                Password = Password
+            });
+
+            await SetStatus($"Logged in as user ID {lrsp.UserId}, fetching profile...");
+            var asc = await clientProvider.GetAuthenticatedClientAsync(ServerName, lrsp.Token!);
+            var cu = await asc.GetCurrentUser();
+            await SetStatus($"Logged in as {cu.Username}#{cu.Discriminator} ({cu.Id})! Saving...");
+            await sessionStore.AddSession(new SessionEntry() {
+                ServerName = ServerName,
+                AccessToken = lrsp.Token!,
+                ProfileCache = new() {
+                    Id = cu.Id,
+                    Username = cu.Username,
+                    Discriminator = cu.Discriminator,
+                    AvatarUrl = cu.Avatar ?? "",
+                }
+            }, setCurrent: true);
+
+            // await SetStatus(lrsp.ToJson());
+        }
+        catch (Exception e) {
+            await SetStatus("Failed to log in: " + e);
+        }
+    }
+
+}

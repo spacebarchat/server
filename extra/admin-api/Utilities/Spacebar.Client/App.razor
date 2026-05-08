@@ -1,0 +1,18 @@
+﻿@using Spacebar.Client.Components
+
+<SessionManager @ref="SessionManager"></SessionManager>
+<ClientManager @ref="ClientManager">
+    <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        </Found>
+    </Router>
+</ClientManager>
+
+
+@code {
+    public static SessionManager SessionManager { get; set; } = null!;
+    public static ClientManager ClientManager { get; set; } = null!;
+
+}

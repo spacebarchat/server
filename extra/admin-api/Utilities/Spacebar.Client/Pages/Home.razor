@@ -1,0 +1,26 @@
+﻿@page "/"
+@page "/app"
+@using ArcaneLibs.Blazor.Components
+@using ArcaneLibs.Extensions
+@using Spacebar.Client.Core
+@using Spacebar.Client.WebCore
+@inject SpacebarClientWellKnownResolverService cswkrs
+@inject SessionStore sessionStore
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+<LinkButton OnClickAsync="@(()=>App.SessionManager.SetSessionPickerVisible())">Trigger session picker</LinkButton>
+<pre>@Ss.ToJson()</pre>
+<pre>@Res.ToJson()</pre>
+
+@code{
+    private SpacebarClientWellKnown? Res { get; set; }
+    private SessionEntry? Ss { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Ss = await sessionStore.GetCurrentSessionAsync();
+        Res = await cswkrs.ResolveClientWellKnown(Ss?.ServerName ?? "spacebar.chat");
+    }
+
+}

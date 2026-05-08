@@ -59,7 +59,7 @@ in
         };
 
         offload = {
-          enable = true;
+          enable = false;
           gateway = {
             enableIdentify = true;
             enableGuildMembers = true;
@@ -77,12 +77,12 @@ in
         };
 
         cdnCs = {
-          enable = false;
+          enable = true;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
 
         uApi = {
-          enable = true;
+          enable = false;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
 

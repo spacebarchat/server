@@ -1,0 +1,52 @@
+@using ArcaneLibs.Blazor.Components
+@using ArcaneLibs.Blazor.Components.Services
+@using Spacebar.Client.WebCore
+@inject SessionStore sessionStore
+@inject JsConsoleService jsConsole
+
+<DebugBanner Name="@GetType().Name" @ref="_dbgBanner"/>
+@if (_sessionPickerVisible) {
+    <ModalWindow Title="Session manager" OnCloseClickedAsync="@(() => SetSessionPickerVisible(false))">
+        @foreach (var (sessionId, session) in _sessionEntries) {
+            <LinkButton
+                OnClickAsync="@(() => SetCurrentSessionAsync(sessionId))">@(session.ProfileCache?.Username ?? "Unknown user")#@(session.ProfileCache?.Discriminator ?? "0000") <sub
+                    class="code">on @session.ServerName</sub></LinkButton>
+        }
+        <br/><br/>
+        <LinkButton href="/login">Log in</LinkButton>
+        <LinkButton href="/register">Register</LinkButton>
+    </ModalWindow>
+}
+
+@code {
+    private bool _sessionPickerVisible;
+    private DebugBanner _dbgBanner;
+
+    private Dictionary<Guid, SessionEntry> _sessionEntries = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (!firstRender) return;
+        await _dbgBanner.SetStatus("Crunching numbers...");
+        _sessionPickerVisible = await sessionStore.GetCurrentSessionAsync() == null;
+        await _dbgBanner.SetStatus("Ready!");
+        await _dbgBanner.SetStatus(null, 1000);
+    }
+
+    public async Task SetSessionPickerVisible(bool visible = true) {
+        await jsConsole.Info("[SessionManager] showing session picker...");
+        _sessionEntries = visible ? await sessionStore.GetAllSessionsAsync() : [];
+        _sessionPickerVisible = visible;
+        StateHasChanged();
+        await Task.Delay(1);
+    }
+
+    private async Task SetCurrentSessionAsync(Guid sessionId) {
+        _sessionPickerVisible = false;
+        StateHasChanged();
+        await sessionStore.SetCurrentSessionAsync(sessionId);
+        var cs = await sessionStore.GetCurrentSessionAsync();
+        await _dbgBanner.SetStatus($"Current session changed to {cs!.ProfileCache?.Username}#{cs.ProfileCache?.Discriminator} ({cs.ProfileCache.Id}) / {sessionId.ToString()}!");
+        await _dbgBanner.SetStatus(null, 3000);
+    }
+
+}

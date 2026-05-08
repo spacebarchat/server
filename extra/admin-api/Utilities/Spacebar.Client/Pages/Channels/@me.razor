@@ -1,0 +1,28 @@
+@* Workaround for Rider "Bad compile constant value" bug *@
+@attribute [Route(PageUri)]
+@using ArcaneLibs.Blazor.Components.Services
+@using Spacebar.Client.Core
+@using Spacebar.Models.Gateway
+@inject JsConsoleService jsConsole
+
+<h3>@@me</h3>
+<p>@Client?.ApiHttpClient.BaseAddress</p>
+<p>@Client?.Gateway.RawClientWebSocket.State</p>
+
+@code {
+    private const string PageUri = "/channels/@me";
+
+    [Parameter, CascadingParameter]
+    public required AuthenticatedSpacebarClient? Client {
+        get;
+        set { field = value; Console.WriteLine("Set client: " + value); }
+    }
+
+    protected override async Task OnParametersSetAsync() {
+        if (Client == null) return;
+        Client.Gateway.OnGatewayMessage.Add(async msg => {
+            await jsConsole.Log("Received gateway message: ", msg);
+        });
+    }
+
+}

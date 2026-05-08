@@ -1,0 +1,61 @@
+@using ArcaneLibs.Blazor.Components.Services
+@using ArcaneLibs.Extensions
+@using Spacebar.Client.Core
+@using Spacebar.Client.WebCore
+@using Spacebar.Models.Gateway
+@inject SessionStore sessionStore
+@inject SpacebarClientProviderService clientProvider
+@inject JsConsoleService jsConsole
+
+<DebugBanner Name="@GetType().Name" @ref="_dbgBanner"/>
+<CascadingValue TValue="AuthenticatedSpacebarClient" Value="@_client">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    private DebugBanner _dbgBanner = null!;
+    private AuthenticatedSpacebarClient? _client { get; set; }
+
+    [Parameter]
+    public required RenderFragment ChildContent { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (!firstRender) return;
+        await _dbgBanner.SetStatus("Preparing for launch!");
+        await Task.Delay(125);
+        var session = await sessionStore.GetCurrentSessionAsync();
+        if (session != null) {
+            _client = await clientProvider.GetAuthenticatedClientAsync(session.ServerName, session.AccessToken);
+            await _dbgBanner.SetStatus($"Got authenticated client for {session.ProfileCache.Username}#{session.ProfileCache.Discriminator} on {session.ServerName}! Connecting to gateway...");
+            _client.Gateway.IdentifyData.ClientProperties = new IdentifyClientProperties() {
+                HasClientMods = false,
+                ApplicationArchitecture = "wasm"
+            }.ToJsonNode().AsObject();
+            StateHasChanged();
+            await _client.Gateway.Connect();
+            _ = _client.Gateway.Start().ContinueWith(ct => {
+                jsConsole.Warn("[ClientManager] Heartbeat loop exited!");
+                if (ct.IsFaulted) {
+                    jsConsole.Error("Unhandled exception during gateway connection:", ct.Exception.ToString());
+                    throw ct.Exception;
+                }
+            });
+            _client.Gateway.OnceGatewayMessage.Add(async msg => {
+                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
+                    await _dbgBanner.SetStatus($"Got READY from gateway");
+                    await _dbgBanner.SetStatus(null, 1750);
+                    var content = msg.GetData<ReadyResponse>();
+                    await jsConsole.Info("Parsed ready payload:", content);
+                    return true;
+                }
+                return false;
+            });
+        }
+        else {
+            await _dbgBanner.SetStatus("No session marked as current... :(");
+            await _dbgBanner.SetStatus(null, 1750);
+        }
+
+    }
+
+}

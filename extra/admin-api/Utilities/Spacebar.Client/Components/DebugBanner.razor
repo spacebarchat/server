@@ -1,0 +1,23 @@
+<span class="@("dbgBanner " + (_bannerVisible ? "" : "hidden"))"><b class="code">@(Name)</b>: @_status</span>
+
+@code {
+    
+    private bool _bannerVisible = true;
+    private string? _status = "initializing...";
+    
+    [Parameter]
+    public required string Name { get; set; }
+    
+    public async Task SetStatus(string? message, int closeDelay = 0) {
+        _bannerVisible = !string.IsNullOrWhiteSpace(message);
+        if (!_bannerVisible) {
+            await Task.Delay(closeDelay);
+            StateHasChanged();
+            await Task.Delay(1000);
+        }
+
+        _status = message;
+        StateHasChanged();
+        await Task.Yield();
+    }
+}
