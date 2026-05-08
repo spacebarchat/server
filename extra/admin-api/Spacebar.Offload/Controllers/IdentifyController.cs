@@ -38,7 +38,9 @@ public class IdentifyController(ILogger<IdentifyController> logger, SpacebarAuth
         }
 
         yield return new ReplicationMessage<ReadyResponse>() {
-            Payload = new() { },
+            Payload = new() {
+                Guilds = []
+            },
         };
     }
 

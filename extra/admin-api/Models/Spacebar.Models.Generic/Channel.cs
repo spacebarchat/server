@@ -2,6 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace Spacebar.Models.Generic;
 
+public class Channel {
+    
+}
+
 public class ChannelPermissionOverwrite {
     [JsonPropertyName("id")]
     public string Id { get; set; }
