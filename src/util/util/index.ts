@@ -27,7 +27,7 @@ export * from "./Database";
 export * from "./DateBuilder";
 export * from "./email";
 export * from "./ElapsedTime";
-export * from "./Event";
+export * from "./ipc/Event";
 export * from "./FieldError";
 export * from "./Intents";
 export * from "./InvisibleCharacters";
