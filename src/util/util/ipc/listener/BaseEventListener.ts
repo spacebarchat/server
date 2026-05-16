@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import EventEmitter from "node:events";
 import { EventOpts } from "@spacebar/util";
 
 export abstract class BaseEventListener {

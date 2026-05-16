@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import EventEmitter from "node:events";
-import { Event, EventOpts } from "@spacebar/util";
+import { Event } from "@spacebar/util";
 
 export abstract class BaseEventWriter {
     abstract init(): Promise<void>;
