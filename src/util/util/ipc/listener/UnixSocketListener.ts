@@ -20,7 +20,7 @@ import EventEmitter from "node:events";
 import fs from "node:fs";
 import net, { Server } from "node:net";
 import { BaseEventListener } from "./BaseEventListener";
-import { Event, EventOpts } from "@spacebar/util";
+import { EVENT, Event, EventOpts } from "@spacebar/util";
 
 export class UnixSocketListener extends BaseEventListener {
     eventEmitter: EventEmitter;
@@ -39,15 +39,15 @@ export class UnixSocketListener extends BaseEventListener {
         try {
             if (fs.existsSync(this.socketPath)) {
                 fs.unlinkSync(this.socketPath);
-                console.log("[Events] Removed stale socket file:", this.socketPath);
+                console.log("[UnixSocketListener] Removed stale socket file:", this.socketPath);
             }
         } catch (e) {
-            console.error("[Events] Failed to remove stale socket:", e);
+            console.error("[UnixSocketListener] Failed to remove stale socket:", e);
         }
 
         this.server = net.createServer((socket) => {
             socket.on("connect", () => {
-                console.log("[Events] Unix socket client connected");
+                console.log("[UnixSocketListener] Unix socket client connected");
             });
             let buffer = Buffer.alloc(0);
             socket.on("data", (data: Buffer) => {
@@ -58,18 +58,18 @@ export class UnixSocketListener extends BaseEventListener {
                     const msgBuf = buffer.subarray(4, 4 + msgLen);
                     buffer = buffer.subarray(4 + msgLen);
                     try {
-                        const payload = JSON.parse(msgBuf.toString());
+                        const payload = JSON.parse(msgBuf.toString()) as { id: EVENT; event: Event };
                         this.eventEmitter.emit(payload.id, payload.event);
                     } catch (e) {
-                        console.error("[Events] Failed to parse unix socket data:", e);
+                        console.error("[UnixSocketListener] Failed to parse unix socket data:", e);
                     }
                 }
             });
             socket.on("error", (err) => {
-                console.error("[Events] Unix socket error:", err);
+                console.error("[UnixSocketListener] Unix socket error:", err);
             });
             socket.on("close", () => {
-                console.log("[Events] Unix socket client disconnected");
+                console.log("[UnixSocketListener] Unix socket client disconnected");
             });
         });
 
@@ -83,14 +83,14 @@ export class UnixSocketListener extends BaseEventListener {
     }
 
     async close(): Promise<void> {
-        console.log("[Events] Closing unix socket server");
+        console.log("[UnixSocketListener] Closing unix socket server");
         this.server.close();
 
         // clean up socket file
         try {
             fs.unlinkSync(this.socketPath);
         } catch (e) {
-            console.error("[Events] Failed to unlink socket file:", e);
+            console.error("[UnixSocketListener] Failed to unlink socket file:", e);
         }
 
         process.exit(0);
