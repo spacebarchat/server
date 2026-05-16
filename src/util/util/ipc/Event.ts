@@ -20,13 +20,15 @@ import { Channel } from "amqplib";
 import { randomUUID } from "node:crypto";
 import EventEmitter from "node:events";
 import path from "node:path";
-import { RabbitMQ } from "../RabbitMQ";
+import { RabbitMQ } from "./RabbitMQ";
 import { EVENT, Event } from "../../interfaces";
 import { Config } from "../Config";
 import { BaseEventListener } from "./listener/BaseEventListener";
 import { BaseEventWriter } from "./writer/BaseEventWriter";
 import { UnixSocketWriter } from "./writer/UnixSocketWriter";
 import { UnixSocketListener } from "./listener/UnixSocketListener";
+import { RabbitMqSingleListener } from "./listener/RabbitMqSingleListener";
+import { yellow } from "picocolors";
 
 export const events = new EventEmitter();
 let listener: BaseEventListener | null = null;
@@ -131,12 +133,25 @@ export interface ProcessEvent {
 
 export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts): Promise<() => Promise<void>> {
     if (RabbitMQ.connection) {
+        if (process.env.EVENT_TRANSMISSION !== "rabbitmq-legacy") {
+            console.warn(yellow("[Events] Warning:"), "RabbitMQ replication without configuring EVENT_TRANSMISSION is deprecated.");
+            console.warn(yellow("[Events] Warning:"), "Set EVENT_TRANSMISSION to 'rabbitmq-legacy' in environment variables to silence this warning.");
+        }
         const rabbitMQChannel = await RabbitMQ.getSafeChannel();
         const channel = opts?.channel || rabbitMQChannel;
         if (!channel) throw new Error("[Events] An event was sent without an associated channel");
         return await rabbitListen(channel, event, callback, {
             acknowledge: opts?.acknowledge,
         });
+    } else if (process.env.EVENT_TRANSMISSION === "rabbitmq-single") {
+        if (!Config.get().rabbitmq.host) {
+            console.error("[Events] RabbitMQ is not configured.");
+        }
+        if (!listener) {
+            listener = new RabbitMqSingleListener(Config.get().rabbitmq.host!);
+            await listener.init();
+        }
+        return await listener.listen(event, callback);
     } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
         if (!unixSocketListener) {
             listener = unixSocketListener = new UnixSocketListener(path.join(process.env.EVENT_SOCKET_PATH, `${process.pid}.sock`));

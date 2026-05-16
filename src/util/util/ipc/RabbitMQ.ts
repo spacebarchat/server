@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import amqp, { Channel, ChannelModel } from "amqplib";
-import { Config } from "./Config";
 import EventEmitter from "node:events";
+import amqp, { Channel, ChannelModel } from "amqplib";
+import { Config } from "../Config";
 
 export class RabbitMQ {
     public static connection: ChannelModel | null = null;
