@@ -19,7 +19,7 @@
 import { randomUUID } from "node:crypto";
 import EventEmitter from "node:events";
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { EVENT } from "../../interfaces";
+import { Event, EVENT } from "../../interfaces";
 import { Config } from "../Config";
 import type { EventOpts } from "./Event";
 
@@ -172,6 +172,32 @@ export class RabbitMQ {
      */
     static isConnected(): boolean {
         return this.connection !== null && !this.isReconnecting;
+    }
+
+    static async publishEvent(id: string, payload: Omit<Event, "created_at">, retryCount = 0): Promise<void> {
+        const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
+        const channel = await RabbitMQ.getSafeChannel();
+        try {
+            await channel.assertExchange(id, "fanout", {
+                durable: false,
+            });
+
+            // assertQueue isn't needed, because a queue will automatically created if it doesn't exist
+            const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
+            if (!successful) throw new Error("failed to send event");
+        } catch (e) {
+            // Check if this is a channel closed error and if we should retry
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            const isChannelError = errorMessage.includes("Channel closed") || errorMessage.includes("IllegalOperationError") || errorMessage.includes("RESOURCE_ERROR");
+
+            if (isChannelError && retryCount < 1) {
+                console.log("[RabbitMQ] Channel error detected, retrying with new channel...");
+                // Force the cached channel to be discarded by calling getSafeChannel which will create a new one
+                return RabbitMQ.publishEvent(id, payload, retryCount + 1);
+            }
+
+            console.log("[RabbitMQ] ", e);
+        }
     }
 }
 

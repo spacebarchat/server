@@ -40,34 +40,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
     if (!id) return console.error("event doesn't contain any id", payload);
 
     if (RabbitMQ.connection) {
-        const data = typeof payload.data === "object" ? JSON.stringify(payload.data) : payload.data; // use rabbitmq for event transmission
-
-        const publishEvent = async (retryCount = 0): Promise<void> => {
-            const channel = await RabbitMQ.getSafeChannel();
-            try {
-                await channel.assertExchange(id, "fanout", {
-                    durable: false,
-                });
-
-                // assertQueue isn't needed, because a queue will automatically created if it doesn't exist
-                const successful = channel.publish(id, "", Buffer.from(`${data}`), { type: payload.event });
-                if (!successful) throw new Error("failed to send event");
-            } catch (e) {
-                // Check if this is a channel closed error and if we should retry
-                const errorMessage = e instanceof Error ? e.message : String(e);
-                const isChannelError = errorMessage.includes("Channel closed") || errorMessage.includes("IllegalOperationError") || errorMessage.includes("RESOURCE_ERROR");
-
-                if (isChannelError && retryCount < 1) {
-                    console.log("[RabbitMQ] Channel error detected, retrying with new channel...");
-                    // Force the cached channel to be discarded by calling getSafeChannel which will create a new one
-                    return publishEvent(retryCount + 1);
-                }
-
-                console.log("[RabbitMQ] ", e);
-            }
-        };
-
-        await publishEvent();
+        await RabbitMQ.publishEvent(id, payload);
     } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
         if (!unixSocketWriter) {
             console.error("[Event] Unix socket writer not initialized, cannot emit event!");
