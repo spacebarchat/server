@@ -16,19 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel } from "amqplib";
-import { randomUUID } from "node:crypto";
 import EventEmitter from "node:events";
 import path from "node:path";
-import { RabbitMQ } from "./RabbitMQ";
-import { EVENT, Event } from "../../interfaces";
+import { Channel } from "amqplib";
+import { yellow } from "picocolors";
+import { Event } from "../../interfaces";
 import { Config } from "../Config";
+import { rabbitListen, RabbitMQ } from "./RabbitMQ";
 import { BaseEventListener } from "./listener/BaseEventListener";
 import { BaseEventWriter } from "./writer/BaseEventWriter";
 import { UnixSocketWriter } from "./writer/UnixSocketWriter";
 import { UnixSocketListener } from "./listener/UnixSocketListener";
 import { RabbitMqSingleListener } from "./listener/RabbitMqSingleListener";
-import { yellow } from "picocolors";
 
 export const events = new EventEmitter();
 let listener: BaseEventListener | null = null;
@@ -185,52 +184,4 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
 
         return cancel;
     }
-}
-
-async function rabbitListen(channel: Channel, id: string, callback: (event: EventOpts) => unknown, opts?: { acknowledge?: boolean }): Promise<() => Promise<void>> {
-    await channel.assertExchange(id, "fanout", { durable: false });
-    const q = await channel.assertQueue("", {
-        exclusive: true,
-        autoDelete: true,
-        messageTtl: 5000,
-    });
-
-    const consumerTag = randomUUID();
-
-    const cancel = async () => {
-        try {
-            await channel.unbindQueue(q.queue, id, "");
-            await channel.cancel(consumerTag);
-        } catch (e) {
-            console.log("[RabbitMQ] Error while cancelling channel (may be expected):", e instanceof Error ? e.message : e);
-        }
-    };
-
-    await channel.bindQueue(q.queue, id, "");
-    await channel.consume(
-        q.queue,
-        (opts) => {
-            if (!opts) return;
-
-            const data = JSON.parse(opts.content.toString());
-            const event = opts.properties.type as EVENT;
-
-            callback({
-                event,
-                data,
-                acknowledge() {
-                    channel.ack(opts);
-                },
-                channel,
-                cancel,
-            });
-            // rabbitCh.ack(opts);
-        },
-        {
-            noAck: !opts?.acknowledge,
-            consumerTag: consumerTag,
-        },
-    );
-
-    return cancel;
 }
