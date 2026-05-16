@@ -40,22 +40,22 @@ export class UnixSocketWriter extends BaseEventWriter {
     async init() {
         if (!fs.opendirSync(this.socketPath)) throw new Error("Unix socket path does not exist or is not a directory: " + this.socketPath);
 
-        console.log("[Events] Unix socket writer initializing for", this.socketPath);
+        console.log("[UnixSocketWriter] Unix socket writer initializing for", this.socketPath);
 
         const connect = (file: string) => {
             const fullPath = path.join(this.socketPath, file);
             const pid = Number(path.basename(file, ".sock"));
-            console.log("[Events] Attempting to connect to unix socket:", fullPath, "| proc:", getPidCmdline(pid) ?? red("No such pid: " + pid));
+            console.log("[UnixSocketWriter] Attempting to connect to unix socket:", fullPath, "| proc:", getPidCmdline(pid) ?? red("No such pid: " + pid));
 
             // avoid duplicate connections
             if (this.clients[fullPath] && !this.clients[fullPath].destroyed) {
-                console.log("[Events] Unix socket client already connected to", fullPath);
+                console.log("[UnixSocketWriter] Unix socket client already connected to", fullPath);
                 return;
             }
 
             // clean up old connection if it exists
             if (this.clients[fullPath]) {
-                console.log("[Events] Removing stale unix socket client for", fullPath);
+                console.log("[UnixSocketWriter] Removing stale unix socket client for", fullPath);
                 try {
                     this.clients[fullPath].destroy();
                 } catch (e) {
@@ -68,21 +68,21 @@ export class UnixSocketWriter extends BaseEventWriter {
             try {
                 const stats = fs.statSync(fullPath);
                 if (!stats.isSocket()) {
-                    console.log("[Events] Ignoring non-socket file:", fullPath);
+                    console.log("[UnixSocketWriter] Ignoring non-socket file:", fullPath);
                     return;
                 }
             } catch (e) {
-                console.log("[Events] Cannot stat socket file:", fullPath);
+                console.log("[UnixSocketWriter] Cannot stat socket file:", fullPath);
                 return;
             }
 
             try {
                 this.clients[fullPath] = net.createConnection(fullPath, () => {
-                    console.log("[Events] Unix socket client connected to", fullPath);
+                    console.log("[UnixSocketWriter] Unix socket client connected to", fullPath);
                 });
 
                 this.clients[fullPath].on("error", (err) => {
-                    console.error("[Events] Unix socket client error on", fullPath, ":", err);
+                    console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
                     // clean up after error
                     if (this.clients[fullPath]) {
                         delete this.clients[fullPath];
@@ -91,18 +91,18 @@ export class UnixSocketWriter extends BaseEventWriter {
 
                 // handle clean socket closure
                 this.clients[fullPath].on("close", () => {
-                    console.log("[Events] Unix socket client closed:", fullPath);
+                    console.log("[UnixSocketWriter] Unix socket client closed:", fullPath);
                     delete this.clients[fullPath];
                 });
             } catch (e) {
-                console.error("[Events] Failed to create connection to", fullPath, ":", e);
+                console.error("[UnixSocketWriter] Failed to create connection to", fullPath, ":", e);
                 delete this.clients[fullPath];
             }
         };
 
         // connect to all sockets, now and in the future
         this.watcher = fs.watch(this.socketPath, {}, (eventType, filename) => {
-            console.log("[Events] Unix socket writer received watch sig", eventType, filename);
+            console.log("[UnixSocketWriter] Unix socket writer received watch sig", eventType, filename);
             if (eventType === "rename" && filename?.endsWith(".sock")) {
                 try {
                     const fullPath = path.join(this.socketPath, filename!);
@@ -110,7 +110,7 @@ export class UnixSocketWriter extends BaseEventWriter {
                         connect(filename!);
                     } else {
                         if (this.clients[fullPath]) {
-                            console.log("[Events] Unix socket writer detected removed socket:", fullPath);
+                            console.log("[UnixSocketWriter] Unix socket writer detected removed socket:", fullPath);
                             try {
                                 this.clients[fullPath].destroy();
                             } catch (e) {
@@ -126,20 +126,20 @@ export class UnixSocketWriter extends BaseEventWriter {
         });
 
         this.watcher.on("error", (err) => {
-            console.error("[Events] Unix socket watcher error:", err);
+            console.error("[UnixSocketWriter] Unix socket watcher error:", err);
         });
 
         // connect to existing sockets if any
         try {
             const files = fs.readdirSync(this.socketPath);
-            console.log("[Events] Unix socket writer found existing sockets:", files);
+            console.log("[UnixSocketWriter] Unix socket writer found existing sockets:", files);
             files.forEach((file) => {
                 if (file.endsWith(".sock")) {
                     connect(file);
                 }
             });
         } catch (err) {
-            console.error("[Events] Unix socket writer failed to read directory:", err);
+            console.error("[UnixSocketWriter] Unix socket writer failed to read directory:", err);
         }
 
         this.isInitializing = false;
@@ -151,11 +151,11 @@ export class UnixSocketWriter extends BaseEventWriter {
         // check if there are any listeners
         const clientCount = Object.entries(this.clients).length;
         if (clientCount === 0) {
-            console.warn("[Events] Unix socket writer has no connected clients to emit to, backlog size:", this.backlog.length + 1);
+            console.warn("[UnixSocketWriter] Unix socket writer has no connected clients to emit to, backlog size:", this.backlog.length + 1);
             this.backlog.push(event);
             if (!this.isInitializing) {
                 this.isInitializing = true;
-                console.log("[Events] Re-initializing unix socket writer due to new event with no listeners");
+                console.log("[UnixSocketWriter] Re-initializing unix socket writer due to new event with no listeners");
                 await this.close();
                 await this.init();
             }
@@ -165,7 +165,7 @@ export class UnixSocketWriter extends BaseEventWriter {
         await this.replayLock;
         await (this.replayLock = Promise.resolve().then(async () => {
             if (this.backlog.length > 0) {
-                console.log(`[Events] Replaying ${this.backlog.length} backlog events`);
+                console.log(`[UnixSocketWriter] Replaying ${this.backlog.length} backlog events`);
                 for (const backlogEvent of this.backlog) {
                     await this.broadcast(backlogEvent);
                 }
@@ -187,7 +187,7 @@ export class UnixSocketWriter extends BaseEventWriter {
 
             for (const [socketPath, socket] of Object.entries(this.clients)) {
                 if (socket.destroyed) {
-                    console.log("[Events] Unix socket writer found destroyed socket, removing:", socketPath);
+                    console.log("[UnixSocketWriter] Unix socket writer found destroyed socket, removing:", socketPath);
                     delete this.clients[socketPath];
                     continue;
                 }
@@ -195,19 +195,19 @@ export class UnixSocketWriter extends BaseEventWriter {
                 try {
                     socket.write(framed);
                 } catch (e) {
-                    console.error("[Events] Unix socket writer failed to write to socket", socketPath, ":", e);
+                    console.error("[UnixSocketWriter] Unix socket writer failed to write to socket", socketPath, ":", e);
                 }
             }
 
             if (tsw.elapsed().totalMilliseconds > 5)
                 // else it's too noisy
-                console.log(`[Events] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
+                console.log(`[UnixSocketWriter] Unix socket writer emitted to ${Object.entries(this.clients).length} sockets in ${tsw.elapsed().totalMilliseconds}ms`);
             res();
         }));
     }
 
     async close() {
-        console.log("[Events] Closing Unix socket writer");
+        console.log("[UnixSocketWriter] Closing Unix socket writer");
 
         if (this.watcher) {
             this.watcher.close();
@@ -218,7 +218,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             try {
                 socket.destroy();
             } catch (e) {
-                console.error("[Events] Error closing socket", path, ":", e);
+                console.error("[UnixSocketWriter] Error closing socket", path, ":", e);
             }
         }
         this.clients = {};

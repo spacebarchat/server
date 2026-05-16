@@ -37,7 +37,7 @@ export * from "./Logo";
 export * from "./MessageFlags";
 export * from "./networking";
 export * from "./Permissions";
-export * from "./RabbitMQ";
+export * from "./ipc/RabbitMQ";
 export * from "./Regex";
 export * from "./Rights";
 export * from "./Snowflake";
