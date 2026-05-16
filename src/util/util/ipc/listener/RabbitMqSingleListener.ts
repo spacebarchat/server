@@ -18,7 +18,7 @@
 
 import EventEmitter from "node:events";
 import { BaseEventListener } from "./BaseEventListener";
-import { EVENT, Event, EventOpts, RabbitMQ } from "@spacebar/util";
+import { EVENT, Event, EventOpts } from "@spacebar/util";
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { randomUUID } from "node:crypto";
 
