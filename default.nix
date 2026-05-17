@@ -82,8 +82,6 @@ let
       # set +x
       runHook postInstall
     '';
-
-    passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix self);
   };
 in
 pkgs.stdenv.mkDerivation {
@@ -122,5 +120,18 @@ pkgs.stdenv.mkDerivation {
     makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/apply-migrations --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/dist/apply-migrations.js
   '';
 
-  passthru.tests = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix self);
+  passthru.tests = pkgs.runCommand "spacebar-server-ts-all-tests" rec {
+    bundleStarts = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix { inherit self; });
+    bundleStartsRabbitMq = pkgs.testers.runNixOSTest (
+      import ./nix/tests/test-bundle-starts.nix {
+        inherit self;
+        withIpc = "rabbitmq-single";
+      }
+    );
+
+    nativeBuildInputs = [
+      bundleStarts
+      bundleStartsRabbitMq
+    ];
+  } "touch $out";
 }
