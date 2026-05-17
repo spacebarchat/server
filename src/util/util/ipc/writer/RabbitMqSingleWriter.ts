@@ -46,14 +46,14 @@ export class RabbitMqSingleWriter extends BaseEventWriter {
     async emit(event: Event): Promise<void> {
         // todo check if channel is closed
         if ((this.channel as unknown as { closed?: boolean }).closed) this.channel = await this.connection.createChannel();
-        await this.channel.assertExchange("", "fanout", {
+        await this.channel.assertExchange("-", "fanout", {
             durable: false, // ensure that messages arent written to disk
         });
 
         let success = false;
         try {
             success = this.channel.publish(
-                "",
+                "-",
                 "",
                 Buffer.from(JSON.stringify({ id: (event.guild_id || event.channel_id || event.user_id || event.session_id) as string, event })),
                 {},

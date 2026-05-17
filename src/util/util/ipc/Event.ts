@@ -52,7 +52,7 @@ export async function emitEvent(payload: Omit<Event, "created_at">) {
 export async function initEvent() {
     if (process.env.EVENT_TRANSMISSION === "rabbitmq-single") {
         if (!Config.get().rabbitmq.host!) {
-            throw new Error("[Events] RabbitMQ is not configured.");
+            throw new Error("[Events] rabbitmq.host is not configured.");
         }
 
         if (!writer) {
@@ -112,7 +112,7 @@ export interface ProcessEvent {
 export async function listenEvent(event: string, callback: (event: EventOpts) => unknown, opts?: ListenEventOpts): Promise<() => Promise<void>> {
     if (process.env.EVENT_TRANSMISSION === "rabbitmq-single") {
         if (!Config.get().rabbitmq.host) {
-            throw new Error("[Events] EVENT_SOCKET_PATH is not configured.");
+            throw new Error("[Events] rabbitmq.host is not configured.");
         }
         if (!listener) {
             listener = new RabbitMqSingleListener(Config.get().rabbitmq.host!);

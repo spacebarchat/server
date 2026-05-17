@@ -1,4 +1,7 @@
-self:
+{
+  self,
+  withIpc ? "unix",
+}:
 {
   config,
   lib,
@@ -8,11 +11,13 @@ self:
 
 let
   sb = import ../lib/mkEndpoint.nix;
+  isRabbitMqTest = lib.strings.hasPrefix "rabbitmq" withIpc;
 in
 {
-  name = "test-bundle-starts";
+  name = "test-bundle-starts" + lib.optionalString (withIpc != "unix") ("_ipc=" + withIpc);
   skipTypeCheck = true;
   skipLint = true;
+  globalTimeout = 120;
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
@@ -30,12 +35,20 @@ in
             LOG_REQUESTS = "-"; # Log all requests
             LOG_VALIDATION_ERRORS = true;
           };
+          ipcMethod = withIpc;
+
+          settings = {
+            rabbitmq = {
+              host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
+            };
+          };
 
           nginx.enable = true;
         };
       in
       lib.trace ("Testing with config: " + builtins.toJSON cfg) cfg;
     services.nginx.enable = true;
+    services.rabbitmq.enable = isRabbitMqTest;
     services.postgresql = {
       enable = true;
       initdbArgs = [

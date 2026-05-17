@@ -18,7 +18,7 @@
 
 import EventEmitter from "node:events";
 import { BaseEventListener } from "./BaseEventListener";
-import { EVENT, Event, EventOpts } from "@spacebar/util";
+import { EVENT, Event, EventOpts, sleep } from "@spacebar/util";
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { randomUUID } from "node:crypto";
 
@@ -35,11 +35,19 @@ export class RabbitMqSingleListener extends BaseEventListener {
     }
 
     async init() {
-        console.log(`[RabbitMQSingleListener] Connecting to: ${this.host}`);
-        this.connection = await amqp.connect(this.host, {
-            timeout: 1000 * 60,
-            noDelay: true,
-        });
+        while (!this.connection) {
+            try {
+                console.log(`[RabbitMQSingleListener] Connecting to: ${this.host}`);
+                this.connection = await amqp.connect(this.host, {
+                    timeout: 1000 * 60,
+                    noDelay: true,
+                });
+                console.log(`[RabbitMQSingleListener] Connected to: ${this.host}`);
+            } catch (e) {
+                console.log(`[RabbitMQSingleListener] Failed to connect to to: ${this.host}: ${e}`);
+                await sleep(1000);
+            }
+        }
         this.channel = await this.connection.createChannel();
 
         for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
@@ -52,19 +60,21 @@ export class RabbitMqSingleListener extends BaseEventListener {
 
         this.connection.on("close", () => {
             console.error("[RabbitMQSingleListener] Connection closed");
-            this.init().catch((e) => console.error("[RabbitMQSingleListener] Failed to schedule reconnection:", e));
+            sleep(1000).then(() => {
+                this.init().catch((e) => console.error("[RabbitMQSingleListener] Failed to schedule reconnection:", e));
+            });
         });
 
         // actually set up event receiving?
-        await this.channel.assertExchange("", "fanout", { durable: false });
-        const q = await this.channel.assertQueue("", {
-            exclusive: true,
+        await this.channel.assertExchange("-", "fanout", { durable: false });
+        const q = await this.channel.assertQueue("-", {
+            exclusive: false,
             autoDelete: true,
             messageTtl: 5000,
         });
 
         const consumerTag = randomUUID();
-        await this.channel.bindQueue(q.queue, "", "");
+        await this.channel.bindQueue(q.queue, "-", "");
         await this.channel.consume(
             q.queue,
             (opts) => {
