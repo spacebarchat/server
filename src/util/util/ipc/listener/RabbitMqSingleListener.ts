@@ -24,8 +24,8 @@ import { randomUUID } from "node:crypto";
 
 export class RabbitMqSingleListener extends BaseEventListener {
     private readonly host: string;
-    private connection: ChannelModel;
-    private channel: Channel;
+    private connection?: ChannelModel;
+    private channel?: Channel;
     eventEmitter: EventEmitter;
 
     constructor(host: string) {
@@ -90,8 +90,10 @@ export class RabbitMqSingleListener extends BaseEventListener {
     }
 
     async close(): Promise<void> {
-        await this.channel.close();
-        await this.connection.close();
+        await this.channel?.close();
+        this.channel = undefined;
+        await this.connection?.close();
+        this.connection = undefined;
     }
 
     async listen(event: string, callback: (event: EventOpts) => unknown): Promise<() => Promise<void>> {
