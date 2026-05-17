@@ -122,16 +122,23 @@ pkgs.stdenv.mkDerivation {
 
   passthru.tests = pkgs.runCommand "spacebar-server-ts-all-tests" rec {
     bundleStarts = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix { inherit self; });
-    bundleStartsRabbitMq = pkgs.testers.runNixOSTest (
+    bundleStartsRabbitMqSingle = pkgs.testers.runNixOSTest (
       import ./nix/tests/test-bundle-starts.nix {
         inherit self;
         withIpc = "rabbitmq-single";
       }
     );
+    bundleStartsRabbitMqLegacy = pkgs.testers.runNixOSTest (
+      import ./nix/tests/test-bundle-starts.nix {
+        inherit self;
+        withIpc = "rabbitmq-legacy";
+      }
+    );
 
     nativeBuildInputs = [
       bundleStarts
-      bundleStartsRabbitMq
+      bundleStartsRabbitMqSingle
+      bundleStartsRabbitMqLegacy
     ];
   } "touch $out";
 }
