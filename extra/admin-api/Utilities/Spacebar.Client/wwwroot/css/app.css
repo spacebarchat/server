@@ -24,6 +24,25 @@ pre, .code {
         height: 0;
     }
 
+.mdErrorBlinkBg {
+    animation: ease-in-out 1s mdErrorBlinkBgAnim;
+    border: 1px #ff00ff;
+    margin-right: 1em;
+    border-radius: 3px;
+}
+
+@keyframes mdErrorBlinkBgAnim {
+    0%{
+        background-color: #ffff0088;
+    }
+    50% {
+        background-color: #ffff0000;
+    }
+    100% {
+        background-color: #ffff0088;
+    }
+}
+
 #app > div > main > div {
     background-color: #333;
     border-bottom: none;

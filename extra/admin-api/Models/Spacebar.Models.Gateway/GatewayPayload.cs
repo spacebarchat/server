@@ -35,7 +35,7 @@ public class GatewayPayload {
     }
 }
 
-public enum GatewayOpcode {
+public enum GatewayOpcode : byte {
     S2CDispatch,
     Heartbeat,
     C2SIdentify,

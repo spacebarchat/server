@@ -14,9 +14,11 @@
         <BlazorEnableCompression>false</BlazorEnableCompression>
         <CompressionEnabled>false</CompressionEnabled>
         <BlazorCacheBootResources>false</BlazorCacheBootResources>
-        <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+        <!--<BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>-->
         <WasmEnableHotReload>false</WasmEnableHotReload>
         <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,7 +26,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js"/>
     </ItemGroup>

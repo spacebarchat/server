@@ -1,0 +1,72 @@
+@page "/channels/{GuildId:long}/{ChannelId:long}"
+@page "/channels/{GuildId:long}/{ChannelId:long}/{MessageId:long}"
+@using System.Collections.ObjectModel
+@using ArcaneLibs.Blazor.Components.Services
+@using ArcaneLibs.Extensions
+@using Spacebar.Client.Components
+@using Spacebar.Models.Gateway
+@using Spacebar.Models.Generic
+@inject JsConsoleService jsConsole
+
+<style>@_guildCss</style>
+<ChannelMessageList Messages="@_messages"></ChannelMessageList>
+
+@code {
+
+    private ObservableCollection<Message> _messages { get; set; } = [];
+    private string _guildCss = "";
+
+    [Parameter]
+    public long GuildId { get; set; }
+
+    [Parameter]
+    public long ChannelId { get; set; }
+
+    [Parameter]
+    public long? MessageId { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        var cid = ChannelId;
+        Console.WriteLine($"OIA GuildChannel(g={GuildId},c={ChannelId},m={MessageId})");
+        await (App.ClientManager.ClientAvailable ?? Task.CompletedTask);
+        if (MessageId is null) {
+            App.ClientManager.Client?.Gateway.OnceGatewayMessage.Add(async evt => {
+                if (evt is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "MESSAGE_CREATE" }) {
+                    if (evt.EventData["channel_id"].GetValue<string>() != ChannelId.ToString()) return false;
+                    await jsConsole.Info("Current channel message:", evt);
+                    var msg = evt.GetData<Message>();
+                    await jsConsole.Info("... typed:", msg);
+                    _messages.Add(msg);
+                    StateHasChanged();
+                }
+
+                return cid != ChannelId;
+            });
+            await (App.ClientManager.ClientReady ?? Task.CompletedTask);
+            _messages = new ObservableCollection<Message>(Enumerable.Reverse(await App.ClientManager.Client.GetChannel(ChannelId).GetMessagesAsync(
+                before: App.ClientManager.ClientState.Guilds[GuildId].Channels.First(x => x.Id == ChannelId).LastMessageId + 1,
+                limit: 100
+            )));
+
+            // build role color css...
+            _guildCss = "";
+            foreach (var role in App.ClientManager.ClientState.Guilds[GuildId].Roles) {
+                _guildCss += $$"""
+                               .role_{{role.Id}} {
+                                 color: #{{role.Colors.PrimaryColor.ToString("X6")}};
+                               }
+
+                               """;
+            }
+        }
+    }
+
+    public override async Task SetParametersAsync(ParameterView parameters) {
+        bool reset = false;
+        if (parameters.GetValueOrDefault<long>("ChannelId") != ChannelId) reset = true;
+
+        await base.SetParametersAsync(parameters);
+        if (reset) await OnInitializedAsync();
+    }
+
+}

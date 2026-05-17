@@ -1,3 +1,26 @@
+.navGuildIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+    image-rendering: high-quality;
+}
+
+a:hover > .navGuildIcon {
+    transition: 0.15s;
+    border-radius: 25%;
+}
+
+.nav-item > a.nav-link a {
+    text-overflow: fade;
+    text-wrap: nowrap;
+    padding-left: 0;
+    line-height: 1rem;
+}
+
+/* default CSS */
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -52,7 +75,7 @@
         height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
+        line-height: 1rem;
     }
 
 .nav-item ::deep a.active {

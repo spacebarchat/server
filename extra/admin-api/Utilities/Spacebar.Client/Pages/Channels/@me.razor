@@ -2,12 +2,15 @@
 @attribute [Route(PageUri)]
 @using ArcaneLibs.Blazor.Components.Services
 @using Spacebar.Client.Core
-@using Spacebar.Models.Gateway
 @inject JsConsoleService jsConsole
 
 <h3>@@me</h3>
 <p>@Client?.ApiHttpClient.BaseAddress</p>
 <p>@Client?.Gateway.RawClientWebSocket.State</p>
+
+@foreach (var guild in App.ClientManager.ClientState.Guilds) {
+    <span class="code">@guild.Value.Name</span><br/>
+}
 
 @code {
     private const string PageUri = "/channels/@me";
@@ -21,7 +24,8 @@
     protected override async Task OnParametersSetAsync() {
         if (Client == null) return;
         Client.Gateway.OnGatewayMessage.Add(async msg => {
-            await jsConsole.Log("Received gateway message: ", msg);
+            // await jsConsole.Log("Received gateway message: ", msg);
+            // StateHasChanged();
         });
     }
 

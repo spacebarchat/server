@@ -1,0 +1,158 @@
+@using System.Collections.ObjectModel
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@using ArcaneLibs.Blazor.Components.Services
+@using ArcaneLibs.Extensions
+@using Spacebar.Client.Core
+@using Spacebar.Models.Generic
+@inject JsConsoleService jsConsole
+
+@foreach (var message in Messages) {
+    if (message.Type == 0 || message.Type == 19) {
+        if (message.Type == 19) {
+            <span>╭⎯⎯ <b>@message.ReferencedMessage?.Author.Username</b> @string.Join("", message.ReferencedMessage?.Content?.Split("\n")[0].Take(100) ?? [])</span>
+            <br/>
+        }
+
+        <b class="@(string.Join(" ", GetMemberRoles(message.GuildId.Value, message.Author.Id).Select(x => $"role_{x}")))">@message.Author.Username</b>
+        <br/>
+        <span>@message.Content</span>
+        <br/>
+        <div style="background-color: #FFFF0033;">
+            @GetMessageContent(message)
+        </div>
+        <br/>
+        <div style="background-color: #FF00FF33;">
+            @GetMessageContentEnumerated(message)
+        </div>
+        <br/>
+        @if (message.Attachments.Any()) {
+            @foreach (var att in message.Attachments) {
+                @if (att.ContentType.StartsWith("image/")) {
+                    <img src="@att.ProxyUrl" class="attachmentImage" alt="Attachment image"/>
+                }
+                else {
+                    <span class="code">@att.ToJson()</span>
+                }
+
+                <br/>
+            }
+        }
+
+        <br/>
+    }
+    else {
+        <span class="code" style="background-color: #772222">
+            Unknown message type @message.Type
+            <details>
+                <summary>View raw message data</summary>
+                @message.ToJson(indent: true)
+            </details>
+        </span>
+        <br/>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public required ObservableCollection<Message> Messages { get; set; }
+
+    public List<string> GetMemberRoles(long guildId, long memberId) {
+        // App.ClientManager.ClientState.Guilds[guildId].
+        return [];
+    }
+
+    private static string[] _partColors = [
+        "#FFFF0033",
+        "#FF00FF33",
+        "#00FFFF33",
+        "#FF000033",
+        "#00FF0033",
+        "#0000FF33"
+    ];
+
+    private static bool _shouldRenderMarkdownZones = true;
+    private RenderFragment GetMessageContent(Message msg) => builder => {
+        var fullContent = msg.Content;
+        int i = 0, line = 0;
+        Regex[][] groupedRegexes = [[MarkdownBoldRegex, MarkdownCodeblockRegex], [MarkdownCodeRegex, MarkdownItalicRegex]];
+        Regex[] regexes = groupedRegexes.SelectMany(x => x).ToArray();
+
+        var lines = fullContent.Split('\n');
+        foreach (var lineContent in lines) {
+            var content = lineContent;
+            var elemType = "span";
+            var shouldBr = true;
+            if (content.StartsWith("-#")) {
+                elemType = "sub";
+                content = content[2..].TrimStart();
+            }
+            else if (content.StartsWith("#")) {
+                var hdrLevel = content.TakeWhile(x => x == '#').Count();
+                content = content[hdrLevel..];
+                shouldBr = false;
+                elemType = "h" + hdrLevel;
+            }
+            else if (content.StartsWith("*")) {
+                
+            }
+            
+            var indicies = regexes.Select(r => new {
+                regex = r,
+                regexStr = r.ToString(),
+                matchIdx = r.Match(content).Index,
+                matchContent = r.Match(content).Value
+            }).Where(x => x.matchIdx != 0).ToList();
+
+            if (indicies.Any()) {
+                jsConsole.Info("Found indices: ", JsonSerializer.SerializeToElement(indicies, new JsonSerializerOptions() {
+                    IncludeFields = true
+                }));
+
+                builder.OpenElement(i++, elemType);
+                {
+                    if (_shouldRenderMarkdownZones) builder.AddAttribute(i++, "style", $"background-color: {_partColors[i % _partColors.Length]}");
+                    builder.AddContent(i++, content![..indicies.Min(x => x.matchIdx)]);
+                    content = content![..indicies.Min(x => x.matchIdx)];
+                }
+                builder.CloseComponent();
+            }
+            else {
+                builder.OpenElement(i++, elemType);
+                {
+                    if (_shouldRenderMarkdownZones && elemType != "span") builder.AddAttribute(i++, "style", $"background-color: {_partColors[i % _partColors.Length]}");
+                    builder.AddContent(i++, content!);
+                }
+                builder.CloseComponent();
+                // continue;
+            }
+
+            if (line++ <= lines.Length && shouldBr) {
+                builder.AddMarkupContent(i++, "<br/>");
+            }
+        }
+    };
+
+    private RenderFragment GetMessageContentEnumerated(Message msg) => builder => {
+        int i = 0;
+        builder.OpenElement(i++, "div");
+        builder.AddAttribute(i++, "id", "msg"+msg.Id);
+        foreach (var comp in new MarkdownEnumerator().EnumerateMarkdownComponents(msg.Content)) {
+            if (comp is ContainerMarkdownNode) {
+                
+            }
+            else {
+                builder.OpenElement(i++, "span");
+                builder.AddAttribute(i++, "class", "mdErrorBlinkBg");
+                // jsConsole.Info("frames:", builder.GetFrames().Array[0].);
+                // builder.AddAttribute(i++, );
+                builder.AddContent(i++, $"Unknown component type: {comp.GetType().FullName}");
+                builder.CloseElement();
+            }
+        }
+        
+        builder.CloseElement();
+    };
+
+}

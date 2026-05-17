@@ -1,0 +1,7 @@
+.attachmentImage {
+    max-height: 300px;
+    max-width: 300px;
+    object-position: center;
+    object-fit: cover;
+}
+

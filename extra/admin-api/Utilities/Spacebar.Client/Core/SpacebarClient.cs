@@ -32,10 +32,12 @@ public class AuthenticatedSpacebarClient {
         };
         ApiHttpClient.DefaultRequestHeaders.Authorization = new("Bearer", token);
         Gateway = new(sp.GetRequiredService<ILogger<AuthenticatedSpacebarGatewayClient>>(), wellKnown, token);
+        ClientWellKnown = wellKnown;
     }
 
     public HttpClient ApiHttpClient { get; set; }
     public AuthenticatedSpacebarGatewayClient Gateway { get; set; }
+    public SpacebarClientWellKnown ClientWellKnown { get; set; }
 
     // TODO: write a proper full user model...
     public async Task<PartialUser> GetCurrentUser() {
@@ -47,6 +49,28 @@ public class AuthenticatedSpacebarClient {
 
     ~AuthenticatedSpacebarClient() {
         ApiHttpClient.Dispose();
+    }
+
+    public SpacebarClientChannel GetChannel(long channelId) {
+        return new(this, channelId);
+    }
+}
+
+public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long channelId) {
+    public long Id => channelId;
+
+    public async Task<List<Message>> GetMessagesAsync(long? around = null, long? before = null, long? after = null, int limit = 50) {
+        var uri = $"channels/{channelId}/messages?limit={limit}";
+        if (around.HasValue) uri += $"&around={around.Value}";
+        if (before.HasValue) uri += $"&before={before.Value}";
+        if (after.HasValue) uri += $"&after={after.Value}";
+
+        var resp = await client.ApiHttpClient.GetAsync(uri);
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        var data = await resp.Content.ReadFromJsonAsync<List<JsonObject>>();
+        Console.WriteLine(data.ToJson(indent: false, ignoreNull: true));
+        return data.Select(x => x.Deserialize<Message>()).ToList();
     }
 }
 
@@ -87,11 +111,23 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
                 logger.LogInformation("Got heartbeat ACK from server!");
             }
 
-            await Task.WhenAll(OnGatewayMessage.Select(x => x(msg)).ToArray());
+            await Task.WhenAll(OnGatewayMessage.Select(async x => {
+                try {
+                    await x(msg);
+                }
+                catch (Exception e) {
+                    logger.LogError("OnGatewayMessage callback failed: {e}", e);
+                }
+            }).ToArray());
             foreach (var t in OnceGatewayMessage.Select((Func<GatewayPayload, Task<bool>> Callback, Task<bool> WasHandled) (cb) => (cb, cb(msg))).ToList()) {
-                var handled = await t.WasHandled;
-                if (handled) {
-                    OnceGatewayMessage.Remove(t.Callback);
+                try {
+                    var handled = await t.WasHandled;
+                    if (handled) {
+                        OnceGatewayMessage.Remove(t.Callback);
+                    }
+                }
+                catch (Exception e) {
+                    logger.LogError("OnceGatewayMessage callback failed: {e}", e);
                 }
             }
         }
@@ -134,13 +170,14 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
             idx++;
 
             if (msg.EndOfMessage) {
-                Console.WriteLine("Got message, deserialising...");
+                Console.WriteLine($"Got message, deserialising {messageParts.Count} bytes...");
                 var fullMsg = messageParts.ToArray();
                 trace.Add(($"LD({messageParts.Count})", sw.GetElapsedAndRestart()));
 
                 var d = JsonSerializer.Deserialize<GatewayPayload>(fullMsg);
                 trace.Add(($"LJS({fullMsg.Length})", sw.GetElapsedAndRestart()));
 
+                Console.WriteLine($"Received gateway message #{d.Sequence}: {(byte)d.Opcode}/{d.Opcode.ToString().Replace("S2C", "")} {d.DispatchEventType}");
                 yield return d ?? throw new InvalidDataException("Gateway message deserialisation returned null?");
                 trace.Add(($"YLD", sw.GetElapsedAndRestart()));
 

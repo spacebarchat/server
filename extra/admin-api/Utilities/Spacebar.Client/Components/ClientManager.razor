@@ -2,22 +2,41 @@
 @using ArcaneLibs.Extensions
 @using Spacebar.Client.Core
 @using Spacebar.Client.WebCore
+@using Spacebar.Client.WebCore.Client
 @using Spacebar.Models.Gateway
 @inject SessionStore sessionStore
 @inject SpacebarClientProviderService clientProvider
 @inject JsConsoleService jsConsole
 
 <DebugBanner Name="@GetType().Name" @ref="_dbgBanner"/>
-<CascadingValue TValue="AuthenticatedSpacebarClient" Value="@_client">
+<CascadingValue TValue="AuthenticatedSpacebarClient" Value="@Client">
     @ChildContent
 </CascadingValue>
 
 @code {
     private DebugBanner _dbgBanner = null!;
-    private AuthenticatedSpacebarClient? _client { get; set; }
+    private bool _readyReceived = false;
+
+    public ClientManager() {
+        ClientAvailable = Task.Run(async () => {
+            while (Client is null) await Task.Delay(50);
+            ClientAvailable = null;
+        });
+        ClientReady = Task.Run(async () => {
+            while (!_readyReceived) await Task.Delay(50);
+            ClientAvailable = null;
+        });
+    }
+
+    public AuthenticatedSpacebarClient? Client { get; set; }
+
+    public ClientStateContainer ClientState { get; set; } = new();
 
     [Parameter]
     public required RenderFragment ChildContent { get; set; }
+
+    public Task? ClientAvailable { get; set; }
+    public Task? ClientReady { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (!firstRender) return;
@@ -25,29 +44,53 @@
         await Task.Delay(125);
         var session = await sessionStore.GetCurrentSessionAsync();
         if (session != null) {
-            _client = await clientProvider.GetAuthenticatedClientAsync(session.ServerName, session.AccessToken);
+            Client = await clientProvider.GetAuthenticatedClientAsync(session.ServerName, session.AccessToken);
             await _dbgBanner.SetStatus($"Got authenticated client for {session.ProfileCache.Username}#{session.ProfileCache.Discriminator} on {session.ServerName}! Connecting to gateway...");
-            _client.Gateway.IdentifyData.ClientProperties = new IdentifyClientProperties() {
+            Client.Gateway.IdentifyData.ClientProperties = new IdentifyClientProperties() {
                 HasClientMods = false,
                 ApplicationArchitecture = "wasm"
             }.ToJsonNode().AsObject();
             StateHasChanged();
-            await _client.Gateway.Connect();
-            _ = _client.Gateway.Start().ContinueWith(ct => {
+            await Client.Gateway.Connect();
+            _ = Client.Gateway.Start().ContinueWith(ct => {
                 jsConsole.Warn("[ClientManager] Heartbeat loop exited!");
                 if (ct.IsFaulted) {
                     jsConsole.Error("Unhandled exception during gateway connection:", ct.Exception.ToString());
                     throw ct.Exception;
                 }
             });
-            _client.Gateway.OnceGatewayMessage.Add(async msg => {
+            Client.Gateway.OnceGatewayMessage.Add(async msg => {
                 if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
-                    await _dbgBanner.SetStatus($"Got READY from gateway");
-                    await _dbgBanner.SetStatus(null, 1750);
+                    await _dbgBanner.SetStatus($"Got READY from gateway, deserializing...");
                     var content = msg.GetData<ReadyResponse>();
-                    await jsConsole.Info("Parsed ready payload:", content);
+                    await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling...");
+                    // ClientState.Guilds.AddRange(content.Guilds.ToDictionary(x=>x.Id, x=>x));
+                    foreach (var guild in content.Guilds) {
+                        ClientState.Guilds.Add(guild.Id, guild);
+                        await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling... guilds ({ClientState.Guilds.Count})");
+                        await Task.Delay(1);
+                    }
+
+                    foreach (var guild in content.Relationships) {
+                        // ClientState.Relationships.Add(guild.Id, guild);
+                        await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling... guilds ({ClientState.Guilds.Count}), relationships (0)");
+                        await Task.Delay(1);
+                    }
+
+                    await jsConsole.Info("Parsed ready payload:", new { original = msg.EventData, parsed = content });
+                    await _dbgBanner.SetStatus($"Done handling ready!");
+                    _readyReceived = true;
+                    _ = _dbgBanner.SetStatus(null, 1750);
+                    return false;
+                }
+
+                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY_SUPPLEMENTAL" }) {
+                    await _dbgBanner.SetStatus("Received READY_SUPPLEMENTAL...");
+                    await jsConsole.Info("Parsed ready_supplemental payload", new { original = msg.EventData });
+                    _ =_dbgBanner.SetStatus(null, 1750);
                     return true;
                 }
+
                 return false;
             });
         }
@@ -55,7 +98,6 @@
             await _dbgBanner.SetStatus("No session marked as current... :(");
             await _dbgBanner.SetStatus(null, 1750);
         }
-
     }
 
 }

@@ -14,14 +14,22 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+        @foreach (var guild in App.ClientManager.ClientState.Guilds) {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@($"/channels/{guild.Key}/{guild.Value.Channels.First(x => x.Type == 0).Id}")">
+                    @{
+                        var guildIconUrl = string.IsNullOrWhiteSpace(guild.Value.Icon)
+                            ? "/img/icon_white.png"
+                            : new Uri($"{App.ClientManager.Client?.ClientWellKnown.Cdn.BaseUrl}/icons/{guild.Key}/{guild.Value.Icon}").AbsoluteUri;
+                    }
+                    <img class="navGuildIcon" src="@guildIconUrl" alt="" aria-hidden="true">
+                    @guild.Value.Name
+                </NavLink>
+            </div>
+        }
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            <NavLink class="nav-link" href="/discovery/guilds">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Discover...
             </NavLink>
         </div>
     </nav>
@@ -34,6 +42,10 @@
 
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override async Task OnInitializedAsync() {
+        App.ClientManager.ClientState.Guilds.CollectionChanged += (_,_) => this.StateHasChanged();
     }
 
 }
