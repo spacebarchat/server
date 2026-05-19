@@ -16,8 +16,8 @@
   },
   {
     "pname": "Microsoft.AspNetCore.OpenApi",
-    "version": "10.0.7",
-    "hash": "sha256-WlAW49otxYzgrmuqHewUoBsjDcAZwhNz5WVbCT4EiIA="
+    "version": "10.0.8",
+    "hash": "sha256-v2E7nwc4Nac8Ns5cQ2KmzLash9AEMbfQbMo2bFy7oZM="
   },
   {
     "pname": "Microsoft.EntityFrameworkCore",

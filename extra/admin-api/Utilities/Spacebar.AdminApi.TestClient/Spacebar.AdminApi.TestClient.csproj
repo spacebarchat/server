@@ -21,11 +21,12 @@
         <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260420-212318" />
         <PackageReference Include="ArcaneLibs.Blazor.Components" Version="1.0.1-preview.20260420-212318" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.7" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.7" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.8" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.204" />
 <!--        <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.203" />-->
 <!--        <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.103" />-->
-        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.8" />
     </ItemGroup>
     
     <ItemGroup>
