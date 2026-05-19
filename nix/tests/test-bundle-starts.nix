@@ -32,13 +32,6 @@ in
           };
 
           nginx.enable = true;
-          offload = {
-            enable = true;
-            gateway = {
-              enableGuildSync = true;
-            };
-            extraConfiguration.ConnectionStrings.Spacebar = "Host=127.0.0.1; Username=Spacebar; Password=postgres; Database=spacebar; Port=5432; Include Error Detail=true; Maximum Pool Size=1000; Command Timeout=6000; Timeout=600;";
-          };
         };
       in
       lib.trace ("Testing with config: " + builtins.toJSON cfg) cfg;
