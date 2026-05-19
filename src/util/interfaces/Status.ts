@@ -16,6 +16,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export enum PublicStatusOrder {
+    online = 0,
+    idle = 1,
+    dnd = 2,
+    offline = 3,
+}
+
+console.log(PublicStatusOrder);
+
+export type PublicStatus = keyof typeof PublicStatusOrder;
+export type PrivateStatus = PublicStatus | "invisible";
+export type SetPrivateStatus = PrivateStatus | "unknown";
+
+// @deprecated Use PublicStatus, PrivateStatus or SetPrivateStatus instead
 export type Status =
     | "idle"
     | "dnd"

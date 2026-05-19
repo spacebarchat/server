@@ -241,6 +241,9 @@
             },
             "since": {
                 "type": "integer"
+            },
+            "client_status": {
+                "$ref": "#/definitions/ClientStatus"
             }
         },
         "additionalProperties": false,
@@ -3990,7 +3993,9 @@
                 "additionalProperties": false
             },
             "intents": {
-                "type": "bigint"
+                "type": "number",
+                "properties": {},
+                "additionalProperties": false
             },
             "presence": {
                 "$ref": "#/definitions/ActivitySchema"
@@ -4009,7 +4014,9 @@
                 "maxItems": 2,
                 "type": "array",
                 "items": {
-                    "type": "bigint"
+                    "type": "number",
+                    "properties": {},
+                    "additionalProperties": false
                 }
             },
             "guild_subscriptions": {
@@ -8297,6 +8304,28 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ClientStatus": {
+        "type": "object",
+        "properties": {
+            "desktop": {
+                "type": "string"
+            },
+            "mobile": {
+                "type": "string"
+            },
+            "web": {
+                "type": "string"
+            },
+            "embedded": {
+                "type": "string"
+            },
+            "vr": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ChannelPermissionOverwriteType": {
         "type": "number",
         "enum": [
@@ -10073,7 +10102,7 @@
                 "$ref": "#/definitions/ClientStatus"
             },
             "status": {
-                "$ref": "#/definitions/Status"
+                "$ref": "#/definitions/PrivateStatus"
             },
             "is_admin_session": {
                 "type": "boolean"
@@ -10113,26 +10142,15 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ClientStatus": {
-        "type": "object",
-        "properties": {
-            "desktop": {
-                "type": "string"
-            },
-            "mobile": {
-                "type": "string"
-            },
-            "web": {
-                "type": "string"
-            },
-            "embedded": {
-                "type": "string"
-            },
-            "vr": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
+    "PrivateStatus": {
+        "enum": [
+            "dnd",
+            "idle",
+            "invisible",
+            "offline",
+            "online"
+        ],
+        "type": "string",
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ExtendedLocationInfo": {
@@ -14319,7 +14337,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@698": {
+                    "__@unscopables@749": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -14445,17 +14463,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@696": {
+                            "__@iterator@747": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@749": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@698",
+                    "__@unscopables@749",
                     "length"
                 ]
             },

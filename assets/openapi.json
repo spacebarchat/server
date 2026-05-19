@@ -256,6 +256,9 @@
                     },
                     "since": {
                         "type": "integer"
+                    },
+                    "client_status": {
+                        "$ref": "#/components/schemas/ClientStatus"
                     }
                 },
                 "required": [
@@ -3764,7 +3767,9 @@
                         "additionalProperties": false
                     },
                     "intents": {
-                        "type": "number"
+                        "type": "number",
+                        "properties": {},
+                        "additionalProperties": false
                     },
                     "presence": {
                         "$ref": "#/components/schemas/ActivitySchema"
@@ -3783,7 +3788,9 @@
                         "maxItems": 2,
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "type": "number",
+                            "properties": {},
+                            "additionalProperties": false
                         }
                     },
                     "guild_subscriptions": {
@@ -7796,6 +7803,26 @@
                     5
                 ]
             },
+            "ClientStatus": {
+                "type": "object",
+                "properties": {
+                    "desktop": {
+                        "type": "string"
+                    },
+                    "mobile": {
+                        "type": "string"
+                    },
+                    "web": {
+                        "type": "string"
+                    },
+                    "embedded": {
+                        "type": "string"
+                    },
+                    "vr": {
+                        "type": "string"
+                    }
+                }
+            },
             "ChannelPermissionOverwriteType": {
                 "type": "number",
                 "enum": [
@@ -9468,7 +9495,7 @@
                         "$ref": "#/components/schemas/ClientStatus"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/Status"
+                        "$ref": "#/components/schemas/PrivateStatus"
                     },
                     "is_admin_session": {
                         "type": "boolean"
@@ -9506,25 +9533,15 @@
                     "user_id"
                 ]
             },
-            "ClientStatus": {
-                "type": "object",
-                "properties": {
-                    "desktop": {
-                        "type": "string"
-                    },
-                    "mobile": {
-                        "type": "string"
-                    },
-                    "web": {
-                        "type": "string"
-                    },
-                    "embedded": {
-                        "type": "string"
-                    },
-                    "vr": {
-                        "type": "string"
-                    }
-                }
+            "PrivateStatus": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
             },
             "ExtendedLocationInfo": {
                 "type": "object",
@@ -13402,7 +13419,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@698": {
+                            "__@unscopables@749": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -13528,17 +13545,17 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@696": {
+                                    "__@iterator@747": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@698": {
+                                    "__@unscopables@749": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@698",
+                            "__@unscopables@749",
                             "length"
                         ]
                     },

@@ -20,7 +20,7 @@ import crypto from "node:crypto";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, Status } from "../interfaces";
+import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, PrivateStatus } from "../interfaces";
 import { randomUpperString } from "@spacebar/api";
 import { DateBuilder, IpDataClient, TimeSpan } from "../util";
 
@@ -57,7 +57,7 @@ export class Session extends BaseClassWithoutId {
     client_status: ClientStatus;
 
     @Column({ nullable: false, type: String })
-    status: Status;
+    status: PrivateStatus;
 
     @Column({ default: false })
     is_admin_session: boolean;

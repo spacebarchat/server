@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity imports
-import { Activity, Status } from "@spacebar/util";
+import { Activity, ClientStatus, Status } from "@spacebar/util";
 
 export const ActivitySchema = {
     $afk: Boolean,
@@ -78,4 +78,5 @@ export interface ActivitySchema {
     status: Status;
     activities?: Activity[];
     since?: number; // unix time (in milliseconds) of when the client went idle, or null if the client is not idle
+    client_status?: ClientStatus;
 }

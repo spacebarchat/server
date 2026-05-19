@@ -35,6 +35,7 @@ import {
     GuildOrUnavailable,
     Snowflake,
     ThreadMember,
+    PrivateStatus,
 } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
 import {
@@ -603,7 +604,7 @@ export interface GatewaySession {
     activities: Activity[];
     hidden_activities: Activity[];
     client_info: GatewaySessionClientInfo;
-    status: Status;
+    status: PrivateStatus;
     active?: boolean; // How is this even defined?
 }
 
