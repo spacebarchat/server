@@ -10,7 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260420-212318"/>
-        <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.12.0" />
+        <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.13.1" />
     </ItemGroup>
 
     <ItemGroup>
