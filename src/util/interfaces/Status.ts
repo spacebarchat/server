@@ -23,7 +23,14 @@ export enum PublicStatusOrder {
     offline = 3,
 }
 
-console.log(PublicStatusOrder);
+export enum InternalStatusOrder {
+    online = 0,
+    idle = 1,
+    dnd = 2,
+    invisible = 3,
+    offline = 4,
+    unknown = 5,
+}
 
 export type PublicStatus = keyof typeof PublicStatusOrder;
 export type PrivateStatus = PublicStatus | "invisible";

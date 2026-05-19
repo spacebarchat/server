@@ -246,7 +246,7 @@
                         "type": "boolean"
                     },
                     "status": {
-                        "$ref": "#/components/schemas/Status"
+                        "$ref": "#/components/schemas/SetPrivateStatus"
                     },
                     "activities": {
                         "type": "array",
@@ -7621,7 +7621,7 @@
             "ErrorList": {
                 "type": "object"
             },
-            "Status": {
+            "SetPrivateStatus": {
                 "enum": [
                     "dnd",
                     "idle",
