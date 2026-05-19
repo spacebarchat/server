@@ -79,7 +79,7 @@
     },
     "dependencies": {
         "@spacebarchat/pion-webrtc": "^0.0.4",
-        "@toondepauw/node-zstd": "^1.2.0",
+        "@toondepauw/node-zstd": "^2.0.0",
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
         "amqplib": "^2.0.1",
