@@ -16,16 +16,17 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import moduleAlias from "module-alias";
-moduleAlias(__dirname + "../../../package.json");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
-import { Server } from "./Server";
+import moduleAlias from "module-alias";
+moduleAlias(__dirname + "../../../package.json");
 import { config } from "dotenv";
+config({ quiet: true });
+
+import { Server } from "./Server";
 import fs from "node:fs";
 import cluster from "node:cluster";
-config({ quiet: true });
 
 let port = Number(process.env.PORT);
 if (isNaN(port)) port = 3002;

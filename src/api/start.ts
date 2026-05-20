@@ -16,17 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import moduleAlias from "module-alias";
-moduleAlias(__dirname + "../../../package.json");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
+import moduleAlias from "module-alias";
+moduleAlias(__dirname + "../../../package.json");
 import { config } from "dotenv";
 config({ quiet: true });
-import { SpacebarServer } from "./Server";
+
 import cluster from "node:cluster";
 import os from "node:os";
 import fs from "node:fs";
+import { SpacebarServer } from "./Server";
+
 let cores = 1;
 try {
     cores = Number(process.env.THREADS) || os.cpus().length;

@@ -16,18 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+process.on("unhandledRejection", console.error);
+process.on("uncaughtException", console.error);
+
 import moduleAlias from "module-alias";
 moduleAlias(__dirname + "../../../package.json");
 
-import "reflect-metadata";
+import { config } from "dotenv";
+config({ quiet: true });
+
 import cluster, { Worker } from "node:cluster";
 import os from "node:os";
+import "reflect-metadata";
 import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
-import { initStats } from "./stats";
-import { config } from "dotenv";
-
-config({ quiet: true });
 import { centerString, getRevInfoOrFail, Logo } from "@spacebar/util";
+import { initStats } from "./stats";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
 
