@@ -37,6 +37,7 @@ export class CDNServer extends Server {
 
     async start() {
         await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
 

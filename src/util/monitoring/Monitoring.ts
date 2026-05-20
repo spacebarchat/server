@@ -18,6 +18,7 @@
 
 import * as client from "prom-client";
 import { Router } from "express";
+import http, { IncomingMessage, ServerResponse } from "node:http";
 
 export class Monitoring {
     static isInitialised = false;
@@ -34,5 +35,10 @@ export class Monitoring {
             const metrics = await client.register.metrics();
             res.send(metrics);
         });
+    }
+
+    static async handleRawRequest(req: IncomingMessage, res: ServerResponse) {
+        const metrics = await client.register.metrics();
+        res.setHeader("Content-Type", client.register.contentType).writeHead(200).end(metrics);
     }
 }
