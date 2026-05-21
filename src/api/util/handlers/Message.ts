@@ -663,6 +663,7 @@ async function handleMessageMentionsAsync(message: Message) {
 
     let content = message.content;
 
+    // TODO: sets
     // root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
     //const mention_channel_ids = [] as string[];
     const mention_role_ids = [] as string[];
@@ -684,7 +685,7 @@ async function handleMessageMentionsAsync(message: Message) {
         }
 
         await Promise.all(
-            Array.from(content.matchAll(ROLE_MENTION)).map(async ([, mention]) => {
+            content.matchAll(ROLE_MENTION).map(async ([, mention]) => {
                 const role = await Role.findOneOrFail({
                     where: { id: mention, guild_id: channel.guild_id },
                 });
@@ -732,14 +733,13 @@ async function handleMessageMentionsAsync(message: Message) {
     /*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
-    message.mention_roles = (await Promise.all(mention_role_ids.map((x) => Role.findOne({ where: { id: x } })))).filter((role) => role !== null);
-
-    message.mentions = [...message.mentions, ...(await Promise.all(mention_user_ids.map((x) => User.findOne({ where: { id: x } })))).filter((user) => user !== null)];
-
+    message.mention_roles = await Role.find({ where: { id: In(mention_role_ids), guild_id: channel.guild_id } });
+    message.mentions = [...message.mentions, ...(await User.find({ where: { id: In(mention_user_ids) } }))];
     message.mention_everyone = mention_everyone;
+
     async function fillInMissingIDs(ids: string[]) {
         const states = await ReadState.findBy({
-            user_id: Or(...ids.map((id) => Equal(id))),
+            user_id: In(ids),
             channel_id: channel.id,
         });
         const users = new Set(ids);
@@ -747,14 +747,17 @@ async function handleMessageMentionsAsync(message: Message) {
         if (!users.size) {
             return;
         }
-        return Promise.all([...users].map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
+        // TODO: is there a more efficient way to do this? Additionally, could this be a .insert()?
+        return Promise.all(users.values().map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
     }
+
     if ((message.flags & (1 << 6)) !== 0) {
         // ephemeral messages
         const id = message.interaction_metadata?.user_id;
         if (id) {
             let pinged = mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM;
             if (!pinged) pinged = !!message.mentions.find((user) => user.id === id);
+            // TODO: can we somehow rewrite this into an In(...) query?
             if (!pinged) pinged = !!(await Member.find({ where: { id, roles: Or(...message.mention_roles.map(({ id }) => Equal(id))) } }));
             if (pinged) {
                 //stuff
@@ -763,10 +766,10 @@ async function handleMessageMentionsAsync(message: Message) {
     } else if ((!!message.content?.match(EVERYONE_MENTION) && permission?.has("MENTION_EVERYONE")) || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
         if (channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
             if (channel.recipients) {
-                await fillInMissingIDs(channel.recipients.map(({ user_id }) => user_id));
+                await fillInMissingIDs(channel.recipients.map((r) => r.user_id));
             }
         } else {
-            await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id));
+            await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id));
         }
         const repository = ReadState.getRepository();
         const condition = { channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
@@ -783,8 +786,8 @@ async function handleMessageMentionsAsync(message: Message) {
             ...message.mentions.map((user) => user.id),
         ]);
         if (!!message.content?.match(HERE_MENTION) && permission?.has("MENTION_EVERYONE")) {
-            const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map(({ id }) => id);
-            (await Session.find({ where: { user_id: Or(...ids.map((id) => Equal(id))) } })).forEach(({ user_id }) => users.add(user_id));
+            const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id);
+            (await Session.find({ where: { user_id: In(ids) } })).map((s) => s.user_id).forEach(users.add);
         }
         if (users.size) {
             const repository = ReadState.getRepository();
