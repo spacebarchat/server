@@ -15514,7 +15514,11 @@
                 "type": "boolean"
             },
             "type": {
-                "type": "integer"
+                "enum": [
+                    0,
+                    1
+                ],
+                "type": "number"
             }
         },
         "additionalProperties": false,

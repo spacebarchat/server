@@ -47,6 +47,10 @@ import {
     MessageFlags,
     FieldErrors,
     getDatabase,
+    ElapsedTime,
+    TraceRoot,
+    Stopwatch,
+    TraceNode,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
 import { In, Or, Equal, IsNull } from "typeorm";
@@ -66,6 +70,7 @@ import {
     UnfurledMediaItem,
     BaseMessageComponents,
     v1CompTypes,
+    MessageReferenceType,
 } from "@spacebar/schemas";
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -655,22 +660,31 @@ export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateClou
 }
 
 async function handleMessageMentionsAsync(message: Message) {
+    const sw = Stopwatch.startNew(),
+        totalSw = Stopwatch.startNew();
+    const trace: TraceNode = { micros: 0, calls: [] };
+    const traceRoot: TraceRoot = ["handleMessageMentionsAsync", trace];
+
     const channel = await Channel.findOneOrFail({
         where: { id: message.channel_id },
         relations: { recipients: true },
     });
+    trace.calls.push(`getChannel(${channel.id})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
+
     const permission = await getPermission(message.author_id ?? message.author?.id, channel.guild_id, channel);
+    trace.calls.push(`getPermissions`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
     let content = message.content;
 
     // TODO: sets
     // root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
     //const mention_channel_ids = [] as string[];
-    const mention_role_ids = [] as string[];
-    const mention_user_ids = [] as string[];
     let mention_everyone = false;
+    const mention_user_id_set = new Set<string>();
+    const mention_role_id_set = new Set<string>();
 
     if (content) {
+        const contentTrace: TraceNode = { micros: 0, calls: [] };
         // TODO: explicit-only mentions
         // TODO: make mentions lazy
         content = content.replace(/ *`[^)]*` */g, ""); // remove codeblocks
@@ -679,25 +693,33 @@ async function handleMessageMentionsAsync(message: Message) {
 			if (!mention_channel_ids.includes(mention))
 				mention_channel_ids.push(mention);
 		}*/
+        contentTrace.calls.push("filterCodeblocks", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-        for (const [, mention] of content.matchAll(USER_MENTION)) {
-            if (!mention_user_ids.includes(mention)) mention_user_ids.push(mention);
-        }
-
-        await Promise.all(
-            content.matchAll(ROLE_MENTION).map(async ([, mention]) => {
-                const role = await Role.findOneOrFail({
-                    where: { id: mention, guild_id: channel.guild_id },
-                });
-                if (role.mentionable || message.webhook?.id || message.webhook_id || permission?.has("MANAGE_ROLES")) {
-                    mention_role_ids.push(mention);
-                }
-            }),
-        );
-
+        for (const [, mention] of content.matchAll(USER_MENTION)) mention_user_id_set.add(mention);
+        for (const [, mention] of content.matchAll(ROLE_MENTION)) mention_role_id_set.add(mention);
         if (message.webhook?.id || message.webhook_id || permission?.has("MENTION_EVERYONE")) {
             mention_everyone = !!content.match(EVERYONE_MENTION) || !!content.match(HERE_MENTION);
         }
+        contentTrace.calls.push("parseMentions", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+        let mentionedRoles = await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
+        contentTrace.calls.push("queryMentionRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
+
+        //TODO: should this throw at all?
+        if (mention_role_id_set.size != mentionedRoles.length) {
+            const missingRoles = mention_role_id_set
+                .values()
+                .filter((x) => !mentionedRoles.find((r) => r.id == x))
+                .toArray();
+            throw new HTTPError("Mentioned invalid roles: " + missingRoles.join(", "), 500);
+        }
+
+        if (!(message.webhook?.id || message.webhook_id || permission?.has("MANAGE_ROLES"))) {
+            mentionedRoles = mentionedRoles.filter((x) => x.mentionable);
+            mention_role_id_set.clear();
+            mentionedRoles.forEach((r) => mention_role_id_set.add(r.id));
+        }
+        contentTrace.calls.push("validateMentionRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
     }
 
     if (message.message_reference?.message_id) {
@@ -718,8 +740,7 @@ async function handleMessageMentionsAsync(message: Message) {
             );
         }
 
-        // FORWARD
-        if (message.message_reference.type === 1) {
+        if (message.message_reference.type === MessageReferenceType.FORWARD) {
             message.type = MessageType.DEFAULT;
 
             if (message.referenced_message) {
@@ -733,8 +754,8 @@ async function handleMessageMentionsAsync(message: Message) {
     /*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
-    message.mention_roles = await Role.find({ where: { id: In(mention_role_ids), guild_id: channel.guild_id } });
-    message.mentions = [...message.mentions, ...(await User.find({ where: { id: In(mention_user_ids) } }))];
+    message.mention_roles = await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
+    message.mentions = [...message.mentions, ...(await User.find({ where: { id: In(mention_user_id_set.values().toArray()) } }))];
     message.mention_everyone = mention_everyone;
 
     async function fillInMissingIDs(ids: string[]) {

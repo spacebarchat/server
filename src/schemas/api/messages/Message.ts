@@ -238,5 +238,10 @@ export interface MessageReference {
     channel_id?: string;
     guild_id?: string;
     fail_if_not_exists?: boolean;
-    type?: number;
+    type?: MessageReferenceType;
+}
+
+export enum MessageReferenceType {
+    DEFAULT = 0,
+    FORWARD = 1,
 }
