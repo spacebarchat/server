@@ -788,7 +788,7 @@ async function handleMessageMentionsAsync(message: Message) {
         }
         if (users.size) {
             const repository = ReadState.getRepository();
-            const condition = { user_id: Or(...[...users].map((id) => Equal(id))), channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
+            const condition = { user_id: In(users.values().toArray()), channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
 
             await fillInMissingIDs([...users]);
             await repository.increment(condition, "mention_count", 1);
