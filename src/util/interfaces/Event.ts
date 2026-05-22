@@ -153,7 +153,9 @@ export interface ReadyEventData {
     _trace?: string[]; // trace of the request, used for debugging
 }
 
-export type TraceNode = { micros: number; calls: TraceNode[] } | { micros: number } | string;
+export type TraceValue = { micros: number };
+export type TraceSubTree = { micros: number; calls: TraceNode[] };
+export type TraceNode = TraceSubTree | TraceValue | string;
 
 export type TraceRoot = [string, { micros: number; calls: TraceNode[] }];
 
