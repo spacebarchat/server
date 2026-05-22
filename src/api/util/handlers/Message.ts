@@ -823,7 +823,7 @@ async function handleMessageMentionsAsync(message: Message) {
         trace.calls.push("getUsers", { micros: sw.getElapsedAndReset().totalMicroseconds });
         if (mention_here) {
             const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id);
-            (await Session.find({ where: { user_id: In(ids) } })).map((s) => s.user_id).forEach(users.add);
+            (await Session.find({ where: { user_id: In(ids) } })).forEach((s) => users.add(s.user_id));
             trace.calls.push("mentionHere", { micros: sw.getElapsedAndReset().totalMicroseconds });
         }
         if (users.size) {
