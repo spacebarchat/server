@@ -16,46 +16,45 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomString, fillMessageUrlEmbeds } from "@spacebar/api";
+import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
 import {
     Application,
     Attachment,
     Channel,
+    CloudAttachment,
     Config,
+    DiscordApiErrors,
     emitEvent,
     EVERYONE_MENTION,
+    FieldErrors,
+    getDatabase,
     getPermission,
     getRights,
     Guild,
+    handleFile,
     HERE_MENTION,
+    Member,
     Message,
     MessageCreateEvent,
+    MessageFlags,
+    Permissions,
+    ReadState,
     Role,
     ROLE_MENTION,
-    Sticker,
-    User,
-    //CHANNEL_MENTION,
-    USER_MENTION,
-    Webhook,
-    handleFile,
-    Permissions,
-    DiscordApiErrors,
-    CloudAttachment,
-    ReadState,
-    Member,
     Session,
-    MessageFlags,
-    FieldErrors,
-    getDatabase,
-    ElapsedTime,
-    TraceRoot,
+    Sticker,
     Stopwatch,
     TraceNode,
+    TraceRoot,
+    User,
+    USER_MENTION,
+    Webhook,
 } from "@spacebar/util";
 import { HTTPError } from "lambert-server";
-import { In, Or, Equal, IsNull } from "typeorm";
+import { Equal, In, Or } from "typeorm";
 import {
     ActionRowComponent,
+    BaseMessageComponents,
     ButtonStyle,
     ChannelType,
     Embed,
@@ -64,14 +63,14 @@ import {
     MessageCreateAttachment,
     MessageCreateCloudAttachment,
     MessageCreateSchema,
+    MessageReferenceType,
     MessageType,
     Reaction,
     ReadStateType,
     UnfurledMediaItem,
-    BaseMessageComponents,
     v1CompTypes,
-    MessageReferenceType,
 } from "@spacebar/schemas";
+
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
 // TODO: embed gifs/videos/images
@@ -770,6 +769,7 @@ async function handleMessageMentionsAsync(message: Message) {
         const states = await ReadState.findBy({
             user_id: In(ids),
             channel_id: channel.id,
+            read_state_type: ReadStateType.CHANNEL,
         });
         const users = new Set(ids);
         states.forEach((state) => users.delete(state.user_id));
@@ -806,9 +806,7 @@ async function handleMessageMentionsAsync(message: Message) {
             await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id));
         }
         const repository = ReadState.getRepository();
-        const condition = { channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
-        await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
-        await repository.increment(condition, "mention_count", 1);
+        await repository.increment({ channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }, "mention_count", 1);
         trace.calls.push("mentionEveryone", { micros: sw.getElapsedAndReset().totalMicroseconds });
     } else {
         const users = new Set<string>([
