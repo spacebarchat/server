@@ -46,6 +46,7 @@ import {
     Stopwatch,
     TraceNode,
     TraceRoot,
+    TraceSubTree,
     User,
     USER_MENTION,
     Webhook,
@@ -765,32 +766,44 @@ async function handleMessageMentionsAsync(message: Message) {
     message.mention_everyone = mention_everyone;
     trace.calls.push("fillMessageMentionProperties", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-    const fillInMissingIDs = async (ids: string[]) => {
-        const fillMessageSw = Stopwatch.startNew();
-        const states = await ReadState.find({
-            where: {
-                user_id: In(ids),
-                channel_id: channel.id,
-                read_state_type: ReadStateType.CHANNEL,
-            },
-            select: { user_id: true },
-        });
-        const users = new Set(ids);
-        states.forEach((state) => users.delete(state.user_id));
-        if (!users.size) {
-            return;
+    const fillInMissingIDs = async (ids: string[], trace?: TraceSubTree) => {
+        const fillMessageSw = Stopwatch.startNew(),
+            subSw = Stopwatch.startNew();
+        const subTrace: TraceSubTree = { micros: 0, calls: [] };
+        try {
+            const states = await ReadState.find({
+                where: {
+                    user_id: In(ids),
+                    channel_id: channel.id,
+                    read_state_type: ReadStateType.CHANNEL,
+                },
+                select: { user_id: true },
+            });
+            subTrace.calls.push("findReadStates", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+
+            const users = new Set(ids);
+            states.forEach((state) => users.delete(state.user_id));
+            subTrace.calls.push("collectMissingIds", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+
+            if (!users.size) {
+                subTrace.calls.push("--noop--", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+                return;
+            }
+
+            const newReadStates = users
+                .values()
+                .map((user_id) => ({ user_id, channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }))
+                .toArray();
+            subTrace.calls.push("constructNewReadStates", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+
+            await ReadState.insert(newReadStates).catch((e) => {
+                console.log("Failed to bulk insert", users.size, "new ReadStates, trying again (race condition?)...\nDetails:", e);
+                return fillInMissingIDs(users.values().toArray(), subTrace);
+            });
+            subTrace.calls.push("insertNewReadStates", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+        } finally {
+            trace?.calls.push(`fillInMissingIDs(${ids.length})`, { micros: fillMessageSw.getElapsedAndReset().totalMicroseconds, calls: subTrace.calls });
         }
-
-        const newReadStates = users
-            .values()
-            .map((user_id) => ({ user_id, channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }))
-            .toArray();
-        await ReadState.insert(newReadStates).catch((e) => {
-            console.log("Failed to bulk insert", users.size, "new ReadStates, trying again (race condition?)...\nDetails:", e);
-            return fillInMissingIDs(users.values().toArray());
-        });
-
-        trace.calls.push(`fillInMissingIDs(${ids.length})`, { micros: fillMessageSw.getElapsedAndReset().totalMicroseconds });
     };
 
     if ((message.flags & (1 << 6)) !== 0) {
@@ -809,10 +822,16 @@ async function handleMessageMentionsAsync(message: Message) {
     } else if (mention_everyone) {
         if (channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
             if (channel.recipients) {
-                await fillInMissingIDs(channel.recipients.map((r) => r.user_id));
+                await fillInMissingIDs(
+                    channel.recipients.map((r) => r.user_id),
+                    trace,
+                );
             }
         } else {
-            await fillInMissingIDs((await Member.find({ where: { guild_id: channel.guild_id }, select: { id: true } })).map((m) => m.id));
+            await fillInMissingIDs(
+                (await Member.find({ where: { guild_id: channel.guild_id }, select: { id: true } })).map((m) => m.id),
+                trace,
+            );
         }
         const repository = ReadState.getRepository();
         await repository.increment({ channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }, "mention_count", 1);
@@ -830,6 +849,7 @@ async function handleMessageMentionsAsync(message: Message) {
         trace.calls.push("getUsers", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
         if (mention_here) {
+            // TODO: incorporate sessions
             const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id);
             (await Session.find({ where: { user_id: In(ids) } })).forEach((s) => users.add(s.user_id));
             trace.calls.push("mentionHere", { micros: sw.getElapsedAndReset().totalMicroseconds });
@@ -838,12 +858,12 @@ async function handleMessageMentionsAsync(message: Message) {
         if (users.size) {
             const repository = ReadState.getRepository();
 
-            await fillInMissingIDs([...users]);
+            await fillInMissingIDs([...users], trace);
             await repository.increment({ user_id: In(users.values().toArray()), channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }, "mention_count", 1);
             trace.calls.push("updateMentionedUserReadStates", { micros: sw.getElapsedAndReset().totalMicroseconds });
         }
     }
 
     trace.micros = totalSw.elapsed().totalMicroseconds;
-    new console.Console({ stdout: process.stdout, inspectOptions: { depth: 20 } }).log("Mention handling trace:", trace);
+    if (process.env.LOG_MENTION_TRACE === "true") new console.Console({ stdout: process.stdout, inspectOptions: { depth: 20 } }).log("Mention handling trace:", trace);
 }
