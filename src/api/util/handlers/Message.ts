@@ -680,10 +680,12 @@ async function handleMessageMentionsAsync(message: Message) {
     // root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
     //const mention_channel_ids = [] as string[];
     let mention_everyone = false;
+    let mention_here = false;
     const mention_user_id_set = new Set<string>();
     const mention_role_id_set = new Set<string>();
 
     if (content) {
+        const contentSw = Stopwatch.startNew();
         const contentTrace: TraceNode = { micros: 0, calls: [] };
         // TODO: explicit-only mentions
         // TODO: make mentions lazy
@@ -697,8 +699,9 @@ async function handleMessageMentionsAsync(message: Message) {
 
         for (const [, mention] of content.matchAll(USER_MENTION)) mention_user_id_set.add(mention);
         for (const [, mention] of content.matchAll(ROLE_MENTION)) mention_role_id_set.add(mention);
-        if (message.webhook?.id || message.webhook_id || permission?.has("MENTION_EVERYONE")) {
-            mention_everyone = !!content.match(EVERYONE_MENTION) || !!content.match(HERE_MENTION);
+        if (message.webhook?.id || message.webhook_id || permission?.has("MENTION_EVERYONE") || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+            mention_everyone = !!content.match(EVERYONE_MENTION);
+            mention_here = !!content.match(HERE_MENTION);
         }
         contentTrace.calls.push("parseMentions", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
@@ -720,6 +723,8 @@ async function handleMessageMentionsAsync(message: Message) {
             mentionedRoles.forEach((r) => mention_role_id_set.add(r.id));
         }
         contentTrace.calls.push("validateMentionRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
+        contentTrace.micros = contentSw.elapsed().totalMicroseconds;
+        trace.calls.push("parseContent", contentTrace);
     }
 
     if (message.message_reference?.message_id) {
@@ -748,6 +753,7 @@ async function handleMessageMentionsAsync(message: Message) {
                 message.message_snapshots = [message.referenced_message.toSnapshot()];
             }
         }
+        trace.calls.push("handleMessageReference", { micros: sw.getElapsedAndReset().totalMicroseconds });
     }
 
     // root@Rory - 20/02/2023 - This breaks channel mentions in test client. We're not sure this was used in older clients.
@@ -757,8 +763,10 @@ async function handleMessageMentionsAsync(message: Message) {
     message.mention_roles = await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
     message.mentions = [...message.mentions, ...(await User.find({ where: { id: In(mention_user_id_set.values().toArray()) } }))];
     message.mention_everyone = mention_everyone;
+    trace.calls.push("fillMessageMentionProperties", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
     async function fillInMissingIDs(ids: string[]) {
+        const fillMessageSw = Stopwatch.startNew();
         const states = await ReadState.findBy({
             user_id: In(ids),
             channel_id: channel.id,
@@ -769,7 +777,11 @@ async function handleMessageMentionsAsync(message: Message) {
             return;
         }
         // TODO: is there a more efficient way to do this? Additionally, could this be a .insert()?
-        return Promise.all(users.values().map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
+        await Promise.all(users.values().map((user_id) => ReadState.create({ user_id, channel_id: channel.id }).save()));
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-expect-error
+        trace.calls.push(`fillInMissingIDs(${ids.count})`, { micros: fillMessageSw.getElapsedAndReset().totalMicroseconds });
     }
 
     if ((message.flags & (1 << 6)) !== 0) {
@@ -784,7 +796,8 @@ async function handleMessageMentionsAsync(message: Message) {
                 //stuff
             }
         }
-    } else if ((!!message.content?.match(EVERYONE_MENTION) && permission?.has("MENTION_EVERYONE")) || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
+        trace.calls.push("ephemeralPinged", { micros: sw.getElapsedAndReset().totalMicroseconds });
+    } else if (mention_everyone) {
         if (channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM) {
             if (channel.recipients) {
                 await fillInMissingIDs(channel.recipients.map((r) => r.user_id));
@@ -796,6 +809,7 @@ async function handleMessageMentionsAsync(message: Message) {
         const condition = { channel_id: channel.id, read_state_type: ReadStateType.CHANNEL };
         await repository.update({ ...condition, mention_count: IsNull() }, { mention_count: 0 });
         await repository.increment(condition, "mention_count", 1);
+        trace.calls.push("mentionEveryone", { micros: sw.getElapsedAndReset().totalMicroseconds });
     } else {
         const users = new Set<string>([
             ...(message.mention_roles.length
@@ -806,9 +820,11 @@ async function handleMessageMentionsAsync(message: Message) {
             ).map((member) => member.id),
             ...message.mentions.map((user) => user.id),
         ]);
-        if (!!message.content?.match(HERE_MENTION) && permission?.has("MENTION_EVERYONE")) {
+        trace.calls.push("getUsers", { micros: sw.getElapsedAndReset().totalMicroseconds });
+        if (mention_here) {
             const ids = (await Member.find({ where: { guild_id: channel.guild_id } })).map((m) => m.id);
             (await Session.find({ where: { user_id: In(ids) } })).map((s) => s.user_id).forEach(users.add);
+            trace.calls.push("mentionHere", { micros: sw.getElapsedAndReset().totalMicroseconds });
         }
         if (users.size) {
             const repository = ReadState.getRepository();
@@ -816,6 +832,10 @@ async function handleMessageMentionsAsync(message: Message) {
 
             await fillInMissingIDs([...users]);
             await repository.increment(condition, "mention_count", 1);
+            trace.calls.push("updateMentionedUserReadStates", { micros: sw.getElapsedAndReset().totalMicroseconds });
         }
     }
+
+    trace.micros = totalSw.elapsed().totalMicroseconds;
+    new console.Console({ stdout: process.stdout, inspectOptions: { depth: 20 } }).log("Mention handling trace:", trace);
 }
