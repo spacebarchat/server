@@ -55,3 +55,22 @@ export function arrayGroupBy<T, M>(array: T[], selector: (elem: T) => M): Map<M,
 
     return map;
 }
+
+// https://github.com/TheArcaneBrony/ArcaneLibs/blob/ca7ce2bb57a5dffd891b0b86ec5f358df02735c0/ArcaneLibs/Extensions/CollectionExtensions.cs#L103
+export function arrayDistributeSequentially<T>(array: T[], count: number): T[][] {
+    if (count <= 0) throw new Error("Count must be greater than 0");
+    if (count == 1) return [array];
+
+    const list = array;
+    const groups: T[][] = [];
+    for (let i = 0; i < count; i++) groups.push([]);
+
+    // [1,2,3],[4,5,6],[7,8,9]...
+    for (let i = 0; i < list.length; i++) {
+        const idx: number = Math.floor((i / list.length) * count);
+        // console.log(`${i}/${list.length} -> ${idx}:${groups[idx].length}/{count}`);
+        groups[idx].push(list[i]);
+    }
+
+    return groups;
+}
