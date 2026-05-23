@@ -19,6 +19,8 @@
 import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
 import {
     Application,
+    arrayDistributeSequentially,
+    arrayPartition,
     Attachment,
     Channel,
     CloudAttachment,
@@ -33,6 +35,7 @@ import {
     Guild,
     handleFile,
     HERE_MENTION,
+    mathLogBase,
     Member,
     Message,
     MessageCreateEvent,
@@ -42,6 +45,7 @@ import {
     Role,
     ROLE_MENTION,
     Session,
+    Snowflake,
     Sticker,
     Stopwatch,
     TraceNode,
@@ -790,17 +794,29 @@ async function handleMessageMentionsAsync(message: Message) {
                 return;
             }
 
-            const newReadStates = users
-                .values()
-                .map((user_id) => ({ user_id, channel_id: channel.id, read_state_type: ReadStateType.CHANNEL }))
-                .toArray();
-            subTrace.calls.push("constructNewReadStates", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+            const newReadStateSeqs = arrayDistributeSequentially(users.values().toArray(), Math.max(1, mathLogBase(users.size, 2))).map((seq) =>
+                seq.map((user_id) => ({ id: Snowflake.generate(), user_id, channel_id: channel.id, read_state_type: ReadStateType.CHANNEL })),
+            );
+            subTrace.calls.push(`constructNewReadStatesChunked(${newReadStateSeqs.length})`, { micros: subSw.getElapsedAndReset().totalMicroseconds });
 
-            await ReadState.insert(newReadStates).catch((e) => {
-                console.log("Failed to bulk insert", users.size, "new ReadStates, trying again (race condition?)...\nDetails:", e);
-                return fillInMissingIDs(users.values().toArray(), subTrace);
-            });
-            subTrace.calls.push("insertNewReadStates", { micros: subSw.getElapsedAndReset().totalMicroseconds });
+            await Promise.all(
+                newReadStateSeqs.map((seq) =>
+                    // just a safety thing... handle postgres hard limit at 65535 parameters, at 4 params per object... 16384
+                    seq.length > 15000
+                        ? fillInMissingIDs(
+                              seq.map((rs) => rs.user_id),
+                              subTrace,
+                          )
+                        : ReadState.insert(seq).catch((e) => {
+                              console.log("Failed to bulk insert", seq.length, "new ReadStates, trying again (race condition/too many params?)...\nDetails:", e);
+                              return fillInMissingIDs(
+                                  seq.map((rs) => rs.user_id),
+                                  subTrace,
+                              );
+                          }),
+                ),
+            );
+            subTrace.calls.push("insertNewReadStatesChunked", { micros: subSw.getElapsedAndReset().totalMicroseconds });
         } finally {
             trace?.calls.push(`fillInMissingIDs(${ids.length})`, { micros: fillMessageSw.getElapsedAndReset().totalMicroseconds, calls: subTrace.calls });
         }
