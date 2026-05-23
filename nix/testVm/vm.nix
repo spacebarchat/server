@@ -27,6 +27,12 @@
       host.port = 8080;
       guest.port = 80;
     }
+    {
+      from="host";
+      host.port = 6000;
+      guest.port = 6000;
+      proto = "udp";
+    }
   ];
   networking.useDHCP = lib.mkForce true;
 
