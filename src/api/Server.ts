@@ -157,14 +157,6 @@ export class SpacebarServer extends Server {
 
         // new well-known location
         app.get("/.well-known/spacebar/client", (req, res) => {
-            let erlpackSupported = false;
-            try {
-                require("@yukikaze-bot/erlpack");
-                erlpackSupported = true;
-            } catch (e) {
-                // empty
-            }
-
             res.json({
                 api: {
                     baseUrl: Config.get().api.endpointPublic?.split("/api/")[0],
@@ -178,7 +170,7 @@ export class SpacebarServer extends Server {
                 },
                 gateway: {
                     baseUrl: Config.get().gateway.endpointPublic,
-                    encoding: [...(erlpackSupported ? ["etf"] : []), "json"],
+                    encoding: ["etf", "json"],
                     compression: ["zstd-stream", "zlib-stream", null],
                 },
                 admin:

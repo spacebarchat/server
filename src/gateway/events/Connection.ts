@@ -27,15 +27,8 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
-import { Config, ErlpackType } from "@spacebar/util";
+import { Config } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
-
-let erlpack: ErlpackType | null = null;
-try {
-    erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
-} catch (e) {
-    console.log("Failed to import @yukikaze-bot/erlpack: ", e);
-}
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -107,8 +100,6 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
             console.error(`[Gateway/${socket.ipAddress}] Unknown encoding: ${socket.encoding}`);
             return socket.close(CLOSECODES.Decode_error);
         }
-
-        if (socket.encoding === "etf" && !erlpack) throw new Error("Erlpack is not installed: 'npm i @yukikaze-bot/erlpack'");
 
         socket.version = Number(searchParams.get("version")) || 8;
         if (socket.version != 8) {

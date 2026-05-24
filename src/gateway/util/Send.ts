@@ -20,15 +20,8 @@ import { Payload, WebSocket } from "@spacebar/gateway";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { ErlpackType, JSONReplacer } from "@spacebar/util";
+import { JSONReplacer } from "@spacebar/util";
 import * as erlpack from "harmony-erlpack";
-
-// let erlpack: ErlpackType | null = null;
-// try {
-//     erlpack = require("@yukikaze-bot/erlpack") as ErlpackType;
-// } catch (e) {
-//     console.log("Failed to import @yukikaze-bot/erlpack: ", e);
-// }
 
 // don't care
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
