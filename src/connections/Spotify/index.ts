@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
+import { ApiError, ConnectedAccount, ConnectionLoader, DiscordApiErrors, RefreshableConnection } from "@spacebar/util";
 import wretch from "wretch";
 import { GenericOAuthSettings as SpotifySettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
@@ -129,7 +129,8 @@ export default class SpotifyConnection extends RefreshableConnection {
             .unauthorized(async () => {
                 // assume the token was revoked
                 await connectedAccount.revoke();
-                return DiscordApiErrors.CONNECTION_REVOKED;
+                // TODO: this used to be return, investigate how to properly handle this, or how this even behaves?
+                throw DiscordApiErrors.CONNECTION_REVOKED;
             })
             .json<ConnectedAccountCommonOAuthTokenResponse>()
             .catch((e) => {
