@@ -8,7 +8,6 @@ self:
 }:
 
 let
-  secrets = import ../secrets.nix { inherit lib config; };
   cfg = config.services.spacebarchat-server;
   jsonFormat = pkgs.formats.json { };
   makeServerTsService = import ../../../lib/makeServerTsService.nix { inherit cfg lib; };
