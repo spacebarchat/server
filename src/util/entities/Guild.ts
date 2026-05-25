@@ -462,6 +462,8 @@ export class Guild extends BaseClass {
                 select: { channel_ordering: true },
             });
 
+        guild.channel_ordering ??= [];
+
         let position;
         if (typeof insertPoint == "string") position = guild.channel_ordering.indexOf(insertPoint) + 1;
         else position = insertPoint;
