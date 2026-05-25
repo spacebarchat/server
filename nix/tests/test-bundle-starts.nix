@@ -73,6 +73,8 @@ in
     };
   };
 
+  # https://nixos.org/manual/nixos/stable/index.html#sec-nixos-tests
+  # https://nixos.org/manual/nixpkgs/unstable/#tester-runNixOSTest
   testScript = ''
     machine.wait_for_unit("spacebar-api")
     machine.wait_for_unit("spacebar-cdn")
@@ -82,7 +84,13 @@ in
     machine.wait_for_open_port(3001)
     machine.wait_for_open_port(3002)
     machine.wait_for_open_port(3003)
-    # If well known works, its probably fine(tm)?
+
+    # this should be working
     machine.succeed("curl -f http://api.sb.localhost/.well-known/spacebar/client")
+
+    # check if metrics endpoint works on all services
+    machine.succeed("curl -f http://api.sb.localhost/metrics")
+    machine.succeed("curl -f http://gateway.sb.localhost/metrics")
+    machine.succeed("curl -f http://cdn.sb.localhost/metrics")
   '';
 }
