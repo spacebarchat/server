@@ -31,16 +31,15 @@ export class Monitoring {
     }
 
     public static attach(app: Application) {
-        const a = app;
         const http_request_total = new client.Counter({
-            name: "node_http_request_total",
+            name: "spacebar_http_request_total",
             help: "The total number of HTTP requests received",
             labelNames: ["path", "method", "status_code"],
         });
         client.register.registerMetric(http_request_total);
 
         const http_response_rate_histogram = new client.Histogram({
-            name: "node_http_duration",
+            name: "spacebar_http_duration",
             labelNames: ["path", "method", "status_code"],
             help: "The duration of HTTP requests in seconds",
             buckets: [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10],
@@ -50,12 +49,15 @@ export class Monitoring {
         app.use((req, res, next) => {
             const endTimer = http_response_rate_histogram.startTimer();
             res.on("finish", () => {
-                const r = req;
                 const path = (res.locals.lambertRouteBase ?? req.baseUrl ?? "") + req.route?.path;
-                if (!req.route?.path) {
-                    console.log(req);
+                if (!req.route?.path && req.method !== "OPTIONS") {
+                    console.log("[Monitoring] Request route path was undefined? Request path:", req.path, "Request route:", req.route);
                 }
                 endTimer({ method: req.method, path, status_code: res.statusCode });
+
+                // OPTIONS requests don't set path due to not being routed... discard unhandled ones
+                if (!path && req.method === "OPTIONS") return;
+
                 http_request_total.inc({ method: req.method, path, status_code: res.statusCode });
             });
             next();
