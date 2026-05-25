@@ -16,18 +16,26 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import http, { IncomingMessage, ServerResponse } from "node:http";
+import { IncomingMessage, ServerResponse } from "node:http";
 import * as client from "prom-client";
 import { Application, Router } from "express";
-import { sleep } from "@spacebar/util";
+import { Metric } from "prom-client";
 
 export class Monitoring {
     static isInitialised = false;
     public static async init() {
         if (Monitoring.isInitialised) return;
         console.log("[Monitoring] Initialising prometheus metrics");
-        client.collectDefaultMetrics();
+        client.collectDefaultMetrics({ prefix: "spacebar_" });
         Monitoring.isInitialised = true;
+    }
+
+    public static attachMetric<T extends Metric>(name: string, metric: T): T {
+        const existingMetric = client.register.getSingleMetric(name);
+        // TODO: is there any way to *ensure* the metric is T? We're assuming that there's no conflicting definitions across the app...
+        if (existingMetric) return existingMetric as T;
+        client.register.registerMetric(metric);
+        return metric;
     }
 
     public static attach(app: Application) {
