@@ -20,7 +20,7 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 import moduleAlias from "module-alias";
-moduleAlias(__dirname + "../../../package.json");
+moduleAlias(__dirname + "../../package.json");
 import { config } from "dotenv";
 config({ quiet: true });
 
