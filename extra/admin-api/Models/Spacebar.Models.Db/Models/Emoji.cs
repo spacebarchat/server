@@ -35,10 +35,10 @@ public partial class Emoji
     public bool RequireColons { get; set; }
 
     [Column("roles")]
-    public string Roles { get; set; } = null!;
+    public List<long> Roles { get; set; } = null!;
 
     [Column("groups")]
-    public string? Groups { get; set; }
+    public List<long>? Groups { get; set; }
 
     [ForeignKey("GuildId")]
     [InverseProperty("Emojis")]

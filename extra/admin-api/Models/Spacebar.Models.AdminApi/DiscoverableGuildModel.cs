@@ -120,8 +120,8 @@ public class DiscoverableGuildModel {
     [JsonPropertyName("premium_progress_bar_enabled")]
     public bool? PremiumProgressBarEnabled { get; set; }
 
-    [JsonPropertyName("channel_ordering")]
-    public List<string> ChannelOrdering { get; set; }
+    [JsonPropertyName("channel_ordering"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public List<long> ChannelOrdering { get; set; }
 
     [JsonPropertyName("discovery_weight")]
     public int DiscoveryWeight { get; set; }

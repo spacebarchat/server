@@ -34,8 +34,8 @@ public partial class Guild
     [Column("explicit_content_filter")]
     public int? ExplicitContentFilter { get; set; }
 
-    [Column("features")]
-    public string Features { get; set; } = null!;
+    [Column("features", TypeName = "character varying[]")]
+    public List<string> Features { get; set; } = null!;
 
     [Column("primary_category_id")]
     public long? PrimaryCategoryId { get; set; }
@@ -128,7 +128,7 @@ public partial class Guild
     public bool? PremiumProgressBarEnabled { get; set; }
 
     [Column("channel_ordering")]
-    public string ChannelOrdering { get; set; } = null!;
+    public List<long> ChannelOrdering { get; set; } = null!;
 
     [Column("discovery_weight")]
     public int DiscoveryWeight { get; set; }

@@ -11,7 +11,7 @@ public class UserModel {
     public string? Avatar { get; set; }
     public int? AccentColor { get; set; }
     public string? Banner { get; set; }
-    public string? ThemeColors { get; set; }
+    public List<int>? ThemeColors { get; set; }
     public string? Pronouns { get; set; }
     public string? Phone { get; set; }
     public bool Desktop { get; set; }

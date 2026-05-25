@@ -30,7 +30,7 @@ public partial class User
     public string? Banner { get; set; }
 
     [Column("theme_colors")]
-    public string? ThemeColors { get; set; }
+    public List<int>? ThemeColors { get; set; }
 
     [Column("pronouns", TypeName = "character varying")]
     public string? Pronouns { get; set; }
@@ -107,8 +107,8 @@ public partial class User
     [Column("data", TypeName = "jsonb")]
     public string Data { get; set; } = null!;
 
-    [Column("fingerprints")]
-    public string Fingerprints { get; set; } = null!;
+    [Column("fingerprints", TypeName = "character varying[]")]
+    public List<string> Fingerprints { get; set; } = null!;
 
     [Column("settingsIndex")]
     public int? SettingsIndex { get; set; }
@@ -117,7 +117,7 @@ public partial class User
     public bool WebauthnEnabled { get; set; }
 
     [Column("badge_ids")]
-    public string? BadgeIds { get; set; }
+    public List<long>? BadgeIds { get; set; }
 
     [Column("avatar_decoration_data", TypeName = "jsonb")]
     public string? AvatarDecorationData { get; set; }

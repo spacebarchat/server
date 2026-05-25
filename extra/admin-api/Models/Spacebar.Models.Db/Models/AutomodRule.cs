@@ -20,10 +20,10 @@ public partial class AutomodRule
     public int EventType { get; set; }
 
     [Column("exempt_channels")]
-    public string ExemptChannels { get; set; } = null!;
+    public List<long> ExemptChannels { get; set; } = null!;
 
     [Column("exempt_roles")]
-    public string ExemptRoles { get; set; } = null!;
+    public List<long> ExemptRoles { get; set; } = null!;
 
     [Column("guild_id")]
     public long GuildId { get; set; }

@@ -53,7 +53,7 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             async () => {
                 var uid = config.OverrideUid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "id").Value;
                 if (string.IsNullOrWhiteSpace(uid)) throw new InvalidOperationException("No user ID specified, is the access token valid?");
-                return await db.Users.FindAsync(uid) ?? throw new InvalidOperationException();
+                return await db.Users.FindAsync(long.Parse(uid)) ?? throw new InvalidOperationException();
             },
             config.AuthCacheExpiry);
     }
@@ -64,7 +64,7 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             async () => {
                 var did = config.OverrideDid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "did").Value;
                 if (string.IsNullOrWhiteSpace(did)) throw new InvalidOperationException("No device ID specified, is the access token valid?");
-                return await db.Sessions.FindAsync(did) ?? throw new InvalidOperationException();
+                return await db.Sessions.FindAsync(long.Parse(did)) ?? throw new InvalidOperationException();
             },
             config.AuthCacheExpiry);
     }

@@ -15,7 +15,7 @@ public class GuildModel {
     public string? Description { get; set; }
     public string? DiscoverySplash { get; set; }
     public int? ExplicitContentFilter { get; set; }
-    public string Features { get; set; } = null!;
+    public List<string> Features { get; set; } = null!;
 
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
     public long? PrimaryCategoryId { get; set; }
@@ -66,7 +66,9 @@ public class GuildModel {
     public bool Nsfw { get; set; }
     public string? Parent { get; set; }
     public bool? PremiumProgressBarEnabled { get; set; }
-    public string ChannelOrdering { get; set; } = null!;
+
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public List<long> ChannelOrdering { get; set; } = null!;
 
     public int ChannelCount { get; set; }
     public int RoleCount { get; set; }

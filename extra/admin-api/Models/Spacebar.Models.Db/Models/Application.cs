@@ -44,8 +44,8 @@ public partial class Application
     [Column("flags")]
     public int Flags { get; set; }
 
-    [Column("redirect_uris")]
-    public string? RedirectUris { get; set; }
+    [Column("redirect_uris", TypeName = "character varying[]")]
+    public List<string>? RedirectUris { get; set; }
 
     [Column("rpc_application_state")]
     public int? RpcApplicationState { get; set; }
@@ -71,8 +71,8 @@ public partial class Application
     [Column("discovery_eligibility_flags")]
     public int? DiscoveryEligibilityFlags { get; set; }
 
-    [Column("tags")]
-    public string? Tags { get; set; }
+    [Column("tags", TypeName = "character varying[]")]
+    public List<string>? Tags { get; set; }
 
     [Column("cover_image", TypeName = "character varying")]
     public string? CoverImage { get; set; }

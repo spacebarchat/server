@@ -40,8 +40,8 @@ public partial class ConnectedAccount
     [Column("visibility")]
     public int Visibility { get; set; }
 
-    [Column("integrations")]
-    public string Integrations { get; set; } = null!;
+    [Column("integrations", TypeName = "character varying[]")]
+    public List<string> Integrations { get; set; } = null!;
 
     [Column("metadata", TypeName = "jsonb")]
     public string? Metadata { get; set; }

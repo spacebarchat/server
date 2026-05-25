@@ -57,7 +57,7 @@ public partial class Member
     public string Bio { get; set; } = null!;
 
     [Column("theme_colors")]
-    public string? ThemeColors { get; set; }
+    public List<int>? ThemeColors { get; set; }
 
     [Column("pronouns", TypeName = "character varying")]
     public string? Pronouns { get; set; }

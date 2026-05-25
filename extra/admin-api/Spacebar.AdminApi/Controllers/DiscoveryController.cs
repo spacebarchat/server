@@ -29,7 +29,7 @@ public class GuildDiscoveryController(
         await foreach (var guild in discoverableGuilds.AsAsyncEnumerable()) {
             yield return new DiscoverableGuildModel() {
                 Id = guild.Id,
-                Features = guild.Features.Split(",").ToList(),
+                Features = guild.Features,
                 Banner = guild.Banner,
                 DiscoveryExcluded = guild.DiscoveryExcluded,
                 DiscoveryWeight = guild.DiscoveryWeight,
@@ -38,7 +38,7 @@ public class GuildDiscoveryController(
                 SystemChannelFlags = guild.SystemChannelFlags,
                 AfkChannelId = guild.AfkChannelId,
                 AfkTimeout = guild.AfkTimeout,
-                ChannelOrdering = guild.ChannelOrdering.Split(",").ToList(),
+                ChannelOrdering = guild.ChannelOrdering,
                 DefaultMessageNotifications = guild.DefaultMessageNotifications,
                 Description = guild.Description,
                 DiscoverySplash = guild.DiscoverySplash,
@@ -86,7 +86,7 @@ public class GuildDiscoveryController(
         var guild = await discoverableGuilds.SingleAsync();
         return new DiscoverableGuildModel() {
             Id = guild.Id,
-            Features = guild.Features.Split(",").ToList(),
+            Features = guild.Features,
             Banner = guild.Banner,
             DiscoveryExcluded = guild.DiscoveryExcluded,
             DiscoveryWeight = guild.DiscoveryWeight,
@@ -95,7 +95,7 @@ public class GuildDiscoveryController(
             SystemChannelFlags = guild.SystemChannelFlags,
             AfkChannelId = guild.AfkChannelId,
             AfkTimeout = guild.AfkTimeout,
-            ChannelOrdering = guild.ChannelOrdering.Split(",").ToList(),
+            ChannelOrdering = guild.ChannelOrdering,
             DefaultMessageNotifications = guild.DefaultMessageNotifications,
             Description = guild.Description,
             DiscoverySplash = guild.DiscoverySplash,
@@ -152,7 +152,7 @@ public class GuildDiscoveryController(
 
         return new DiscoverableGuildModel() {
             Id = guild.Id,
-            Features = guild.Features.Split(",").ToList(),
+            Features = guild.Features,
             Banner = guild.Banner,
             DiscoveryExcluded = guild.DiscoveryExcluded,
             DiscoveryWeight = guild.DiscoveryWeight,
@@ -161,7 +161,7 @@ public class GuildDiscoveryController(
             SystemChannelFlags = guild.SystemChannelFlags,
             AfkChannelId = guild.AfkChannelId,
             AfkTimeout = guild.AfkTimeout,
-            ChannelOrdering = guild.ChannelOrdering.Split(",").ToList(),
+            ChannelOrdering = guild.ChannelOrdering,
             DefaultMessageNotifications = guild.DefaultMessageNotifications,
             Description = guild.Description,
             DiscoverySplash = guild.DiscoverySplash,

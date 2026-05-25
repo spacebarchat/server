@@ -16,8 +16,8 @@ public partial class TeamMember
     [Column("membership_state")]
     public int MembershipState { get; set; }
 
-    [Column("permissions")]
-    public string Permissions { get; set; } = null!;
+    [Column("permissions", TypeName = "character varying[]")]
+    public List<string> Permissions { get; set; } = null!;
 
     [Column("team_id")]
     public long? TeamId { get; set; }
