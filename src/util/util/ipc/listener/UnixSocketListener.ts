@@ -100,7 +100,7 @@ export class UnixSocketListener extends BaseEventListener {
             });
             socket.on("close", () => {
                 console.log("[UnixSocketListener] Unix socket client disconnected");
-                this.openConnectionsMetric.set(this.server.connections);
+                this.openConnectionsMetric.set(this.server.connections ?? 0);
             });
         });
 
