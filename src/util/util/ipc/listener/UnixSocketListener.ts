@@ -35,7 +35,6 @@ export class UnixSocketListener extends BaseEventListener {
     isInitialized = false;
     openConnectionsMetric: Gauge.Internal<string>;
     openListenersMetric: Gauge.Internal<string>;
-    isInitialized = false;
 
     constructor(socketPath: string) {
         super();
@@ -101,12 +100,12 @@ export class UnixSocketListener extends BaseEventListener {
             });
             socket.on("close", () => {
                 console.log("[UnixSocketListener] Unix socket client disconnected");
-                this.openConnectionsMetric.set(this.server.connections ?? 0);
+                this.openConnectionsMetric.set(this.server.connections);
             });
         });
 
         this.server.listen(this.socketPath, () => {
-            console.log(`[UnixSocketListener] listening on ${this.socketPath}`);
+            console.log(`[UnixSocketListener] Listening on ${this.socketPath}`);
         });
 
         ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());

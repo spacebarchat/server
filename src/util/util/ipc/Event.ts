@@ -125,7 +125,7 @@ export async function listenEvent(event: string, callback: (event: EventOpts) =>
         }
 
         if (!listener) {
-            listener = listener = new UnixSocketListener(path.join(process.env.EVENT_SOCKET_PATH, `${process.pid}.sock`));
+            listener = new UnixSocketListener(path.join(process.env.EVENT_SOCKET_PATH, `${process.pid}.sock`));
             await listener.init();
         }
         return await listener.listen(event, callback);

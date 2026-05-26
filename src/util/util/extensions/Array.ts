@@ -74,3 +74,9 @@ export function arrayDistributeSequentially<T>(array: T[], count: number): T[][]
 
     return groups;
 }
+
+//region Numerics
+export function arraySum(array: number[]) {
+    return array.reduce((prev, curr) => prev + curr, 0);
+}
+//endregion
