@@ -43,6 +43,17 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         if (index !== -1) openConnections.splice(index, 1);
     });
 
+    for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
+        process.on(sig, async () => {
+            await Send(socket, {
+                op: OPCODES.Reconnect,
+                s: socket.sequence++,
+                d: Math.round(Math.random() * 5000),
+            });
+            socket.close(1000);
+        });
+    }
+
     const forwardedFor = Config.get().security.forwardedFor;
     const ipAddress = forwardedFor ? (request.headers[forwardedFor.toLowerCase()] as string) : request.socket.remoteAddress;
 
