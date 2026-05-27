@@ -3,9 +3,10 @@
 require("dotenv").config({ quiet: true });
 const { OPCODES } = require("../../dist/gateway/util/Constants.js");
 const WebSocket = require("ws");
-const ENDPOINT = `ws://localhost:3001?v=9&encoding=json`;
 const TOKEN = process.env.TOKEN;
 const TOTAL_ITERATIONS = process.env.ITER ? parseInt(process.env.ITER) : 500;
+const PORT = process.env.PORT ?? 3002;
+const ENDPOINT = `ws://localhost:${PORT}?v=9&encoding=json`;
 
 const doTimedIdentify = () =>
     new Promise((resolve) => {
@@ -44,7 +45,8 @@ const doTimedIdentify = () =>
     while (perfs.length < TOTAL_ITERATIONS) {
         const ret = await doTimedIdentify();
         perfs.push(ret);
-        // console.log(`${perfs.length}/${TOTAL_ITERATIONS} - this: ${Math.floor(ret)}ms`)
+        const avg = perfs.reduce((prev, curr) => prev + curr) / (perfs.length - 1);
+        console.log(`${perfs.length}/${TOTAL_ITERATIONS} - this: ${Math.floor(ret)}ms - avg: ${Math.floor(avg * 100) / 100}ms`);
     }
 
     const avg = perfs.reduce((prev, curr) => prev + curr) / (perfs.length - 1);
