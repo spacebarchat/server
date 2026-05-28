@@ -47,7 +47,7 @@ export class RabbitMqSingleWriter extends BaseEventWriter {
         this.channel = await this.connection.createChannel();
 
         for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, this.close);
+            process.on(sig, () => this.close());
         }
 
         this.connection.on("error", (err) => {

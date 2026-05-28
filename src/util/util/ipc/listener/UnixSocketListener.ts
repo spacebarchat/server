@@ -26,6 +26,7 @@ export class UnixSocketListener extends BaseEventListener {
     eventEmitter: EventEmitter;
     socketPath: string;
     server: Server;
+    isInitialized = false;
 
     constructor(socketPath: string) {
         super();
@@ -47,7 +48,7 @@ export class UnixSocketListener extends BaseEventListener {
 
         this.server = net.createServer((socket) => {
             socket.on("connect", () => {
-                console.log("[UnixSocketListener] Unix socket client connected");
+                console.log("[UnixSocketListener] Unix socket client connected, now at", this.server.connections, "connections...");
             });
             let buffer = Buffer.alloc(0);
             socket.on("data", (data: Buffer) => {
@@ -74,15 +75,20 @@ export class UnixSocketListener extends BaseEventListener {
         });
 
         this.server.listen(this.socketPath, () => {
-            console.log(`Unix socket server listening on ${this.socketPath}`);
+            console.log(`[UnixSocketListener] Listening on ${this.socketPath}`);
         });
 
         for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, this.close);
+            process.on(sig, () => this.close());
         }
+        this.isInitialized = true;
     }
 
     async close(): Promise<void> {
+        if (!this.isInitialized) {
+            console.log("[UnixSocketListener] close() called before init! - Path:", this.socketPath, " - server:", this.server, " - this:", this);
+        }
+
         console.log("[UnixSocketListener] Closing unix socket server");
         this.server.close();
 
@@ -92,8 +98,6 @@ export class UnixSocketListener extends BaseEventListener {
         } catch (e) {
             console.error("[UnixSocketListener] Failed to unlink socket file:", e);
         }
-
-        process.exit(0);
     }
 
     async listen(event: string, callback: (event: EventOpts) => unknown): Promise<() => Promise<void>> {

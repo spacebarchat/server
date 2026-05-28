@@ -142,6 +142,10 @@ export class UnixSocketWriter extends BaseEventWriter {
             console.error("[UnixSocketWriter] Unix socket writer failed to read directory:", err);
         }
 
+        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
+            process.on(sig, () => this.close());
+        }
+
         this.isInitializing = false;
     }
 
