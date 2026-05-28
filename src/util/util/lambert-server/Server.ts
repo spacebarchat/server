@@ -54,7 +54,15 @@ export class Server {
             if (router.default) router = router.default;
             if (!router || router?.prototype?.constructor?.name !== "router") throw `File doesn't export any default router`;
 
-            this.app.use(path, <Router>router);
+            this.app.use(
+                path,
+                // TODO: I wish this middleware wasn't nessecary to preserve base path param names for monitoring...
+                (_, res, next) => {
+                    res.locals.lambertRouteBase = path;
+                    next();
+                },
+                <Router>router,
+            );
 
             if (this.options.serverInitLogging && process.env.LOG_ROUTES !== "false") console.log(`[Server] Route ${path} registered`);
 

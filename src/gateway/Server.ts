@@ -22,8 +22,9 @@ import ws from "ws";
 import { checkToken, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
 import { randomString } from "@spacebar/api"; // TODO: move to util
 import { Connection, openConnections } from "./events/Connection";
-import { cleanupOnStartup, OPCODES, Send } from "./util";
+import { cleanupOnStartup } from "./util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 export class Server {
     public ws: ws.Server;
@@ -67,7 +68,9 @@ export class Server {
                     res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
                 }
                 const requestUrl = new URL(`http://${req.headers.host}${req.url}`);
-                if (requestUrl.pathname === "/_spacebar/gateway/admin/introspect") {
+                if (requestUrl.pathname === "/metrics") {
+                    return await Monitoring.handleRawRequest(req, res);
+                } else if (requestUrl.pathname === "/_spacebar/gateway/admin/introspect") {
                     if (!req.headers.authorization) {
                         return res.writeHead(401).end("Unauthorized");
                     } else {
@@ -169,6 +172,7 @@ export class Server {
     }
 
     async start(): Promise<void> {
+        await Monitoring.init();
         await initDatabase();
         await Config.init();
         await initEvent();

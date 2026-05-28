@@ -24,6 +24,7 @@ import { CORS, BodyParser } from "@spacebar/api";
 import guildProfilesRoute from "./routes/guild-profiles";
 import { storage } from "./util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -35,6 +36,8 @@ export class CDNServer extends Server {
     }
 
     async start() {
+        await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
 

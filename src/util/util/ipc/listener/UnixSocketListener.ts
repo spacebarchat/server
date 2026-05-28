@@ -20,19 +20,46 @@ import EventEmitter from "node:events";
 import fs from "node:fs";
 import net, { Server } from "node:net";
 import { BaseEventListener } from "./BaseEventListener";
-import { EVENT, Event, EventOpts } from "@spacebar/util";
+import { arraySum, EVENT, Event, EventOpts } from "@spacebar/util";
 import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { Gauge } from "prom-client";
+import { Monitoring } from "../../../monitoring/Monitoring";
 
 export class UnixSocketListener extends BaseEventListener {
+    static openConnectionsMetric?: Gauge;
+    static openListenersMetric?: Gauge;
+
     eventEmitter: EventEmitter;
     socketPath: string;
     server: Server;
     isInitialized = false;
+    openConnectionsMetric: Gauge.Internal<string>;
+    openListenersMetric: Gauge.Internal<string>;
 
     constructor(socketPath: string) {
         super();
         this.eventEmitter = new EventEmitter();
         this.socketPath = socketPath;
+
+        UnixSocketListener.openConnectionsMetric = Monitoring.attachMetric(
+            "spacebar_ipc_unix_listener_open_connection_count",
+            new Gauge({
+                name: "spacebar_ipc_unix_listener_open_connection_count",
+                help: "Amount of open inbound connections on unix socket",
+                labelNames: ["path"],
+            }),
+        );
+        this.openConnectionsMetric = UnixSocketListener.openConnectionsMetric.labels({ path: socketPath });
+
+        UnixSocketListener.openListenersMetric = Monitoring.attachMetric(
+            "spacebar_ipc_unix_listener_open_listener_count",
+            new Gauge({
+                name: "spacebar_ipc_unix_listener_open_listener_count",
+                help: "Amount of open listeners on unix socket",
+                labelNames: ["path"],
+            }),
+        );
+        this.openListenersMetric = UnixSocketListener.openListenersMetric.labels({ path: socketPath });
     }
 
     async init() {
@@ -50,6 +77,7 @@ export class UnixSocketListener extends BaseEventListener {
         this.server = net.createServer((socket) => {
             socket.on("connect", () => {
                 console.log("[UnixSocketListener] Unix socket client connected, now at", this.server.connections, "connections...");
+                this.openConnectionsMetric.set(this.server.connections);
             });
             let buffer = Buffer.alloc(0);
             socket.on("data", (data: Buffer) => {
@@ -72,6 +100,7 @@ export class UnixSocketListener extends BaseEventListener {
             });
             socket.on("close", () => {
                 console.log("[UnixSocketListener] Unix socket client disconnected");
+                this.openConnectionsMetric.set(this.server.connections ?? 0);
             });
         });
 
@@ -90,6 +119,7 @@ export class UnixSocketListener extends BaseEventListener {
 
         console.log("[UnixSocketListener] Closing unix socket server");
         this.server.close();
+        UnixSocketListener.openConnectionsMetric?.remove({ path: this.socketPath });
 
         // clean up socket file
         try {
@@ -109,10 +139,12 @@ export class UnixSocketListener extends BaseEventListener {
         };
 
         this.eventEmitter.addListener(event, listener);
+        this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
 
         const cancel = async () => {
             this.eventEmitter.removeListener(event, listener);
             this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() - 1);
+            this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
         };
 
         this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() + 1);

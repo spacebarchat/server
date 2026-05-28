@@ -28,6 +28,7 @@ import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
 import { Config, initDatabase } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 const app = express();
 const server = http.createServer();
@@ -54,6 +55,7 @@ ProcessLifecycle.eventEmitter.on("stopping", async () => {
 });
 
 async function main() {
+    await Monitoring.init();
     await initDatabase();
     await Config.init();
 

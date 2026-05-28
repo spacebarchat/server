@@ -26,6 +26,7 @@ import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLim
 import { initInstance } from "./util/handlers/Instance";
 import { route } from "./util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -51,6 +52,8 @@ export class SpacebarServer extends Server {
     }
 
     async start() {
+        await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
         await initEvent();

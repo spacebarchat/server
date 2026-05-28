@@ -30,6 +30,8 @@ import { URL } from "node:url";
 import { Config } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
+import { Monitoring } from "../../util/monitoring/Monitoring";
+import { Gauge } from "prom-client";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -37,11 +39,21 @@ import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
 
 export const openConnections: WebSocket[] = [];
 
+const openConnectionCount = Monitoring.attachMetric(
+    "spacebar_gateway_open_connection_count",
+    new Gauge({
+        name: "spacebar_gateway_open_connection_count",
+        help: "The total number of HTTP requests received",
+    }),
+);
+
 export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
     openConnections.push(socket);
+    openConnectionCount.set(openConnections.length);
     socket.on("close", () => {
         const index = openConnections.indexOf(socket);
         if (index !== -1) openConnections.splice(index, 1);
+        openConnectionCount.set(openConnections.length);
     });
 
     const onShutdown = async () => {
