@@ -19,6 +19,7 @@
 import { BaseEventWriter } from "./BaseEventWriter";
 import amqp, { Channel, ChannelModel } from "amqplib";
 import { Event, sleep } from "@spacebar/util";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
 
 export class RabbitMqSingleWriter extends BaseEventWriter {
     private readonly host: string;
@@ -46,10 +47,7 @@ export class RabbitMqSingleWriter extends BaseEventWriter {
         }
         this.channel = await this.connection.createChannel();
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
-
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
         this.connection.on("error", (err) => {
             console.error("[RabbitMQSingleWriter] Connection error:", err);
         });

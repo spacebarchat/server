@@ -16,13 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import path from "node:path";
+import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server";
 import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
-import path from "node:path";
 import guildProfilesRoute from "./routes/guild-profiles";
-import morgan from "morgan";
 import { storage } from "./util";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -34,6 +36,8 @@ export class CDNServer extends Server {
     }
 
     async start() {
+        await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
 
@@ -71,6 +75,7 @@ export class CDNServer extends Server {
         this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
         if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
+        await ProcessLifecycle.Ready();
         return super.start();
     }
 
@@ -89,6 +94,8 @@ export class CDNServer extends Server {
     }
 
     async stop() {
+        await ProcessLifecycle.Shutdown();
+        await ProcessLifecycle.Finalize();
         return super.stop();
     }
 }

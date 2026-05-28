@@ -17,21 +17,36 @@
 */
 
 import EventEmitter from "node:events";
-import { BaseEventListener } from "./BaseEventListener";
-import { EVENT, Event, EventOpts, sleep } from "@spacebar/util";
-import amqp, { Channel, ChannelModel } from "amqplib";
 import { randomUUID } from "node:crypto";
+import { BaseEventListener } from "./BaseEventListener";
+import { arraySum, EVENT, Event, EventOpts, sleep } from "@spacebar/util";
+import amqp, { Channel, ChannelModel } from "amqplib";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { Monitoring } from "../../../monitoring/Monitoring";
+import { Gauge } from "prom-client";
 
 export class RabbitMqSingleListener extends BaseEventListener {
+    static openListenersMetric: Gauge;
     private readonly host: string;
     private connection?: ChannelModel;
     private channel?: Channel;
     eventEmitter: EventEmitter;
+    openListenersMetric: Gauge.Internal<string>;
 
     constructor(host: string) {
         super();
         this.eventEmitter = new EventEmitter();
         this.host = host;
+
+        RabbitMqSingleListener.openListenersMetric = Monitoring.attachMetric(
+            "spacebar_ipc_unix_listener_open_listener_count",
+            new Gauge({
+                name: "spacebar_ipc_rabbitmqsingle_listener_open_listener_count",
+                help: "Amount of open listeners on unix socket",
+                labelNames: ["host"],
+            }),
+        );
+        this.openListenersMetric = RabbitMqSingleListener.openListenersMetric.labels({ host });
     }
 
     async init() {
@@ -50,9 +65,7 @@ export class RabbitMqSingleListener extends BaseEventListener {
         }
         this.channel = await this.connection.createChannel();
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
 
         this.connection.on("error", (err) => {
             console.error("[RabbitMQSingleListener] Connection error:", err);
@@ -94,6 +107,7 @@ export class RabbitMqSingleListener extends BaseEventListener {
         this.channel = undefined;
         await this.connection?.close();
         this.connection = undefined;
+        RabbitMqSingleListener.openListenersMetric.remove({ host: this.host });
     }
 
     async listen(event: string, callback: (event: EventOpts) => unknown): Promise<() => Promise<void>> {
@@ -105,10 +119,12 @@ export class RabbitMqSingleListener extends BaseEventListener {
         };
 
         this.eventEmitter.addListener(event, listener);
+        this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
 
         const cancel = async () => {
             this.eventEmitter.removeListener(event, listener);
             this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() - 1);
+            this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
         };
 
         this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() + 1);

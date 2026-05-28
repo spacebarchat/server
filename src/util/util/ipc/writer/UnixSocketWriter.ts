@@ -22,8 +22,13 @@ import path from "node:path";
 import { red } from "picocolors";
 import { BaseEventWriter } from "./BaseEventWriter";
 import { Event, Stopwatch } from "@spacebar/util";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { Monitoring } from "../../../monitoring/Monitoring";
+import { Gauge } from "prom-client";
 
 export class UnixSocketWriter extends BaseEventWriter {
+    private static openConnectionsMetric: Gauge;
+
     socketPath: string;
     clients: { [key: string]: Socket } = {};
     watcher?: FSWatcher;
@@ -31,10 +36,21 @@ export class UnixSocketWriter extends BaseEventWriter {
     broadcastLock: Promise<void> = Promise.resolve();
     replayLock: Promise<void> = Promise.resolve();
     isInitializing = true;
+    openConnectionsMetric: Gauge.Internal<string>;
 
     constructor(socketPath: string) {
         super();
         this.socketPath = socketPath;
+
+        UnixSocketWriter.openConnectionsMetric = Monitoring.attachMetric(
+            "spacebar_ipc_unix_writer_open_connection_count",
+            new Gauge({
+                name: "spacebar_ipc_unix_writer_open_connection_count",
+                help: "Amount of open outbound connections on unix socket",
+                labelNames: ["path"],
+            }),
+        );
+        this.openConnectionsMetric = UnixSocketWriter.openConnectionsMetric.labels({ path: socketPath });
     }
 
     async init() {
@@ -79,6 +95,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             try {
                 this.clients[fullPath] = net.createConnection(fullPath, () => {
                     console.log("[UnixSocketWriter] Unix socket client connected to", fullPath);
+                    this.openConnectionsMetric.set(Object.entries(this.clients).length);
                 });
 
                 this.clients[fullPath].on("error", (err) => {
@@ -93,6 +110,7 @@ export class UnixSocketWriter extends BaseEventWriter {
                 this.clients[fullPath].on("close", () => {
                     console.log("[UnixSocketWriter] Unix socket client closed:", fullPath);
                     delete this.clients[fullPath];
+                    this.openConnectionsMetric.set(Object.entries(this.clients).length);
                 });
             } catch (e) {
                 console.error("[UnixSocketWriter] Failed to create connection to", fullPath, ":", e);
@@ -142,10 +160,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             console.error("[UnixSocketWriter] Unix socket writer failed to read directory:", err);
         }
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
-
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
         this.isInitializing = false;
     }
 
@@ -226,6 +241,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             }
         }
         this.clients = {};
+        UnixSocketWriter.openConnectionsMetric.remove({ path: this.socketPath });
     }
 }
 

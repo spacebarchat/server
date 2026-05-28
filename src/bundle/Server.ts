@@ -16,21 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import morgan from "morgan";
-
-process.on("unhandledRejection", console.error);
-process.on("uncaughtException", console.error);
-
 import http from "node:http";
+import fs from "node:fs";
+import cluster from "node:cluster";
+import morgan from "morgan";
+import express from "express";
+import { green, bold } from "picocolors";
 import * as Api from "@spacebar/api";
 import * as Gateway from "@spacebar/gateway";
 import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
-import express from "express";
-import { green, bold } from "picocolors";
 import { Config, initDatabase } from "@spacebar/util";
-import fs from "node:fs";
-import cluster from "node:cluster";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "../util/monitoring/Monitoring";
 
 const app = express();
 const server = http.createServer();
@@ -48,8 +46,7 @@ const webrtc = new Webrtc.Server({
     production,
 });
 
-process.on("SIGTERM", async () => {
-    console.log("Shutting down due to SIGTERM");
+ProcessLifecycle.eventEmitter.on("stopping", async () => {
     await gateway.stop();
     await cdn.stop();
     await api.stop();
@@ -58,6 +55,7 @@ process.on("SIGTERM", async () => {
 });
 
 async function main() {
+    await Monitoring.init();
     await initDatabase();
     await Config.init();
 
