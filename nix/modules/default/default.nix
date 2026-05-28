@@ -18,6 +18,7 @@ in
 {
   imports = [
     ./integration-nginx.nix
+    ./integration-prometheus.nix
     ./users.nix
     (import ./gw-sharding.nix self)
     (import ./pion-sfu.nix self)
