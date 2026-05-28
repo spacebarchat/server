@@ -22,6 +22,7 @@ import path from "node:path";
 import { red } from "picocolors";
 import { BaseEventWriter } from "./BaseEventWriter";
 import { Event, Stopwatch } from "@spacebar/util";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
 
 export class UnixSocketWriter extends BaseEventWriter {
     socketPath: string;
@@ -142,10 +143,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             console.error("[UnixSocketWriter] Unix socket writer failed to read directory:", err);
         }
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
-
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
         this.isInitializing = false;
     }
 

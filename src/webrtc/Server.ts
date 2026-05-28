@@ -15,14 +15,14 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import dotenv from "dotenv";
-dotenv.config({ quiet: true });
-import { closeDatabase, Config, initDatabase, initEvent, Session, TimeSpan } from "@spacebar/util";
+
 import http from "node:http";
 import ws from "ws";
+import { green, yellow } from "picocolors";
+import { Config, initDatabase, initEvent } from "@spacebar/util";
 import { Connection } from "./events/Connection";
 import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "./util";
-import { green, yellow } from "picocolors";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 
 export class Server {
     public ws: ws.Server;
@@ -76,11 +76,14 @@ export class Server {
             this.server.listen(this.port);
             console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
         }
+
+        await ProcessLifecycle.Ready();
     }
 
     async stop() {
-        await closeDatabase();
+        await ProcessLifecycle.Shutdown();
         this.server.close();
-        mediaServer?.stop();
+        await mediaServer?.stop();
+        await ProcessLifecycle.Finalize();
     }
 }

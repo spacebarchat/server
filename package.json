@@ -75,7 +75,8 @@
         "pretty-quick": "^4.2.2",
         "ts-node": "^10.9.2",
         "typescript": "^6.0.3",
-        "typescript-json-schema": "^0.67.4"
+        "typescript-json-schema": "^0.67.4",
+        "why-is-node-running": "^3.2.2"
     },
     "dependencies": {
         "@spacebarchat/pion-webrtc": "^0.0.4",

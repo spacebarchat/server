@@ -23,6 +23,7 @@ import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
 import { ConfigEntity } from "../entities/Config";
 import fs from "node:fs";
+import { ProcessLifecycle } from "./ProcessLifecycle";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -127,11 +128,13 @@ export async function initDatabase(): Promise<DataSource> {
         }
     }
 
-    console.log(`[Database] ${green("Connected")}`);
+    ProcessLifecycle.eventEmitter.on("stopped", async () => await closeDatabase());
 
+    console.log(`[Database] ${green("Connected")}`);
     return dbConnection;
 }
 
 export async function closeDatabase() {
-    await dbConnection?.destroy();
+    if (DataSourceOptions.isInitialized) await DataSourceOptions.destroy();
+    if (dbConnection?.isInitialized) await dbConnection?.destroy();
 }

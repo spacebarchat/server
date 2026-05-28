@@ -16,21 +16,21 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import dotenv from "dotenv";
-dotenv.config({ quiet: true });
-import { checkToken, closeDatabase, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
-import ws from "ws";
-import { Connection, openConnections } from "./events/Connection";
 import http from "node:http";
-import { cleanupOnStartup } from "./util";
-import { randomString } from "@spacebar/api";
 import { setInterval } from "node:timers";
+import ws from "ws";
+import { checkToken, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
+import { randomString } from "@spacebar/api"; // TODO: move to util
+import { Connection, openConnections } from "./events/Connection";
+import { cleanupOnStartup, OPCODES, Send } from "./util";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 
 export class Server {
     public ws: ws.Server;
     public port: number;
     public server: http.Server;
     public production: boolean;
+    private monitoringLoop: NodeJS.Timeout;
 
     constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
         this.port = port;
@@ -42,7 +42,7 @@ export class Server {
             const eluP = [1, 5, 15].map(() => performance.eventLoopUtilization());
             const cpu = [1, 5, 15].map(() => process.cpuUsage());
             let sec = 0;
-            setInterval(() => {
+            const monitoringLoop = setInterval(() => {
                 sec += 1;
                 // for some reason this behaves differently from cpuUsage, so we need an absolute reference as "previous"
                 const eluC = performance.eventLoopUtilization();
@@ -150,6 +150,8 @@ export class Server {
 
                 res.writeHead(200).end("Online");
             });
+
+            ProcessLifecycle.eventEmitter.on("stopping", () => clearTimeout(monitoringLoop));
         }
 
         this.server.on("upgrade", (request, socket, head) => {
@@ -177,14 +179,16 @@ export class Server {
             this.server.listen(this.port);
             console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
         }
+
+        await ProcessLifecycle.Ready();
     }
 
     async stop() {
+        await ProcessLifecycle.Shutdown();
+        clearInterval(this.monitoringLoop);
         this.ws.clients.forEach((x) => x.close());
-        this.ws.close(() => {
-            this.server.close(() => {
-                closeDatabase();
-            });
-        });
+        this.ws.close();
+        this.server.close();
+        await ProcessLifecycle.Finalize();
     }
 }

@@ -16,8 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
+import { route, SpacebarServer } from "@spacebar/api";
 import { Request, Response, Router } from "express";
+import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -35,7 +36,9 @@ router.post(
     (req: Request, res: Response) => {
         console.log(`/stop was called by ${req.user_id} at ${new Date()}`);
         res.sendStatus(200);
-        process.kill(process.pid, "SIGTERM");
+        ProcessLifecycle.Shutdown().catch((e) => {
+            console.error("Failed to shut down:", e);
+        });
     },
 );
 

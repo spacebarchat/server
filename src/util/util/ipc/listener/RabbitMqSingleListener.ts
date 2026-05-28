@@ -17,10 +17,11 @@
 */
 
 import EventEmitter from "node:events";
+import { randomUUID } from "node:crypto";
 import { BaseEventListener } from "./BaseEventListener";
 import { EVENT, Event, EventOpts, sleep } from "@spacebar/util";
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { randomUUID } from "node:crypto";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
 
 export class RabbitMqSingleListener extends BaseEventListener {
     private readonly host: string;
@@ -50,9 +51,7 @@ export class RabbitMqSingleListener extends BaseEventListener {
         }
         this.channel = await this.connection.createChannel();
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
 
         this.connection.on("error", (err) => {
             console.error("[RabbitMQSingleListener] Connection error:", err);

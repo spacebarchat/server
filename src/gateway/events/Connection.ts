@@ -29,6 +29,7 @@ import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
 import { Config } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
+import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -43,16 +44,26 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         if (index !== -1) openConnections.splice(index, 1);
     });
 
-    for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-        process.on(sig, async () => {
-            await Send(socket, {
-                op: OPCODES.Reconnect,
-                s: socket.sequence++,
-                d: Math.round(Math.random() * 5000),
-            });
-            socket.close(1000);
+    const onShutdown = async () => {
+        await Send(socket, {
+            op: OPCODES.Reconnect,
+            s: socket.sequence++,
+            d: Math.round(Math.random() * 5000),
         });
-    }
+
+        const closeListeners = socket.listeners("close");
+        for (const listener of closeListeners) {
+            socket.off("close", listener);
+            // noinspection JSVoidFunctionReturnValueUsed - awaiting results
+            const res = listener.call(socket, 1000, 0) as void | Promise<void>;
+            if (res) await res;
+        }
+
+        socket.close(1000);
+    };
+
+    if (ProcessLifecycle.state == "stopping" || ProcessLifecycle.state == "stopped") return await onShutdown();
+    ProcessLifecycle.eventEmitter.on("stopping", onShutdown);
 
     const forwardedFor = Config.get().security.forwardedFor;
     const ipAddress = forwardedFor ? (request.headers[forwardedFor.toLowerCase()] as string) : request.socket.remoteAddress;

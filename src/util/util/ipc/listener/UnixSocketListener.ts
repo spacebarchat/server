@@ -21,6 +21,7 @@ import fs from "node:fs";
 import net, { Server } from "node:net";
 import { BaseEventListener } from "./BaseEventListener";
 import { EVENT, Event, EventOpts } from "@spacebar/util";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
 
 export class UnixSocketListener extends BaseEventListener {
     eventEmitter: EventEmitter;
@@ -78,9 +79,7 @@ export class UnixSocketListener extends BaseEventListener {
             console.log(`[UnixSocketListener] Listening on ${this.socketPath}`);
         });
 
-        for (const sig of ["SIGINT", "SIGTERM", "SIGQUIT"] as const) {
-            process.on(sig, () => this.close());
-        }
+        ProcessLifecycle.eventEmitter.on("stopped", async () => await this.close());
         this.isInitialized = true;
     }
 
@@ -96,6 +95,7 @@ export class UnixSocketListener extends BaseEventListener {
         try {
             fs.unlinkSync(this.socketPath);
         } catch (e) {
+            if (e instanceof Error && "errno" in e && e.errno == -2) return;
             console.error("[UnixSocketListener] Failed to unlink socket file:", e);
         }
     }
