@@ -50,7 +50,7 @@ export class Monitoring {
             name: "spacebar_http_duration",
             labelNames: ["path", "method", "status_code"],
             help: "The duration of HTTP requests in seconds",
-            buckets: [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10],
+            buckets: [0.0, 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10],
         });
         client.register.registerMetric(http_response_rate_histogram);
 
