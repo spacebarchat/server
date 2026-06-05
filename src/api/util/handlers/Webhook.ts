@@ -92,6 +92,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
             attachments.push(Attachment.create(file));
         } catch (error) {
             if (wait) res.status(400).json({ message: error?.toString() });
+            console.error("[webhookExecute] Failed to handle attachment:", error);
             return;
         }
     }
