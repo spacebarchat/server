@@ -1,6 +1,8 @@
 using ArcaneLibs.Collections;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace Spacebar.Client.Core;
+namespace Spacebar.Sdk.Core;
 
 public class SpacebarClientProviderService(ILogger<SpacebarClientProviderService> logger, IServiceProvider serviceProvider, SpacebarClientWellKnownResolverService clientWellKnownResolver) {
     private static readonly SemaphoreCache<UnauthenticatedSpacebarClient> UnauthenticatedClientCache = new();

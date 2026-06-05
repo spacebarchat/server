@@ -1,4 +1,4 @@
-namespace Spacebar.Client.Core;
+namespace Spacebar.Sdk.Core;
 
 public class MarkdownEnumerator {
     public IEnumerable<BaseMarkdownNode> EnumerateMarkdownComponents(string text) {

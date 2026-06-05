@@ -2,8 +2,8 @@ using ArcaneLibs.Blazor.Components.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Spacebar.Client;
-using Spacebar.Client.Core;
 using Spacebar.Client.WebCore;
+using Spacebar.Sdk.Core;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

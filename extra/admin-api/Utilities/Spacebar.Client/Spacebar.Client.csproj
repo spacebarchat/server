@@ -28,14 +28,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Api\Spacebar.Models.Api.csproj"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj"/>
+        <ProjectReference Include="..\Spacebar.Sdk\Spacebar.Sdk.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js"/>
     </ItemGroup>
 
 </Project>
