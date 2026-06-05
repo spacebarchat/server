@@ -79,7 +79,11 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
     this.type = type;
 
     const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
-    this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
+    try {
+        this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
+    } catch (e) {
+        return this.close(4013);
+    }
 
     this.on("close", () => {
         // ice-lite media server relies on this to know when the peer went away

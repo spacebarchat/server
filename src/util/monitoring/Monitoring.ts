@@ -18,7 +18,7 @@
 
 import { IncomingMessage, ServerResponse } from "node:http";
 import * as client from "prom-client";
-import { Application, Router } from "express";
+import { Application } from "express";
 import { Metric } from "prom-client";
 
 export class Monitoring {
