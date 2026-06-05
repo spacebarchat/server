@@ -242,6 +242,10 @@ export class Message extends BaseClass {
     @Column({ default: "[]", type: "jsonb" })
     message_snapshots: MessageSnapshot[];
 
+    get isWebhook() {
+        return this.webhook_id != null && this.webhook != null;
+    }
+
     static async fillReplies(messages: Message[]) {
         const ms = messages
             .filter((msg) => msg.message_reference && !msg.referenced_message?.id && msg.message_reference.message_id)

@@ -559,7 +559,8 @@ export async function postHandleMessage(message: Message) {
         embed.type ||= EmbedType.rich;
     });
 
-    if ((await getPermission(message.author_id, message.channel.guild_id, message.channel_id)).has(Permissions.FLAGS.EMBED_LINKS)) await fillMessageUrlEmbeds(message);
+    if (message.isWebhook || (await getPermission(message.author_id, message.channel.guild_id, message.channel_id)).has(Permissions.FLAGS.EMBED_LINKS))
+        await fillMessageUrlEmbeds(message);
 }
 
 export async function sendMessage(opts: MessageOptions) {
@@ -675,7 +676,13 @@ async function handleMessageMentionsAsync(message: Message) {
     });
     trace.calls.push(`getChannel(${channel.id})`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-    const permission = await getPermission(message.author_id ?? message.author?.id, channel.guild_id, channel);
+    const permissionTargetId = message.isWebhook ? message.webhook?.application_id : (message.author_id ?? message.author?.id);
+    const permission =
+        permissionTargetId != null
+            ? await getPermission(permissionTargetId, channel.guild_id, channel)
+            : message.guild_id != null
+              ? new Permissions((await Role.findOneOrFail({ where: { id: message.guild_id ?? message.guild?.id } })).permissions)
+              : Permissions.DEFAULT_DM_PERMISSIONS;
     trace.calls.push(`getPermissions`, { micros: sw.getElapsedAndReset().totalMicroseconds });
 
     let content = message.content;
