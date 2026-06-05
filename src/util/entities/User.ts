@@ -349,19 +349,11 @@ export class User extends BaseClass {
             });
         }
 
-        setImmediate(async () => {
-            if (bot) {
-                const { guild } = Config.get();
-                if (!guild.autoJoin.bots) {
-                    return;
-                }
+        const { guild } = Config.get();
+        if (guild.autoJoin.enabled && !(bot && !guild.autoJoin.bots))
+            for (const guild of Config.get().guild.autoJoin.guilds || []) {
+                await Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e));
             }
-            if (Config.get().guild.autoJoin.enabled) {
-                for (const guild of Config.get().guild.autoJoin.guilds || []) {
-                    await Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e));
-                }
-            }
-        });
 
         return user;
     }
