@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using ArcaneLibs.Extensions;
 using Spacebar.Models.Api;
@@ -33,6 +34,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
     [Fact]
     public async Task ConcurrentRegister50Users() {
         var tasks = Enumerable.Range(0, 50).Select(async _ => {
+            var sw = Stopwatch.StartNew();
             var rr = new RegisterRequest() {
                 Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
                 Username = Guid.NewGuid().ToString(),
@@ -40,7 +42,10 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
                 DateOfBirth = new(),
                 Consent = true
             };
-            return (rr, await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr));
+            
+            var result = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr);
+            testOutputHelper.WriteLine($"Registered {rr.Email} in {sw.Elapsed}...");
+            return (rr, result);
         }).ToList();
         await Task.WhenAll(tasks);
 

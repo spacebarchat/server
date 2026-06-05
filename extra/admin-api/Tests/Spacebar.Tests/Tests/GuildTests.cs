@@ -21,7 +21,7 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
 
     [Fact]
     public async Task CreateGuild() {
-        var client = await _userAbstraction.GetFreshUser();
+        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });
@@ -31,7 +31,7 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
     
     [Fact]
     public async Task GetChannels() {
-        var client = await _userAbstraction.GetFreshUser();
+        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });

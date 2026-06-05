@@ -14,6 +14,8 @@ public class SpacebarApiException : Exception {
     public JsonObject? Errors { get; set; }
     
     public JsonObject?[]? AjvErrors { get; set; }
+    
+    public JsonObject? OriginalErrorData { get; init; }
 
     public class FieldErrorList {
         // public 
@@ -32,6 +34,7 @@ public class SpacebarApiException : Exception {
         }
         
         var ex = new SpacebarApiException(msg) {
+            OriginalErrorData = resp,
             Code = resp["code"]!.GetValue<int>(),
             ErrorMessage = resp["message"]!.GetValue<string>(),
             Request = resp["request"]?.GetValue<string>(),
@@ -42,7 +45,7 @@ public class SpacebarApiException : Exception {
         return ex;
     }
 
-    public JsonObject AsJsonObject() => new() {
+    public JsonObject AsJsonObject() => OriginalErrorData?.DeepClone().AsObject() ?? new() {
         { "message", Message },
         { "code", Code },
         { "request", Request },

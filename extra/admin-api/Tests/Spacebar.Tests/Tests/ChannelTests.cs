@@ -23,7 +23,7 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     
     [Fact]
     public async Task CreateChannel() {
-        var client = await _userAbstraction.GetFreshUser();
+        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });
@@ -40,13 +40,14 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     [Fact]
     public async Task GetChannel() {
-        var client = await _userAbstraction.GetFreshUser();
+        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });
         
         Assert.Equal("Test guild", guild.Name);
-
+        
+        // await Task.Delay(1000, TestContext.Current.CancellationToken); // TODO: unflake
         var channel = await client.GetGuild(guild.Id).CreateChannelAsync(new() {
             Name = "test",
             Type = 0
@@ -54,6 +55,7 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         
         Assert.Equal("test", channel.Name);
 
+        // await Task.Delay(1000, TestContext.Current.CancellationToken); // TODO: unflake
         var res = await client.ApiHttpClient.GetAsync("channels/" + channel.Id, TestContext.Current.CancellationToken);
         await Assert.HttpSuccess(res);
         

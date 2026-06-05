@@ -15,10 +15,12 @@ public class UserAbstraction(Config _config, SpacebarClientProviderService _clie
         var client = await _clientProvider.GetAuthenticatedClientAsync(_config.TestInstance, tokenResponse.Token);
 
         if (!withAutojoinGuilds) {
-            
+            await Task.Delay(1000);
+            var leaves = (await client.GetJoinedGuilds()).Select(x => client.GetGuild(x.Id).LeaveAsync()).ToList();
+            await Task.WhenAll(leaves);
+            await Task.Delay(1000);
         }
 
         return client;
     }
-    
 }

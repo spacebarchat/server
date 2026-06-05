@@ -10,7 +10,7 @@ public class UserAbstractionTests(ITestOutputHelper testOutputHelper, TestFixtur
     
     [Fact]
     public async Task CanGetUser() {
-        var res = await _config.GetFreshUser();
+        var res = await _config.GetFreshUser(withAutojoinGuilds: true);
         Assert.StringNotNullOrWhitespace(res.ApiHttpClient.BaseAddress!.ToString());
     }
 }

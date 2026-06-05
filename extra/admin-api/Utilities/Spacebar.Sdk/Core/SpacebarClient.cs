@@ -73,6 +73,13 @@ public class AuthenticatedSpacebarClient {
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
         return (await resp.Content.ReadFromJsonAsync<Guild>())!;
     }
+
+    public async Task<List<Guild>> GetJoinedGuilds() {
+        var resp = await ApiHttpClient.GetAsync("users/@me/guilds");
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        return (await resp.Content.ReadFromJsonAsync<List<Guild>>())!;
+    }
 }
 
 public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long channelId) {
@@ -90,6 +97,22 @@ public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long chan
         var data = await resp.Content.ReadFromJsonAsync<List<JsonObject>>();
         Console.WriteLine(data.ToJson(indent: false, ignoreNull: true));
         return data.Select(x => x.Deserialize<Message>()).ToList();
+    }
+
+    public async Task<Webhook> CreateWebhookAsync(CreateWebhookRequest req) {
+        var resp = await client.ApiHttpClient.PostAsJsonAsync($"channels/{channelId}/webhooks", req, new JsonSerializerOptions() {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        return (await resp.Content.ReadFromJsonAsync<Webhook>())!;
+    }
+
+    public async Task<List<Webhook>> GetWebhooksAsync() {
+        var resp = await client.ApiHttpClient.GetAsync($"channels/{channelId}/webhooks");
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        return (await resp.Content.ReadFromJsonAsync<List<Webhook>>())!;
     }
 }
 
@@ -114,6 +137,19 @@ public class SpacebarClientGuild(AuthenticatedSpacebarClient client, long guildI
         // TODO: abstract out
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
         return (await resp.Content.ReadFromJsonAsync<Channel>())!;
+    }
+
+    public async Task LeaveAsync(bool lurking = false) {
+        var req = new HttpRequestMessage(HttpMethod.Delete, $"users/@me/guilds/{guildId}") {
+            Content = new StringContent(new JsonObject() {
+                { "lurking", lurking }
+            }.ToJsonString(new JsonSerializerOptions() {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            }))
+        };
+        var resp = await client.ApiHttpClient.SendAsync(req);
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
     }
 }
 
