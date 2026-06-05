@@ -107,6 +107,7 @@ router.post(
         return res.json({
             ...hook,
             user: user,
+            url: Config.get().api.endpointPublic + "/api/webhooks/" + hook.id + "/" + hook.token,
         });
     },
 );
