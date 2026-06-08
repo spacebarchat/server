@@ -7,61 +7,58 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Spacebar.Tests.Tests;
 
-public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture) {
-    private readonly Config _config = fixture.GetService<Config>(testOutputHelper) ?? throw new InvalidOperationException($"Failed to get {nameof(Config)}");
+public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture), IAsyncLifetime {
+    private readonly Config _config = fixture.GetRequiredService<Config>(testOutputHelper);
+    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetRequiredService<SpacebarClientWellKnownResolverService>(testOutputHelper);
+    private readonly SpacebarClientProviderService _clientProvider = fixture.GetRequiredService<SpacebarClientProviderService>(testOutputHelper);
+    private readonly UserAbstraction _userAbstraction = fixture.GetRequiredService<UserAbstraction>(testOutputHelper);
 
-    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetService<SpacebarClientWellKnownResolverService>(testOutputHelper) ??
-                                                                                 throw new InvalidOperationException(
-                                                                                     $"Failed to get {nameof(SpacebarClientWellKnownResolverService)}");
+    private static AuthenticatedSpacebarClient Client = null!;
+    private static SpacebarClientGuild? Guild;
 
-    private readonly SpacebarClientProviderService _clientProvider = fixture.GetService<SpacebarClientProviderService>(testOutputHelper) ??
-                                                                     throw new InvalidOperationException($"Failed to get {nameof(SpacebarClientProviderService)}");
+    private static SpacebarClientChannel? Channel = null!;
 
-    private readonly UserAbstraction _userAbstraction = fixture.GetService<UserAbstraction>(testOutputHelper) ??
-                                                        throw new InvalidOperationException($"Failed to get {nameof(SpacebarClientProviderService)}");
-    
+    public async ValueTask InitializeAsync() {
+        Client = await _userAbstraction.GetSharedUser();
+
+        if (Guild is null)
+            await Client.CreateGuild(new() {
+                Name = "Test guild"
+            }).ContinueWith(g => {
+                Assert.Equal("Test guild", g.Result.Name);
+                Guild = Client.GetGuild(g.Result.Id);
+            });
+
+        if (Channel is null)
+            await Guild!.CreateChannelAsync(new() {
+                Name = "test",
+                Type = 0
+            }).ContinueWith(c => {
+                Assert.Equal("test", c.Result.Name);
+                Channel = Client.GetChannel(c.Result.Id);
+            });
+    }
+
     [Fact]
     public async Task CreateWebhook() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
-        var guild = await client.CreateGuild(new() {
-            Name = "Test guild"
-        });
-        
-        Assert.Equal("Test guild", guild.Name);
-
-        var channel = await client.GetGuild(guild.Id).CreateChannelAsync(new() {
-            Name = "test",
-            Type = 0
-        });
-        
-        Assert.Equal("test", channel.Name);
-
-        var cChannel = client.GetChannel(channel.Id);
-        var wh = await cChannel.CreateWebhookAsync(new() {
+        var wh = await Channel!.CreateWebhookAsync(new() {
             Name = "meow"
         });
 
         Assert.Equal("meow", wh.Name);
         Assert.StringNotNullOrWhitespace(wh.Url);
     }
-    
+
     [Fact]
     public async Task CreateMultipleWebhooks() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
-        var guild = await client.CreateGuild(new() {
-            Name = "Test guild"
-        });
-        
-        Assert.Equal("Test guild", guild.Name);
-
-        var channel = await client.GetGuild(guild.Id).CreateChannelAsync(new() {
+        var channel = await Guild!.CreateChannelAsync(new() {
             Name = "test",
             Type = 0
         });
-        
+
         Assert.Equal("test", channel.Name);
 
-        var cChannel = client.GetChannel(channel.Id);
+        var cChannel = Client.GetChannel(channel.Id);
 
         var count = Random.Shared.Next(10);
         testOutputHelper.WriteLine($"Creating {count} webhooks...");
@@ -76,22 +73,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     [Fact]
     public async Task SendWebhookMessageWithWait() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
-        var guild = await client.CreateGuild(new() {
-            Name = "Test guild"
-        });
-        
-        Assert.Equal("Test guild", guild.Name);
-
-        var channel = await client.GetGuild(guild.Id).CreateChannelAsync(new() {
-            Name = "test",
-            Type = 0
-        });
-        
-        Assert.Equal("test", channel.Name);
-
-        var cChannel = client.GetChannel(channel.Id);
-        var wh = await cChannel.CreateWebhookAsync(new() {
+        var wh = await Channel!.CreateWebhookAsync(new() {
             Name = "meow"
         });
 
@@ -102,25 +84,10 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             { "content", "meow" }
         });
     }
-    
+
     [Fact]
     public async Task SendWebhookMessage() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
-        var guild = await client.CreateGuild(new() {
-            Name = "Test guild"
-        });
-        
-        Assert.Equal("Test guild", guild.Name);
-
-        var channel = await client.GetGuild(guild.Id).CreateChannelAsync(new() {
-            Name = "test",
-            Type = 0
-        });
-        
-        Assert.Equal("test", channel.Name);
-
-        var cChannel = client.GetChannel(channel.Id);
-        var wh = await cChannel.CreateWebhookAsync(new() {
+        var wh = await Channel!.CreateWebhookAsync(new() {
             Name = "meow"
         });
 

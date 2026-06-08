@@ -8,4 +8,5 @@ public class Config {
     }
 
     public string TestInstance { get; set; }
+    public int RegisterConcurrentCount { get; set; }
 }

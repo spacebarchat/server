@@ -7,21 +7,14 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace Spacebar.Tests.Tests;
 
 public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture) {
-    private readonly Config _config = fixture.GetService<Config>(testOutputHelper) ?? throw new InvalidOperationException($"Failed to get {nameof(Config)}");
-
-    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetService<SpacebarClientWellKnownResolverService>(testOutputHelper) ??
-                                                                                 throw new InvalidOperationException(
-                                                                                     $"Failed to get {nameof(SpacebarClientWellKnownResolverService)}");
-
-    private readonly SpacebarClientProviderService _clientProvider = fixture.GetService<SpacebarClientProviderService>(testOutputHelper) ??
-                                                                     throw new InvalidOperationException($"Failed to get {nameof(SpacebarClientProviderService)}");
-
-    private readonly UserAbstraction _userAbstraction = fixture.GetService<UserAbstraction>(testOutputHelper) ??
-                                                        throw new InvalidOperationException($"Failed to get {nameof(SpacebarClientProviderService)}");
+    private readonly Config _config = fixture.GetRequiredService<Config>(testOutputHelper);
+    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetRequiredService<SpacebarClientWellKnownResolverService>(testOutputHelper);
+    private readonly SpacebarClientProviderService _clientProvider = fixture.GetRequiredService<SpacebarClientProviderService>(testOutputHelper);
+    private readonly UserAbstraction _userAbstraction = fixture.GetRequiredService<UserAbstraction>(testOutputHelper);
 
     [Fact]
     public async Task CreateGuild() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
+        var client = await _userAbstraction.GetSharedUser();
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });
@@ -31,7 +24,7 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
     
     [Fact]
     public async Task GetChannels() {
-        var client = await _userAbstraction.GetFreshUser(withAutojoinGuilds: true);
+        var client = await _userAbstraction.GetSharedUser();
         var guild = await client.CreateGuild(new() {
             Name = "Test guild"
         });

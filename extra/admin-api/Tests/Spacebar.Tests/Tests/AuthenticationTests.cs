@@ -7,18 +7,14 @@ using Spacebar.Sdk.Core;
 using Spacebar.Tests.Extensions;
 using Spacebar.Tests.Fixtures;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
+using Xunit.Sdk;
 
 namespace Spacebar.Tests.Tests;
 
 public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture) {
-    private readonly Config _config = fixture.GetService<Config>(testOutputHelper) ?? throw new InvalidOperationException($"Failed to get {nameof(Config)}");
-
-    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetService<SpacebarClientWellKnownResolverService>(testOutputHelper) ??
-                                                                                 throw new InvalidOperationException(
-                                                                                     $"Failed to get {nameof(SpacebarClientWellKnownResolverService)}");
-
-    private readonly SpacebarClientProviderService _clientProvider = fixture.GetService<SpacebarClientProviderService>(testOutputHelper) ??
-                                                                     throw new InvalidOperationException($"Failed to get {nameof(SpacebarClientProviderService)}");
+    private readonly Config _config = fixture.GetRequiredService<Config>(testOutputHelper);
+    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetRequiredService<SpacebarClientWellKnownResolverService>(testOutputHelper);
+    private readonly SpacebarClientProviderService _clientProvider = fixture.GetRequiredService<SpacebarClientProviderService>(testOutputHelper);
 
     [Fact]
     public async Task RegisterUser() {
@@ -29,11 +25,13 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
             DateOfBirth = new(),
             Consent = true
         });
+        await Assert.HttpSuccess(res);
     }
 
     [Fact]
-    public async Task ConcurrentRegister50Users() {
-        var tasks = Enumerable.Range(0, 50).Select(async _ => {
+    public async Task RegisterUsersConcurrent() {
+        testOutputHelper.WriteLine($"Registering {_config.RegisterConcurrentCount} users concurrently...");
+        var tasks = Enumerable.Range(0, _config.RegisterConcurrentCount).Select(async _ => {
             var sw = Stopwatch.StartNew();
             var rr = new RegisterRequest() {
                 Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",

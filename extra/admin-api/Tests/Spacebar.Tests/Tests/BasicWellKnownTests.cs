@@ -6,10 +6,8 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 namespace Spacebar.Tests.Tests;
 
 public class BasicWellKnownTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture) {
-    private readonly Config _config = fixture.GetService<Config>(testOutputHelper) ?? throw new InvalidOperationException($"Failed to get {nameof(Config)}");
-
-    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetService<SpacebarClientWellKnownResolverService>(testOutputHelper) ??
-                                                                                 throw new InvalidOperationException($"Failed to get {nameof(Config)}");
+    private readonly Config _config = fixture.GetRequiredService<Config>(testOutputHelper);
+    private readonly SpacebarClientWellKnownResolverService _wellKnownResolver = fixture.GetRequiredService<SpacebarClientWellKnownResolverService>(testOutputHelper);
 
     [Fact]
     public async Task ValidateTestConfig() {
