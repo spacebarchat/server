@@ -31,6 +31,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
     [Fact]
     public async Task RegisterUsersConcurrent() {
         testOutputHelper.WriteLine($"Registering {_config.RegisterConcurrentCount} users concurrently...");
+        int i = 0;
         var tasks = Enumerable.Range(0, _config.RegisterConcurrentCount).Select(async _ => {
             var sw = Stopwatch.StartNew();
             var rr = new RegisterRequest() {
@@ -42,7 +43,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
             };
             
             var result = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr);
-            testOutputHelper.WriteLine($"Registered {rr.Email} in {sw.Elapsed}...");
+            testOutputHelper.WriteLine($"[{i++}] Registered {rr.Email} in {sw.Elapsed}...");
             return (rr, result);
         }).ToList();
         await Task.WhenAll(tasks);

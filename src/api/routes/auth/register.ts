@@ -23,6 +23,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
 import { MoreThan } from "typeorm";
 import { RegisterSchema } from "@spacebar/schemas";
+import { BcryptWorkerPool } from "../../../util/util/workers/bcrypt/BcryptWorkerPool";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -305,7 +306,8 @@ router.post(
                 });
             }
             // the salt is saved in the password refer to bcrypt docs
-            body.password = await bcrypt.hash(body.password, 12);
+            body.password = await BcryptWorkerPool.GetBcryptWorker().hashPassword(body.password, 12);
+            // body.password = await bcrypt.hash(body.password, 12);
         } else if (register.password.required) {
             throw FieldErrors({
                 password: {

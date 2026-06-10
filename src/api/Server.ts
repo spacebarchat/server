@@ -27,6 +27,7 @@ import { initInstance } from "./util/handlers/Instance";
 import { route } from "./util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
+import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -61,6 +62,7 @@ export class SpacebarServer extends Server {
         await ConnectionConfig.init();
         await initInstance();
         WebAuthn.init();
+        await BcryptWorkerPool.Init(4); // TODO: make configurable
 
         const logRequests = process.env["LOG_REQUESTS"] != undefined;
         if (logRequests) {
