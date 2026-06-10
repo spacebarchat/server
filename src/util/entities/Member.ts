@@ -312,17 +312,17 @@ export class Member extends BaseClassWithoutId {
             console.log("[Member.addToGuild]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
         };
 
-        const user = await User.getPublicUser(user_id);
-        logTrace("Get user");
-
-        const isBanned = await Ban.findOne({ where: { guild_id, user_id }, select: { id: true } });
+        const isBanned = await Ban.exists({ where: { guild_id, user_id } });
         if (isBanned) throw DiscordApiErrors.USER_BANNED;
-        logTrace("Check ban");
+        logTrace("Check bans");
+
+        if (await Member.exists({ where: { id: user_id, guild_id } })) throw new HTTPError("You are already a member of this guild", 400);
+        logTrace("Check existing membership");
 
         const { maxGuilds } = Config.get().limits.user;
         const guild_count = await Member.count({ where: { id: user_id } });
         if (guild_count >= maxGuilds) {
-            throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
+            throw new HTTPError(`You are at the ${maxGuilds} guild limit.`, 403);
         }
         logTrace("Enforce max guilds");
 
@@ -359,14 +359,6 @@ export class Member extends BaseClassWithoutId {
         ).map((member) => member.toPublicMember());
         logTrace("Calculate member preview");
 
-        if (
-            await Member.count({
-                where: { id: user.id, guild: { id: guild_id } },
-            })
-        )
-            throw new HTTPError("You are already a member of this guild", 400);
-        logTrace("Check existing membership");
-
         const member = {
             id: user_id,
             guild_id,
@@ -400,6 +392,9 @@ export class Member extends BaseClassWithoutId {
             },
             // Member.save is needed because else the roles relations wouldn't be updated
         });
+
+        const user = await User.getPublicUser(user_id);
+        logTrace("Get user");
 
         await Promise.all([
             newMember.save(),
