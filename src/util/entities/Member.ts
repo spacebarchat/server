@@ -434,16 +434,13 @@ export class Member extends BaseClassWithoutId {
         ]);
         logTrace("Save member info");
 
-        if (guild.system_channel_id) {
-            const channel = await Channel.findOneOrFail({
-                where: { id: guild.system_channel_id },
-            });
-
+        const welcomeChannelId = guild.system_channel_id;
+        if (welcomeChannelId && (await Channel.exists({ where: { id: welcomeChannelId } }))) {
             // Send a welcome message
             const message = Message.create({
                 type: 7,
                 guild_id: guild.id,
-                channel_id: guild.system_channel_id,
+                channel_id: welcomeChannelId,
                 author: user,
                 timestamp: new Date(),
                 reactions: [],
@@ -465,7 +462,7 @@ export class Member extends BaseClassWithoutId {
                     channel_id: message.channel_id,
                     data: publicMsg,
                 } satisfies MessageCreateEvent),
-                Channel.update({ id: channel.id }, { last_message_id: message.id }),
+                Channel.update({ id: welcomeChannelId }, { last_message_id: message.id }),
             ]);
             logTrace("Send welcome message");
         }
