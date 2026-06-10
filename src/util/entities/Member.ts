@@ -438,6 +438,7 @@ export class Member extends BaseClassWithoutId {
             const channel = await Channel.findOneOrFail({
                 where: { id: guild.system_channel_id },
             });
+
             // Send a welcome message
             const message = Message.create({
                 type: 7,
@@ -456,9 +457,7 @@ export class Member extends BaseClassWithoutId {
                 mention_everyone: false,
             });
 
-            channel.last_message_id = message.id;
-
-            await message.save();
+            await message.insert();
             const publicMsg = message.toJSON();
             await Promise.all([
                 emitEvent({
@@ -466,7 +465,7 @@ export class Member extends BaseClassWithoutId {
                     channel_id: message.channel_id,
                     data: publicMsg,
                 } satisfies MessageCreateEvent),
-                channel.save(),
+                Channel.update({ id: channel.id }, { last_message_id: message.id }),
             ]);
             logTrace("Send welcome message");
         }
