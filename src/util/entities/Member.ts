@@ -333,10 +333,14 @@ export class Member extends BaseClassWithoutId {
             relations: PublicGuildRelations,
             relationLoadStrategy: "query",
         });
+        const channelPositionsGuild = await Guild.findOneOrFail({
+            where: { id: guild_id },
+            select: { channel_ordering: true },
+        });
         logTrace("Find guild");
 
         for await (const channel of guild.channels) {
-            channel.position = await Channel.calculatePosition(channel.id, guild_id);
+            channel.position = await Channel.calculatePosition(channel.id, guild_id, channelPositionsGuild);
         }
         logTrace("Reorder channels");
 
@@ -359,21 +363,16 @@ export class Member extends BaseClassWithoutId {
         ).map((member) => member.toPublicMember());
         logTrace("Calculate member preview");
 
-        const member = {
+        const newMember = Member.create({
             id: user_id,
             guild_id,
             nick: undefined,
-            roles: [guild_id], // @everyone role
             joined_at: new Date(),
             deaf: false,
             mute: false,
             pending: false,
             bio: "",
-        };
-
-        const newMember = Member.create({
-            ...member,
-            roles: [Role.create({ id: guild_id })],
+            roles: [Role.create({ id: guild_id })], // @everyone role
             // read_state: {},
             settings: {
                 guild_id: null,
