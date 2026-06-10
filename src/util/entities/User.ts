@@ -18,7 +18,7 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, Config, Email, FieldErrors, Snowflake, trimSpecial } from "..";
+import { Channel, Config, Email, FieldErrors, Snowflake, Stopwatch, trimSpecial } from "..";
 import { Random } from "../util";
 import { BaseClass } from "./BaseClass";
 import { ConnectedAccount } from "./ConnectedAccount";
@@ -296,6 +296,13 @@ export class User extends BaseClass {
         req?: Request;
         bot?: boolean;
     }) {
+        const totalSw = Stopwatch.startNew();
+        const incSw = Stopwatch.startNew();
+        const logTrace = (...data: unknown[]) => {
+            if (process.env.LOG_VERBOSE_TRACES !== "true") return;
+            console.log("[User.register]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
+        };
+
         // trim special utf8 control characters -> Backspace, Newline, ...
         username = trimSpecial(username);
 
@@ -309,6 +316,7 @@ export class User extends BaseClass {
                 },
             });
         }
+        logTrace("Generate discriminator");
 
         // TODO: save date_of_birth
         // apparently discord doesn't save the date of birth and just calculate if nsfw is allowed
@@ -340,20 +348,24 @@ export class User extends BaseClass {
         });
 
         user.validate();
+        logTrace("Generate/validate user");
+
         await Promise.all([user.save(), settings.save()]);
+        logTrace("Save user");
 
         // send verification email if users aren't verified by default and we have an email
         if (!Config.get().defaults.user.verified && email) {
             await Email.sendVerifyEmail(user, email).catch((e) => {
                 console.error(`Failed to send verification email to ${user.tag}: ${e}`);
             });
+            logTrace("Send verify email");
         }
 
-        const { guild } = Config.get();
-        if (guild.autoJoin.enabled && !(bot && !guild.autoJoin.bots))
-            for (const guild of Config.get().guild.autoJoin.guilds || []) {
-                await Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e));
-            }
+        const { autoJoin } = Config.get().guild;
+        if (autoJoin.enabled && autoJoin.guilds.length > 0 && !(bot && !autoJoin.bots)) {
+            await Promise.all(autoJoin.guilds.map((guild) => Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e))));
+            logTrace("Autojoin", autoJoin.guilds.length, "guilds");
+        }
 
         return user;
     }

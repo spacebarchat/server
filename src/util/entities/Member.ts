@@ -21,7 +21,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTabl
 import { Ban, Channel, PublicGuildRelations } from ".";
 import { ReadyGuildDTO } from "../dtos";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
-import { Config, emitEvent, DiscordApiErrors } from "../util";
+import { Config, emitEvent, DiscordApiErrors, Stopwatch } from "../util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";
@@ -305,16 +305,26 @@ export class Member extends BaseClassWithoutId {
     }
 
     static async addToGuild(user_id: string, guild_id: string) {
+        const totalSw = Stopwatch.startNew();
+        const incSw = Stopwatch.startNew();
+        const logTrace = (...data: unknown[]) => {
+            if (process.env.LOG_VERBOSE_TRACES !== "true") return;
+            console.log("[Member.addToGuild]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
+        };
+
         const user = await User.getPublicUser(user_id);
-        const isBanned = await Ban.count({ where: { guild_id, user_id } });
-        if (isBanned) {
-            throw DiscordApiErrors.USER_BANNED;
-        }
+        logTrace("Get user");
+
+        const isBanned = await Ban.findOne({ where: { guild_id, user_id }, select: { id: true } });
+        if (isBanned) throw DiscordApiErrors.USER_BANNED;
+        logTrace("Check ban");
+
         const { maxGuilds } = Config.get().limits.user;
         const guild_count = await Member.count({ where: { id: user_id } });
         if (guild_count >= maxGuilds) {
             throw new HTTPError(`You are at the ${maxGuilds} server limit.`, 403);
         }
+        logTrace("Enforce max guilds");
 
         const guild = await Guild.findOneOrFail({
             where: {
@@ -323,12 +333,15 @@ export class Member extends BaseClassWithoutId {
             relations: PublicGuildRelations,
             relationLoadStrategy: "query",
         });
+        logTrace("Find guild");
 
         for await (const channel of guild.channels) {
             channel.position = await Channel.calculatePosition(channel.id, guild_id);
         }
+        logTrace("Reorder channels");
 
         const memberCount = await Member.count({ where: { guild_id } });
+        logTrace("Get member count");
 
         const memberPreview = (
             await Member.find({
@@ -344,6 +357,7 @@ export class Member extends BaseClassWithoutId {
                 take: 10,
             })
         ).map((member) => member.toPublicMember());
+        logTrace("Calculate member preview");
 
         if (
             await Member.count({
@@ -351,6 +365,7 @@ export class Member extends BaseClassWithoutId {
             })
         )
             throw new HTTPError("You are already a member of this guild", 400);
+        logTrace("Check existing membership");
 
         const member = {
             id: user_id,
@@ -417,6 +432,7 @@ export class Member extends BaseClassWithoutId {
                 user_id,
             } satisfies GuildCreateEvent),
         ]);
+        logTrace("Save member info");
 
         if (guild.system_channel_id) {
             const channel = await Channel.findOneOrFail({
@@ -452,6 +468,7 @@ export class Member extends BaseClassWithoutId {
                 } satisfies MessageCreateEvent),
                 channel.save(),
             ]);
+            logTrace("Send welcome message");
         }
     }
 

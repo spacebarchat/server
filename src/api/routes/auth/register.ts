@@ -17,7 +17,7 @@
 */
 
 import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan } from "@spacebar/util";
+import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan, Stopwatch } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server";
@@ -45,6 +45,13 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
+        const totalSw = Stopwatch.startNew();
+        const incSw = Stopwatch.startNew();
+        const logTrace = (...data: unknown[]) => {
+            if (process.env.LOG_VERBOSE_TRACES !== "true") return;
+            console.log("[Register]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
+        };
+
         const body = req.body as RegisterSchema;
         const { register, security, limits } = Config.get();
         const ip = req.ip!;
@@ -133,6 +140,8 @@ router.post(
             }
         }
 
+        logTrace("Basic checks");
+
         //region IP checks
         const cacheBlockedIp = (ip: string, reason: string) => {
             recentlyBlockedIps[ip] = {
@@ -206,6 +215,7 @@ router.post(
             }
         }
         //endregion
+        logTrace("IP checks");
 
         // TODO: gift_code_sku_id?
         // TODO: check password strength
@@ -241,6 +251,8 @@ router.post(
                 },
             });
         }
+
+        logTrace("Email checks");
 
         if (register.dateOfBirth.required && !body.date_of_birth) {
             throw FieldErrors({
@@ -302,6 +314,7 @@ router.post(
                 },
             });
         }
+        logTrace("Password checks");
 
         if (!regTokenUsed && !body.invite && (register.requireInvite || (register.guestsRequireInvite && !register.email))) {
             // require invite to register -> e.g. for organizations to send invites to their employees
@@ -330,6 +343,7 @@ router.post(
                 },
             });
         }
+        logTrace("Absolute register rate checks");
 
         const { maxUsername } = Config.get().limits.user;
         if (body.username.length > maxUsername) {
@@ -342,13 +356,16 @@ router.post(
         }
 
         const user = await User.register({ ...body, req });
+        logTrace("Register user");
 
         if (body.invite) {
             // await to fail if the invite doesn't exist (necessary for requireInvite to work properly) (username only signups are possible)
             await Invite.joinGuild(user.id, body.invite);
+            logTrace("Accept invite");
         }
 
-        return res.json({ token: await generateToken(user.id) });
+        res.json({ token: await generateToken(user.id) });
+        logTrace("Generate token");
     },
 );
 
