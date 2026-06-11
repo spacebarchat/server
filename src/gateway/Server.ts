@@ -19,12 +19,13 @@
 import http from "node:http";
 import { setInterval } from "node:timers";
 import ws from "ws";
-import { checkToken, Config, initDatabase, initEvent, Rights } from "@spacebar/util";
 import { randomString } from "@spacebar/api"; // TODO: move to util
-import { Connection, openConnections } from "./events/Connection";
-import { cleanupOnStartup } from "./util";
+import { initDatabase } from "@spacebar/database";
+import { checkToken, Config, initEvent, Rights } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
+import { Connection, openConnections } from "./events/Connection";
+import { cleanupOnStartup } from "./util";
 
 export class Server {
     public ws: ws.Server;

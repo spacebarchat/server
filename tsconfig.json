@@ -34,6 +34,8 @@
             //"*": ["./src/*"],
             "@spacebar/api": ["./src/api"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/api*": ["./src/api*"],
+            "@spacebar/database": ["./src/database"], // Required for stable tsc, typescript-go doesn't need this
+            "@spacebar/database*": ["./src/database*"],
             "@spacebar/extensions": ["./src/extensions"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/extensions*": ["./src/extensions*"],
             "@spacebar/gateway": ["./src/gateway"], // Required for stable tsc, typescript-go doesn't need this

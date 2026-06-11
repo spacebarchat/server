@@ -23,10 +23,11 @@ import morgan from "morgan";
 import express from "express";
 import { green, bold } from "picocolors";
 import * as Api from "@spacebar/api";
-import * as Gateway from "@spacebar/gateway";
-import * as Webrtc from "@spacebar/webrtc";
 import { CDNServer } from "@spacebar/cdn";
-import { Config, initDatabase } from "@spacebar/util";
+import { initDatabase } from "@spacebar/database";
+import * as Gateway from "@spacebar/gateway";
+import { Config } from "@spacebar/util";
+import * as Webrtc from "@spacebar/webrtc";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 

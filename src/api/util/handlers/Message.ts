@@ -16,7 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { HTTPError } from "lambert-server/HTTPError";
+import { Equal, In, Or } from "typeorm";
 import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
+import { getDatabase } from "@spacebar/database";
 import { mathLogBase, arrayDistributeSequentially } from "@spacebar/extensions";
 import {
     Application,
@@ -28,7 +31,6 @@ import {
     emitEvent,
     EVERYONE_MENTION,
     FieldErrors,
-    getDatabase,
     getPermission,
     getRights,
     Guild,
@@ -53,8 +55,6 @@ import {
     USER_MENTION,
     Webhook,
 } from "@spacebar/util";
-import { HTTPError } from "lambert-server/HTTPError";
-import { Equal, In, Or } from "typeorm";
 import {
     ActionRowComponent,
     BaseMessageComponents,

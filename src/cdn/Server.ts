@@ -19,12 +19,13 @@
 import path from "node:path";
 import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
-import { Attachment, Config, initDatabase, registerRoutes } from "@spacebar/util";
 import { CORS, BodyParser } from "@spacebar/api";
-import guildProfilesRoute from "./routes/guild-profiles";
-import { storage } from "./util";
+import { initDatabase } from "@spacebar/database";
+import { Attachment, Config, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
+import guildProfilesRoute from "./routes/guild-profiles";
+import { storage } from "./util";
 
 export type CDNServerOptions = ServerOptions;
 

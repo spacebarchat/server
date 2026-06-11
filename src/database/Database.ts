@@ -21,9 +21,9 @@ import path from "node:path";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
-import { ConfigEntity } from "../entities/Config";
+import { ConfigEntity } from "../util/entities/Config";
 import fs from "node:fs";
-import { ProcessLifecycle } from "./ProcessLifecycle";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class

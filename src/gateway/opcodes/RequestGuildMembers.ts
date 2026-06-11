@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, DateBuilder, getDatabase, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
-import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
-import { check } from "./instanceOf";
 import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
+import { getDatabase } from "@spacebar/database";
+import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
+import { Config, DateBuilder, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { check } from "./instanceOf";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();

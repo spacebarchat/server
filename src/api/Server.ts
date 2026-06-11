@@ -21,13 +21,14 @@ import { Request, Response, Router } from "express";
 import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
 import { red } from "picocolors";
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase, getRevInfoOrFail } from "@spacebar/util";
-import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
-import { initInstance } from "./util/handlers/Instance";
-import { route } from "./util";
+import { getDatabase, initDatabase } from "@spacebar/database";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initEvent, registerRoutes, getRevInfoOrFail } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
+import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
+import { initInstance } from "./util/handlers/Instance";
+import { route } from "./util";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");

@@ -26,7 +26,7 @@ config({ quiet: true });
 
 process.env.DB_LOGGING = "true";
 
-import { closeDatabase, initDatabase } from "@spacebar/util";
+import { closeDatabase, initDatabase } from "@spacebar/database";
 
 async function main() {
     let success = false;

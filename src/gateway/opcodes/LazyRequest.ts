@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { arrayPartition } from "@spacebar/extensions";
-import { getDatabase, getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, getMostRelevantSession } from "@spacebar/util";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import murmur from "murmurhash-js/murmurhash3_gc";
-import { check } from "./instanceOf";
+import { getDatabase } from "@spacebar/database";
+import { arrayPartition } from "@spacebar/extensions";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import { LazyRequestSchema } from "@spacebar/schemas";
+import { getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, getMostRelevantSession } from "@spacebar/util";
+import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
