@@ -62,7 +62,7 @@ export class SpacebarServer extends Server {
         await ConnectionConfig.init();
         await initInstance();
         WebAuthn.init();
-        await BcryptWorkerPool.Init(4); // TODO: make configurable
+        // await BcryptWorkerPool.Init(8); // TODO: make configurable
 
         const logRequests = process.env["LOG_REQUESTS"] != undefined;
         if (logRequests) {

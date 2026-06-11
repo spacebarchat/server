@@ -58,7 +58,7 @@ class BcryptWorker {
                 if (msg.type == "hash" && msg.requestId === requestId) {
                     res((msg as BcryptHashMessage).password);
                     this.worker.off("message", handler);
-                    console.log("[BcryptWorker] Got response to hashPassword in", sw.elapsed().toString());
+                    if (sw.elapsed().totalMilliseconds > 5000) console.log("[BcryptWorker] Got slow response to hashPassword in", sw.elapsed().toString());
                 }
             };
             this.worker.on("message", handler);
@@ -86,7 +86,7 @@ interface BcryptHashVerify extends BcryptWorkerMessage {
 //region Worker implementation
 if (!isMainThread) {
     parentPort!.on("message", async (msg: BcryptWorkerMessage) => {
-        console.log("[BcryptWorker] Received", msg.type, "message");
+        // console.log("[BcryptWorker] Received", msg.type, "message");
         switch (msg.type) {
             case "hash":
                 parentPort?.postMessage({

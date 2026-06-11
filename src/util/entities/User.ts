@@ -363,7 +363,7 @@ export class User extends BaseClass {
 
         const { autoJoin } = Config.get().guild;
         if (autoJoin.enabled && autoJoin.guilds.length > 0 && !(bot && !autoJoin.bots)) {
-            await Promise.all(autoJoin.guilds.map((guild) => Member.addToGuild(user.id, guild).catch((e) => console.error("[Autojoin]", e))));
+            await Promise.all(autoJoin.guilds.map((guild) => Member.addToGuild(user.id, guild, true).catch((e) => console.error("[Autojoin]", e))));
             logTrace("Autojoin", autoJoin.guilds.length, "guilds");
         }
 

@@ -304,7 +304,7 @@ export class Member extends BaseClassWithoutId {
         ]);
     }
 
-    static async addToGuild(user_id: string, guild_id: string) {
+    static async addToGuild(user_id: string, guild_id: string, isRegistration: boolean = false) {
         const totalSw = Stopwatch.startNew();
         const incSw = Stopwatch.startNew();
         const logTrace = (...data: unknown[]) => {
@@ -312,19 +312,23 @@ export class Member extends BaseClassWithoutId {
             console.log("[Member.addToGuild]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
         };
 
-        const isBanned = await Ban.exists({ where: { guild_id, user_id } });
-        if (isBanned) throw DiscordApiErrors.USER_BANNED;
-        logTrace("Check bans");
+        if (!isRegistration) {
+            const isBanned = Ban.exists({ where: { guild_id, user_id } });
+            const isMember = Member.exists({ where: { id: user_id, guild_id } });
 
-        if (await Member.exists({ where: { id: user_id, guild_id } })) throw new HTTPError("You are already a member of this guild", 400);
-        logTrace("Check existing membership");
+            if (await isBanned) throw DiscordApiErrors.USER_BANNED;
+            logTrace("Check bans");
 
-        const { maxGuilds } = Config.get().limits.user;
-        const guild_count = await Member.count({ where: { id: user_id } });
-        if (guild_count >= maxGuilds) {
-            throw new HTTPError(`You are at the ${maxGuilds} guild limit.`, 403);
+            if (await isMember) throw new HTTPError("You are already a member of this guild", 400);
+            logTrace("Check existing membership");
+
+            const { maxGuilds } = Config.get().limits.user;
+            const guild_count = await Member.count({ where: { id: user_id } });
+            if (guild_count >= maxGuilds) {
+                throw new HTTPError(`You are at the ${maxGuilds} guild limit.`, 403);
+            }
+            logTrace("Enforce max guilds");
         }
-        logTrace("Enforce max guilds");
 
         const guild = await Guild.findOneOrFail({
             where: {
@@ -338,30 +342,6 @@ export class Member extends BaseClassWithoutId {
             select: { channel_ordering: true },
         });
         logTrace("Find guild");
-
-        for await (const channel of guild.channels) {
-            channel.position = await Channel.calculatePosition(channel.id, guild_id, channelPositionsGuild);
-        }
-        logTrace("Reorder channels");
-
-        const memberCount = await Member.count({ where: { guild_id } });
-        logTrace("Get member count");
-
-        const memberPreview = (
-            await Member.find({
-                where: {
-                    guild_id,
-                    user: {
-                        sessions: {
-                            status: Not("invisible" as const), // lol typescript?
-                        },
-                    },
-                },
-                relations: { user: true, roles: true },
-                take: 10,
-            })
-        ).map((member) => member.toPublicMember());
-        logTrace("Calculate member preview");
 
         const newMember = Member.create({
             id: user_id,
@@ -392,11 +372,41 @@ export class Member extends BaseClassWithoutId {
             // Member.save is needed because else the roles relations wouldn't be updated
         });
 
+        let memberCount = 0;
+        let memberPreview: PublicMember[] = [];
+        if (!isRegistration) {
+            for await (const channel of guild.channels) {
+                channel.position = await Channel.calculatePosition(channel.id, guild_id, channelPositionsGuild);
+            }
+
+            logTrace("Reorder channels");
+
+            memberCount = isRegistration ? 0 : await Member.count({ where: { guild_id } });
+            logTrace("Get member count");
+
+            memberPreview = (
+                await Member.find({
+                    where: {
+                        guild_id,
+                        user: {
+                            id: Not(user_id),
+                            sessions: {
+                                status: Not("invisible" as const), // lol typescript?
+                            },
+                        },
+                    },
+                    relations: { user: true, roles: true },
+                    take: 10,
+                })
+            ).map((member) => member.toPublicMember());
+            logTrace("Calculate member preview");
+        }
+
         const user = await User.getPublicUser(user_id);
         logTrace("Get user");
 
         await Promise.all([
-            newMember.save(),
+            newMember.save(), // TODO: can we somehow insert the roles manually? We have no entity for this... Would skip a few select's
             Guild.increment({ id: guild_id }, "member_count", 1),
             emitEvent({
                 event: "GUILD_MEMBER_ADD",
@@ -408,23 +418,25 @@ export class Member extends BaseClassWithoutId {
                 guild_id,
                 origin: "util/entities/Member.ts:377/addToGuild(user_id, guild_id)",
             } satisfies GuildMemberAddEvent),
-            emitEvent({
-                event: "GUILD_CREATE",
-                data: {
-                    ...new ReadyGuildDTO(guild).toJSON(),
-                    members: [...memberPreview, { ...newMember.toPublicMember(), user }],
-                    member_count: memberCount + 1,
-                    guild_hashes: {},
-                    guild_scheduled_events: [],
-                    joined_at: newMember.joined_at,
-                    presences: [],
-                    stage_instances: [],
-                    threads: [],
-                    embedded_activities: [],
-                    voice_states: guild.voice_states.map((x) => x.toPublicVoiceState()),
-                },
-                user_id,
-            } satisfies GuildCreateEvent),
+            isRegistration
+                ? null
+                : emitEvent({
+                      event: "GUILD_CREATE",
+                      data: {
+                          ...new ReadyGuildDTO(guild).toJSON(),
+                          members: [...memberPreview, { ...newMember.toPublicMember(), user }],
+                          member_count: memberCount + 1,
+                          guild_hashes: {},
+                          guild_scheduled_events: [],
+                          joined_at: newMember.joined_at,
+                          presences: [],
+                          stage_instances: [],
+                          threads: [],
+                          embedded_activities: [],
+                          voice_states: guild.voice_states.map((x) => x.toPublicVoiceState()),
+                      },
+                      user_id,
+                  } satisfies GuildCreateEvent),
         ]);
         logTrace("Save member info");
 
@@ -448,13 +460,12 @@ export class Member extends BaseClassWithoutId {
                 mention_everyone: false,
             });
 
-            await message.insert();
-            const publicMsg = message.toJSON();
             await Promise.all([
+                message.insert(),
                 emitEvent({
                     event: "MESSAGE_CREATE",
                     channel_id: message.channel_id,
-                    data: publicMsg,
+                    data: message.toJSON(),
                 } satisfies MessageCreateEvent),
                 Channel.update({ id: welcomeChannelId }, { last_message_id: message.id }),
             ]);
