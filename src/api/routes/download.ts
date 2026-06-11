@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { FieldErrors, ClientRelease } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { ClientRelease } from "@spacebar/database";
+import { FieldErrors } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 

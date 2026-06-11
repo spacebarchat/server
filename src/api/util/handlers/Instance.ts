@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Session, TimeSpan } from "@spacebar/util";
+import { Session } from "@spacebar/database";
+import { TimeSpan } from "@spacebar/util";
 import { setInterval } from "node:timers";
 
 export async function initInstance() {

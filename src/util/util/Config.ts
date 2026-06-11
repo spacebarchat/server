@@ -20,7 +20,7 @@ import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import { OrmUtils } from "..";
 import { ConfigValue } from "../config";
-import { ConfigEntity } from "../entities";
+import { ConfigEntity } from "../../database/entities";
 import { JsonValue } from "@protobuf-ts/runtime";
 import { bold, red, redBright } from "picocolors";
 

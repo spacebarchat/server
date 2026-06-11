@@ -18,9 +18,10 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Channel, Config, Email, FieldErrors, Snowflake, Stopwatch, trimSpecial } from "..";
-import { Random } from "../util";
+import { Config, Email, FieldErrors, Snowflake, Stopwatch, trimSpecial } from "@spacebar/util";
+import { Random } from "@spacebar/util/util/Random";
 import { BaseClass } from "./BaseClass";
+import { Channel } from "./Channel";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
 import { Relationship } from "./Relationship";
@@ -38,7 +39,7 @@ import {
     PublicUserProjection,
     UserPrivate,
 } from "@spacebar/schemas";
-import { JsonNumber } from "../util/Decorators";
+import { JsonNumber } from "../../util/util/Decorators";
 
 @Entity({
     name: "users",

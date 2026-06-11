@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, ChannelRecipientAddEvent, DiscordApiErrors, DmChannelDTO, emitEvent, Recipient, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Channel, Recipient, User } from "@spacebar/database";
+import { ChannelRecipientAddEvent, DiscordApiErrors, DmChannelDTO, emitEvent } from "@spacebar/util";
 import { ChannelType, PublicUserProjection } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

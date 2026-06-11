@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, FieldErrors, Member, Message, Snowflake, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Between, FindManyOptions, FindOptionsWhere, In, LessThan, Like, MoreThan } from "typeorm";
+import { route } from "@spacebar/api";
+import { Channel, Member, Message } from "@spacebar/database";
+import { FieldErrors, Snowflake, getPermission } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 

@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { emitEvent, GuildRoleDeleteEvent, GuildRoleUpdateEvent, handleFile, Member, Role } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Member, Role } from "@spacebar/database";
+import { emitEvent, GuildRoleDeleteEvent, GuildRoleUpdateEvent, handleFile } from "@spacebar/util";
 import { RoleModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

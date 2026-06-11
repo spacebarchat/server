@@ -18,11 +18,12 @@
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
-import { route } from "@spacebar/api";
-import { Channel, FieldErrors, Message, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { FindManyOptions, Like } from "typeorm";
+import { route } from "@spacebar/api";
+import { Channel, Message } from "@spacebar/database";
+import { FieldErrors, getPermission } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 

@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Emoji, GuildEmojisUpdateEvent, Member, Snowflake, emitEvent, handleFile } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Emoji, Member } from "@spacebar/database";
+import { Config, DiscordApiErrors, GuildEmojisUpdateEvent, Snowflake, emitEvent, handleFile } from "@spacebar/util";
 import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

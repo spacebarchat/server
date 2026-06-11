@@ -16,26 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-    Ban,
-    EVENTEnum,
-    EventOpts,
-    getPermission,
-    listenEvent,
-    ListenEventOpts,
-    Member,
-    Message,
-    NewUrlUserSignatureData,
-    Permissions,
-    RabbitMQ,
-    Recipient,
-    Relationship,
-} from "@spacebar/util";
-import { CLOSECODES, OPCODES, Send } from "../util";
-import { WebSocket } from "@spacebar/gateway";
 import { Channel as AMQChannel } from "amqplib";
-import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { bgRedBright } from "picocolors";
+import { Ban, Member, Message, Recipient, Relationship } from "@spacebar/database";
+import { EVENTEnum, EventOpts, getPermission, listenEvent, ListenEventOpts, NewUrlUserSignatureData, Permissions, RabbitMQ } from "@spacebar/util";
+import { WebSocket } from "@spacebar/gateway";
+import { PublicMember, RelationshipType } from "@spacebar/schemas";
+import { CLOSECODES, OPCODES, Send } from "../util";
 
 // TODO: close connection on Invalidated Token
 // TODO: check intent

@@ -20,46 +20,48 @@ import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import { arrayGroupBy } from "@spacebar/extensions";
-import { getDatabase } from "@spacebar/database";
 import {
+    getDatabase,
     Application,
     Channel,
+    Emoji,
+    Guild,
+    Member,
+    MemberPrivateProjection,
+    ReadState,
+    Recipient,
+    Relationship,
+    Role,
+    Session,
+    Sticker,
+    ThreadMember,
+    UserSettings,
+    UserSettingsProtos,
+    VoiceState,
+} from "@spacebar/database";
+import {
     checkToken,
     Config,
     CurrentTokenFormatVersion,
     ElapsedTime,
     emitEvent,
-    Emoji,
     EVENTEnum,
     generateToken,
-    Guild,
     GuildOrUnavailable,
     Intents,
-    Member,
-    MemberPrivateProjection,
     OPCodes,
     PresenceUpdateEvent,
-    ReadState,
     ReadyEventData,
     ReadyGuildDTO,
     ReadyUserGuildSettingsEntries,
-    Recipient,
-    Relationship,
-    Role,
-    Session,
     SessionsReplace,
-    Sticker,
     Stopwatch,
-    ThreadMember,
     timeFunction,
     timePromise,
     TraceNode,
     TraceRoot,
-    UserSettings,
-    UserSettingsProtos,
-    VoiceState,
 } from "@spacebar/util";
-import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
+import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
 import { randomString } from "@spacebar/api";
 import { check } from "./instanceOf";
 

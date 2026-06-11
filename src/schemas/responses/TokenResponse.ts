@@ -17,7 +17,7 @@
 */
 
 // TODO: remove dependency on entities
-import { BackupCode, UserSettings } from "@spacebar/util";
+import { BackupCode, UserSettings } from "@spacebar/database";
 
 export interface TokenResponse {
     token: string;

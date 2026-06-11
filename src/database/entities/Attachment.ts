@@ -17,9 +17,9 @@
 */
 
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Config, deleteFile } from "../util";
+import { Config, deleteFile } from "../../util/util";
 import { BaseClass } from "./BaseClass";
-import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "../Signing";
+import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "../../util/Signing";
 import { PublicAttachment } from "../../schemas/api/messages/Attachments";
 
 @Entity({

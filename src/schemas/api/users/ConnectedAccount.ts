@@ -17,6 +17,6 @@
 */
 
 //TODO: remove entity import
-import { ConnectedAccount } from "@spacebar/util";
+import { ConnectedAccount } from "@spacebar/database";
 
 export type PublicConnectedAccount = Pick<ConnectedAccount, "name" | "type" | "verified">;

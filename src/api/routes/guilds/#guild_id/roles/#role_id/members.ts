@@ -17,9 +17,10 @@
 */
 
 import { Router, Request, Response } from "express";
-import { arrayPartition } from "@spacebar/extensions";
-import { DiscordApiErrors, Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
+import { Member } from "@spacebar/database";
+import { arrayPartition } from "@spacebar/extensions";
+import { DiscordApiErrors } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 

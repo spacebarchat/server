@@ -16,15 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, FieldErrors, User, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
-import bcrypt from "bcrypt";
 import crypto from "node:crypto";
+import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { User } from "@spacebar/database";
+import { Config, FieldErrors, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
 import { LoginSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
-export default router;
 
 router.post(
     "/",
@@ -197,3 +197,5 @@ router.post(
  * @returns {"token": "USERTOKEN", "settings": {"locale": "en", "theme": "dark"}}
 
  */
+
+export default router;

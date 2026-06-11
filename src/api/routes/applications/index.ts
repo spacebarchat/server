@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Application, Config, createAppBotUser, trimSpecial } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Application } from "@spacebar/database";
+import { Config, createAppBotUser, trimSpecial } from "@spacebar/util";
 import { ApplicationCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

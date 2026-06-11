@@ -16,16 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, Message, MessageDeleteBulkEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
+import { route } from "@spacebar/api";
+import { Channel, Message } from "@spacebar/database";
+import { MessageDeleteBulkEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { isTextChannel, PurgeSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
-
-export default router;
 
 /**
 TODO: apply the delete bit by bit to prevent client and database stress
@@ -99,3 +98,5 @@ router.post(
         res.sendStatus(204);
     },
 );
+
+export default router;

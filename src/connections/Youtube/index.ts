@@ -16,8 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
+import { ConnectedAccount } from "@spacebar/database";
+import { Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
+
 import { GenericOAuthSettings as YoutubeSettings } from "../GenericOAuthSettings";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
 

@@ -17,11 +17,11 @@
 */
 
 import murmur from "murmurhash-js/murmurhash3_gc";
-import { getDatabase } from "@spacebar/database";
+import { getDatabase, Member, Role, Session, User, Channel } from "@spacebar/database";
 import { arrayPartition } from "@spacebar/extensions";
 import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
 import { LazyRequestSchema } from "@spacebar/schemas";
-import { getPermission, listenEvent, Member, Role, Session, User, Presence, Channel, Permissions, getMostRelevantSession } from "@spacebar/util";
+import { getPermission, listenEvent, Presence, Permissions, getMostRelevantSession } from "@spacebar/util";
 import { check } from "./instanceOf";
 
 // TODO: only show roles/members that have access to this channel

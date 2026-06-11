@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, getRights, Guild, Member, Message, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Guild, Member, Message, User } from "@spacebar/database";
+import { Config, getRights } from "@spacebar/util";
 const router = Router({ mergeParams: true });
 
 router.get(

@@ -16,10 +16,11 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { Application, ApplicationCommand, Member, Snowflake } from "@spacebar/util";
 import { IsNull } from "typeorm";
+import { route } from "@spacebar/api";
+import { Application, ApplicationCommand, Member } from "@spacebar/database";
+import { Snowflake } from "@spacebar/util";
 import { ApplicationCommandSchema, ApplicationCommandType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

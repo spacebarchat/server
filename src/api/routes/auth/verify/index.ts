@@ -16,9 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, verifyCaptcha } from "@spacebar/api";
-import { checkToken, Config, FieldErrors, generateToken, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { User } from "@spacebar/database";
+import { checkToken, Config, FieldErrors, generateToken } from "@spacebar/util";
+
 const router = Router({ mergeParams: true });
 
 async function getToken(user: User) {

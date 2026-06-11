@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@spacebar/gateway";
-import { emitEvent, Member, PresenceUpdateEvent, Session, SessionsReplace, User, VoiceState, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
 import { randomString } from "@spacebar/api";
+import { Member, Session, User, VoiceState } from "@spacebar/database";
+import { WebSocket } from "@spacebar/gateway";
+import { emitEvent, PresenceUpdateEvent, SessionsReplace, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
 import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {

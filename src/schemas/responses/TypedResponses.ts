@@ -20,7 +20,7 @@
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
 // TODO: remove entity imports
-import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Message, Role, Template, Webhook } from "@spacebar/util";
+import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Message, Role, Template, Webhook } from "@spacebar/database";
 import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
 import { GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
 

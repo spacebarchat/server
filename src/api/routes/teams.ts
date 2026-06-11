@@ -17,9 +17,9 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
-import { Team, TeamMember, User } from "@spacebar/util";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Team, TeamMember, User } from "@spacebar/database";
 import { TeamCreateSchema, TeamMemberRole, TeamMemberState } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

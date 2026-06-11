@@ -17,6 +17,6 @@
 */
 
 // TODO: remove entity import
-import { Team } from "@spacebar/util";
+import { Team } from "@spacebar/database";
 
 export type TeamListResponse = Team[];

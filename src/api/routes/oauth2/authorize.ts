@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { ApiError, Application, DiscordApiErrors, FieldErrors, Member, Permissions, User, getPermission, Role } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Application, Member, Role, User } from "@spacebar/database";
+import { ApiError, DiscordApiErrors, FieldErrors, Permissions, getPermission } from "@spacebar/util";
 import { ApplicationAuthorizeSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 // TODO: scopes, other oauth types

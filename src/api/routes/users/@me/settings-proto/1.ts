@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, OrmUtils, UserSettingsProtos } from "@spacebar/util";
 import { PreloadedUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
+import { route } from "@spacebar/api";
+import { UserSettingsProtos } from "@spacebar/database";
+import { emitEvent, OrmUtils } from "@spacebar/util";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

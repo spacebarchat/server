@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Intents, ListenEventOpts, Permissions, Session } from "@spacebar/util";
 import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
-import { Capabilities } from "./Capabilities";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
+import { Session } from "@spacebar/database";
+import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import { QoSPayload } from "../opcodes/Heartbeat";
+import { Capabilities } from "./Capabilities";
 
 export interface WebSocket extends WS {
     recentTransactions: string[];

@@ -27,7 +27,7 @@ import { Guild } from "./Guild";
 import { Webhook } from "./Webhook";
 import { Sticker } from "./Sticker";
 import { Attachment } from "./Attachment";
-import { NewUrlUserSignatureData } from "../Signing";
+import { NewUrlUserSignatureData } from "../../util/Signing";
 import {
     ApplicationCommandType,
     BaseMessageComponents,
@@ -44,7 +44,7 @@ import {
     InteractionType,
 } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
-import { JsonRemoveEmpty } from "../util/Decorators";
+import { JsonRemoveEmpty } from "../../util/util/Decorators";
 
 @Entity({
     name: "messages",

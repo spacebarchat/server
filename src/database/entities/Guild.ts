@@ -18,7 +18,7 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { arrayRemove } from "@spacebar/extensions";
-import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
+import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "@spacebar/util";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";

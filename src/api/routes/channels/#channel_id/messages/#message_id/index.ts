@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Request, Response, Router } from "express";
+import { HTTPError } from "lambert-server/HTTPError";
+import multer from "multer";
+import { handleMessage, postHandleMessage, route } from "@spacebar/api";
+import { Attachment, Channel, Message } from "@spacebar/database";
 import {
-    Attachment,
-    Channel,
-    Message,
     MessageCreateEvent,
     MessageDeleteEvent,
     MessageUpdateEvent,
@@ -31,10 +33,6 @@ import {
     uploadFile,
     NewUrlUserSignatureData,
 } from "@spacebar/util";
-import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server/HTTPError";
-import multer from "multer";
-import { handleMessage, postHandleMessage, route } from "@spacebar/api";
 import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { DiscordApiErrors, Guild, Member } from "@spacebar/util";
-import { Request, Response, Router } from "express";
-import { makeBadge } from "badge-maker";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
+import { makeBadge } from "badge-maker";
+import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Guild, Member } from "@spacebar/database";
+import { DiscordApiErrors } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 

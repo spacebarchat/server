@@ -16,9 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { ApiError, ConnectedAccount, ConnectionStore, DiscordApiErrors, FieldErrors, RefreshableConnection } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { ConnectedAccount } from "@spacebar/database";
+import { ApiError, ConnectionStore, DiscordApiErrors, FieldErrors, RefreshableConnection } from "@spacebar/util";
+
 const router = Router({ mergeParams: true });
 
 // TODO: this route is only used for spotify, twitch, and youtube. (battlenet seems to be able to PUT, maybe others also)

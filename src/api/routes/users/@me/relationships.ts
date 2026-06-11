@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Relationship, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Relationship, User } from "@spacebar/database";
+import { Config, DiscordApiErrors, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, emitEvent } from "@spacebar/util";
 import { PublicUserProjection, RelationshipType, RelationshipPatchSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

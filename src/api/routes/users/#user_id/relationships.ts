@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { User } from "@spacebar/util";
+import { User } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 import { UserRelationsResponse } from "@spacebar/schemas";
 

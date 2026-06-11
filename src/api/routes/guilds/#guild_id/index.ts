@@ -16,23 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import {
-    Channel,
-    DiscordApiErrors,
-    Guild,
-    GuildUpdateEvent,
-    Member,
-    Permissions,
-    SpacebarApiErrors,
-    emitEvent,
-    getPermission,
-    getRights,
-    handleFile,
-    Config,
-} from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Channel, Guild, Member } from "@spacebar/database";
+import { DiscordApiErrors, GuildUpdateEvent, Permissions, SpacebarApiErrors, emitEvent, getPermission, getRights, handleFile } from "@spacebar/util";
 import { GuildCreateResponse, GuildUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

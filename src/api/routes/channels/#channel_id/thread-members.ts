@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, emitEvent, Member, Permissions, ThreadCreateEvent, ThreadDeleteEvent, ThreadMember, ThreadMemberFlags, ThreadMembersUpdateEvent } from "@spacebar/util";
-import { ChannelType, Snowflake } from "@spacebar/schemas";
-
 import { Request, Response, Router } from "express";
 import { MoreThan } from "typeorm";
+import { route } from "@spacebar/api";
+import { Channel, Member, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
+import { emitEvent, Permissions, ThreadCreateEvent, ThreadDeleteEvent, ThreadMembersUpdateEvent } from "@spacebar/util";
+import { ChannelType, Snowflake } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

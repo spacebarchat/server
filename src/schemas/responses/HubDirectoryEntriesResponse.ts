@@ -17,7 +17,7 @@
 */
 
 // TODO: remove dependency on entities
-import { Guild } from "@spacebar/util";
+import { Guild } from "@spacebar/database";
 
 export interface HubDirectoryEntry {
     author_id: string;

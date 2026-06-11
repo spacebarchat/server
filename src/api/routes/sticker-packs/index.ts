@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { StickerPack } from "@spacebar/util";
+import { StickerPack } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router({ mergeParams: true });

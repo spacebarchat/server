@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Guild, Member, User, UserSettingsProtos } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Guild, Member, User, UserSettingsProtos } from "@spacebar/database";
 
 const router = Router({ mergeParams: true });
 

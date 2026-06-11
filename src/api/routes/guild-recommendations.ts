@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config, Guild } from "@spacebar/util";
-
-import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { ArrayContains } from "typeorm";
+import { route } from "@spacebar/api";
+import { Guild } from "@spacebar/database";
+import { Config } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 

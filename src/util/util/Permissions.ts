@@ -2,7 +2,7 @@
 // Apache License Version 2.0 Copyright 2015 - 2021 Amish Shah
 // @fc-license-skip
 
-import { Channel, Guild, Member, Role, User } from "../entities";
+import { Channel, Guild, Member, Role, User } from "../../database/entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
 import { HTTPError } from "lambert-server/HTTPError";
 import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, UserFlags } from "@spacebar/schemas";

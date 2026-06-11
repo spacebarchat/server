@@ -17,7 +17,7 @@
 */
 
 // TODO: remove dependency on entities
-import { User, Webhook } from "@spacebar/util";
+import { User, Webhook } from "@spacebar/database";
 
 export interface WebhookCreateResponse {
     user: User;

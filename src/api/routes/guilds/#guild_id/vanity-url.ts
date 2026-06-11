@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, Guild, Invite } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Channel, Guild, Invite } from "@spacebar/database";
 import { ChannelType, VanityUrlSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

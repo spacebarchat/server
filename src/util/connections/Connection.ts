@@ -17,7 +17,7 @@
 */
 
 import crypto from "node:crypto";
-import { ConnectedAccount } from "../entities";
+import { ConnectedAccount } from "../../database/entities";
 import { ConnectedAccountSchema, ConnectionCallbackSchema } from "@spacebar/schemas";
 import { Config, DiscordApiErrors } from "../util";
 

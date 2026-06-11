@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, emitEvent, Emoji, getPermission, getRights, Guild, GuildMemberUpdateEvent, handleFile, Member, Role, Sticker } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
+import { Config, DiscordApiErrors, emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile } from "@spacebar/util";
 import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

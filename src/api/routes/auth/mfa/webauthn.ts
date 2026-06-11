@@ -16,12 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { generateToken, SecurityKey, User, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { SecurityKey, User } from "@spacebar/database";
+import { generateToken, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { WebAuthnTotpSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 function toArrayBuffer(buf: Buffer) {

@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { BackupCode, User, generateToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { verifyToken } from "node-2fa";
+import { route } from "@spacebar/api";
+import { BackupCode, User } from "@spacebar/database";
+import { generateToken } from "@spacebar/util";
 import { TotpDisableSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

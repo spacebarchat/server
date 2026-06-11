@@ -16,14 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { sleep, arrayDistinctBy, arrayGroupBy } from "@spacebar/extensions";
-import { Config, EmbedCache, emitEvent, Message, MessageUpdateEvent, normalizeUrl, OrmUtils } from "@spacebar/util";
-import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 import * as cheerio from "cheerio";
 import crypto from "node:crypto";
 import { yellow } from "picocolors";
 import probe from "probe-image-size";
 import { FindOptionsWhere, In } from "typeorm";
+import { EmbedCache, Message } from "@spacebar/database";
+import { sleep, arrayDistinctBy, arrayGroupBy } from "@spacebar/extensions";
+import { Config, emitEvent, MessageUpdateEvent, normalizeUrl, OrmUtils } from "@spacebar/util";
+import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 
 export function getDefaultFetchOptions(): RequestInit {
     return {

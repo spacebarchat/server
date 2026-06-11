@@ -18,10 +18,10 @@
 
 import { HTTPError } from "lambert-server/HTTPError";
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, Not, PrimaryGeneratedColumn, RelationId } from "typeorm";
-import { Ban, Channel, PublicGuildRelations } from ".";
-import { ReadyGuildDTO } from "../dtos";
-import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../interfaces";
-import { Config, emitEvent, DiscordApiErrors, Stopwatch } from "../util";
+import { Ban, Channel, PublicGuildRelations } from "./index";
+import { ReadyGuildDTO } from "../../util/dtos";
+import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../../util/interfaces";
+import { Config, emitEvent, DiscordApiErrors, Stopwatch } from "../../util/util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";

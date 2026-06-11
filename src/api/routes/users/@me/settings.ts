@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { User, UserSettings, emitEvent, Session, PresenceUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Session, User, UserSettings } from "@spacebar/database";
+import { emitEvent, PresenceUpdateEvent } from "@spacebar/util";
 import { UserSettingsUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

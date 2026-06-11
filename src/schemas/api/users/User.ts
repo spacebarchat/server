@@ -20,7 +20,7 @@ import { ConnectedAccountSchema, Snowflake, UserSettingsSchema } from "@spacebar
 // TODO: maybe move the one thing this depends on to
 import { BitField } from "@spacebar/util/util";
 // TODO: remove entity import
-import { Relationship, Session } from "@spacebar/util/entities";
+import { Relationship, Session } from "@spacebar/database/entities";
 
 interface UserEntityPleaseRewriteThankYou {
     id: Snowflake;

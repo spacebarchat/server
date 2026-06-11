@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, Message, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Message, User } from "@spacebar/database";
+import { Config } from "@spacebar/util";
 import { DmMessagesResponseSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 router.get(

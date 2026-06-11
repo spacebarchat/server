@@ -15,7 +15,8 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { Stream } from "@spacebar/util";
+
+import { Stream } from "@spacebar/database";
 import { mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 import type { WebRtcClient } from "@spacebarchat/spacebar-webrtc-types";
 import { validateSchema, VoiceVideoSchema } from "@spacebar/schemas";

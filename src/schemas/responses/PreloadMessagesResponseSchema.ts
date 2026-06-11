@@ -17,6 +17,6 @@
 */
 
 // TODO: remove entity import
-import { Message } from "@spacebar/util";
+import { Message } from "@spacebar/database";
 
 export type PreloadMessagesResponseSchema = Message[];

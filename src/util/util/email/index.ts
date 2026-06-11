@@ -18,7 +18,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { User } from "../../entities";
+import { User } from "../../../database/entities";
 import { Config } from "../Config";
 import { generateToken } from "../Token";
 import { IEmail, IEmailClient } from "./clients/IEmailClient";

@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile, Member, OrmUtils, Permissions } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Member } from "@spacebar/database";
+import { emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile, OrmUtils, Permissions } from "@spacebar/util";
 import { MemberChangeProfileSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

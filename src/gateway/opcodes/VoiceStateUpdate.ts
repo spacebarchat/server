@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Guild, Member, VoiceState } from "@spacebar/database";
 import { Payload, WebSocket, genVoiceToken } from "@spacebar/gateway";
-import { Config, emitEvent, Guild, Member, VoiceServerUpdateEvent, VoiceState, VoiceStateUpdateEvent } from "@spacebar/util";
-import { check } from "./instanceOf";
+import { Config, emitEvent, VoiceServerUpdateEvent, VoiceStateUpdateEvent } from "@spacebar/util";
 import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
+import { check } from "./instanceOf";
 // TODO: check if a voice server is setup
 
 // Notice: Bot users respect the voice channel's user limit, if set.

@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity import
-import { Sticker } from "@spacebar/util";
+import { Sticker } from "@spacebar/database";
 import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake } from "@spacebar/schemas";
 import { PublicAttachment } from "./Attachments";
 

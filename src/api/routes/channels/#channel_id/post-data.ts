@@ -16,13 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, Member, Message } from "@spacebar/util";
-import { PostDataSchema, PublicMessage } from "@spacebar/schemas";
-
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
 import { In } from "typeorm";
+import { route } from "@spacebar/api";
+import { Channel, Member, Message } from "@spacebar/database";
+import { PostDataSchema, PublicMessage } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

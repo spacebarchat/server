@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { emitEvent, Session } from "@spacebar/util";
+import { route } from "@spacebar/api";
+import { Session } from "@spacebar/database";
+import { emitEvent } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
-export default router;
 
 router.post(
     "/",
@@ -51,3 +51,5 @@ router.post(
             });
     },
 );
+
+export default router;

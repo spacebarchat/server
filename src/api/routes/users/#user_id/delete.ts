@@ -17,22 +17,8 @@
 */
 
 import { route } from "@spacebar/api";
-import {
-    Channel,
-    ChannelDeleteEvent,
-    ChannelRecipientRemoveEvent,
-    emitEvent,
-    Emoji,
-    Guild,
-    InstanceBan,
-    Member,
-    Recipient,
-    Sticker,
-    Stopwatch,
-    User,
-    UserDeleteEvent,
-    UserSettingsProtos,
-} from "@spacebar/util";
+import { Channel, Emoji, Guild, InstanceBan, Member, Recipient, Sticker, User, UserSettingsProtos } from "@spacebar/database";
+import { ChannelDeleteEvent, ChannelRecipientRemoveEvent, emitEvent, Stopwatch, UserDeleteEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ChannelType, InstanceUserDeleteSchema, PrivateUserProjection } from "@spacebar/schemas";
 import { Not } from "typeorm";

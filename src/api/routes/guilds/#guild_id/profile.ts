@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { Guild } from "@spacebar/util";
+import { Guild } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 import { GuildProfileResponse, GuildVisibilityLevel } from "@spacebar/schemas";
 
