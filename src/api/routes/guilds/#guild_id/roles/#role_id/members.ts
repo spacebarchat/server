@@ -17,7 +17,8 @@
 */
 
 import { Router, Request, Response } from "express";
-import { DiscordApiErrors, Member, arrayPartition } from "@spacebar/util";
+import { arrayPartition } from "@spacebar/extensions";
+import { DiscordApiErrors, Member } from "@spacebar/util";
 import { route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });

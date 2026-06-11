@@ -17,10 +17,9 @@
 */
 
 import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
+import { mathLogBase, arrayDistributeSequentially } from "@spacebar/extensions";
 import {
     Application,
-    arrayDistributeSequentially,
-    arrayPartition,
     Attachment,
     Channel,
     CloudAttachment,
@@ -35,7 +34,6 @@ import {
     Guild,
     handleFile,
     HERE_MENTION,
-    mathLogBase,
     Member,
     Message,
     MessageCreateEvent,

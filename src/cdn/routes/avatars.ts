@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import crypto from "node:crypto";
 import { Router, Response, Request } from "express";
+import { fileTypeFromBuffer } from "file-type";
 import { Config } from "@spacebar/util";
 import { storage } from "@spacebar/cdn";
-import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server";
-import crypto from "node:crypto";
 import { multer } from "../util/multer";
 import { cache } from "../util/cache";
 

@@ -17,6 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
+import { arrayRemove } from "@spacebar/extensions";
 import {
     Channel,
     emitEvent,
@@ -29,7 +30,6 @@ import {
     MessageReactionRemoveEmojiEvent,
     MessageReactionRemoveEvent,
     User,
-    arrayRemove,
     ReactionType,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";

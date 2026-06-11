@@ -17,9 +17,9 @@
 */
 
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
+import { arrayGroupBy } from "@spacebar/extensions";
 import {
     Application,
-    arrayGroupBy,
     Channel,
     checkToken,
     Config,
