@@ -53,7 +53,7 @@ import {
     USER_MENTION,
     Webhook,
 } from "@spacebar/util";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Equal, In, Or } from "typeorm";
 import {
     ActionRowComponent,

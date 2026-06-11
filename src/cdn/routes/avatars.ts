@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { Config } from "@spacebar/util";
 import { storage } from "@spacebar/cdn";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { multer } from "../util/multer";
 import { cache } from "../util/cache";
 

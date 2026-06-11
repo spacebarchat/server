@@ -1,4 +1,4 @@
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "./Config";
 import { TenorGif } from "@spacebar/schemas";
 

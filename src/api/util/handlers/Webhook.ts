@@ -1,7 +1,7 @@
 import { handleMessage, postHandleMessage } from "@spacebar/api";
 import { Attachment, Channel, Config, DiscordApiErrors, emitEvent, FieldErrors, Message, MessageCreateEvent, Snowflake, uploadFile, ValidateName, Webhook } from "@spacebar/util";
 import { Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
 import { WebhookExecuteSchema } from "@spacebar/schemas";
 

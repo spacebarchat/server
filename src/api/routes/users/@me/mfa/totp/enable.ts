@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { User, generateMfaBackupCodes, generateToken } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { verifyToken } from "node-2fa";
 import { TotpEnableSchema } from "@spacebar/schemas";
 

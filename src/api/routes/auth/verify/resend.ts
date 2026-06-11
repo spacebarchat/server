@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Email, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 const router = Router({ mergeParams: true });
 
 router.post(

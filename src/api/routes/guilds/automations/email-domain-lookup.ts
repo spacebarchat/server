@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { FieldErrors } from "@spacebar/util";
 import emailProviders from "email-providers/all.json";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { EmailDomainLookupResponse, EmailDomainLookupSchema, EmailDomainLookupVerifyCodeSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

@@ -26,7 +26,7 @@ import { existsSync } from "node:fs";
 import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
 import { randomUpperString } from "@spacebar/api";
 import { TimeSpan } from "./Timespan";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import path from "node:path";
 
 /// Change history:

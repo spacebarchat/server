@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Ban, Config, DiscordApiErrors, emitEvent, getPermission, Guild, Invite, InviteDeleteEvent, PublicInviteRelation } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { UserFlags } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

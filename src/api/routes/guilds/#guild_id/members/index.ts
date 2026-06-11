@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
 import { PublicMemberProjection } from "@spacebar/schemas";
 

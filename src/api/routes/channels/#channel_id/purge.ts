@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Channel, Message, MessageDeleteBulkEvent, emitEvent, getPermission, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Between, FindManyOptions, FindOperator, Not } from "typeorm";
 import { isTextChannel, PurgeSchema } from "@spacebar/schemas";
 

@@ -19,7 +19,7 @@
 import path from "node:path";
 import { Request, Response, Router } from "express";
 import morgan from "morgan";
-import { Server, ServerOptions } from "lambert-server";
+import { Server, ServerOptions } from "lambert-server/Server";
 import { red } from "picocolors";
 import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initDatabase, initEvent, registerRoutes, getDatabase, getRevInfoOrFail } from "@spacebar/util";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";

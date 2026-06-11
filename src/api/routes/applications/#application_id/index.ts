@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Application, DiscordApiErrors, FieldErrors, Guild, handleFile, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { verifyToken } from "node-2fa";
 import { ApplicationModifySchema } from "@spacebar/schemas";
 

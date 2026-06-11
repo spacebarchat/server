@@ -18,7 +18,7 @@
 
 import { Config } from "./Config";
 import { FieldErrors } from "./FieldError";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 export function ValidateName(name: string) {
     const check_username = name.replace(/\s/g, "");

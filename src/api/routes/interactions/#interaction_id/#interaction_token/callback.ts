@@ -20,7 +20,7 @@ import { BaseMessageComponents, InteractionCallbackSchema, InteractionCallbacksS
 import { handleComps, route, sendMessage } from "@spacebar/api";
 import { Request, Response, Router } from "express";
 import { Config, emitEvent, InteractionSuccessEvent, Message, MessageUpdateEvent, pendingInteractions, User, InteractionFailureEvent } from "@spacebar/util";
-import { HTTPError } from "#util/util/lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 const router = Router({ mergeParams: true });
 

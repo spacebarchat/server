@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import fs from "node:fs/promises";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { join } from "node:path";
 import { fileTypeFromBuffer } from "file-type";
 import { cache } from "../util/cache";

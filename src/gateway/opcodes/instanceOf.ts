@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { instanceOf } from "lambert-server";
+import { instanceOf } from "lambert-server/check";
 import { WebSocket } from "@spacebar/gateway";
 import { CLOSECODES } from "../util/Constants";
 

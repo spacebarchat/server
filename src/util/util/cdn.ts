@@ -17,7 +17,7 @@
 */
 
 import FormData from "form-data";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Attachment } from "../entities";
 import { Config } from "./Config";
 
