@@ -17,7 +17,6 @@
 */
 
 export * from "./ApiError";
-export * from "./extensions/Array";
 export * from "./BitField";
 //export * from "./Categories";
 export * from "./cdn";
@@ -52,7 +51,6 @@ export * from "./Gifs";
 export * from "./Application";
 export * from "./NameValidation";
 export * from "../../schemas/HelperTypes";
-export * from "./extensions";
 export * from "./Random";
 export * from "./Url";
 export * from "./Version";

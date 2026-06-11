@@ -19,10 +19,11 @@
 import EventEmitter from "node:events";
 import fs from "node:fs";
 import net, { Server } from "node:net";
-import { BaseEventListener } from "./BaseEventListener";
-import { arraySum, EVENT, Event, EventOpts } from "@spacebar/util";
-import { ProcessLifecycle } from "../../ProcessLifecycle";
 import { Gauge } from "prom-client";
+import { arraySum } from "@spacebar/extensions";
+import { EVENT, Event, EventOpts } from "@spacebar/util";
+import { BaseEventListener } from "./BaseEventListener";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
 import { Monitoring } from "../../../monitoring/Monitoring";
 
 export class UnixSocketListener extends BaseEventListener {

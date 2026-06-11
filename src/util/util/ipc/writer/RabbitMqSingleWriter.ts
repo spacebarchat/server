@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseEventWriter } from "./BaseEventWriter";
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { Event, sleep } from "@spacebar/util";
+import { sleep } from "@spacebar/extensions";
+import { Event } from "@spacebar/util";
 import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { BaseEventWriter } from "./BaseEventWriter";
 
 export class RabbitMqSingleWriter extends BaseEventWriter {
     private readonly host: string;

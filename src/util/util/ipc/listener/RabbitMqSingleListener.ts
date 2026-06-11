@@ -18,12 +18,13 @@
 
 import EventEmitter from "node:events";
 import { randomUUID } from "node:crypto";
-import { BaseEventListener } from "./BaseEventListener";
-import { arraySum, EVENT, Event, EventOpts, sleep } from "@spacebar/util";
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { ProcessLifecycle } from "../../ProcessLifecycle";
-import { Monitoring } from "../../../monitoring/Monitoring";
 import { Gauge } from "prom-client";
+import { sleep, arraySum } from "@spacebar/extensions";
+import { EVENT, Event, EventOpts } from "@spacebar/util";
+import { Monitoring } from "../../../monitoring/Monitoring";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { BaseEventListener } from "./BaseEventListener";
 
 export class RabbitMqSingleListener extends BaseEventListener {
     static openListenersMetric: Gauge;

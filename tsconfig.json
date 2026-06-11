@@ -32,12 +32,21 @@
         // "baseUrl": "./src/", //deprecated
         "paths": {
             //"*": ["./src/*"],
+            "@spacebar/api": ["./src/api"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/api*": ["./src/api*"],
+            "@spacebar/extensions": ["./src/extensions"], // Required for stable tsc, typescript-go doesn't need this
+            "@spacebar/extensions*": ["./src/extensions*"],
+            "@spacebar/gateway": ["./src/gateway"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/gateway*": ["./src/gateway*"],
+            "@spacebar/cdn": ["./src/cdn"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/cdn*": ["./src/cdn*"],
+            "@spacebar/util": ["./src/util"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/util*": ["./src/util*"],
+            "@spacebar/webrtc": ["./src/webrtc"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/webrtc*": ["./src/webrtc*"],
+            "@spacebar/schemas": ["./src/schemas"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/schemas*": ["./src/schemas*"],
+            "lambert-server": ["./src/util/util/lambert-server"], // Required for stable tsc, typescript-go doesn't need this
             "lambert-server*": ["./src/util/util/lambert-server*"],
         } /* Specify a set of entries that re-map imports to additional lookup locations. */,
         "rootDir": "./src", // Required as of TypeScript 7

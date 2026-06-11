@@ -17,6 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { arrayRemove } from "@spacebar/extensions";
 import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "..";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -30,7 +31,6 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { arrayRemove } from "@spacebar/util";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
