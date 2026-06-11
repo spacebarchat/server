@@ -126,6 +126,7 @@
     "_moduleAliases": {
         "@spacebar/api": "dist/api",
         "@spacebar/cdn": "dist/cdn",
+        "@spacebar/database": "dist/database",
         "@spacebar/extensions": "dist/extensions",
         "@spacebar/gateway": "dist/gateway",
         "@spacebar/util": "dist/util",

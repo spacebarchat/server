@@ -16,8 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { In, Not } from "typeorm";
+import { PreloadedUserSettings } from "discord-protos";
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
 import { arrayGroupBy } from "@spacebar/extensions";
+import { getDatabase } from "@spacebar/database";
 import {
     Application,
     Channel,
@@ -29,7 +32,6 @@ import {
     Emoji,
     EVENTEnum,
     generateToken,
-    getDatabase,
     Guild,
     GuildOrUnavailable,
     Intents,
@@ -57,11 +59,9 @@ import {
     UserSettingsProtos,
     VoiceState,
 } from "@spacebar/util";
-import { check } from "./instanceOf";
-import { In, Not } from "typeorm";
-import { PreloadedUserSettings } from "discord-protos";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
 import { randomString } from "@spacebar/api";
+import { check } from "./instanceOf";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
