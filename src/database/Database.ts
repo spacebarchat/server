@@ -56,13 +56,13 @@ export const DataSourceOptions = isHeadlessProcess
           type: DatabaseType,
           charset: "utf8mb4",
           url: process.env.DATABASE,
-          entities: [path.join(__dirname, "..", "entities", "*.js")],
+          entities: [path.join(__dirname, "entities", "*.js")],
           synchronize: !!process.env.DB_SYNC,
           logging: !!process.env.DB_LOGGING,
           bigNumberStrings: false,
           supportBigNumbers: true,
           name: "default",
-          migrations: applyMigrations ? [path.join(__dirname, "..", "migration", DatabaseType, "*.js")] : [],
+          migrations: applyMigrations ? [path.join(__dirname, "migration", DatabaseType, "*.js")] : [],
       });
 
 // Gets the existing database connection
@@ -108,7 +108,7 @@ export async function initDatabase(): Promise<DataSource> {
         if (!(await dbExists())) {
             console.log("[Database] This appears to be a fresh database. Running initial DDL.");
             const qr = dbConnection.createQueryRunner();
-            const initialPath = path.join(__dirname, "..", "migration", DatabaseType + "-initial.js");
+            const initialPath = path.join(__dirname, "migration", DatabaseType + "-initial.js");
             if (fs.existsSync(initialPath)) {
                 console.log("[Database] Found initial migration file, running it.");
                 await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
