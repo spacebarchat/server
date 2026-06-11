@@ -32,13 +32,13 @@
         // "baseUrl": "./src/", //deprecated
         "paths": {
             //"*": ["./src/*"],
-            "@spacebar/api*": ["./src/api"],
-            "@spacebar/gateway*": ["./src/gateway"],
-            "@spacebar/cdn*": ["./src/cdn"],
-            "@spacebar/util*": ["./src/util"],
-            "@spacebar/webrtc*": ["./src/webrtc"],
-            "@spacebar/schemas*": ["./src/schemas"],
-            "lambert-server*": ["./src/util/util/lambert-server"]
+            "@spacebar/api*": ["./src/api*"],
+            "@spacebar/gateway*": ["./src/gateway*"],
+            "@spacebar/cdn*": ["./src/cdn*"],
+            "@spacebar/util*": ["./src/util*"],
+            "@spacebar/webrtc*": ["./src/webrtc*"],
+            "@spacebar/schemas*": ["./src/schemas*"],
+            "lambert-server*": ["./src/util/util/lambert-server*"],
         } /* Specify a set of entries that re-map imports to additional lookup locations. */,
         "rootDir": "./src", // Required as of TypeScript 7
         // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
