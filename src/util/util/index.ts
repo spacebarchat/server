@@ -50,7 +50,6 @@ export * from "./ChannelFlags";
 export * from "./Gifs";
 export * from "./Application";
 export * from "./NameValidation";
-export * from "../../schemas/HelperTypes";
 export * from "./Random";
 export * from "./Url";
 export * from "./Version";
