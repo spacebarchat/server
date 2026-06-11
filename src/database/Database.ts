@@ -16,13 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { config } from "dotenv";
 import path from "node:path";
+import fs from "node:fs";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
-// noinspection ES6PreferShortImport
-import { ConfigEntity } from "@spacebar/database/entities/Config";
-import fs from "node:fs";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 
 // UUID extension option is only supported with postgres
@@ -34,7 +31,7 @@ let isHeadlessProcess = false;
 // For typeorm cli
 if (!process.env) {
     isHeadlessProcess = true;
-    config({ quiet: true });
+    require("dotenv").config({ quiet: true });
 }
 if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
@@ -100,7 +97,8 @@ export async function initDatabase(): Promise<DataSource> {
     // Crude way of detecting if the migrations table exists.
     const dbExists = async () => {
         try {
-            await ConfigEntity.count();
+            // do not globally import to avoid circular references
+            await require("./entities/Config").ConfigEntity.count();
             return true;
         } catch (e) {
             return false;
