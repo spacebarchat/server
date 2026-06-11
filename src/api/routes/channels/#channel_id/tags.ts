@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Channel, ChannelUpdateEvent, emitEvent, Tag } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { TagCreateSchema } from "@spacebar/schemas";
-import { HTTPError } from "#util/util/lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 const router: Router = Router({ mergeParams: true });
 

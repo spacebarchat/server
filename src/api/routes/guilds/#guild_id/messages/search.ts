@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Channel, FieldErrors, Member, Message, Snowflake, getPermission } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Between, FindManyOptions, FindOptionsWhere, In, LessThan, Like, MoreThan } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });

@@ -18,7 +18,7 @@
 
 import { Router, Response, Request } from "express";
 import { storage } from "@spacebar/cdn";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { fileTypeFromBuffer } from "file-type";
 import { cache } from "../util/cache";
 

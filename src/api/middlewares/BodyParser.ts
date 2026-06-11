@@ -18,7 +18,7 @@
 
 import bodyParser, { OptionsJson } from "body-parser";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 const errorMessages: { [key: string]: [string, number] } = {
     "entity.too.large": ["Request body too large", 413],

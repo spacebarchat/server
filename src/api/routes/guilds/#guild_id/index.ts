@@ -32,7 +32,7 @@ import {
     Config,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { GuildCreateResponse, GuildUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

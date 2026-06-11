@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, Guild, Member, Tag, Template } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { ChannelType, GuildTemplateCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

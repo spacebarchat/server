@@ -37,7 +37,7 @@ import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment
 
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
-import { HTTPError } from "#util/util/lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { FindManyOptions, FindOptionsOrder, In, Like, ArrayContains, ArrayOverlap } from "typeorm";
 
 const router = Router({ mergeParams: true });

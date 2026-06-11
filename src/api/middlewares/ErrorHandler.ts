@@ -17,7 +17,7 @@
 */
 
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { ApiError, FieldError } from "@spacebar/util";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 

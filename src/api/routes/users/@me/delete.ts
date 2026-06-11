@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { Guild, Member, User, UserSettingsProtos } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 const router = Router({ mergeParams: true });
 

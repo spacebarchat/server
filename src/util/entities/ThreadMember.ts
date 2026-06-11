@@ -21,7 +21,7 @@ import { ThreadMembersUpdateEvent } from "../interfaces";
 import { emitEvent } from "../util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { Member } from "./Member";
 
 // TODO: move

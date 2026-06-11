@@ -19,7 +19,7 @@
 import { Config } from "@spacebar/util";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { multer } from "../util/multer";
 import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";

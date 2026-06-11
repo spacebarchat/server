@@ -20,7 +20,7 @@ import { route } from "@spacebar/api";
 import { generateToken, SecurityKey, User, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { WebAuthnTotpSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 

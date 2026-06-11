@@ -26,7 +26,7 @@ const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
 const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
-require("../dist/util/util/extensions");
+require("../dist/extensions");
 const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");

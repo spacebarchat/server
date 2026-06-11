@@ -17,7 +17,7 @@
 */
 
 // TODO: should this even be in schemas?
-import { Tuple } from "lambert-server";
+import { Tuple } from "lambert-server/check";
 
 export const PayloadSchema = {
     op: Number,

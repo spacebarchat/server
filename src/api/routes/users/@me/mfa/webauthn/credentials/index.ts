@@ -21,7 +21,7 @@ import { DiscordApiErrors, FieldErrors, generateWebAuthnTicket, SecurityKey, Use
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { CreateWebAuthnCredentialSchema, GenerateWebAuthnCredentialsSchema, WebAuthnPostSchema } from "@spacebar/schemas";
 const router = Router({ mergeParams: true });
 

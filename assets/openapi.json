@@ -3767,9 +3767,7 @@
                         "additionalProperties": false
                     },
                     "intents": {
-                        "type": "number",
-                        "properties": {},
-                        "additionalProperties": false
+                        "type": "number"
                     },
                     "presence": {
                         "$ref": "#/components/schemas/ActivitySchema"
@@ -3788,9 +3786,7 @@
                         "maxItems": 2,
                         "type": "array",
                         "items": {
-                            "type": "number",
-                            "properties": {},
-                            "additionalProperties": false
+                            "type": "number"
                         }
                     },
                     "guild_subscriptions": {
@@ -10872,6 +10868,9 @@
                             "$ref": "#/components/schemas/MessageSnapshot"
                         }
                     },
+                    "isWebhook": {
+                        "type": "boolean"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -10881,6 +10880,7 @@
                     "embeds",
                     "flags",
                     "id",
+                    "isWebhook",
                     "mention_channels",
                     "mention_roles",
                     "mentions",

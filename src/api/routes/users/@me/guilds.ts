@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api";
 import { Config, Guild, Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 const router: Router = Router({ mergeParams: true });
 

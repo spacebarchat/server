@@ -1,7 +1,7 @@
 import { route } from "@spacebar/api";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, Webhook, WebhooksUpdateEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
 import { WebhookUpdateSchema } from "@spacebar/schemas";

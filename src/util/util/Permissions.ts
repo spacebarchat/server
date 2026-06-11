@@ -4,7 +4,7 @@
 
 import { Channel, Guild, Member, Role, User } from "../entities";
 import { BitField, BitFieldResolvable, BitFlag } from "./BitField";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { ChannelPermissionOverwrite, ChannelPermissionOverwriteType, ChannelType, UserFlags } from "@spacebar/schemas";
 import { FindOneOptions } from "typeorm";
 

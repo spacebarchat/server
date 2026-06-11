@@ -33,7 +33,7 @@ import {
     ReactionType,
 } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { In } from "typeorm";
 import { PartialEmoji, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 

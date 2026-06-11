@@ -20,7 +20,7 @@ import { route, verifyCaptcha } from "@spacebar/api";
 import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan, Stopwatch } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
 import { RegisterSchema } from "@spacebar/schemas";
 import { BcryptWorkerPool } from "../../../util/util/workers/bcrypt/BcryptWorkerPool";

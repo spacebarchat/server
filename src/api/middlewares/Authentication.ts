@@ -18,7 +18,7 @@
 
 import { checkToken, Rights, Session, User, UserTokenData } from "@spacebar/util";
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server";
+import { HTTPError } from "lambert-server/HTTPError";
 
 export const NO_AUTHORIZATION_ROUTES = [
     // Authentication routes
