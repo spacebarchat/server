@@ -17,7 +17,7 @@
 */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ConnectionConfigEntity } from "../../database/entities";
+import { ConnectionConfigEntity } from "@spacebar/database";
 import { OrmUtils } from "../imports";
 
 let config: any;
