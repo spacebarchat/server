@@ -17,7 +17,7 @@
 */
 
 import { getVoiceRegions, route } from "@spacebar/api";
-import { Guild } from "@spacebar/util";
+import { Guild } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });

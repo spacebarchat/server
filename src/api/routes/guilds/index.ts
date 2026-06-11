@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, Guild, Member, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Guild, Member } from "@spacebar/database";
+import { Config, DiscordApiErrors, getRights } from "@spacebar/util";
 import { GuildCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

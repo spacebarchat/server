@@ -20,7 +20,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 import crypto from "node:crypto";
-import { Config } from "../util";
+import { Config } from "../../util/util";
 
 @Entity({
     name: "backup_codes",

@@ -17,7 +17,7 @@
 */
 
 import { route } from "@spacebar/api";
-import { SecurityKey, User } from "@spacebar/util";
+import { SecurityKey, User } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
 

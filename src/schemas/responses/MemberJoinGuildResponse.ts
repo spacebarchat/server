@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity imports
-import { Emoji, Role, Sticker } from "@spacebar/util";
+import { Emoji, Role, Sticker } from "@spacebar/database";
 import { GuildCreateResponse } from "@spacebar/schemas";
 
 export interface MemberJoinGuildResponse {

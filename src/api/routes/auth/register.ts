@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, FieldErrors, Invite, User, ValidRegistrationToken, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan, Stopwatch } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { Invite, User, ValidRegistrationToken } from "@spacebar/database";
+import { Config, FieldErrors, generateToken, IpDataClient, AbuseIpDbClient, TimeSpan, Stopwatch } from "@spacebar/util";
 import { RegisterSchema } from "@spacebar/schemas";
 import { BcryptWorkerPool } from "../../../util/util/workers/bcrypt/BcryptWorkerPool";
 

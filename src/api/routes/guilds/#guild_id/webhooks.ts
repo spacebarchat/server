@@ -16,9 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, Webhook } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Webhook } from "@spacebar/database";
+import { Config } from "@spacebar/util";
+
 const router = Router({ mergeParams: true });
 
 router.get(

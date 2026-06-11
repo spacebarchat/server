@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount } from "../entities";
+import { ConnectedAccount } from "../../database/entities";
 
 export class ConnectedAccountDTO {
     id: string;

@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { Member } from "@spacebar/util";
+import { Member } from "@spacebar/database";
 import { route } from "@spacebar/api";
 
 const router = Router({ mergeParams: true });

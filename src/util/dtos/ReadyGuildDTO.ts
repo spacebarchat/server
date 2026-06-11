@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Channel, Emoji, Guild, Role, Sticker } from "../entities";
+import { Channel, Emoji, Guild, Role, Sticker } from "../../database/entities";
 import { ChannelOverride, ChannelType, PublicMember, PublicUser, UserGuildSettings } from "@spacebar/schemas";
 
 // TODO: this is not the best place for this type

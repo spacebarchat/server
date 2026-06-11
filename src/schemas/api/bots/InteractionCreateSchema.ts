@@ -18,7 +18,7 @@
 
 import { PublicMember, PublicUser, Snowflake, InteractionType } from "@spacebar/schemas";
 // TODO: remove entity imports
-import { Channel, Message } from "@spacebar/util";
+import { Channel, Message } from "@spacebar/database";
 
 export interface InteractionCreateSchema {
     version: number; // TODO: types?

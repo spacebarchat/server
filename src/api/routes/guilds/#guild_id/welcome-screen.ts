@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, Guild, Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Channel, Guild, Member } from "@spacebar/database";
 import { GuildUpdateWelcomeScreenSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

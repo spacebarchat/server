@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { checkToken, Email, FieldErrors, generateToken, User } from "@spacebar/util";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { User } from "@spacebar/database";
+import { checkToken, Email, FieldErrors, generateToken } from "@spacebar/util";
 import { PasswordResetSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

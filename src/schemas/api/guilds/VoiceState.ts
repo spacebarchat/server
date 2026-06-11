@@ -17,7 +17,7 @@
 */
 
 //TODO: remove entity import
-import { VoiceState } from "@spacebar/util";
+import { VoiceState } from "@spacebar/database";
 
 export enum PublicVoiceStateEnum {
     user_id,

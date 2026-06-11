@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, Config, DiscordApiErrors, User, Webhook, handleFile, trimSpecial, ValidateName, Application } from "@spacebar/util";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Application, Channel, User, Webhook } from "@spacebar/database";
+import { Config, DiscordApiErrors, handleFile, trimSpecial, ValidateName } from "@spacebar/util";
 import { isTextChannel, WebhookCreateSchema, WebhookType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

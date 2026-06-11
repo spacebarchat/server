@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Member, Role, Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
+import { route } from "@spacebar/api";
+import { Member, Role } from "@spacebar/database";
+import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Snowflake } from "@spacebar/util";
 import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

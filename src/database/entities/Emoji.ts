@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { User } from ".";
+import { User } from "./index";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 

@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, ChannelUpdateEvent, Guild, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Channel, Guild } from "@spacebar/database";
+import { ChannelUpdateEvent, emitEvent } from "@spacebar/util";
 import { ChannelCreateSchema, ChannelReorderSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 router.get(

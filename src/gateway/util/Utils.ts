@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { sleep } from "@spacebar/extensions";
-import { Event, Session, TimeSpan, VoiceState } from "@spacebar/util";
+import { Session, VoiceState } from "@spacebar/database";
+import { Event, TimeSpan } from "@spacebar/util";
 import { WebSocket } from "./WebSocket";
 import { OPCODES } from "./Constants";
 import { Send } from "./Send";

@@ -15,12 +15,15 @@
         You should have received a copy of the GNU Affero General Public License
         along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import { route } from "@spacebar/api";
+
 import { createHash } from "node:crypto";
-import { emitEvent, Session } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { SessionsLogoutSchema } from "../../../schemas/api/users/SessionsSchemas";
 import { In } from "typeorm";
+import { route } from "@spacebar/api";
+import { emitEvent } from "@spacebar/util";
+import { SessionsLogoutSchema } from "@spacebar/schemas";
+import { Session } from "@spacebar/database";
+
 const router = Router({ mergeParams: true });
 router.get(
     "/",
@@ -78,4 +81,5 @@ router.post(
         res.status(204).send();
     },
 );
+
 export default router;

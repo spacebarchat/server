@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, verifyCaptcha } from "@spacebar/api";
-import { Config, Email, User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route, verifyCaptcha } from "@spacebar/api";
+import { User } from "@spacebar/database";
+import { Config, Email } from "@spacebar/util";
 import { ForgotPasswordSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 router.post(

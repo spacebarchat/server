@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { BackupCode, DiscordApiErrors, User, generateMfaBackupCodes } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { BackupCode, generateMfaBackupCodes, User } from "@spacebar/database";
+import { DiscordApiErrors } from "@spacebar/util";
 import { CodesVerificationSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

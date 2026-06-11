@@ -17,10 +17,10 @@
 */
 
 import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
-import { getDatabase } from "@spacebar/database";
+import { getDatabase, Member, Session } from "@spacebar/database";
 import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { RequestGuildMembersSchema } from "@spacebar/schemas";
-import { Config, DateBuilder, getPermission, GuildMembersChunkEvent, Member, Presence, Session } from "@spacebar/util";
+import { Config, DateBuilder, getPermission, GuildMembersChunkEvent, Presence } from "@spacebar/util";
 import { check } from "./instanceOf";
 
 export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {

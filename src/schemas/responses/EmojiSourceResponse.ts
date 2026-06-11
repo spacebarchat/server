@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity import
-import { Emoji } from "@spacebar/util";
+import { Emoji } from "@spacebar/database";
 
 export interface EmojiSourceResponse {
     type: "GUILD" | "APPLICATION";

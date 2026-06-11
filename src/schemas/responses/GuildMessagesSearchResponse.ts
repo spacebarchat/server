@@ -17,7 +17,7 @@
 */
 
 // TODO: remove dependency on entities
-import { Role } from "@spacebar/util";
+import { Role } from "@spacebar/database";
 import { BaseMessageComponents, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
 import { PublicAttachment } from "../api/messages/Attachments";
 

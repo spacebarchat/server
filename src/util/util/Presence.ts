@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { emitEvent, Member, PresenceUpdateEvent, Recipient, Relationship, Session } from "@spacebar/util";
+import { Member, Recipient, Relationship, Session } from "@spacebar/database";
+import { emitEvent, PresenceUpdateEvent } from "@spacebar/util";
 import { RelationshipType } from "@spacebar/schemas";
 import { Not } from "typeorm";
 

@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { User } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { User } from "@spacebar/database";
 import { AccountStandingResponse, AccountStandingState, AppealEligibility } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

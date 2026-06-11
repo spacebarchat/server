@@ -21,3 +21,4 @@ export * from "./InstanceUserDeleteSchema";
 export * from "./Member";
 export * from "./User";
 export * from "./UserSettings";
+export * from "./SessionsSchemas";

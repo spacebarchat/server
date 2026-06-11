@@ -21,7 +21,7 @@ import path from "node:path";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 // noinspection ES6PreferShortImport
-import { ConfigEntity } from "../util/entities/Config";
+import { ConfigEntity } from "@spacebar/database/entities/Config";
 import fs from "node:fs";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 

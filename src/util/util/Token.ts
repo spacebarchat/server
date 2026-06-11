@@ -18,7 +18,7 @@
 
 import jwt from "jsonwebtoken";
 import { Config } from "./Config";
-import { InstanceBan, Session, User } from "../entities";
+import { InstanceBan, Session, User } from "../../database/entities";
 import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";

@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomString, route } from "@spacebar/api";
-import { Config, ValidRegistrationToken } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { randomString, route } from "@spacebar/api";
+import { ValidRegistrationToken } from "@spacebar/database";
+import { Config } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
-export default router;
 
 router.get(
     "/",
@@ -68,3 +68,5 @@ router.get(
         return res.json({ tokens: ret });
     },
 );
+
+export default router;

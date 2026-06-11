@@ -18,7 +18,7 @@
 
 import FormData from "form-data";
 import { HTTPError } from "lambert-server/HTTPError";
-import { Attachment } from "../entities";
+import { Attachment } from "../../database/entities";
 import { Config } from "./Config";
 
 export async function uploadFile(

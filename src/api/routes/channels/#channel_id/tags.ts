@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Channel, ChannelUpdateEvent, emitEvent, Tag } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TagCreateSchema } from "@spacebar/schemas";
 import { HTTPError } from "lambert-server/HTTPError";
+import { route } from "@spacebar/api";
+import { Channel, Tag } from "@spacebar/database";
+import { ChannelUpdateEvent, emitEvent } from "@spacebar/util";
+import { TagCreateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 

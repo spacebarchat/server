@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Guild, Member, Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { IsNull, LessThan } from "typeorm";
+import { route } from "@spacebar/api";
+import { Guild, Member } from "@spacebar/database";
+import { Snowflake } from "@spacebar/util";
+
 const router = Router({ mergeParams: true });
 
 //Returns all inactive members, respecting role hierarchy

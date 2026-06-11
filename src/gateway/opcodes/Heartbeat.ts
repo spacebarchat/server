@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { FindOptionsWhere } from "typeorm";
 import { OPCODES, Payload, WebSocket } from "@spacebar/gateway";
+import { Session } from "@spacebar/database";
 import { setHeartbeat } from "../util/Heartbeat";
 import { Send } from "../util/Send";
-import { Session } from "@spacebar/util";
-import { FindOptionsWhere } from "typeorm";
 
 interface QoSData {
     seq: number | null;

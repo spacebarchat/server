@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Member } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
+import { route } from "@spacebar/api";
+import { Member } from "@spacebar/database";
 import { PublicMemberProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });

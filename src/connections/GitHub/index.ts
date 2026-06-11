@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccount, Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import wretch from "wretch";
-import { GenericOAuthSettings as GitHubSettings } from "../GenericOAuthSettings";
+import { ConnectedAccount } from "@spacebar/database";
+import { Connection, ConnectionLoader, DiscordApiErrors } from "@spacebar/util";
 import { ConnectedAccountCommonOAuthTokenResponse, ConnectionCallbackSchema } from "@spacebar/schemas";
+import { GenericOAuthSettings as GitHubSettings } from "../GenericOAuthSettings";
 
 interface UserResponse {
     login: string;

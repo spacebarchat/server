@@ -17,7 +17,7 @@
 */
 
 // TODO: remove entity imports
-import { Badge, Member, User } from "@spacebar/util";
+import { Badge, Member, User } from "@spacebar/database";
 import { PublicConnectedAccount, PublicMember, PublicUser } from "@spacebar/schemas";
 
 export type MutualGuild = {

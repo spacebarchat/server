@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route, sendMessage } from "@spacebar/api";
-import { Message, Channel, emitEvent, User, MessageUpdateEvent } from "@spacebar/util";
-import { MessageThreadCreationSchema, ChannelType, MessageType } from "@spacebar/schemas";
-
 import { Request, Response, Router } from "express";
+import { route, sendMessage } from "@spacebar/api";
+import { Channel, Message, User } from "@spacebar/database";
+import { emitEvent, MessageUpdateEvent } from "@spacebar/util";
+import { MessageThreadCreationSchema, ChannelType, MessageType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

@@ -16,10 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { ConnectedAccount, DiscordApiErrors, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { ConnectedAccount } from "@spacebar/database";
+import { DiscordApiErrors, emitEvent } from "@spacebar/util";
 import { ConnectionUpdateSchema } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 // TODO: connection update schema

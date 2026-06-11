@@ -16,9 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { Note, Snowflake, User, emitEvent } from "@spacebar/util";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api";
+import { Note, User } from "@spacebar/database";
+import { Snowflake, emitEvent } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 

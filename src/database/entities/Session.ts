@@ -20,9 +20,9 @@ import crypto from "node:crypto";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, PrivateStatus } from "../interfaces";
+import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, PrivateStatus } from "../../util/interfaces";
 import { randomUpperString } from "@spacebar/api";
-import { DateBuilder, IpDataClient, TimeSpan } from "../util";
+import { DateBuilder, IpDataClient, TimeSpan } from "../../util/util";
 
 @Entity({
     name: "sessions",

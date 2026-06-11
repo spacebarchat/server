@@ -16,12 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
-import { GuildStickersUpdateEvent, Member, Snowflake, Sticker, emitEvent, uploadFile, Config, DiscordApiErrors } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
+import { route } from "@spacebar/api";
+import { Member, Sticker } from "@spacebar/database";
+import { GuildStickersUpdateEvent, Snowflake, emitEvent, uploadFile, Config, DiscordApiErrors } from "@spacebar/util";
 import { ModifyGuildStickerSchema, StickerFormatType, StickerType } from "@spacebar/schemas";
+
 const router = Router({ mergeParams: true });
 
 router.get(
