@@ -17,10 +17,9 @@
 */
 
 import { Router, Response, Request } from "express";
-import { storage } from "@spacebar/cdn";
 import { HTTPError } from "lambert-server/HTTPError";
 import { fileTypeFromBuffer } from "file-type";
-import { cache } from "../util/cache";
+import { storage, cache } from "@spacebar/cdn/util";
 
 const router = Router({ mergeParams: true });
 

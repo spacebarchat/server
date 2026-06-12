@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request, Response, Router } from "express";
 import fs from "node:fs/promises";
-import { HTTPError } from "lambert-server/HTTPError";
 import { join } from "node:path";
+import { Request, Response, Router } from "express";
 import { fileTypeFromBuffer } from "file-type";
-import { cache } from "../util/cache";
+import { HTTPError } from "lambert-server/HTTPError";
+import { cache } from "@spacebar/cdn/util";
 
 const defaultAvatarHashMap = new Map([
     ["0", "4a8562cf00887030c416d3ec2d46385a"],

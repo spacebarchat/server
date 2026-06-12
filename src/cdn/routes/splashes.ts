@@ -17,13 +17,11 @@
 */
 
 import { Router, Response, Request } from "express";
-import { Config } from "@spacebar/util";
-import { storage } from "@spacebar/cdn";
+import crypto from "node:crypto";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
-import crypto from "node:crypto";
-import { multer } from "../util/multer";
-import { cache, cacheNotFound } from "../util/cache";
+import { Config } from "@spacebar/util";
+import { storage, multer, cache, cacheNotFound } from "@spacebar/cdn/util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon

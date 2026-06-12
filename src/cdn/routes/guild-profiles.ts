@@ -16,14 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Config } from "@spacebar/util";
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
-import { HTTPError } from "lambert-server/HTTPError";
-import { multer } from "../util/multer";
-import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";
-import { cache } from "../util/cache";
+import { HTTPError } from "lambert-server/HTTPError";
+import { Config } from "@spacebar/util";
+import { storage, multer, cache } from "@spacebar/cdn/util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon

@@ -22,9 +22,7 @@ import imageSize from "image-size";
 import { HTTPError } from "lambert-server/HTTPError";
 import { CloudAttachment } from "@spacebar/database";
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
-import { storage } from "@spacebar/cdn/util/Storage";
-import { multer } from "@spacebar/cdn/util/multer";
-import { cache } from "@spacebar/cdn/util/cache";
+import { storage, multer, cache } from "@spacebar/cdn/util";
 
 const router = Router({ mergeParams: true });
 

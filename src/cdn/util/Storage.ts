@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { FileStorage } from "./FileStorage";
 import path from "node:path";
 import fs from "node:fs";
 import { red } from "picocolors";
@@ -46,6 +45,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
     if (!fs.existsSync(location)) fs.mkdirSync(location);
     process.env.STORAGE_LOCATION = location;
 
+    const { FileStorage } = require("./FileStorage");
     storage = new FileStorage();
 } else if (process.env.STORAGE_PROVIDER === "s3") {
     try {
