@@ -19,7 +19,7 @@
 import path from "node:path";
 import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
-import { CORS, BodyParser } from "@spacebar/api";
+import { CORS, BodyParser } from "@spacebar/api/middlewares";
 import { Attachment, initDatabase } from "@spacebar/database";
 import { Config, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";

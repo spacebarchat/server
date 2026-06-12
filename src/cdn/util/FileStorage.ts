@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Storage } from "./Storage";
 import fs from "node:fs";
 import fsp from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { Readable } from "node:stream";
+import { Storage } from "./Storage";
 import ExifTransformer from "exif-be-gone";
 
 export class FileStorage implements Storage {

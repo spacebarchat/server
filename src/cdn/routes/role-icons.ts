@@ -16,14 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import crypto from "node:crypto";
 import { Router, Response, Request } from "express";
-import { Config } from "@spacebar/util";
-import { storage } from "@spacebar/cdn";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
-import crypto from "node:crypto";
-import { multer } from "../util/multer";
-import { cache } from "../util/cache";
+import { Config } from "@spacebar/util";
+import { storage, multer, cache } from "@spacebar/cdn/util";
 
 //Role icons ---> avatars.ts modified
 
