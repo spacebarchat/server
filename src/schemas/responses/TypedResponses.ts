@@ -56,7 +56,6 @@ export interface APIGuildWithJoinedAt extends GuildCreateResponse {
 
 export type APIRoleArray = Role[];
 export type APITemplateArray = Template[];
-export type APIGuildVoiceRegion = GuildVoiceRegion[];
 export type APILimitsConfiguration = LimitsConfiguration;
 
 export type APIConnectionsConfiguration = Record<

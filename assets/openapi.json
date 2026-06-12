@@ -205,21 +205,6 @@
                     "type"
                 ]
             },
-            "RouteResponse": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "integer"
-                    },
-                    "body": {
-                        "type": "string",
-                        "pattern": "^.*Response$"
-                    },
-                    "headers": {
-                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
-                    }
-                }
-            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -238,6 +223,21 @@
                     "errors",
                     "message"
                 ]
+            },
+            "RouteResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string",
+                        "pattern": "^.*Response$"
+                    },
+                    "headers": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
+                    }
+                }
             },
             "ActivitySchema": {
                 "type": "object",
@@ -4156,6 +4156,43 @@
                     "video_ssrc"
                 ]
             },
+            "VoiceRegionResponse": {
+                "type": "object",
+                "properties": {
+                    "optimal": {
+                        "type": "boolean"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "vip": {
+                        "type": "boolean"
+                    },
+                    "custom": {
+                        "type": "boolean"
+                    },
+                    "deprecated": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "custom",
+                    "deprecated",
+                    "id",
+                    "name",
+                    "optimal",
+                    "vip"
+                ]
+            },
+            "VoiceRegionListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/VoiceRegionResponse"
+                }
+            },
             "APIGuild": {
                 "type": "object",
                 "properties": {
@@ -5072,12 +5109,6 @@
                     "$ref": "#/components/schemas/Template"
                 }
             },
-            "APIGuildVoiceRegion": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/GuildVoiceRegion"
-                }
-            },
             "APILimitsConfiguration": {
                 "type": "object",
                 "properties": {
@@ -5850,6 +5881,9 @@
             "MessageEditSchema": {
                 "type": "object",
                 "properties": {
+                    "poll": {
+                        "$ref": "#/components/schemas/PollCreationSchema"
+                    },
                     "embed": {
                         "anyOf": [
                             {
@@ -6002,9 +6036,6 @@
                                 "type": "null"
                             }
                         ]
-                    },
-                    "poll": {
-                        "$ref": "#/components/schemas/PollCreationSchema"
                     },
                     "enforce_nonce": {
                         "type": "boolean"
@@ -14141,33 +14172,6 @@
                     "name"
                 ]
             },
-            "GuildVoiceRegion": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "custom": {
-                        "type": "boolean"
-                    },
-                    "deprecated": {
-                        "type": "boolean"
-                    },
-                    "optimal": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "custom",
-                    "deprecated",
-                    "id",
-                    "name",
-                    "optimal"
-                ]
-            },
             "UserLimits": {
                 "type": "object",
                 "properties": {
@@ -15176,7 +15180,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIGuildVoiceRegion"
+                                    "$ref": "#/components/schemas/VoiceRegionListResponse"
                                 }
                             }
                         }
@@ -21165,7 +21169,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIGuildVoiceRegion"
+                                    "$ref": "#/components/schemas/VoiceRegionListResponse"
                                 }
                             }
                         }

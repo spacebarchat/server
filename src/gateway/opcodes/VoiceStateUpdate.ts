@@ -19,7 +19,7 @@
 import { Guild, Member, VoiceState } from "@spacebar/database";
 import { Payload, WebSocket, genVoiceToken } from "@spacebar/gateway";
 import { Config, emitEvent, VoiceServerUpdateEvent, VoiceStateUpdateEvent } from "@spacebar/util";
-import { Region, VoiceStateUpdateSchema } from "@spacebar/schemas";
+import { ConfigVoiceRegion, VoiceStateUpdateSchema } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 // TODO: check if a voice server is setup
 
@@ -127,7 +127,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
             where: { id: voiceState.guild_id },
         });
         const regions = Config.get().regions;
-        let guildRegion: Region | undefined;
+        let guildRegion: ConfigVoiceRegion | undefined;
 
         const defaultRegion = regions.available.find((r) => r.id === regions.default);
 

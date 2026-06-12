@@ -27,7 +27,7 @@ router.get(
     route({
         responses: {
             200: {
-                body: "APIGuildVoiceRegion",
+                body: "VoiceRegionListResponse",
             },
             404: {
                 body: "APIErrorResponse",

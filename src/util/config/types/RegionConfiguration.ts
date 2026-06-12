@@ -16,12 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Region } from "@spacebar/schemas";
+import { ConfigVoiceRegion } from "@spacebar/schemas";
 
 export class RegionConfiguration {
     default: string = "spacebar";
     useDefaultAsOptimal: boolean = true;
-    available: Region[] = [
+    available: ConfigVoiceRegion[] = [
         {
             id: "spacebar",
             name: "spacebar",

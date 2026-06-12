@@ -16,15 +16,27 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export interface Region {
+export interface BaseVoiceRegion {
     id: string;
     name: string;
-    endpoint: string;
-    location?: {
-        latitude: number;
-        longitude: number;
-    };
     vip: boolean;
     custom: boolean;
     deprecated: boolean;
 }
+
+export interface ConfigVoiceRegion extends BaseVoiceRegion {
+    endpoint: string; // not spec, used for config
+    location?: {
+        latitude: number;
+        longitude: number;
+    }; // not spec, used for config
+    vip: boolean;
+    custom: boolean;
+    deprecated: boolean;
+}
+
+export interface VoiceRegionResponse extends BaseVoiceRegion {
+    optimal: boolean;
+}
+
+export type VoiceRegionListResponse = VoiceRegionResponse[];

@@ -186,23 +186,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "RouteResponse": {
-        "type": "object",
-        "properties": {
-            "status": {
-                "type": "integer"
-            },
-            "body": {
-                "type": "string",
-                "pattern": "^.*Response$"
-            },
-            "headers": {
-                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "FieldErrorResponse": {
         "type": "object",
         "properties": {
@@ -222,6 +205,23 @@
             "errors",
             "message"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RouteResponse": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "integer"
+            },
+            "body": {
+                "type": "string",
+                "pattern": "^.*Response$"
+            },
+            "headers": {
+                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ActivitySchema": {
@@ -4398,6 +4398,46 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "VoiceRegionResponse": {
+        "type": "object",
+        "properties": {
+            "optimal": {
+                "type": "boolean"
+            },
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "vip": {
+                "type": "boolean"
+            },
+            "custom": {
+                "type": "boolean"
+            },
+            "deprecated": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "custom",
+            "deprecated",
+            "id",
+            "name",
+            "optimal",
+            "vip"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "VoiceRegionListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/VoiceRegionResponse"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "APIGuild": {
         "type": "object",
         "properties": {
@@ -5373,13 +5413,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "APIGuildVoiceRegion": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/GuildVoiceRegion"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "APILimitsConfiguration": {
         "type": "object",
         "properties": {
@@ -6208,6 +6241,9 @@
     "MessageEditSchema": {
         "type": "object",
         "properties": {
+            "poll": {
+                "$ref": "#/definitions/PollCreationSchema"
+            },
             "embed": {
                 "anyOf": [
                     {
@@ -6360,9 +6396,6 @@
                         "type": "null"
                     }
                 ]
-            },
-            "poll": {
-                "$ref": "#/definitions/PollCreationSchema"
             },
             "enforce_nonce": {
                 "type": "boolean"
@@ -15115,35 +15148,6 @@
             "is_primary",
             "localizations",
             "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildVoiceRegion": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "custom": {
-                "type": "boolean"
-            },
-            "deprecated": {
-                "type": "boolean"
-            },
-            "optimal": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "custom",
-            "deprecated",
-            "id",
-            "name",
-            "optimal"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

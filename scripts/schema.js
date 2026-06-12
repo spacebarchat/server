@@ -256,7 +256,7 @@ async function main() {
         process.stdout.write(
             "Done in " + yellowBright(elapsed.totalMilliseconds + "." + elapsed.microseconds) + " ms, " + yellowBright(JSON.stringify(part).length) + " bytes (unformatted) ",
         );
-        if (elapsed.totalMilliseconds >= 20) console.log(bgRedBright("\x1b[5m[SLOW]\x1b[25m"));
+        if (elapsed.totalMilliseconds >= 100) console.log(bgRedBright("\x1b[5m[SLOW]\x1b[25m"));
         else console.log();
 
         definitions = { ...definitions, [name]: { ...part } };
