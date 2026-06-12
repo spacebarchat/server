@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { DateBuilder } from "@spacebar/util";
+import { DateBuilder } from "@spacebar/extensions";
 
 // https://www.stopforumspam.com/usage
 export class StopForumSpamClient {

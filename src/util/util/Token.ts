@@ -25,7 +25,7 @@ import { existsSync } from "node:fs";
 // TODO: dont use deprecated APIs lol
 import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
 import { randomUpperString } from "@spacebar/api";
-import { TimeSpan } from "./Timespan";
+import { TimeSpan } from "../../extensions/Timespan";
 import { HTTPError } from "lambert-server/HTTPError";
 import path from "node:path";
 

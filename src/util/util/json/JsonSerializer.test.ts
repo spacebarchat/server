@@ -2,7 +2,7 @@ import { JsonSerializer } from "./JsonSerializer";
 import { describe, it } from "node:test";
 import { strict as assert } from "node:assert";
 import fs from "node:fs/promises";
-import { Stopwatch } from "../Stopwatch";
+import { Stopwatch } from "../../../extensions/Stopwatch";
 import { JsonValue } from "@protobuf-ts/runtime";
 
 describe("JsonSerializer", () => {

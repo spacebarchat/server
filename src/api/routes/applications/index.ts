@@ -19,8 +19,9 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api";
 import { Application } from "@spacebar/database";
-import { Config, createAppBotUser, trimSpecial } from "@spacebar/util";
+import { Config, createAppBotUser } from "@spacebar/util";
 import { ApplicationCreateSchema } from "@spacebar/schemas";
+import { trimSpecial } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
 

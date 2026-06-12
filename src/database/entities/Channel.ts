@@ -20,7 +20,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../../util/dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../../util/interfaces";
-import { InvisibleCharacters, Snowflake, emitEvent, getPermission, trimSpecial, Permissions, Config, DiscordApiErrors } from "../../util/util";
+import { InvisibleCharacters, Snowflake, emitEvent, getPermission, Permissions, Config, DiscordApiErrors } from "../../util/util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";
@@ -35,6 +35,7 @@ import { Member } from "./Member";
 import { ChannelPermissionOverwrite, ChannelType, PublicChannel, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
 import { OrmUtils } from "../../util/imports";
 import { ThreadMember } from "./ThreadMember";
+import { trimSpecial } from "@spacebar/extensions";
 
 @Entity({
     name: "channels",

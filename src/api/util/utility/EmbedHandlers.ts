@@ -22,8 +22,8 @@ import { yellow } from "picocolors";
 import probe from "probe-image-size";
 import { FindOptionsWhere, In } from "typeorm";
 import { EmbedCache, Message } from "@spacebar/database";
-import { sleep, arrayDistinctBy, arrayGroupBy } from "@spacebar/extensions";
-import { Config, emitEvent, MessageUpdateEvent, normalizeUrl, OrmUtils } from "@spacebar/util";
+import { sleep, arrayDistinctBy, arrayGroupBy, normalizeUrl } from "@spacebar/extensions";
+import { Config, emitEvent, MessageUpdateEvent, OrmUtils } from "@spacebar/util";
 import { Embed, EmbedImage, EmbedType } from "@spacebar/schemas";
 
 export function getDefaultFetchOptions(): RequestInit {

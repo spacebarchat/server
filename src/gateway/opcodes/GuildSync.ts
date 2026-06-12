@@ -18,9 +18,10 @@
 
 import { In } from "typeorm";
 import { Member, Session } from "@spacebar/database";
+import { Stopwatch, timePromise } from "@spacebar/extensions";
 import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { PublicMember } from "@spacebar/schemas";
-import { Presence, timePromise, Stopwatch, Config, getMostRelevantSession } from "@spacebar/util";
+import { Presence, Config, getMostRelevantSession } from "@spacebar/util";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online

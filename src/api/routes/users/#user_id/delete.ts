@@ -16,12 +16,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Request, Response, Router } from "express";
+import { Not } from "typeorm";
 import { route } from "@spacebar/api";
 import { Channel, Emoji, Guild, InstanceBan, Member, Recipient, Sticker, User, UserSettingsProtos } from "@spacebar/database";
-import { ChannelDeleteEvent, ChannelRecipientRemoveEvent, emitEvent, Stopwatch, UserDeleteEvent } from "@spacebar/util";
-import { Request, Response, Router } from "express";
+import { ChannelDeleteEvent, ChannelRecipientRemoveEvent, emitEvent, UserDeleteEvent } from "@spacebar/util";
 import { ChannelType, InstanceUserDeleteSchema, PrivateUserProjection } from "@spacebar/schemas";
-import { Not } from "typeorm";
+import { Stopwatch } from "@spacebar/extensions";
 
 const router = Router({ mergeParams: true });
 

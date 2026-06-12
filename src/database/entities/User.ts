@@ -18,8 +18,8 @@
 
 import { Request } from "express";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
-import { Config, Email, FieldErrors, Snowflake, Stopwatch, trimSpecial } from "@spacebar/util";
-import { Random } from "@spacebar/util/util/Random";
+import { Config, Email, FieldErrors, Snowflake } from "@spacebar/util";
+import { Stopwatch, trimSpecial, Random } from "@spacebar/extensions";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { ConnectedAccount } from "./ConnectedAccount";

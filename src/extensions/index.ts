@@ -17,7 +17,14 @@
 */
 
 export * from "./Array";
+export * from "./DateBuilder";
+export * from "./ElapsedTime";
 export * from "./Math";
+export * from "./Random";
+export * from "./Stopwatch";
+export * from "./String";
+export * from "./Timespan";
+export * from "./Url";
 
 // TODO: move to a separate file
 export async function sleep(ms: number) {

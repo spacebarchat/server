@@ -18,8 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { generateCode, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Guild, Template } from "@spacebar/database";
+import { generateCode } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
 
