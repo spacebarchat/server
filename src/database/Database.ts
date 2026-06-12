@@ -111,7 +111,7 @@ export async function initDatabase(): Promise<DataSource> {
             const initialPath = path.join(__dirname, "migration", DatabaseType + "-initial.js");
             if (fs.existsSync(initialPath)) {
                 console.log("[Database] Found initial migration file, running it.");
-                await new (require(`../migration/${DatabaseType}-initial`).initial0)().up(qr);
+                await new (require(`./migration/${DatabaseType}-initial`).initial0)().up(qr);
             } else console.log("[Database] No initial migration file found at '", initialPath, "', skipping.");
             await qr.release();
         }
