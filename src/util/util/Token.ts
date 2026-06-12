@@ -16,18 +16,17 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import jwt from "jsonwebtoken";
-import { Config } from "./Config";
-import { InstanceBan, Session, User } from "../../database/entities";
 import crypto from "node:crypto";
-import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
-// TODO: dont use deprecated APIs lol
-import { FindOptionsRelationByString, FindOptionsSelectByString } from "typeorm";
-import { randomUpperString } from "@spacebar/api";
-import { TimeSpan } from "../../extensions/Timespan";
-import { HTTPError } from "lambert-server/HTTPError";
 import path from "node:path";
+import fs from "node:fs/promises";
+import jwt from "jsonwebtoken";
+import { HTTPError } from "lambert-server/HTTPError";
+import { InstanceBan, Session, User } from "@spacebar/database";
+import { randomUpperString } from "@spacebar/api";
+import { TimeSpan } from "@spacebar/extensions";
+import { Config } from "./Config";
+import { OrmUtils } from "@spacebar/util";
 
 /// Change history:
 /// 1 - Initial version with HS256
@@ -62,8 +61,8 @@ function rejectAndLog(rejectFunction: (reason?: unknown) => void, httpCode: numb
 export const checkToken = (
     token: string,
     opts?: {
-        select?: FindOptionsSelectByString<User>;
-        relations?: FindOptionsRelationByString;
+        select?: string[]; // TODO: clean up
+        relations?: string[]; // TODO: clean up
         ipAddress?: string;
         fingerprint?: string;
     },
@@ -85,8 +84,8 @@ export const checkToken = (
             let [user, session] = await Promise.all([
                 User.findOne({
                     where: { id: decoded.id },
-                    select: [...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"],
-                    relations: opts?.relations,
+                    select: OrmUtils.keysToObject([...(opts?.select || []), "id", "bot", "disabled", "deleted", "rights", "data"]), // TODO: clean up
+                    relations: !opts?.relations ? undefined : OrmUtils.keysToObject(opts.relations), // TODO: clean up
                 }),
                 decoded.did ? Session.findOne({ where: { session_id: decoded.did, user_id: decoded.id } }) : undefined,
             ]);

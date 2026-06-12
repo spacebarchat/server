@@ -46,7 +46,7 @@ router.post(
         const body = req.body as InstanceUserDeleteSchema | undefined;
         const user = await User.findOneOrFail({
             where: { id: req.params.user_id as string },
-            select: [...PrivateUserProjection, "data"],
+            select: Object.fromEntries([...PrivateUserProjection, "data"].map((i) => [i, true])), // TODO: clean up
         });
 
         if ((body?.persistInstanceBan ?? true) && !(await InstanceBan.findOne({ where: { user_id: user.id } })))

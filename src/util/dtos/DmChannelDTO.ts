@@ -46,7 +46,7 @@ export class DmChannelDTO {
                     .map((r) =>
                         User.findOneOrFail({
                             where: { id: r.user_id },
-                            select: PublicUserProjection,
+                            select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), // TODO: clean up
                         }),
                     ) || [],
             )

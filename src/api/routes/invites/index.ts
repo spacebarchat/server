@@ -42,7 +42,7 @@ router.get(
 
         const invite = await Invite.findOneOrFail({
             where: { code: invite_code },
-            relations: PublicInviteRelation,
+            relations: Object.fromEntries(PublicInviteRelation.map((i) => [i, true])), //TODO: clean up
         });
 
         res.status(200).send(invite.toPublicJSON());

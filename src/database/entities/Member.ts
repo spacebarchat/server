@@ -335,7 +335,7 @@ export class Member extends BaseClassWithoutId {
             where: {
                 id: guild_id,
             },
-            relations: PublicGuildRelations,
+            relations: Object.fromEntries(PublicGuildRelations.map((i) => [i, true])), //TODO: clean up
             relationLoadStrategy: "query",
         });
         const channelPositionsGuild = await Guild.findOneOrFail({

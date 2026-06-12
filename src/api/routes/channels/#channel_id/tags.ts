@@ -43,7 +43,7 @@ router.post(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["available_tags"],
+            relations: { available_tags: true },
         });
 
         if (!channel.isForum()) throw new Error("is not thread only channel");
@@ -88,7 +88,7 @@ router.put(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["available_tags"],
+            relations: { available_tags: true },
         });
 
         if (!channel.isForum()) throw new Error("is not thread only channel");
@@ -127,7 +127,7 @@ router.delete(
 
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
-            relations: ["available_tags"],
+            relations: { available_tags: true },
         });
 
         if (!channel.isForum()) throw new Error("is not thread only channel");

@@ -72,7 +72,7 @@ router.put(
             await User.findOneOrFail({
                 where: { id: req.params.user_id as string },
                 relations: { relationships: { to: true } },
-                select: userProjection,
+                select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
             }),
             req.body.type ?? RelationshipType.friends,
         ),
@@ -136,7 +136,7 @@ router.post(
             res,
             await User.findOneOrFail({
                 relations: { relationships: { to: true } },
-                select: userProjection,
+                select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
                 where: {
                     discriminator: String(req.body.discriminator).padStart(4, "0"), //Discord send the discriminator as integer, we need to add leading zeroes
                     username: req.body.username,
@@ -165,12 +165,12 @@ router.delete(
 
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: userProjection,
+            select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
             relations: { relationships: true },
         });
         const friend = await User.findOneOrFail({
             where: { id: user_id },
-            select: userProjection,
+            select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
             relations: { relationships: true },
         });
 
@@ -215,8 +215,6 @@ router.delete(
     },
 );
 
-export default router;
-
 async function updateRelationship(req: Request, res: Response, friend: User, type: RelationshipType) {
     const id = friend.id;
     if (id === req.user_id) throw new HTTPError("You can't add yourself as a friend");
@@ -224,7 +222,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
     const user = await User.findOneOrFail({
         where: { id: req.user_id },
         relations: { relationships: { to: true } },
-        select: userProjection,
+        select: Object.fromEntries(userProjection.map((i) => [i, true])), //TODO: cleanup
     });
 
     let relationship = user.relationships.find((x) => x.to_id === id);
@@ -316,3 +314,5 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
 
     return res.sendStatus(204);
 }
+
+export default router;

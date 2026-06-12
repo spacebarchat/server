@@ -37,7 +37,7 @@ router.get(
     async (req: Request, res: Response) => {
         res.json(
             await User.findOne({
-                select: PrivateUserProjection,
+                select: Object.fromEntries(PrivateUserProjection.map((i) => [i, true])), //TODO: cleanup
                 where: { id: req.user_id },
             }),
         );
@@ -65,7 +65,7 @@ router.patch(
 
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
-            select: [...PrivateUserProjection, "data"],
+            select: Object.fromEntries([...PrivateUserProjection, "data"].map((i) => [i, true])), //TODO: cleanup
         });
 
         // Populated on password change

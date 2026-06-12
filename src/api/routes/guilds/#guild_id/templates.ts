@@ -86,7 +86,7 @@ router.post(
         const { guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
-            select: TemplateGuildProjection,
+            select: Object.fromEntries(TemplateGuildProjection.map((i) => [i, true])), //TODO: cleanup
             relations: { roles: true, channels: true },
         });
         const exists = await Template.findOne({
@@ -142,7 +142,7 @@ router.put(
         const { code, guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({
             where: { id: guild_id },
-            select: TemplateGuildProjection,
+            select: Object.fromEntries(TemplateGuildProjection.map((i) => [i, true])), //TODO: cleanup
         });
 
         const template = await Template.create({

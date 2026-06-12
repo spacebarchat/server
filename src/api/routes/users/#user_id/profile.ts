@@ -120,7 +120,10 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
         const relationshipsIntersection = relationshipsSelf.filter((r1) => relationshipsUser.some((r2) => r2.to_id === r1.to_id));
         if (with_mutual_friends_count) mutual_friends_count = relationshipsIntersection.length;
         if (with_mutual_friends) {
-            const users = await User.find({ where: { id: In(relationshipsIntersection.map((r) => r.to_id)) }, select: PublicUserProjection });
+            const users = await User.find({
+                where: { id: In(relationshipsIntersection.map((r) => r.to_id)) },
+                select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])),
+            }); //TODO: clean up
             mutual_friends = users.map((u) => u.toPublicUser());
         }
     }
@@ -169,7 +172,7 @@ router.patch("/", route({ requestBody: "UserProfileModifySchema" }), async (req:
     if (body.banner) body.banner = await handleFile(`/banners/${req.user_id}`, body.banner as string);
     const user = await User.findOneOrFail({
         where: { id: req.user_id },
-        select: [...PrivateUserProjection, "data"],
+        select: Object.fromEntries([...PrivateUserProjection, "data"].map((i) => [i, true])), //TODO: cleanup
     });
 
     if (body.bio) {

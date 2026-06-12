@@ -37,7 +37,7 @@ router.get(
 
         const invites = await Invite.find({
             where: { guild_id },
-            relations: PublicInviteRelation,
+            relations: Object.fromEntries(PublicInviteRelation.map((i) => [i, true])), // TODO cleanup
         });
 
         await Promise.all(

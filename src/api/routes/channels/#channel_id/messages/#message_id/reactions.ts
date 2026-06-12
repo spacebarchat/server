@@ -161,7 +161,7 @@ router.get(
                 where: {
                     id: In(reaction.user_ids),
                 },
-                select: PublicUserProjection,
+                select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), //TODO: cleanup
                 take: limit,
             })
         ).map((user) => user.toPublicUser());

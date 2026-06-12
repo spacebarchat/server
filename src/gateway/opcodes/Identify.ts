@@ -49,6 +49,7 @@ import {
     GuildOrUnavailable,
     Intents,
     OPCodes,
+    OrmUtils,
     PresenceUpdateEvent,
     ReadyEventData,
     ReadyGuildDTO,
@@ -260,7 +261,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                 where: { id: this.user_id },
                 select: {
                     // We only want some member props
-                    ...Object.fromEntries(["index", ...MemberPrivateProjection].map((x) => [x, true])),
+                    ...OrmUtils.keysToObject(["index", ...(<string[]>MemberPrivateProjection)]),
                     settings: true, // guild settings
                     roles: { id: true }, // the full role is fetched from the `guild` relation
                     guild: { id: true },
@@ -353,7 +354,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     type: Not(In([ChannelType.GUILD_PUBLIC_THREAD, ChannelType.GUILD_PRIVATE_THREAD, ChannelType.GUILD_NEWS_THREAD])),
                 },
                 order: { guild_id: "ASC" },
-                relations: ["available_tags"],
+                relations: { available_tags: true },
             }),
         ),
         timePromise(() =>

@@ -546,7 +546,7 @@ export class Channel extends BaseClass {
                 channel_id: channel.id,
                 user: await User.findOneOrFail({
                     where: { id: user_id },
-                    select: PublicUserProjection,
+                    select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), //TODO: cleanup
                 }),
             },
             channel_id: channel.id,

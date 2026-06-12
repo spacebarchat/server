@@ -2,6 +2,9 @@
 // Copyright (c) 2015-2022 TypeORM. http://typeorm.github.io
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @fc-license-skip
+import { arrayGroupBy } from "@spacebar/extensions";
+import { FindOptionsSelect, FindOptionsWhere } from "typeorm";
+
 export class OrmUtils {
     // Checks if it's an object made by Object.create(null), {} or new Object()
     private static isPlainObject(item: unknown) {
@@ -92,6 +95,25 @@ export class OrmUtils {
 
         for (const source of sources) {
             OrmUtils.merge(target, source);
+        }
+
+        return target;
+    }
+
+    // Copyright Spacebar & contributors 2026 (AGPLv3)
+    static keysToObject(keys: string[]) {
+        const target: FindOptionsSelect<any> = {};
+        for (const k of keys.filter((x) => !x.includes("."))) {
+            target[k] = true;
+        }
+
+        const keyGroups = arrayGroupBy(
+            keys.filter((x) => x.includes(".")),
+            (k) => k.split(".", 2)[0],
+        );
+
+        for (const [k, v] of keyGroups) {
+            target[k] = this.keysToObject(v.map((vv) => vv.replace(k + ".", "")));
         }
 
         return target;

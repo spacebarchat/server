@@ -235,7 +235,7 @@ export class User extends BaseClass {
     static async getPublicUser(user_id: string): Promise<PublicUser> {
         const user = await User.findOneOrFail({
             where: { id: user_id },
-            select: PublicUserProjection,
+            select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), // TODO: clean up
         });
         return user.toPublicUser();
     }

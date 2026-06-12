@@ -60,7 +60,7 @@ router.get(
 
         const members = await Member.find({
             where: { guild_id, ...query },
-            select: PublicMemberProjection,
+            select: Object.fromEntries(PublicMemberProjection.map((i) => [i, true])), // TODO: cleanup
             take: limit,
             order: { id: "ASC" },
         });

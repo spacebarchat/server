@@ -128,7 +128,7 @@ router.get(
         mentions = mentions instanceof Array ? mentions : mentions ? [mentions] : [];
         let roleids = [] as string[];
         if (mentions) {
-            const ms = await Member.find({ where: { id: In(mentions), guild_id: req.params.guild_id as string }, relations: ["roles"] });
+            const ms = await Member.find({ where: { id: In(mentions), guild_id: req.params.guild_id as string }, relations: { roles: true } });
             const rSet = new Set<string>();
             ms.forEach((memb) => {
                 memb.roles.forEach(({ id }) => rSet.add(id));

@@ -65,7 +65,7 @@ router.put(
                     user: (
                         await User.findOneOrFail({
                             where: { id: user_id },
-                            select: PublicUserProjection,
+                            select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), //TODO: cleanup
                         })
                     ).toPublicUser(),
                 },

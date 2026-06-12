@@ -44,7 +44,7 @@ router.post(
         const body = req.body as MessageThreadCreationSchema;
         const message = await Message.findOneOrFail({
             where: { id: message_id, channel_id },
-            relations: ["guild"],
+            relations: { guild: true },
         });
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
