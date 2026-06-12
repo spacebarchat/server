@@ -1,6 +1,6 @@
 import { isMainThread, parentPort, Worker } from "node:worker_threads";
 import { ProcessLifecycle } from "../../ProcessLifecycle";
-import { Stopwatch } from "../../Stopwatch";
+import { Stopwatch } from "../../../../extensions/Stopwatch";
 import bcrypt from "bcrypt";
 
 export class BcryptWorkerPool {

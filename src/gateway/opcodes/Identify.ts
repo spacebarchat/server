@@ -19,7 +19,7 @@
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
-import { arrayGroupBy } from "@spacebar/extensions";
+import { arrayGroupBy, ElapsedTime, Stopwatch, timeFunction, timePromise } from "@spacebar/extensions";
 import {
     getDatabase,
     Application,
@@ -43,7 +43,6 @@ import {
     checkToken,
     Config,
     CurrentTokenFormatVersion,
-    ElapsedTime,
     emitEvent,
     EVENTEnum,
     generateToken,
@@ -55,9 +54,6 @@ import {
     ReadyGuildDTO,
     ReadyUserGuildSettingsEntries,
     SessionsReplace,
-    Stopwatch,
-    timeFunction,
-    timePromise,
     TraceNode,
     TraceRoot,
 } from "@spacebar/util";

@@ -18,7 +18,7 @@
 
 process.env.LOG_ROUTES = "false";
 
-const { Stopwatch } = require("../dist/util/util/Stopwatch");
+const { Stopwatch } = require("../dist/extensions/Stopwatch");
 const totalSw = Stopwatch.startNew();
 
 require("module-alias/register");
@@ -26,7 +26,6 @@ const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
 const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
-require("../dist/extensions");
 const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");

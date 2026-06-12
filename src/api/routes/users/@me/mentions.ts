@@ -20,7 +20,8 @@ import { Request, Response, Router } from "express";
 import { In, LessThan, FindOptionsWhere } from "typeorm";
 import { route } from "@spacebar/api";
 import { Message, Member, Channel, Attachment } from "@spacebar/database";
-import { Snowflake, Permissions, NewUrlUserSignatureData, Stopwatch } from "@spacebar/util";
+import { Snowflake, Permissions, NewUrlUserSignatureData } from "@spacebar/util";
+import { Stopwatch } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
 

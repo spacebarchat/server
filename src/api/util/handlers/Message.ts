@@ -20,7 +20,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { Equal, In, Or } from "typeorm";
 import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
 import { getDatabase, Application, Attachment, Channel, CloudAttachment, Guild, Member, Message, ReadState, Role, Session, Sticker, User, Webhook } from "@spacebar/database";
-import { mathLogBase, arrayDistributeSequentially } from "@spacebar/extensions";
+import { mathLogBase, arrayDistributeSequentially, Stopwatch } from "@spacebar/extensions";
 import {
     Config,
     DiscordApiErrors,
@@ -36,7 +36,6 @@ import {
     Permissions,
     ROLE_MENTION,
     Snowflake,
-    Stopwatch,
     TraceNode,
     TraceRoot,
     TraceSubTree,

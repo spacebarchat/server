@@ -19,7 +19,7 @@
 /*
 	Regenerates the `spacebarchat/server/assets/schemas.json` file, used for API/Gateway input validation.
 */
-const { Stopwatch } = require("../dist/util/util/Stopwatch");
+const { Stopwatch } = require("../dist/extensions/Stopwatch");
 const totalSw = Stopwatch.startNew();
 
 const conWarn = console.warn;

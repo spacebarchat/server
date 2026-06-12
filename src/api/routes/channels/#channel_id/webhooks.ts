@@ -21,8 +21,9 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api";
 import { Application, Channel, User, Webhook } from "@spacebar/database";
-import { Config, DiscordApiErrors, handleFile, trimSpecial, ValidateName } from "@spacebar/util";
+import { Config, DiscordApiErrors, handleFile, ValidateName } from "@spacebar/util";
 import { isTextChannel, WebhookCreateSchema, WebhookType } from "@spacebar/schemas";
+import { trimSpecial } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
 

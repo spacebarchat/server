@@ -16,9 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Session } from "@spacebar/database";
-import { TimeSpan } from "@spacebar/util";
 import { setInterval } from "node:timers";
+import { Session } from "@spacebar/database";
+import { TimeSpan } from "@spacebar/extensions";
 
 export async function initInstance() {
     // TODO: clean up database and delete tombstone data

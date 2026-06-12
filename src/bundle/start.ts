@@ -29,7 +29,8 @@ import cluster, { Worker } from "node:cluster";
 import os from "node:os";
 import "reflect-metadata";
 import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
-import { centerString, getRevInfoOrFail, Logo } from "@spacebar/util";
+import { centerString } from "@spacebar/extensions";
+import { getRevInfoOrFail, Logo } from "@spacebar/util";
 import { initStats } from "./stats";
 
 const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;

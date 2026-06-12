@@ -17,12 +17,13 @@
 */
 
 import crypto from "node:crypto";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
+import { randomUpperString } from "@spacebar/api";
+import { DateBuilder, TimeSpan } from "@spacebar/extensions";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
 import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, PrivateStatus } from "../../util/interfaces";
-import { randomUpperString } from "@spacebar/api";
-import { DateBuilder, IpDataClient, TimeSpan } from "../../util/util";
+import { IpDataClient } from "../../util/util";
 
 @Entity({
     name: "sessions",

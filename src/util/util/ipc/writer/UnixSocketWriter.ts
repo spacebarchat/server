@@ -20,11 +20,12 @@ import net, { Socket } from "node:net";
 import fs, { FSWatcher } from "node:fs";
 import path from "node:path";
 import { red } from "picocolors";
-import { BaseEventWriter } from "./BaseEventWriter";
-import { Event, Stopwatch } from "@spacebar/util";
-import { ProcessLifecycle } from "../../ProcessLifecycle";
-import { Monitoring } from "../../../monitoring/Monitoring";
 import { Gauge } from "prom-client";
+import { Stopwatch } from "@spacebar/extensions";
+import { Event } from "@spacebar/util";
+import { Monitoring } from "../../../monitoring/Monitoring";
+import { ProcessLifecycle } from "../../ProcessLifecycle";
+import { BaseEventWriter } from "./BaseEventWriter";
 
 export class UnixSocketWriter extends BaseEventWriter {
     private static openConnectionsMetric: Gauge;

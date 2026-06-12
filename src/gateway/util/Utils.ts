@@ -17,7 +17,8 @@
 */
 
 import { Session, VoiceState } from "@spacebar/database";
-import { Event, TimeSpan } from "@spacebar/util";
+import { TimeSpan } from "@spacebar/extensions";
+import { Event } from "@spacebar/util";
 import { WebSocket } from "./WebSocket";
 import { OPCODES } from "./Constants";
 import { Send } from "./Send";

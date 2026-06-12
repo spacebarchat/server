@@ -16,7 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SPECIAL_CHAR } from "./Regex";
+import { Request } from "express";
+import { SPECIAL_CHAR } from "@spacebar/util/util/Regex";
+import { Random } from "@spacebar/extensions/Random";
+import { ntob } from "@spacebar/api";
+import { FieldErrors } from "@spacebar/util";
 
 export function trimSpecial(str?: string): string {
     if (!str) return "";
@@ -43,4 +47,22 @@ export function stringGlobToRegexp(str: string, flags?: string): RegExp {
     // Convert simple wildcard patterns to regex
     const escaped = str.replace(".", "\\.").replace("?", ".").replace("*", ".*");
     return new RegExp(escaped, flags);
+}
+
+export function stringCheckLength(str: string, min: number, max: number, key: string, req: Request) {
+    if (str.length < min || str.length > max) {
+        throw FieldErrors({
+            [key]: {
+                code: "BASE_TYPE_BAD_LENGTH",
+                // TODO: remove dependency on request (add generic field?)
+                message: req.t("common:field.BASE_TYPE_BAD_LENGTH", {
+                    length: `${min} - ${max}`,
+                }),
+            },
+        });
+    }
+}
+
+export function generateCode() {
+    return ntob(Date.now() + Random.nextInt(0, 10000));
 }
