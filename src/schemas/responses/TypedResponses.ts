@@ -20,8 +20,7 @@
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
 // TODO: remove entity imports
-import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Message, Role, Template, Webhook } from "@spacebar/database";
-import { GuildVoiceRegion } from "./GuildVoiceRegionsResponse";
+import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Message, Template, Webhook } from "@spacebar/database";
 import { GuildCreateResponse, PrivateUser, PublicMember, PublicUser } from "@spacebar/schemas";
 
 // TODO: remove this entire file!
@@ -54,7 +53,6 @@ export interface APIGuildWithJoinedAt extends GuildCreateResponse {
     joined_at: string;
 }
 
-export type APIRoleArray = Role[];
 export type APITemplateArray = Template[];
 export type APILimitsConfiguration = LimitsConfiguration;
 

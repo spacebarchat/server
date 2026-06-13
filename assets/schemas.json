@@ -3893,6 +3893,84 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "RoleResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "color": {
+                "type": "integer"
+            },
+            "colors": {
+                "$ref": "#/definitions/RoleColors"
+            },
+            "hoist": {
+                "type": "boolean"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "unicode_emoji": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "position": {
+                "type": "integer"
+            },
+            "permissions": {
+                "type": "string"
+            },
+            "managed": {
+                "type": "boolean"
+            },
+            "mentionable": {
+                "type": "boolean"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "tags": {
+                "$ref": "#/definitions/RoleTags"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "color",
+            "colors",
+            "description",
+            "hoist",
+            "id",
+            "managed",
+            "mentionable",
+            "name",
+            "permissions",
+            "position"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RoleListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/RoleResponse"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "StickersResponse": {
         "type": "array",
         "items": {
@@ -5397,13 +5475,6 @@
             "welcome_screen",
             "widget_enabled"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "APIRoleArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/Role"
-        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "APITemplateArray": {
@@ -15022,6 +15093,43 @@
             2,
             3
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RoleTags": {
+        "type": "object",
+        "properties": {
+            "bot_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "integration_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "subscription_listing_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "premium_subscriber": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "available_for_purchase": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "guild_connections": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "DmChannelDTO": {

@@ -119,7 +119,7 @@ router.patch(
         permission: "MANAGE_ROLES",
         responses: {
             200: {
-                body: "APIRoleArray",
+                body: "RoleListResponse",
             },
             400: {
                 body: "APIErrorResponse",
