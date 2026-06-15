@@ -297,7 +297,7 @@ router.delete(
             await channel.save();
         }
         const message = await Message.findOneOrFail({
-            where: { id: message_id },
+            where: { id: message_id, channel_id: channel_id },
         });
 
         const rights = await getRights(req.user_id);
@@ -309,7 +309,7 @@ router.delete(
             }
         } else rights.hasThrow("SELF_DELETE_MESSAGES");
 
-        await Message.delete({ id: message_id });
+        await Message.delete({ id: message_id, channel_id: channel_id });
 
         await emitEvent({
             event: "MESSAGE_DELETE",
