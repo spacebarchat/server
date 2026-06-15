@@ -756,7 +756,7 @@ async function handleMessageMentionsAsync(message: Message) {
     /*message.mention_channels = mention_channel_ids.map((x) =>
 		Channel.create({ id: x }),
 	);*/
-    message.mention_roles = await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
+    message.mention_roles = mention_role_id_set.size == 0 ? [] : await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
     message.mentions = [...message.mentions, ...(await User.find({ where: { id: In(mention_user_id_set.values().toArray()) } }))];
     message.mention_everyone = mention_everyone;
     trace.calls.push("fillMessageMentionProperties", { micros: sw.getElapsedAndReset().totalMicroseconds });
