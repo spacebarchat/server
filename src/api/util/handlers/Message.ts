@@ -700,7 +700,7 @@ async function handleMessageMentionsAsync(message: Message) {
         }
         contentTrace.calls.push("parseMentions", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
-        let mentionedRoles = await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
+        let mentionedRoles = !channel.guild_id ? [] : await Role.find({ where: { id: In(mention_role_id_set.values().toArray()), guild_id: channel.guild_id } });
         contentTrace.calls.push("queryMentionRoles", { micros: sw.getElapsedAndReset().totalMicroseconds });
 
         //TODO: should this throw at all?
