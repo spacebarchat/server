@@ -78,10 +78,10 @@ Console.WriteLine();
 
 IEnumerable<string> ReadDirRecursive(string path)
 {
-    foreach (var f in Directory.GetFiles(path))
+    foreach (var f in Directory.GetFiles(path).OrderBy(x=>x.TrimEnd(".ts").ToString()))
         yield return f;
 
-    foreach (var d in Directory.GetDirectories(path))
+    foreach (var d in Directory.GetDirectories(path).Order())
     foreach (var f in ReadDirRecursive(d))
         yield return f;
 }
