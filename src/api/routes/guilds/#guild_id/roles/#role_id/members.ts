@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Member } from "@spacebar/database";
 import { arrayPartition } from "@spacebar/extensions";
 import { DiscordApiErrors } from "@spacebar/util";

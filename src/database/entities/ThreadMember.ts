@@ -18,7 +18,7 @@
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { ThreadMembersUpdateEvent } from "../../util/interfaces";
-import { emitEvent } from "../../util/util";
+import { emitEvent } from "@spacebar/util/util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
 import { HTTPError } from "lambert-server/HTTPError";

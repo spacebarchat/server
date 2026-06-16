@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Application } from "@spacebar/database";
 import { Config, createAppBotUser } from "@spacebar/util";
 import { ApplicationCreateSchema } from "@spacebar/schemas";

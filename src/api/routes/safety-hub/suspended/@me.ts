@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { User } from "@spacebar/database";
 import { AccountStandingResponse, AccountStandingState, AppealEligibility } from "@spacebar/schemas";
 

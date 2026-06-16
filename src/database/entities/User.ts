@@ -39,7 +39,7 @@ import {
     PublicUserProjection,
     UserPrivate,
 } from "@spacebar/schemas";
-import { JsonNumber } from "../../util/util/Decorators";
+import { JsonNumber } from "@spacebar/util/util/Decorators";
 
 @Entity({
     name: "users",

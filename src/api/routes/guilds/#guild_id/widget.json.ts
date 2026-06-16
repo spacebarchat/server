@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Guild, Member, Invite } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { Config, DiscordApiErrors, Permissions } from "@spacebar/util";

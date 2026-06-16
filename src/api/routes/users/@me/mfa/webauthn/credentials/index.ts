@@ -20,7 +20,7 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { ExpectedAttestationResult } from "fido2-lib";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { SecurityKey, User } from "@spacebar/database";
 import { DiscordApiErrors, FieldErrors, generateWebAuthnTicket, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { CreateWebAuthnCredentialSchema, GenerateWebAuthnCredentialsSchema, WebAuthnPostSchema } from "@spacebar/schemas";

@@ -20,7 +20,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { DmChannelDTO } from "../../util/dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../../util/interfaces";
-import { InvisibleCharacters, Snowflake, emitEvent, getPermission, Permissions, Config, DiscordApiErrors } from "../../util/util";
+import { InvisibleCharacters, Snowflake, emitEvent, getPermission, Permissions, Config, DiscordApiErrors } from "@spacebar/util/util";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Invite } from "./Invite";

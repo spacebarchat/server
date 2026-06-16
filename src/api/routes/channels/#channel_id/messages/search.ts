@@ -21,7 +21,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { FindManyOptions, Like } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Message } from "@spacebar/database";
 import { FieldErrors, getPermission } from "@spacebar/util";
 

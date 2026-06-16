@@ -20,7 +20,7 @@ import { Member, Session, User, VoiceState } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { WebSocket } from "@spacebar/gateway";
 import { emitEvent, PresenceUpdateEvent, SessionsReplace, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
-import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
+import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 
 export async function Close(this: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());

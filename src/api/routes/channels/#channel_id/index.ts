@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Recipient } from "@spacebar/database";
 import { ChannelDeleteEvent, ChannelUpdateEvent, emitEvent, handleFile, Config, FieldError, ErrorList, makeObjectErrorContent } from "@spacebar/util";
 import { ChannelModifySchema, ChannelType } from "@spacebar/schemas";

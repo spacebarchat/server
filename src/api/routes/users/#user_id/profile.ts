@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Badge, Member, Relationship, User } from "@spacebar/database";
 import { Config, emitEvent, FieldErrors, handleFile, UserUpdateEvent } from "@spacebar/util";
 import { PartialConnectedAccountResponse, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType, UserProfileModifySchema } from "@spacebar/schemas";

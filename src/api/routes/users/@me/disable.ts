@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { User } from "@spacebar/database";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";

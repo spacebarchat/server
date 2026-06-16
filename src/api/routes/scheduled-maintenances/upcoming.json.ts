@@ -17,7 +17,7 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 const router = Router({ mergeParams: true });
 
 router.get(

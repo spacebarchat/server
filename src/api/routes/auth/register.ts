@@ -24,7 +24,7 @@ import { route, verifyCaptcha } from "@spacebar/api";
 import { Invite, User, ValidRegistrationToken } from "@spacebar/database";
 import { Config, FieldErrors, generateToken, IpDataClient, AbuseIpDbClient } from "@spacebar/util";
 import { RegisterSchema } from "@spacebar/schemas";
-import { BcryptWorkerPool } from "../../../util/util/workers/bcrypt/BcryptWorkerPool";
+import { BcryptWorkerPool } from "@spacebar/util/util/workers/bcrypt/BcryptWorkerPool";
 import { Stopwatch, TimeSpan } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });

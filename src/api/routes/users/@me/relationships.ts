@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Relationship, User } from "@spacebar/database";
 import { Config, DiscordApiErrors, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, emitEvent } from "@spacebar/util";
 import { PublicUserProjection, RelationshipType, RelationshipPatchSchema } from "@spacebar/schemas";

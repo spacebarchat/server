@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Member, Role } from "@spacebar/database";
 import { ChannelUpdateEvent, emitEvent } from "@spacebar/util";
 import { ChannelPermissionOverwriteSchema, ChannelPermissionOverwrite, ChannelPermissionOverwriteType } from "@spacebar/schemas";

@@ -17,10 +17,10 @@
 */
 
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Config, deleteFile } from "../../util/util";
+import { Config, deleteFile } from "@spacebar/util/util";
+import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "@spacebar/util/Signing";
+import { PublicAttachment } from "@spacebar/schemas/api/messages/Attachments";
 import { BaseClass } from "./BaseClass";
-import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "../../util/Signing";
-import { PublicAttachment } from "../../schemas/api/messages/Attachments";
 
 @Entity({
     name: "attachments",

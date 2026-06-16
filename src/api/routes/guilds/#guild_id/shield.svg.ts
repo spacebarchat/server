@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { makeBadge } from "badge-maker";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Guild, Member } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
 

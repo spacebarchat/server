@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { ExpectedAssertionResult } from "fido2-lib";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { SecurityKey, User } from "@spacebar/database";
 import { generateToken, verifyWebAuthnToken, WebAuthn } from "@spacebar/util";
 import { WebAuthnTotpSchema } from "@spacebar/schemas";

@@ -18,7 +18,7 @@
 
 import { BaseClass } from "./BaseClass";
 import { Entity, Column } from "typeorm";
-import { ReportMenuType } from "../../schemas/api/reports/ReportMenu";
+import { ReportMenuType } from "@spacebar/schemas/api/reports/ReportMenu";
 
 @Entity({
     name: "report_menus",

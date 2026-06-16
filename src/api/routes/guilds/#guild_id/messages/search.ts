@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Between, FindManyOptions, FindOptionsWhere, In, LessThan, Like, MoreThan } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Member, Message } from "@spacebar/database";
 import { FieldErrors, Snowflake, getPermission } from "@spacebar/util";
 

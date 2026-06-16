@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Application, Member, Role, User } from "@spacebar/database";
 import { ApiError, DiscordApiErrors, FieldErrors, Permissions, getPermission } from "@spacebar/util";
 import { ApplicationAuthorizeSchema } from "@spacebar/schemas";

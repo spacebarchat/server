@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { verifyToken } from "node-2fa";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { BackupCode, User } from "@spacebar/database";
 import { generateToken } from "@spacebar/util";
 import { TotpDisableSchema } from "@spacebar/schemas";

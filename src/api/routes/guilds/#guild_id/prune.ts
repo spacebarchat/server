@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { IsNull, LessThan } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Guild, Member } from "@spacebar/database";
 import { Snowflake } from "@spacebar/util";
 

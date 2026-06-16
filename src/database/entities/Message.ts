@@ -44,7 +44,7 @@ import {
     InteractionType,
 } from "@spacebar/schemas";
 import { MessageFlags } from "@spacebar/util";
-import { JsonRemoveEmpty } from "../../util/util/Decorators";
+import { JsonRemoveEmpty } from "@spacebar/util/util/Decorators";
 
 @Entity({
     name: "messages",

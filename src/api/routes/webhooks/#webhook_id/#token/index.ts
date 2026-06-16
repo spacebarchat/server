@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Webhook } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, WebhooksUpdateEvent } from "@spacebar/util";
 import { executeWebhook } from "@spacebar/api/util/handlers/Webhook";

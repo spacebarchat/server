@@ -21,7 +21,7 @@ import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, JoinTabl
 import { Ban, Channel, PublicGuildRelations } from "./index";
 import { ReadyGuildDTO } from "../../util/dtos";
 import { GuildCreateEvent, GuildDeleteEvent, GuildMemberAddEvent, GuildMemberRemoveEvent, GuildMemberUpdateEvent, MessageCreateEvent } from "../../util/interfaces";
-import { Config, emitEvent, DiscordApiErrors } from "../../util/util";
+import { Config, emitEvent, DiscordApiErrors } from "@spacebar/util/util";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Guild } from "./Guild";
 import { Message } from "./Message";

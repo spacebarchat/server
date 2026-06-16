@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { ArrayContains } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Guild } from "@spacebar/database";
 import { Config } from "@spacebar/util";
 

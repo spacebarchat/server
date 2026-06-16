@@ -17,7 +17,7 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { getDatabase } from "@spacebar/database";
 
 const router = Router({ mergeParams: true });

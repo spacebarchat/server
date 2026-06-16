@@ -18,7 +18,7 @@
 
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { User } from "@spacebar/database";
 import { checkToken, Email, FieldErrors, generateToken } from "@spacebar/util";
 import { PasswordResetSchema } from "@spacebar/schemas";

@@ -18,7 +18,7 @@
 
 import { route, SpacebarServer } from "@spacebar/api";
 import { Request, Response, Router } from "express";
-import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
+import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 
 const router: Router = Router({ mergeParams: true });
 

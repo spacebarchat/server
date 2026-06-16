@@ -18,9 +18,9 @@
 
 import { BaseEntity, BeforeInsert, BeforeUpdate, FindOptionsWhere, PrimaryColumn } from "typeorm";
 import { getDatabase } from "../Database";
-import { Snowflake } from "../../util/util/Snowflake";
+import { Snowflake } from "@spacebar/util/util/Snowflake";
 import { OrmUtils } from "../../util/imports/OrmUtils";
-import { annotationsKey } from "../../util/util/Decorators";
+import { annotationsKey } from "@spacebar/util/util/Decorators";
 
 export class BaseClassWithoutId extends BaseEntity {
     private get construct() {

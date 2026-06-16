@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Emoji, Guild, InstanceBan, Member, Recipient, Sticker, User, UserSettingsProtos } from "@spacebar/database";
 import { ChannelDeleteEvent, ChannelRecipientRemoveEvent, emitEvent, UserDeleteEvent } from "@spacebar/util";
 import { ChannelType, InstanceUserDeleteSchema, PrivateUserProjection } from "@spacebar/schemas";

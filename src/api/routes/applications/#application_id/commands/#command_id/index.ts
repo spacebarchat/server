@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Application, ApplicationCommand } from "@spacebar/database";
 import { FieldErrors, Snowflake } from "@spacebar/util";
 import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";

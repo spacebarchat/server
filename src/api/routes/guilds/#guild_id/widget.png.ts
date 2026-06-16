@@ -22,7 +22,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { storage } from "@spacebar/cdn/util/Storage";
 import { Guild } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";

@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { ReportMenuType, ReportMenuTypeNames, CreateReportSchema } from "@spacebar/schemas";
 import { FieldErrors } from "@spacebar/util";
 

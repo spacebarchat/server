@@ -19,7 +19,7 @@
 import { randomBytes } from "node:crypto";
 import { Request, Response, Router } from "express";
 import { InteractionFailureReason, InteractionSchema, InteractionType } from "@spacebar/schemas";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Guild, Member, Message } from "@spacebar/database";
 import { Config, emitEvent, getPermission, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";

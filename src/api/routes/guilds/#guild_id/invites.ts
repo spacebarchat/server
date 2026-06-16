@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api";
+import { route } from "@spacebar/api/util/handlers/route";
 import { Invite, PublicInviteRelation } from "@spacebar/database";
 
 const router = Router({ mergeParams: true });
