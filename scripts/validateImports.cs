@@ -28,13 +28,18 @@ foreach (var f in ReadDirRecursive("./src"))
     else
         await foreach (var import in GetImports(f))
         {
-            // if (import.ImportSourceType == ImportSourceType.Npm)
-            // Console.WriteLine(import.ToJson(indent: false));
+            // These files are completely idempotent and safe to import
+            if (import.ImportSource.EndsWith("util/util/ProcessLifeCycle") && import.ImportEntities.SequenceEqual(["ProcessLifecycle"])) continue;
 
             // file level
             if (f == "./src/schemas/Validator.ts")
             {
                 if (import is not { ImportSource: "ajv" or "ajv-formats" or "node:fs" or "node:path" })
+                    LogError(f, import);
+            }
+            else if (f == "./src/database/Database.ts")
+            {
+                if (import is not { ImportSource: "picocolors" or "dotenv" or "node:fs" or "node:path" })
                     LogError(f, import);
             }
 
@@ -93,7 +98,7 @@ async IAsyncEnumerable<ImportReference> GetImports(string path)
         RegexOptions.Multiline
     );
     var basicRequireRegex = new Regex(
-        @"require\(""(?<source>.*)""\)",
+        @"require\(""(?<source>.*)""\)(\.(?<entities>\w+))?",
         RegexOptions.Multiline
     );
     // Console.WriteLine(basicImportRegex);
@@ -121,7 +126,9 @@ async IAsyncEnumerable<ImportReference> GetImports(string path)
     {
         IsRequire = isRequire,
         IsTypeImport = m.Groups.ContainsKey("typeSpecifier") && m.Groups["typeSpecifier"].Success,
-        ImportEntities = m.Groups["entities"].Value.ReplaceLineEndings("").Replace(" ", "").Split(","),
+        ImportEntities = isRequire
+            ? [m.Groups["entities"].Value.ReplaceLineEndings("")]
+            : m.Groups["entities"].Value.ReplaceLineEndings("").Replace(" ", "").Split(","),
         ImportSource = m.Groups["source"].Value,
         ImportSourceType = ClassifyImportSourceType(m.Groups["source"].Value),
         Line = fileContents[..(m.Index)].CountInstances("\n"),
@@ -160,7 +167,7 @@ struct ImportReference
             $"{ConsoleUtils.ColoredString(sourceType.GetFriendlyName(), sourceTypeClr?.R ?? 255, sourceTypeClr?.G ?? 255, sourceTypeClr?.B ?? 255)} "
             + $"{(IsTypeImport ? ConsoleUtils.ColoredString("type ", 255, 127, 0) : "")}{(IsRequire ? ConsoleUtils.ColoredString("require", 255, 255, 0) : ConsoleUtils.ColoredString("import", 0, 255, 0))} "
             + $"from {ConsoleUtils.ColoredString(ImportSource, sourceTypeClr?.R ?? 255, sourceTypeClr?.G ?? 255, sourceTypeClr?.B ?? 255)}, "
-            + $"obtaining {(IsRequire ? "<unknown>" : string.Join(", ", ImportEntities.Select(x => ConsoleUtils.ColoredString(x, 150, 150, 150))))}";
+            + $"obtaining {(string.Join(", ", ImportEntities.Select(x => ConsoleUtils.ColoredString(x, 150, 150, 150))))}";
     }
 }
 
