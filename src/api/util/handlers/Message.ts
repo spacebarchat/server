@@ -18,9 +18,9 @@
 
 import { HTTPError } from "lambert-server/HTTPError";
 import { Equal, In, Or } from "typeorm";
-import { fillMessageUrlEmbeds, randomString } from "@spacebar/api";
+import { fillMessageUrlEmbeds } from "@spacebar/api";
 import { getDatabase, Application, Attachment, Channel, CloudAttachment, Guild, Member, Message, ReadState, Role, Session, Sticker, User, Webhook } from "@spacebar/database";
-import { mathLogBase, arrayDistributeSequentially, Stopwatch } from "@spacebar/extensions";
+import { mathLogBase, arrayDistributeSequentially, Stopwatch, Random } from "@spacebar/extensions";
 import {
     Config,
     DiscordApiErrors,
@@ -280,7 +280,7 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
         throw FieldErrors(errors);
     }
     return async (messageId: string, user: User, channel: Channel) => {
-        const batchId = `CLOUD_compUploads_${randomString(128)}`;
+        const batchId = `CLOUD_compUploads_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 128)}`;
         (await Promise.all(medias.map((m, index) => processMedia(m, messageId, batchId, user, channel, index + "")))).forEach((_) => _?.());
     };
 }

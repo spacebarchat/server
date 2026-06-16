@@ -19,8 +19,8 @@
 import http from "node:http";
 import { setInterval } from "node:timers";
 import ws from "ws";
-import { randomString } from "@spacebar/api"; // TODO: move to util
 import { initDatabase } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { checkToken, Config, initEvent, Rights } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
@@ -66,7 +66,10 @@ export class Server {
 
             this.server = http.createServer(async (req, res) => {
                 if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
-                    res.setHeader("Set-Cookie", `__sb_sessid=${randomString(32)}; Secure; HttpOnly; SameSite=None; Path=/`);
+                    res.setHeader(
+                        "Set-Cookie",
+                        `__sb_sessid=${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)}; Secure; HttpOnly; SameSite=None; Path=/`,
+                    );
                 }
                 const requestUrl = new URL(`http://${req.headers.host}${req.url}`);
                 if (requestUrl.pathname === "/metrics") {

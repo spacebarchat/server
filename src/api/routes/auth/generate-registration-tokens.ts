@@ -17,8 +17,9 @@
 */
 
 import { Request, Response, Router } from "express";
-import { randomString, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { ValidRegistrationToken } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { Config } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
@@ -48,7 +49,7 @@ router.get(
 
         for (let i = 0; i < count; i++) {
             const token = ValidRegistrationToken.create({
-                token: randomString(length),
+                token: Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", length),
                 expires_at: new Date(Date.now() + Config.get().security.defaultRegistrationTokenExpiration),
             });
             tokens.push(token);

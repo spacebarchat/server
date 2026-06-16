@@ -17,8 +17,9 @@
 */
 
 import { Request, Response, Router } from "express";
-import { randomString, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Channel, Guild, Member, Invite } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { Config, DiscordApiErrors, Permissions } from "@spacebar/util";
 import { ChannelType, GuildWidgetJsonResponse } from "@spacebar/schemas";
 
@@ -93,7 +94,7 @@ async function getWidgetJsonData(guild_id: string) {
         const expires_at = new Date(max_age * 1000 + Date.now());
 
         invite = await Invite.create({
-            code: randomString(),
+            code: Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6),
             temporary: false,
             uses: 0,
             max_uses: 0,

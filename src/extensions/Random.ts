@@ -89,4 +89,18 @@ export class Random {
         }
         return array;
     }
+
+    public static getString(choices: string, length: number) {
+        const _choices = choices.split("");
+        const result = new Array(length);
+        for (const i in result) {
+            result[i] = _choices[Random.nextInt(0, _choices.length)];
+        }
+
+        return result.join("");
+    }
+
+    public static getHexString(length: number) {
+        return this.getString("0123456789ABCDEF", length);
+    }
 }

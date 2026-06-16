@@ -23,8 +23,7 @@ import fs from "node:fs/promises";
 import jwt from "jsonwebtoken";
 import { HTTPError } from "lambert-server/HTTPError";
 import { InstanceBan, Session, User } from "@spacebar/database";
-import { randomUpperString } from "@spacebar/api";
-import { TimeSpan } from "@spacebar/extensions";
+import { Random, TimeSpan } from "@spacebar/extensions";
 import { Config } from "./Config";
 import { OrmUtils } from "@spacebar/util";
 
@@ -162,7 +161,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
     let newSession;
     do {
         newSession = Session.create({
-            session_id: randomUpperString(10), // readable at a glance
+            session_id: Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10), // readable at a glance
             user_id: id,
             is_admin_session: isAdminSession,
             client_status: {},

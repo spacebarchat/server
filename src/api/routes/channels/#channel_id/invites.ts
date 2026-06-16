@@ -18,10 +18,11 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { randomString, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
 import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
+import { Random } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -59,7 +60,7 @@ router.post(
         const expires_at = body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
 
         const invite = await Invite.create({
-            code: randomString(),
+            code: Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6),
             temporary: body.temporary || true,
             uses: 0,
             max_uses: body.max_uses ? Math.max(0, body.max_uses) : 0,

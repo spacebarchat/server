@@ -19,7 +19,7 @@
 import { In, Not } from "typeorm";
 import { PreloadedUserSettings } from "discord-protos";
 import { Capabilities, CLOSECODES, OPCODES, Payload, Send, setupListener, WebSocket } from "@spacebar/gateway";
-import { arrayGroupBy, ElapsedTime, Stopwatch, timeFunction, timePromise } from "@spacebar/extensions";
+import { arrayGroupBy, ElapsedTime, Stopwatch, timeFunction, timePromise, Random } from "@spacebar/extensions";
 import {
     getDatabase,
     Application,
@@ -59,7 +59,6 @@ import {
     TraceRoot,
 } from "@spacebar/util";
 import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
-import { randomString } from "@spacebar/api";
 import { check } from "./instanceOf";
 
 // TODO: user sharding
@@ -202,7 +201,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     activities: this.session.activities,
                 },
                 origin: "GATEWAY_IDENTIFY",
-                transaction_id: `IDENT_${this.user_id}_${randomString()}`,
+                transaction_id: `IDENT_${this.user_id}_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)}`,
             } satisfies PresenceUpdateEvent;
         }
     }

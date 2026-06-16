@@ -17,8 +17,9 @@
 */
 
 import { Request, Response, Router } from "express";
-import { randomString, route } from "@spacebar/api";
+import { route } from "@spacebar/api";
 import { Channel, CloudAttachment } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { Config, Permissions } from "@spacebar/util";
 import { UploadAttachmentRequestSchema, UploadAttachmentResponseSchema } from "@spacebar/schemas";
 
@@ -53,7 +54,7 @@ router.post(
         }
 
         const cdnUrl = Config.get().cdn.endpointPublic;
-        const batchId = `CLOUD_${user.id}_${randomString(128)}`;
+        const batchId = `CLOUD_${user.id}_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 128)}`;
 
         // validate IDs
         const seenIds: (string | undefined)[] = [];

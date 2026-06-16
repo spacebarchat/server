@@ -18,19 +18,18 @@
 
 import crypto from "node:crypto";
 import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, RelationId } from "typeorm";
-import { randomUpperString } from "@spacebar/api";
-import { DateBuilder, TimeSpan } from "@spacebar/extensions";
+import { DateBuilder, TimeSpan, Random } from "@spacebar/extensions";
 import { User } from "./User";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Activity, ClientStatus, GatewaySession, GatewaySessionClientInfo, PrivateStatus } from "../../util/interfaces";
-import { IpDataClient } from "../../util/util";
+import { IpDataClient } from "@spacebar/util/util/networking";
 
 @Entity({
     name: "sessions",
 })
 export class Session extends BaseClassWithoutId {
     @PrimaryColumn({ nullable: false })
-    session_id: string = randomUpperString();
+    session_id: string = Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10);
 
     @Column()
     @RelationId((session: Session) => session.user)

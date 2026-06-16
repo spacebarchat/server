@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { randomString } from "@spacebar/api";
 import { Member, Session, User, VoiceState } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { WebSocket } from "@spacebar/gateway";
 import { emitEvent, PresenceUpdateEvent, SessionsReplace, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
 import { ProcessLifecycle } from "../../util/util/ProcessLifecycle";
@@ -56,7 +56,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                                     activities: this.session!.activities,
                                 },
                                 origin: "GATEWAY_CLOSE",
-                                transaction_id: `IDENT_${this.user_id}_${randomString()}`,
+                                transaction_id: `IDENT_${this.user_id}_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)}`,
                             } satisfies PresenceUpdateEvent);
                             console.log("... done!");
                         } else console.log("... Discarding presence update as the session reactivated");
