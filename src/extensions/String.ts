@@ -16,10 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Request } from "express";
 import { SPECIAL_CHAR } from "@spacebar/util/util/Regex";
 import { Random, ntob } from "@spacebar/extensions";
-import { FieldErrors } from "@spacebar/util/util/FieldError";
 
 export function trimSpecial(str?: string): string {
     if (!str) return "";
@@ -49,20 +47,29 @@ export function stringGlobToRegexp(str: string, flags?: string): RegExp {
 }
 
 // TODO: use exception type
-export function stringCheckLength(str: string, min: number, max: number, key: string, req: Request) {
+export function stringCheckLength(str: string, min: number, max: number, key: string) {
     if (str.length < min || str.length > max) {
-        throw FieldErrors({
-            [key]: {
-                code: "BASE_TYPE_BAD_LENGTH",
-                // TODO: remove dependency on request (add generic field?)
-                message: req.t("common:field.BASE_TYPE_BAD_LENGTH", {
-                    length: `${min} - ${max}`,
-                }),
-            },
+        throw new StringLengthOutOfBoundsException({
+            key,
+            min,
+            max,
+            value: str,
         });
     }
 }
 
 export function generateCode() {
     return ntob(Date.now() + Random.nextInt(0, 10000));
+}
+
+export class StringLengthOutOfBoundsException extends RangeError {
+    min: number;
+    max: number;
+    key: string;
+    value: string;
+
+    constructor(opts: { min: number; max: number; key: string; value: string }) {
+        super(`String ${opts.key} must be between ${opts.min} and ${opts.max} characters`);
+        Object.assign(this, opts);
+    }
 }

@@ -18,11 +18,23 @@
 
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { ApiError, FieldError } from "@spacebar/util";
+import { ApiError, FieldError, FieldErrors } from "@spacebar/util";
+import { StringLengthOutOfBoundsException } from "@spacebar/extensions";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 
 export function ErrorHandler(error: Error & { type?: string }, req: Request, res: Response, next: NextFunction) {
     if (!error) return next();
+
+    // Convert custom generic exception classes to spacebar errors
+    if (error instanceof StringLengthOutOfBoundsException)
+        error = FieldErrors({
+            [error.key]: {
+                code: "BASE_TYPE_BAD_LENGTH",
+                message: req.t("common:field.BASE_TYPE_BAD_LENGTH", {
+                    length: `${error.min} - ${error.max}`,
+                }),
+            },
+        });
 
     try {
         let code = 400;
