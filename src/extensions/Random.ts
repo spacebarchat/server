@@ -93,7 +93,7 @@ export class Random {
     public static getString(choices: string, length: number) {
         const _choices = choices.split("");
         const result = new Array(length);
-        for (const i in result) {
+        for (let i = 0; i < length; i++) {
             result[i] = _choices[Random.nextInt(0, _choices.length)];
         }
 
