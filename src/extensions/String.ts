@@ -18,9 +18,8 @@
 
 import { Request } from "express";
 import { SPECIAL_CHAR } from "@spacebar/util/util/Regex";
-import { Random } from "@spacebar/extensions/Random";
-import { ntob } from "@spacebar/api";
-import { FieldErrors } from "@spacebar/util";
+import { Random, ntob } from "@spacebar/extensions";
+import { FieldErrors } from "@spacebar/util/util/FieldError";
 
 export function trimSpecial(str?: string): string {
     if (!str) return "";
@@ -49,6 +48,7 @@ export function stringGlobToRegexp(str: string, flags?: string): RegExp {
     return new RegExp(escaped, flags);
 }
 
+// TODO: use exception type
 export function stringCheckLength(str: string, min: number, max: number, key: string, req: Request) {
     if (str.length < min || str.length > max) {
         throw FieldErrors({

@@ -17,6 +17,7 @@
 */
 
 export * from "./Array";
+export * from "./Base64";
 export * from "./DateBuilder";
 export * from "./ElapsedTime";
 export * from "./Math";
