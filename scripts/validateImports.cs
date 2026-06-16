@@ -149,7 +149,7 @@ struct ImportReference
     {
         var sourceType = ImportSourceType;
         return
-            $"{ImportSourceType.GetType().GetMember((sourceType.ToString())).First().GetFriendlyName()} {(IsRequire ? "require" : "import")} from {ImportSource}, obtaining {string.Join(", ", ImportEntities)}";
+            $"{ImportSourceType.GetType().GetMember((sourceType.ToString())).First().GetFriendlyName()} {(IsTypeImport ? "type " : "")}{(IsRequire ? "require" : "import")} from {ImportSource}, obtaining {string.Join(", ", ImportEntities)}";
     }
 
     public string ToColorizedString()
@@ -158,7 +158,7 @@ struct ImportReference
         var sourceTypeClr = sourceType.GetColorOrNull();
         return
             $"{ConsoleUtils.ColoredString(sourceType.GetFriendlyName(), sourceTypeClr?.R ?? 255, sourceTypeClr?.G ?? 255, sourceTypeClr?.B ?? 255)} "
-            + $"{(IsRequire ? ConsoleUtils.ColoredString("require", 255, 255, 0) : ConsoleUtils.ColoredString("import", 0, 255, 0))} "
+            + $"{(IsTypeImport ? ConsoleUtils.ColoredString("type ", 255, 127, 0) : "")}{(IsRequire ? ConsoleUtils.ColoredString("require", 255, 255, 0) : ConsoleUtils.ColoredString("import", 0, 255, 0))} "
             + $"from {ConsoleUtils.ColoredString(ImportSource, sourceTypeClr?.R ?? 255, sourceTypeClr?.G ?? 255, sourceTypeClr?.B ?? 255)}, "
             + $"obtaining {(IsRequire ? "<unknown>" : string.Join(", ", ImportEntities.Select(x => ConsoleUtils.ColoredString(x, 150, 150, 150))))}";
     }
