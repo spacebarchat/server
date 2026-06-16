@@ -19,6 +19,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Session, User } from "@spacebar/database";
+import { Random } from "@spacebar/extensions";
 import { checkToken, Rights, UserTokenData } from "@spacebar/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
@@ -89,8 +90,11 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
             .split("; ")
             .find((x) => x.startsWith("__sb_sessid="))!
             .split("=")[1];
-    // for some reason we need to require here, else the openapi generator fails with "route is not a function"
-    else res.setHeader("Set-Cookie", `__sb_sessid=${(req.fingerprint = (await require("../util")).randomString(32))}; Secure; HttpOnly; SameSite=None; Path=/`);
+    else
+        res.setHeader(
+            "Set-Cookie",
+            `__sb_sessid=${(req.fingerprint = Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32))}; Secure; HttpOnly; SameSite=None; Path=/`,
+        );
 
     if (
         NO_AUTHORIZATION_ROUTES.some((x) => {
