@@ -101,6 +101,7 @@ router.delete(
             } satisfies MessageDeleteBulkEvent);
         }
 
+        await Message.delete({ channel_id, webhook_id });
         await Webhook.delete({ id: webhook_id });
 
         await emitEvent({
