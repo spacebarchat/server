@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api/util";
 import { User } from "@spacebar/database";
 import { Config, Email } from "@spacebar/util";
 import { ForgotPasswordSchema } from "@spacebar/schemas";

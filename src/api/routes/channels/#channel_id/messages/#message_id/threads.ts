@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route, sendMessage } from "@spacebar/api";
+import { route, sendMessage } from "@spacebar/api/util";
 import { Channel, Message, User } from "@spacebar/database";
 import { emitEvent, MessageUpdateEvent } from "@spacebar/util";
 import { MessageThreadCreationSchema, ChannelType, MessageType } from "@spacebar/schemas";

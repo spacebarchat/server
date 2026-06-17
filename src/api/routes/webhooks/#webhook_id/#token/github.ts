@@ -1,8 +1,8 @@
-import { getProxyUrl, route } from "@spacebar/api";
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { executeWebhook } from "../../../../util/handlers/Webhook";
+import { getProxyUrl, route } from "@spacebar/api/util";
 import { EmbedType, WebhookExecuteSchema } from "@spacebar/schemas";
+import { executeWebhook } from "../../../../util/handlers/Webhook";
 
 const router = Router({ mergeParams: true });
 

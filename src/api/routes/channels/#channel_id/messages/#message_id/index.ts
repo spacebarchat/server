@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
-import { handleMessage, postHandleMessage, route } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
 import { Attachment, Channel, Message } from "@spacebar/database";
 import {
     MessageCreateEvent,

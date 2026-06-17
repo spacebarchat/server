@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { handleComps, route, sendMessage } from "@spacebar/api";
+import { handleComps, route, sendMessage } from "@spacebar/api/util";
 import { Message, User } from "@spacebar/database";
 import { InteractionCallbacksSchema, InteractionCallbackType, InteractionFailureReason, MessageType } from "@spacebar/schemas";
 import { Config, emitEvent, InteractionSuccessEvent, MessageUpdateEvent, pendingInteractions, InteractionFailureEvent } from "@spacebar/util";

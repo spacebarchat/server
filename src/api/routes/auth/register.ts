@@ -20,7 +20,7 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
-import { route, verifyCaptcha } from "@spacebar/api";
+import { route, verifyCaptcha } from "@spacebar/api/util";
 import { Invite, User, ValidRegistrationToken } from "@spacebar/database";
 import { Config, FieldErrors, generateToken, IpDataClient, AbuseIpDbClient } from "@spacebar/util";
 import { RegisterSchema } from "@spacebar/schemas";

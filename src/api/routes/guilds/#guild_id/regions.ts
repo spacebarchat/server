@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getVoiceRegions, route } from "@spacebar/api";
+import { getVoiceRegions, route } from "@spacebar/api/util";
 import { Guild } from "@spacebar/database";
 import { Request, Response, Router } from "express";
 

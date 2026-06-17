@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { FindManyOptions, FindOptionsOrder, In, Like, ArrayContains, ArrayOverlap } from "typeorm";
-import { handleMessage, postHandleMessage, route, sendMessage } from "@spacebar/api";
+import { handleMessage, postHandleMessage, route, sendMessage } from "@spacebar/api/util";
 import { Attachment, Channel, Member, Message, ReadState, ThreadMember, User } from "@spacebar/database";
 import { emitEvent, uploadFile, MessageCreateEvent, FieldErrors, getPermission, ChannelFlags } from "@spacebar/util";
 import { ChannelType, MessageType, ThreadCreationSchema, MessageCreateAttachment, MessageCreateCloudAttachment } from "@spacebar/schemas";
