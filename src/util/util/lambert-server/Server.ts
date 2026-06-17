@@ -68,7 +68,9 @@ export class Server {
 
             return router;
         } catch (error) {
-            console.error(new Error(`[Server] Failed to register route ${path}: ${error}`));
+            const err = new Error(`[Server] Failed to register route ${path}: ${error}`);
+            err.stack = (err.stack ?? "") + "\n  Inner exception: " + (<Error>error).stack!.replaceAll("/:", "/index.ts:");
+            console.error(err);
         }
     }
 

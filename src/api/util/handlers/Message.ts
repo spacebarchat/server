@@ -18,7 +18,8 @@
 
 import { HTTPError } from "lambert-server/HTTPError";
 import { Equal, In, Or } from "typeorm";
-import { fillMessageUrlEmbeds } from "@spacebar/api";
+// noinspection ES6PreferShortImport -- Causes a circular reference...
+import { fillMessageUrlEmbeds } from "../utility/EmbedHandlers";
 import { getDatabase, Application, Attachment, Channel, CloudAttachment, Guild, Member, Message, ReadState, Role, Session, Sticker, User, Webhook } from "@spacebar/database";
 import { mathLogBase, arrayDistributeSequentially, Stopwatch, Random } from "@spacebar/extensions";
 import {

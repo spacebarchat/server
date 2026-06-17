@@ -18,15 +18,15 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import {
+import type {
     ApplicationCommandHandlerType,
     ApplicationCommandOption,
     ApplicationCommandIndexPermissions,
-    ApplicationCommandType,
     Snowflake,
     ApplicationIntegrationType,
     InteractionContextType,
 } from "@spacebar/schemas";
+import { ApplicationCommandType } from "@spacebar/schemas/api/bots/ApplicationCommandSchema";
 
 @Entity({
     name: "application_commands",
