@@ -207,23 +207,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "RouteResponse": {
-        "type": "object",
-        "properties": {
-            "status": {
-                "type": "integer"
-            },
-            "body": {
-                "type": "string",
-                "pattern": "^.*Response$"
-            },
-            "headers": {
-                "$ref": "#/definitions/Record%3Cstring%2Cstring%3E"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "ActivitySchema": {
         "type": "object",
         "properties": {

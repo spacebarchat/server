@@ -224,21 +224,6 @@
                     "message"
                 ]
             },
-            "RouteResponse": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "type": "integer"
-                    },
-                    "body": {
-                        "type": "string",
-                        "pattern": "^.*Response$"
-                    },
-                    "headers": {
-                        "$ref": "#/components/schemas/Record%3Cstring%2Cstring%3E"
-                    }
-                }
-            },
             "ActivitySchema": {
                 "type": "object",
                 "properties": {
