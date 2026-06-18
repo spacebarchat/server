@@ -57,6 +57,7 @@ ProcessLifecycle.eventEmitter.on("stopping", async () => {
 
 async function main() {
     await Monitoring.init();
+    Monitoring.attach(app);
     await initDatabase();
     await Config.init();
 
