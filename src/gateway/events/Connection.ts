@@ -44,6 +44,7 @@ const openConnectionCount = Monitoring.attachMetric(
     new Gauge({
         name: "spacebar_gateway_open_connection_count",
         help: "The total number of HTTP requests received",
+        registers: [],
     }),
 );
 

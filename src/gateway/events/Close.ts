@@ -18,7 +18,7 @@
 
 import { Member, Session, User, VoiceState } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { WebSocket } from "@spacebar/gateway";
+import { WebSocket } from "@spacebar/gateway/util";
 import { emitEvent, PresenceUpdateEvent, SessionsReplace, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 

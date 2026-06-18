@@ -45,6 +45,7 @@ export class RabbitMqSingleListener extends BaseEventListener {
                 name: "spacebar_ipc_rabbitmqsingle_listener_open_listener_count",
                 help: "Amount of open listeners on unix socket",
                 labelNames: ["host"],
+                registers: [],
             }),
         );
         this.openListenersMetric = RabbitMqSingleListener.openListenersMetric.labels({ host });

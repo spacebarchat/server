@@ -48,6 +48,7 @@ export class UnixSocketListener extends BaseEventListener {
                 name: "spacebar_ipc_unix_listener_open_connection_count",
                 help: "Amount of open inbound connections on unix socket",
                 labelNames: ["path"],
+                registers: [],
             }),
         );
         this.openConnectionsMetric = UnixSocketListener.openConnectionsMetric.labels({ path: socketPath });
@@ -58,6 +59,7 @@ export class UnixSocketListener extends BaseEventListener {
                 name: "spacebar_ipc_unix_listener_open_listener_count",
                 help: "Amount of open listeners on unix socket",
                 labelNames: ["path"],
+                registers: [],
             }),
         );
         this.openListenersMetric = UnixSocketListener.openListenersMetric.labels({ path: socketPath });

@@ -49,6 +49,7 @@ export class UnixSocketWriter extends BaseEventWriter {
                 name: "spacebar_ipc_unix_writer_open_connection_count",
                 help: "Amount of open outbound connections on unix socket",
                 labelNames: ["path"],
+                registers: [],
             }),
         );
         this.openConnectionsMetric = UnixSocketWriter.openConnectionsMetric.labels({ path: socketPath });
