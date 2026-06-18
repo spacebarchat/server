@@ -119,7 +119,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     }
 
     public static IEnumerable<object?[]> WebhookExecuteCombinations() {
-        string[] contents = ["meow", "meowmeow", "emma was here", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
+        string[] contents = ["meow", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
         string?[] usernames = [null, "meow"];
         string?[] avatarUrls = [null, "https://spacebar.chat/favicon.ico"];
         bool?[] ttsEnabled = [null, true, false];

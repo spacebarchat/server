@@ -21,7 +21,7 @@ import { Request, Response, Router } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache } from "@spacebar/cdn/util";
+import { storage, multer, cache } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon

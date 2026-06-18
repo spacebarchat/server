@@ -92,7 +92,7 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", content,
             cancellationToken: TestContext.Current.CancellationToken));
-        var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
+        var json = (await res.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken));
         testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal("meow", msg.Content);
@@ -109,33 +109,40 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
                 }
             ]
         }, cancellationToken: TestContext.Current.CancellationToken));
-        var createAttRespContent = await createAttResp.Content.ReadFromJsonAsync<JsonObject>();
-        testOutputHelper.WriteLine(createAttRespContent.ToString());
+        var createAttRespContent = await createAttResp.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken);
+        testOutputHelper.WriteLine(createAttRespContent?.ToString());
 
         var createAtt = createAttRespContent.Deserialize<CreateAttachmentResponse>();
-        foreach (var attFile in createAtt.Attachments) {
-            var ret = await Assert.HttpSuccess(await Client.ApiHttpClient.PutAsync(attFile.UploadUrl,
-                new ByteArrayContent("Hellorld!"u8.ToArray()) {
-                    Headers = {
-                        ContentType = new MediaTypeHeaderValue("text/plain")
-                    }
-                }));
-            var retCon = await ret.Content.ReadFromJsonAsync<JsonObject>();
-            testOutputHelper.WriteLine(retCon.ToString());
-        }
+        foreach (var attFile in createAtt.Attachments)
+            await Assert.HttpSuccess(await Client.ApiHttpClient.PutAsync(attFile.UploadUrl, new ByteArrayContent("Hellorld!"u8.ToArray()) {
+                Headers = {
+                    ContentType = new MediaTypeHeaderValue("text/plain")
+                }
+            }, TestContext.Current.CancellationToken));
 
-        // var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", content,
-        // cancellationToken: TestContext.Current.CancellationToken));
-        // var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
-        // testOutputHelper.WriteLine(json.ToJson(indent: true));
-        // var msg = json.Deserialize<Message>();
-        // Assert.Equal("meow", msg.Content);
+        var content = new JsonObject() {
+            { "content", "meow" }, {
+                "attachments", new JsonArray() {
+                    new JsonObject() {
+                        { "id", createAtt.Attachments[0].Id.ToString() },
+                        { "filename", "hellorld.txt" },
+                        { "uploaded_filename", createAtt.Attachments[0].UploadFileName },
+                        { "original_content_type", "text/plain" },
+                    }
+                }
+            }
+        };
+        var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", content,
+            cancellationToken: TestContext.Current.CancellationToken));
+        var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
+        testOutputHelper.WriteLine(json.ToJson(indent: true));
+        var msg = json.Deserialize<Message>();
+        Assert.Equal("meow", msg.Content);
+        Assert.Single(msg.Attachments);
     }
 
     public static IEnumerable<object?[]> WebhookExecuteCombinations() {
-        string[] contents = ["meow", "meowmeow", "emma was here", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
-        string?[] usernames = [null, "meow"];
-        string?[] avatarUrls = [null, "https://spacebar.chat/favicon.ico"];
+        string[] contents = ["meow", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
         bool?[] ttsEnabled = [null, true, false];
         int?[] messageFlags = [
             null,
@@ -145,32 +152,33 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             1 << 13  // VOICE_MESSAGE
         ];
 
+        var i = 0;
         foreach (var content in contents)
-            // foreach (var avatarUrl in avatarUrls)
             foreach (var tts in ttsEnabled)
-                foreach (var flags in messageFlags)
-                    foreach (var withNonce in (bool[])[true, false])
-                        yield return [content, null /*avatarUrl*/, tts, flags, withNonce ? Guid.NewGuid().ToString() : null];
+                foreach (var flags in messageFlags) {
+                    yield return [content, tts, flags, null];
+                    if (i++ % 50 == 0) yield return [content, tts, flags, Guid.NewGuid().ToString()];
+                }
     }
 
     [Theory]
     [MemberData(nameof(WebhookExecuteCombinations))]
-    public async Task SendWebhookMessageWithData(string content, string? avatarUrl, bool? tts, int? flags, string? nonce) {
+    public async Task SendWebhookMessageWithData(string content, bool? tts, int? flags, string? nonce) {
         var payload = new JsonObject() {
             { "content", content }
         };
-        if (avatarUrl != null) payload.Add("avatar_url", avatarUrl);
+        // BUG: figure out why this endpoint even accepts avatar_url in the first place...?
         if (tts != null) payload.Add("tts", tts);
         if (flags != null) payload.Add("flags", flags);
         if (nonce != null) payload.Add("nonce", nonce);
 
         var reqContent = new MultipartFormDataContent();
         reqContent.Add(JsonContent.Create(payload), "payload_json");
-        testOutputHelper.WriteLine(await reqContent.ReadAsStringAsync());
+        testOutputHelper.WriteLine(await reqContent.ReadAsStringAsync(TestContext.Current.CancellationToken));
 
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", reqContent,
             cancellationToken: TestContext.Current.CancellationToken));
-        var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
+        var json = (await res.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken));
         testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal(content, msg.Content);

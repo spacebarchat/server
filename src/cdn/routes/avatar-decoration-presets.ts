@@ -19,7 +19,7 @@
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { fileTypeFromBuffer } from "file-type";
-import { storage, cache } from "@spacebar/cdn/util";
+import { storage, cache } from "../util";
 
 const router = Router({ mergeParams: true });
 
