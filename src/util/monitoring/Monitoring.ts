@@ -39,20 +39,24 @@ export class Monitoring {
     }
 
     public static attach(app: Application) {
-        const http_request_total = new client.Counter({
-            name: "spacebar_http_request_total",
-            help: "The total number of HTTP requests received",
-            labelNames: ["path", "method", "status_code"],
-        });
-        client.register.registerMetric(http_request_total);
+        const http_request_total = this.attachMetric(
+            "spacebar_http_request_total",
+            new client.Counter({
+                name: "spacebar_http_request_total",
+                help: "The total number of HTTP requests received",
+                labelNames: ["path", "method", "status_code"],
+            }),
+        );
 
-        const http_response_rate_histogram = new client.Histogram({
-            name: "spacebar_http_duration",
-            labelNames: ["path", "method", "status_code"],
-            help: "The duration of HTTP requests in seconds",
-            buckets: [0.0, 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10],
-        });
-        client.register.registerMetric(http_response_rate_histogram);
+        const http_response_rate_histogram = this.attachMetric(
+            "spacebar_http_duration",
+            new client.Histogram({
+                name: "spacebar_http_duration",
+                labelNames: ["path", "method", "status_code"],
+                help: "The duration of HTTP requests in seconds",
+                buckets: [0.0, 0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10],
+            }),
+        );
 
         app.use((req, res, next) => {
             const endTimer = http_response_rate_histogram.startTimer();
