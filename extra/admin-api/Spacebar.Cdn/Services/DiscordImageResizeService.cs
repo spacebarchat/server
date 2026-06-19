@@ -11,9 +11,10 @@ public class DiscordImageResizeParams {
 
     public bool SpacebarAllowUpscale { get; set; } = false;
     public bool SpacebarOptimiseGif { get; set; } = true;
+    public string Format { get; set; } = "webp";
 
     public string ToSerializedName() {
-        return $"{(Animated ? "a_" : "")}{Size}px_{Quality.ToString()}_u.{SpacebarAllowUpscale}_o.{SpacebarOptimiseGif}";
+        return $"{(Animated ? "a_" : "")}{Size}px_{Quality.ToString()}_u.{SpacebarAllowUpscale}_o.{SpacebarOptimiseGif}.{Format}";
     }
 }
 

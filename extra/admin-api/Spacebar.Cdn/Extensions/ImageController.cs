@@ -8,7 +8,7 @@ namespace Spacebar.Cdn.Extensions;
 
 [ApiController]
 public class ImageController(LruFileCache lfc, IFileSource fs, CdnWorkerService cws) : ControllerBase {
-    public async Task<IActionResult> GetImage(string path) {
+    protected async Task<IActionResult> GetImage(string path) {
         DiscordImageResizeParams resizeParams = Request.GetResizeParams();
         var cacheKey = path + resizeParams.ToSerializedName();
         if (!Request.Query.Any() || resizeParams.Passthrough) {

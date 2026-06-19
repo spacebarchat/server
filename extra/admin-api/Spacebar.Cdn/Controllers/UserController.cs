@@ -24,13 +24,12 @@ public class UserController(LruFileCache lfc, IFileSource fs, CdnWorkerService c
         }
         else
             entry = await lfc.GetOrAdd(cacheKey, async () => {
-                var original = await fs.GetFile(Request.Path);
                 var res = await cws.GetRawClient("q8").GetAsync("/scale" + Request.Path + Request.QueryString);
                 var outStream = await res.Content.ReadAsStreamAsync();
 
                 return new LruFileCache.Entry {
                     Data = outStream.ReadToEnd().ToArray(),
-                    MimeType = res.Content.Headers.ContentType?.ToString() ?? original.MimeType
+                    MimeType = res.Content.Headers.ContentType?.ToString() ?? (await fs.GetFile(Request.Path)).MimeType
                 };
             });
 
