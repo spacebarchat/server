@@ -16,6 +16,7 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     private static AuthenticatedSpacebarClient Client { get; set; } = null!;
     private static Guild? Guild { get; set; }
+    private static Channel? Channel { get; set; }
 
     public async ValueTask InitializeAsync() {
         testOutputHelper.WriteLine("Running InitializeAsync");
@@ -25,6 +26,7 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         Guild ??= await Client.CreateGuild(new() {
             Name = "Test guild"
         });
+        Channel ??= await Client.GetGuild(Guild.Id).CreateChannelAsync(new() { Name = "meow", Type = 0 });
     }
 
     [Fact]
@@ -32,7 +34,7 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         Assert.Equal("Test guild", Guild!.Name);
         var channel = await Client!.GetGuild(Guild.Id).CreateChannelAsync(new() {
             Name = "test",
-            Type = 0
+            Type = 0 // TODO: this should be the default
         });
 
         Assert.Equal("test", channel.Name);
@@ -40,18 +42,15 @@ public class ChannelTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     [Fact]
     public async Task GetChannel() {
-        Assert.Equal("Test guild", Guild!.Name);
-        var channel = await Client!.GetGuild(Guild.Id).CreateChannelAsync(new() {
-            Name = "test",
-            Type = 0
-        });
-        Assert.Equal("test", channel.Name);
-
-        var res = await Client.ApiHttpClient.GetAsync("channels/" + channel.Id, TestContext.Current.CancellationToken);
-        await Assert.HttpSuccess(res);
+        var res = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync("channels/" + Channel.Id, TestContext.Current.CancellationToken));
 
         var channelResp = await res.Content.ReadFromJsonAsync<Channel>(cancellationToken: TestContext.Current.CancellationToken);
-        Assert.Equal(channel.Name, channelResp!.Name);
-        Assert.Equal(channel.Id, channelResp!.Id);
+        Assert.Equal(Channel.Name, channelResp!.Name);
+        Assert.Equal(Channel.Id, channelResp!.Id);
+    }
+
+    [Fact]
+    public async Task SendTyping() {
+        await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel!.Id}/typing", null, TestContext.Current.CancellationToken));
     }
 }
