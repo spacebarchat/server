@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
-        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260420-212318"/>
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441"/>
     </ItemGroup>
 
 </Project>

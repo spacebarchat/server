@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260420-212318"/>
-        <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.13.1" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441"/>
+        <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.14.0" />
     </ItemGroup>
 
     <ItemGroup>

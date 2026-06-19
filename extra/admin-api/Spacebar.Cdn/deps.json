@@ -1,18 +1,18 @@
 [
   {
     "pname": "ArcaneLibs",
-    "version": "1.0.1-preview.20260420-212318",
-    "hash": "sha256-y+gU8S3jbcFgIwwc0vkkEPMfHzGZ+55//9uvsKOEGXY="
+    "version": "1.0.1-preview.20260619-035441",
+    "hash": "sha256-jNEGd8Ccgkk4A8ZMaJO4QDExmsf9q7TeuhiNESos3Q4="
   },
   {
     "pname": "Magick.NET-Q16-HDRI-AnyCPU",
-    "version": "14.13.1",
-    "hash": "sha256-nsy1i1Ohzh1dejjYdAtAgeGt6Tm9y93WksVGOSZ/dKY="
+    "version": "14.14.0",
+    "hash": "sha256-mYPqIbPvpAjz0OR58AciaZ7gWteQs8VdzJ6NJChlxqQ="
   },
   {
     "pname": "Magick.NET.Core",
-    "version": "14.13.1",
-    "hash": "sha256-s5JFCFyz2ZBu6UiidoA9povEo7h2lOktrCED4VdjvsY="
+    "version": "14.14.0",
+    "hash": "sha256-MD1J3kQQH40SoYo3+9HF2TKQXcQb5jzJsuSlaMMLrW0="
   },
   {
     "pname": "Microsoft.AspNetCore.OpenApi",
@@ -46,12 +46,12 @@
   },
   {
     "pname": "Npgsql",
-    "version": "10.0.2",
-    "hash": "sha256-hW03ZWoW7y16vvScwsjZNyqFybGy+s6hQYQXebo78yQ="
+    "version": "10.0.3",
+    "hash": "sha256-ddCXCSOoyfy7035OvnL+4LEDYqHjZyPoZ3ffG2coMW0="
   },
   {
     "pname": "Npgsql.EntityFrameworkCore.PostgreSQL",
-    "version": "10.0.1",
-    "hash": "sha256-G5WmWoc02gHTsdBLXESFQ5eMV+liwiO8YjzFKg4NDEk="
+    "version": "10.0.2",
+    "hash": "sha256-JlJXttrCmPFUGVznTGl7hsfn9/BzKt91y/uLErDqQfY="
   }
 ]

@@ -1,17 +1,17 @@
 [
   {
     "pname": "ArcaneLibs",
-    "version": "1.0.1-preview.20260420-212318",
-    "hash": "sha256-y+gU8S3jbcFgIwwc0vkkEPMfHzGZ+55//9uvsKOEGXY="
+    "version": "1.0.1-preview.20260619-035441",
+    "hash": "sha256-jNEGd8Ccgkk4A8ZMaJO4QDExmsf9q7TeuhiNESos3Q4="
   },
   {
     "pname": "Magick.NET-Q16-HDRI-OpenMP-x64",
-    "version": "14.13.1",
-    "hash": "sha256-CyO2qBJt63JsOwub5NVjqInQ8XrOMaIT5stfEjDxSws="
+    "version": "14.14.0",
+    "hash": "sha256-q352Jjyh3yhjh3yl/SLx3cqRkI2Ny+cLwox7oTxfv5c="
   },
   {
     "pname": "Magick.NET.Core",
-    "version": "14.13.1",
-    "hash": "sha256-s5JFCFyz2ZBu6UiidoA9povEo7h2lOktrCED4VdjvsY="
+    "version": "14.14.0",
+    "hash": "sha256-MD1J3kQQH40SoYo3+9HF2TKQXcQb5jzJsuSlaMMLrW0="
   }
 ]

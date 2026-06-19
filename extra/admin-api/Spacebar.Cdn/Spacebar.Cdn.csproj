@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441"/>
         <!-- i dont think native performance here is worth it? -->
-        <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.13.1" />
+        <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.14.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8" />
     </ItemGroup>
 
