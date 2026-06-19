@@ -14,9 +14,10 @@ public class DiscordImageResizeParams {
 
     public bool SpacebarAllowUpscale { get; set; } = false;
     public bool SpacebarOptimiseGif { get; set; } = true;
+    public string Format { get; set; } = "webp";
 
     public string ToSerializedName() {
-        return $"{(Animated ? "a_" : "")}{Size}px_{Quality.ToString()}_u.{SpacebarAllowUpscale}_o.{SpacebarOptimiseGif}";
+        return $"{(Animated ? "a_" : "")}{Size}px_{Quality.ToString()}_u.{SpacebarAllowUpscale}_o.{SpacebarOptimiseGif}.{Format}";
     }
 }
 
@@ -33,6 +34,7 @@ public static class HttpRequestExtensions {
                 Animated = request.Query.ContainsKey("animated") && bool.TryParse(request.Query["animated"], out bool an) && an,
                 SpacebarAllowUpscale = request.Query.ContainsKey("allowUpscale") && bool.TryParse(request.Query["allowUpscale"], out bool au) && au,
                 SpacebarOptimiseGif = request.Query.ContainsKey("optimiseGif") && bool.TryParse(request.Query["optimiseGif"], out bool og) && og,
+                Format = request.Query.ContainsKey("format") ? request.Query["format"]! : "webp",
             };
         }
     }
@@ -72,7 +74,7 @@ public class DiscordImageResizeService {
 
         if (!resizeParams.Animated) {
             var oldImg = img;
-            img = new MagickImageCollection([oldImg.First()]);
+            img = new MagickImageCollection([oldImg.First().Clone()]);
             oldImg.Dispose();
         }
 

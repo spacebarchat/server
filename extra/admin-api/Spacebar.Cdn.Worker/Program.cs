@@ -96,7 +96,7 @@ app.MapGet("/scale/{*path}", async (HttpContext ctx, IFileSource ifs, DiscordIma
     await mig.ReadAsync(f.Stream, ctx.RequestAborted);
     var res = await dirs.Apply(mig, ctx.Request.GetResizeParams());
     await ctx.Response.StartAsync();
-    await res.WriteAsync(ctx.Response.Body);
+    await res.WriteAsync(ctx.Response.Body, Mimes.GetFormatForExtension(ctx.Request.GetResizeParams().Format));
     await ctx.Response.CompleteAsync();
 });
 

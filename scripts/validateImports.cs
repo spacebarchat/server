@@ -22,24 +22,42 @@ void LogError(string fileName, ImportReference import)
 
 foreach (var f in ReadDirRecursive("./src"))
 {
-    if (f.EndsWith(".test.ts"))
-    {
-    }
+    if (f.EndsWith(".test.ts")) continue; //ignore for now
     else
         await foreach (var import in GetImports(f))
         {
             // These files are completely idempotent and safe to import
-            if (import.ImportSource.EndsWith("util/util/ProcessLifeCycle") && import.ImportEntities.SequenceEqual(["ProcessLifecycle"])) continue;
+            if (import.ImportSource.EndsWith("util/util/ProcessLifeCycle") &&
+                import.ImportEntities.SequenceEqual(["ProcessLifecycle"])) continue;
+
+            // Technically valid but what the heck
+            if (import.ImportSource.StartsWith('#')) LogError(f, import);
 
             // file level
-            if (f == "./src/schemas/Validator.ts")
+            else if (new FileInfo(f).Name == "start.ts")
+            {
+                if (import is
+                    {
+                        ImportSource: "module-alias" or "dotenv" or "./Server" // good imports
+                        or "node:cluster" or "node:os" or "node:fs" // do we want to keep these around?
+                    }) continue;
+                LogError(f, import);
+            }
+            else if (f != "./src/bundle/Server.ts" && import is
+                     {
+                         ImportSource: "@spacebar/api"
+                         or "@spacebar/cdn"
+                         // or "@spacebar/gateway"
+                         // or "@spacebar/webrtc"
+                     }) LogError(f, import);
+            else if (f == "./src/schemas/Validator.ts")
             {
                 if (import is not { ImportSource: "ajv" or "ajv-formats" or "node:fs" or "node:path" })
                     LogError(f, import);
             }
             else if (f == "./src/database/Database.ts")
             {
-                if (import is not { ImportSource: "picocolors" or "dotenv" or "node:fs" or "node:path" })
+                if (import is not { ImportSource: "picocolors" or "dotenv" or "typeorm" or "node:fs" or "node:path" })
                     LogError(f, import);
             }
 
@@ -64,12 +82,15 @@ foreach (var f in ReadDirRecursive("./src"))
             {
                 LogError(f, import);
             }
-            else
+            else if (f.StartsWith("./src/api"))
             {
+                if (import.ImportSource == "express" &&
+                    ((string[])["Request", "Response", "Router"]).ContainsAll(import.ImportEntities)) continue;
+                LogError(f, import);
             }
         }
 
-    if (importErrors.ContainsKey(f)) Console.Write("\n");
+    if (importErrors.ContainsKey(f)) Console.Write("\n\n");
 }
 
 if (importErrors.Any())
@@ -83,7 +104,7 @@ Console.WriteLine();
 
 IEnumerable<string> ReadDirRecursive(string path)
 {
-    foreach (var f in Directory.GetFiles(path).OrderBy(x=>x.TrimEnd(".ts").ToString()))
+    foreach (var f in Directory.GetFiles(path).OrderBy(x => x.TrimEnd(".ts").ToString()))
         yield return f;
 
     foreach (var d in Directory.GetDirectories(path).Order())
@@ -118,6 +139,7 @@ async IAsyncEnumerable<ImportReference> GetImports(string path)
         if (p.StartsWith("lambert-server")) return ImportSourceTypeValue.VendoredModule;
         if (p.StartsWith("../")) return ImportSourceTypeValue.Path;
         if (p.StartsWith("./")) return ImportSourceTypeValue.LocalPath;
+        if (p.StartsWith('#')) return ImportSourceTypeValue.Hashtag;
 
         return ImportSourceTypeValue.Npm;
     }
@@ -204,4 +226,7 @@ enum ImportSourceTypeValue
 
     [Color(255, 255, 0)] [FriendlyName(Name = "Local file path")]
     LocalPath,
+
+    [FriendlyName(Name = "Hashtag import")] [Color(255, 82, 82)]
+    Hashtag
 }

@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
 
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />

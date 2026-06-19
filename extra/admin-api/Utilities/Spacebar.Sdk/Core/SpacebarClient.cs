@@ -114,6 +114,20 @@ public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long chan
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
         return (await resp.Content.ReadFromJsonAsync<List<Webhook>>())!;
     }
+
+    public async Task<TypingResponse> SendTypingAsync() {
+        var resp = await client.ApiHttpClient.GetAsync($"channels/{channelId}/webhooks");
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        return (await resp.Content.ReadFromJsonAsync<TypingResponse>())!;
+    }
+
+    public async Task<Channel> GetInfoAsync() {
+        var resp = await client.ApiHttpClient.GetAsync($"channels/{channelId}");
+        // TODO: abstract out
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+        return (await resp.Content.ReadFromJsonAsync<Channel>())!;
+    }
 }
 
 public class SpacebarClientGuild(AuthenticatedSpacebarClient client, long guildId) {

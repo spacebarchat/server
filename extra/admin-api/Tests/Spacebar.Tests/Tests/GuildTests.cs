@@ -1,4 +1,6 @@
-﻿using ArcaneLibs.Extensions;
+﻿using System.Net.Http.Json;
+using System.Text.Json.Nodes;
+using ArcaneLibs.Extensions;
 using Spacebar.Models.Generic;
 using Spacebar.Sdk.Core;
 using Spacebar.Tests.Abstractions;
@@ -56,7 +58,29 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
     [Fact]
     public async Task SetChannelOrder() {
         var cg = Client.GetGuild(Guild.Id);
+
+        await Task.WhenAll(Enumerable.Range(1, 10).Select(x => cg.CreateChannelAsync(new() {
+            Name = Guid.NewGuid().ToString(),
+            Type = 0
+        })));
+        
         var guildChannels = await cg.GetChannelsAsync();
-        // testOutputHelper.WriteLine(guildChannels.Select(x=>(x.Id, x.Name)).ToJson(includeFields: true));
+        testOutputHelper.WriteLine(guildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
+
+        var payload = new JsonArray();
+
+        var i = 0;
+        foreach (var c in guildChannels.OrderBy(x=>x.Name)) {
+            payload.Add(new JsonObject() {
+                {"id", c.Id.ToString()},
+                {"position", i++}
+            });    
+        }
+
+        await Assert.HttpSuccess(await Client.ApiHttpClient.PatchAsJsonAsync($"guilds/{cg.Id}/channels", payload, cancellationToken: TestContext.Current.CancellationToken));
+        
+        var newGuildChannels = await cg.GetChannelsAsync();
+        testOutputHelper.WriteLine(newGuildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
+        Assert.Equal(guildChannels.OrderBy(x=>x.Name), newGuildChannels, (a, b) => a.Id == b.Id);
     }
 }
