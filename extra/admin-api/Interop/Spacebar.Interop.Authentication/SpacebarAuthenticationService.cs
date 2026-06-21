@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using ArcaneLibs.Collections;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Spacebar.Models.Db.Contexts;
@@ -53,7 +54,7 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             async () => {
                 var uid = config.OverrideUid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "id").Value;
                 if (string.IsNullOrWhiteSpace(uid)) throw new InvalidOperationException("No user ID specified, is the access token valid?");
-                return await db.Users.FindAsync(long.Parse(uid)) ?? throw new InvalidOperationException();
+                return await db.Users.FindAsync(long.Parse(uid)) ?? throw new InvalidOperationException($"Could not find user with ID {uid}?");
             },
             config.AuthCacheExpiry);
     }
@@ -62,9 +63,11 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
         var res = await ValidateTokenAsync(token);
         return await SessionCache.GetOrAdd(token,
             async () => {
+                var uid = config.OverrideUid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "id").Value;
                 var did = config.OverrideDid ?? res?.ClaimsIdentity.Claims.First(x => x.Type == "did").Value;
                 if (string.IsNullOrWhiteSpace(did)) throw new InvalidOperationException("No device ID specified, is the access token valid?");
-                return await db.Sessions.FindAsync(long.Parse(did)) ?? throw new InvalidOperationException();
+                return await db.Sessions.SingleAsync(s => s.SessionId == did && s.UserId == long.Parse(uid))
+                       ?? throw new InvalidOperationException($"Could not find device with ID {did}?");
             },
             config.AuthCacheExpiry);
     }

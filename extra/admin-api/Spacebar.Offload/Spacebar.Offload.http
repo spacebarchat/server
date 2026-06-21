@@ -32,3 +32,15 @@ Content-Type: application/json
 ]
 
 ###
+
+POST {{GatewayOffload_HostAddress}}/_spacebar/offload/gateway/LazyRequest
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "guild_id": "1006649183970562092",
+  "channels": {
+    "1006649184062836783": [[1,2]]
+  }
+}
