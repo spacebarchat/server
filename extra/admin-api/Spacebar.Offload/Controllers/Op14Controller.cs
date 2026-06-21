@@ -34,12 +34,56 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             yield break;
         }
 
+        var memberList = await GetGuildMemberListAsync(db, payload.GuildId);
+
+        yield return new ReplicationMessage<GuildMemberListUpdate>() {
+            UserId = user.Result.Id,
+            Event = GuildMemberListUpdate.EventId,
+            Origin = "Offload/LazyRequest",
+            CreatedAt = DateTime.UtcNow,
+            Payload = new GuildMemberListUpdate() {
+                GuildId = payload.GuildId,
+                ListId = payload.GuildId.ToString(),
+                OnlineCount = memberList.TakeWhile(x => x is not RoleEntry { Id: "offline" }).Count(),
+                MemberCount = await db.Members.CountAsync(x => x.GuildId == payload.GuildId),
+                Operations = [
+                    new GuildMemberListUpdateOperation.SyncOperation() {
+                        Items = memberList.Select<IMemberListEntry, GuildMemberListSyncItem>(item => item is RoleEntry re
+                                ? new GuildMemberListSyncItem.RoleEntry() { Id = re.Id, Count = re.Count }
+                                : item is MemberEntry me
+                                    ? new GuildMemberListSyncItem.MemberEntry() { Member = me.Member }
+                                    : throw new InvalidCastException("List item was neither RoleEntry nor MemberEntry???"))
+                            .ToList(),
+                        Range = [0, memberList.Count]
+                    }
+                ],
+                Groups = memberList.OfType<RoleEntry>().Select(re => new GuildMemberListSyncItem.RoleEntry() { Id = re.Id, Count = re.Count }).ToList()
+            }
+            // TODO: send presence updates
+            // TODO: handle subscriptions
+            // TODO: handle channel permissions
+            // TODO: handle channels at all
+        };
+    }
+
+    private async Task<string?> GetMemberListIdAsync(SpacebarDbContext db, long guildId, long channelId) {
+        var channel = await db.Channels.AsNoTracking().FirstOrDefaultAsync(c => c.Id == channelId && c.GuildId == guildId);
+        if (channel == null) return null;
+
+        if (string.IsNullOrWhiteSpace(channel.PermissionOverwrites) || channel.PermissionOverwrites == "[]") {
+            return "everyone";
+        }
+
+        return null; // TODO
+    }
+
+    private async Task<List<IMemberListEntry>> GetGuildMemberListAsync(SpacebarDbContext db, long guildId) {
         var memberList = new List<IMemberListEntry>();
 
         // Fetch hoisted roles for the guild to define groups
         var hoistedRoles = await db.Roles
             .AsNoTracking()
-            .Where(r => r.GuildId == payload.GuildId && r.Hoist)
+            .Where(r => r.GuildId == guildId && r.Hoist)
             .OrderByDescending(r => r.Position)
             // .Select(r => r.Id)
             .ToListAsync();
@@ -51,7 +95,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             var members = await db.Members.AsNoTracking()
                 .Include(x => x.IdNavigation)
                 .Where(x =>
-                    x.GuildId == payload.GuildId
+                    x.GuildId == guildId
                     && x.Roles.Any(r => r.Id == role)
                     && !x.Roles.Any(r => handledRoles.Contains(r.Id))
                     // and finally, filter by online
@@ -74,7 +118,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             .Include(x => x.IdNavigation)
             // .ThenInclude(x=>x.Sessions)
             .Where(x =>
-                x.GuildId == payload.GuildId
+                x.GuildId == guildId
                 && !x.Roles.Any(r => handledRoles.Contains(r.Id))
                 // and finally, filter by online
                 && x.IdNavigation.Sessions.Any(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")
@@ -90,14 +134,13 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             memberList.AddRange(onlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMember() }));
         }
 
-
         if (memberList.Count < 2000) {
             logger.LogInformation("Less than 2000 members, including offline members...");
             var offlineMembers = await db.Members.AsNoTracking()
                 .Include(x => x.IdNavigation)
                 // .ThenInclude(x=>x.Sessions)
                 .Where(x =>
-                    x.GuildId == payload.GuildId
+                    x.GuildId == guildId
                     && !x.Roles.Any(r => handledRoles.Contains(r.Id))
                     // and finally, filter by online
                     && (x.IdNavigation.Sessions.Any(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
@@ -115,24 +158,14 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         }
 
         logger.LogInformation("Got member list with {count} total nodes", memberList.Count);
-    }
-
-    private async Task<string?> GetMemberListIdAsync(SpacebarDbContext db, long guildId, long channelId) {
-        var channel = await db.Channels.AsNoTracking().FirstOrDefaultAsync(c => c.Id == channelId && c.GuildId == guildId);
-        if (channel == null) return null;
-
-        if (string.IsNullOrWhiteSpace(channel.PermissionOverwrites) || channel.PermissionOverwrites == "[]") {
-            return "everyone";
-        }
-
-        return null; // TODO
+        return memberList;
     }
 }
 
 internal interface IMemberListEntry { }
 
 internal struct RoleEntry : IMemberListEntry {
-    [JsonPropertyName("id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    [JsonPropertyName("id")]
     public string Id { get; set; }
 
     [JsonPropertyName("count")]
