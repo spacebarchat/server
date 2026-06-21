@@ -30,7 +30,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
     this.inflate?.close();
     this.removeAllListeners();
 
-    if (this.session_id) {
+    if (this.session) {
         const authSessionId = this.session?.session_id;
         const closedAt = Date.now();
 
@@ -66,6 +66,7 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                 }
             }, 10_000);
 
+        if (!this.user_id) console.error("No user id in websocket???", this);
         const voiceState = await VoiceState.findOne({
             where: { user_id: this.user_id },
         });
