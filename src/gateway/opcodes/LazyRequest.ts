@@ -19,9 +19,9 @@
 import murmur from "murmurhash-js/murmurhash3_gc";
 import { getDatabase, Member, Role, Session, User, Channel } from "@spacebar/database";
 import { arrayPartition, Stopwatch } from "@spacebar/extensions";
-import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spacebar/gateway";
+import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
 import { LazyRequestSchema } from "@spacebar/schemas";
-import { getPermission, listenEvent, Presence, Permissions, getMostRelevantSession } from "@spacebar/util";
+import { getPermission, listenEvent, Presence, Permissions, getMostRelevantSession, Config } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { start } from "node:repl";
 
@@ -157,6 +157,10 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     check.call(this, LazyRequestSchema, d);
     // noinspection JSUnusedLocalSymbols - TODO: implement typing/activities subscriptions
     const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
+
+    if (Config.get().offload.gateway.lazyRequestUrl !== null) {
+        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.lazyRequestUrl!, d);
+    }
 
     if (members) {
         // Client has requested a PRESENCE_UPDATE for specific member
