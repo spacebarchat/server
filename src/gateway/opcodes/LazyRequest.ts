@@ -23,7 +23,7 @@ import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send } from "@spaceb
 import { LazyRequestSchema } from "@spacebar/schemas";
 import { getPermission, listenEvent, Presence, Permissions, getMostRelevantSession } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { And, Any, ArrayContains, In, Not } from "typeorm";
+import { start } from "node:repl";
 
 // TODO: only show roles/members that have access to this channel
 // TODO: config: to list all members (even those who are offline) sorted by role, or just those who are online
@@ -152,7 +152,7 @@ async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 }
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
-    const startTime = Date.now();
+    const sw = Stopwatch.startNew();
     // TODO: check data
     check.call(this, LazyRequestSchema, d);
     // noinspection JSUnusedLocalSymbols - TODO: implement typing/activities subscriptions
@@ -257,44 +257,5 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
         },
     });
 
-    console.log(`[Gateway/${this.user_id}] LAZY_REQUEST ${guild_id} ${channel_id} took ${Date.now() - startTime}ms`);
+    console.log(`[Gateway/${this.user_id}] LAZY_REQUEST ${guild_id} ${channel_id} took ${sw.elapsed().toString()}`);
 }
-
-// async function getAllGroups(guild_id: string) {
-//     const hoistedRoles = await Role.find({ where: { hoist: true, guild_id }, order: { position: "DESC" } });
-//     return [...hoistedRoles.map((r) => ({ id: r.id, count: 0 })), { id: "online", count: 0 }, { id: "offline", count: 0 }];
-// }
-//
-// export async function buildFullMemberlistSequential(guild_id: string) {
-//     const totalSw = Stopwatch.startNew();
-//     const incSw = Stopwatch.startNew();
-//     const logTrace = (...data: unknown[]) => {
-//         if (process.env.LOG_VERBOSE_TRACES !== "true") return;
-//         console.log("[LazyRequest/buildFullMemberlist]", ...data, `[${totalSw.elapsed().toString()} (+${incSw.getElapsedAndReset().totalMilliseconds}ms)]`);
-//     };
-//
-//     const groups = await getAllGroups(guild_id);
-//     const handledGroups: string[] = [];
-//     const handledUsers: string[] = [];
-//     const offlineUsers: string[] = [];
-//     logTrace("[LazyRequest] Got", groups.length, "groups...");
-//
-//     for (const group of groups) {
-//         console.log("[LazyRequest] Building member list for", group.id);
-//         if (group.id == "offline") {
-//         } else if (group.id == "online") {
-//         } else {
-//             const potentialMembers = await Member.find({
-//                 where: { roles: And<Role>(Any<Role>(And<Role>({ id: group.id }, Not(Any({ id: In(handledGroups) }))))) },
-//                 relations: { roles: true, user: true },
-//             });
-//             console.log(
-//                 "[LazyRequest] Found",
-//                 potentialMembers.length,
-//                 "potential members",
-//                 potentialMembers.map((pm) => ({ id: pm.id, name: pm.nick ?? pm.user.tag ?? pm.id })),
-//             );
-//         }
-//         logTrace("Built member list for", group.id, "with", 0, "members!");
-//     }
-// }
