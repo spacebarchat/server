@@ -43,35 +43,37 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
 
         var memberList = await GetGuildMemberListAsync(db, payload.GuildId);
 
-        yield return new ReplicationMessage<GuildMemberListUpdate>()
-        {
-            UserId = user.Result.Id,
-            Event = GuildMemberListUpdate.EventId,
-            Origin = "Offload/LazyRequest",
-            CreatedAt = DateTime.UtcNow,
-            Payload = new GuildMemberListUpdate()
+        foreach (var (cid, ranges) in payload.Channels)
+        foreach (var range in ranges)
+            yield return new ReplicationMessage<GuildMemberListUpdate>()
             {
-                GuildId = payload.GuildId,
-                // this doesnt appear to work currently, skip it
-                ListId = "everyone", // await GetMemberListIdAsync(db, guildId: payload.GuildId, channelId: long.Parse(payload.Channels.Keys.First())),
-                OnlineCount = memberList.TakeWhile(x => x is not GuildMemberListSyncItem.RoleEntry { Group.Id: "offline" }).Count(),
-                MemberCount = await db.Members.CountAsync(x => x.GuildId == payload.GuildId),
-                Operations =
-                [
-                    new GuildMemberListUpdateOperation.SyncOperation()
-                    {
-                        Operation = GuildMemberListUpdateOperationType.Sync,
-                        Items = memberList.ToList(),
-                        Range = [0, memberList.Count]
-                    }
-                ],
-                Groups = memberList.OfType<GuildMemberListSyncItem.RoleEntry>().Select(x => x.Group).ToList()
-            }
-            // TODO: send presence updates
-            // TODO: handle subscriptions
-            // TODO: handle channel permissions
-            // TODO: handle channels at all
-        };
+                UserId = user.Result.Id,
+                Event = GuildMemberListUpdate.EventId,
+                Origin = "Offload/LazyRequest",
+                CreatedAt = DateTime.UtcNow,
+                Payload = new GuildMemberListUpdate()
+                {
+                    GuildId = payload.GuildId,
+                    // this doesnt appear to work currently, skip it
+                    ListId = "everyone", // await GetMemberListIdAsync(db, guildId: payload.GuildId, channelId: long.Parse(cid)),
+                    OnlineCount = memberList.TakeWhile(x => x is not GuildMemberListSyncItem.RoleEntry { Group.Id: "offline" }).Count(),
+                    MemberCount = await db.Members.CountAsync(x => x.GuildId == payload.GuildId),
+                    Operations =
+                    [
+                        new GuildMemberListUpdateOperation.SyncOperation()
+                        {
+                            Operation = GuildMemberListUpdateOperationType.Sync,
+                            Items = memberList.Skip(range[0]).Take(range[1]).ToList(),
+                            Range = [range[0], Math.Min(range[1], memberList.Count)]
+                        }
+                    ],
+                    Groups = memberList.OfType<GuildMemberListSyncItem.RoleEntry>().Select(x => x.Group).ToList()
+                }
+                // TODO: send presence updates
+                // TODO: handle subscriptions
+                // TODO: handle channel permissions
+                // TODO: handle channels at all
+            };
     }
 
     private async Task<string?> GetMemberListIdAsync(SpacebarDbContext db, long guildId, long channelId)
