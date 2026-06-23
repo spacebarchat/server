@@ -32,7 +32,7 @@ export async function onGuildSync(this: WebSocket, { d }: Payload) {
     if (!Array.isArray(d)) throw new Error("Invalid payload for GUILD_SYNC");
 
     if (Config.get().offload.gateway.guildSyncUrl !== null) {
-        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildSyncUrl!, d);
+        if (await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildSyncUrl!, d)) return;
     }
 
     const guild_ids = d as string[];

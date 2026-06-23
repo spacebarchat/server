@@ -27,7 +27,7 @@ export async function onRequestChannelInfo(this: WebSocket, { d }: Payload) {
     if (!d.fields) throw new Error('"fields" is required');
 
     if (Config.get().offload.gateway.channelInfoUrl !== null) {
-        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.channelInfoUrl!, d);
+        if (await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.channelInfoUrl!, d)) return;
     }
 
     const channels = (

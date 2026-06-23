@@ -24,7 +24,7 @@ export async function onRequestChannelStatuses(this: WebSocket, { d }: Payload) 
     if (!d.guild_id) throw new Error('"guild_id" is required');
 
     if (Config.get().offload.gateway.channelStatusesUrl !== null) {
-        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.channelStatusesUrl!, d);
+        if (await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.channelStatusesUrl!, d)) return;
     }
 
     // TODO: implement

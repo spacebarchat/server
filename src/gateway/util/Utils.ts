@@ -97,7 +97,7 @@ async function expireOldPresenceStates() {
     }
 }
 
-export async function handleOffloadedGatewayRequest(socket: WebSocket, url: string, body: unknown) {
+export async function handleOffloadedGatewayRequest(socket: WebSocket, url: string, body: unknown): Promise<boolean> {
     // TODO: async json object streaming
     const resp = await fetch(url, {
         body: JSON.stringify(body),
@@ -114,7 +114,8 @@ export async function handleOffloadedGatewayRequest(socket: WebSocket, url: stri
         const text = await resp.text();
         console.error(`[Gateway] Offloaded request to ${url} failed with status ${resp.status}: ${text}`);
         if (resp.status === 415 || resp.status === 400) console.log(typeof body, body);
-        throw new Error(`Offloaded request failed with status ${resp.status}: ${text}`);
+        // throw new Error(`Offloaded request failed with status ${resp.status}: ${text}`);
+        return false;
     }
 
     const data = ((await resp.json()) as Event[]).toReversed();
@@ -128,4 +129,6 @@ export async function handleOffloadedGatewayRequest(socket: WebSocket, url: stri
             d: event.data,
         });
     }
+
+    return true;
 }

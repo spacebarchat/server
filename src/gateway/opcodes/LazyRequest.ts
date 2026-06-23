@@ -159,7 +159,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
 
     if (Config.get().offload.gateway.lazyRequestUrl !== null) {
-        return await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.lazyRequestUrl!, d);
+        if (await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.lazyRequestUrl!, d)) return;
     }
 
     if (members) {
