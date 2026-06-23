@@ -25,4 +25,9 @@ public static class User
             System = user.System,
         };
     }
+
+    extension(Models.Db.Models.User user)
+    {
+        public string Tag => $"{user.Username}#{user.Discriminator}";
+    }
 }

@@ -142,7 +142,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             if (members.Count > 0)
             {
                 memberList.Add(new RoleEntry() { Group = new() { Id = role.ToString(), Count = members.Count } });
-                memberList.AddRange(members.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMember() }));
+                memberList.AddRange(members.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
             }
 
             handledRoles.Add(role);
@@ -167,7 +167,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         if (onlineMembers.Count > 0)
         {
             memberList.Add(new RoleEntry() { Group = new() { Id = "online", Count = onlineMembers.Count } });
-            memberList.AddRange(onlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMember() }));
+            memberList.AddRange(onlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
         }
 
         if (memberList.Count < 2000)
@@ -194,7 +194,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 {
                     Group = new() { Id = "offline", Count = offlineMembers.Count }
                 });
-                memberList.AddRange(offlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMember() }));
+                memberList.AddRange(offlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
             }
         }
 
@@ -226,5 +226,5 @@ internal struct RoleEntry : IMemberListEntry
 internal struct MemberEntry : IMemberListEntry
 {
     [JsonPropertyName("member")]
-    public Member Member { get; set; }
+    public MemberWithPresence Member { get; set; }
 }
