@@ -147,6 +147,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         // online members
         var onlineMembers = await db.Members.AsNoTracking()
             .Include(x => x.IdNavigation)
+            .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
             // .ThenInclude(x=>x.Sessions)
             .Where(x =>
                 x.GuildId == guildId
@@ -171,6 +172,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             logger.LogInformation("Less than 2000 members, including offline members...");
             var offlineMembers = await db.Members.AsNoTracking()
                 .Include(x => x.IdNavigation)
+                .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
                 // .ThenInclude(x=>x.Sessions)
                 .Where(x =>
                     x.GuildId == guildId
