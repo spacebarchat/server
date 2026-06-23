@@ -54,24 +54,18 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 GuildId = payload.GuildId,
                 // this doesnt appear to work currently, skip it
                 ListId = "everyone", // await GetMemberListIdAsync(db, guildId: payload.GuildId, channelId: long.Parse(payload.Channels.Keys.First())),
-                OnlineCount = memberList.TakeWhile(x => x is not RoleEntry { Group.Id: "offline" }).Count(),
+                OnlineCount = memberList.TakeWhile(x => x is not GuildMemberListSyncItem.RoleEntry { Group.Id: "offline" }).Count(),
                 MemberCount = await db.Members.CountAsync(x => x.GuildId == payload.GuildId),
                 Operations =
                 [
                     new GuildMemberListUpdateOperation.SyncOperation()
                     {
                         Operation = GuildMemberListUpdateOperationType.Sync,
-                        Items = memberList.Select<IMemberListEntry, GuildMemberListSyncItem>(item => item is RoleEntry re
-                                ? new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = re.Group.Id, Count = re.Group.Count } }
-                                : item is MemberEntry me
-                                    ? new GuildMemberListSyncItem.MemberEntry() { Member = me.Member }
-                                    : throw new InvalidCastException("List item was neither RoleEntry nor MemberEntry???"))
-                            .ToList(),
+                        Items = memberList.ToList(),
                         Range = [0, memberList.Count]
                     }
                 ],
-                Groups = memberList.OfType<RoleEntry>().Select(re => new GuildMemberListSyncItem.RoleEntry.Content() { Id = re.Group.Id, Count = re.Group.Count })
-                    .ToList()
+                Groups = memberList.OfType<GuildMemberListSyncItem.RoleEntry>().Select(x => x.Group).ToList()
             }
             // TODO: send presence updates
             // TODO: handle subscriptions
@@ -85,7 +79,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         var channel = await db.Channels.AsNoTracking().FirstOrDefaultAsync(c => c.Id == channelId && c.GuildId == guildId);
         if (channel == null) return null;
 
-        
+
         if (string.IsNullOrWhiteSpace(channel.PermissionOverwrites) || channel.PermissionOverwrites == "[]")
         {
             return "everyone";
@@ -94,8 +88,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         List<string> perms = [];
         foreach (var overwrite in channel.MappedPermissionOverwrites)
         {
-            if (((Permissions) overwrite.Allow).HasFlag(Permissions.ViewChannel)) perms.Add($"allow:{overwrite}");
-            else if (((Permissions) overwrite.Deny).HasFlag(Permissions.ViewChannel)) perms.Add($"deny:{overwrite}");
+            if (((Permissions)overwrite.Allow).HasFlag(Permissions.ViewChannel)) perms.Add($"allow:{overwrite}");
+            else if (((Permissions)overwrite.Deny).HasFlag(Permissions.ViewChannel)) perms.Add($"deny:{overwrite}");
         }
 
         perms.Sort();
@@ -105,9 +99,9 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         return hashResult.ToString();
     }
 
-    private async Task<List<IMemberListEntry>> GetGuildMemberListAsync(SpacebarDbContext db, long guildId)
+    private async Task<List<GuildMemberListSyncItem>> GetGuildMemberListAsync(SpacebarDbContext db, long guildId)
     {
-        var memberList = new List<IMemberListEntry>();
+        var memberList = new List<GuildMemberListSyncItem>();
 
         // Fetch hoisted roles for the guild to define groups
         var hoistedRoles = await db.Roles
@@ -141,8 +135,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
 
             if (members.Count > 0)
             {
-                memberList.Add(new RoleEntry() { Group = new() { Id = role.ToString(), Count = members.Count } });
-                memberList.AddRange(members.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
+                memberList.Add(new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = role.ToString(), Count = members.Count } });
+                memberList.AddRange(members.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
             }
 
             handledRoles.Add(role);
@@ -166,8 +160,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
 
         if (onlineMembers.Count > 0)
         {
-            memberList.Add(new RoleEntry() { Group = new() { Id = "online", Count = onlineMembers.Count } });
-            memberList.AddRange(onlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
+            memberList.Add(new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = "online", Count = onlineMembers.Count } });
+            memberList.AddRange(onlineMembers.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
         }
 
         if (memberList.Count < 2000)
@@ -190,41 +184,15 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
 
             if (offlineMembers.Count > 0)
             {
-                memberList.Add(new RoleEntry()
+                memberList.Add(new GuildMemberListSyncItem.RoleEntry()
                 {
                     Group = new() { Id = "offline", Count = offlineMembers.Count }
                 });
-                memberList.AddRange(offlineMembers.Select(m => (IMemberListEntry)new MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
+                memberList.AddRange(offlineMembers.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
             }
         }
 
         logger.LogInformation("Got member list with {count} total nodes", memberList.Count);
         return memberList;
     }
-}
-
-// TODO: either remove these classes by using the schema ones, or compress these down?
-internal interface IMemberListEntry
-{
-}
-
-internal struct RoleEntry : IMemberListEntry
-{
-    [JsonPropertyName("group")]
-    public Content Group { get; set; }
-
-    internal struct Content
-    {
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [JsonPropertyName("count")]
-        public int Count { get; set; }
-    }
-}
-
-internal struct MemberEntry : IMemberListEntry
-{
-    [JsonPropertyName("member")]
-    public MemberWithPresence Member { get; set; }
 }
