@@ -131,8 +131,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 )
                 .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
 
-            logger.LogInformation("Got {count} potential members for group {group} ({groupName}):\n - {members}",
-                members.Count, role, roleObj.Name, string.Join("\n - ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
+            logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
+                members.Count, role, roleObj.Name, string.Join(", ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
             );
 
             if (members.Count > 0)
@@ -157,8 +157,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             )
             .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
 
-        logger.LogInformation("Got {count} potential members for group {group} ({groupName}):\n - {members}",
-            onlineMembers.Count, "online", "online", string.Join("\n - ", onlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
+        logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
+            onlineMembers.Count, "online", "online", string.Join(", ", onlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
         );
 
         if (onlineMembers.Count > 0)
@@ -178,12 +178,12 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                     x.GuildId == guildId
                     && !x.Roles.Any(r => handledRoles.Contains(r.Id))
                     // and finally, filter by online
-                    && (x.IdNavigation.Sessions.Any(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
+                    && (x.IdNavigation.Sessions.All(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
                 )
                 .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
 
-            logger.LogInformation("Got {count} potential members for group {group} ({groupName}):\n - {members}",
-                offlineMembers.Count, "offline", "offline", string.Join("\n - ", offlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
+            logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
+                offlineMembers.Count, "offline", "offline", string.Join(", ", offlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
             );
 
             if (offlineMembers.Count > 0)
