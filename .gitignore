@@ -9,6 +9,7 @@ assets/cache
 .env
 config.json
 assets/cacheMisses
+http-client.private.env.json
 
 .vscode/settings.json
 

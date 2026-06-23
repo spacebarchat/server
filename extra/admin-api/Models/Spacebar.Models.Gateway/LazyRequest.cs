@@ -12,8 +12,8 @@ public class LazyRequest
     [JsonPropertyName("channels")]
     public Dictionary<string, List<List<int>>> Channels { get; set; }
 
-    [JsonPropertyName("members")]
-    public bool Members { get; set; }
+    [JsonPropertyName("members"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public List<long>? Members { get; set; }
 
     [JsonPropertyName("threads")]
     public bool Threads { get; set; }

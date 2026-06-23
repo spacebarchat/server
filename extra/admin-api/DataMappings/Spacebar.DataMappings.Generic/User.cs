@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Spacebar.Models.Generic;
 
 namespace Spacebar.DataMappings.Generic;
@@ -6,7 +7,8 @@ public static class User
 {
     public static PartialUser ToPartialUser(this Models.Db.Models.User user)
     {
-        return new PartialUser() {
+        return new PartialUser()
+        {
             Id = user.Id,
             Discriminator = user.Discriminator,
             Username = user.Username,
@@ -16,7 +18,7 @@ public static class User
             Banner = user.Banner,
             Bot = user.Bot,
             Collectibles = user.Collectibles,
-            DisplayNameStyles = user.DisplayNameStyles,
+            DisplayNameStyles = JsonSerializer.Deserialize<DisplayNameStyle>(user.DisplayNameStyles ?? "null"),
             // GlobalName = x.GlobalName,
             PrimaryGuild = user.PrimaryGuild,
             PublicFlags = user.PublicFlags,

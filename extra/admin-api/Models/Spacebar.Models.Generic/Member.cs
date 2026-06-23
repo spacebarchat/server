@@ -23,8 +23,8 @@ public class Member {
     [JsonPropertyName("collectibles")]
     public object? Collectibles { get; set; }
 
-    [JsonPropertyName("display_name_styles")]
-    public object? DisplayNameStyles { get; set; }
+    [JsonPropertyName("display_name_styles"), JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public DisplayNameStyle? DisplayNameStyles { get; set; }
 
     [JsonPropertyName("banner")]
     public string? Banner { get; set; }
