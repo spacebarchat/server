@@ -27,10 +27,10 @@ public static class MemberExtensions
         var presence = new Presence()
         {
             User = partialUser ?? member.IdNavigation.ToPartialUser(),
-            Status = onlineSessions.OrderByDescending(x => x.LastSeen).First().Status,
+            Status = onlineSessions.OrderByDescending(x => x.LastSeen).FirstOrDefault()?.Status ?? "offline",
             GuildId = member.GuildId,
             Activities = onlineSessions.SelectMany(x => x.GetActivities()).ToList(),
-            ClientStatus = onlineSessions.Aggregate(new Presence.ClientStatuses() { }, (res, sess) =>
+            ClientStatus = !onlineSessions.Any() ? new() : onlineSessions.Aggregate(new Presence.ClientStatuses() { }, (res, sess) =>
             {
                 var cs = sess.GetClientStatuses();
                 string? Maybe(string? source)
