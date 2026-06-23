@@ -12,6 +12,7 @@ using Spacebar.Models.Db.Contexts;
 using Spacebar.Models.Db.Models;
 using Spacebar.Models.Gateway;
 using Spacebar.Models.Generic;
+using Session = Spacebar.Models.Db.Models.Session;
 
 namespace Spacebar.GatewayOffload.Controllers;
 
