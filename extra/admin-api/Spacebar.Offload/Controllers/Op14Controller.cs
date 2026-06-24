@@ -169,9 +169,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             logger.LogInformation("Less than 2000 members, including offline members...");
             var offlineMembers = await baseMembersQry
                 .Where(x =>
-                    !x.Roles.Any(r => handledRoles.Contains(r.Id))
-                    // and finally, filter by online
-                    && (x.IdNavigation.Sessions.All(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
+                    x.IdNavigation.Sessions.All(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown")
+                    || !x.IdNavigation.Sessions.Any()
                 ).ToListAsync();
 
             AddGroupIfNonEmpty("offline", "offline", offlineMembers);
