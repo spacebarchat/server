@@ -32,7 +32,7 @@ export interface PollMedia {
 }
 
 export interface PollAnswer {
-    answer_id?: string;
+    answer_id?: number;
     poll_media: PollMedia;
 }
 
