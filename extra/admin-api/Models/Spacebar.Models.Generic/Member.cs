@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Spacebar.Models.Generic;
@@ -7,7 +8,9 @@ namespace Spacebar.Models.Generic;
 [DebuggerDisplay("{User.Id} ({User.Username}#{User.Discriminator})")]
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 [SuppressMessage("ReSharper", "PropertyCanBeMadeInitOnly.Global")]
-public class Member {
+[JsonConverter(typeof(MemberJsonConverter))]
+public class Member
+{
     [JsonPropertyName("user")]
     public required PartialUser User { get; set; }
 
@@ -37,7 +40,18 @@ public class Member {
 }
 
 // Unsure if this is used anywhere outside of op14...?
-public class MemberWithPresence : Member {
+public class MemberWithPresence : Member
+{
     [JsonPropertyName("presence")]
     public Presence? Presence { get; set; }
+}
+
+public class MemberJsonConverter : JsonConverter<Member>
+{
+    public override Member? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException(); // TODO
+    }
+
+    public override void Write(Utf8JsonWriter writer, Member value, JsonSerializerOptions options) => JsonSerializer.Serialize(writer, value, value.GetType(), options);
 }
