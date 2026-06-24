@@ -13229,7 +13229,7 @@
         "type": "object",
         "properties": {
             "answer_id": {
-                "type": "string"
+                "type": "integer"
             },
             "poll_media": {
                 "$ref": "#/definitions/PollMedia"
