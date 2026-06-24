@@ -486,6 +486,10 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     message.content = opts.content?.trim();
 
+    if (message.poll && opts.poll?.duration) {
+        message.poll.expiry = new Date(Date.now() + opts.poll.duration * 3600000);
+    }
+
     await handleMessageMentionsAsync(message);
 
     const attachmentIndices = new Map(message.attachments?.map((attachment, index) => [`attachment://${attachment.filename}`, index]));
