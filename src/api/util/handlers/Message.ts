@@ -495,7 +495,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
         if (opts.poll?.answers) {
             for (let i = 0; i < opts.poll.answers.length; i++) {
-                message.poll.answers[i].answer_id = i;
+                message.poll.answers[i].answer_id = i + 1;
             }
         }
     }
