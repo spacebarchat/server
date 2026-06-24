@@ -19,12 +19,12 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
 import { Message } from "#database";
-import { DiscordApiErrors } from "#util";
+import { DiscordApiErrors, emitEvent, MessageUpdateEvent } from "#util";
 
 const router: Router = Router({ mergeParams: true });
 
 router.post("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res: Response) => {
-    const { poll_id } = req.params as { [key: string]: string };
+    const { poll_id, channel_id } = req.params as { [key: string]: string };
 
     const message = await Message.findOne({ where: { id: poll_id } });
 
@@ -44,6 +44,12 @@ router.post("/", route({ permission: "VIEW_CHANNEL" }), async (req: Request, res
 
     await message.save();
     res.send(message);
+
+    await emitEvent({
+        channel_id,
+        data: message.toJSON(),
+        event: "MESSAGE_UPDATE",
+    } satisfies MessageUpdateEvent);
 });
 
 export default router;
