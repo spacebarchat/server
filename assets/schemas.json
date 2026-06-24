@@ -207,6 +207,22 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PollUserAnswersSchema": {
+        "type": "object",
+        "properties": {
+            "answer_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "answer_ids"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ActivitySchema": {
         "type": "object",
         "properties": {

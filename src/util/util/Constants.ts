@@ -659,6 +659,8 @@ export const DiscordApiErrors = {
     STICKER_ANIMATION_DURATION_MAXIMUM: new ApiError("Sticker animation duration exceeds maximum of {} seconds", 170007, undefined, ["5"]),
     AUTOMODERATOR_BLOCK: new ApiError("Message was blocked by automatic moderation", 200000),
     BULK_BAN_FAILED: new ApiError("Failed to ban users", 500000),
+    POLL_VOTING_BLOCKED: new ApiError("Poll voting blocked", 520000),
+    POLL_EXPIRED: new ApiError("Poll expired", 520001),
 
     //Other errors
     UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
