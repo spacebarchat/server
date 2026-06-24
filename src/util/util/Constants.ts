@@ -663,6 +663,7 @@ export const DiscordApiErrors = {
     POLL_EXPIRED: new ApiError("Poll expired", 520001),
     POLL_INVALID_CHANNEL_TYPE: new ApiError("Invalid channel type for poll creation", 520002),
     POLL_CANNOT_EDIT_MESSAGE: new ApiError("Cannot edit a poll message", 520003),
+    NON_POLL_MESSAGE_CANNOT_EXPIRE: new ApiError("Cannot expire a non-poll message", 520006),
 
     //Other errors
     UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
