@@ -15,6 +15,8 @@ using Spacebar.Models.Gateway;
 using Spacebar.Models.Generic;
 using Spacebar.Models.Generic.Constants;
 using Spacebar.Offload.Extensions;
+using Member = Spacebar.Models.Db.Models.Member;
+using Role = Spacebar.Models.Db.Models.Role;
 
 namespace Spacebar.GatewayOffload.Controllers;
 
@@ -122,9 +124,21 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
             .Include(x => x.Roles)
             .OrderBy(x => x.Nick ?? x.IdNavigation.Username)
-            .Where(x=>x.GuildId == guildId);
-        
-        
+            .Where(x => x.GuildId == guildId);
+
+        void AddGroupIfNonEmpty(string groupId, string groupName, List<Member> members)
+        {
+            logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
+                members.Count, groupId, groupName, string.Join(", ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
+            );
+
+            if (members.Count > 0)
+            {
+                memberList.Add(new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = groupId, Count = members.Count } });
+                memberList.AddRange(members.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
+            }
+        }
+
         foreach (var roleObj in hoistedRoles)
         {
             var role = roleObj.Id;
@@ -136,16 +150,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                     && x.IdNavigation.Sessions.Any(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")
                 ).ToListAsync();
 
-            logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
-                members.Count, role, roleObj.Name, string.Join(", ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
-            );
-
-            if (members.Count > 0)
-            {
-                memberList.Add(new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = role.ToString(), Count = members.Count } });
-                memberList.AddRange(members.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
-            }
-
+            AddGroupIfNonEmpty(roleObj.Id.ToString(), roleObj.Name, members);
             handledRoles.Add(role);
         }
 
@@ -157,15 +162,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 && x.IdNavigation.Sessions.Any(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")
             ).ToListAsync();
 
-        logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
-            onlineMembers.Count, "online", "online", string.Join(", ", onlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
-        );
-
-        if (onlineMembers.Count > 0)
-        {
-            memberList.Add(new GuildMemberListSyncItem.RoleEntry() { Group = new() { Id = "online", Count = onlineMembers.Count } });
-            memberList.AddRange(onlineMembers.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
-        }
+        AddGroupIfNonEmpty("online", "online", onlineMembers);
 
         if (memberList.Count < 2000)
         {
@@ -177,18 +174,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                     && (x.IdNavigation.Sessions.All(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
                 ).ToListAsync();
 
-            logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
-                offlineMembers.Count, "offline", "offline", string.Join(", ", offlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
-            );
-
-            if (offlineMembers.Count > 0)
-            {
-                memberList.Add(new GuildMemberListSyncItem.RoleEntry()
-                {
-                    Group = new() { Id = "offline", Count = offlineMembers.Count }
-                });
-                memberList.AddRange(offlineMembers.Select(m => new GuildMemberListSyncItem.MemberEntry() { Member = m.ToPublicMemberWithPresence() }));
-            }
+            AddGroupIfNonEmpty("offline", "offline", offlineMembers);
         }
 
         logger.LogInformation("Got member list with {count} total nodes", memberList.Count);
