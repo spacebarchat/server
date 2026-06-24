@@ -46,6 +46,7 @@ import {
     MessageCreateCloudAttachment,
     MessageCreateSchema,
     PartialUser,
+    PollAnswerCount,
     PublicMessage,
     Reaction,
     ReadStateType,
@@ -212,6 +213,13 @@ router.get(
 
                     return att;
                 }) ?? [];
+
+            (x.poll?.results?.answer_counts as (PollAnswerCount & { voters?: string[] })[]).map((answer) => {
+                answer.me_voted = answer.voters!.includes(req.user_id);
+                delete answer.voters;
+
+                return answer;
+            });
 
             /**
 			Some clients ( discord.js ) only check if a property exists within the response,
