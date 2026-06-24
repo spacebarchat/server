@@ -129,7 +129,10 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         void AddGroupIfNonEmpty(string groupId, string groupName, List<Member> members)
         {
             logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
-                members.Count, groupId, groupName, string.Join(", ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
+                members.Count, groupId, groupName,
+                string.Join(", ",
+                    members.Take(10).Select(x =>
+                        $"{x.Id} {x.Nick ?? x.IdNavigation.Tag} ({x.IdNavigation.Sessions.Count(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")} online sessions)"))
             );
 
             if (members.Count > 0)
