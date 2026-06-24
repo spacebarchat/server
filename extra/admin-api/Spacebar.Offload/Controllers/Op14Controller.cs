@@ -115,21 +115,25 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
 
         logger.LogDebug("Got hoisted roles: {roleIds}", hoistedRoles.Select(x => x.Id).ToList());
         List<long> handledRoles = [];
+
+        var baseMembersQry = db.Members.AsNoTracking()
+            .Include(x => x.IdNavigation)
+            .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
+            .Include(x => x.Roles)
+            .OrderBy(x => x.Nick ?? x.IdNavigation.Username)
+            .Where(x=>x.GuildId == guildId);
+        
+        
         foreach (var roleObj in hoistedRoles)
         {
             var role = roleObj.Id;
-            var members = await db.Members.AsNoTracking()
-                .Include(x => x.IdNavigation)
-                .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
-                .Include(x => x.Roles)
+            var members = await baseMembersQry
                 .Where(x =>
-                    x.GuildId == guildId
-                    && x.Roles.Any(r => r.Id == role)
+                    x.Roles.Any(r => r.Id == role)
                     && !x.Roles.Any(r => handledRoles.Contains(r.Id))
                     // and finally, filter by online
                     && x.IdNavigation.Sessions.Any(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")
-                )
-                .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
+                ).ToListAsync();
 
             logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
                 members.Count, role, roleObj.Name, string.Join(", ", members.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
@@ -145,17 +149,12 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         }
 
         // online members
-        var onlineMembers = await db.Members.AsNoTracking()
-            .Include(x => x.IdNavigation)
-            .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
-            // .ThenInclude(x=>x.Sessions)
+        var onlineMembers = await baseMembersQry
             .Where(x =>
-                x.GuildId == guildId
-                && !x.Roles.Any(r => handledRoles.Contains(r.Id))
+                !x.Roles.Any(r => handledRoles.Contains(r.Id))
                 // and finally, filter by online
                 && x.IdNavigation.Sessions.Any(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown")
-            )
-            .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
+            ).ToListAsync();
 
         logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
             onlineMembers.Count, "online", "online", string.Join(", ", onlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
@@ -170,17 +169,12 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
         if (memberList.Count < 2000)
         {
             logger.LogInformation("Less than 2000 members, including offline members...");
-            var offlineMembers = await db.Members.AsNoTracking()
-                .Include(x => x.IdNavigation)
-                .ThenInclude(x => x.Sessions.Where(s => s.Status != "offline" && s.Status != "invisible" && s.Status != "unknown"))
-                // .ThenInclude(x=>x.Sessions)
+            var offlineMembers = await baseMembersQry
                 .Where(x =>
-                    x.GuildId == guildId
-                    && !x.Roles.Any(r => handledRoles.Contains(r.Id))
+                    !x.Roles.Any(r => handledRoles.Contains(r.Id))
                     // and finally, filter by online
                     && (x.IdNavigation.Sessions.All(s => s.Status == "offline" || s.Status == "invisible" || s.Status == "unknown") || !x.IdNavigation.Sessions.Any())
-                )
-                .OrderBy(x => x.Nick ?? x.IdNavigation.Username).ToListAsync();
+                ).ToListAsync();
 
             logger.LogInformation("Got {count} potential members for group {group} ({groupName}): {members}",
                 offlineMembers.Count, "offline", "offline", string.Join(", ", offlineMembers.Take(10).Select(x => $"{x.Id} {x.Nick ?? x.IdNavigation.Tag}"))
