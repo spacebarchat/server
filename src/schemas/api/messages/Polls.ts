@@ -46,3 +46,7 @@ export interface PollAnswerCount {
     count: number;
     me_voted: boolean;
 }
+
+export interface PollUserAnswersSchema {
+    answer_ids: string[];
+}
