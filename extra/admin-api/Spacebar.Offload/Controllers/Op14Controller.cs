@@ -73,6 +73,7 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 // TODO: handle subscriptions
                 // TODO: handle channel permissions
                 // TODO: handle channels at all
+                // TODO: reduce the amount of duplicate User objects sent?
             };
     }
 
