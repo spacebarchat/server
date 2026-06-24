@@ -355,6 +355,10 @@ router.post(
             throw new HTTPError(`Cannot send messages to channel of type ${channel.type}`, 400);
         }
 
+        if (body.poll && !isTextChannel(channel.type)) {
+            throw DiscordApiErrors.POLL_INVALID_CHANNEL_TYPE;
+        }
+
         // handle blocked users in dms
         if (channel.recipients?.length == 2) {
             const otherUser = channel.recipients.find((r) => r.user_id != req.user_id)?.user;

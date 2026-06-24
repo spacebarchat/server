@@ -32,6 +32,7 @@ import {
     getRights,
     uploadFile,
     NewUrlUserSignatureData,
+    DiscordApiErrors,
 } from "@spacebar/util";
 import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
 
@@ -84,6 +85,10 @@ router.patch(
                 // guild admins can only suppress embeds of other messages, no such restriction imposed to instance-wide admins
             }
         } else rights.hasThrow("SELF_EDIT_MESSAGES");
+
+        if (message.poll) {
+            throw DiscordApiErrors.POLL_CANNOT_EDIT_MESSAGE;
+        }
 
         // no longer necessary, somehow resolved by updating the type of `attachments`...?
         // //@ts-expect-error Something is wrong with message_reference here, TS complains since "channel_id" is optional in MessageCreateSchema
