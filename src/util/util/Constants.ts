@@ -661,6 +661,8 @@ export const DiscordApiErrors = {
     BULK_BAN_FAILED: new ApiError("Failed to ban users", 500000),
     POLL_VOTING_BLOCKED: new ApiError("Poll voting blocked", 520000),
     POLL_EXPIRED: new ApiError("Poll expired", 520001),
+    POLL_INVALID_CHANNEL_TYPE: new ApiError("Invalid channel type for poll creation", 520002),
+    POLL_CANNOT_EDIT_MESSAGE: new ApiError("Cannot edit a poll message", 520003),
 
     //Other errors
     UNKNOWN_VOICE_STATE: new ApiError("Unknown Voice State", 10065, 404),
