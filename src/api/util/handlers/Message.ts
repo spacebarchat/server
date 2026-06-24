@@ -486,13 +486,17 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
     message.content = opts.content?.trim();
 
-    if (message.poll && opts.poll?.duration) {
-        message.poll.expiry = new Date(Date.now() + opts.poll.duration * 3600000);
-    }
+    if (message.poll) {
+        message.poll.results = { answer_counts: [], is_finalized: false };
 
-    if (message.poll && opts.poll?.answers) {
-        for (let i = 0; i < opts.poll.answers.length; i++) {
-            message.poll.answers[i].answer_id = i;
+        if (opts.poll?.duration) {
+            message.poll.expiry = new Date(Date.now() + opts.poll.duration * 3600000);
+        }
+
+        if (opts.poll?.answers) {
+            for (let i = 0; i < opts.poll.answers.length; i++) {
+                message.poll.answers[i].answer_id = i;
+            }
         }
     }
 
