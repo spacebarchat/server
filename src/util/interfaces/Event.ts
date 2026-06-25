@@ -366,6 +366,29 @@ export interface MessageDeleteBulkEvent extends Event {
         guild_id?: string;
     };
 }
+
+export interface MessagePollVoteAddEvent extends Event {
+    event: "MESSAGE_POLL_VOTE_ADD";
+    data: {
+        answer_id: number;
+        channel_id: string;
+        guild_id?: string;
+        message_id: string;
+        user_id: string;
+    };
+}
+
+export interface MessagePollVoteRemoveEvent extends Event {
+    event: "MESSAGE_POLL_VOTE_REMOVE";
+    data: {
+        answer_id: number;
+        channel_id: string;
+        guild_id?: string;
+        message_id: string;
+        user_id: string;
+    };
+}
+
 export const enum ReactionType {
     normal = 0,
     burst = 1,
@@ -685,6 +708,8 @@ export type EventData =
     | MessageUpdateEvent
     | MessageDeleteEvent
     | MessageDeleteBulkEvent
+    | MessagePollVoteAddEvent
+    | MessagePollVoteRemoveEvent
     | MessageReactionAddEvent
     | MessageReactionRemoveEvent
     | MessageReactionRemoveAllEvent
@@ -746,6 +771,8 @@ export enum EVENTEnum {
     MessageUpdate = "MESSAGE_UPDATE",
     MessageDelete = "MESSAGE_DELETE",
     MessageDeleteBulk = "MESSAGE_DELETE_BULK",
+    MessagePollVoteAdd = "MESSAGE_POLL_VOTE_ADD",
+    MessageePollVoteRemove = "MESSAGE_POLL_VOTE_REMOVE",
     MessageReactionAdd = "MESSAGE_REACTION_ADD",
     MessageReactionRemove = "MESSAGE_REACTION_REMOVE",
     MessageReactionRemoveAll = "MESSAGE_REACTION_REMOVE_ALL",
@@ -804,6 +831,8 @@ export type EVENT =
     | "MESSAGE_UPDATE"
     | "MESSAGE_DELETE"
     | "MESSAGE_DELETE_BULK"
+    | "MESSAGE_POLL_VOTE_ADD"
+    | "MESSAGE_POLL_VOTE_REMOVE"
     | "MESSAGE_REACTION_ADD"
     // TODO: add a new event: bulk add reaction:
     // | "MESSAGE_REACTION_BULK_ADD"
