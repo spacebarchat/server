@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
-import { Message, User } from "#database";
-import { DiscordApiErrors } from "#util";
-import { PollAnswerCount } from "#schemas";
+import { Message, User } from "@spacebar/database";
+import { DiscordApiErrors } from "@spacebar/util";
+import { PollAnswerCount } from "@spacebar/schemas";
 import { In } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
