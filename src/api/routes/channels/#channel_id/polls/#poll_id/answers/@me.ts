@@ -75,7 +75,7 @@ router.put("/", route({ requestBody: "PollUserAnswersSchema", permission: "VIEW_
         }
     }
 
-    for (const answerCount of allAnswerCounts.filter((a) => !payload.answer_ids.includes(a.id))) {
+    for (const answerCount of allAnswerCounts.filter((a) => !payload.answer_ids.includes(a.id) && a.voters.includes(req.user_id))) {
         answerCount.voters = answerCount.voters.filter((voter) => voter != req.user_id);
         answerCount.count = answerCount.voters.length;
 
