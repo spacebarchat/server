@@ -20,7 +20,7 @@ import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
 import { PollAnswerCount, PollUserAnswersSchema } from "@spacebar/schemas";
 import { Message } from "#database";
-import { DiscordApiErrors, ErrorList, FieldError, makeObjectErrorContent } from "#util";
+import { DiscordApiErrors, emitEvent, ErrorList, FieldError, makeObjectErrorContent, MessagePollVoteAddEvent, MessagePollVoteRemoveEvent } from "#util";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -44,6 +44,9 @@ router.put("/", route({ requestBody: "PollUserAnswersSchema", permission: "VIEW_
         throw new FieldError(50035, "Invalid form body", errors);
     }
 
+    const channel_id = message.channel_id!;
+    const guild_id = message.guild_id;
+
     const allAnswerCounts = message.poll.results.answer_counts as unknown as (Omit<PollAnswerCount, "me_voted"> & { voters: string[] })[];
 
     for (const answer_id of payload.answer_ids) {
@@ -57,12 +60,36 @@ router.put("/", route({ requestBody: "PollUserAnswersSchema", permission: "VIEW_
         if (!answerCount.voters.includes(req.user_id)) {
             answerCount.voters.push(req.user_id);
             answerCount.count = answerCount.voters.length;
+
+            await emitEvent({
+                event: "MESSAGE_POLL_VOTE_ADD",
+                channel_id,
+                data: {
+                    answer_id: Number(answerCount.id),
+                    channel_id: channel_id,
+                    message_id: poll_id,
+                    user_id: req.user_id,
+                    guild_id,
+                },
+            } satisfies MessagePollVoteAddEvent);
         }
     }
 
     for (const answerCount of allAnswerCounts.filter((a) => !payload.answer_ids.includes(a.id))) {
         answerCount.voters = answerCount.voters.filter((voter) => voter != req.user_id);
         answerCount.count = answerCount.voters.length;
+
+        await emitEvent({
+            event: "MESSAGE_POLL_VOTE_REMOVE",
+            channel_id,
+            data: {
+                answer_id: Number(answerCount.id),
+                channel_id,
+                message_id: poll_id,
+                user_id: req.user_id,
+                guild_id,
+            },
+        } satisfies MessagePollVoteRemoveEvent);
     }
 
     await message.save();
