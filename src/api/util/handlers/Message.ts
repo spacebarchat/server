@@ -497,7 +497,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
 
         if (opts.poll?.answers) {
-            if (message.poll.answers.length < 0 && message.poll.answers.length > 10) {
+            if (opts.poll.answers.length < 1 || opts.poll.answers.length > 10) {
                 const errors: ErrorList = {};
                 errors["poll"] = makeObjectErrorContent("BASE_TYPE_BAD_LENGTH", "Must be between 1 and 10 in length.");
                 throw new FieldError(50035, "Invalid form body", errors);
