@@ -26,12 +26,15 @@ import {
     Config,
     DiscordApiErrors,
     emitEvent,
+    ErrorList,
     EVERYONE_MENTION,
+    FieldError,
     FieldErrors,
     getPermission,
     getRights,
     handleFile,
     HERE_MENTION,
+    makeObjectErrorContent,
     MessageCreateEvent,
     MessageFlags,
     Permissions,
@@ -494,6 +497,12 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         }
 
         if (opts.poll?.answers) {
+            if (message.poll.answers.length < 0 && message.poll.answers.length > 10) {
+                const errors: ErrorList = {};
+                errors["poll"] = makeObjectErrorContent("BASE_TYPE_BAD_LENGTH", "Must be between 1 and 10 in length.");
+                throw new FieldError(50035, "Invalid form body", errors);
+            }
+
             for (let i = 0; i < opts.poll.answers.length; i++) {
                 message.poll.answers[i].answer_id = i + 1;
             }
