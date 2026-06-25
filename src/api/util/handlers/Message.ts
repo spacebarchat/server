@@ -469,7 +469,8 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             }
             /** Q: should be checked if the referenced message exists? ANSWER: NO
 			 otherwise backfilling won't work **/
-            if (MessageType.THREAD_STARTER_MESSAGE !== message.type && MessageType.THREAD_CREATED !== message.type) message.type = MessageType.REPLY;
+            if (MessageType.THREAD_STARTER_MESSAGE !== message.type && MessageType.THREAD_CREATED !== message.type && MessageType.POLL_RESULT !== message.type)
+                message.type = MessageType.REPLY;
         }
     }
 
