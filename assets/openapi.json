@@ -11472,6 +11472,7 @@
                             "gifv",
                             "image",
                             "link",
+                            "poll_result",
                             "rich",
                             "video"
                         ],
