@@ -55,6 +55,7 @@ export enum EmbedType {
     gifv = "gifv",
     article = "article",
     link = "link",
+    poll_result = "poll_result",
 }
 
 export interface EmbedImage {
