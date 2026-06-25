@@ -29,7 +29,7 @@ import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { initInstance } from "./util/handlers/Instance";
 import { route, sendMessage } from "./util";
-import { EmbedType, MessageReferenceType, MessageType, PollAnswerCount } from "#schemas";
+import { EmbedType, MessageReferenceType, MessageType, PollAnswerCount } from "@spacebar/schemas";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");

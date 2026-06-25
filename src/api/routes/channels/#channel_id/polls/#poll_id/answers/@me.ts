@@ -19,8 +19,8 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
 import { PollAnswerCount, PollUserAnswersSchema } from "@spacebar/schemas";
-import { Message } from "#database";
-import { DiscordApiErrors, emitEvent, ErrorList, FieldError, makeObjectErrorContent, MessagePollVoteAddEvent, MessagePollVoteRemoveEvent } from "#util";
+import { Message } from "@spacebar/database";
+import { DiscordApiErrors, emitEvent, ErrorList, FieldError, makeObjectErrorContent, MessagePollVoteAddEvent, MessagePollVoteRemoveEvent } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 
