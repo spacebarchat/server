@@ -94,22 +94,23 @@ router.get(
             {
                 channel_id: In(visibleChannelIds),
                 mentions: { id: user.id },
-                id: before ? LessThan(before) : undefined,
             },
         ];
         if (everyone) {
             whereQuery.push({
                 channel_id: In(visibleChannelIds),
                 mention_everyone: true,
-                id: before ? LessThan(before) : undefined,
             });
         }
         if (roles) {
             whereQuery.push({
                 channel_id: In(visibleChannelIds),
                 mention_roles: { id: In(ownedMentionableRoleIds) },
-                id: before ? LessThan(before) : undefined,
             });
+        }
+
+        if (before) {
+            whereQuery.map((query) => (query.id = LessThan(before)));
         }
 
         const sw = Stopwatch.startNew();
