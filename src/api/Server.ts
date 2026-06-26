@@ -28,8 +28,7 @@ import { Monitoring } from "../util/monitoring/Monitoring";
 import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { initInstance } from "./util/handlers/Instance";
-import { route, sendMessage } from "./util";
-import { EmbedType, MessageReferenceType, MessageType, PollAnswerCount } from "@spacebar/schemas";
+import { route, addPendingPoll } from "./util";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -198,99 +197,7 @@ export class SpacebarServer extends Server {
                 return;
             }
 
-            pendingPolls.set(message.id, {
-                timeout: setTimeout(
-                    async () => {
-                        if (!message.poll?.results) {
-                            return;
-                        }
-
-                        const allAnswerCounts = message.poll.results.answer_counts as unknown as (Omit<PollAnswerCount, "me_voted"> & { voters: string[] })[];
-
-                        const totalVotes = allAnswerCounts.map((a) => a.voters).length;
-                        const winningAnswerCounts = allAnswerCounts.filter((a) => (a.count * totalVotes) / 100);
-
-                        const pollResultsMessage = {
-                            type: MessageType.POLL_RESULT,
-                            channel_id: message.channel_id,
-                            author_id: message.author_id,
-                            message_reference: {
-                                type: MessageReferenceType.DEFAULT,
-                                message_id: message.id,
-                                channel_id: message.channel_id,
-                            },
-                            embeds: [
-                                {
-                                    type: EmbedType.poll_result,
-                                    id: message.id,
-                                    fields: [
-                                        {
-                                            name: "poll_question_text",
-                                            value: message.poll.question.text!,
-                                        },
-                                        {
-                                            name: "total_votes",
-                                            value: totalVotes.toString(),
-                                        },
-                                    ],
-                                },
-                            ],
-                        };
-
-                        if (winningAnswerCounts) {
-                            const winningAnswer = message.poll.answers.find((a) => a.answer_id === Number(winningAnswerCounts[0]?.id))!;
-
-                            if (winningAnswerCounts.length === 0) {
-                                pollResultsMessage.embeds[0].fields.push({
-                                    name: "victor_answer_votes",
-                                    value: "0",
-                                });
-                            } else if (winningAnswerCounts.length === 1) {
-                                pollResultsMessage.embeds[0].fields.push(
-                                    {
-                                        name: "victor_answer_votes",
-                                        value: winningAnswerCounts[0].count.toString(),
-                                    },
-                                    {
-                                        name: "victor_answer_id",
-                                        value: winningAnswerCounts[0].id,
-                                    },
-                                    {
-                                        name: "victor_answer_text",
-                                        value: winningAnswer.poll_media.text!,
-                                    },
-                                );
-                            } else if (winningAnswerCounts.length > 1) {
-                                pollResultsMessage.embeds[0].fields.push({
-                                    name: "victor_answer_votes",
-                                    value: winningAnswerCounts[0].count.toString(),
-                                });
-                            }
-
-                            if (winningAnswer?.poll_media.emoji) {
-                                pollResultsMessage.embeds[0].fields.push(
-                                    {
-                                        name: "victor_answer_emoji_id",
-                                        value: winningAnswer.poll_media.emoji.id!.toString()!,
-                                    },
-                                    {
-                                        name: "victor_answer_emoji_name",
-                                        value: winningAnswer.poll_media.emoji.name!,
-                                    },
-                                    {
-                                        name: "victor_answer_emoji_animated",
-                                        value: `${winningAnswer.poll_media.emoji.animated}`,
-                                    },
-                                );
-                            }
-                        }
-
-                        await sendMessage(pollResultsMessage);
-                        pendingPolls.delete(message.id);
-                    },
-                    new Date(message.poll.expiry).getTime() - Date.now(),
-                ),
-            });
+            addPendingPoll(message, new Date(message.poll.expiry).getTime() - Date.now());
         }
 
         function isReady(req: Request, res: Response) {

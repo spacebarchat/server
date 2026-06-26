@@ -23,3 +23,4 @@ export * from "./handlers/route";
 export * from "./handlers/Voice";
 export * from "./utility/captcha";
 export * from "./utility/EmbedHandlers";
+export * from "./utility/polls";
