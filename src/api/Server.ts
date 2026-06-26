@@ -192,7 +192,6 @@ export class SpacebarServer extends Server {
 
         // Pickup non-expired polls
         const nonExpiredPolls = await Message.createQueryBuilder("message").where("message.poll->>'expiry' > :now", { now: new Date().toISOString() }).getMany();
-        console.log(nonExpiredPolls);
 
         for (const message of nonExpiredPolls) {
             if (!message.poll) {
