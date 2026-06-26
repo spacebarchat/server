@@ -63,6 +63,10 @@ export const DataSourceOptions = isHeadlessProcess
           supportBigNumbers: true,
           name: "default",
           migrations: applyMigrations ? [path.join(__dirname, "migration", DatabaseType, "*.js")] : [],
+          invalidWhereValuesBehavior: {
+              null: "sql-null",
+              undefined: "ignore",
+          },
       });
 
 // Gets the existing database connection
