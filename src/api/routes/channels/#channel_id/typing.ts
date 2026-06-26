@@ -20,6 +20,7 @@ import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Member } from "@spacebar/database";
 import { emitEvent, TypingStartEvent } from "@spacebar/util";
+import { IsNull } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -41,7 +42,7 @@ router.post(
             where: { id: channel_id },
         });
         const member = await Member.findOne({
-            where: { id: user_id, guild_id: channel.guild_id },
+            where: { id: user_id, guild_id: channel.guild_id || IsNull() },
             relations: { roles: true, user: true },
         });
         await emitEvent({
