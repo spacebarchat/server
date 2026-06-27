@@ -223,6 +223,9 @@ router.post(
                 guild_id: body.guild_id,
                 color: 0,
                 colors: { primary_color: 0 },
+                hoist: false,
+                mentionable: false,
+                position: 1, // TODO: calculate actual position and move stuff around
             });
             await role.save();
             await Member.addRole(body.guild_id, req.user_id, role.id);
