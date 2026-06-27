@@ -768,7 +768,7 @@ async function handleMessageMentionsAsync(message: Message) {
             );
         }
 
-        if (message.embeds[0].type === EmbedType.poll_result) {
+        if (message.embeds[0]?.type === EmbedType.poll_result) {
             message.mentions.push(
                 // @ts-expect-error it does not like the .toPublicUser() lol
                 (await User.findOne({ where: { id: message.author_id } }))!.toPublicUser(),

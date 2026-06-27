@@ -53,6 +53,45 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     }
 
     [Fact]
+    public async Task SendMessageReply() {
+        var r = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", new JsonObject() {
+            { "content", "meow" }
+        }, cancellationToken: TestContext.Current.CancellationToken));
+        var msg = await r.Content.ReadFromJsonAsync<Message>();
+        await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", new JsonObject() {
+            { "content", "meow" }, {
+                "message_reference", new JsonObject() {
+                    { "guild_id", msg.GuildId.Value.ToString() },
+                    { "channel_id", msg.ChannelId.Value.ToString() },
+                    { "message_id", msg.Id.ToString() },
+                }
+            }
+        }, cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task SendMessageReplyAllowedMentions() {
+        var r = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", new JsonObject() {
+            { "content", "meow" }
+        }, cancellationToken: TestContext.Current.CancellationToken));
+        var msg = await r.Content.ReadFromJsonAsync<Message>();
+        await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", new JsonObject() {
+            { "content", "meow" }, {
+                "message_reference", new JsonObject() {
+                    { "guild_id", msg.GuildId.Value.ToString() },
+                    { "channel_id", msg.ChannelId.Value.ToString() },
+                    { "message_id", msg.Id.ToString() },
+                }
+            }, {
+                "allowed_mentions", new JsonObject() {
+                    { "parse", new JsonArray("users", "roles", "everyone") },
+                    { "replied_user", false }
+                }
+            }
+        }, cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
     public async Task SendMessageMultipart() {
         var content = new MultipartFormDataContent();
         content.Add(JsonContent.Create(new JsonObject() {
