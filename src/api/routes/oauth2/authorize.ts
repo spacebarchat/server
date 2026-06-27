@@ -221,6 +221,8 @@ router.post(
                 name: app.name,
                 permissions: body.permissions,
                 guild_id: body.guild_id,
+                color: 0,
+                colors: { primary_color: 0 },
             });
             await role.save();
             await Member.addRole(body.guild_id, req.user_id, role.id);
