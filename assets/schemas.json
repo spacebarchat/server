@@ -11897,6 +11897,12 @@
             "team": {
                 "$ref": "#/definitions/Team"
             },
+            "emojis": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Emoji"
+                }
+            },
             "id": {
                 "type": "string"
             }
@@ -11906,6 +11912,7 @@
             "description",
             "discoverability_state",
             "discovery_eligibility_flags",
+            "emojis",
             "flags",
             "hook",
             "id",
@@ -12015,6 +12022,97 @@
             "admin",
             "developer",
             "read_only"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Emoji": {
+        "type": "object",
+        "properties": {
+            "animated": {
+                "type": "boolean"
+            },
+            "available": {
+                "type": "boolean"
+            },
+            "guild_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "guild": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Guild"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "application_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "application": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Application"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "user": {
+                "$ref": "#/definitions/User"
+            },
+            "managed": {
+                "type": "boolean"
+            },
+            "name": {
+                "type": "string"
+            },
+            "require_colons": {
+                "type": "boolean"
+            },
+            "roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "groups": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "animated",
+            "application",
+            "application_id",
+            "available",
+            "groups",
+            "guild",
+            "guild_id",
+            "id",
+            "managed",
+            "name",
+            "require_colons",
+            "roles",
+            "user",
+            "user_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -13890,69 +13988,6 @@
             "source_guild",
             "source_guild_id",
             "updated_at"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "Emoji": {
-        "type": "object",
-        "properties": {
-            "animated": {
-                "type": "boolean"
-            },
-            "available": {
-                "type": "boolean"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "guild": {
-                "$ref": "#/definitions/Guild"
-            },
-            "user_id": {
-                "type": "string"
-            },
-            "user": {
-                "$ref": "#/definitions/User"
-            },
-            "managed": {
-                "type": "boolean"
-            },
-            "name": {
-                "type": "string"
-            },
-            "require_colons": {
-                "type": "boolean"
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "groups": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "id": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "animated",
-            "available",
-            "groups",
-            "guild",
-            "guild_id",
-            "id",
-            "managed",
-            "name",
-            "require_colons",
-            "roles",
-            "user",
-            "user_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

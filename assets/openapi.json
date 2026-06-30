@@ -11202,6 +11202,12 @@
                     "team": {
                         "$ref": "#/components/schemas/Team"
                     },
+                    "emojis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Emoji"
+                        }
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -11210,6 +11216,7 @@
                     "description",
                     "discoverability_state",
                     "discovery_eligibility_flags",
+                    "emojis",
                     "flags",
                     "hook",
                     "id",
@@ -11313,6 +11320,91 @@
                     "admin",
                     "developer",
                     "read_only"
+                ]
+            },
+            "Emoji": {
+                "type": "object",
+                "properties": {
+                    "animated": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    },
+                    "guild_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "guild": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Guild"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "application_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "application": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Application"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "require_colons": {
+                        "type": "boolean"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "animated",
+                    "application",
+                    "application_id",
+                    "available",
+                    "groups",
+                    "guild",
+                    "guild_id",
+                    "id",
+                    "managed",
+                    "name",
+                    "require_colons",
+                    "roles",
+                    "user",
+                    "user_id"
                 ]
             },
             "Sticker": {
@@ -12995,67 +13087,6 @@
                     "source_guild",
                     "source_guild_id",
                     "updated_at"
-                ]
-            },
-            "Emoji": {
-                "type": "object",
-                "properties": {
-                    "animated": {
-                        "type": "boolean"
-                    },
-                    "available": {
-                        "type": "boolean"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "guild": {
-                        "$ref": "#/components/schemas/Guild"
-                    },
-                    "user_id": {
-                        "type": "string"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "managed": {
-                        "type": "boolean"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "require_colons": {
-                        "type": "boolean"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "animated",
-                    "available",
-                    "groups",
-                    "guild",
-                    "guild_id",
-                    "id",
-                    "managed",
-                    "name",
-                    "require_colons",
-                    "roles",
-                    "user",
-                    "user_id"
                 ]
             },
             "GuildWelcomeScreen": {

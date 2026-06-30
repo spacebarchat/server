@@ -21,7 +21,7 @@ import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
 import { Guild } from "./Guild";
-import { Emoji } from "@spacebar/database";
+import { Emoji } from "./Emoji";
 
 @Entity({
     name: "applications",
