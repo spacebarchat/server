@@ -34,7 +34,7 @@ export class Emoji extends BaseClass {
     @Column({ nullable: true })
     guild_id: string | null;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_emoji_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.emojis, {
         onDelete: "CASCADE",
         nullable: true,
@@ -44,7 +44,7 @@ export class Emoji extends BaseClass {
     @Column({ nullable: true })
     application_id: string | null;
 
-    @JoinColumn({ name: "application_id" })
+    @JoinColumn({ name: "application_id", foreignKeyConstraintName: "FK_emoji_application_id" })
     @ManyToOne(() => Application, (application) => application.emojis, {
         onDelete: "CASCADE",
         nullable: true,
