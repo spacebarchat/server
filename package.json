@@ -21,7 +21,7 @@
         "sync:db": "npm run build && node -r dotenv/config -r module-alias/register --enable-source-maps scripts/syncronise.js",
         "generate:rights": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/rights.js",
         "generate:schema": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/schema.js",
-        "generate:migration": "node -r dotenv/config -r module-alias/register --enable-source-maps node_modules/typeorm/cli.js migration:generate -d dist/util/util/Database.js",
+        "generate:migration": "node -r dotenv/config -r module-alias/register --enable-source-maps node_modules/typeorm/cli.js migration:generate -d dist/database/Database.js",
         "generate:openapi": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/openapi.js",
         "add:license": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
         "node:tests": "npm run build:src:tsgo && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
