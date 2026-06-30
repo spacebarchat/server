@@ -34,7 +34,7 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
     options
         .UseNpgsql(builder.Configuration.GetConnectionString("Spacebar"))
         .EnableDetailedErrors();
-});
+}, 64);
 
 if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("CONFIG_PATH")))
     builder.Services.AddSingleton<Config>(sp => {

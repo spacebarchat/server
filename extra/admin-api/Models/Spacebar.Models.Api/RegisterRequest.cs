@@ -22,7 +22,7 @@ public class RegisterRequest {
     public string? Invite { get; set; }
 
     [JsonPropertyName("date_of_birth")]
-    public DateTimeOffset? DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 
     [JsonPropertyName("gift_code_sku_id")]
     public string? GiftCodeSkuId { get; set; }

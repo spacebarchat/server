@@ -1,6 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using ArcaneLibs.Collections;
+using ArcaneLibs.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -15,9 +17,9 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
 
     private static bool _isInitialised;
     private static readonly JwtSecurityTokenHandler Handler = new();
+    private static ECDsaSecurityKey _publicKey = null!, _privateKey = null!;
 
     private static readonly TokenValidationParameters TokenValidationParameters = new() {
-        // IssuerSigningKey = new ECDsaSecurityKey(key),
         ValidAlgorithms = ["ES512"],
         LogValidationExceptions = true,
         // These are required to be false for the token to be valid as they aren't provided by the token
@@ -29,10 +31,18 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
 
     public async Task InitializeAsync() {
         if (_isInitialised) return;
-        var secretFile = await File.ReadAllTextAsync(config.PublicKeyPath);
-        var key = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-        key.ImportFromPem(secretFile);
-        TokenValidationParameters.IssuerSigningKey = new ECDsaSecurityKey(key);
+
+        var publicKeyFile = await File.ReadAllTextAsync(config.PublicKeyPath);
+        var rawPublicKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        rawPublicKey.ImportFromPem(publicKeyFile);
+        _publicKey = new ECDsaSecurityKey(rawPublicKey);
+
+        var privateKeyFile = await File.ReadAllTextAsync(config.PrivateKeyPath);
+        var rawPrivateKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        rawPrivateKey.ImportFromPem(privateKeyFile);
+        _privateKey = new ECDsaSecurityKey(rawPrivateKey);
+
+        TokenValidationParameters.IssuerSigningKey = _publicKey;
         _isInitialised = true;
     }
 
@@ -72,9 +82,30 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
             config.AuthCacheExpiry);
     }
 
-    // public async Task<string> GenerateAccessTokenAsync(string userId) {
-    //     // await db.Sessions.AddAsync(new() {
-    //         
-    //     // })
-    // }
+    public async Task<string> GenerateAccessTokenAsync(long userId, bool isAdminSession = false) {
+        if (!_isInitialised) await InitializeAsync();
+        // TODO: check for duplicate session IDs
+        var sess = db.Sessions.Add(new() {
+            UserId = userId,
+            SessionId = Random.Shared.GetString("ABCDEFGHIJKLMNOPQRSTUVEXYZ", 10),
+            IsAdminSession = isAdminSession,
+            Status = "unknown",
+            ClientStatus = "{}",
+            ClientInfo = "{}"
+        });
+        await db.SaveChangesAsync();
+
+        var res = Handler.CreateJwtSecurityToken(new() {
+            Claims = new Dictionary<string, object>() {
+                { "id", userId.ToString() },
+                { "iat", new DateTimeOffset(sess.Entity.CreatedAt).ToUnixTimeSeconds() },
+                { "kid", SHA256.Create().ComputeHash(_publicKey.ECDsa.ExportSubjectPublicKeyInfoPem().AsBytes().ToArray()) },
+                { "ver", 3 },
+                { "did", sess.Entity.SessionId },
+            },
+            SigningCredentials = new SigningCredentials(_privateKey, "ES512")
+        });
+
+        return Handler.WriteToken(res);
+    }
 }
