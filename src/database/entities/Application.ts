@@ -16,11 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
 import { Guild } from "./Guild";
+import { Emoji } from "@spacebar/database";
 
 @Entity({
     name: "applications",
@@ -135,4 +136,12 @@ export class Application extends BaseClass {
         nullable: true,
     })
     team?: Team;
+
+    @JoinColumn({ name: "emoji_ids" })
+    @OneToMany(() => Emoji, (emoji: Emoji) => emoji.application, {
+        cascade: true,
+        orphanedRowAction: "delete",
+        onDelete: "CASCADE",
+    })
+    emojis: Emoji[];
 }

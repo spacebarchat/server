@@ -17,7 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { User } from "./index";
+import { Application, User } from "./index";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 
@@ -31,14 +31,25 @@ export class Emoji extends BaseClass {
     @Column()
     available: boolean; // whether this emoji can be used, may be false due to various reasons
 
-    @Column()
-    guild_id: string;
+    @Column({ nullable: true })
+    guild_id: string | null;
 
     @JoinColumn({ name: "guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.emojis, {
         onDelete: "CASCADE",
+        nullable: true,
     })
-    guild: Guild;
+    guild: Guild | null;
+
+    @Column({ nullable: true })
+    application_id: string | null;
+
+    @JoinColumn({ name: "application_id" })
+    @ManyToOne(() => Application, (application) => application.emojis, {
+        onDelete: "CASCADE",
+        nullable: true,
+    })
+    application: Application | null;
 
     @Column({ nullable: true })
     @RelationId((emoji: Emoji) => emoji.user)
