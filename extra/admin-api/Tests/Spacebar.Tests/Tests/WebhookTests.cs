@@ -139,7 +139,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
                             yield return [content, username, avatarUrl, tts, flags];
     }
 
-    [Theory()]
+    [Theory]
     [MemberData(nameof(WebhookExecuteCombinations))]
     public async Task SendWebhookMessageWithData(string content, string? username, string? avatarUrl, bool? tts, int? flags) {
         var payload = new JsonObject() {

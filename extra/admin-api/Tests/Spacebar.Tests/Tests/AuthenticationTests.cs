@@ -41,7 +41,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
                 DateOfBirth = new(),
                 Consent = true
             };
-            
+
             var result = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr);
             testOutputHelper.WriteLine($"[{i++}] Registered {rr.Email} in {sw.Elapsed}...");
             return (rr, result);
@@ -50,7 +50,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
 
         testOutputHelper.WriteLine("Waiting for server to settle...");
         await Task.Delay(2500, TestContext.Current.CancellationToken);
-        
+
         testOutputHelper.WriteLine("Cleaning up users...");
         var cleanupTasks = tasks.Select(x => x.Result).Select(async res => {
             var resp = await res.Item2.Content.ReadFromJsonAsync<RegisterResponse>();
@@ -74,11 +74,15 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
             DateOfBirth = new(),
             Consent = true
         };
-        var rrRes = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr);
-        var loginRes = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/login", new LoginRequest() {
-            Login = rr.Email,
-            Password = rr.Password
-        });
+        var rrRes = await Assert.SuccessfullyHttpPostAsJsonAsync(
+            $"{_config.TestInstance}/api/v9/auth/register", rr);
+        
+        var loginRes = await Assert.SuccessfullyHttpPostAsJsonAsync(
+            $"{_config.TestInstance}/api/v9/auth/login",
+            new LoginRequest() {
+                Login = rr.Email,
+                Password = rr.Password
+            });
     }
 
     [Fact]
