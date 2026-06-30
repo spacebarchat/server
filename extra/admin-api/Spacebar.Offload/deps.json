@@ -70,6 +70,31 @@
     "hash": "sha256-JlJXttrCmPFUGVznTGl7hsfn9/BzKt91y/uLErDqQfY="
   },
   {
+    "pname": "OpenTelemetry",
+    "version": "1.16.0",
+    "hash": "sha256-KViNS0YOkmVeF6TxUyiafJELGycUPIKCOn4Aex9EYl0="
+  },
+  {
+    "pname": "OpenTelemetry.Api",
+    "version": "1.16.0",
+    "hash": "sha256-7ucxafQ9Agc9CCD9OD1C5SSZ+MXfttJrGlDiXTz2+8A="
+  },
+  {
+    "pname": "OpenTelemetry.Api.ProviderBuilderExtensions",
+    "version": "1.16.0",
+    "hash": "sha256-DjEfeTGE0Y5FIpk+HrlOUiP11hgXHV41L3Xh3irPhmo="
+  },
+  {
+    "pname": "OpenTelemetry.Exporter.Prometheus.AspNetCore",
+    "version": "1.16.0-beta.1",
+    "hash": "sha256-17xjNxhPrBmnTk8uszU3BtUufo1bHcDdR+yRapCaxa8="
+  },
+  {
+    "pname": "OpenTelemetry.Extensions.Hosting",
+    "version": "1.16.0",
+    "hash": "sha256-yAhIVoenhXzUMpESE8BAhE/D7vK0jWJr9BNPhd4j7to="
+  },
+  {
     "pname": "System.IdentityModel.Tokens.Jwt",
     "version": "8.18.0",
     "hash": "sha256-90vrFrRi93g0HuPsUpjt/Aa01l8Jpi1z9hgMB3wIaxs="
