@@ -18,9 +18,10 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
-import { Emoji, Guild, Member } from "@spacebar/database";
+import { Application, Emoji, Guild, Member } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
 import { APIErrorResponse, EmojiGuild, EmojiSourceResponse } from "@spacebar/schemas";
+import { In } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -50,37 +51,52 @@ router.get(
         }
 
         // TODO: emojis can be owned by applications these days, account for this when we get there?
-        res.json({
-            type: "GUILD",
-            guild: {
-                ...(await Guild.findOne({
-                    where: {
-                        id: emoji.guild_id,
-                    },
-                    select: {
-                        id: true,
-                        name: true,
-                        icon: true,
-                        description: true,
-                        features: true,
-                        emojis: true,
-                        premium_tier: true,
-                        premium_subscription_count: true,
-                    },
-                })),
-                approximate_member_count: await Member.countBy({
-                    guild_id: emoji.guild_id,
-                }),
-                approximate_presence_count: await Member.countBy({
-                    guild_id: emoji.guild_id,
-                    user: {
-                        sessions: {
-                            status: "online",
+        if (emoji.guild_id)
+            res.json({
+                type: "GUILD",
+                guild: {
+                    ...(await Guild.findOne({
+                        where: {
+                            id: emoji.guild_id!,
                         },
-                    },
-                }),
-            } as EmojiGuild,
-        } as EmojiSourceResponse);
+                        select: {
+                            id: true,
+                            name: true,
+                            icon: true,
+                            description: true,
+                            features: true,
+                            emojis: true,
+                            premium_tier: true,
+                            premium_subscription_count: true,
+                        },
+                    })),
+                    approximate_member_count: await Member.countBy({
+                        guild_id: emoji.guild_id!,
+                    }),
+                    approximate_presence_count: await Member.countBy({
+                        guild_id: emoji.guild_id!,
+                        user: {
+                            sessions: {
+                                status: In(["online", "away", "dnd"]),
+                            },
+                        },
+                    }),
+                } as EmojiGuild,
+            } satisfies EmojiSourceResponse);
+        else if (emoji.application_id) {
+            const app = await Application.findOneOrFail({
+                where: { id: emoji.application_id },
+                select: { id: true, name: true },
+            });
+
+            res.json({
+                type: "APPLICATION",
+                application: {
+                    id: app.id,
+                    name: app.name,
+                },
+            } satisfies EmojiSourceResponse);
+        } else throw new Error("Assertion failure: emoji is neither owned by a guild nor application...?");
     },
 );
 
