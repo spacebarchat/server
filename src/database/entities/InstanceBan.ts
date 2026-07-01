@@ -30,15 +30,15 @@ export class InstanceBan extends BaseClass {
     @Column()
     reason: string;
 
-    @Index()
-    @Column({ nullable: true })
+    @Index("instance_bans_user_id_idx", { type: "hash" })
+    @Column({ type: "int8", nullable: true })
     user_id?: string;
 
-    @Index()
+    @Index("instance_bans_fingerprint_idx", { type: "hash" })
     @Column({ nullable: true })
     fingerprint?: string;
 
-    @Index()
+    @Index("instance_bans_ip_address_idx", { type: "hash" })
     @Column({ nullable: true })
     ip_address?: string;
 
