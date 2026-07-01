@@ -7,8 +7,8 @@
   <a href="https://matrix.to/#/#spacebar:rory.gay">
     <img src="https://img.shields.io/matrix/spacebar%3Arory.gay?server_fqdn=matrix.rory.gay&fetchMode=summary&logo=matrix&logoColor=fffffff&label=Matrix" />
   </a>
-  <a href="https://fermi.chat/invite/spacebar?instance=spacebar.chat">
-    <img src="https://api.old.server.spacebar.chat/api/guilds/1006649183970562092/shield.svg" />
+  <a href="https://sbar.top/i/spacebar?instance=spacebar.chat">
+    <img src="https://api.rory.server.spacebar.chat/api/guilds/1006649183970562092/shield.svg" />
   </a>
   <a href="https://discord.gg/ZrnGQP6p3d">
     <img src="https://img.shields.io/discord/806142446094385153?color=7489d5&logo=discord&logoColor=ffffff&label=Discord" />
@@ -48,4 +48,4 @@ And with documentation on how to set up your own server [here](https://docs.spac
 You _should_ be able to use any client designed for Discord.com to connect to a Spacebar instance.
 However, some incompatibilities still exist between Spacebar and Discord. For this reason, not every client will connect.  
 We recommend using [Fermo](https://fermo.sovr.top/login?instance=spacebar.chat) as a solid starting point on your adventure in the SpaceBar!
-You can explore other clients with the [Spacebar Explorer](https://spacebar-explorer.sovr.top/clients).
+You can explore other clients with the [Spacebar Explorer](https://sbar.top/clients).
