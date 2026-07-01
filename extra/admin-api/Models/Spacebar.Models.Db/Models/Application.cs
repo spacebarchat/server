@@ -108,6 +108,9 @@ public partial class Application
     [InverseProperty("ApplicationBotUser")]
     public virtual User? BotUser { get; set; }
 
+    [InverseProperty("Application")]
+    public virtual ICollection<Emoji> Emojis { get; set; } = new List<Emoji>();
+
     [ForeignKey("GuildId")]
     [InverseProperty("Applications")]
     public virtual Guild? Guild { get; set; }

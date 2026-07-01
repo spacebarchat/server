@@ -36,6 +36,8 @@ dotnet-ef dbcontext scaffold "Host=127.0.0.1; Username=postgres; Database=sb-ser
   --data-annotations \
   --no-build
 
+echo 'Cleaning up dependencies...'
+dotnet remove package Microsoft.EntityFrameworkCore.Design
 
 echo 'Patching results...'
 
@@ -46,6 +48,9 @@ done
 for patch in ../db-patches/*.patch; do
   patch --verbose -p2 < $patch
 done
+
+echo 'Cleaning up temporary files...'
+rm -v Models/*.cs.orig
 
 echo '[]' > deps.json
 git add .
