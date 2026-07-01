@@ -2,6 +2,7 @@ import { Snowflake } from "../../Identifiers";
 import { PartialUser } from "../users";
 
 export type EmojisResponse = EmojiResponse[];
+export type ApplicationsEmojisResponse = { items: EmojiResponse[] };
 
 // why is almost everything optional?
 export interface EmojiResponse {

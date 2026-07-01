@@ -1055,6 +1055,16 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ApplicationEmojiModifySchema": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EmojiModifySchema": {
         "type": "object",
         "properties": {
@@ -5486,6 +5496,9 @@
     "APILimitsConfiguration": {
         "type": "object",
         "properties": {
+            "application": {
+                "$ref": "#/definitions/ApplicationLimits"
+            },
             "user": {
                 "$ref": "#/definitions/UserLimits"
             },
@@ -5508,6 +5521,7 @@
         "additionalProperties": false,
         "required": [
             "absoluteRate",
+            "application",
             "channel",
             "guild",
             "message",
@@ -7987,6 +8001,22 @@
         "items": {
             "$ref": "#/definitions/EmojiResponse"
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationsEmojisResponse": {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EmojiResponse"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "items"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "EmojiResponse": {
@@ -15291,6 +15321,19 @@
             "is_primary",
             "localizations",
             "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationLimits": {
+        "type": "object",
+        "properties": {
+            "maxEmojis": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "maxEmojis"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

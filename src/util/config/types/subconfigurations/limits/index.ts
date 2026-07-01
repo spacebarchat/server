@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export * from "./ApplicationLimits";
 export * from "./ChannelLimits";
 export * from "./GlobalRateLimits";
 export * from "./GuildLimits";
