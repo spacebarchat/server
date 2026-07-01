@@ -98,6 +98,7 @@ router.post(
         const body = req.body as EmojiCreateSchema;
 
         const app = await Application.findOne({ where: { id: application_id } });
+        if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
         if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         const id = Snowflake.generate();
@@ -148,6 +149,7 @@ router.patch(
         const body = req.body as ApplicationEmojiModifySchema;
 
         const app = await Application.findOne({ where: { id: application_id } });
+        if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
         if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
@@ -180,6 +182,7 @@ router.delete(
         const { emoji_id, application_id } = req.params as { [key: string]: string };
 
         const app = await Application.findOne({ where: { id: application_id } });
+        if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
         if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         await Emoji.delete({
