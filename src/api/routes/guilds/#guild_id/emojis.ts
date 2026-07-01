@@ -159,6 +159,10 @@ router.patch(
 
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
+        await Emoji.findOneOrFail({
+            where: { guild_id: guild_id, id: emoji_id },
+        });
+
         const emoji = await Emoji.create({
             ...body,
             id: emoji_id,
