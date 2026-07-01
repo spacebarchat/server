@@ -74,10 +74,12 @@ router.get(
         if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
         if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
-        const emoji = await Emoji.findOneOrFail({
+        const emoji = await Emoji.findOne({
             where: { application_id: application_id, id: emoji_id },
             relations: { user: true },
         });
+
+        if (!emoji) throw DiscordApiErrors.UNKNOWN_EMOJI;
 
         return res.json(emoji);
     },
@@ -160,9 +162,10 @@ router.patch(
 
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
-        await Emoji.findOneOrFail({
+        const oldEmoji = await Emoji.findOne({
             where: { id: emoji_id, application_id: application_id },
         });
+        if (!oldEmoji) throw DiscordApiErrors.UNKNOWN_EMOJI;
 
         const emoji = await Emoji.create({
             ...body,
@@ -190,6 +193,8 @@ router.delete(
         const app = await Application.findOne({ where: { id: application_id } });
         if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
         if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+
+        if (!(await Emoji.existsBy({ id: emoji_id, application_id }))) throw DiscordApiErrors.UNKNOWN_EMOJI;
 
         await Emoji.delete({
             id: emoji_id,
