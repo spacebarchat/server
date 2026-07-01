@@ -20,7 +20,7 @@ public partial class Emoji
     public bool Available { get; set; }
 
     [Column("guild_id")]
-    public long GuildId { get; set; }
+    public long? GuildId { get; set; }
 
     [Column("user_id")]
     public long? UserId { get; set; }
@@ -40,9 +40,16 @@ public partial class Emoji
     [Column("groups")]
     public List<long>? Groups { get; set; }
 
+    [Column("application_id")]
+    public long? ApplicationId { get; set; }
+
+    [ForeignKey("ApplicationId")]
+    [InverseProperty("Emojis")]
+    public virtual Application? Application { get; set; }
+
     [ForeignKey("GuildId")]
     [InverseProperty("Emojis")]
-    public virtual Guild Guild { get; set; } = null!;
+    public virtual Guild? Guild { get; set; }
 
     [ForeignKey("UserId")]
     [InverseProperty("Emojis")]

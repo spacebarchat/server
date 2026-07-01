@@ -294,7 +294,13 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Guild).WithMany(p => p.Emojis).HasConstraintName("FK_4b988e0db89d94cebcf07f598cc");
+            entity.HasOne(d => d.Application).WithMany(p => p.Emojis)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_emoji_application_id");
+
+            entity.HasOne(d => d.Guild).WithMany(p => p.Emojis)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_emoji_guild_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Emojis).HasConstraintName("FK_fa7ddd5f9a214e28ce596548421");
         });
