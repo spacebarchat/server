@@ -39,7 +39,9 @@ router.get(
     async (req: Request, res: Response) => {
         const { application_id } = req.params as { [key: string]: string };
 
-        // TODO: is there *any* gating on this endpoint?
+        const app = await Application.findOne({ where: { id: application_id } });
+        if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
+        if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         const emojis = await Emoji.find({
             where: { application_id: application_id },
@@ -67,6 +69,10 @@ router.get(
     }),
     async (req: Request, res: Response) => {
         const { application_id, emoji_id } = req.params as { [key: string]: string };
+
+        const app = await Application.findOne({ where: { id: application_id } });
+        if (!app) throw DiscordApiErrors.UNKNOWN_APPLICATION;
+        if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         const emoji = await Emoji.findOneOrFail({
             where: { application_id: application_id, id: emoji_id },
