@@ -58,6 +58,10 @@ export class Application extends BaseClass {
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     owner: User;
 
+    @Column({ type: "int8" })
+    @RelationId((application: Application) => application.owner)
+    owner_id: string;
+
     // TODO: enum this? https://discord.com/developers/docs/resources/application#application-object-application-flags
     @Column()
     flags: number = 0;

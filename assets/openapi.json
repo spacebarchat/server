@@ -11137,6 +11137,9 @@
                     "owner": {
                         "$ref": "#/components/schemas/User"
                     },
+                    "owner_id": {
+                        "type": "string"
+                    },
                     "flags": {
                         "type": "integer",
                         "default": 0
@@ -11250,6 +11253,7 @@
                     "integration_require_code_grant",
                     "name",
                     "owner",
+                    "owner_id",
                     "redirect_uris",
                     "rpc_application_state",
                     "store_application_state",

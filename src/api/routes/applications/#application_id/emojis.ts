@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
-import { Emoji } from "@spacebar/database";
+import { Emoji, Application } from "@spacebar/database";
 import { Config, DiscordApiErrors, Snowflake, handleFile } from "@spacebar/util";
 import { ApplicationEmojiModifySchema, EmojiCreateSchema } from "@spacebar/schemas";
 
@@ -97,6 +97,9 @@ router.post(
         const { application_id } = req.params as { [key: string]: string };
         const body = req.body as EmojiCreateSchema;
 
+        const app = await Application.findOne({ where: { id: application_id } });
+        if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+
         const id = Snowflake.generate();
         const emoji_count = await Emoji.count({
             where: { application_id: application_id },
@@ -144,6 +147,9 @@ router.patch(
         const { emoji_id, application_id } = req.params as { [key: string]: string };
         const body = req.body as ApplicationEmojiModifySchema;
 
+        const app = await Application.findOne({ where: { id: application_id } });
+        if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
+
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
         await Emoji.findOneOrFail({
@@ -172,6 +178,9 @@ router.delete(
     }),
     async (req: Request, res: Response) => {
         const { emoji_id, application_id } = req.params as { [key: string]: string };
+
+        const app = await Application.findOne({ where: { id: application_id } });
+        if (req.user_id != app?.id && req.user_id != app?.owner_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         await Emoji.delete({
             id: emoji_id,
