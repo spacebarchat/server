@@ -28,7 +28,7 @@ export class SecurityKey extends BaseClass {
     @RelationId((key: SecurityKey) => key.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_security_key_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

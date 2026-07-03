@@ -67,7 +67,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.afk_channel)
     afk_channel_id?: string | null;
 
-    @JoinColumn({ name: "afk_channel_id" })
+    @JoinColumn({ name: "afk_channel_id", foreignKeyConstraintName: "FK_guild_afk_channel_id" })
     @ManyToOne(() => Channel)
     afk_channel?: Channel;
 
@@ -79,7 +79,7 @@ export class Guild extends BaseClass {
     // @Column({ nullable: true })
     // application?: string;
 
-    @JoinColumn({ name: "ban_ids" })
+    @JoinColumn({ name: "ban_ids", foreignKeyConstraintName: "FK_guild_ban_ids" })
     @OneToMany(() => Ban, (ban: Ban) => ban.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -105,7 +105,7 @@ export class Guild extends BaseClass {
     features: string[] = []; //TODO use enum
     //TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     primary_category_id?: string; // TODO: this was number?
 
     @Column({ nullable: true })
@@ -136,7 +136,7 @@ export class Guild extends BaseClass {
     })
     members: Member[];
 
-    @JoinColumn({ name: "role_ids" })
+    @JoinColumn({ name: "role_ids", foreignKeyConstraintName: "FK_guild_role_ids" })
     @OneToMany(() => Role, (role: Role) => role.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -144,7 +144,7 @@ export class Guild extends BaseClass {
     })
     roles: Role[];
 
-    @JoinColumn({ name: "channel_ids" })
+    @JoinColumn({ name: "channel_ids", foreignKeyConstraintName: "FK_guild_channel_ids" })
     @OneToMany(() => Channel, (channel: Channel) => channel.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -155,11 +155,11 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.template)
     template_id?: string;
 
-    @JoinColumn({ name: "template_id", referencedColumnName: "id" })
+    @JoinColumn({ name: "template_id", referencedColumnName: "id", foreignKeyConstraintName: "FK_guild_template_id" })
     @ManyToOne(() => Template)
     template: Template;
 
-    @JoinColumn({ name: "emoji_ids" })
+    @JoinColumn({ name: "emoji_ids", foreignKeyConstraintName: "FK_guild_emoji_ids" })
     @OneToMany(() => Emoji, (emoji: Emoji) => emoji.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -167,7 +167,7 @@ export class Guild extends BaseClass {
     })
     emojis: Emoji[];
 
-    @JoinColumn({ name: "sticker_ids" })
+    @JoinColumn({ name: "sticker_ids", foreignKeyConstraintName: "FK_guild_sticker_ids" })
     @OneToMany(() => Sticker, (sticker: Sticker) => sticker.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -175,7 +175,7 @@ export class Guild extends BaseClass {
     })
     stickers: Sticker[];
 
-    @JoinColumn({ name: "invite_ids" })
+    @JoinColumn({ name: "invite_ids", foreignKeyConstraintName: "FK_guild_invite_ids" })
     @OneToMany(() => Invite, (invite: Invite) => invite.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -183,7 +183,7 @@ export class Guild extends BaseClass {
     })
     invites: Invite[];
 
-    @JoinColumn({ name: "voice_state_ids" })
+    @JoinColumn({ name: "voice_state_ids", foreignKeyConstraintName: "FK_guild_voice_state_ids" })
     @OneToMany(() => VoiceState, (voicestate: VoiceState) => voicestate.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -191,7 +191,7 @@ export class Guild extends BaseClass {
     })
     voice_states: VoiceState[];
 
-    @JoinColumn({ name: "webhook_ids" })
+    @JoinColumn({ name: "webhook_ids", foreignKeyConstraintName: "FK_guild_webhook_ids" })
     @OneToMany(() => Webhook, (webhook: Webhook) => webhook.guild, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -209,7 +209,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.owner)
     owner_id?: string; // optional to allow for ownerless guilds
 
-    @JoinColumn({ name: "owner_id", referencedColumnName: "id" })
+    @JoinColumn({ name: "owner_id", referencedColumnName: "id", foreignKeyConstraintName: "FK_guild_owner_id" })
     @ManyToOne(() => User)
     owner?: User; // optional to allow for ownerless guilds
 
@@ -226,7 +226,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.public_updates_channel)
     public_updates_channel_id: string | null;
 
-    @JoinColumn({ name: "public_updates_channel_id" })
+    @JoinColumn({ name: "public_updates_channel_id", foreignKeyConstraintName: "FK_guild_public_updates_channel_id" })
     @ManyToOne(() => Channel)
     public_updates_channel?: Channel;
 
@@ -234,7 +234,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.rules_channel)
     rules_channel_id?: string | null;
 
-    @JoinColumn({ name: "rules_channel_id" })
+    @JoinColumn({ name: "rules_channel_id", foreignKeyConstraintName: "FK_guild_rules_channel_id" })
     @ManyToOne(() => Channel)
     rules_channel?: string;
 
@@ -248,7 +248,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.system_channel)
     system_channel_id?: string | null;
 
-    @JoinColumn({ name: "system_channel_id" })
+    @JoinColumn({ name: "system_channel_id", foreignKeyConstraintName: "FK_guild_system_channel_id" })
     @ManyToOne(() => Channel)
     system_channel?: Channel;
 
@@ -271,7 +271,7 @@ export class Guild extends BaseClass {
     @RelationId((guild: Guild) => guild.widget_channel)
     widget_channel_id?: string;
 
-    @JoinColumn({ name: "widget_channel_id" })
+    @JoinColumn({ name: "widget_channel_id", foreignKeyConstraintName: "FK_guild_widget_channel_id" })
     @ManyToOne(() => Channel)
     widget_channel?: Channel;
 
@@ -298,10 +298,10 @@ export class Guild extends BaseClass {
     @Column({ select: false, type: "int8", array: true })
     channel_ordering: string[];
 
-    @Column()
+    @Column({ default: 0 })
     discovery_weight: number = 0;
 
-    @Column()
+    @Column({ default: false })
     discovery_excluded: boolean = false;
 
     async ToGuildSource() {

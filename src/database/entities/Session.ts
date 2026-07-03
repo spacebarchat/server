@@ -36,7 +36,7 @@ export class Session extends BaseClassWithoutId {
     @Index({})
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_session_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

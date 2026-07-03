@@ -65,7 +65,7 @@ export class Member extends BaseClassWithoutId {
     @RelationId((member: Member) => member.user)
     id: string;
 
-    @JoinColumn({ name: "id" })
+    @JoinColumn({ name: "id", foreignKeyConstraintName: "FK_member_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -75,7 +75,7 @@ export class Member extends BaseClassWithoutId {
     @RelationId((member: Member) => member.guild)
     guild_id: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_member_guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
@@ -86,10 +86,15 @@ export class Member extends BaseClassWithoutId {
 
     @JoinTable({
         name: "member_roles",
-        joinColumn: { name: "index", referencedColumnName: "index" },
+        joinColumn: {
+            name: "index",
+            referencedColumnName: "index",
+            foreignKeyConstraintName: "FK_member_role_member_index",
+        },
         inverseJoinColumn: {
             name: "role_id",
             referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_member_role_role_id",
         },
     })
     @ManyToMany(() => Role, { cascade: true })
@@ -113,7 +118,7 @@ export class Member extends BaseClassWithoutId {
     @Column({ type: "jsonb", select: false })
     settings: UserGuildSettings;
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     last_message_id?: string;
 
     /**

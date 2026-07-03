@@ -30,7 +30,7 @@ export class Relationship extends BaseClass {
     @RelationId((relationship: Relationship) => relationship.from)
     from_id: string;
 
-    @JoinColumn({ name: "from_id" })
+    @JoinColumn({ name: "from_id", foreignKeyConstraintName: "FK_relationship_from_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -40,7 +40,7 @@ export class Relationship extends BaseClass {
     @RelationId((relationship: Relationship) => relationship.to)
     to_id: string;
 
-    @JoinColumn({ name: "to_id" })
+    @JoinColumn({ name: "to_id", foreignKeyConstraintName: "FK_relationship_to_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

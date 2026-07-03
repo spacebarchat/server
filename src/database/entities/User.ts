@@ -147,14 +147,14 @@ export class User extends BaseClass {
     @OneToMany(() => Session, (session: Session) => session.user)
     sessions: Session[];
 
-    @JoinColumn({ name: "relationship_ids" })
+    @JoinColumn({ name: "relationship_ids", foreignKeyConstraintName: "FK_user_relationship_ids" })
     @OneToMany(() => Relationship, (relationship: Relationship) => relationship.from, {
         cascade: true,
         orphanedRowAction: "delete",
     })
     relationships: Relationship[];
 
-    @JoinColumn({ name: "connected_account_ids" })
+    @JoinColumn({ name: "connected_account_ids", foreignKeyConstraintName: "FK_user_connected_account_ids" })
     @OneToMany(() => ConnectedAccount, (account: ConnectedAccount) => account.user, {
         cascade: true,
         orphanedRowAction: "delete",
@@ -175,7 +175,7 @@ export class User extends BaseClass {
         orphanedRowAction: "delete",
         nullable: true,
     })
-    @JoinColumn()
+    @JoinColumn({ foreignKeyConstraintName: "FK_user_settings_index" })
     settings?: UserSettings;
 
     @OneToMany(() => SecurityKey, (key: SecurityKey) => key.user)

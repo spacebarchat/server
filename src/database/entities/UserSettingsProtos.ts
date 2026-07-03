@@ -30,7 +30,7 @@ export class UserSettingsProtos extends BaseClassWithoutId {
         orphanedRowAction: "delete",
         eager: false,
     })
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_user_settings_proto_user_id" })
     user: User;
 
     @PrimaryColumn({ type: "text" })

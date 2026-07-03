@@ -11,7 +11,7 @@ export class StreamSession extends BaseClass {
     @RelationId((session: StreamSession) => session.stream)
     stream_id: string;
 
-    @JoinColumn({ name: "stream_id" })
+    @JoinColumn({ name: "stream_id", foreignKeyConstraintName: "FK_stream_session_stream_id" })
     @ManyToOne(() => Stream, {
         onDelete: "CASCADE",
     })
@@ -21,7 +21,7 @@ export class StreamSession extends BaseClass {
     @RelationId((session: StreamSession) => session.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_stream_session_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

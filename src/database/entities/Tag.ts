@@ -24,10 +24,10 @@ import { Channel } from "./Channel";
     name: "tags",
 })
 export class Tag extends BaseClass {
-    @Column()
+    @Column({ type: "int8" })
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_tag_channel_id" })
     @ManyToOne(() => Channel, (channel) => channel.available_tags, {
         onDelete: "CASCADE",
     })
@@ -39,7 +39,7 @@ export class Tag extends BaseClass {
     @Column()
     moderated: boolean = false;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "int8" })
     emoji_id?: string;
 
     @Column({ nullable: true })

@@ -54,7 +54,7 @@ export class Application extends BaseClass {
     @Column()
     verify_key: string;
 
-    @JoinColumn({ name: "owner_id" })
+    @JoinColumn({ name: "owner_id", foreignKeyConstraintName: "FK_application_owner_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     owner: User;
 
@@ -66,7 +66,7 @@ export class Application extends BaseClass {
     @Column()
     flags: number = 0;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, array: true })
     redirect_uris: string[] = [];
 
     @Column({ nullable: true })
@@ -93,7 +93,7 @@ export class Application extends BaseClass {
     @Column({ nullable: true })
     discovery_eligibility_flags: number = 2240;
 
-    @JoinColumn({ name: "bot_user_id" })
+    @JoinColumn({ name: "bot_user_id", foreignKeyConstraintName: "FK_application_bot_user_id" })
     @OneToOne(() => User, { onDelete: "CASCADE" })
     bot?: User;
 
@@ -116,7 +116,7 @@ export class Application extends BaseClass {
     @RelationId((application: Application) => application.guild)
     guild_id?: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_application_guild_id" })
     @ManyToOne(() => Guild)
     guild?: Guild; // guild to which the app is linked, e.g. a developer support server
 
@@ -134,7 +134,7 @@ export class Application extends BaseClass {
     //@Column({ nullable: true })
     //slug?: string; // if this application is a game sold, this field will be the URL slug that links to the store page
 
-    @JoinColumn({ name: "team_id" })
+    @JoinColumn({ name: "team_id", foreignKeyConstraintName: "FK_application_team_id" })
     @ManyToOne(() => Team, {
         onDelete: "CASCADE",
         nullable: true,

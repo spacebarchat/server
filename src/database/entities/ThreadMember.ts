@@ -49,7 +49,7 @@ export class ThreadMember extends BaseClassWithoutId {
     @RelationId((member: ThreadMember) => member.channel)
     id: string;
 
-    @JoinColumn({ name: "id" })
+    @JoinColumn({ name: "id", foreignKeyConstraintName: "FK_thread_member_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -59,7 +59,7 @@ export class ThreadMember extends BaseClassWithoutId {
     @RelationId((member: ThreadMember) => member.member)
     member_idx: string;
 
-    @JoinColumn({ name: "member_idx" })
+    @JoinColumn({ name: "member_idx", foreignKeyConstraintName: "FK_thread_member_member_id" })
     @ManyToOne(() => Member, {
         onDelete: "CASCADE",
     })

@@ -23,10 +23,10 @@ import { BaseClass } from "./BaseClass";
     name: "security_settings",
 })
 export class SecuritySettings extends BaseClass {
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     guild_id: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     channel_id: string;
 
     @Column()

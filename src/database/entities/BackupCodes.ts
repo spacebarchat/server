@@ -26,7 +26,7 @@ import { Config } from "@spacebar/util/util";
     name: "backup_codes",
 })
 export class BackupCode extends BaseClass {
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_backup_code_user_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     user: User;
 

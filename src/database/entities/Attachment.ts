@@ -41,21 +41,21 @@ export class Attachment extends BaseClass {
     @Column({ nullable: true })
     content_type?: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, foreignKeyConstraintName: "FK_attachment_message_id" })
     @RelationId((attachment: Attachment) => attachment.message)
     message_id: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, foreignKeyConstraintName: "FK_attachment_channel_id" })
     @RelationId((attachment: Attachment) => attachment.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "message_id" })
+    @JoinColumn({ name: "message_id", foreignKeyConstraintName: "FK_attachment_message_id" })
     @ManyToOne(() => require("./Message").Message, (message: import("./Message").Message) => message.attachments, {
         onDelete: "CASCADE",
     })
     message: import("./Message").Message;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_attachment_channel_id" })
     @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })

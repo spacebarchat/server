@@ -38,7 +38,7 @@ export class TeamMember extends BaseClass {
     @RelationId((member: TeamMember) => member.team)
     team_id: string;
 
-    @JoinColumn({ name: "team_id" })
+    @JoinColumn({ name: "team_id", foreignKeyConstraintName: "FK_team_member_team_id" })
     @ManyToOne(() => require("./Team").Team, (team: import("./Team").Team) => team.members, {
         onDelete: "CASCADE",
     })
@@ -48,7 +48,7 @@ export class TeamMember extends BaseClass {
     @RelationId((member: TeamMember) => member.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_team_member_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

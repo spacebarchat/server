@@ -31,30 +31,30 @@ import { ReadStateFlags, ReadStateType } from "@spacebar/schemas";
 })
 @Index(["channel_id", "user_id"], { unique: true })
 export class ReadState extends BaseClass {
-    @Column()
+    @Column({ type: "int8" })
     @RelationId((read_state: ReadState) => read_state.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_read_state_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
     channel: Channel;
 
-    @Column()
+    @Column({ type: "int8" })
     @RelationId((read_state: ReadState) => read_state.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_read_state_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
     user: User;
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     last_message_id?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     last_acked_id?: string;
 
     @Column({ nullable: true })

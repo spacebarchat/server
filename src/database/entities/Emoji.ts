@@ -55,7 +55,7 @@ export class Emoji extends BaseClass {
     @RelationId((emoji: Emoji) => emoji.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_emoji_user_id" })
     @ManyToOne(() => User)
     user: User;
 

@@ -29,7 +29,7 @@ export class Ban extends BaseClass {
     @RelationId((ban: Ban) => ban.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_ban_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -39,7 +39,7 @@ export class Ban extends BaseClass {
     @RelationId((ban: Ban) => ban.guild)
     guild_id: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_ban_guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
@@ -49,7 +49,7 @@ export class Ban extends BaseClass {
     @RelationId((ban: Ban) => ban.executor)
     executor_id: string;
 
-    @JoinColumn({ name: "executor_id" })
+    @JoinColumn({ name: "executor_id", foreignKeyConstraintName: "FK_ban_executor_id" })
     @ManyToOne(() => User)
     executor: User;
 

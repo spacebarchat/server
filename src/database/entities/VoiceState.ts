@@ -33,7 +33,7 @@ export class VoiceState extends BaseClass {
     @RelationId((voice_state: VoiceState) => voice_state.guild)
     guild_id: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_voice_state_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.voice_states, {
         onDelete: "CASCADE",
     })
@@ -43,7 +43,7 @@ export class VoiceState extends BaseClass {
     @RelationId((voice_state: VoiceState) => voice_state.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_voice_state_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -53,7 +53,7 @@ export class VoiceState extends BaseClass {
     @RelationId((voice_state: VoiceState) => voice_state.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_voice_state_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

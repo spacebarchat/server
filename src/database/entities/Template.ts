@@ -41,7 +41,7 @@ export class Template extends BaseClass {
     @RelationId((template: Template) => template.creator)
     creator_id: string;
 
-    @JoinColumn({ name: "creator_id" })
+    @JoinColumn({ name: "creator_id", foreignKeyConstraintName: "FK_template_creator_id" })
     @ManyToOne(() => User)
     creator: User;
 
@@ -55,7 +55,7 @@ export class Template extends BaseClass {
     @RelationId((template: Template) => template.source_guild)
     source_guild_id: string;
 
-    @JoinColumn({ name: "source_guild_id" })
+    @JoinColumn({ name: "source_guild_id", foreignKeyConstraintName: "FK_template_source_guild_id" })
     @ManyToOne(() => Guild, { onDelete: "CASCADE" })
     source_guild: Guild;
 

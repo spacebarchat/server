@@ -44,7 +44,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.guild)
     guild_id?: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_webhook_guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
@@ -54,7 +54,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_webhook_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -64,7 +64,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.application)
     application_id: string;
 
-    @JoinColumn({ name: "application_id" })
+    @JoinColumn({ name: "application_id", foreignKeyConstraintName: "FK_webhook_application_id" })
     @ManyToOne(() => Application, {
         onDelete: "CASCADE",
     })
@@ -74,7 +74,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_webhook_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -84,7 +84,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.guild)
     source_guild_id?: string;
 
-    @JoinColumn({ name: "source_guild_id" })
+    @JoinColumn({ name: "source_guild_id", foreignKeyConstraintName: "FK_webhook_source_guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
@@ -94,7 +94,7 @@ export class Webhook extends BaseClass {
     @RelationId((webhook: Webhook) => webhook.channel)
     source_channel_id: string;
 
-    @JoinColumn({ name: "source_channel_id" })
+    @JoinColumn({ name: "source_channel_id", foreignKeyConstraintName: "FK_webhook_source_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })

@@ -65,14 +65,14 @@ export class Channel extends BaseClass {
     })
     thread_members?: ThreadMember[];
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     last_message_id?: string;
 
     @Column({ nullable: true })
     @RelationId((channel: Channel) => channel.guild)
     guild_id?: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_channel_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.channels, {
         onDelete: "CASCADE",
         nullable: true,
@@ -83,7 +83,7 @@ export class Channel extends BaseClass {
     @RelationId((channel: Channel) => channel.parent)
     parent_id: string | null;
 
-    @JoinColumn({ name: "parent_id" })
+    @JoinColumn({ name: "parent_id", foreignKeyConstraintName: "FK_channel_parent_id" })
     @ManyToOne(() => Channel)
     parent?: Channel;
 
@@ -92,7 +92,7 @@ export class Channel extends BaseClass {
     @RelationId((channel: Channel) => channel.owner)
     owner_id?: string;
 
-    @JoinColumn({ name: "owner_id" })
+    @JoinColumn({ name: "owner_id", foreignKeyConstraintName: "FK_channel_owner_id" })
     @ManyToOne(() => User)
     owner: User;
 
@@ -174,7 +174,7 @@ export class Channel extends BaseClass {
     @Column({ nullable: true })
     total_message_sent?: number;
 
-    @JoinColumn({ name: "available_tags_ids" })
+    @JoinColumn({ name: "available_tags_ids", foreignKeyConstraintName: "FK_channel_available_tag_ids" })
     @OneToMany(() => Tag, (tag: Tag) => tag.channel, {
         cascade: true,
         orphanedRowAction: "delete",

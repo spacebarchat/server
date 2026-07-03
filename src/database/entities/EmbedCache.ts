@@ -17,7 +17,7 @@
 */
 
 import { BaseClass } from "./BaseClass";
-import { Entity, Column } from "typeorm";
+import { Entity, Column, CreateDateColumn } from "typeorm";
 import { Embed } from "@spacebar/schemas";
 
 @Entity({
@@ -33,6 +33,6 @@ export class EmbedCache extends BaseClass {
     @Column({ type: "jsonb", nullable: true })
     embeds?: Embed[];
 
-    @Column({ name: "created_at", type: "timestamp with time zone" })
+    @CreateDateColumn({ name: "created_at", type: "timestamp with time zone" })
     createdAt: Date;
 }

@@ -54,7 +54,7 @@ export class Invite extends BaseClassWithoutId {
     @RelationId((invite: Invite) => invite.guild)
     guild_id: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_invite_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.invites, {
         onDelete: "CASCADE",
     })
@@ -64,7 +64,7 @@ export class Invite extends BaseClassWithoutId {
     @RelationId((invite: Invite) => invite.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_invite_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -74,7 +74,7 @@ export class Invite extends BaseClassWithoutId {
     @RelationId((invite: Invite) => invite.inviter)
     inviter_id?: string;
 
-    @JoinColumn({ name: "inviter_id" })
+    @JoinColumn({ name: "inviter_id", foreignKeyConstraintName: "FK_invite_inviter_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -84,7 +84,7 @@ export class Invite extends BaseClassWithoutId {
     @RelationId((invite: Invite) => invite.target_user)
     target_user_id: string;
 
-    @JoinColumn({ name: "target_user_id" })
+    @JoinColumn({ name: "target_user_id", foreignKeyConstraintName: "FK_invite_target_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

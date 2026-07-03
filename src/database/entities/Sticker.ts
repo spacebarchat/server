@@ -42,7 +42,7 @@ export class Sticker extends BaseClass {
     @RelationId((sticker: Sticker) => sticker.pack)
     pack_id?: string;
 
-    @JoinColumn({ name: "pack_id" })
+    @JoinColumn({ name: "pack_id", foreignKeyConstraintName: "FK_sticker_pack_id" })
     @ManyToOne(() => require("./StickerPack").StickerPack, {
         onDelete: "CASCADE",
         nullable: true,
@@ -52,7 +52,7 @@ export class Sticker extends BaseClass {
     @Column({ nullable: true })
     guild_id?: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_sticker_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.stickers, {
         onDelete: "CASCADE",
     })
@@ -61,7 +61,7 @@ export class Sticker extends BaseClass {
     @Column({ nullable: true })
     user_id?: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_sticker_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

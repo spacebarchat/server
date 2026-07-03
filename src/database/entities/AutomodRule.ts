@@ -25,7 +25,7 @@ import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, Automo
     name: "automod_rules",
 })
 export class AutomodRule extends BaseClass {
-    @JoinColumn({ name: "creator_id" })
+    @JoinColumn({ name: "creator_id", foreignKeyConstraintName: "FK_automod_rule_creator_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     creator: User;
 
@@ -41,7 +41,7 @@ export class AutomodRule extends BaseClass {
     @Column({ type: "int8", array: true })
     exempt_roles: string[];
 
-    @Column()
+    @Column({ type: "int8" })
     guild_id: string;
 
     @Column()

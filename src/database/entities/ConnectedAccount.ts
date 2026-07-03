@@ -32,7 +32,7 @@ export class ConnectedAccount extends BaseClass {
     @RelationId((account: ConnectedAccount) => account.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_connected_account_user_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })

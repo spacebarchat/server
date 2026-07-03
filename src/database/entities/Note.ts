@@ -25,11 +25,11 @@ import { User } from "./User";
 })
 @Unique(["owner", "target"])
 export class Note extends BaseClass {
-    @JoinColumn({ name: "owner_id" })
+    @JoinColumn({ name: "owner_id", foreignKeyConstraintName: "FK_note_owner_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     owner: User;
 
-    @JoinColumn({ name: "target_id" })
+    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_note_target_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     target: User;
 

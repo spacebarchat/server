@@ -30,7 +30,7 @@ export class Role extends BaseClass {
     @RelationId((role: Role) => role.guild)
     guild_id: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_role_guild_id" })
     @ManyToOne(() => Guild, (guild) => guild.roles, {
         onDelete: "CASCADE",
     })

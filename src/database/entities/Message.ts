@@ -56,7 +56,7 @@ export class Message extends BaseClass {
     @Index()
     channel_id?: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_message_channel_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -67,7 +67,7 @@ export class Message extends BaseClass {
     @JsonRemoveEmpty
     thread_id?: string;
 
-    @JoinColumn({ name: "thread_id" })
+    @JoinColumn({ name: "thread_id", foreignKeyConstraintName: "FK_message_thread_id" })
     @ManyToOne(() => Channel, {
         onDelete: "CASCADE",
     })
@@ -79,7 +79,7 @@ export class Message extends BaseClass {
     @JsonRemoveEmpty
     guild_id?: string;
 
-    @JoinColumn({ name: "guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_message_guild_id" })
     @ManyToOne(() => Guild, {
         onDelete: "CASCADE",
     })
@@ -90,7 +90,7 @@ export class Message extends BaseClass {
     @Index()
     author_id?: string;
 
-    @JoinColumn({ name: "author_id", referencedColumnName: "id" })
+    @JoinColumn({ name: "author_id", referencedColumnName: "id", foreignKeyConstraintName: "FK_message_author_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -100,7 +100,7 @@ export class Message extends BaseClass {
     @RelationId((message: Message) => message.member)
     member_id?: string;
 
-    @JoinColumn({ name: "member_id", referencedColumnName: "id" })
+    @JoinColumn({ name: "member_id", referencedColumnName: "id", foreignKeyConstraintName: "FK_message_member_id" })
     @ManyToOne(() => User, {
         onDelete: "CASCADE",
     })
@@ -111,7 +111,7 @@ export class Message extends BaseClass {
     @JsonRemoveEmpty
     webhook_id?: string;
 
-    @JoinColumn({ name: "webhook_id" })
+    @JoinColumn({ name: "webhook_id", foreignKeyConstraintName: "FK_message_webhook_id" })
     @ManyToOne(() => Webhook)
     webhook?: Webhook;
 
@@ -119,7 +119,7 @@ export class Message extends BaseClass {
     @RelationId((message: Message) => message.application)
     application_id?: string;
 
-    @JoinColumn({ name: "application_id" })
+    @JoinColumn({ name: "application_id", foreignKeyConstraintName: "FK_message_application_id" })
     @ManyToOne(() => Application)
     application?: Application;
 
@@ -251,7 +251,7 @@ export class Message extends BaseClass {
         type?: number; // 0 = DEFAULT, 1 = FORWARD
     };
 
-    @JoinColumn({ name: "message_reference_id" })
+    @JoinColumn({ name: "message_reference_id", foreignKeyConstraintName: "FK_message_message_reference_id" })
     @ManyToOne(() => Message, { onDelete: "SET NULL" })
     referenced_message?: Message | null;
 

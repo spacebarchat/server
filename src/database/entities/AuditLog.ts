@@ -25,7 +25,7 @@ import { AuditLogChange, AuditLogEvents } from "@spacebar/schemas";
     name: "audit_logs",
 })
 export class AuditLog extends BaseClass {
-    @JoinColumn({ name: "target_id" })
+    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
     @ManyToOne(() => User)
     target?: User;
 
@@ -33,7 +33,7 @@ export class AuditLog extends BaseClass {
     @RelationId((auditlog: AuditLog) => auditlog.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_audit_log_source_user_id" })
     @ManyToOne(() => User, (user: User) => user.id)
     user: User;
 

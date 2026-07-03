@@ -27,7 +27,7 @@ export class Recipient extends BaseClass {
     @RelationId((recipient: Recipient) => recipient.channel)
     channel_id: string;
 
-    @JoinColumn({ name: "channel_id" })
+    @JoinColumn({ name: "channel_id", foreignKeyConstraintName: "FK_recipient_channel_id" })
     @ManyToOne(() => require("./Channel").Channel, {
         onDelete: "CASCADE",
     })
@@ -37,7 +37,7 @@ export class Recipient extends BaseClass {
     @RelationId((recipient: Recipient) => recipient.user)
     user_id: string;
 
-    @JoinColumn({ name: "user_id" })
+    @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_recipient_user_id" })
     @ManyToOne(() => require("./User").User, {
         onDelete: "CASCADE",
     })

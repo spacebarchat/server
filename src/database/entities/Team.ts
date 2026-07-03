@@ -28,7 +28,7 @@ export class Team extends BaseClass {
     @Column({ nullable: true })
     icon?: string;
 
-    @JoinColumn({ name: "member_ids" })
+    @JoinColumn({ name: "member_ids", foreignKeyConstraintName: "FK_team_member_ids" })
     @OneToMany(() => TeamMember, (member: TeamMember) => member.team, {
         orphanedRowAction: "delete",
     })
@@ -41,7 +41,7 @@ export class Team extends BaseClass {
     @RelationId((team: Team) => team.owner_user)
     owner_user_id: string;
 
-    @JoinColumn({ name: "owner_user_id" })
+    @JoinColumn({ name: "owner_user_id", foreignKeyConstraintName: "FK_team_owner_user_id" })
     @ManyToOne(() => User)
     owner_user: User;
 }
