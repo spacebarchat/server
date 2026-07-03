@@ -82,6 +82,11 @@ nixpkgs.lib.recursiveUpdate (
         };
 
         # Models
+        Spacebar-Models-Api = buildSpacebarDotnetModule {
+          name = "Spacebar.Models.Api";
+          projectFile = "Spacebar.Models.Api.csproj";
+          srcRoot = Models/Spacebar.Models.Api;
+        };
         Spacebar-Models-AdminApi = buildSpacebarDotnetModule {
           name = "Spacebar.Models.AdminApi";
           projectFile = "Spacebar.Models.AdminApi.csproj";
@@ -189,6 +194,7 @@ nixpkgs.lib.recursiveUpdate (
             proj.Spacebar-Interop-Authentication-AspNetCore
             proj.Spacebar-Interop-Replication-Abstractions
             proj.Spacebar-Interop-Replication-UnixSocket
+            proj.Spacebar-Models-Api
             proj.Spacebar-Models-Config
             proj.Spacebar-Models-Db
             proj.Spacebar-Models-Gateway
