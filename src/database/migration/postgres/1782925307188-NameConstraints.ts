@@ -33,7 +33,6 @@ export class NameConstraints1782925307188 implements MigrationInterface {
 
         await queryRunner.query(`ALTER TABLE "connected_accounts" RENAME CONSTRAINT "FK_f47244225a6a1eac04a3463dd90" TO "FK_connected_account_user_id"`);
 
-        await queryRunner.query(`ALTER TABLE "emojis" RENAME CONSTRAINT "FK_4b988e0db89d94cebcf07f598cc" TO "FK_emoji_guild_id"`);
         await queryRunner.query(`ALTER TABLE "emojis" RENAME CONSTRAINT "FK_fa7ddd5f9a214e28ce596548421" TO "FK_emoji_user_id"`);
 
         await queryRunner.query(`ALTER TABLE "guilds" RENAME CONSTRAINT "FK_8d450b016dc8bec35f36729e4b0" TO "FK_guild_public_updates_channel_id"`);
@@ -168,7 +167,6 @@ export class NameConstraints1782925307188 implements MigrationInterface {
 
         await queryRunner.query(`ALTER TABLE "connected_accounts" RENAME CONSTRAINT "FK_connected_account_user_id" TO "FK_f47244225a6a1eac04a3463dd90"`);
 
-        await queryRunner.query(`ALTER TABLE "emojis" RENAME CONSTRAINT "FK_emoji_guild_id" TO "FK_4b988e0db89d94cebcf07f598cc"`);
         await queryRunner.query(`ALTER TABLE "emojis" RENAME CONSTRAINT "FK_emoji_user_id" TO "FK_fa7ddd5f9a214e28ce596548421"`);
 
         await queryRunner.query(`ALTER TABLE "guilds" RENAME CONSTRAINT "FK_guild_public_updates_channel_id" TO "FK_8d450b016dc8bec35f36729e4b0"`);
