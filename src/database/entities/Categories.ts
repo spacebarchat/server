@@ -39,7 +39,7 @@ import { BaseClassWithoutId } from "./BaseClass";
 export class Categories extends BaseClassWithoutId {
     // Not using snowflake
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: "int4" })
     id: number;
 
     @Column({ nullable: true })

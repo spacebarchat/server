@@ -35,10 +35,10 @@ export class ApplicationCommand extends BaseClass {
     @Column({ default: ApplicationCommandType.CHAT_INPUT })
     type?: ApplicationCommandType;
 
-    @Column()
+    @Column({ type: "int8" })
     application_id: Snowflake;
 
-    @Column({ nullable: true })
+    @Column({ type: "int8", nullable: true })
     guild_id?: Snowflake;
 
     @Column()
@@ -80,8 +80,8 @@ export class ApplicationCommand extends BaseClass {
     @Column({ nullable: true, type: "jsonb" })
     contexts?: InteractionContextType[];
 
-    @Column({ default: 0 })
-    version: Snowflake;
+    @Column({ type: "int8", default: "0::bigint" })
+    version: Snowflake; // Is this really a snowflake though? "An autoincrementing version identifier updated during substantial record changes"
 
     @Column({ default: 0 })
     handler?: ApplicationCommandHandlerType;
