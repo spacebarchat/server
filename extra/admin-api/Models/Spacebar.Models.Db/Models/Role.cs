@@ -60,7 +60,7 @@ public partial class Role
     [InverseProperty("Roles")]
     public virtual ICollection<Member> Indices { get; set; } = new List<Member>();
 
-    [ForeignKey("RolesId")]
+    [ForeignKey("RoleId")]
     [InverseProperty("Roles")]
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

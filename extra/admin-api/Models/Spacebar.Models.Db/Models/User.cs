@@ -240,7 +240,7 @@ public partial class User
     [InverseProperty("User")]
     public virtual ICollection<Webhook> Webhooks { get; set; } = new List<Webhook>();
 
-    [ForeignKey("UsersId")]
+    [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

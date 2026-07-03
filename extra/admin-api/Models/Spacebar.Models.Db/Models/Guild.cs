@@ -144,9 +144,6 @@ public partial class Guild
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     [InverseProperty("Guild")]
-    public virtual ICollection<AutomodRule> AutomodRules { get; set; } = new List<AutomodRule>();
-
-    [InverseProperty("Guild")]
     public virtual ICollection<Ban> Bans { get; set; } = new List<Ban>();
 
     [InverseProperty("Guild")]
@@ -167,10 +164,6 @@ public partial class Guild
     [ForeignKey("OwnerId")]
     [InverseProperty("Guilds")]
     public virtual User? Owner { get; set; }
-
-    [ForeignKey("PrimaryCategoryId")]
-    [InverseProperty("Guilds")]
-    public virtual Category? PrimaryCategory { get; set; }
 
     [ForeignKey("PublicUpdatesChannelId")]
     [InverseProperty("GuildPublicUpdatesChannels")]

@@ -19,13 +19,13 @@ public partial class ApplicationCommand
     [Column("application_id")]
     public long ApplicationId { get; set; }
 
-    [Column("guild_id", TypeName = "character varying")]
-    public string? GuildId { get; set; }
+    [Column("guild_id")]
+    public long? GuildId { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string Name { get; set; } = null!;
 
-    [Column("name_localizations")]
+    [Column("name_localizations", TypeName = "jsonb")]
     public string? NameLocalizations { get; set; }
 
     [Column("description", TypeName = "character varying")]
@@ -63,8 +63,4 @@ public partial class ApplicationCommand
 
     [Column("handler")]
     public int Handler { get; set; }
-
-    [ForeignKey("ApplicationId")]
-    [InverseProperty("ApplicationCommands")]
-    public virtual Application Application { get; set; } = null!;
 }

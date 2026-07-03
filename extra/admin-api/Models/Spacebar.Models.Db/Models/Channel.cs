@@ -160,7 +160,7 @@ public partial class Channel
     [InverseProperty("SourceChannel")]
     public virtual ICollection<Webhook> WebhookSourceChannels { get; set; } = new List<Webhook>();
 
-    [ForeignKey("ChannelsId")]
+    [ForeignKey("ChannelId")]
     [InverseProperty("Channels")]
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

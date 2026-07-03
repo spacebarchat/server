@@ -49,8 +49,4 @@ public partial class AutomodRule
     [ForeignKey("CreatorId")]
     [InverseProperty("AutomodRules")]
     public virtual User? Creator { get; set; }
-
-    [ForeignKey("GuildId")]
-    [InverseProperty("AutomodRules")]
-    public virtual Guild Guild { get; set; } = null!;
 }

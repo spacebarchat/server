@@ -67,6 +67,8 @@ public partial class SpacebarDbContext : DbContext
 
     public virtual DbSet<Relationship> Relationships { get; set; }
 
+    public virtual DbSet<ReportMenu> ReportMenus { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SecurityKey> SecurityKeys { get; set; }
@@ -115,17 +117,15 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.BotUser).WithOne(p => p.ApplicationBotUser)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_2ce5a55796fe4c2f77ece57a647");
+                .HasConstraintName("FK_application_bot_user_id");
 
-            entity.HasOne(d => d.Guild).WithMany(p => p.Applications).HasConstraintName("FK_e5bf78cdbbe9ba91062d74c5aba");
+            entity.HasOne(d => d.Guild).WithMany(p => p.Applications).HasConstraintName("FK_application_guild_id");
 
-            entity.HasOne(d => d.Owner).WithMany(p => p.ApplicationOwners)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_e57508958bf92b9d9d25231b5e8");
+            entity.HasOne(d => d.Owner).WithMany(p => p.ApplicationOwners).HasConstraintName("FK_application_owner_id");
 
             entity.HasOne(d => d.Team).WithMany(p => p.Applications)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_a36ed02953077f408d0f3ebc424");
+                .HasConstraintName("FK_application_team_id");
         });
 
         modelBuilder.Entity<ApplicationCommand>(entity =>
@@ -136,9 +136,6 @@ public partial class SpacebarDbContext : DbContext
             entity.Property(e => e.DmPermission).HasDefaultValue(true);
             entity.Property(e => e.Options).HasDefaultValueSql("'[]'::jsonb");
             entity.Property(e => e.Type).HasDefaultValue(1);
-            entity.Property(e => e.Version).HasDefaultValueSql("(0)::bigint");
-
-            entity.HasOne(d => d.Application).WithMany(p => p.ApplicationCommands).HasConstraintName("application_commands_applications_fk");
         });
 
         modelBuilder.Entity<Attachment>(entity =>
@@ -149,11 +146,11 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Channel).WithMany(p => p.Attachments)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("attachments_channels_fk");
+                .HasConstraintName("FK_attachment_channel_id");
 
             entity.HasOne(d => d.Message).WithMany(p => p.Attachments)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_623e10eec51ada466c5038979e3");
+                .HasConstraintName("FK_attachment_message_id");
         });
 
         modelBuilder.Entity<AuditLog>(entity =>
@@ -162,9 +159,9 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Target).WithMany(p => p.AuditLogTargets).HasConstraintName("FK_3cd01cd3ae7aab010310d96ac8e");
+            entity.HasOne(d => d.Target).WithMany(p => p.AuditLogTargets).HasConstraintName("FK_audit_log_target_user_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.AuditLogUsers).HasConstraintName("FK_bd2726fd31b35443f2245b93ba0");
+            entity.HasOne(d => d.User).WithMany(p => p.AuditLogUsers).HasConstraintName("FK_audit_log_source_user_id");
         });
 
         modelBuilder.Entity<AutomodRule>(entity =>
@@ -175,9 +172,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Creator).WithMany(p => p.AutomodRules)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_12d3d60b961393d310429c062b7");
-
-            entity.HasOne(d => d.Guild).WithMany(p => p.AutomodRules).HasConstraintName("automod_rules_guilds_fk");
+                .HasConstraintName("FK_automod_rule_creator_id");
         });
 
         modelBuilder.Entity<BackupCode>(entity =>
@@ -188,14 +183,12 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.BackupCodes)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_70066ea80d2f4b871beda32633b");
+                .HasConstraintName("FK_backup_code_user_id");
         });
 
         modelBuilder.Entity<Badge>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_8a651318b8de577e8e217676466");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Ban>(entity =>
@@ -204,15 +197,15 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Executor).WithMany(p => p.BanExecutors).HasConstraintName("FK_07ad88c86d1f290d46748410d58");
+            entity.HasOne(d => d.Executor).WithMany(p => p.BanExecutors).HasConstraintName("FK_ban_executor_id");
 
             entity.HasOne(d => d.Guild).WithMany(p => p.Bans)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_9d3ab7dd180ebdd245cdb66ecad");
+                .HasConstraintName("FK_ban_guild_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.BanUsers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_5999e8e449f80a236ff72023559");
+                .HasConstraintName("FK_ban_user_id");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -230,11 +223,11 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Guild).WithMany(p => p.Channels)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_c253dafe5f3a03ec00cd8fb4581");
+                .HasConstraintName("FK_channel_guild_id");
 
-            entity.HasOne(d => d.Owner).WithMany(p => p.Channels).HasConstraintName("FK_3873ed438575cce703ecff4fc7b");
+            entity.HasOne(d => d.Owner).WithMany(p => p.Channels).HasConstraintName("FK_channel_owner_id");
 
-            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent).HasConstraintName("FK_3274522d14af40540b1a883fc80");
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent).HasConstraintName("FK_channel_parent_id");
         });
 
         modelBuilder.Entity<ClientRelease>(entity =>
@@ -252,11 +245,11 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Channel).WithMany(p => p.CloudAttachments)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_998d5fe91008ba5b09e1322104c");
+                .HasConstraintName("FK_cloud_attachment_channel_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.CloudAttachments)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_8bf8cc8767e48cb482ff644fce6");
+                .HasConstraintName("FK_cloud_attachment_user_id");
         });
 
         modelBuilder.Entity<Config>(entity =>
@@ -272,7 +265,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.ConnectedAccounts)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_f47244225a6a1eac04a3463dd90");
+                .HasConstraintName("FK_connected_account_user_id");
         });
 
         modelBuilder.Entity<ConnectionConfig>(entity =>
@@ -302,7 +295,7 @@ public partial class SpacebarDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_emoji_guild_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Emojis).HasConstraintName("FK_fa7ddd5f9a214e28ce596548421");
+            entity.HasOne(d => d.User).WithMany(p => p.Emojis).HasConstraintName("FK_emoji_user_id");
         });
 
         modelBuilder.Entity<Guild>(entity =>
@@ -311,43 +304,37 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.AfkChannel).WithMany(p => p.GuildAfkChannels).HasConstraintName("FK_f591a66b8019d87b0fe6c12dad6");
+            entity.HasOne(d => d.AfkChannel).WithMany(p => p.GuildAfkChannels).HasConstraintName("FK_guild_afk_channel_id");
 
-            entity.HasOne(d => d.Owner).WithMany(p => p.Guilds)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_fc1a451727e3643ca572a3bb394");
+            entity.HasOne(d => d.Owner).WithMany(p => p.Guilds).HasConstraintName("FK_guild_owner_id");
 
-            entity.HasOne(d => d.PrimaryCategory).WithMany(p => p.Guilds)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("guilds_categories_fk");
+            entity.HasOne(d => d.PublicUpdatesChannel).WithMany(p => p.GuildPublicUpdatesChannels).HasConstraintName("FK_guild_public_updates_channel_id");
 
-            entity.HasOne(d => d.PublicUpdatesChannel).WithMany(p => p.GuildPublicUpdatesChannels).HasConstraintName("FK_8d450b016dc8bec35f36729e4b0");
+            entity.HasOne(d => d.RulesChannel).WithMany(p => p.GuildRulesChannels).HasConstraintName("FK_guild_rules_channel_id");
 
-            entity.HasOne(d => d.RulesChannel).WithMany(p => p.GuildRulesChannels).HasConstraintName("FK_95828668aa333460582e0ca6396");
+            entity.HasOne(d => d.SystemChannel).WithMany(p => p.GuildSystemChannels).HasConstraintName("FK_guild_system_channel_id");
 
-            entity.HasOne(d => d.SystemChannel).WithMany(p => p.GuildSystemChannels).HasConstraintName("FK_cfc3d3ad260f8121c95b31a1fce");
+            entity.HasOne(d => d.Template).WithMany(p => p.Guilds).HasConstraintName("FK_guild_template_id");
 
-            entity.HasOne(d => d.Template).WithMany(p => p.Guilds).HasConstraintName("FK_e2a2f873a64a5cf62526de42325");
-
-            entity.HasOne(d => d.WidgetChannel).WithMany(p => p.GuildWidgetChannels).HasConstraintName("FK_9d1d665379eefde7876a17afa99");
+            entity.HasOne(d => d.WidgetChannel).WithMany(p => p.GuildWidgetChannels).HasConstraintName("FK_guild_widget_channel_id");
         });
 
         modelBuilder.Entity<InstanceBan>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_3aa6e80a6d325601054892b1340");
 
-            entity.HasIndex(e => e.Fingerprint, "instance_bans_fingerprint_idx").HasMethod("hash");
+            entity.HasIndex(e => e.Fingerprint, "IDX_instance_ban_fingerprint").HasMethod("hash");
 
-            entity.HasIndex(e => e.IpAddress, "instance_bans_ip_address_idx").HasMethod("hash");
+            entity.HasIndex(e => e.IpAddress, "IDX_instance_ban_ip_address").HasMethod("hash");
 
-            entity.HasIndex(e => e.UserId, "instance_bans_user_id_idx").HasMethod("hash");
+            entity.HasIndex(e => e.UserId, "IDX_instance_ban_user_id").HasMethod("hash");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
 
             entity.HasOne(d => d.OriginInstanceBan).WithOne(p => p.InverseOriginInstanceBan)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_0b02d18d0d830f160c921192a30");
+                .HasConstraintName("FK_origin_instance_ban_id");
         });
 
         modelBuilder.Entity<Invite>(entity =>
@@ -356,38 +343,38 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Channel).WithMany(p => p.Invites)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_6a15b051fe5050aa00a4b9ff0f6");
+                .HasConstraintName("FK_invite_channel_id");
 
             entity.HasOne(d => d.Guild).WithMany(p => p.Invites)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_3f4939aa1461e8af57fea3fb05d");
+                .HasConstraintName("FK_invite_guild_id");
 
             entity.HasOne(d => d.Inviter).WithMany(p => p.InviteInviters)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_15c35422032e0b22b4ada95f48f");
+                .HasConstraintName("FK_invite_inviter_id");
 
             entity.HasOne(d => d.TargetUser).WithMany(p => p.InviteTargetUsers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_11a0d394f8fc649c19ce5f16b59");
+                .HasConstraintName("FK_invite_target_user_id");
         });
 
         modelBuilder.Entity<Member>(entity =>
         {
             entity.HasKey(e => e.Index).HasName("PK_b4a6b8c2478e5df990909c6cf6a");
 
-            entity.HasOne(d => d.Guild).WithMany(p => p.Members).HasConstraintName("FK_16aceddd5b89825b8ed6029ad1c");
+            entity.HasOne(d => d.Guild).WithMany(p => p.Members).HasConstraintName("FK_member_guild_id");
 
-            entity.HasOne(d => d.IdNavigation).WithMany(p => p.Members).HasConstraintName("FK_28b53062261b996d9c99fa12404");
+            entity.HasOne(d => d.IdNavigation).WithMany(p => p.Members).HasConstraintName("FK_member_user_id");
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Indices)
                 .UsingEntity<Dictionary<string, object>>(
                     "MemberRole",
                     r => r.HasOne<Role>().WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("FK_e9080e7a7997a0170026d5139c1"),
+                        .HasConstraintName("FK_member_role_role_id"),
                     l => l.HasOne<Member>().WithMany()
                         .HasForeignKey("Index")
-                        .HasConstraintName("FK_5d7ddc8a5f9c167f548625e772e"),
+                        .HasConstraintName("FK_member_role_member_index"),
                     j =>
                     {
                         j.HasKey("Index", "RoleId").HasName("PK_951c1d72a0fd1da8760b4a1fd66");
@@ -407,108 +394,108 @@ public partial class SpacebarDbContext : DbContext
             entity.Property(e => e.MessageSnapshots).HasDefaultValueSql("'[]'::jsonb");
             entity.Property(e => e.Timestamp).HasDefaultValueSql("now()");
 
-            entity.HasOne(d => d.Application).WithMany(p => p.Messages).HasConstraintName("FK_5d3ec1cb962de6488637fd779d6");
+            entity.HasOne(d => d.Application).WithMany(p => p.Messages).HasConstraintName("FK_message_application_id");
 
             entity.HasOne(d => d.Author).WithMany(p => p.MessageAuthors)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_05535bc695e9f7ee104616459d3");
+                .HasConstraintName("FK_message_author_id");
 
             entity.HasOne(d => d.Channel).WithMany(p => p.MessageChannels)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_86b9109b155eb70c0a2ca3b4b6d");
+                .HasConstraintName("FK_message_channel_id");
 
             entity.HasOne(d => d.Guild).WithMany(p => p.Messages)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_b193588441b085352a4c0109423");
+                .HasConstraintName("FK_message_guild_id");
 
             entity.HasOne(d => d.Member).WithMany(p => p.MessageMembers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_b0525304f2262b7014245351c76");
+                .HasConstraintName("FK_message_member_id");
 
             entity.HasOne(d => d.MessageReferenceNavigation).WithMany(p => p.InverseMessageReferenceNavigation)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_61a92bb65b302a76d9c1fcd3174");
+                .HasConstraintName("FK_message_message_reference_id");
 
             entity.HasOne(d => d.Thread).WithMany(p => p.MessageThreads)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_bb3af7f695d50083e6523290d41");
+                .HasConstraintName("FK_message_thread_id");
 
-            entity.HasOne(d => d.Webhook).WithMany(p => p.Messages).HasConstraintName("FK_f83c04bcf1df4e5c0e7a52ed348");
+            entity.HasOne(d => d.Webhook).WithMany(p => p.Messages).HasConstraintName("FK_message_webhook_id");
 
             entity.HasMany(d => d.Channels).WithMany(p => p.Messages)
                 .UsingEntity<Dictionary<string, object>>(
                     "MessageChannelMention",
                     r => r.HasOne<Channel>().WithMany()
-                        .HasForeignKey("ChannelsId")
-                        .HasConstraintName("FK_bdb8c09e1464cabf62105bf4b9d"),
+                        .HasForeignKey("ChannelId")
+                        .HasConstraintName("FK_message_channel_mentions_channel_id"),
                     l => l.HasOne<Message>().WithMany()
-                        .HasForeignKey("MessagesId")
-                        .HasConstraintName("FK_2a27102ecd1d81b4582a4360921"),
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("FK_message_channel_mentions_message_id"),
                     j =>
                     {
-                        j.HasKey("MessagesId", "ChannelsId").HasName("PK_85cb45351497cd9d06a79ced65e");
+                        j.HasKey("MessageId", "ChannelId").HasName("PK_85cb45351497cd9d06a79ced65e");
                         j.ToTable("message_channel_mentions");
-                        j.HasIndex(new[] { "MessagesId" }, "IDX_2a27102ecd1d81b4582a436092");
-                        j.HasIndex(new[] { "ChannelsId" }, "IDX_bdb8c09e1464cabf62105bf4b9");
-                        j.IndexerProperty<long>("MessagesId").HasColumnName("messagesId");
-                        j.IndexerProperty<long>("ChannelsId").HasColumnName("channelsId");
+                        j.HasIndex(new[] { "ChannelId" }, "IDX_32f530caa79d0e7d295eb59f62");
+                        j.HasIndex(new[] { "MessageId" }, "IDX_900f52a6d0f53bdcb2e9079017");
+                        j.IndexerProperty<long>("MessageId").HasColumnName("message_id");
+                        j.IndexerProperty<long>("ChannelId").HasColumnName("channel_id");
                     });
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Messages)
                 .UsingEntity<Dictionary<string, object>>(
                     "MessageRoleMention",
                     r => r.HasOne<Role>().WithMany()
-                        .HasForeignKey("RolesId")
-                        .HasConstraintName("FK_29d63eb1a458200851bc37d074b"),
+                        .HasForeignKey("RoleId")
+                        .HasConstraintName("FK_message_role_mentions_role_id"),
                     l => l.HasOne<Message>().WithMany()
-                        .HasForeignKey("MessagesId")
-                        .HasConstraintName("FK_a8242cf535337a490b0feaea0b4"),
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("FK_message_role_mentions_message_id"),
                     j =>
                     {
-                        j.HasKey("MessagesId", "RolesId").HasName("PK_74dba92cc300452a6e14b83ed44");
+                        j.HasKey("MessageId", "RoleId").HasName("PK_74dba92cc300452a6e14b83ed44");
                         j.ToTable("message_role_mentions");
-                        j.HasIndex(new[] { "RolesId" }, "IDX_29d63eb1a458200851bc37d074");
-                        j.HasIndex(new[] { "MessagesId" }, "IDX_a8242cf535337a490b0feaea0b");
-                        j.IndexerProperty<long>("MessagesId").HasColumnName("messagesId");
-                        j.IndexerProperty<long>("RolesId").HasColumnName("rolesId");
+                        j.HasIndex(new[] { "MessageId" }, "IDX_30114cbe788f0affbd8b8bf1f1");
+                        j.HasIndex(new[] { "RoleId" }, "IDX_ce866308ad8ddf9b6abce06b33");
+                        j.IndexerProperty<long>("MessageId").HasColumnName("message_id");
+                        j.IndexerProperty<long>("RoleId").HasColumnName("role_id");
                     });
 
             entity.HasMany(d => d.Stickers).WithMany(p => p.Messages)
                 .UsingEntity<Dictionary<string, object>>(
                     "MessageSticker",
                     r => r.HasOne<Sticker>().WithMany()
-                        .HasForeignKey("StickersId")
-                        .HasConstraintName("FK_e22a70819d07659c7a71c112a1f"),
+                        .HasForeignKey("StickerId")
+                        .HasConstraintName("FK_message_stickers_sticker_id"),
                     l => l.HasOne<Message>().WithMany()
-                        .HasForeignKey("MessagesId")
-                        .HasConstraintName("FK_40bb6f23e7cc133292e92829d28"),
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("FK_message_stickers_message_id"),
                     j =>
                     {
-                        j.HasKey("MessagesId", "StickersId").HasName("PK_ed820c4093d0b8cd1d2bcf66087");
+                        j.HasKey("MessageId", "StickerId").HasName("PK_ed820c4093d0b8cd1d2bcf66087");
                         j.ToTable("message_stickers");
-                        j.HasIndex(new[] { "MessagesId" }, "IDX_40bb6f23e7cc133292e92829d2");
-                        j.HasIndex(new[] { "StickersId" }, "IDX_e22a70819d07659c7a71c112a1");
-                        j.IndexerProperty<long>("MessagesId").HasColumnName("messagesId");
-                        j.IndexerProperty<long>("StickersId").HasColumnName("stickersId");
+                        j.HasIndex(new[] { "StickerId" }, "IDX_2b34e1145cafb79c6c5c193d12");
+                        j.HasIndex(new[] { "MessageId" }, "IDX_724f8b11056c706429933bdf87");
+                        j.IndexerProperty<long>("MessageId").HasColumnName("message_id");
+                        j.IndexerProperty<long>("StickerId").HasColumnName("sticker_id");
                     });
 
             entity.HasMany(d => d.Users).WithMany(p => p.Messages)
                 .UsingEntity<Dictionary<string, object>>(
                     "MessageUserMention",
                     r => r.HasOne<User>().WithMany()
-                        .HasForeignKey("UsersId")
-                        .HasConstraintName("FK_b831eb18ceebd28976239b1e2f8"),
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("FK_message_mentions_user_id"),
                     l => l.HasOne<Message>().WithMany()
-                        .HasForeignKey("MessagesId")
-                        .HasConstraintName("FK_a343387fc560ef378760681c236"),
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("FK_message_mentions_message_id"),
                     j =>
                     {
-                        j.HasKey("MessagesId", "UsersId").HasName("PK_9b9b6e245ad47a48dbd7605d4fb");
+                        j.HasKey("MessageId", "UserId").HasName("PK_9b9b6e245ad47a48dbd7605d4fb");
                         j.ToTable("message_user_mentions");
-                        j.HasIndex(new[] { "MessagesId" }, "IDX_a343387fc560ef378760681c23");
-                        j.HasIndex(new[] { "UsersId" }, "IDX_b831eb18ceebd28976239b1e2f");
-                        j.IndexerProperty<long>("MessagesId").HasColumnName("messagesId");
-                        j.IndexerProperty<long>("UsersId").HasColumnName("usersId");
+                        j.HasIndex(new[] { "UserId" }, "IDX_16395c9069e88c5f93cd658e9a");
+                        j.HasIndex(new[] { "MessageId" }, "IDX_972e8e013af7698f8aa8bc3fc8");
+                        j.IndexerProperty<long>("MessageId").HasColumnName("message_id");
+                        j.IndexerProperty<long>("UserId").HasColumnName("user_id");
                     });
         });
 
@@ -525,11 +512,11 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Owner).WithMany(p => p.NoteOwners)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_f9e103f8ae67cb1787063597925");
+                .HasConstraintName("FK_note_owner_id");
 
             entity.HasOne(d => d.Target).WithMany(p => p.NoteTargets)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_23e08e5b4481711d573e1abecdc");
+                .HasConstraintName("FK_note_target_id");
         });
 
         modelBuilder.Entity<RateLimit>(entity =>
@@ -545,9 +532,9 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Channel).WithMany(p => p.ReadStates).HasConstraintName("FK_40da2fca4e0eaf7a23b5bfc5d34");
+            entity.HasOne(d => d.Channel).WithMany(p => p.ReadStates).HasConstraintName("FK_read_state_channel_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.ReadStates).HasConstraintName("FK_195f92e4dd1254a4e348c043763");
+            entity.HasOne(d => d.User).WithMany(p => p.ReadStates).HasConstraintName("FK_read_state_user_id");
         });
 
         modelBuilder.Entity<Recipient>(entity =>
@@ -556,9 +543,9 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Channel).WithMany(p => p.Recipients).HasConstraintName("FK_2f18ee1ba667f233ae86c0ea60e");
+            entity.HasOne(d => d.Channel).WithMany(p => p.Recipients).HasConstraintName("FK_recipient_channel_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Recipients).HasConstraintName("FK_6157e8b6ba4e6e3089616481fe2");
+            entity.HasOne(d => d.User).WithMany(p => p.Recipients).HasConstraintName("FK_recipient_user_id");
         });
 
         modelBuilder.Entity<Relationship>(entity =>
@@ -567,9 +554,16 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.From).WithMany(p => p.RelationshipFroms).HasConstraintName("FK_9af4194bab1250b1c584ae4f1d7");
+            entity.HasOne(d => d.From).WithMany(p => p.RelationshipFroms).HasConstraintName("FK_relationship_from_id");
 
-            entity.HasOne(d => d.To).WithMany(p => p.RelationshipTos).HasConstraintName("FK_9c7f6b98a9843b76dce1b0c878b");
+            entity.HasOne(d => d.To).WithMany(p => p.RelationshipTos).HasConstraintName("FK_relationship_to_id");
+        });
+
+        modelBuilder.Entity<ReportMenu>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_1b5d649a189d57579d558ace79f");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -578,7 +572,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Guild).WithMany(p => p.Roles).HasConstraintName("FK_c32c1ab1c4dc7dcb0278c4b1b8b");
+            entity.HasOne(d => d.Guild).WithMany(p => p.Roles).HasConstraintName("FK_role_guild_id");
         });
 
         modelBuilder.Entity<SecurityKey>(entity =>
@@ -589,7 +583,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.SecurityKeys)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_24c97d0771cafedce6d7163eaad");
+                .HasConstraintName("FK_security_key_user_id");
         });
 
         modelBuilder.Entity<SecuritySetting>(entity =>
@@ -606,7 +600,7 @@ public partial class SpacebarDbContext : DbContext
             entity.Property(e => e.Activities).HasDefaultValueSql("'[]'::jsonb");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("now()");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Sessions).HasConstraintName("FK_085d540d9f418cfbdc7bd55bb19");
+            entity.HasOne(d => d.User).WithMany(p => p.Sessions).HasConstraintName("FK_session_user_id");
         });
 
         modelBuilder.Entity<Sticker>(entity =>
@@ -617,15 +611,15 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Guild).WithMany(p => p.Stickers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_193d551d852aca5347ef5c9f205");
+                .HasConstraintName("FK_sticker_guild_id");
 
             entity.HasOne(d => d.Pack).WithMany(p => p.Stickers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_e7cfa5cefa6661b3fb8fda8ce69");
+                .HasConstraintName("FK_sticker_pack_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Stickers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_8f4ee73f2bb2325ff980502e158");
+                .HasConstraintName("FK_sticker_user_id");
         });
 
         modelBuilder.Entity<StickerPack>(entity =>
@@ -634,7 +628,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.CoverStickerId1Navigation).WithMany(p => p.StickerPacks).HasConstraintName("FK_448fafba4355ee1c837bbc865f1");
+            entity.HasOne(d => d.CoverStickerId1Navigation).WithMany(p => p.StickerPacks).HasConstraintName("FK_sticker_pack_cover_sticker_id");
         });
 
         modelBuilder.Entity<Stream>(entity =>
@@ -643,9 +637,9 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Channel).WithMany(p => p.Streams).HasConstraintName("FK_5101f0cded27ff0aae78fc4eed7");
+            entity.HasOne(d => d.Channel).WithMany(p => p.Streams).HasConstraintName("FK_stream_channel_id");
 
-            entity.HasOne(d => d.Owner).WithMany(p => p.Streams).HasConstraintName("FK_1b566f9b54d1cda271da53ac82f");
+            entity.HasOne(d => d.Owner).WithMany(p => p.Streams).HasConstraintName("FK_stream_owner_id");
         });
 
         modelBuilder.Entity<StreamSession>(entity =>
@@ -654,9 +648,9 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Stream).WithMany(p => p.StreamSessions).HasConstraintName("FK_8b5a028a34dae9ee54af37c9c32");
+            entity.HasOne(d => d.Stream).WithMany(p => p.StreamSessions).HasConstraintName("FK_stream_session_stream_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.StreamSessions).HasConstraintName("FK_13ae5c29aff4d0890c54179511a");
+            entity.HasOne(d => d.User).WithMany(p => p.StreamSessions).HasConstraintName("FK_stream_session_user_id");
         });
 
         modelBuilder.Entity<Tag>(entity =>
@@ -665,7 +659,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Channel).WithMany(p => p.Tags).HasConstraintName("FK_2e2df07f6dacc12e1932b361fe4");
+            entity.HasOne(d => d.Channel).WithMany(p => p.Tags).HasConstraintName("FK_tag_channel_id");
         });
 
         modelBuilder.Entity<Team>(entity =>
@@ -674,7 +668,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.OwnerUser).WithMany(p => p.Teams).HasConstraintName("FK_13f00abf7cb6096c43ecaf8c108");
+            entity.HasOne(d => d.OwnerUser).WithMany(p => p.Teams).HasConstraintName("FK_team_owner_user_id");
         });
 
         modelBuilder.Entity<TeamMember>(entity =>
@@ -685,11 +679,11 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Team).WithMany(p => p.TeamMembers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_fdad7d5768277e60c40e01cdcea");
+                .HasConstraintName("FK_team_member_team_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.TeamMembers)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_c2bf4967c8c2a6b845dadfbf3d4");
+                .HasConstraintName("FK_team_member_user_id");
         });
 
         modelBuilder.Entity<Template>(entity =>
@@ -698,20 +692,20 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Creator).WithMany(p => p.Templates).HasConstraintName("FK_d7374b7f8f5fbfdececa4fb62e1");
+            entity.HasOne(d => d.Creator).WithMany(p => p.Templates).HasConstraintName("FK_template_creator_id");
 
             entity.HasOne(d => d.SourceGuild).WithMany(p => p.Templates)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_445d00eaaea0e60a017a5ed0c11");
+                .HasConstraintName("FK_template_source_guild_id");
         });
 
         modelBuilder.Entity<ThreadMember>(entity =>
         {
             entity.HasKey(e => e.Index).HasName("PK_22232a9f7a08fb9967a9c78da53");
 
-            entity.HasOne(d => d.IdNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_cf20e37d71b0e1bf1ab633861c8");
+            entity.HasOne(d => d.IdNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_thread_member_channel_id");
 
-            entity.HasOne(d => d.MemberIdxNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_4721015b4e24ad29da55dbd2de0");
+            entity.HasOne(d => d.MemberIdxNavigation).WithMany(p => p.ThreadMembers).HasConstraintName("FK_thread_member_member_id");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -720,7 +714,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.SettingsIndexNavigation).WithOne(p => p.User).HasConstraintName("FK_0c14beb78d8c5ccba66072adbc7");
+            entity.HasOne(d => d.SettingsIndexNavigation).WithOne(p => p.User).HasConstraintName("FK_user_settings_index");
         });
 
         modelBuilder.Entity<UserSetting>(entity =>
@@ -736,7 +730,7 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.User).WithOne(p => p.UserSettingsProto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_8ff3d1961a48b693810c9f99853");
+                .HasConstraintName("FK_user_settings_proto_user_id");
         });
 
         modelBuilder.Entity<ValidRegistrationToken>(entity =>
@@ -752,15 +746,15 @@ public partial class SpacebarDbContext : DbContext
 
             entity.HasOne(d => d.Channel).WithMany(p => p.VoiceStates)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_9f8d389866b40b6657edd026dd4");
+                .HasConstraintName("FK_voice_state_channel_id");
 
             entity.HasOne(d => d.Guild).WithMany(p => p.VoiceStates)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_03779ef216d4b0358470d9cb748");
+                .HasConstraintName("FK_voice_state_guild_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.VoiceStates)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_5fe1d5f931a67e85039c640001b");
+                .HasConstraintName("FK_voice_state_user_id");
         });
 
         modelBuilder.Entity<Webhook>(entity =>
@@ -769,27 +763,29 @@ public partial class SpacebarDbContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Application).WithMany(p => p.Webhooks).HasConstraintName("FK_c3e5305461931763b56aa905f1c");
+            entity.HasOne(d => d.Application).WithMany(p => p.Webhooks)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_webhook_application_id");
 
             entity.HasOne(d => d.Channel).WithMany(p => p.WebhookChannels)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_df528cf77e82f8032230e7e37d8");
+                .HasConstraintName("FK_webhook_channel_id");
 
             entity.HasOne(d => d.Guild).WithMany(p => p.WebhookGuilds)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_487a7af59d189f744fe394368fc");
+                .HasConstraintName("FK_webhook_guild_id");
 
             entity.HasOne(d => d.SourceChannel).WithMany(p => p.WebhookSourceChannels)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_4495b7032a33c6b8b605d030398");
+                .HasConstraintName("FK_webhook_source_channel_id");
 
             entity.HasOne(d => d.SourceGuild).WithMany(p => p.WebhookSourceGuilds)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_3a285f4f49c40e0706d3018bc9f");
+                .HasConstraintName("FK_webhook_source_guild_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Webhooks)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_0d523f6f997c86e052c49b1455f");
+                .HasConstraintName("FK_webhook_user_id");
         });
 
         OnModelCreatingPartial(modelBuilder);

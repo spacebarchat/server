@@ -20,7 +20,7 @@ public partial class EmbedCache
     public string? Embed { get; set; }
 
     [Column("created_at")]
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     [Column("embeds", TypeName = "jsonb")]
     public string? Embeds { get; set; }

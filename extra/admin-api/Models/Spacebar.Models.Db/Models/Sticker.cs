@@ -55,7 +55,7 @@ public partial class Sticker
     [InverseProperty("Stickers")]
     public virtual User? User { get; set; }
 
-    [ForeignKey("StickersId")]
+    [ForeignKey("StickerId")]
     [InverseProperty("Stickers")]
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 }

@@ -11,7 +11,7 @@ public partial class Category
 {
     [Key]
     [Column("id")]
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     [Column("name", TypeName = "character varying")]
     public string? Name { get; set; }
@@ -24,7 +24,4 @@ public partial class Category
 
     [Column("icon", TypeName = "character varying")]
     public string? Icon { get; set; }
-
-    [InverseProperty("PrimaryCategory")]
-    public virtual ICollection<Guild> Guilds { get; set; } = new List<Guild>();
 }

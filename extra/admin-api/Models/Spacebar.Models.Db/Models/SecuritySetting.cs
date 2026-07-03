@@ -22,12 +22,12 @@ public partial class SecuritySetting
     [Column("encryption_permission_mask")]
     public int EncryptionPermissionMask { get; set; }
 
-    [Column("allowed_algorithms")]
-    public string AllowedAlgorithms { get; set; } = null!;
-
     [Column("current_algorithm", TypeName = "character varying")]
     public string CurrentAlgorithm { get; set; } = null!;
 
     [Column("used_since_message", TypeName = "character varying")]
     public string? UsedSinceMessage { get; set; }
+
+    [Column("allowed_algorithms", TypeName = "character varying[]")]
+    public List<string> AllowedAlgorithms { get; set; } = null!;
 }

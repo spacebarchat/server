@@ -138,19 +138,19 @@ public partial class Message
     [InverseProperty("Messages")]
     public virtual Webhook? Webhook { get; set; }
 
-    [ForeignKey("MessagesId")]
+    [ForeignKey("MessageId")]
     [InverseProperty("Messages")]
     public virtual ICollection<Channel> Channels { get; set; } = new List<Channel>();
 
-    [ForeignKey("MessagesId")]
+    [ForeignKey("MessageId")]
     [InverseProperty("Messages")]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
-    [ForeignKey("MessagesId")]
+    [ForeignKey("MessageId")]
     [InverseProperty("Messages")]
     public virtual ICollection<Sticker> Stickers { get; set; } = new List<Sticker>();
 
-    [ForeignKey("MessagesId")]
+    [ForeignKey("MessageId")]
     [InverseProperty("Messages")]
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
