@@ -139,20 +139,68 @@ export class Message extends BaseClass {
     @Column({ nullable: true })
     mention_everyone?: boolean;
 
-    @JoinTable({ name: "message_user_mentions" })
+    @JoinTable({
+        name: "message_user_mentions",
+        joinColumn: {
+            name: "message_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_mentions_message_id",
+        },
+        inverseJoinColumn: {
+            name: "user_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_mentions_user_id",
+        },
+    })
     @ManyToMany(() => User)
     mentions: User[];
 
-    @JoinTable({ name: "message_role_mentions" })
+    @JoinTable({
+        name: "message_role_mentions",
+        joinColumn: {
+            name: "message_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_role_mentions_message_id",
+        },
+        inverseJoinColumn: {
+            name: "role_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_role_mentions_role_id",
+        },
+    })
     @ManyToMany(() => Role)
     mention_roles: Role[];
 
-    @JoinTable({ name: "message_channel_mentions" })
+    @JoinTable({
+        name: "message_channel_mentions",
+        joinColumn: {
+            name: "message_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_channel_mentions_message_id",
+        },
+        inverseJoinColumn: {
+            name: "channel_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_channel_mentions_channel_id",
+        },
+    })
     @ManyToMany(() => Channel)
     @JsonRemoveEmpty
     mention_channels: Channel[];
 
-    @JoinTable({ name: "message_stickers" })
+    @JoinTable({
+        name: "message_stickers",
+        joinColumn: {
+            name: "message_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_stickers_message_id",
+        },
+        inverseJoinColumn: {
+            name: "sticker_id",
+            referencedColumnName: "id",
+            foreignKeyConstraintName: "FK_message_stickers_sticker_id",
+        },
+    })
     @ManyToMany(() => Sticker, { cascade: true, onDelete: "CASCADE" })
     @JsonRemoveEmpty
     sticker_items?: Sticker[];
