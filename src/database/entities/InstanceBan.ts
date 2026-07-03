@@ -30,15 +30,15 @@ export class InstanceBan extends BaseClass {
     @Column()
     reason: string;
 
-    @Index("instance_bans_user_id_idx", { type: "hash" })
+    @Index("IDX_instance_ban_user_id", { type: "hash" })
     @Column({ type: "int8", nullable: true })
     user_id?: string;
 
-    @Index("instance_bans_fingerprint_idx", { type: "hash" })
+    @Index("IDX_instance_ban_fingerprint", { type: "hash" })
     @Column({ nullable: true })
     fingerprint?: string;
 
-    @Index("instance_bans_ip_address_idx", { type: "hash" })
+    @Index("IDX_instance_ban_ip_address", { type: "hash" })
     @Column({ nullable: true })
     ip_address?: string;
 
@@ -54,7 +54,7 @@ export class InstanceBan extends BaseClass {
     @RelationId((instance_ban: InstanceBan) => instance_ban.origin_instance_ban)
     origin_instance_ban_id?: string;
 
-    @JoinColumn({ name: "origin_instance_ban_id" })
+    @JoinColumn({ name: "origin_instance_ban_id", foreignKeyConstraintName: "FK_origin_instance_ban_id" })
     @OneToOne(() => InstanceBan, { nullable: true, onDelete: "SET NULL" })
     origin_instance_ban?: InstanceBan;
 
