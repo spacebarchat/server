@@ -27,7 +27,6 @@ export class ReconcileTypeormModels1783086174271 implements MigrationInterface {
         await queryRunner.query(
             `CREATE TABLE "report_menus" ("id" bigint NOT NULL, "type" integer NOT NULL, "variant" character varying NOT NULL, "isCurrent" boolean NOT NULL, "inherits" character varying, "content" jsonb NOT NULL, CONSTRAINT "PK_1b5d649a189d57579d558ace79f" PRIMARY KEY ("id"))`,
         );
-        await queryRunner.query(`ALTER TABLE "application_commands" ALTER COLUMN "version" SET DEFAULT '0::bigint'`);
         await queryRunner.query(`ALTER TABLE "embed_cache" ALTER COLUMN "created_at" SET NOT NULL`);
         await queryRunner.query(`ALTER TABLE "security_settings" DROP COLUMN "allowed_algorithms"`);
         await queryRunner.query(`ALTER TABLE "security_settings" ADD "allowed_algorithms" character varying array NOT NULL`);
@@ -99,7 +98,6 @@ export class ReconcileTypeormModels1783086174271 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "security_settings" DROP COLUMN "allowed_algorithms"`);
         await queryRunner.query(`ALTER TABLE "security_settings" ADD "allowed_algorithms" text NOT NULL`);
         await queryRunner.query(`ALTER TABLE "embed_cache" ALTER COLUMN "created_at" DROP NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "application_commands" ALTER COLUMN "version" SET DEFAULT (0)`);
         await queryRunner.query(`DROP TABLE "report_menus"`);
         await queryRunner.query(`CREATE INDEX "IDX_e22a70819d07659c7a71c112a1" ON "message_stickers" USING btree ("sticker_id") `);
         await queryRunner.query(`CREATE INDEX "IDX_40bb6f23e7cc133292e92829d2" ON "message_stickers" USING btree ("message_id") `);

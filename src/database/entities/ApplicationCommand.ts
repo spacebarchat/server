@@ -80,7 +80,7 @@ export class ApplicationCommand extends BaseClass {
     @Column({ nullable: true, type: "jsonb" })
     contexts?: InteractionContextType[];
 
-    @Column({ type: "int8", default: "0::bigint" })
+    @Column({ type: "int8", default: 0n })
     version: Snowflake; // Is this really a snowflake though? "An autoincrementing version identifier updated during substantial record changes"
 
     @Column({ default: 0 })
