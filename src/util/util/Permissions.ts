@@ -78,7 +78,7 @@ export class Permissions extends BitField {
         SET_VOICE_CHANNEL_STATUS: BitFlag(48),
         SEND_POLLS: BitFlag(49),
         USE_EXTERNAL_APPS: BitFlag(50),
-        PIN_MESSAGES: BitFlag(51),
+        UNUSED_13: BitFlag(51),
         BYPASS_SLOWMODE: BitFlag(52),
 
         /**
