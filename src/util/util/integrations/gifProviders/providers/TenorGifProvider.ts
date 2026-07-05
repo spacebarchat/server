@@ -42,7 +42,7 @@ export default class TenorGifProvider implements IGifProvider {
         });
 
         const { results } = (await response.json()) as { results: TenorGif[] };
-        return results.map(parseGifResult);
+        return results.map(this.convertGifResult);
     }
 
     private convertGifResult(result: TenorGif) {
