@@ -29,6 +29,7 @@ import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { initInstance } from "./util/handlers/Instance";
 import { route, addPendingPoll } from "./util";
+import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");
 const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
@@ -64,6 +65,7 @@ export class SpacebarServer extends Server {
         await initInstance();
         WebAuthn.init();
         // await BcryptWorkerPool.Init(8); // TODO: make configurable
+        await GifProviderManager.init();
 
         const logRequests = process.env["LOG_REQUESTS"] != undefined;
         if (logRequests) {

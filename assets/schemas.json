@@ -2779,7 +2779,7 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "TenorGifResponse": {
+    "GifResponse": {
         "type": "object",
         "properties": {
             "id": {
@@ -2862,7 +2862,7 @@
             "gifs": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/TenorGifResponse"
+                    "$ref": "#/definitions/GifResponse"
                 }
             }
         },
@@ -2873,10 +2873,10 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "TenorGifsResponse": {
+    "GifsResponse": {
         "type": "array",
         "items": {
-            "$ref": "#/definitions/TenorGifResponse"
+            "$ref": "#/definitions/GifResponse"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

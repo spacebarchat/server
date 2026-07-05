@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api/util/handlers/route";
 import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorGif, TenorMediaTypes } from "@spacebar/schemas";
+import { TenorGif, GifMediaTypes } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -30,7 +30,7 @@ router.get(
             media_format: {
                 type: "string",
                 description: "Media format",
-                values: Object.keys(TenorMediaTypes).filter((key) => isNaN(Number(key))),
+                values: Object.keys(GifMediaTypes).filter((key) => isNaN(Number(key))),
             },
             locale: {
                 type: "string",

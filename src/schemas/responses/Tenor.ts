@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export enum TenorMediaTypes {
+export enum GifMediaTypes {
     gif,
     mediumgif,
     tinygif,
@@ -41,7 +41,7 @@ export type TenorGif = {
     created: number;
     hasaudio: boolean;
     id: string;
-    media: { [type in keyof typeof TenorMediaTypes]: TenorMedia }[];
+    media: { [type in keyof typeof GifMediaTypes]: TenorMedia }[];
     tags: string[];
     title: string;
     itemurl: string;
@@ -71,7 +71,7 @@ export type TenorSearchResults = {
     results: TenorGif[];
 };
 
-export interface TenorGifResponse {
+export interface GifResponse {
     id: string;
     title: string;
     url: string;
@@ -84,7 +84,7 @@ export interface TenorGifResponse {
 
 export interface TenorTrendingResponse {
     categories: TenorCategoriesResults;
-    gifs: TenorGifResponse[];
+    gifs: GifResponse[];
 }
 
-export type TenorGifsResponse = TenorGifResponse[];
+export type GifsResponse = GifResponse[];
