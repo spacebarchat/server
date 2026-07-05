@@ -2606,7 +2606,7 @@
                     "$ref": "#/components/schemas/Team"
                 }
             },
-            "TenorGifResponse": {
+            "GifResponse": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -2687,7 +2687,7 @@
                     "gifs": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/TenorGifResponse"
+                            "$ref": "#/components/schemas/GifResponse"
                         }
                     }
                 },
@@ -2696,10 +2696,10 @@
                     "gifs"
                 ]
             },
-            "TenorGifsResponse": {
+            "GifsResponse": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/TenorGifResponse"
+                    "$ref": "#/components/schemas/GifResponse"
                 }
             },
             "TokenResponse": {
@@ -23642,7 +23642,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TenorGifsResponse"
+                                    "$ref": "#/components/schemas/GifsResponse"
                                 }
                             }
                         }
@@ -23673,6 +23673,14 @@
                             "type": "string"
                         },
                         "description": "Locale"
+                    },
+                    {
+                        "name": "provider",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Provider to use"
                     }
                 ],
                 "tags": [

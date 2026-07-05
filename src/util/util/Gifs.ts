@@ -2,6 +2,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "./Config";
 import { TenorGif } from "@spacebar/schemas";
 
+// @deprecated
 export function parseGifResult(result: TenorGif) {
     return {
         id: result.id,
