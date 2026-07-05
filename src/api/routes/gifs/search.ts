@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api/util/handlers/route";
 import { Request, Response, Router } from "express";
+import { route } from "@spacebar/api/util/handlers/route";
 import { GifMediaTypes } from "@spacebar/schemas";
 import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
 
@@ -55,7 +55,7 @@ router.get(
     async (req: Request, res: Response) => {
         const { provider } = req.query;
 
-        const impl = GifProviderManager.getProvider(provider as string);
+        const impl = GifProviderManager.getProvider((provider as string) ?? "tenor");
         const result = await impl.search(req.query as typeof impl.search.arguments);
 
         res.json(result).status(200);
