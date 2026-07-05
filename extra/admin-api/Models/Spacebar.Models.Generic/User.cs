@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 namespace Spacebar.Models.Generic;
@@ -23,16 +24,16 @@ public class PartialUser
     public string? Avatar { get; set; }
 
     [JsonPropertyName("avatar_decoration_data")]
-    public object? AvatarDecorationData { get; set; }
+    public JsonObject? AvatarDecorationData { get; set; }
 
     [JsonPropertyName("collectibles")]
-    public object? Collectibles { get; set; }
+    public JsonObject? Collectibles { get; set; }
 
     [JsonPropertyName("display_name_styles"), JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public DisplayNameStyle? DisplayNameStyles { get; set; }
 
     [JsonPropertyName("primary_guild")]
-    public object? PrimaryGuild { get; set; }
+    public JsonObject? PrimaryGuild { get; set; }
 
     [JsonPropertyName("bot")]
     public bool? Bot { get; set; }

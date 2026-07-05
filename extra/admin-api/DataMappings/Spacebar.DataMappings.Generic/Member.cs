@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Spacebar.Models.Generic;
 
 namespace Spacebar.DataMappings.Generic;
@@ -10,10 +11,10 @@ public static class MemberExtensions
         return new()
         {
             User = partialUser ?? member.IdNavigation.ToPartialUser(),
-            AvatarDecorationData = member.AvatarDecorationData,
+            AvatarDecorationData = string.IsNullOrWhiteSpace(member.AvatarDecorationData) ? null : JsonSerializer.Deserialize<JsonObject>(member.AvatarDecorationData), // TODO: schema
             Avatar = string.IsNullOrWhiteSpace(member.Avatar) ? null : member.Avatar,
             Banner = string.IsNullOrWhiteSpace(member.Banner) ? null : member.Banner,
-            Collectibles = member.Collectibles,
+            Collectibles = string.IsNullOrWhiteSpace(member.Collectibles) ? null : JsonSerializer.Deserialize<JsonObject>(member.Collectibles), // TODO: schema,
             DisplayNameStyles = JsonSerializer.Deserialize<DisplayNameStyle>(member.DisplayNameStyles ?? "null"),
             Bio = string.IsNullOrWhiteSpace(member.Bio) ? null : member.Bio,
             Nick = string.IsNullOrWhiteSpace(member.Nick) ? null : member.Nick,
@@ -52,10 +53,10 @@ public static class MemberExtensions
         return new()
         {
             User = partialUser ?? member.IdNavigation.ToPartialUser(),
-            AvatarDecorationData = member.AvatarDecorationData,
+            AvatarDecorationData = string.IsNullOrWhiteSpace(member.AvatarDecorationData) ? null : JsonSerializer.Deserialize<JsonObject>(member.AvatarDecorationData), // TODO: schema
             Avatar = string.IsNullOrWhiteSpace(member.Avatar) ? null : member.Avatar,
             Banner = string.IsNullOrWhiteSpace(member.Banner) ? null : member.Banner,
-            Collectibles = member.Collectibles,
+            Collectibles = string.IsNullOrWhiteSpace(member.Collectibles) ? null : JsonSerializer.Deserialize<JsonObject>(member.Collectibles), // TODO: schema
             DisplayNameStyles = JsonSerializer.Deserialize<DisplayNameStyle>(member.DisplayNameStyles ?? "null"),
             Bio = string.IsNullOrWhiteSpace(member.Bio) ? null : member.Bio,
             Nick = string.IsNullOrWhiteSpace(member.Nick) ? null : member.Nick,

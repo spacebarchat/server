@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Spacebar.Models.Generic;
 
 namespace Spacebar.DataMappings.Generic;
@@ -14,13 +15,13 @@ public static class User
             Username = user.Username,
             AccentColor = user.AccentColor,
             Avatar = user.Avatar,
-            AvatarDecorationData = user.AvatarDecorationData,
+            AvatarDecorationData = string.IsNullOrWhiteSpace(user.AvatarDecorationData) ? null : JsonSerializer.Deserialize<JsonObject>(user.AvatarDecorationData), // TODO: schema
             Banner = user.Banner,
             Bot = user.Bot,
-            Collectibles = user.Collectibles,
+            Collectibles = string.IsNullOrWhiteSpace(user.Collectibles) ? null : JsonSerializer.Deserialize<JsonObject>(user.Collectibles), // TODO: schema
             DisplayNameStyles = JsonSerializer.Deserialize<DisplayNameStyle>(user.DisplayNameStyles ?? "null"),
             // GlobalName = x.GlobalName,
-            PrimaryGuild = user.PrimaryGuild,
+            PrimaryGuild = string.IsNullOrWhiteSpace(user.PrimaryGuild) ? null : JsonSerializer.Deserialize<JsonObject>(user.PrimaryGuild), // TODO: schema
             PublicFlags = user.PublicFlags,
             System = user.System,
         };
