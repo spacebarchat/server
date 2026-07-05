@@ -67,8 +67,6 @@ export class ConnectionLoader {
             }
         }
 
-        if (cfg?.enabled) console.log(`[Connections] ${id} enabled`);
-
         // if (!cfg)
         // 	console.log(
         // 		`[ConnectionConfig/WARN] Getting connection settings for '${id}' returned null! (Did you forget to add settings?)`,
