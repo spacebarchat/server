@@ -48,6 +48,8 @@
             "@spacebar/webrtc*": ["./src/webrtc*"],
             "@spacebar/schemas": ["./src/schemas"], // Required for stable tsc, typescript-go doesn't need this
             "@spacebar/schemas*": ["./src/schemas*"],
+            "@spacebar/integrations": ["./src/integrations"], // Required for stable tsc, typescript-go doesn't need this
+            "@spacebar/integrations*": ["./src/integrations*"],
             "lambert-server": ["./src/util/util/lambert-server"], // Required for stable tsc, typescript-go doesn't need this
             "lambert-server*": ["./src/util/util/lambert-server*"],
         } /* Specify a set of entries that re-map imports to additional lookup locations. */,

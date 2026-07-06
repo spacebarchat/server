@@ -129,6 +129,7 @@
         "@spacebar/database": "dist/database",
         "@spacebar/extensions": "dist/extensions",
         "@spacebar/gateway": "dist/gateway",
+        "@spacebar/integrations": "dist/integrations",
         "@spacebar/util": "dist/util",
         "@spacebar/webrtc": "dist/webrtc",
         "@spacebar/schemas": "dist/schemas",

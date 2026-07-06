@@ -17,9 +17,10 @@
 */
 
 import type { IGifProvider } from "../IGifProvider";
-import { TenorGif, GifsResponse, TenorCategoriesResults, GifTrendingCategory } from "@spacebar/schemas";
-import { Config, getGifApiKey, parseGifResult } from "@spacebar/util";
+import { GifsResponse, GifTrendingCategory, GifMediaTypes } from "@spacebar/schemas";
+import { Config } from "@spacebar/util";
 
+// Tenor V1 API... Not yet shut down as of writing, but is going soon...
 export default class TenorGifProvider implements IGifProvider {
     id = "tenor";
     available = true;
@@ -41,8 +42,8 @@ export default class TenorGifProvider implements IGifProvider {
             headers: { "Content-Type": "application/json" },
         });
 
-        const { results } = (await response.json()) as { results: TenorGif[] };
-        return results.map(this.convertGifResult);
+        const responseData = (await response.json()) as TenorSearchResults;
+        return responseData.results.map(this.convertGifResult);
     }
 
     async getTrendingCategories(query: { media_format: string; locale: string }): Promise<GifTrendingCategory[]> {
@@ -51,9 +52,8 @@ export default class TenorGifProvider implements IGifProvider {
             headers: { "Content-Type": "application/json" },
         });
 
-        const { tags } = (await response.json()) as TenorCategoriesResults;
-
-        return tags.map((x) => ({
+        const responseData = (await response.json()) as TenorCategoriesResults;
+        return responseData.tags.map((x) => ({
             name: x.searchterm,
             src: x.image,
         })) satisfies GifTrendingCategory[];
@@ -65,8 +65,8 @@ export default class TenorGifProvider implements IGifProvider {
             headers: { "Content-Type": "application/json" },
         });
 
-        const { results } = (await response.json()) as { results: TenorGif[] };
-        return results.map(this.convertGifResult);
+        const responseData = (await response.json()) as TenorTrendingResults;
+        return responseData.results.map(this.convertGifResult);
     }
 
     private convertGifResult(result: TenorGif) {
@@ -82,3 +82,46 @@ export default class TenorGifProvider implements IGifProvider {
         };
     }
 }
+
+// API response types
+
+type TenorGif = {
+    created: number;
+    hasaudio: boolean;
+    id: string;
+    media: { [type in keyof typeof GifMediaTypes]: TenorMedia }[];
+    tags: string[];
+    title: string;
+    itemurl: string;
+    hascaption: boolean;
+    url: string;
+};
+
+type TenorMedia = {
+    preview: string;
+    url: string;
+    dims: number[];
+    size: number;
+};
+
+type TenorCategory = {
+    searchterm: string;
+    path: string;
+    image: string;
+    name: string;
+};
+
+type TenorCategoriesResults = {
+    tags: TenorCategory[];
+};
+
+type TenorTrendingResults = {
+    next: string;
+    results: TenorGif[];
+    locale: string;
+};
+
+type TenorSearchResults = {
+    next: string;
+    results: TenorGif[];
+};

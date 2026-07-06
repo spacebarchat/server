@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,9 +17,9 @@
 */
 
 import { route } from "@spacebar/api/util/handlers/route";
-import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorGif, GifMediaTypes } from "@spacebar/schemas";
+import { GifMediaTypes } from "@spacebar/schemas";
+import { GifProviderManager } from "@spacebar/integrations/gifs";
 
 const router = Router({ mergeParams: true });
 
@@ -36,27 +36,25 @@ router.get(
                 type: "string",
                 description: "Locale",
             },
+            limit: {
+                type: "number",
+                description: "Maximum number of GIFs to return",
+            },
+            provider: {
+                type: "string",
+                description: "Provider to use",
+            },
         },
         responses: {
             200: {
-                body: "TenorGifsResponse",
+                body: "GifsResponse",
             },
         },
     }),
     async (req: Request, res: Response) => {
-        // TODO: Custom providers
-        const { media_format, locale } = req.query;
-
-        const apiKey = getGifApiKey();
-
-        const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${media_format}&locale=${locale}&key=${apiKey}`, {
-            method: "get",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        const { results } = (await response.json()) as { results: TenorGif[] };
-
-        res.json(results.map(parseGifResult)).status(200);
+        const provider = GifProviderManager.getProvider((req.query.provider as string) ?? "tenor");
+        const results = await provider.getTrendingGifs(req.query as typeof provider.getTrendingGifs.arguments);
+        res.json(results).status(200);
     },
 );
 

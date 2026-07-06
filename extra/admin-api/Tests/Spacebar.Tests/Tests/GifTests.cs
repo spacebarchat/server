@@ -77,4 +77,21 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
             Assert.NotEqual(0, gif.Height);
         });
     }
+    
+    [Theory, MemberData(nameof(GifProviders))]
+    public async Task GetTrendingGifs(string provider) {
+        var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending-gifs?provider={provider}", TestContext.Current.CancellationToken));
+        var respContent = await resp.Content.ReadFromJsonAsync<List<GifItem>>(cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.True(respContent!.Count > 0, "respContent.Count > 0");
+        Assert.All(respContent, gif => {
+            Assert.StringNotNullOrWhitespace(gif.Id);
+            Assert.StringNotNullOrWhitespace(gif.GifSource);
+            Assert.StringNotNullOrWhitespace(gif.Preview);
+            Assert.StringNotNullOrWhitespace(gif.Source);
+            Assert.StringNotNullOrWhitespace(gif.Url);
+            Assert.NotEqual(0, gif.Width);
+            Assert.NotEqual(0, gif.Height);
+        });
+    }
 }

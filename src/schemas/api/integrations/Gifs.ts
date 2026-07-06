@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -29,47 +29,6 @@ export enum GifMediaTypes {
     tinywebm,
     nanowebm,
 }
-
-export type TenorMedia = {
-    preview: string;
-    url: string;
-    dims: number[];
-    size: number;
-};
-
-export type TenorGif = {
-    created: number;
-    hasaudio: boolean;
-    id: string;
-    media: { [type in keyof typeof GifMediaTypes]: TenorMedia }[];
-    tags: string[];
-    title: string;
-    itemurl: string;
-    hascaption: boolean;
-    url: string;
-};
-
-export type TenorCategory = {
-    searchterm: string;
-    path: string;
-    image: string;
-    name: string;
-};
-
-export type TenorCategoriesResults = {
-    tags: TenorCategory[];
-};
-
-export type TenorTrendingResults = {
-    next: string;
-    results: TenorGif[];
-    locale: string;
-};
-
-export type TenorSearchResults = {
-    next: string;
-    results: TenorGif[];
-};
 
 export interface GifResponse {
     id: string;
