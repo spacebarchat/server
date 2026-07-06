@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GifsResponse } from "@spacebar/schemas";
+import { GifsResponse, GifTrendingCategory } from "@spacebar/schemas";
 
 export interface IGifProvider {
     id: string;
@@ -24,4 +24,6 @@ export interface IGifProvider {
 
     init(): Promise<void>;
     search(query: { q: string; limit?: number; media_format: string; locale: string }): Promise<GifsResponse>;
+    getTrendingCategories(query: { media_format: string; locale: string }): Promise<GifTrendingCategory[]>;
+    getTrendingGifs(query: { q: string; limit?: number; media_format: string; locale: string }): Promise<GifsResponse>;
 }

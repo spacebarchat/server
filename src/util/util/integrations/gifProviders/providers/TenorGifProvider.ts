@@ -17,7 +17,7 @@
 */
 
 import type { IGifProvider } from "../IGifProvider";
-import { TenorGif, GifsResponse } from "@spacebar/schemas";
+import { TenorGif, GifsResponse, TenorCategoriesResults, GifTrendingCategory } from "@spacebar/schemas";
 import { Config, getGifApiKey, parseGifResult } from "@spacebar/util";
 
 export default class TenorGifProvider implements IGifProvider {
@@ -37,6 +37,30 @@ export default class TenorGifProvider implements IGifProvider {
 
     async search(query: { q: string; limit?: number; media_format: string; locale: string }): Promise<GifsResponse> {
         const response = await fetch(`https://g.tenor.com/v1/search?q=${query.q}&media_format=${query.media_format}&locale=${query.locale}&key=${this.#apiKey}`, {
+            method: "get",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const { results } = (await response.json()) as { results: TenorGif[] };
+        return results.map(this.convertGifResult);
+    }
+
+    async getTrendingCategories(query: { media_format: string; locale: string }): Promise<GifTrendingCategory[]> {
+        const response = await fetch(`https://g.tenor.com/v1/categories?locale=${query.locale}&key=${this.#apiKey}`, {
+            method: "get",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const { tags } = (await response.json()) as TenorCategoriesResults;
+
+        return tags.map((x) => ({
+            name: x.searchterm,
+            src: x.image,
+        })) satisfies GifTrendingCategory[];
+    }
+
+    async getTrendingGifs(query: { media_format: string; locale: string }): Promise<GifsResponse> {
+        const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${query.media_format}&locale=${query.locale}&key=${this.#apiKey}`, {
             method: "get",
             headers: { "Content-Type": "application/json" },
         });

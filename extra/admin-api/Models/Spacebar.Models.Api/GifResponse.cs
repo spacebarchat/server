@@ -27,3 +27,19 @@ public class GifItem {
     [JsonPropertyName("height")]
     public int Height { get; set; }
 }
+
+public class TrendingGifsResult {
+    [JsonPropertyName("categories")]
+    public List<CategoryEntry> Categories { get; set; }
+    
+    [JsonPropertyName("gifs")]
+    public List<GifItem> Gifs { get; set; }
+
+    public class CategoryEntry {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        
+        [JsonPropertyName("src")]
+        public string Source { get; set; }
+    }
+}

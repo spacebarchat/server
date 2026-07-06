@@ -2824,40 +2824,10 @@
         "type": "object",
         "properties": {
             "categories": {
-                "type": "object",
-                "properties": {
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "searchterm": {
-                                    "type": "string"
-                                },
-                                "path": {
-                                    "type": "string"
-                                },
-                                "image": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "image",
-                                "name",
-                                "path",
-                                "searchterm"
-                            ]
-                        }
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "tags"
-                ]
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GifTrendingCategory"
+                }
             },
             "gifs": {
                 "type": "array",
@@ -14664,6 +14634,23 @@
                     "boolean"
                 ]
             }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GifTrendingCategory": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "src": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "src"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

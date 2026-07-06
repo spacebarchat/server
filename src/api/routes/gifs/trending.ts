@@ -19,7 +19,9 @@
 import { route } from "@spacebar/api/util/handlers/route";
 import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorCategoriesResults, TenorTrendingResults } from "@spacebar/schemas";
+import { TenorCategoriesResults, TenorTrendingResponse, TenorTrendingResults } from "@spacebar/schemas";
+import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
+import trendingGifs from "@spacebar/api/routes/gifs/trending-gifs";
 
 const router = Router({ mergeParams: true });
 
@@ -31,6 +33,10 @@ router.get(
                 type: "string",
                 description: "Locale",
             },
+            provider: {
+                type: "string",
+                description: "Provider to use",
+            },
         },
         responses: {
             200: {
@@ -39,34 +45,17 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        // TODO: Custom providers
-        // TODO: return gifs as mp4
-        // const { media_format, locale } = req.query;
-        const { locale } = req.query;
+        const provider = GifProviderManager.getProvider((req.query.provider as string) ?? "tenor");
 
-        const apiKey = getGifApiKey();
-
-        const [responseSource, trendGifSource] = await Promise.all([
-            fetch(`https://g.tenor.com/v1/categories?locale=${locale}&key=${apiKey}`, {
-                method: "get",
-                headers: { "Content-Type": "application/json" },
-            }),
-            fetch(`https://g.tenor.com/v1/trending?locale=${locale}&key=${apiKey}`, {
-                method: "get",
-                headers: { "Content-Type": "application/json" },
-            }),
+        const [trendingCategories, trendingGifs] = await Promise.all([
+            provider.getTrendingCategories(req.query as typeof provider.getTrendingCategories.arguments),
+            provider.getTrendingGifs(req.query as typeof provider.getTrendingCategories.arguments),
         ]);
 
-        const { tags } = (await responseSource.json()) as TenorCategoriesResults;
-        const { results } = (await trendGifSource.json()) as TenorTrendingResults;
-
         res.json({
-            categories: tags.map((x) => ({
-                name: x.searchterm,
-                src: x.image,
-            })),
-            gifs: [parseGifResult(results[0])],
-        }).status(200);
+            categories: trendingCategories,
+            gifs: trendingGifs,
+        } satisfies TenorTrendingResponse).status(200);
     },
 );
 
