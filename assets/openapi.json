@@ -2606,72 +2606,6 @@
                     "$ref": "#/components/schemas/Team"
                 }
             },
-            "GifResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "src": {
-                        "type": "string"
-                    },
-                    "gif_src": {
-                        "type": "string"
-                    },
-                    "width": {
-                        "type": "integer"
-                    },
-                    "height": {
-                        "type": "integer"
-                    },
-                    "preview": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "gif_src",
-                    "height",
-                    "id",
-                    "preview",
-                    "src",
-                    "title",
-                    "url",
-                    "width"
-                ]
-            },
-            "TrendingGifsResponse": {
-                "type": "object",
-                "properties": {
-                    "categories": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/GifTrendingCategory"
-                        }
-                    },
-                    "gifs": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/GifResponse"
-                        }
-                    }
-                },
-                "required": [
-                    "categories",
-                    "gifs"
-                ]
-            },
-            "GifsResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/GifResponse"
-                }
-            },
             "TokenResponse": {
                 "type": "object",
                 "properties": {
@@ -3771,6 +3705,72 @@
                     "tags",
                     "type"
                 ]
+            },
+            "GifResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "src": {
+                        "type": "string"
+                    },
+                    "gif_src": {
+                        "type": "string"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "preview": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "gif_src",
+                    "height",
+                    "id",
+                    "preview",
+                    "src",
+                    "title",
+                    "url",
+                    "width"
+                ]
+            },
+            "TrendingGifsResponse": {
+                "type": "object",
+                "properties": {
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GifTrendingCategory"
+                        }
+                    },
+                    "gifs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GifResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "categories",
+                    "gifs"
+                ]
+            },
+            "GifsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/GifResponse"
+                }
             },
             "CreateReportSchema": {
                 "type": "object",
@@ -13700,21 +13700,6 @@
                     }
                 ]
             },
-            "GifTrendingCategory": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "src": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "name",
-                    "src"
-                ]
-            },
             "BackupCode": {
                 "type": "object",
                 "properties": {
@@ -14198,6 +14183,21 @@
                         "nullable": true
                     }
                 }
+            },
+            "GifTrendingCategory": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "src": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "src"
+                ]
             },
             "DmChannelDTO": {
                 "type": "object",
@@ -23593,7 +23593,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TenorGifsResponse"
+                                    "$ref": "#/components/schemas/GifsResponse"
                                 }
                             }
                         }
@@ -23615,6 +23615,22 @@
                             "type": "string"
                         },
                         "description": "Locale"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Maximum number of GIFs to return"
+                    },
+                    {
+                        "name": "provider",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Provider to use"
                     }
                 ],
                 "tags": [

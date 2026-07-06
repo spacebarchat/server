@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
 import { GifMediaTypes } from "@spacebar/schemas";
-import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
+import { GifProviderManager } from "@spacebar/integrations/gifs";
 
 const router = Router({ mergeParams: true });
 
@@ -53,11 +53,8 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { provider } = req.query;
-
-        const impl = GifProviderManager.getProvider((provider as string) ?? "tenor");
+        const impl = GifProviderManager.getProvider((req.query.provider as string) ?? "tenor");
         const result = await impl.search(req.query as typeof impl.search.arguments);
-
         res.json(result).status(200);
     },
 );

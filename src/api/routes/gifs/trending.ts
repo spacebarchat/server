@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -17,11 +17,9 @@
 */
 
 import { route } from "@spacebar/api/util/handlers/route";
-import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorCategoriesResults, TrendingGifsResponse, TenorTrendingResults } from "@spacebar/schemas";
-import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
-import trendingGifs from "@spacebar/api/routes/gifs/trending-gifs";
+import { TrendingGifsResponse } from "@spacebar/schemas";
+import { GifProviderManager } from "@spacebar/integrations/gifs";
 
 const router = Router({ mergeParams: true });
 

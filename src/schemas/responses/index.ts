@@ -54,7 +54,6 @@ export * from "./PreloadMessagesResponseSchema";
 export * from "./RefreshUrlsResponse";
 export * from "./SettingsProtoUpdateResponse";
 export * from "./TeamListResponse";
-export * from "./Tenor";
 export * from "./TokenResponse";
 export * from "./TypedResponses";
 export * from "./UpdatesResponse";

@@ -2779,77 +2779,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "GifResponse": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "title": {
-                "type": "string"
-            },
-            "url": {
-                "type": "string"
-            },
-            "src": {
-                "type": "string"
-            },
-            "gif_src": {
-                "type": "string"
-            },
-            "width": {
-                "type": "integer"
-            },
-            "height": {
-                "type": "integer"
-            },
-            "preview": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "gif_src",
-            "height",
-            "id",
-            "preview",
-            "src",
-            "title",
-            "url",
-            "width"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "TrendingGifsResponse": {
-        "type": "object",
-        "properties": {
-            "categories": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/GifTrendingCategory"
-                }
-            },
-            "gifs": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/GifResponse"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "categories",
-            "gifs"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GifsResponse": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/GifResponse"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "TokenResponse": {
         "type": "object",
         "properties": {
@@ -4009,6 +3938,77 @@
             "tags",
             "type"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GifResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "url": {
+                "type": "string"
+            },
+            "src": {
+                "type": "string"
+            },
+            "gif_src": {
+                "type": "string"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "preview": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "gif_src",
+            "height",
+            "id",
+            "preview",
+            "src",
+            "title",
+            "url",
+            "width"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "TrendingGifsResponse": {
+        "type": "object",
+        "properties": {
+            "categories": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GifTrendingCategory"
+                }
+            },
+            "gifs": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GifResponse"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "categories",
+            "gifs"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GifsResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/GifResponse"
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "CreateReportSchema": {
@@ -14637,23 +14637,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "GifTrendingCategory": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string"
-            },
-            "src": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "name",
-            "src"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "BackupCode": {
         "type": "object",
         "properties": {
@@ -15186,6 +15169,23 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GifTrendingCategory": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "src": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "src"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "DmChannelDTO": {
