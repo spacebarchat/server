@@ -19,7 +19,7 @@
 import { route } from "@spacebar/api/util/handlers/route";
 import { getGifApiKey, parseGifResult } from "@spacebar/util";
 import { Request, Response, Router } from "express";
-import { TenorCategoriesResults, TenorTrendingResponse, TenorTrendingResults } from "@spacebar/schemas";
+import { TenorCategoriesResults, TrendingGifsResponse, TenorTrendingResults } from "@spacebar/schemas";
 import { GifProviderManager } from "@spacebar/util/util/integrations/gifProviders/GifProviderManager";
 import trendingGifs from "@spacebar/api/routes/gifs/trending-gifs";
 
@@ -40,7 +40,7 @@ router.get(
         },
         responses: {
             200: {
-                body: "TenorTrendingResponse",
+                body: "TrendingGifsResponse",
             },
         },
     }),
@@ -55,7 +55,7 @@ router.get(
         res.json({
             categories: trendingCategories,
             gifs: trendingGifs,
-        } satisfies TenorTrendingResponse).status(200);
+        } satisfies TrendingGifsResponse).status(200);
     },
 );
 

@@ -87,7 +87,7 @@ export interface GifTrendingCategory {
     src: string;
 }
 
-export interface TenorTrendingResponse {
+export interface TrendingGifsResponse {
     categories: GifTrendingCategory[];
     gifs: GifResponse[];
 }

@@ -2645,7 +2645,7 @@
                     "width"
                 ]
             },
-            "TenorTrendingResponse": {
+            "TrendingGifsResponse": {
                 "type": "object",
                 "properties": {
                     "categories": {
@@ -23551,7 +23551,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TenorTrendingResponse"
+                                    "$ref": "#/components/schemas/TrendingGifsResponse"
                                 }
                             }
                         }
