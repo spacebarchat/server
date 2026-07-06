@@ -28,10 +28,13 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
         Client = await _userAbstraction.GetSharedUser();
     }
 
+    // wish this could just be a single string.... MEmberData requires  returning an array spanning the argument count...
+    public static IEnumerable<string[]> GifProviders() => [["tenor"]];
+
     public static IEnumerable<object[]> GifSearchTestMatrix() {
         foreach (var query in (string[])["meow", "meowmeow"])
-            foreach (var provider in (string[])["tenor"])
-                yield return [query, provider];
+            foreach (var provider in GifProviders())
+                yield return [query, provider[0]];
     }
 
     [Theory, MemberData(nameof(GifSearchTestMatrix))]
@@ -41,6 +44,30 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
 
         Assert.True(respContent!.Count > 0, "respContent.Count > 0");
         Assert.All(respContent, gif => {
+            Assert.StringNotNullOrWhitespace(gif.Id);
+            Assert.StringNotNullOrWhitespace(gif.GifSource);
+            Assert.StringNotNullOrWhitespace(gif.Preview);
+            Assert.StringNotNullOrWhitespace(gif.Source);
+            Assert.StringNotNullOrWhitespace(gif.Url);
+            Assert.NotEqual(0, gif.Width);
+            Assert.NotEqual(0, gif.Height);
+        });
+    }
+
+    [Theory, MemberData(nameof(GifProviders))]
+    public async Task GetTrendingCategories(string provider) {
+        var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending?provider={provider}", TestContext.Current.CancellationToken));
+        var respContent = await resp.Content.ReadFromJsonAsync<TrendingGifsResult>(cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.True(respContent!.Categories.Count > 0, "respContent.Categories.Count > 0");
+        Assert.True(respContent.Gifs.Count > 0, "respContent.Gifs.Count > 0");
+
+        Assert.All(respContent.Categories, cat => {
+            Assert.StringNotNullOrWhitespace(cat.Name);
+            Assert.StringNotNullOrWhitespace(cat.Source);
+        });
+
+        Assert.All(respContent.Gifs, gif => {
             Assert.StringNotNullOrWhitespace(gif.Id);
             Assert.StringNotNullOrWhitespace(gif.GifSource);
             Assert.StringNotNullOrWhitespace(gif.Preview);

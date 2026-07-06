@@ -82,8 +82,13 @@ export interface GifResponse {
     preview: string;
 }
 
+export interface GifTrendingCategory {
+    name: string;
+    src: string;
+}
+
 export interface TenorTrendingResponse {
-    categories: TenorCategoriesResults;
+    categories: GifTrendingCategory[];
     gifs: GifResponse[];
 }
 

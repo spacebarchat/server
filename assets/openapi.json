@@ -2649,40 +2649,10 @@
                 "type": "object",
                 "properties": {
                     "categories": {
-                        "type": "object",
-                        "properties": {
-                            "tags": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "searchterm": {
-                                            "type": "string"
-                                        },
-                                        "path": {
-                                            "type": "string"
-                                        },
-                                        "image": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "image",
-                                        "name",
-                                        "path",
-                                        "searchterm"
-                                    ]
-                                }
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "tags"
-                        ]
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GifTrendingCategory"
+                        }
                     },
                     "gifs": {
                         "type": "array",
@@ -13730,6 +13700,21 @@
                     }
                 ]
             },
+            "GifTrendingCategory": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "src": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "src"
+                ]
+            },
             "BackupCode": {
                 "type": "object",
                 "properties": {
@@ -23580,6 +23565,14 @@
                             "type": "string"
                         },
                         "description": "Locale"
+                    },
+                    {
+                        "name": "provider",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Provider to use"
                     }
                 ],
                 "tags": [
