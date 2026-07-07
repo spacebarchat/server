@@ -63,7 +63,7 @@ export default class KlipyGifProvider implements IGifProvider {
         });
 
         if (!response.ok) console.log(response, await response.text());
-        const responseData = (await response.json()) as KlipyTrendingResponse;
+        const responseData = (await response.json()) as KlipyGifsResponse;
         return responseData.data.data.map(this.convertGifResult);
     }
 
@@ -98,7 +98,7 @@ export default class KlipyGifProvider implements IGifProvider {
             });
 
             if (!response.ok) console.log(response, await response.text());
-            const responseData = (await response.json()) as KlipyTrendingResponse;
+            const responseData = (await response.json()) as KlipyGifsResponse;
             return responseData.data.data.map(this.convertGifResult);
         });
     }
@@ -130,7 +130,7 @@ interface KlipyCategory {
     preview_url: string;
 }
 
-interface KlipyTrendingResponse {
+interface KlipyGifsResponse {
     result: boolean;
     data: { current_page: number; per_page: number; has_next: boolean; data: KlipyMediaItem[] };
 }
