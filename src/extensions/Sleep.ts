@@ -16,15 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export * from "./Array";
-export * from "./Base64";
-export * from "./DateBuilder";
-export * from "./ElapsedTime";
-export * from "./Math";
-export * from "./Random";
-export * from "./SingletonCache";
-export * from "./Sleep";
-export * from "./Stopwatch";
-export * from "./String";
-export * from "./Timespan";
-export * from "./Url";
+export async function sleep(ms: number) {
+    return new Promise((resolve) => void setTimeout(resolve, ms));
+}

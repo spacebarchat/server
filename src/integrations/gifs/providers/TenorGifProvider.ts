@@ -19,12 +19,18 @@
 import type { IGifProvider } from "../IGifProvider";
 import { GifsResponse, GifTrendingCategory, GifMediaTypes } from "@spacebar/schemas";
 import { Config } from "@spacebar/util";
+import { SingletonCache, TimeSpan } from "@spacebar/extensions";
+
+const TRENDING_CATEGORIES_CACHE_DURATION = TimeSpan.fromSeconds(24 * 60 * 60); // 1 day
+const TRENDING_GIFS_CACHE_DURATION = TimeSpan.fromSeconds(60 * 60); // 1 hour
 
 // Tenor V1 API... Not yet shut down as of writing, but is going soon...
 export default class TenorGifProvider implements IGifProvider {
     id = "tenor";
     available = true;
     #apiKey: string;
+    #trendingCategoryCache = new SingletonCache<GifTrendingCategory[]>(TRENDING_CATEGORIES_CACHE_DURATION);
+    #trendingGifsCache = new SingletonCache<GifsResponse>(TRENDING_GIFS_CACHE_DURATION);
 
     async init(): Promise<void> {
         if (!(Config.get().gif.enabled && Config.get().gif.apiKey)) {
@@ -47,26 +53,31 @@ export default class TenorGifProvider implements IGifProvider {
     }
 
     async getTrendingCategories(query: { media_format: string; locale: string }): Promise<GifTrendingCategory[]> {
-        const response = await fetch(`https://g.tenor.com/v1/categories?locale=${query.locale}&key=${this.#apiKey}`, {
-            method: "get",
-            headers: { "Content-Type": "application/json" },
-        });
+        return await this.#trendingCategoryCache.getOrUpdate(async () => {
+            const response = await fetch(`https://g.tenor.com/v1/categories?locale=${query.locale}&key=${this.#apiKey}`, {
+                method: "get",
+                headers: { "Content-Type": "application/json" },
+            });
 
-        const responseData = (await response.json()) as TenorCategoriesResults;
-        return responseData.tags.map((x) => ({
-            name: x.searchterm,
-            src: x.image,
-        })) satisfies GifTrendingCategory[];
+            const responseData = (await response.json()) as TenorCategoriesResults;
+            return responseData.tags.map((x) => ({
+                name: x.searchterm,
+                src: x.image,
+            })) satisfies GifTrendingCategory[];
+        });
     }
 
     async getTrendingGifs(query: { media_format: string; locale: string }): Promise<GifsResponse> {
-        const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${query.media_format}&locale=${query.locale}&key=${this.#apiKey}`, {
-            method: "get",
-            headers: { "Content-Type": "application/json" },
-        });
+        return await this.#trendingGifsCache.getOrUpdate(async () => {
+            const response = await fetch(`https://g.tenor.com/v1/trending?media_format=${query.media_format}&locale=${query.locale}&key=${this.#apiKey}`, {
+                method: "get",
+                headers: { "Content-Type": "application/json" },
+            });
 
-        const responseData = (await response.json()) as TenorTrendingResults;
-        return responseData.results.map(this.convertGifResult);
+            console.log(response);
+            const responseData = (await response.json()) as TenorTrendingResults;
+            return responseData.results.map(this.convertGifResult);
+        });
     }
 
     private convertGifResult(result: TenorGif) {
