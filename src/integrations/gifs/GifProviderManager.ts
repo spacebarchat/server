@@ -48,4 +48,15 @@ export class GifProviderManager {
 
         throw new Error(`Unknown GIF provider, or it is not enabled: ${id}, known GIF providers: ${this._providers.keys().toArray().join(", ")}`);
     }
+
+    public static getProviders() {
+        const providers: { [key: string]: { available: boolean } } = {};
+        for (const [id, provider] of this._providers) {
+            providers[id] = {
+                available: provider.available,
+            };
+        }
+
+        return providers;
+    }
 }

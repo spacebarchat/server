@@ -191,6 +191,10 @@ export class SpacebarServer extends Server {
             });
         });
 
+        app.get("/_spacebar/api/v1/integrations/gif", (req, res) => {
+            res.json({ providers: GifProviderManager.getProviders() });
+        });
+
         // Pickup non-expired polls
         const nonExpiredPolls = await Message.createQueryBuilder("message").where("message.poll->>'expiry' > :now", { now: new Date().toISOString() }).getMany();
 
