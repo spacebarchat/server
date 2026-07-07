@@ -53,7 +53,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const impl = GifProviderManager.getProvider((req.query.provider as string) ?? "tenor");
+        const impl = GifProviderManager.getProvider((req.query.provider as string) ?? "klipy");
         const result = await impl.search(req.query as typeof impl.search.arguments);
         res.json(result).status(200);
     },
