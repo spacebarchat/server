@@ -43,7 +43,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const provider = GifProviderManager.getProvider((req.query.provider as string) ?? "tenor");
+        const provider = GifProviderManager.getProvider((req.query.provider as string) ?? "klipy");
 
         const [trendingCategories, trendingGifs] = await Promise.all([
             provider.getTrendingCategories(req.query as typeof provider.getTrendingCategories.arguments),
