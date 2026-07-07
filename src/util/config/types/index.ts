@@ -25,6 +25,7 @@ export * from "./ExternalTokensConfiguration";
 export * from "./GeneralConfiguration";
 export * from "./GifConfiguration";
 export * from "./GuildConfiguration";
+export * from "./IntegrationConfiguration";
 export * from "./LimitConfigurations";
 export * from "./OffloadConfiguration";
 export * from "./LoginConfiguration";

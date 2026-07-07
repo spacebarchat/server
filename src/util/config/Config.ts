@@ -28,6 +28,7 @@ import {
     GeneralConfiguration,
     GifConfiguration,
     GuildConfiguration,
+    IntegrationConfiguration,
     LimitsConfiguration,
     LoginConfiguration,
     OffloadConfiguration,
@@ -63,4 +64,5 @@ export class ConfigValue {
     offload: OffloadConfiguration = new OffloadConfiguration();
     components = new ComponentConfiguration();
     embeds = new EmbedConfiguration();
+    integrations = new IntegrationConfiguration();
 }
