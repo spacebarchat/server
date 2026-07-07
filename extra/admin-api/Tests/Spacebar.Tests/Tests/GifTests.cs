@@ -29,7 +29,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
     }
 
     // wish this could just be a single string.... MEmberData requires  returning an array spanning the argument count...
-    public static IEnumerable<string[]> GifProviders() => [["tenor"]];
+    public static IEnumerable<string[]> GifProviders() => [["klipy"]];
 
     public static IEnumerable<object[]> GifSearchTestMatrix() {
         foreach (var query in (string[])["meow", "meowmeow"])
@@ -42,6 +42,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/search?q={query}&provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<List<GifItem>>(cancellationToken: TestContext.Current.CancellationToken);
 
+        _testOutputHelper.WriteLine($"Got {respContent!.Count} results");
         Assert.True(respContent!.Count > 0, "respContent.Count > 0");
         Assert.All(respContent, gif => {
             Assert.StringNotNullOrWhitespace(gif.Id);
@@ -59,7 +60,8 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending?provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<TrendingGifsResult>(cancellationToken: TestContext.Current.CancellationToken);
 
-        Assert.True(respContent!.Categories.Count > 0, "respContent.Categories.Count > 0");
+        _testOutputHelper.WriteLine($"Got {respContent!.Categories.Count} categories and {respContent.Gifs.Count} gifs");
+        Assert.True(respContent.Categories.Count > 0, "respContent.Categories.Count > 0");
         Assert.True(respContent.Gifs.Count > 0, "respContent.Gifs.Count > 0");
 
         Assert.All(respContent.Categories, cat => {
@@ -83,6 +85,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending-gifs?provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<List<GifItem>>(cancellationToken: TestContext.Current.CancellationToken);
 
+        _testOutputHelper.WriteLine($"Got {respContent!.Count} results");
         Assert.True(respContent!.Count > 0, "respContent.Count > 0");
         Assert.All(respContent, gif => {
             Assert.StringNotNullOrWhitespace(gif.Id);
