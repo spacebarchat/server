@@ -47,7 +47,7 @@ router.get(
 
         const [trendingCategories, trendingGifs] = await Promise.all([
             provider.getTrendingCategories(req.query as typeof provider.getTrendingCategories.arguments),
-            provider.getTrendingGifs(req.query as typeof provider.getTrendingCategories.arguments),
+            provider.getTrendingGifs(req.query as typeof provider.getTrendingGifs.arguments),
         ]);
 
         res.json({
