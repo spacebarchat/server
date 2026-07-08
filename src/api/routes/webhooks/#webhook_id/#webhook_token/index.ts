@@ -24,7 +24,6 @@ import { Webhook, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, WebhooksUpdateEvent } from "@spacebar/util";
 import { executeWebhook } from "@spacebar/api/util/handlers/Webhook";
 import { WebhookUpdateSchema } from "@spacebar/schemas";
-import { FindOptionsWhere } from "typeorm";
 
 const router = Router({ mergeParams: true });
 
@@ -40,7 +39,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id, token } = req.params as { [key: string]: string };
+        const { webhook_id, webhook_token } = req.params as { [key: string]: string };
         const webhook = await Webhook.findOne({
             where: {
                 id: webhook_id,
@@ -52,7 +51,7 @@ router.get(
             throw DiscordApiErrors.UNKNOWN_WEBHOOK;
         }
 
-        if (webhook.token !== token) {
+        if (webhook.token !== webhook_token) {
             throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
         }
 
@@ -123,7 +122,7 @@ router.delete(
         },
     }),
     async (req: Request, res: Response) => {
-        const { webhook_id, token } = req.params as { [key: string]: string };
+        const { webhook_id, webhook_token } = req.params as { [key: string]: string };
 
         const webhook = await Webhook.findOne({
             where: {
@@ -132,13 +131,9 @@ router.delete(
             relations: { channel: true, guild: true, application: true },
         });
 
-        if (!webhook) {
-            throw DiscordApiErrors.UNKNOWN_WEBHOOK;
-        }
+        if (!webhook) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+        if (webhook.token !== webhook_token) throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 
-        if (webhook.token !== token) {
-            throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
-        }
         const channel_id = webhook.channel_id;
         await Message.delete({ channel_id, webhook_id });
         await Webhook.delete({ id: webhook_id });
@@ -172,14 +167,17 @@ router.patch(
         },
     }),
     async (req: Request, res: Response) => {
-        // noinspection JSUnusedLocalSymbols - TODO: shouldnt token be checked?
-        const { webhook_id, token } = req.params as { [key: string]: string };
+        const { webhook_id, webhook_token } = req.params as { [key: string]: string };
         const body = req.body as WebhookUpdateSchema;
 
-        const webhook = await Webhook.findOneOrFail({
+        const webhook = await Webhook.findOne({
             where: { id: webhook_id },
             relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
         });
+
+        if (!webhook) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+        if (webhook.token != webhook_token) throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
+
         const channel_id = webhook.channel_id;
         if (!body.name && !body.avatar) {
             throw new HTTPError("Empty webhook updates are not allowed", 50006);
