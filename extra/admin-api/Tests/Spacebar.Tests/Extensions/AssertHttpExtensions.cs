@@ -28,6 +28,13 @@ public static class AssertHttpExtensions {
             return res;
         }
 
+        public static async Task<HttpResponseMessage> SuccessfullyHttpDeleteAsync(string url) {
+            var res = await Hc.DeleteAsync(url);
+            if (!res.IsSuccessStatusCode)
+                Assert.True(res.IsSuccessStatusCode, $"Could not DELETE {url}: {(int)res.StatusCode} {res.StatusCode}\n{await GetFormattedErrorDetails(res)}");
+            return res;
+        }
+
         public static async Task<HttpResponseMessage> HttpSuccess(HttpResponseMessage res) {
             if (!res.IsSuccessStatusCode)
                 Assert.True(res.IsSuccessStatusCode,
