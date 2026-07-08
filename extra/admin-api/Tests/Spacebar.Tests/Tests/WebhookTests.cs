@@ -193,6 +193,6 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         if (tts != null) payload.Add("tts", tts);
         if (flags != null) payload.Add("flags", flags);
 
-        await Assert.SuccessfullyHttpPostAsJsonAsync(Webhook.Url + "?wait=true", payload);
+        await Assert.SuccessfullyHttpPatchAsJsonAsync(Webhook.Url + "/messages/" + WebhookMessage!.Id + "?wait=true", payload);
     }
 }
