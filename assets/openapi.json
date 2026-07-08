@@ -7001,31 +7001,7 @@
                         }
                     },
                     "allowed_mentions": {
-                        "type": "object",
-                        "properties": {
-                            "parse": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "roles": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "users": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "replied_user": {
-                                "type": "boolean"
-                            }
-                        },
-                        "additionalProperties": false
+                        "$ref": "#/components/schemas/AllowedMentions"
                     },
                     "components": {
                         "type": "array",
@@ -14993,86 +14969,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/MessageEditSchema"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/APIErrorResponse"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "No description available"
-                    },
-                    "404": {
-                        "description": "No description available"
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "webhook_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "webhook_id"
-                    },
-                    {
-                        "name": "webhook_token",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "webhook_token"
-                    },
-                    {
-                        "name": "message_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "message_id"
-                    }
-                ],
-                "tags": [
-                    "webhooks"
-                ]
-            },
-            "put": {
-                "x-right-required": "SEND_BACKDATED_EVENTS",
-                "x-permission-required": "SEND_MESSAGES",
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/MessageCreateSchema"
+                                "$ref": "#/components/schemas/WebhookExecuteSchema"
                             }
                         }
                     }

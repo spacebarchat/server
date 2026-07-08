@@ -20,21 +20,9 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
-import { Attachment, Channel, Message, Webhook } from "@spacebar/database";
-import {
-    MessageCreateEvent,
-    MessageDeleteEvent,
-    MessageUpdateEvent,
-    Snowflake,
-    SpacebarApiErrors,
-    emitEvent,
-    getPermission,
-    getRights,
-    uploadFile,
-    NewUrlUserSignatureData,
-    DiscordApiErrors,
-} from "@spacebar/util";
-import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
+import { Channel, Message, Webhook } from "@spacebar/database";
+import { MessageDeleteEvent, MessageUpdateEvent, emitEvent, DiscordApiErrors } from "@spacebar/util";
+import { ChannelType, WebhookExecuteSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
@@ -63,7 +51,7 @@ const messageUpload = multer({
 router.patch(
     "/",
     route({
-        requestBody: "MessageEditSchema",
+        requestBody: "WebhookExecuteSchema",
         responses: {
             200: {
                 body: "Message",
@@ -77,7 +65,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token, message_id } = req.params as { [key: string]: string };
-        const body = req.body as MessageEditSchema;
+        const body = req.body as WebhookExecuteSchema;
 
         await assertValidWebhookAuth(webhook_id, webhook_token, message_id);
 
@@ -91,7 +79,8 @@ router.patch(
             // TODO: should message_reference be overridable?
             message_reference: message.message_reference,
             ...body,
-            author_id: message.author_id,
+            // author_id: message.author_id,
+            author_id: undefined, // skip rights check
             webhook_id: message.webhook_id,
             channel_id: message.channel_id,
             id: message_id,

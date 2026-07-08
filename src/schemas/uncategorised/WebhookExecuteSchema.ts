@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Embed } from "@spacebar/schemas";
+import { AllowedMentions, Embed } from "@spacebar/schemas";
 import { MessageCreateAttachment, PollCreationSchema } from "./MessageCreateSchema";
 
 export interface WebhookExecuteSchema {
@@ -25,12 +25,7 @@ export interface WebhookExecuteSchema {
     avatar_url?: string;
     tts?: boolean;
     embeds?: Embed[];
-    allowed_mentions?: {
-        parse?: string[];
-        roles?: string[];
-        users?: string[];
-        replied_user?: boolean;
-    };
+    allowed_mentions?: AllowedMentions;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     components?: any[];
     file?: { filename: string };
