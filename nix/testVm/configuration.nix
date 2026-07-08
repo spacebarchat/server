@@ -59,11 +59,11 @@ in
         };
 
         offload = {
-          enable = false;
+          enable = true;
           gateway = {
-            enableIdentify = true;
-            enableGuildMembers = true;
-            enableGuildSync = true;
+            enableIdentify = false;
+            enableGuildMembers = false;
+            enableGuildSync = false;
             enableLazyRequest = true;
             enableChannelStatuses = true;
             enableChannelInfo = true;
@@ -77,7 +77,7 @@ in
         };
 
         cdnCs = {
-          enable = true;
+          enable = false;
           extraConfiguration.ConnectionStrings.Spacebar = csConnectionString;
         };
 
