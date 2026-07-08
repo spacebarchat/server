@@ -66,6 +66,11 @@
       default = null;
       description = "Path to the secret";
     };
+    klipyApiKeyPath = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Path to the secret";
+    };
   };
 
   systemdLoadCredentials =
@@ -81,7 +86,8 @@
     ++ (if cfg.captchaSecretKeyPath != null then [ "captchaSecretKey:${cfg.captchaSecretKeyPath}" ] else [ ])
     ++ (if cfg.captchaSiteKeyPath != null then [ "captchaSiteKey:${cfg.captchaSiteKeyPath}" ] else [ ])
     ++ (if cfg.ipdataApiKeyPath != null then [ "ipdataApiKey:${cfg.ipdataApiKeyPath}" ] else [ ])
-    ++ (if cfg.requestSignaturePath != null then [ "requestSignature:${cfg.requestSignaturePath}" ] else [ ]);
+    ++ (if cfg.requestSignaturePath != null then [ "requestSignature:${cfg.requestSignaturePath}" ] else [ ])
+    ++ (if cfg.klipyApiKeyPath != null then [ "klipyApiKey:${cfg.klipyApiKeyPath}" ] else [ ]);
 
   systemdEnvironment =
     { }
@@ -96,5 +102,6 @@
     // (if cfg.captchaSecretKeyPath != null then { CAPTCHA_SECRET_KEY_PATH = "%d/captchaSecretKey"; } else { })
     // (if cfg.captchaSiteKeyPath != null then { CAPTCHA_SITE_KEY_PATH = "%d/captchaSiteKey"; } else { })
     // (if cfg.ipdataApiKeyPath != null then { IPDATA_API_KEY_PATH = "%d/ipdataApiKey"; } else { })
-    // (if cfg.requestSignaturePath != null then { REQUEST_SIGNATURE_PATH = "%d/requestSignature"; } else { });
+    // (if cfg.requestSignaturePath != null then { REQUEST_SIGNATURE_PATH = "%d/requestSignature"; } else { })
+    // (if cfg.klipyApiKeyPath != null then { KLIPY_API_KEY_PATH = "%d/klipyApiKey"; } else { });
 }
