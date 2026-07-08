@@ -7461,31 +7461,7 @@
                 }
             },
             "allowed_mentions": {
-                "type": "object",
-                "properties": {
-                    "parse": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "users": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "replied_user": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false
+                "$ref": "#/definitions/AllowedMentions"
             },
             "components": {
                 "type": "array",
