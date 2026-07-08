@@ -82,6 +82,11 @@ let
       # set +x
       runHook postInstall
     '';
+
+    doCheck = true;
+    checkPhase = ''
+      node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js
+    '';
   };
 in
 pkgs.stdenv.mkDerivation {
@@ -119,7 +124,6 @@ pkgs.stdenv.mkDerivation {
     done
     makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/apply-migrations --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/dist/apply-migrations.js
   '';
-
   passthru.tests = pkgs.runCommand "spacebar-server-ts-all-tests" rec {
     bundleStarts = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix { inherit self; });
     bundleStartsRabbitMqSingle = pkgs.testers.runNixOSTest (
