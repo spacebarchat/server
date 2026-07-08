@@ -10,11 +10,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+        <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8"/>
 
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-        <PackageReference Include="Xunit.Microsoft.DependencyInjection" Version="10.0.4" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+        <PackageReference Include="Xunit.Microsoft.DependencyInjection" Version="10.0.4"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -23,17 +23,24 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="xunit.v3" Version="3.2.2" />
+        <PackageReference Include="xunit.v3" Version="3.2.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" />
-      <ProjectReference Include="..\..\Models\Spacebar.Models.Api\Spacebar.Models.Api.csproj" />
-      <ProjectReference Include="..\..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" />
-      <ProjectReference Include="..\..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" />
-      <ProjectReference Include="..\..\Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj" />
-      <ProjectReference Include="..\..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj" />
-      <ProjectReference Include="..\..\Utilities\Spacebar.Sdk\Spacebar.Sdk.csproj" />
+        <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj"/>
+        <PackageReference Include="Spacebar.Models.AdminApi" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Api\Spacebar.Models.Api.csproj"/>
+        <PackageReference Include="Spacebar.Models.Api" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj"/>
+        <PackageReference Include="Spacebar.Models.Config" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj"/>
+        <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj"/>
+        <PackageReference Include="Spacebar.Models.Gateway" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj"/>
+        <PackageReference Include="Spacebar.Models.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+        <ProjectReference Include="..\..\Utilities\Spacebar.Sdk\Spacebar.Sdk.csproj"/>
+        <PackageReference Include="Spacebar.Sdk" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
     <ItemGroup>

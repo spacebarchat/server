@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Db\Spacebar.Models.Db.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
-        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
         <PackageReference Include="Spacebar.Models.Db" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
@@ -17,6 +16,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.8" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     </ItemGroup>
 
 </Project>

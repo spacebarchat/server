@@ -135,6 +135,37 @@ nixpkgs.lib.recursiveUpdate (
             proj.Spacebar-Interop-Cdn-Abstractions
           ];
         };
+        Spacebar-Sdk = buildSpacebarDotnetModule {
+          name = "Spacebar.Sdk";
+          projectFile = "Spacebar.Sdk.csproj";
+          srcRoot = Utilities/Spacebar.Sdk;
+          nugetDeps = Utilities/Spacebar.Sdk/deps.json;
+          packNupkg = true;
+          projectReferences = [
+            proj.Spacebar-Models-AdminApi
+            proj.Spacebar-Models-Api
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
+          ];
+        };
+
+        # Tests
+        Spacebar-Tests = buildSpacebarDotnetModule {
+          name = "Spacebar.Tests";
+          nugetDeps = Tests/Spacebar.Tests/deps.json;
+          projectFile = "Spacebar.Tests.csproj";
+          srcRoot = ./Tests/Spacebar.Tests;
+          packNupkg = false;
+          projectReferences = [
+            proj.Spacebar-Models-AdminApi
+            proj.Spacebar-Models-Api
+            proj.Spacebar-Models-Config
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-Gateway
+            proj.Spacebar-Models-Generic
+            proj.Spacebar-Sdk
+          ];
+        };
 
         # Main projects
         Spacebar-AdminApi = buildSpacebarDotnetModule {

@@ -1,0 +1,47 @@
+[
+  {
+    "pname": "ArcaneLibs",
+    "version": "1.0.1-preview.20260619-035441",
+    "hash": "sha256-jNEGd8Ccgkk4A8ZMaJO4QDExmsf9q7TeuhiNESos3Q4="
+  },
+  {
+    "pname": "Microsoft.Extensions.Configuration.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-pliaksEAQdxyPURUVSlXpfF3LzJB93zHaeEDsaF5QJE="
+  },
+  {
+    "pname": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-YzQpGAsrjLU18s016LmM7DMJKml0MzKl1bPPYJ/erEk="
+  },
+  {
+    "pname": "Microsoft.Extensions.Diagnostics.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-OoBCatkSA+QWbMfyFxeuEOIHb04ukPH32gNfCUsar2M="
+  },
+  {
+    "pname": "Microsoft.Extensions.FileProviders.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-slMiJSmykMXcy0pu/uvoCaOw7BiyBUZQWZ216ERhZok="
+  },
+  {
+    "pname": "Microsoft.Extensions.Hosting.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-wbVJw22JPxh8YXSeXCQdrbYE4ofPi0h6O8ZN/gyQ6CE="
+  },
+  {
+    "pname": "Microsoft.Extensions.Logging.Abstractions",
+    "version": "10.0.9",
+    "hash": "sha256-su2q/OZuG7nB3wnUTVcimy3oHSdetFh4hhmjI3f/ym8="
+  },
+  {
+    "pname": "Microsoft.Extensions.Options",
+    "version": "10.0.9",
+    "hash": "sha256-/fc1g1SDJI81nOZRS7W4LZIAC0ssmasqaWhgJK+9rRs="
+  },
+  {
+    "pname": "Microsoft.Extensions.Primitives",
+    "version": "10.0.9",
+    "hash": "sha256-WEPtmlEexm6QSFR4ITlBHuUD5/bqMfecOxFe5hkbAPU="
+  }
+]

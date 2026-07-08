@@ -8,9 +8,13 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj"/>
+        <PackageReference Include="Spacebar.Models.AdminApi" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Api\Spacebar.Models.Api.csproj"/>
+        <PackageReference Include="Spacebar.Models.Api" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Gateway\Spacebar.Models.Gateway.csproj"/>
+        <PackageReference Include="Spacebar.Models.Gateway" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
         <ProjectReference Include="..\..\Models\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj"/>
+        <PackageReference Include="Spacebar.Models.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
     </ItemGroup>
 
     <ItemGroup>
