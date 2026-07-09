@@ -17,10 +17,12 @@ in
   name = "test-bundle-starts" + lib.optionalString (withIpc != "unix") ("_ipc=" + withIpc);
   skipTypeCheck = true;
   skipLint = true;
-  globalTimeout = 120;
+  globalTimeout = 300; # 120
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
+
+    virtualisation.cores = 8;
 
     services.spacebarchat-server =
       let
@@ -34,6 +36,7 @@ in
             DATABASE = "postgres://postgres:postgres@127.0.0.1/spacebar";
             LOG_REQUESTS = "-"; # Log all requests
             LOG_VALIDATION_ERRORS = true;
+            LOG_API_ERRORS = true;
           };
           ipcMethod = withIpc;
 
@@ -75,22 +78,38 @@ in
 
   # https://nixos.org/manual/nixos/stable/index.html#sec-nixos-tests
   # https://nixos.org/manual/nixpkgs/unstable/#tester-runNixOSTest
-  testScript = ''
-    machine.wait_for_unit("spacebar-api")
-    machine.wait_for_unit("spacebar-cdn")
-    machine.wait_for_unit("spacebar-gateway")
-    # Wait for unit doesn't mean the service is actually ready to accept connections
-    machine.wait_for_open_port(80)
-    machine.wait_for_open_port(3001)
-    machine.wait_for_open_port(3002)
-    machine.wait_for_open_port(3003)
+  testScript =
+    let
+      testConfigPath = pkgs.writeText "Spacebar-Tests-appsettings.json" (
+        builtins.toJSON {
+          Configuration = {
+            TestInstance = "http://localhost:3001";
+            RegisterConcurrentCount = 150;
+          };
+        }
+      );
+    in
+    ''
+      machine.wait_for_unit("spacebar-api")
+      machine.wait_for_unit("spacebar-cdn")
+      machine.wait_for_unit("spacebar-gateway")
+      # Wait for unit doesn't mean the service is actually ready to accept connections
+      machine.wait_for_open_port(80)
+      machine.wait_for_open_port(3001)
+      machine.wait_for_open_port(3002)
+      machine.wait_for_open_port(3003)
 
-    # this should be working
-    machine.succeed("curl -f http://api.sb.localhost/.well-known/spacebar/client")
+      # this should be working
+      machine.succeed("curl -f http://api.sb.localhost/.well-known/spacebar/client")
 
-    # check if metrics endpoint works on all services
-    machine.succeed("curl -f http://api.sb.localhost/metrics")
-    machine.succeed("curl -f http://gateway.sb.localhost/metrics")
-    machine.succeed("curl -f http://cdn.sb.localhost/metrics")
-  '';
+      # check if metrics endpoint works on all services
+      machine.succeed("curl -f http://api.sb.localhost/metrics")
+      machine.succeed("curl -f http://gateway.sb.localhost/metrics")
+      machine.succeed("curl -f http://cdn.sb.localhost/metrics")
+
+      # run integration tests
+      machine.succeed("/usr/bin/env TEST_APPSETTINGS_PATH=${testConfigPath} ${
+        lib.getExe self.outputs.packages.${pkgs.stdenv.system}.Spacebar-Tests
+      } -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories")
+    '';
 }
