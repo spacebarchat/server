@@ -7,7 +7,7 @@ public class UserAbstraction(Config _config, SpacebarClientProviderService _clie
         var ua = await _clientProvider.GetUnauthenticatedClientAsync(_config.TestInstance);
         var tokenResponse = await ua.RegisterAsync(new() {
             Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
-            Username = Guid.NewGuid().ToString(),
+            Username = Guid.NewGuid().ToString()[..32],
             Password = Guid.NewGuid().ToString(),
             DateOfBirth = new(),
             Consent = true

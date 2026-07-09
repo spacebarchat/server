@@ -20,7 +20,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
     public async Task RegisterUser() {
         var res = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", new RegisterRequest() {
             Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
-            Username = Guid.NewGuid().ToString(),
+            Username = Guid.NewGuid().ToString()[..32],
             Password = Guid.NewGuid().ToString(),
             DateOfBirth = new(),
             Consent = true
@@ -36,7 +36,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
             var sw = Stopwatch.StartNew();
             var rr = new RegisterRequest() {
                 Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
-                Username = Guid.NewGuid().ToString(),
+                Username = Guid.NewGuid().ToString()[..32],
                 Password = "password",
                 DateOfBirth = new(),
                 Consent = true
@@ -69,7 +69,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
     public async Task LoginUser() {
         var rr = new RegisterRequest() {
             Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
-            Username = Guid.NewGuid().ToString(),
+            Username = Guid.NewGuid().ToString()[..32],
             Password = Guid.NewGuid().ToString(),
             DateOfBirth = new(),
             Consent = true
@@ -89,7 +89,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
     public async Task WhoAmI() {
         var rr = new RegisterRequest() {
             Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
-            Username = Guid.NewGuid().ToString(),
+            Username = Guid.NewGuid().ToString()[..32],
             Password = Guid.NewGuid().ToString(),
             DateOfBirth = new(),
             Consent = true
