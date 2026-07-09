@@ -47,7 +47,7 @@ if (!process.env.DATABASE && !isHeadlessProcess) {
 const dbConnectionString = process.env.DATABASE!;
 export const DatabaseType = isHeadlessProcess ? "postgres" : dbConnectionString.split(":")[0]?.replace("+srv", "");
 const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
-
+const MIGRATIONLOCK = 1;
 export const DataSourceOptions = isHeadlessProcess
     ? (undefined as unknown as DataSource)
     : new DataSource({
@@ -109,19 +109,25 @@ export async function initDatabase(): Promise<DataSource> {
         }
     };
     if (applyMigrations) {
+        const qr = dbConnection.createQueryRunner();
+        /*
+        The transaction lock ensures that exactly one server is attempting to run migrations at a time.
+        It is session-specific, so should be released if a crash occurs. It is also blocking, so all
+        servers can run their logic.
+         */
+        await qr.query(`Select pg_advisory_lock(${MIGRATIONLOCK})`);
         if (!(await dbExists())) {
             console.log("[Database] This appears to be a fresh database. Running initial DDL.");
-            const qr = dbConnection.createQueryRunner();
             const initialPath = path.join(__dirname, "migration", DatabaseType + "-initial.js");
             if (fs.existsSync(initialPath)) {
                 console.log("[Database] Found initial migration file, running it.");
                 await new (require(`./migration/${DatabaseType}-initial`).initial0)().up(qr);
             } else console.log("[Database] No initial migration file found at '", initialPath, "', skipping.");
-            await qr.release();
         }
-
         console.log("[Database] Applying missing migrations, if any.", process.env.APPLY_DB_MIGRATIONS);
         await dbConnection.runMigrations();
+        await qr.query(`Select pg_advisory_unlock(${MIGRATIONLOCK})`);
+        await qr.release();
     } else {
         console.log("[Database] Skipping migrations as per config.");
         while (!(await dbExists())) {
