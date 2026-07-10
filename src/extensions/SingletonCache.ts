@@ -44,7 +44,7 @@ export class SingletonCache<T> {
             this.cachedValue = result;
             return result;
         } catch (e) {
-            console.log(`[SingletonCache] Factory method failed, returning stale value:`, e);
+            console.error(`[SingletonCache] Factory method failed, returning stale value:`, e);
             return this.cachedValue;
         } finally {
             this.isLocked = false;
