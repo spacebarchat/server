@@ -190,10 +190,11 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
 
 export class JwtKeypairManager {
     private static isLocked = false;
-    static #keypair: JwtKeypair;
+    static #keypair?: JwtKeypair;
     static #filesystemCheckInterval: NodeJS.Timeout;
 
     public static get keypair() {
+        if (!this.#keypair) throw new Error("JwtKeypairManager#keypair.get called before being initialized.");
         return this.#keypair;
     }
 
@@ -256,8 +257,8 @@ export class JwtKeypairManager {
             if (!existsSync("jwt.key") || !existsSync("jwt.key.pub")) {
                 console.log("[JWT] Keypair files disappeared... Saving them again.");
                 await Promise.all([
-                    fs.writeFile("jwt.key", this.#keypair.privateKey.export({ format: "pem", type: "sec1" })),
-                    fs.writeFile("jwt.key.pub", this.#keypair.publicKey.export({ format: "pem", type: "spki" })),
+                    fs.writeFile("jwt.key", this.keypair.privateKey.export({ format: "pem", type: "sec1" })),
+                    fs.writeFile("jwt.key.pub", this.keypair.publicKey.export({ format: "pem", type: "spki" })),
                 ]);
             }
         } catch (e) {
