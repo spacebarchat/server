@@ -111,7 +111,7 @@ export async function initDatabase(): Promise<DataSource> {
     if (applyMigrations) {
         const qr = dbConnection.createQueryRunner();
         /*
-        The transaction lock ensures that exactly one server is attempting to run migrations at a time.
+        The advisory lock ensures that exactly one server is attempting to run migrations at a time.
         It is session-specific, so should be released if a crash occurs. It is also blocking, so all
         servers can run their logic.
          */
