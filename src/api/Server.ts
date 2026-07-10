@@ -145,6 +145,11 @@ export class SpacebarServer extends Server {
             return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "index.html"));
         });
 
+        app.get("/static/logo.png", (req, res) => {
+            res.set("Cache-Control", "public, max-age=21600");
+            return res.sendFile(path.join(ASSETS_FOLDER, "logo.png"));
+        });
+
         app.get("/verify-email", (req, res) => {
             res.set("Cache-Control", "public, max-age=21600");
             return res.sendFile(path.join(PUBLIC_ASSETS_FOLDER, "verify.html"));
