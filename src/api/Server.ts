@@ -22,7 +22,19 @@ import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
 import { red } from "picocolors";
 import { getDatabase, initDatabase, Message } from "@spacebar/database";
-import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initEvent, registerRoutes, getRevInfoOrFail, pendingPolls } from "@spacebar/util";
+import {
+    Config,
+    ConnectionConfig,
+    ConnectionLoader,
+    Email,
+    JSONReplacer,
+    WebAuthn,
+    initEvent,
+    registerRoutes,
+    getRevInfoOrFail,
+    pendingPolls,
+    JwtKeypairManager,
+} from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
@@ -63,6 +75,7 @@ export class SpacebarServer extends Server {
         await Email.init();
         await ConnectionConfig.init();
         await initInstance();
+        await JwtKeypairManager.init();
         WebAuthn.init();
         // await BcryptWorkerPool.Init(8); // TODO: make configurable
         await GifProviderManager.init();

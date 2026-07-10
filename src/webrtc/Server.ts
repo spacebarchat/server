@@ -20,7 +20,7 @@ import http from "node:http";
 import ws from "ws";
 import { green, yellow } from "picocolors";
 import { initDatabase } from "@spacebar/database";
-import { Config, initEvent } from "@spacebar/util";
+import { Config, initEvent, JwtKeypairManager } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection } from "./events/Connection";
@@ -68,6 +68,7 @@ export class Server {
         await initDatabase();
         await Config.init();
         await initEvent();
+        await JwtKeypairManager.init();
 
         // try to load webrtc library, if failed just don't start webrtc endpoint
         try {

@@ -21,7 +21,7 @@ import { setInterval } from "node:timers";
 import ws from "ws";
 import { initDatabase } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { checkToken, Config, initEvent, Rights } from "@spacebar/util";
+import { checkToken, Config, initEvent, JwtKeypairManager, Rights } from "@spacebar/util";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection, openConnections } from "./events/Connection";
@@ -182,6 +182,7 @@ export class Server {
         await initEvent();
         // temporary fix
         await cleanupOnStartup();
+        await JwtKeypairManager.init();
 
         if (!this.server.listening) {
             this.server.listen(this.port);
