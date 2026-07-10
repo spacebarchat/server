@@ -22,7 +22,7 @@ in
   nodes.machine = {
     imports = [ self.nixosModules.default ];
 
-    virtualisation.cores = 8;
+    virtualisation.cores = 4;
 
     services.spacebarchat-server =
       let
@@ -41,6 +41,14 @@ in
           ipcMethod = withIpc;
 
           settings = {
+            limits = {
+              rate.enabled = false;
+              absoluteRate = {
+                register.enabled = false;
+                sendMessage.enabled = false;
+              };
+            };
+
             rabbitmq = {
               host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
             };
@@ -80,6 +88,7 @@ in
   # https://nixos.org/manual/nixpkgs/unstable/#tester-runNixOSTest
   testScript =
     let
+      testBin = lib.getExe self.outputs.packages.${pkgs.stdenv.system}.Spacebar-Tests;
       testConfigPath = pkgs.writeText "Spacebar-Tests-appsettings.json" (
         builtins.toJSON {
           Configuration = {
@@ -108,8 +117,6 @@ in
       machine.succeed("curl -f http://cdn.sb.localhost/metrics")
 
       # run integration tests
-      machine.succeed("/usr/bin/env TEST_APPSETTINGS_PATH=${testConfigPath} ${
-        lib.getExe self.outputs.packages.${pkgs.stdenv.system}.Spacebar-Tests
-      } -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories")
+      machine.succeed("/usr/bin/env TEST_APPSETTINGS_PATH=${testConfigPath} ${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories")
     '';
 }
