@@ -26,6 +26,7 @@ import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycl
 import { Monitoring } from "../util/monitoring/Monitoring";
 import guildProfilesRoute from "./routes/guild-profiles";
 import { storage } from "./util";
+import { ErrorHandler } from "@spacebar/cdn/util/ErrorHandler";
 
 export type CDNServerOptions = ServerOptions;
 
@@ -65,6 +66,7 @@ export class CDNServer extends Server {
 
         this.app.disable("x-powered-by");
 
+        this.app.use(ErrorHandler);
         this.app.use(CORS);
         this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
 

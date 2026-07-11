@@ -62,7 +62,7 @@ export async function handleFile(path: string, body?: string): Promise<string | 
         return id;
     } catch (error) {
         console.error(error);
-        throw new HTTPError("Invalid " + path);
+        throw new HTTPError(`Internal CDN error: Invalid response from POST $CDN${path}: ${(error as Error).message}`);
     }
 }
 

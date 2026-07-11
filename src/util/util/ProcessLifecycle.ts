@@ -18,8 +18,6 @@
 
 import EventEmitter from "node:events";
 import whyIsNodeRunning from "why-is-node-running";
-import net from "node:net";
-import * as dgram from "node:dgram";
 import { DgramSocket } from "node-unix-socket";
 
 interface ProcessLifecycleEvents {

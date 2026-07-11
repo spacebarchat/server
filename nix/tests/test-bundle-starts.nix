@@ -47,6 +47,8 @@ in
             LOG_REQUESTS = "-"; # Log all requests
             LOG_VALIDATION_ERRORS = true;
             LOG_API_ERRORS = true;
+            CDN_SIGNATURE_PATH = "${pkgs.writeText "cdnSig" "meow"}";
+            REQUEST_SIGNATURE_PATH = "${pkgs.writeText "reqSig" "meow"}";
           };
           ipcMethod = withIpc;
 
@@ -96,7 +98,7 @@ in
           ];
           requires = [ "spacebar-api.service" ];
           environment = {
-            TEST_APPSETTINGS_PATH=testConfigPath;
+            TEST_APPSETTINGS_PATH = testConfigPath;
           };
           serviceConfig = {
             ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories";
@@ -152,7 +154,7 @@ in
 
     machine.wait_for_unit("spacebar-tests")
     machine.wait_until_fails("systemctl show spacebar-tests.service | grep 'SubState=running' -q") # ... wait for the unit to exit in any way
-    
+
     testUnitState = machine.get_unit_property("spacebar-tests.service", "SubState"); 
     t.assertNotEqual("failed", testUnitState)
   '';
