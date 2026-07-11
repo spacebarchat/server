@@ -50,6 +50,8 @@ import {
     Intents,
     OPCodes,
     OrmUtils,
+    getMostRelevantSession,
+    Presence,
     PresenceUpdateEvent,
     ReadyEventData,
     ReadyGuildDTO,
@@ -58,7 +60,7 @@ import {
     TraceNode,
     TraceRoot,
 } from "@spacebar/util";
-import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection } from "@spacebar/schemas";
+import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 // TODO: user sharding
@@ -322,6 +324,46 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     user.settings = settings;
 
     const userMetaQueryTime = taskSw.getElapsedAndReset();
+
+    const friendPresenceUserIds = [...new Set(relationships.filter((relationship) => relationship.type === RelationshipType.friends).map((relationship) => relationship.to_id))];
+    const { result: friendPresenceSessions, elapsed: friendPresenceSessionsQueryTime } = await timePromise(() =>
+        friendPresenceUserIds.length === 0
+            ? Promise.resolve([] as Session[])
+            : getDatabase()!.getRepository(Session).find({
+                  where: {
+                      user_id: In(friendPresenceUserIds),
+                      is_admin_session: false,
+                      status: Not(In(["offline", "invisible"])),
+                  },
+                  relations: { user: true },
+                  select: {
+                      user_id: true,
+                      status: true,
+                      activities: true,
+                      client_status: true,
+                      user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+                  },
+              }),
+    );
+
+    const { result: friendPresences, elapsed: generateFriendPresencesTime } = timeFunction<Presence[]>(() => {
+        const sessionsByUserId = arrayGroupBy(friendPresenceSessions, (session) => session.user_id);
+
+        return friendPresenceUserIds.flatMap((userId) => {
+            const sessions = sessionsByUserId.get(userId);
+            if (!sessions?.length) return [];
+
+            const session = getMostRelevantSession(sessions);
+            return [
+                {
+                    user: session.user.toPublicUser(),
+                    status: session.getPublicStatus(),
+                    activities: session.activities,
+                    client_status: session.client_status,
+                },
+            ];
+        });
+    });
 
     const memberGuildIds = members.map((m) => m.guild_id);
 
@@ -688,7 +730,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     version: 0, // TODO
                 },
                 private_channels: channels,
-                presences: [], // TODO: Send actual data
+                presences: [],
                 session_id: this.session_id,
                 country_code: this.session?.last_seen_location_info?.country_code ?? user.settings!.locale,
                 users: Array.from(users),
@@ -746,10 +788,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         queryGuildsTime,
         guildRelationQueryTime,
         createUserSettingsTime,
+        friendPresenceSessionsQueryTime,
         mergedMembersTime,
         generateGuildsListTime,
         generateUserGuildSettingsTime,
         generateDmChannelsTime,
+        generateFriendPresencesTime,
         appendRelationshipsTime,
         findAndGenerateSessionReplaceTime,
         emitSessionsReplaceTime,
@@ -768,6 +812,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     sessionSaveTime,
                     sessionQueryTime,
                     relationshipQueryTime,
+                    friendPresenceSessionsQueryTime,
                     settingsQueryTime,
                     settingsProtosQueryTime,
                     applicationQueryTime,
@@ -845,28 +890,31 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         }),
     );
 
-    const readySupplementalGuilds = (guilds.filter((guild) => !guild.unavailable) as Guild[]).map((guild) => ({
-        voice_states: guild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
-        id: guild.id,
-        embedded_activities: [],
-    }));
+    const readySupplementalGuilds = guilds.map((guild) => {
+        if (!("voice_states" in guild)) return { id: guild.id };
 
-    // TODO: ready supplemental
+        const availableGuild = guild as Guild;
+        return {
+            id: availableGuild.id,
+            voice_states: availableGuild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
+            activity_instances: [],
+        };
+    });
+
     await Send(this, {
         op: OPCodes.DISPATCH,
         t: EVENTEnum.ReadySupplemental,
         s: this.sequence++,
         d: {
+            guilds: readySupplementalGuilds,
+            merged_members: guilds.map(() => []),
             merged_presences: {
-                guilds: [],
-                friends: [],
+                friends: friendPresences,
+                guilds: guilds.map(() => []),
             },
-            // these merged members seem to be all users currently in vc in your guilds
-            merged_members: [],
             lazy_private_channels: [],
-            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
-            // embedded_activities are users currently in an activity?
-            disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
+            disclose: [],
+            game_invites: [],
         },
     });
 
