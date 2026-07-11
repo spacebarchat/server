@@ -17,6 +17,6 @@ jobs:
           trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-bincache.rory.gay:663PIW8xxgIImxLcsokODWI2PHFWXvzJEfjX6TaIjxQ=
           trusted-substituters = https://cache.nixos.org https://nix-bincache.rory.gay
 
-    - run: nix build -L -j auto
-    - run: nix develop --command echo OK
-    - run: nix flake check -vL -j auto
+    - run: nix build --accept-flake-config -L -j auto
+    - run: nix develop --accept-flake-config --command echo OK
+    - run: nix flake check --accept-flake-config -vL -j auto

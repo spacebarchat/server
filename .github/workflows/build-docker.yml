@@ -32,7 +32,7 @@ jobs:
             trusted-substituters = https://cache.nixos.org https://nix-bincache.rory.gay
 
       - name: Build the docker image
-        run: nix build .#containers.x86_64-linux.docker.${{ matrix.package }}
+        run: nix build --accept-flake-config .#containers.x86_64-linux.docker.${{ matrix.package }}
       - run: docker load < result
       - name: downcase REPO
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
