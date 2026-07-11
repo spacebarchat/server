@@ -74,7 +74,7 @@ in
     # ...fix startup ordering
     systemd.services =
       let
-        services = [ "postgresql.service" ] ++ lib.optional (isRabbitMqTest) [ "rabbitmq.service" ];
+        services = [ "postgresql.service" ] ++ lib.optional (isRabbitMqTest) "rabbitmq.service";
         serviceDef = {
           after = services;
           wants = services;
@@ -101,10 +101,7 @@ in
           serviceConfig = {
             ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories";
             DynamicUser = true;
-            RestrictSUIDSGID = true;
-
             Restart = "no";
-            UMask = "077";
           };
         };
       };
@@ -154,9 +151,9 @@ in
     machine.succeed("curl -f http://cdn.sb.localhost/metrics")
 
     machine.wait_for_unit("spacebar-tests")
-    machine.wait_until_fails("systemctl show spacebar-tests.service | grep 'SubState=running' -q")
-    # run integration tests
-    # machine.succeed("/usr/bin/env TEST_APPSETTINGS_PATH=${testConfigPath} ${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories")
-
+    machine.wait_until_fails("systemctl show spacebar-tests.service | grep 'SubState=running' -q") # ... wait for the unit to exit in any way
+    
+    testUnitState = machine.get_unit_property("spacebar-tests.service", "SubState"); 
+    t.assertNotEqual("failed", testUnitState)
   '';
 }
