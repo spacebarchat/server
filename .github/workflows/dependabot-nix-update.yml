@@ -14,10 +14,15 @@ jobs:
       contents: write
     steps:
       - name: Check Out Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            system-features = nixos-test benchmark big-parallel kvm
+            trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-bincache.rory.gay:663PIW8xxgIImxLcsokODWI2PHFWXvzJEfjX6TaIjxQ=
+            trusted-substituters = https://cache.nixos.org https://nix-bincache.rory.gay
 
       - name: Update Nix Flake
         run: nix flake update --extra-experimental-features 'nix-command flakes'

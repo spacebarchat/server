@@ -1,6 +1,15 @@
 {
   description = "Spacebar server, written in Typescript.";
 
+  nixConfig = {
+    extra-substituters = [
+      "https://nix-bincache.rory.gay"
+    ];
+    extra-trusted-public-keys = [
+      "nix-bincache.rory.gay:663PIW8xxgIImxLcsokODWI2PHFWXvzJEfjX6TaIjxQ="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/master"; # temp hack because unstable is frozen
     flake-utils.url = "github:numtide/flake-utils";
