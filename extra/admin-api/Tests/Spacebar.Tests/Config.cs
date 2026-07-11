@@ -9,4 +9,5 @@ public class Config {
 
     public string TestInstance { get; set; }
     public int RegisterConcurrentCount { get; set; }
+    public bool OfflineMode { get; set; }
 }

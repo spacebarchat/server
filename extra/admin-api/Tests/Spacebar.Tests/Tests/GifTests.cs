@@ -39,6 +39,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
 
     [Theory, MemberData(nameof(GifSearchTestMatrix))]
     public async Task SearchGifs(string query, string provider) {
+        Assert.SkipWhen(_config.OfflineMode, "Cannot test GIF providers while offline.");
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/search?q={query}&provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<List<GifItem>>(cancellationToken: TestContext.Current.CancellationToken);
 
@@ -57,6 +58,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
 
     [Theory, MemberData(nameof(GifProviders))]
     public async Task GetTrendingCategories(string provider) {
+        Assert.SkipWhen(_config.OfflineMode, "Cannot test GIF providers while offline.");
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending?provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<TrendingGifsResult>(cancellationToken: TestContext.Current.CancellationToken);
 
@@ -82,6 +84,7 @@ public class GifTests(ITestOutputHelper testOutputHelper, TestFixture fixture) :
     
     [Theory, MemberData(nameof(GifProviders))]
     public async Task GetTrendingGifs(string provider) {
+        Assert.SkipWhen(_config.OfflineMode, "Cannot test GIF providers while offline.");
         var resp = await Assert.HttpSuccess(await Client.ApiHttpClient.GetAsync($"gifs/trending-gifs?provider={provider}", TestContext.Current.CancellationToken));
         var respContent = await resp.Content.ReadFromJsonAsync<List<GifItem>>(cancellationToken: TestContext.Current.CancellationToken);
 

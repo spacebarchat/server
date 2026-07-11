@@ -19,6 +19,7 @@ let
       Configuration = {
         TestInstance = "http://localhost:3001";
         RegisterConcurrentCount = 150;
+        OfflineMode = true;
       };
     }
   );
