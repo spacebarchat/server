@@ -119,9 +119,9 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     }
 
     public static IEnumerable<object?[]> WebhookExecuteCombinations() {
-        string[] contents = ["meow", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
+        string[] contents = ["meow", "# hi!!!", Client.ClientWellKnown.Api.BaseUrl, "@everyone", "@here"];
         string?[] usernames = [null, "meow"];
-        string?[] avatarUrls = [null, "https://spacebar.chat/favicon.ico"];
+        string?[] avatarUrls = [null, Client.ClientWellKnown.Api.BaseUrl + "/static/logo.png"];
         bool?[] ttsEnabled = [null, true, false];
         int?[] messageFlags = [
             null,
@@ -157,7 +157,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     public async Task SendWebhookMessageWithAvatarUrl() {
         await Assert.SuccessfullyHttpPostAsJsonAsync(Webhook.Url + "?wait=true", new JsonObject() {
             { "content", "meow" },
-            { "avatar_url", "https://spacebar.chat/favicon.ico" }
+            { "avatar_url", Client.ClientWellKnown.Api.BaseUrl + "/static/logo.png" }
         });
     }
 }

@@ -181,7 +181,7 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     }
 
     public static IEnumerable<object?[]> WebhookExecuteCombinations() {
-        string[] contents = ["meow", "# hi!!!", "https://spacebar.chat/favicon.ico", "@everyone", "@here"];
+        string[] contents = ["meow", "# hi!!!", Client.ClientWellKnown.Api.BaseUrl, "@everyone", "@here"];
         bool?[] ttsEnabled = [null, true, false];
         int?[] messageFlags = [
             null,

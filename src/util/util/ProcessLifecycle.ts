@@ -18,6 +18,9 @@
 
 import EventEmitter from "node:events";
 import whyIsNodeRunning from "why-is-node-running";
+import net from "node:net";
+import * as dgram from "node:dgram";
+import { DgramSocket } from "node-unix-socket";
 
 interface ProcessLifecycleEvents {
     starting: unknown[];
@@ -33,10 +36,12 @@ export class ProcessLifecycle {
     // to be ran after startup is finished
     static async Ready() {
         await this.emitAsync((this.state = "running"));
+        await SystemdLifecycle.sendReady();
     }
 
     // to be ran at the start of shutdown
     static async Shutdown() {
+        await SystemdLifecycle.sendStopping();
         await this.emitAsync((this.state = "stopping"));
     }
 
@@ -60,3 +65,33 @@ process.on("SIGUSR1", () => {
     whyIsNodeRunning();
     console.log("\nProcess state:", ProcessLifecycle.state);
 });
+
+export class SystemdLifecycle {
+    private static writeData(data: string): Promise<void> {
+        const socketPath = process.env.NOTIFY_SOCKET;
+        if (!socketPath) return Promise.resolve();
+
+        const buf = Buffer.from(data);
+        console.log("Systemd notify socket path:", socketPath, "-", buf.length, "bytes");
+
+        return new Promise((res, rej) => {
+            new DgramSocket().sendTo(buf, 0, buf.length, socketPath, (err) => {
+                if (err) rej(err);
+                res();
+            });
+        });
+    }
+    static async sendReady() {
+        await this.writeData("READY=1");
+    }
+
+    static async sendStopping() {
+        await this.writeData("STOPPING=1");
+    }
+
+    static async setStatus(status: string) {
+        await this.writeData("STATUS=" + status);
+    }
+
+    // TODO: do we want to support the watchdog?
+}

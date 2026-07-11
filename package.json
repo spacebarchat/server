@@ -111,6 +111,7 @@
         "multer": "^2.1.1",
         "murmurhash-js": "^1.0.0",
         "node-2fa": "^2.0.3",
+        "node-unix-socket": "^0.2.7",
         "pg": "^8.21.0",
         "pg-query-stream": "^4.15.0",
         "picocolors": "^1.1.1",

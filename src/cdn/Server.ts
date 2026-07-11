@@ -22,7 +22,7 @@ import { Server, ServerOptions } from "lambert-server/Server";
 import { CORS, BodyParser } from "@spacebar/api/middlewares";
 import { Attachment, initDatabase } from "@spacebar/database";
 import { Config, registerRoutes } from "@spacebar/util";
-import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import guildProfilesRoute from "./routes/guild-profiles";
 import { storage } from "./util";
@@ -76,8 +76,9 @@ export class CDNServer extends Server {
         this.app.use("/guilds/:guild_id/users/:user_id/banners", guildProfilesRoute);
         if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
+        await super.start();
+        await SystemdLifecycle.setStatus(`Listening on ${this.options.host}:${this.options.port}...`);
         await ProcessLifecycle.Ready();
-        return super.start();
     }
 
     async migrateAttachments() {

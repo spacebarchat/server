@@ -127,6 +127,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-api";
+        Type = "notify";
       };
     };
 
@@ -151,6 +152,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-gateway";
+        Type = "notify";
       };
     };
 
@@ -174,6 +176,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-cdn";
+        Type = "notify";
       };
     });
   };

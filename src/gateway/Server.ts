@@ -22,7 +22,7 @@ import ws from "ws";
 import { initDatabase } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { checkToken, Config, initEvent, JwtKeypairManager, Rights } from "@spacebar/util";
-import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection, openConnections } from "./events/Connection";
 import { cleanupOnStartup } from "./util";
@@ -187,6 +187,7 @@ export class Server {
         if (!this.server.listening) {
             this.server.listen(this.port);
             console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
+            await SystemdLifecycle.setStatus(`Listening on 0.0.0.0:${this.port}...`);
         }
 
         await ProcessLifecycle.Ready();

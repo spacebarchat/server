@@ -35,7 +35,7 @@ import {
     pendingPolls,
     JwtKeypairManager,
 } from "@spacebar/util";
-import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
@@ -238,7 +238,8 @@ export class SpacebarServer extends Server {
 
         if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
 
+        await super.start();
+        await SystemdLifecycle.setStatus(`Listening on ${this.options.host}:${this.options.port}...`);
         await ProcessLifecycle.Ready();
-        return super.start();
     }
 }

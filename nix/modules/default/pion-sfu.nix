@@ -69,6 +69,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-webrtc";
+        Type = "notify";
       };
     };
 

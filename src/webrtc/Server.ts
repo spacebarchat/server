@@ -21,7 +21,7 @@ import ws from "ws";
 import { green, yellow } from "picocolors";
 import { initDatabase } from "@spacebar/database";
 import { Config, initEvent, JwtKeypairManager } from "@spacebar/util";
-import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection } from "./events/Connection";
 import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "./util";
@@ -82,6 +82,7 @@ export class Server {
         if (!this.server.listening) {
             this.server.listen(this.port);
             console.log(`[WebRTC] ${green(`online on 0.0.0.0:${this.port}`)}`);
+            await SystemdLifecycle.setStatus(`Listening on 0.0.0.0:${this.port}...`);
         }
 
         await ProcessLifecycle.Ready();
