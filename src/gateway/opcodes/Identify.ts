@@ -906,14 +906,15 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         t: EVENTEnum.ReadySupplemental,
         s: this.sequence++,
         d: {
-            guilds: readySupplementalGuilds,
-            merged_members: guilds.map(() => []),
+            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
+            merged_members: guilds.map(() => []), // these merged members seem to be all users currently in vc in your guilds
             merged_presences: {
                 friends: friendPresences,
                 guilds: guilds.map(() => []),
             },
             lazy_private_channels: [],
-            disclose: [],
+            // embedded_activities are users currently in an activity?
+            disclose: [], // Config.get().general.uniqueUsernames ? ["pomelo"] : []
             game_invites: [],
         },
     });
