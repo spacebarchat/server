@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -128,6 +129,10 @@ public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long chan
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
         return (await resp.Content.ReadFromJsonAsync<Channel>())!;
     }
+
+    public async Task SendMessageAsync(MessageSchema messageSchema) {
+        throw new NotImplementedException();
+    }
 }
 
 public class SpacebarClientGuild(AuthenticatedSpacebarClient client, long guildId) {
@@ -171,6 +176,7 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
     public ClientWebSocket RawClientWebSocket = new();
     public int Sequence;
     public bool TraceGatewayMessages = false;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     public IdentifyRequest IdentifyData { get; } = new() {
         Intents = (GatewayIntentFlags?)0xFFFFFFFF, // too lazy to do math, just gimme everything
@@ -182,15 +188,22 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
 
     public async Task Connect() {
         if (RawClientWebSocket.State is WebSocketState.Connecting or WebSocketState.Open) return;
+        _cts = new CancellationTokenSource();
         Sequence = 0;
+        RawClientWebSocket = new();
         await RawClientWebSocket.ConnectAsync(new Uri(wellKnown.Gateway.BaseUrl).AddQuery("encoding", "json"), CancellationToken.None);
     }
 
+    public async Task Disconnect() {
+        await _cts.CancelAsync();
+        await RawClientWebSocket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+    }
+
     public async Task Start() {
-        await foreach (var msg in _runReceiveLoop()) {
+        await foreach (var msg in _runReceiveLoop(_cts.Token)) {
             // logger.LogInformation("Got gateway message: {msg}", msg);
             if (msg.Opcode == GatewayOpcode.S2CHello) {
-                _ = _runHeartbeatLoop(msg.GetData<HelloResponse>()!.HeartbeatInterval).ContinueWith(ct => {
+                _ = _runHeartbeatLoop(msg.GetData<HelloResponse>()!.HeartbeatInterval, _cts.Token).ContinueWith(ct => {
                     logger.LogWarning("Heartbeat loop exited!");
                     if (ct.IsFaulted) throw ct.Exception;
                 });
@@ -226,7 +239,7 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
         }
     }
 
-    private async Task _runHeartbeatLoop(int interval) {
+    private async Task _runHeartbeatLoop(int interval, CancellationToken ct) {
         while (RawClientWebSocket.State < WebSocketState.Closed) {
             await RawClientWebSocket.SendAsync(JsonSerializer.SerializeToUtf8Bytes(new GatewayPayload() {
                 Opcode = GatewayOpcode.C2SQoSHeartbeat, // QoS Heartbeat
@@ -238,23 +251,33 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
                         Version = 27
                     }
                 }.ToJsonNode().AsObject()
-            }), WebSocketMessageType.Text, WebSocketMessageFlags.EndOfMessage, CancellationToken.None);
-            await Task.Delay(interval);
+            }), WebSocketMessageType.Text, WebSocketMessageFlags.EndOfMessage, ct);
+            await Task.Delay(interval, ct);
         }
     }
 
     private const int ReceiveBufferSize = 2 * 1024 * 1024;
 
-    private async IAsyncEnumerable<GatewayPayload> _runReceiveLoop() {
+    private async IAsyncEnumerable<GatewayPayload> _runReceiveLoop([EnumeratorCancellation] CancellationToken ct) {
         List<byte> messageParts = [];
         List<(string Name, TimeSpan Elapsed)> trace = [];
         var buffer = new byte[ReceiveBufferSize];
         int idx = 0;
 
-        while (RawClientWebSocket.State < WebSocketState.Closed) {
+        while (RawClientWebSocket.State < WebSocketState.CloseSent) {
             var sw = Stopwatch.StartNew();
 
-            var msg = await RawClientWebSocket.ReceiveAsync(buffer, CancellationToken.None);
+            WebSocketReceiveResult msg;
+            try {
+                msg = await RawClientWebSocket.ReceiveAsync(buffer, ct);
+            }
+            catch (TaskCanceledException) {
+                yield break;
+            }
+            catch (InvalidOperationException) {
+                yield break;
+            }
+
             trace.Add(($"RCV.{idx}", sw.GetElapsedAndRestart()));
 
             Console.WriteLine($"Websocket message chunk read: {msg.MessageType} {msg.Count} {msg.EndOfMessage}");

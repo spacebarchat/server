@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using ArcaneLibs.Extensions;
 using Spacebar.Models.Api;
+using Spacebar.Models.Gateway;
 using Spacebar.Models.Generic;
 using Spacebar.Sdk.Core;
 using Spacebar.Tests.Abstractions;
@@ -221,5 +222,30 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal(content, msg.Content);
+    }
+    
+    [Fact]
+    public async Task ShouldNotMessageUpdateForLinklessMessage() {
+        Client.Gateway.OnceGatewayMessage.Add(async payload => {
+            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
+                _testOutputHelper.WriteLine("Got ready: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
+                await Channel.SendMessageAsync(new MessageSchema() {
+                    
+                });
+                return false;
+            }
+
+            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "MESSAGE_UPDATE" }) {
+                _testOutputHelper.WriteLine("Got MESSAGE_UPDATE: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
+                Assert.False(true);
+                return true;
+            }
+
+            _testOutputHelper.WriteLine("Received message: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData?.Count);
+            return false;
+        });
+        // Client.Gateway.TraceGatewayMessages = true;
+        await Client.Gateway.Connect();
+        await Client.Gateway.Start();
     }
 }
