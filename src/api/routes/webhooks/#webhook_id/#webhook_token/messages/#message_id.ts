@@ -22,7 +22,7 @@ import multer from "multer";
 import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
 import { Channel, Message, Webhook } from "@spacebar/database";
 import { MessageDeleteEvent, MessageUpdateEvent, emitEvent, DiscordApiErrors } from "@spacebar/util";
-import { ChannelType, WebhookExecuteSchema } from "@spacebar/schemas";
+import { ChannelType, PublicMessage, WebhookExecuteSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
@@ -54,7 +54,7 @@ router.patch(
         requestBody: "WebhookExecuteSchema",
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
             400: {
                 body: "APIErrorResponse",
@@ -104,21 +104,21 @@ router.patch(
             ...new_message.toJSON(),
             id: new_message.id,
             type: new_message.type,
-            channel_id: new_message.channel_id,
-            member: new_message.member?.toPublicMember(),
-            author: new_message.author?.toPublicUser(),
-            attachments: new_message.attachments,
+            channel_id: new_message.channel_id!,
+            // member: new_message.member?.toPublicMember(), // TODO: why was this here? this isnt in the Message object lol
+            author: new_message.author!.toPartialUser(),
+            attachments: new_message.attachments?.map((x) => x.toJSON()) ?? [],
             embeds: new_message.embeds,
-            mentions: new_message.embeds,
-            mention_roles: new_message.mention_roles,
-            mention_everyone: new_message.mention_everyone,
+            mentions: new_message.mentions.map((u) => u.toPartialUser()),
+            mention_roles: new_message.mention_roles.map((r) => r.id),
+            mention_everyone: new_message.mention_everyone ?? false,
             pinned: new_message.pinned,
-            timestamp: new_message.timestamp,
-            edited_timestamp: new_message.edited_timestamp,
+            timestamp: new_message.timestamp.toISOString(),
+            edited_timestamp: new_message.edited_timestamp?.toISOString() ?? null,
 
             // these are not in the Discord.com response
-            mention_channels: new_message.mention_channels,
-        });
+            mention_channels: new_message.mention_channels.map((x) => x.toJSON()),
+        } satisfies PublicMessage);
     },
 );
 
@@ -127,7 +127,7 @@ router.get(
     route({
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
             400: {
                 body: "APIErrorResponse",
@@ -149,7 +149,7 @@ router.get(
             },
         });
 
-        return res.json(message);
+        return res.json(message.toJSON());
     },
 );
 
