@@ -65,7 +65,7 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
         })));
         
         var guildChannels = await cg.GetChannelsAsync();
-        testOutputHelper.WriteLine(guildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
+        // testOutputHelper.WriteLine(guildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
 
         var payload = new JsonArray();
 
@@ -80,7 +80,7 @@ public class GuildTests(ITestOutputHelper testOutputHelper, TestFixture fixture)
         await Assert.HttpSuccess(await Client.ApiHttpClient.PatchAsJsonAsync($"guilds/{cg.Id}/channels", payload, cancellationToken: TestContext.Current.CancellationToken));
         
         var newGuildChannels = await cg.GetChannelsAsync();
-        testOutputHelper.WriteLine(newGuildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
+        // testOutputHelper.WriteLine(newGuildChannels.Select(x=>(x.Id, x.Name, x.Position)).ToJson(includeFields: true));
         Assert.Equal(guildChannels.OrderBy(x=>x.Name), newGuildChannels, (a, b) => a.Id == b.Id);
     }
 }
