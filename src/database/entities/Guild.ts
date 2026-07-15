@@ -31,6 +31,7 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+import { IntegrationGuild } from "@spacebar/schemas";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
@@ -341,6 +342,14 @@ export class Guild extends BaseClass {
             is_published: false,
             reasons_to_join: [],
         };
+    }
+
+    toIntegrationGuild(): IntegrationGuild {
+        return {
+            id: this.id,
+            name: this.name,
+            icon: this.icon ?? null,
+        } satisfies IntegrationGuild;
     }
 
     static async createGuild(body: {

@@ -32,7 +32,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Member } from "./Member";
-import { ChannelPermissionOverwrite, ChannelType, PublicChannel, PublicUserProjection, ThreadMetadata } from "@spacebar/schemas";
+import { ChannelPermissionOverwrite, ChannelType, PublicChannel, PublicUserProjection, ThreadMetadata, WebhookChannel } from "@spacebar/schemas";
 import { OrmUtils } from "../../util/imports";
 import { ThreadMember } from "./ThreadMember";
 import { trimSpecial } from "@spacebar/extensions";
@@ -733,5 +733,12 @@ export class Channel extends BaseClass {
             applied_tags: this.applied_tags ?? undefined,
             permission_overwrites: this.isThread() ? undefined : this.permission_overwrites,
         };
+    }
+
+    toWebhookChannel(): WebhookChannel {
+        return {
+            id: this.id,
+            name: this.name ?? "Unnamed webhook?",
+        } satisfies WebhookChannel;
     }
 }

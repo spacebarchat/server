@@ -1573,6 +1573,23 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "BackupCodesChallengeResponse": {
+        "type": "object",
+        "properties": {
+            "nonce": {
+                "type": "string"
+            },
+            "regenerate_nonce": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "nonce",
+            "regenerate_nonce"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "CollectiblesCategoriesResponse": {
         "type": "array",
         "items": {
@@ -3649,6 +3666,23 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "WebhookCreateResponse": {
+        "type": "object",
+        "properties": {
+            "user": {
+                "$ref": "#/definitions/User"
+            },
+            "hook": {
+                "$ref": "#/definitions/Webhook"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "hook",
+            "user"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GuildProfileResponse": {
         "type": "object",
         "properties": {
@@ -4694,6 +4728,10 @@
             },
             "discovery_excluded": {
                 "type": "boolean"
+            },
+            "toIntegrationGuild": {
+                "type": "object",
+                "additionalProperties": false
             }
         },
         "additionalProperties": false,
@@ -4717,6 +4755,7 @@
             "public_updates_channel_id",
             "roles",
             "stickers",
+            "toIntegrationGuild",
             "unavailable",
             "voice_states",
             "webhooks",
@@ -5087,13 +5126,6 @@
         "type": "array",
         "items": {
             "$ref": "#/definitions/Invite"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "APIWebhookArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/Webhook"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -5611,23 +5643,6 @@
         "required": [
             "id",
             "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "WebhookCreateResponse": {
-        "type": "object",
-        "properties": {
-            "user": {
-                "$ref": "#/definitions/User"
-            },
-            "hook": {
-                "$ref": "#/definitions/Webhook"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "hook",
-            "user"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

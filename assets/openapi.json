@@ -1488,6 +1488,21 @@
                     "username"
                 ]
             },
+            "BackupCodesChallengeResponse": {
+                "type": "object",
+                "properties": {
+                    "nonce": {
+                        "type": "string"
+                    },
+                    "regenerate_nonce": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "nonce",
+                    "regenerate_nonce"
+                ]
+            },
             "CollectiblesCategoriesResponse": {
                 "type": "array",
                 "items": {
@@ -3443,6 +3458,21 @@
                     "user_sessions"
                 ]
             },
+            "WebhookCreateResponse": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "hook": {
+                        "$ref": "#/components/schemas/Webhook"
+                    }
+                },
+                "required": [
+                    "hook",
+                    "user"
+                ]
+            },
             "GuildProfileResponse": {
                 "type": "object",
                 "properties": {
@@ -4432,6 +4462,10 @@
                     },
                     "discovery_excluded": {
                         "type": "boolean"
+                    },
+                    "toIntegrationGuild": {
+                        "type": "object",
+                        "additionalProperties": false
                     }
                 },
                 "required": [
@@ -4454,6 +4488,7 @@
                     "public_updates_channel_id",
                     "roles",
                     "stickers",
+                    "toIntegrationGuild",
                     "unavailable",
                     "voice_states",
                     "webhooks",
@@ -4811,12 +4846,6 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Invite"
-                }
-            },
-            "APIWebhookArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/Webhook"
                 }
             },
             "APIDiscoveryCategoryArray": {
@@ -5282,21 +5311,6 @@
                 "required": [
                     "id",
                     "name"
-                ]
-            },
-            "WebhookCreateResponse": {
-                "type": "object",
-                "properties": {
-                    "user": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "hook": {
-                        "$ref": "#/components/schemas/Webhook"
-                    }
-                },
-                "required": [
-                    "hook",
-                    "user"
                 ]
             },
             "MFAResponse": {
@@ -14716,7 +14730,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIWebhook"
+                                    "$ref": "#/components/schemas/WebhookResponse"
                                 }
                             }
                         }
@@ -15056,7 +15070,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIWebhook"
+                                    "$ref": "#/components/schemas/WebhookResponse"
                                 }
                             }
                         }
@@ -20068,7 +20082,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIWebhookArray"
+                                    "$ref": "#/components/schemas/WebhookArray"
                                 }
                             }
                         }
@@ -24180,7 +24194,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIWebhookArray"
+                                    "$ref": "#/components/schemas/WebhookArray"
                                 }
                             }
                         }

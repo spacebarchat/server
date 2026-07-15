@@ -22,7 +22,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/util/handlers/route";
 import { Application, Channel, User, Webhook } from "@spacebar/database";
 import { Config, DiscordApiErrors, handleFile, ValidateName } from "@spacebar/util";
-import { isTextChannel, WebhookCreateSchema, WebhookType } from "@spacebar/schemas";
+import { isTextChannel, WebhookCreateSchema, WebhookResponse, WebhookType } from "@spacebar/schemas";
 import { trimSpecial } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
@@ -34,7 +34,7 @@ router.get(
         permission: "MANAGE_WEBHOOKS",
         responses: {
             200: {
-                body: "APIWebhookArray",
+                body: "WebhookArray",
             },
         },
     }),
@@ -46,10 +46,16 @@ router.get(
         });
 
         return res.json(
-            webhooks.map((webhook) => ({
-                ...webhook,
-                url: Config.get().api.endpointPublic + "/api/webhooks/" + webhook.id + "/" + webhook.token,
-            })),
+            webhooks.map(
+                (webhook) =>
+                    ({
+                        ...webhook,
+                        user: webhook.user.toPartialUser(),
+                        source_guild: webhook.source_guild?.toIntegrationGuild(),
+                        source_channel: webhook.source_channel?.toWebhookChannel(),
+                        url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+                    }) satisfies WebhookResponse,
+            ),
         );
     },
 );

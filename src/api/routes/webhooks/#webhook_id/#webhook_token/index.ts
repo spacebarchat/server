@@ -23,7 +23,7 @@ import { route } from "@spacebar/api/util/handlers/route";
 import { Webhook, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, WebhooksUpdateEvent } from "@spacebar/util";
 import { executeWebhook } from "@spacebar/api/util/handlers/Webhook";
-import { WebhookUpdateSchema } from "@spacebar/schemas";
+import { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -33,7 +33,7 @@ router.get(
         description: "Returns a webhook object for the given id and token.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "WebhookResponse",
             },
             404: {},
         },
@@ -57,8 +57,11 @@ router.get(
 
         return res.json({
             ...webhook,
+            user: webhook.user.toPartialUser(),
+            source_guild: webhook.source_guild?.toIntegrationGuild(),
+            source_channel: webhook.source_channel?.toWebhookChannel(),
             url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
-        });
+        } satisfies WebhookResponse);
     },
 );
 
