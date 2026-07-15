@@ -96,8 +96,14 @@ in
           after = [
             "network-online.target"
             "spacebar-api.service"
+            "spacebar-cdn.service"
+            "spacebar-gateway.service"
           ];
-          requires = [ "spacebar-api.service" ];
+          requires = [
+            "spacebar-api.service"
+            "spacebar-cdn.service"
+            "spacebar-gateway.service"
+          ];
           environment = {
             TEST_APPSETTINGS_PATH = testConfigPath;
           };
