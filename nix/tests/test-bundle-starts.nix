@@ -62,9 +62,8 @@ in
               };
             };
 
-            rabbitmq = {
-              host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
-            };
+            rabbitmq.host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
+            security.cdnSignatureIncludeUserAgent = false;
           };
 
           nginx.enable = true;
