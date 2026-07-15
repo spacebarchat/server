@@ -18,7 +18,7 @@
 
 // TODO: remove dependency on entities
 import { Role } from "@spacebar/database";
-import { BaseMessageComponents, Embed, MessageType, Poll, PublicUser } from "@spacebar/schemas";
+import { BaseMessageComponents, Embed, MessageType, Poll, PublicUser, RoleResponse } from "@spacebar/schemas";
 import { PublicAttachment } from "../api/messages/Attachments";
 
 export interface GuildMessagesSearchMessage {
@@ -30,7 +30,7 @@ export interface GuildMessagesSearchMessage {
     attachments: PublicAttachment[];
     embeds: Embed[];
     mentions: PublicUser[];
-    mention_roles: Role[];
+    mention_roles: RoleResponse[];
     pinned: boolean;
     mention_everyone?: boolean;
     tts: boolean;

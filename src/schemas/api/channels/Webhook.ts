@@ -16,9 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { User, Webhook } from "@spacebar/database";
-import { IntegrationGuild, PartialUser, Snowflake } from "@spacebar/schemas";
+import { IntegrationGuild, PartialUser, PublicUser, Snowflake } from "@spacebar/schemas";
 
 export enum WebhookType {
     Incoming = 1,
@@ -27,8 +25,8 @@ export enum WebhookType {
 }
 
 export interface WebhookCreateResponse {
-    user: User;
-    hook: Webhook;
+    user: PublicUser;
+    hook: WebhookResponse;
 }
 
 export type WebhookArray = WebhookResponse[];

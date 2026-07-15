@@ -16,13 +16,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove entity imports
-import { Emoji, Role, Sticker } from "@spacebar/database";
-import { GuildCreateResponse } from "@spacebar/schemas";
+import { GuildCreateResponse, RoleResponse, StickerResponse } from "@spacebar/schemas";
+import { EmojiResponse } from "@spacebar/schemas/api/guilds/Emoji";
 
 export interface MemberJoinGuildResponse {
     guild: GuildCreateResponse;
-    emojis: Emoji[];
-    roles: Role[];
-    stickers: Sticker[];
+    emojis: EmojiResponse[];
+    roles: RoleResponse[];
+    stickers: StickerResponse[];
 }
