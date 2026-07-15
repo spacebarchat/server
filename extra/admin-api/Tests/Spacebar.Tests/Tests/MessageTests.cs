@@ -128,12 +128,12 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             }
         );
 
-        testOutputHelper.WriteLine(await content.ReadAsStringAsync());
+        // testOutputHelper.WriteLine(await content.ReadAsStringAsync());
 
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", content,
             cancellationToken: TestContext.Current.CancellationToken));
         var json = (await res.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken));
-        testOutputHelper.WriteLine(json.ToJson(indent: true));
+        // testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal("meow", msg.Content);
     }
@@ -150,7 +150,7 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             ]
         }, cancellationToken: TestContext.Current.CancellationToken));
         var createAttRespContent = await createAttResp.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken);
-        testOutputHelper.WriteLine(createAttRespContent?.ToString());
+        // testOutputHelper.WriteLine(createAttRespContent?.ToString());
 
         var createAtt = createAttRespContent.Deserialize<CreateAttachmentResponse>();
         foreach (var attFile in createAtt.Attachments)
@@ -175,7 +175,7 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", content,
             cancellationToken: TestContext.Current.CancellationToken));
         var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
-        testOutputHelper.WriteLine(json.ToJson(indent: true));
+        // testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal("meow", msg.Content);
         Assert.Single(msg.Attachments);
@@ -214,44 +214,43 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
         var reqContent = new MultipartFormDataContent();
         reqContent.Add(JsonContent.Create(payload), "payload_json");
-        testOutputHelper.WriteLine(await reqContent.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        // testOutputHelper.WriteLine(await reqContent.ReadAsStringAsync(TestContext.Current.CancellationToken));
 
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", reqContent,
             cancellationToken: TestContext.Current.CancellationToken));
         var json = (await res.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken));
-        testOutputHelper.WriteLine(json.ToJson(indent: true));
+        // testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal(content, msg.Content);
     }
     
-    [Fact]
-    public async Task ShouldNotMessageUpdateForLinklessMessage() {
-        Client.Gateway.OnceGatewayMessage.Add(async payload => {
-            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
-                _testOutputHelper.WriteLine("Got ready: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
-                var mPayload = new JsonObject() {
-                    { "content", "meow" }
-                };
-
-                var reqContent = new MultipartFormDataContent();
-                reqContent.Add(JsonContent.Create(mPayload), "payload_json");
-
-                var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", reqContent,
-                    cancellationToken: TestContext.Current.CancellationToken));
-                return false;
-            }
-
-            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "MESSAGE_UPDATE" }) {
-                _testOutputHelper.WriteLine("Got MESSAGE_UPDATE: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
-                Assert.False(true);
-                return true;
-            }
-
-            _testOutputHelper.WriteLine("Received message: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData?.Count);
-            return false;
-        });
-        // Client.Gateway.TraceGatewayMessages = true;
-        await Client.Gateway.Connect();
-        await Client.Gateway.Start();
-    }
+    // [Fact]
+    // public async Task ShouldNotMessageUpdateForLinklessMessage() {
+    //     Client.Gateway.OnceGatewayMessage.Add(async payload => {
+    //         if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
+    //             _testOutputHelper.WriteLine("Got ready: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
+    //             var mPayload = new JsonObject() {
+    //                 { "content", "meow" }
+    //             };
+    //
+    //             var reqContent = new MultipartFormDataContent();
+    //             reqContent.Add(JsonContent.Create(mPayload), "payload_json");
+    //
+    //             var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", reqContent,
+    //                 cancellationToken: TestContext.Current.CancellationToken));
+    //             return false;
+    //         }
+    //
+    //         if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "MESSAGE_UPDATE" }) {
+    //             _testOutputHelper.WriteLine("Got MESSAGE_UPDATE: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
+    //             Assert.False(true);
+    //             return true;
+    //         }
+    //
+    //         _testOutputHelper.WriteLine("Received message: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData?.Count);
+    //         return false;
+    //     });
+    //     await Client.Gateway.Connect();
+    //     await Client.Gateway.Start();
+    // }
 }

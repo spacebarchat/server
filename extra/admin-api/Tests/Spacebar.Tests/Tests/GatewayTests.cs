@@ -64,8 +64,7 @@ public class GatewayTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         await Client.Gateway.Connect();
         await Client.Gateway.Start();
     }
-    
-    
+
     [Fact]
     public async Task CanReceiveHeartbeatAck() {
         Client.Gateway.OnceGatewayMessage.Add(async payload => {
@@ -82,17 +81,22 @@ public class GatewayTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         await Client.Gateway.Connect();
         await Client.Gateway.Start();
     }
-    
+
     [Fact]
     public async Task SensibleHello() {
         Client.Gateway.OnceGatewayMessage.Add(async payload => {
             if (payload is { Opcode: GatewayOpcode.S2CHello }) {
                 _testOutputHelper.WriteLine("Success: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
                 var data = payload.GetData<HelloResponse>();
-                await Client.Gateway.Disconnect();
-                
-                Assert.NotEqual(0, data.HeartbeatInterval);
-                Assert.True(data.HeartbeatInterval > 1000, "data.HeartbeatInterval > 1000");
+
+                try {
+                    Assert.NotEqual(0, data.HeartbeatInterval);
+                    Assert.True(data.HeartbeatInterval > 1000, "data.HeartbeatInterval > 1000");
+                }
+                finally {
+                    await Client.Gateway.Disconnect();
+                }
+
                 return true;
             }
 
@@ -103,5 +107,4 @@ public class GatewayTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         await Client.Gateway.Connect();
         await Client.Gateway.Start();
     }
-
 }
