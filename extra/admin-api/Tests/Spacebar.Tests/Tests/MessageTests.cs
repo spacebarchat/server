@@ -229,9 +229,15 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         Client.Gateway.OnceGatewayMessage.Add(async payload => {
             if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
                 _testOutputHelper.WriteLine("Got ready: {0} {1} ({2} data keys)", payload.Opcode, payload.DispatchEventType, payload.EventData!.Count);
-                await Channel.SendMessageAsync(new MessageSchema() {
-                    
-                });
+                var mPayload = new JsonObject() {
+                    { "content", "meow" }
+                };
+
+                var reqContent = new MultipartFormDataContent();
+                reqContent.Add(JsonContent.Create(mPayload), "payload_json");
+
+                var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", reqContent,
+                    cancellationToken: TestContext.Current.CancellationToken));
                 return false;
             }
 

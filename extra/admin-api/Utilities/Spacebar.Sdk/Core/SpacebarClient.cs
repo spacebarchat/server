@@ -130,9 +130,9 @@ public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long chan
         return (await resp.Content.ReadFromJsonAsync<Channel>())!;
     }
 
-    public async Task SendMessageAsync(MessageSchema messageSchema) {
-        throw new NotImplementedException();
-    }
+//     public async Task SendMessageAsync(MessageSchema messageSchema) {
+//         throw new NotImplementedException();
+//     }
 }
 
 public class SpacebarClientGuild(AuthenticatedSpacebarClient client, long guildId) {
