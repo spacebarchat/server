@@ -42,7 +42,7 @@ router.get(
         },
         responses: {
             200: {
-                body: "APIMemberArray",
+                body: "PublicMemberArray",
             },
             403: {
                 body: "APIErrorResponse",
@@ -65,7 +65,7 @@ router.get(
             order: { id: "ASC" },
         });
 
-        return res.json(members);
+        return res.json(members.map((m) => m.toPublicMember()));
     },
 );
 

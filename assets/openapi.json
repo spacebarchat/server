@@ -4906,12 +4906,6 @@
                     "$ref": "#/components/schemas/Channel"
                 }
             },
-            "APIMemberArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/Member"
-                }
-            },
             "APIGuildWithJoinedAt": {
                 "type": "object",
                 "properties": {
@@ -21716,7 +21710,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIMemberArray"
+                                    "$ref": "#/components/schemas/PublicMemberArray"
                                 }
                             }
                         }

@@ -5205,13 +5205,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "APIMemberArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/Member"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "APIGuildWithJoinedAt": {
         "type": "object",
         "properties": {

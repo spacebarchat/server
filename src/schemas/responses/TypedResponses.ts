@@ -45,7 +45,6 @@ export type APIWebhookArray = Webhook[];
 export type APIDiscoveryCategoryArray = Categories[];
 export type APIGeneralConfiguration = GeneralConfiguration;
 export type APIChannelArray = Channel[];
-export type APIMemberArray = Member[];
 
 export interface APIGuildWithJoinedAt extends GuildCreateResponse {
     joined_at: string;
