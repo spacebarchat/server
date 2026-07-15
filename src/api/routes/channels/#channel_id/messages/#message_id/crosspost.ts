@@ -27,7 +27,7 @@ router.post(
         permission: "MANAGE_MESSAGES",
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
         },
     }),

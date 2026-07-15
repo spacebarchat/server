@@ -156,9 +156,7 @@ router.patch(
     route({
         requestBody: "WebhookUpdateSchema",
         responses: {
-            200: {
-                body: "Message",
-            },
+            200: {},
             400: {
                 body: "APIErrorResponse",
             },

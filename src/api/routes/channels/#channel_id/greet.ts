@@ -32,7 +32,7 @@ router.post(
         permission: "SEND_MESSAGES",
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
             404: {},
             400: {
@@ -102,7 +102,7 @@ router.post(
             channel.save(),
         ]);
 
-        res.send(message);
+        res.json(publicMsg);
     },
 );
 

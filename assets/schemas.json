@@ -5114,13 +5114,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "APIMessageArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/Message"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "APIWebhookArray": {
         "type": "array",
         "items": {
@@ -5217,93 +5210,6 @@
         "items": {
             "$ref": "#/definitions/Member"
         },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "APIPublicMember": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "flags": {
-                "type": "integer"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "nick": {
-                "type": "string"
-            },
-            "joined_at": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "pending": {
-                "type": "boolean"
-            },
-            "deaf": {
-                "type": "boolean"
-            },
-            "mute": {
-                "type": "boolean"
-            },
-            "premium_since": {
-                "type": "integer"
-            },
-            "avatar": {
-                "type": "string"
-            },
-            "bio": {
-                "type": "string"
-            },
-            "theme_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
-            },
-            "pronouns": {
-                "type": "string"
-            },
-            "communication_disabled_until": {
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "user": {
-                "$ref": "#/definitions/PublicUser"
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
-        "required": [
-            "banner",
-            "bio",
-            "communication_disabled_until",
-            "deaf",
-            "flags",
-            "guild_id",
-            "id",
-            "joined_at",
-            "mute",
-            "pending",
-            "roles",
-            "user"
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "APIGuildWithJoinedAt": {
@@ -14462,7 +14368,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@749": {
+                    "__@unscopables@750": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -14588,17 +14494,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@747": {
+                            "__@iterator@748": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@749": {
+                            "__@unscopables@750": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@749",
+                    "__@unscopables@750",
                     "length"
                 ]
             },

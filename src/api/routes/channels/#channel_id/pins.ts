@@ -166,7 +166,7 @@ router.get(
         permission: ["READ_MESSAGE_HISTORY"],
         responses: {
             200: {
-                body: "APIMessageArray",
+                body: "PublicMessageArray",
             },
             400: {
                 body: "APIErrorResponse",

@@ -4834,12 +4834,6 @@
                     "$ref": "#/components/schemas/Invite"
                 }
             },
-            "APIMessageArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/Message"
-                }
-            },
             "APIWebhookArray": {
                 "type": "array",
                 "items": {
@@ -4917,91 +4911,6 @@
                 "items": {
                     "$ref": "#/components/schemas/Member"
                 }
-            },
-            "APIPublicMember": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "flags": {
-                        "type": "integer"
-                    },
-                    "banner": {
-                        "type": "string"
-                    },
-                    "nick": {
-                        "type": "string"
-                    },
-                    "joined_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "pending": {
-                        "type": "boolean"
-                    },
-                    "deaf": {
-                        "type": "boolean"
-                    },
-                    "mute": {
-                        "type": "boolean"
-                    },
-                    "premium_since": {
-                        "type": "integer"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "bio": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "pronouns": {
-                        "type": "string"
-                    },
-                    "communication_disabled_until": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/PublicUser"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "required": [
-                    "banner",
-                    "bio",
-                    "communication_disabled_until",
-                    "deaf",
-                    "flags",
-                    "guild_id",
-                    "id",
-                    "joined_at",
-                    "mute",
-                    "pending",
-                    "roles",
-                    "user"
-                ]
             },
             "APIGuildWithJoinedAt": {
                 "type": "object",
@@ -13526,7 +13435,7 @@
                             "length": {
                                 "type": "integer"
                             },
-                            "__@unscopables@749": {
+                            "__@unscopables@750": {
                                 "type": "object",
                                 "additionalProperties": false,
                                 "patternProperties": {
@@ -13652,17 +13561,17 @@
                                     "with": {
                                         "type": "boolean"
                                     },
-                                    "__@iterator@747": {
+                                    "__@iterator@748": {
                                         "type": "boolean"
                                     },
-                                    "__@unscopables@749": {
+                                    "__@unscopables@750": {
                                         "type": "boolean"
                                     }
                                 }
                             }
                         },
                         "required": [
-                            "__@unscopables@749",
+                            "__@unscopables@750",
                             "length"
                         ]
                     },
@@ -14980,7 +14889,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -15047,7 +14956,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -15349,14 +15258,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Message"
-                                }
-                            }
-                        }
+                        "description": "No description available"
                     },
                     "400": {
                         "description": "",
@@ -21989,7 +21891,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIPublicMember"
+                                    "$ref": "#/components/schemas/PublicMember"
                                 }
                             }
                         }
@@ -22053,7 +21955,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIPublicMember"
+                                    "$ref": "#/components/schemas/PublicMember"
                                 }
                             }
                         }
@@ -24432,7 +24334,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIMessageArray"
+                                    "$ref": "#/components/schemas/PublicMessageArray"
                                 }
                             }
                         }
@@ -25348,7 +25250,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIMessageArray"
+                                    "$ref": "#/components/schemas/PublicMessageArray"
                                 }
                             }
                         }
@@ -25660,7 +25562,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIMessageArray"
+                                    "$ref": "#/components/schemas/PublicMessageArray"
                                 }
                             }
                         }
@@ -26229,7 +26131,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -26299,7 +26201,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -26358,7 +26260,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -26467,7 +26369,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }
@@ -26802,7 +26704,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Message"
+                                    "$ref": "#/components/schemas/PublicMessage"
                                 }
                             }
                         }

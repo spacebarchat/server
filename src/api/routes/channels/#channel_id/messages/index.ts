@@ -77,7 +77,7 @@ router.get(
         },
         responses: {
             200: {
-                body: "APIMessageArray",
+                body: "PublicMessageArray",
             },
             400: {
                 body: "APIErrorResponse",
@@ -291,7 +291,7 @@ router.post(
         right: "SEND_MESSAGES",
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
             400: {
                 body: "APIErrorResponse",

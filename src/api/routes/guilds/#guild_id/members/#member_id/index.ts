@@ -29,7 +29,7 @@ router.get(
     route({
         responses: {
             200: {
-                body: "APIPublicMember",
+                body: "PublicMember",
             },
             403: {
                 body: "APIErrorResponse",

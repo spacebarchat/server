@@ -29,7 +29,7 @@ router.patch(
         requestBody: "MemberNickChangeSchema",
         responses: {
             200: {
-                body: "APIPublicMember",
+                body: "PublicMember",
             },
             400: {
                 body: "APIErrorResponse",
