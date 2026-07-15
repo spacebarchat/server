@@ -30,7 +30,6 @@ export type APIPublicUser = PublicUser;
 export type APIPrivateUser = PrivateUser;
 export type APIGuildArray = APIGuild[];
 export type APIDMChannelArray = DmChannelDTO[];
-export type APIBackupCodeArray = BackupCode[];
 
 export interface UserUpdateResponse extends APIPrivateUser {
     newToken?: string;
@@ -43,7 +42,6 @@ export type APIApplicationArray = Application[];
 export type APIInviteArray = Invite[];
 export type APIWebhookArray = Webhook[];
 export type APIDiscoveryCategoryArray = Categories[];
-export type APIGeneralConfiguration = GeneralConfiguration;
 export type APIChannelArray = Channel[];
 
 export interface APIGuildWithJoinedAt extends GuildCreateResponse {
@@ -51,6 +49,7 @@ export interface APIGuildWithJoinedAt extends GuildCreateResponse {
 }
 
 export type APITemplateArray = Template[];
+export type APIGeneralConfiguration = GeneralConfiguration;
 export type APILimitsConfiguration = LimitsConfiguration;
 
 export type APIConnectionsConfiguration = Record<

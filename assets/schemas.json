@@ -1573,23 +1573,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "BackupCodesChallengeResponse": {
-        "type": "object",
-        "properties": {
-            "nonce": {
-                "type": "string"
-            },
-            "regenerate_nonce": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "nonce",
-            "regenerate_nonce"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "CollectiblesCategoriesResponse": {
         "type": "array",
         "items": {
@@ -4955,13 +4938,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "APIBackupCodeArray": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/BackupCode"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "UserUpdateResponse": {
         "type": "object",
         "properties": {
@@ -5128,76 +5104,6 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "APIGeneralConfiguration": {
-        "type": "object",
-        "properties": {
-            "instanceName": {
-                "type": "string"
-            },
-            "serverName": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "instanceDescription": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "frontPage": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "tosPage": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "correspondenceEmail": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "correspondenceUserID": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "image": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "instanceId": {
-                "type": "string"
-            },
-            "autoCreateBotUsers": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "autoCreateBotUsers",
-            "correspondenceEmail",
-            "correspondenceUserID",
-            "frontPage",
-            "image",
-            "instanceDescription",
-            "instanceId",
-            "instanceName",
-            "serverName",
-            "tosPage"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "APIChannelArray": {
         "type": "array",
         "items": {
@@ -5360,6 +5266,76 @@
         "items": {
             "$ref": "#/definitions/Template"
         },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "APIGeneralConfiguration": {
+        "type": "object",
+        "properties": {
+            "instanceName": {
+                "type": "string"
+            },
+            "serverName": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "instanceDescription": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "frontPage": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "tosPage": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "correspondenceEmail": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "correspondenceUserID": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "image": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "instanceId": {
+                "type": "string"
+            },
+            "autoCreateBotUsers": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "autoCreateBotUsers",
+            "correspondenceEmail",
+            "correspondenceUserID",
+            "frontPage",
+            "image",
+            "instanceDescription",
+            "instanceId",
+            "instanceName",
+            "serverName",
+            "tosPage"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "APILimitsConfiguration": {

@@ -1488,21 +1488,6 @@
                     "username"
                 ]
             },
-            "BackupCodesChallengeResponse": {
-                "type": "object",
-                "properties": {
-                    "nonce": {
-                        "type": "string"
-                    },
-                    "regenerate_nonce": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "nonce",
-                    "regenerate_nonce"
-                ]
-            },
             "CollectiblesCategoriesResponse": {
                 "type": "array",
                 "items": {
@@ -4683,12 +4668,6 @@
                     "$ref": "#/components/schemas/DmChannelDTO"
                 }
             },
-            "APIBackupCodeArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/BackupCode"
-                }
-            },
             "UserUpdateResponse": {
                 "type": "object",
                 "properties": {
@@ -4846,60 +4825,6 @@
                     "$ref": "#/components/schemas/Categories"
                 }
             },
-            "APIGeneralConfiguration": {
-                "type": "object",
-                "properties": {
-                    "instanceName": {
-                        "type": "string"
-                    },
-                    "serverName": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "instanceDescription": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "frontPage": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "tosPage": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "correspondenceEmail": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "correspondenceUserID": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "image": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "instanceId": {
-                        "type": "string"
-                    },
-                    "autoCreateBotUsers": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "autoCreateBotUsers",
-                    "correspondenceEmail",
-                    "correspondenceUserID",
-                    "frontPage",
-                    "image",
-                    "instanceDescription",
-                    "instanceId",
-                    "instanceName",
-                    "serverName",
-                    "tosPage"
-                ]
-            },
             "APIChannelArray": {
                 "type": "array",
                 "items": {
@@ -5051,6 +4976,60 @@
                 "items": {
                     "$ref": "#/components/schemas/Template"
                 }
+            },
+            "APIGeneralConfiguration": {
+                "type": "object",
+                "properties": {
+                    "instanceName": {
+                        "type": "string"
+                    },
+                    "serverName": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instanceDescription": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "frontPage": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "tosPage": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "correspondenceEmail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "correspondenceUserID": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instanceId": {
+                        "type": "string"
+                    },
+                    "autoCreateBotUsers": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "autoCreateBotUsers",
+                    "correspondenceEmail",
+                    "correspondenceUserID",
+                    "frontPage",
+                    "image",
+                    "instanceDescription",
+                    "instanceId",
+                    "instanceName",
+                    "serverName",
+                    "tosPage"
+                ]
             },
             "APILimitsConfiguration": {
                 "type": "object",
@@ -16329,7 +16308,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIBackupCodeArray"
+                                    "$ref": "#/components/schemas/BackupCodeArray"
                                 }
                             }
                         }
@@ -16383,7 +16362,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/APIBackupCodeArray"
+                                    "$ref": "#/components/schemas/BackupCodeArray"
                                 }
                             }
                         }
