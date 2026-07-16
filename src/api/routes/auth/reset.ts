@@ -19,7 +19,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/util/handlers/route";
-import { User } from "@spacebar/database";
+import { Session, User } from "@spacebar/database";
 import { checkToken, Email, FieldErrors, generateToken } from "@spacebar/util";
 import { PasswordResetSchema } from "@spacebar/schemas";
 
@@ -42,22 +42,36 @@ router.post(
     async (req: Request, res: Response) => {
         const { password, token } = req.body as PasswordResetSchema;
 
+        // TODO: require MFA
+        let userTokenData;
         let user;
         try {
-            const userTokenData = await checkToken(token, {
+            userTokenData = await checkToken(token, {
                 select: ["email"],
                 fingerprint: req.fingerprint,
                 ipAddress: req.ip,
             });
+
             user = userTokenData.user;
         } catch {
+            /* empty */
+        }
+
+        if (
+            !userTokenData ||
+            !user ||
+            // validate that we have a session
+            !userTokenData.decoded.did ||
+            !userTokenData.session?.session_id ||
+            // validate the token has the `account.password.reset` scope to avoid allowing arbitrary tokens
+            !userTokenData.decoded.scopes?.includes("account.password.reset")
+        )
             throw FieldErrors({
                 password: {
                     message: req.t("auth:password_reset.INVALID_TOKEN"),
                     code: "INVALID_TOKEN",
                 },
             });
-        }
 
         // the salt is saved in the password refer to bcrypt docs
         const hash = await bcrypt.hash(password, 12);
@@ -69,9 +83,11 @@ router.post(
             },
         };
         await User.update({ id: user.id }, data);
+        await Session.delete({ user_id: user.id, session_id: userTokenData.decoded.did });
 
-        // come on, the user has to have an email to reset their password in the first place
-        await Email.sendPasswordChanged(user, user.email!);
+        if (user.email)
+            // checking anyways because we might have generated the link out of band
+            await Email.sendPasswordChanged(user, user.email!);
 
         res.json({ token: await generateToken(user.id) });
     },

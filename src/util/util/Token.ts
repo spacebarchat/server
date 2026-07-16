@@ -46,6 +46,8 @@ export type UserTokenData = {
         ver?: number;
         // device id
         did?: string;
+        // OAuth scopes
+        scopes?: string[];
     };
 };
 
@@ -154,7 +156,7 @@ export const checkToken = (
         } else return void rejectAndLog(reject, 400, "Unsupported token algorithm: " + dec.header.alg);
     });
 
-export async function generateToken(id: string, isAdminSession: boolean = false): Promise<string | undefined> {
+export async function generateToken(id: string, isAdminSession: boolean = false, scopes: string[] | undefined = undefined): Promise<string | undefined> {
     const iat = Math.floor(Date.now() / 1000);
     const keyPair = JwtKeypairManager.keypair;
 
@@ -173,7 +175,7 @@ export async function generateToken(id: string, isAdminSession: boolean = false)
     await newSession.save();
 
     return new Promise((res, rej) => {
-        const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentTokenFormatVersion, did: newSession.session_id } as UserTokenData["decoded"];
+        const payload = { id, iat, kid: keyPair.fingerprint, ver: CurrentTokenFormatVersion, did: newSession.session_id, scopes } as UserTokenData["decoded"];
         jwt.sign(
             payload,
             keyPair.privateKey,
