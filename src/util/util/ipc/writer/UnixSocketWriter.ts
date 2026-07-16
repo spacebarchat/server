@@ -101,16 +101,20 @@ export class UnixSocketWriter extends BaseEventWriter {
                 });
 
                 this.clients[fullPath].on("error", (err) => {
-                    console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
                     // clean up after error
                     if (this.clients[fullPath]) {
                         delete this.clients[fullPath];
                     }
+
+                    if ("code" in err && err.code == "ECONNREFUSED") {
+                        console.error("[UnixSocketWriter] Got ECONNREFUSED for socket", fullPath, " - assuming it is orphaned...");
+                        fs.unlinkSync(fullPath);
+                    } else console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
                 });
 
                 // handle clean socket closure
-                this.clients[fullPath].on("close", () => {
-                    console.log("[UnixSocketWriter] Unix socket client closed:", fullPath);
+                this.clients[fullPath].on("close", (hadError) => {
+                    console.log("[UnixSocketWriter] Unix socket client closed:", fullPath, "- hadError:", hadError);
                     delete this.clients[fullPath];
                     this.openConnectionsMetric.set(Object.entries(this.clients).length);
                 });
