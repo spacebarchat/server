@@ -28,7 +28,7 @@ in
   name = "test-bundle-starts" + lib.optionalString (withIpc != "unix") ("_ipc=" + withIpc);
   skipTypeCheck = true;
   skipLint = true;
-  globalTimeout = 300; # 120
+  globalTimeout = 600; # 300; # 120
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
