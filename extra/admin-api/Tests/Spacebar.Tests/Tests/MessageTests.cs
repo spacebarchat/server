@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using ArcaneLibs.Extensions;
 using Spacebar.Models.Api;
 using Spacebar.Models.Gateway;
@@ -223,7 +224,7 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         var msg = json.Deserialize<Message>();
         Assert.Equal(content, msg.Content);
     }
-    
+
     // [Fact]
     // public async Task ShouldNotMessageUpdateForLinklessMessage() {
     //     Client.Gateway.OnceGatewayMessage.Add(async payload => {
@@ -253,4 +254,48 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
     //     await Client.Gateway.Connect();
     //     await Client.Gateway.Start();
     // }
+
+    [Fact]
+    public async Task SendFileMessageMultipartMultiAttachments() {
+        var content = new MultipartFormDataContent();
+        content.Add(JsonContent.Create(new JsonObject() {
+            { "content", "meow" },
+        }), "payload_json");
+
+        for (int i = 5; i < 15; i++) {
+            content.Add(
+                new ByteArrayContent($"Hellorld! {i}".AsBytes().ToArray()) {
+                    Headers = {
+                        ContentType = new MediaTypeHeaderValue("text/plain", "utf-8"),
+                        ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = $"files[{i}]", FileName = $"hellorld_{i}.txt" }
+                    }
+                }
+            );
+        }
+
+        var res = await Assert.HttpSuccess(
+            await Client.ApiHttpClient.PostAsync($"channels/{Channel.Id}/messages", content, cancellationToken: TestContext.Current.CancellationToken)
+        );
+        var msg = (await res.Content.ReadFromJsonAsync<Message>(cancellationToken: TestContext.Current.CancellationToken));
+
+        Assert.Equal("meow", msg.Content);
+        Assert.Equal(10, msg.Attachments.Count);
+
+        foreach (var att in msg.Attachments) {
+            // _testOutputHelper.WriteLine(att.ToJson(indent: false));
+            // _testOutputHelper.WriteLine(att.Url);
+            Assert.StringNotNullOrWhitespace(att.Filename);
+            Assert.StringNotNullOrWhitespace(att.ContentType);
+            Assert.StringNotNullOrWhitespace(att.Url);
+            Assert.StringNotNullOrWhitespace(att.ProxyUrl);
+            Assert.NotEqual(0, att.Size);
+            Assert.NotEqual(0, att.Id);
+
+            var attCdnResponse = await Assert.SuccessfullyHttpGetAsync(att.Url);
+            Assert.Equal(att.Filename.Length - 3, attCdnResponse.Content.Headers.ContentLength);
+            var attContent = await attCdnResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            var attIdx = new Regex(@"hellorld_(\d+).txt").Match(att.Filename).Groups[1];
+            Assert.Equal($"Hellorld! {attIdx}", attContent);
+        }
+    }
 }
