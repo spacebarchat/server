@@ -258,7 +258,7 @@ export const messageUpload = multer({
     limits: {
         fileSize: Config.get().limits.message.maxAttachmentSize,
         fields: 10,
-        // files: 1
+        files: Config.get().limits.message.maxAttachments,
     },
     storage: multer.memoryStorage(),
 }); // max upload 50 mb
