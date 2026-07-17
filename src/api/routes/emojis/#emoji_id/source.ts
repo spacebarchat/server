@@ -50,7 +50,6 @@ router.get(
             return;
         }
 
-        // TODO: emojis can be owned by applications these days, account for this when we get there?
         if (emoji.guild_id)
             res.json({
                 type: "GUILD",

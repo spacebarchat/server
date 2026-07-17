@@ -21,6 +21,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/util/handlers/route";
 import { Channel, Message } from "@spacebar/database";
 import { Config, emitEvent, getPermission, getRights, MessageDeleteBulkEvent } from "@spacebar/util";
+import { In } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -64,7 +65,7 @@ router.post(
             if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
         }
 
-        await Message.delete(messages);
+        await Message.delete({ id: In(messages), channel_id: channel_id });
 
         await emitEvent({
             event: "MESSAGE_DELETE_BULK",
