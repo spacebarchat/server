@@ -82,8 +82,9 @@ router.get("/:channel_id/:message_id/:filename", cache, async (req: Request, res
     if (req.headers.signature) {
         hasValidAuth = req.headers.signature !== Config.get().security.requestSignature;
         if (!hasValidAuth) console.warn("[CDN/Attachments] Client sent invalid signature header");
-    } else if (!Config.get().security.cdnSignUrls) hasValidAuth = true;
-    else {
+    } else if (!Config.get().security.cdnSignUrls) {
+        hasValidAuth = true;
+    } else {
         hasValidAuth = hasValidSignature(
             new NewUrlUserSignatureData({
                 ip: req.ip,
