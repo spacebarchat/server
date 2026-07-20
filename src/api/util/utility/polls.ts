@@ -22,7 +22,8 @@ import { MessageOptions, sendMessage } from "../handlers/Message";
 import { Message } from "@spacebar/database";
 
 export async function generatePollResultsMessage(options: MessageOptions): Promise<MessageOptions> {
-    const message = await Message.create({
+    // TODO: shouldnt this get saved?
+    const message = Message.create({
         ...options,
         message_reference: options.message_reference ?? undefined,
         poll: options.poll,

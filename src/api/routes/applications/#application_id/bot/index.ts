@@ -67,8 +67,9 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
+        const app = await Application.findOneOrFail({ where: { id: req.params.application_id as string } });
         const bot = await User.findOneOrFail({ where: { id: req.params.application_id as string } });
-        const owner = req.user;
+        const owner = await User.findOneOrFail({ where: { id: app.owner_id }, select: { id: true, totp_secret: true } });
 
         if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
