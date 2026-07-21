@@ -190,9 +190,20 @@ function apiRoutes(missingRoutes) {
                         console.log(
                             `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[33m`,
                             "Route",
-                            method,
+                            method.toUpperCase(),
                             path,
                             "missing response schema:",
+                            v.body,
+                            "\x1b[0m",
+                        );
+                    } else if (v.body.startsWith("API") && v.body !== "APIErrorResponse" && v.body !== "APIErrorOrCaptchaResponse") {
+                        missingResponseSchemaCount++;
+                        console.log(
+                            `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[33m`,
+                            "Route",
+                            method.toUpperCase(),
+                            path,
+                            "using entity response schema:",
                             v.body,
                             "\x1b[0m",
                         );
