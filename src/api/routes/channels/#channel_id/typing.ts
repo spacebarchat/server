@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Member } from "@spacebar/database";
 import { emitEvent, TypingStartEvent } from "@spacebar/util";
 

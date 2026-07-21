@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Ban, Member, User } from "@spacebar/database";
 import { DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, emitEvent } from "@spacebar/util";
 import { BanCreateSchema, BanRegistrySchema, GuildBanResponse, GuildBansResponse, PublicUser } from "@spacebar/schemas";

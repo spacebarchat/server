@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
 import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";

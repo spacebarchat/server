@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { PreloadedUserSettings } from "discord-protos";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { UserSettingsProtos } from "@spacebar/database";
 import { emitEvent, OrmUtils } from "@spacebar/util";
 import { SettingsProtoJsonResponse, SettingsProtoResponse, SettingsProtoUpdateJsonSchema, SettingsProtoUpdateSchema } from "@spacebar/schemas";

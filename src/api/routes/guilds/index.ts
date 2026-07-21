@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Guild, Member } from "@spacebar/database";
 import { Config, DiscordApiErrors, getRights } from "@spacebar/util";
 import { GuildCreateSchema } from "@spacebar/schemas";

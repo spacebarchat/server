@@ -19,7 +19,8 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
-import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
+import { handleMessage, postHandleMessage } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Message, Webhook } from "@spacebar/database";
 import { MessageDeleteEvent, MessageUpdateEvent, emitEvent, DiscordApiErrors } from "@spacebar/util";
 import { ChannelType, PublicMessage, WebhookExecuteSchema } from "@spacebar/schemas";

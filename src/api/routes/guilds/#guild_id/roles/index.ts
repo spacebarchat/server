@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Member, Role } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Snowflake } from "@spacebar/util";
 import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";

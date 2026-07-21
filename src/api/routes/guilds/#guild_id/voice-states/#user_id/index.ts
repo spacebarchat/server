@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Member, VoiceState } from "@spacebar/database";
 import { DiscordApiErrors, emitEvent, getPermission, VoiceStateUpdateEvent } from "@spacebar/util";
 import { ChannelType, VoiceStateUpdateSchema } from "@spacebar/schemas";

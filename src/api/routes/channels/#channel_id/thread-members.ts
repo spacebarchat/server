@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { MoreThan } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Member, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
 import { emitEvent, Permissions, ThreadCreateEvent, ThreadDeleteEvent, ThreadMembersUpdateEvent } from "@spacebar/util";
 import { ChannelType, Snowflake } from "@spacebar/schemas";

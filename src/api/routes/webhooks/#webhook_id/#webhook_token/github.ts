@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { getProxyUrl, route } from "@spacebar/api/util";
+import { getProxyUrl } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { EmbedType, WebhookExecuteSchema } from "@spacebar/schemas";
 import { executeWebhook } from "../../../../util/handlers/Webhook";
 

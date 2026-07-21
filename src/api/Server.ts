@@ -40,7 +40,8 @@ import { Monitoring } from "../util/monitoring/Monitoring";
 import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { initInstance } from "./util/handlers/Instance";
-import { route, addPendingPoll } from "./util";
+import { addPendingPoll } from "./util";
+import { route } from "@spacebar/api/middlewares";
 import { GifProviderManager } from "@spacebar/integrations/gifs";
 
 const ASSETS_FOLDER = path.join(__dirname, "..", "..", "assets");

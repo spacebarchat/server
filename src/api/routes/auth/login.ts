@@ -19,7 +19,8 @@
 import crypto from "node:crypto";
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { route, verifyCaptcha } from "@spacebar/api/util";
+import { verifyCaptcha } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { Config, FieldErrors, WebAuthn, generateToken, generateWebAuthnTicket } from "@spacebar/util";
 import { LoginSchema } from "@spacebar/schemas";

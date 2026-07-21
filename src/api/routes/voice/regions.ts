@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getVoiceRegions, route } from "@spacebar/api/util";
+import { getVoiceRegions } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { Request, Response, Router } from "express";
 
 const router: Router = Router({ mergeParams: true });

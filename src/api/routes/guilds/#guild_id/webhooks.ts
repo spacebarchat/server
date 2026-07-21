@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Webhook } from "@spacebar/database";
 import { Config } from "@spacebar/util";
 import { WebhookResponse } from "@spacebar/schemas";

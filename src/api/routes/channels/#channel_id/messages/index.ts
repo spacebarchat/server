@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
+import { handleMessage, postHandleMessage } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { Attachment, Channel, Member, Message, ReadState, Relationship, User, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
 import {
     Config,

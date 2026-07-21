@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { IsNull, Not } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Message, User } from "@spacebar/database";
 import { ChannelPinsUpdateEvent, Config, DiscordApiErrors, emitEvent, MessageCreateEvent, MessageUpdateEvent } from "@spacebar/util";
 

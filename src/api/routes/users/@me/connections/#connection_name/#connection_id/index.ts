@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { ConnectedAccount } from "@spacebar/database";
 import { DiscordApiErrors, emitEvent } from "@spacebar/util";
 import { ConnectionUpdateSchema } from "@spacebar/schemas";

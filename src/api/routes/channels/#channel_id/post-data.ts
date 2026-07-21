@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { messageUpload } from "./messages";
 import { In } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Member, Message } from "@spacebar/database";
 import { PostDataSchema, PublicMessage } from "@spacebar/schemas";
 

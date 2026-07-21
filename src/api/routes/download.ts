@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { ClientRelease } from "@spacebar/database";
 import { FieldErrors } from "@spacebar/util";
 

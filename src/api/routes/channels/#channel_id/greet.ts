@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { In } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Message, Sticker } from "@spacebar/database";
 import { emitEvent, MessageCreateEvent, Permissions } from "@spacebar/util";
 import { GreetRequestSchema, MessageType } from "@spacebar/schemas";

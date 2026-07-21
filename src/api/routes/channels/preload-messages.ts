@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Message } from "@spacebar/database";
 import { Config } from "@spacebar/util";
 import { PreloadMessagesRequestSchema, PublicMessageArray } from "@spacebar/schemas";

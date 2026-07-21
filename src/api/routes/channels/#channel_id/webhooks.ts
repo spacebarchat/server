@@ -19,7 +19,7 @@
 import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, Channel, User, Webhook } from "@spacebar/database";
 import { Config, DiscordApiErrors, handleFile, ValidateName } from "@spacebar/util";
 import { isTextChannel, WebhookCreateSchema, WebhookResponse, WebhookType } from "@spacebar/schemas";

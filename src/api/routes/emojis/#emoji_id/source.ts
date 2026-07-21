@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, Emoji, Guild, Member } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
 import { APIErrorResponse, EmojiGuild, EmojiSourceResponse } from "@spacebar/schemas";
