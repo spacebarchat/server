@@ -1,10 +1,17 @@
 const express = require("express");
 const path = require("path");
 const { traverseDirectory } = require("lambert-server");
-const RouteUtility = require("../../dist/api/util/handlers/route.js");
+const RouteUtility = require("../../dist/api/middlewares/Route.js");
 const { greenBright, yellowBright, blueBright, redBright, underline, bgYellow, black } = require("picocolors");
 
 const methods = ["get", "post", "put", "delete", "patch"];
+/**
+ * @import { RouteOptions } from "../../src/api/middlewares/Route";
+ */
+/**
+ * Discovered routes
+ * @type {Map<string, RouteOptions>}
+ */
 const routes = new Map();
 let currentFile = "";
 let currentPath = "";

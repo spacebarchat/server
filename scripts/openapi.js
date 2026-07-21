@@ -25,7 +25,6 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
 const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
@@ -119,6 +118,12 @@ function getTag(key) {
     return key.match(/\/([\w-]+)/)[1];
 }
 
+const authTypes = {
+    required: [{ bearer: [] }],
+    optional: [{ bearer: [] }, {}],
+    never: [{}],
+};
+
 function apiRoutes(missingRoutes) {
     const routes = getRouteDescriptions();
 
@@ -141,14 +146,7 @@ function apiRoutes(missingRoutes) {
         obj["x-permission-required"] = route.permission;
         obj["x-fires-event"] = route.event;
 
-        if (
-            !NO_AUTHORIZATION_ROUTES.some((x) => {
-                if (typeof x === "string") return (method.toUpperCase() + " " + path).startsWith(x);
-                return x.test(method.toUpperCase() + " " + path);
-            })
-        ) {
-            obj.security = [{ bearer: [] }];
-        }
+        obj.security = authTypes[route.authentication ?? "required"];
 
         if (route.description) obj.description = route.description;
         if (route.summary) obj.summary = route.summary;
