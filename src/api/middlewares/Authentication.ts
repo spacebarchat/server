@@ -17,53 +17,9 @@
 */
 
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server/HTTPError";
 import { Session, User } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { checkToken, DiscordApiErrors, Rights, UserTokenData } from "@spacebar/util";
-
-export const NO_AUTHORIZATION_ROUTES = [
-    // Authentication routes
-    "POST /auth/login",
-    "POST /auth/register",
-    "GET /auth/location-metadata",
-    "POST /auth/mfa/",
-    "POST /auth/verify",
-    "POST /auth/forgot",
-    "POST /auth/reset",
-    "POST /auth/fingerprint",
-    "GET /invites/",
-    // Routes with a seperate auth system
-    /^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/[\w-]+\/?/, // no token requires auth
-    /^POST \/interactions\/\d+\/[A-Za-z0-9_-]+\/callback/,
-    // Public information endpoints
-    "GET /ping",
-    "GET /gateway",
-    "GET /experiments",
-    "GET /updates",
-    "GET /download",
-    "GET /scheduled-maintenances/upcoming.json",
-    // Public kubernetes integration
-    "GET /-/readyz",
-    "GET /-/healthz",
-    // Client analytics
-    "POST /science",
-    "POST /track",
-    // Public policy pages
-    "GET /policies/instance/",
-    // Oauth callback
-    "/oauth2/callback",
-    // Asset delivery
-    /^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
-    /^(GET|HEAD) \/guilds\/\d+\/shield\.svg/,
-    // Connections
-    /^(POST|HEAD) \/connections\/\w+\/callback/,
-    // Image proxy
-    /^(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
-];
-
-export const API_PREFIX = /^\/api(\/v\d+)?/;
-export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
+import { checkToken, Rights, UserTokenData } from "@spacebar/util";
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -84,7 +40,6 @@ declare global {
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
     if (req.method === "OPTIONS") return res.sendStatus(204);
-    const url = req.url.replace(API_PREFIX, "");
 
     if (req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid=")))
         req.fingerprint = req.headers.cookie

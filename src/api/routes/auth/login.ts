@@ -39,6 +39,7 @@ router.post(
                 body: "APIErrorOrCaptchaResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { login, password, captcha_key, undelete } = req.body as LoginSchema;

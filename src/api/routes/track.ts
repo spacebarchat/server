@@ -25,6 +25,7 @@ router.post(
     "/",
     route({
         spacebarOnly: false, // Not part of the public OpenAPI schema
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         // TODO:

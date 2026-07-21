@@ -30,9 +30,11 @@ router.get(
             },
         },
         spacebarOnly: true,
+        authentication: "optional",
     }),
     (req: Request, res: Response) => {
         const { limits } = Config.get();
+        // TODO: handle rights
         res.json(limits);
     },
 );

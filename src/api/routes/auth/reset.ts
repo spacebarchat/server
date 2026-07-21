@@ -38,6 +38,7 @@ router.post(
                 body: "APIErrorOrCaptchaResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { password, token } = req.body as PasswordResetSchema;

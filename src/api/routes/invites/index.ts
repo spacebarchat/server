@@ -36,6 +36,7 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { invite_code } = req.params as { [key: string]: string };

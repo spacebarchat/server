@@ -63,6 +63,7 @@ router.patch(
             403: {},
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token, message_id } = req.params as { [key: string]: string };
@@ -116,6 +117,7 @@ router.get(
             403: {},
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token, message_id } = req.params as { [key: string]: string };
@@ -144,6 +146,7 @@ router.delete(
             },
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token, message_id } = req.params as { [key: string]: string };

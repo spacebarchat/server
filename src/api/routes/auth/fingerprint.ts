@@ -20,11 +20,13 @@ import { createHash } from "node:crypto";
 import { Snowflake } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 const router = Router({ mergeParams: true });
+
 router.post(
     "/",
     route({
         responses: { 200: { body: "CreateFingerprintResponse" } },
         spacebarOnly: false, // not part of public openapi
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         const snowflake = Snowflake.generate();
@@ -33,4 +35,5 @@ router.post(
         });
     },
 );
+
 export default router;

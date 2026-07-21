@@ -31,6 +31,7 @@ router.get(
             },
         },
         spacebarOnly: true,
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         const { general } = Config.get();

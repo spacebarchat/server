@@ -47,6 +47,7 @@ router.post(
             200: { body: "TokenOnlyResponse" },
             400: { body: "APIErrorOrCaptchaResponse" },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const totalSw = Stopwatch.startNew();

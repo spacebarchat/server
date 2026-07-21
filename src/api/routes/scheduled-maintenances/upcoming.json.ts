@@ -24,6 +24,7 @@ router.get(
     "/",
     route({
         spacebarOnly: false, // not part of public openapi
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         res.json({

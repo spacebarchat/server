@@ -31,10 +31,12 @@ router.get(
             },
         },
         spacebarOnly: true,
+        authentication: "optional",
     }),
     async (req: Request, res: Response) => {
         const general = Config.get();
         let outputtedConfig;
+        // TODO: clean up
         if (req.user_id) {
             const rights = await getRights(req.user_id);
             if (rights.has("OPERATOR")) outputtedConfig = general;

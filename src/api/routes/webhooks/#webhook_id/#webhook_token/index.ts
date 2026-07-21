@@ -37,6 +37,7 @@ router.get(
             },
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token } = req.params as { [key: string]: string };
@@ -109,6 +110,7 @@ router.post(
             },
             404: {},
         },
+        authentication: "never",
     }),
     executeWebhook,
 );
@@ -123,6 +125,7 @@ router.delete(
             },
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token } = req.params as { [key: string]: string };
@@ -166,6 +169,7 @@ router.patch(
             403: {},
             404: {},
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { webhook_id, webhook_token } = req.params as { [key: string]: string };

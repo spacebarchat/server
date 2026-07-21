@@ -421,6 +421,7 @@ router.post(
             },
             404: {},
         },
+        authentication: "never",
     }),
     executeWebhook,
 );

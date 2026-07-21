@@ -31,6 +31,7 @@ router.post(
     route({
         stripNulls: true,
         requestBody: "InteractionCallbacksSchema",
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const body = req.body as InteractionCallbacksSchema;

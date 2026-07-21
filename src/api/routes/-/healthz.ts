@@ -22,10 +22,18 @@ import { getDatabase } from "@spacebar/database";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({ deprecated: true, spacebarOnly: true }), (req: Request, res: Response) => {
-    if (!getDatabase()) return res.sendStatus(503);
+router.get(
+    "/",
+    route({
+        deprecated: true,
+        spacebarOnly: true,
+        authentication: "never",
+    }),
+    (req: Request, res: Response) => {
+        if (!getDatabase()) return res.sendStatus(503);
 
-    return res.sendStatus(200);
-});
+        return res.sendStatus(200);
+    },
+);
 
 export default router;
