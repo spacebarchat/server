@@ -15711,6 +15711,9 @@
             "maxReactions": {
                 "type": "integer"
             },
+            "maxAttachments": {
+                "type": "integer"
+            },
             "maxAttachmentSize": {
                 "type": "integer"
             },
@@ -15730,6 +15733,7 @@
         "additionalProperties": false,
         "required": [
             "maxAttachmentSize",
+            "maxAttachments",
             "maxBulkDelete",
             "maxCharacters",
             "maxEmbedDownloadSize",

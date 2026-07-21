@@ -14750,6 +14750,9 @@
                     "maxReactions": {
                         "type": "integer"
                     },
+                    "maxAttachments": {
+                        "type": "integer"
+                    },
                     "maxAttachmentSize": {
                         "type": "integer"
                     },
@@ -14768,6 +14771,7 @@
                 },
                 "required": [
                     "maxAttachmentSize",
+                    "maxAttachments",
                     "maxBulkDelete",
                     "maxCharacters",
                     "maxEmbedDownloadSize",
@@ -15286,9 +15290,7 @@
         "/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}/": {
             "patch": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -15363,9 +15365,7 @@
             },
             "get": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "200": {
@@ -15430,9 +15430,7 @@
             },
             "delete": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "204": {
@@ -15489,9 +15487,7 @@
         "/webhooks/{webhook_id}/{webhook_token}/": {
             "get": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "description": "Returns a webhook object for the given id and token.",
                 "responses": {
@@ -15535,9 +15531,7 @@
             },
             "post": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -15611,9 +15605,7 @@
             },
             "delete": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "204": {
@@ -15659,9 +15651,7 @@
             },
             "patch": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -15722,9 +15712,7 @@
         "/webhooks/{webhook_id}/{webhook_token}/github/": {
             "post": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -18043,6 +18031,9 @@
         },
         "/updates/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -18082,6 +18073,9 @@
         },
         "/track/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "default": {
                         "description": "No description available"
@@ -18411,6 +18405,9 @@
         },
         "/science/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "204": {
                         "description": "No description available"
@@ -18423,6 +18420,9 @@
         },
         "/scheduled-maintenances/upcoming.json/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "default": {
                         "description": "No description available"
@@ -19375,6 +19375,12 @@
         },
         "/policies/instance/limits/": {
             "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    },
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19400,6 +19406,9 @@
         },
         "/policies/instance/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19425,6 +19434,9 @@
         },
         "/policies/instance/domains/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19450,6 +19462,12 @@
         },
         "/policies/instance/config/": {
             "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    },
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19475,6 +19493,9 @@
         },
         "/ping/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19703,6 +19724,9 @@
         },
         "/invites/{invite_code}": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -19878,9 +19902,7 @@
         "/interactions/{interaction_id}/{interaction_token}/callback/": {
             "post": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -20196,9 +20218,7 @@
         "/guilds/{guild_id}/widget.png/": {
             "get": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "200": {
@@ -20244,9 +20264,7 @@
         "/guilds/{guild_id}/widget.json/": {
             "get": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "200": {
@@ -24197,6 +24215,9 @@
         },
         "/gateway/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -24216,6 +24237,9 @@
         },
         "/gateway/bot/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -24259,6 +24283,12 @@
         },
         "/experiments/": {
             "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    },
+                    {}
+                ],
                 "responses": {
                     "default": {
                         "description": "No description available"
@@ -24316,6 +24346,9 @@
         },
         "/download/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "302": {
                         "description": "No description available"
@@ -24411,9 +24444,7 @@
         "/connections/{connection_name}/callback/": {
             "post": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "requestBody": {
                     "required": true,
@@ -27345,6 +27376,9 @@
         },
         "/auth/verify/view-backup-codes-challenge/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27385,6 +27419,9 @@
         "/auth/verify/resend/": {
             "post": {
                 "x-right-required": "RESEND_VERIFICATION_EMAIL",
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "204": {
                         "description": "No description available"
@@ -27417,6 +27454,9 @@
         },
         "/auth/verify/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27507,6 +27547,9 @@
         },
         "/auth/reset/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27546,6 +27589,9 @@
         },
         "/auth/register/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27585,6 +27631,9 @@
         },
         "/auth/mfa/webauthn/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27624,6 +27673,9 @@
         },
         "/auth/mfa/totp/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27680,6 +27732,9 @@
         },
         "/auth/login/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27719,6 +27774,9 @@
         },
         "/auth/location-metadata/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -27787,6 +27845,9 @@
         },
         "/auth/forgot/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -27819,6 +27880,9 @@
         },
         "/auth/fingerprint/": {
             "post": {
+                "security": [
+                    {}
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -29154,6 +29218,9 @@
         },
         "/-/readyz/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "deprecated": true,
                 "responses": {
                     "default": {
@@ -29173,6 +29240,9 @@
         },
         "/-/healthz/": {
             "get": {
+                "security": [
+                    {}
+                ],
                 "deprecated": true,
                 "responses": {
                     "default": {
