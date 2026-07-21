@@ -40,7 +40,7 @@ export class Server {
         }
     }
 
-    registerRoute(root: string, file: string): Router | undefined {
+    registerRoute(root: string, file: string, destRouter: Router | undefined = undefined): Router | undefined {
         if (root.endsWith("/") || root.endsWith("\\")) root = root.slice(0, -1); // removes slash at the end of the root dir
         let path = file.replace(root, ""); // remove root from path and
         path = path.split(".").slice(0, -1).join("."); // trancate .js/.ts file extension of path
@@ -54,7 +54,7 @@ export class Server {
             if (router.default) router = router.default;
             if (!router || router?.prototype?.constructor?.name !== "router") throw `File doesn't export any default router`;
 
-            this.app.use(
+            (destRouter ?? this.app).use(
                 path,
                 // TODO: I wish this middleware wasn't nessecary to preserve base path param names for monitoring...
                 (_, res, next) => {
