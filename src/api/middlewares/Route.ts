@@ -74,6 +74,11 @@ export interface RouteOptions {
     // 	event?: EVENT | EVENT[];
     // 	headers?: Record<string, string>;
     // };
+
+    /**
+     * @defaultValue "required"
+     */
+    authentication?: "never" | "optional" | "required";
 }
 export function stripNull(obj: object) {
     for (const [key, value] of Object.entries(obj)) {
@@ -126,7 +131,11 @@ export function route(opts: RouteOptions) {
         if (!validate) throw new Error(`Body schema ${opts.requestBody} not found`);
     }
 
+    opts.authentication ??= "required";
+
     return async (req: Request, res: Response, next: NextFunction) => {
+        if (opts.authentication === "required" && !req.isAuthenticated) throw DiscordApiErrors.UNAUTHORIZED;
+
         if (opts.permission) {
             const { guild_id, channel_id } = req.params as { [key: string]: string };
             req.permission = await getPermission(req.user_id, guild_id, channel_id);

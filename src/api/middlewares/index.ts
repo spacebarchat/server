@@ -22,4 +22,5 @@ export * from "./CORS";
 export * from "./ErrorHandler";
 export * from "./ImageProxy";
 export * from "./RateLimit";
+export * from "./Route";
 export * from "./Translation";

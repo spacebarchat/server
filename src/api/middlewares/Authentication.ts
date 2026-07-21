@@ -20,7 +20,7 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Session, User } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { checkToken, Rights, UserTokenData } from "@spacebar/util";
+import { checkToken, DiscordApiErrors, Rights, UserTokenData } from "@spacebar/util";
 
 export const NO_AUTHORIZATION_ROUTES = [
     // Authentication routes
@@ -77,6 +77,7 @@ declare global {
             session?: Session;
             rights: Rights;
             fingerprint?: string;
+            isAuthenticated: boolean;
         }
     }
 }
@@ -96,33 +97,16 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
             `__sb_sessid=${(req.fingerprint = Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32))}; Secure; HttpOnly; SameSite=None; Path=/`,
         );
 
-    if (
-        NO_AUTHORIZATION_ROUTES.some((x) => {
-            if (typeof x !== "string") {
-                return x.test(req.method + " " + url);
-            }
+    await handleAuthentication(req);
 
-            const fullRoute = req.method + " " + url;
+    return next();
+}
 
-            if (req.method === "HEAD") {
-                const urlPart = x.split(" ").slice(1).join(" ");
-                if (urlPart.endsWith("/")) {
-                    return url.startsWith(urlPart);
-                } else {
-                    return url === urlPart;
-                }
-            }
-
-            if (x.endsWith("/")) {
-                return fullRoute.startsWith(x);
-            } else {
-                return fullRoute === x;
-            }
-        })
-    )
-        return next();
-
-    if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
+export async function handleAuthentication(req: Request) {
+    if (!req.headers.authorization) {
+        req.isAuthenticated = false;
+        return;
+    }
 
     try {
         const { decoded, user, session } = (req.tokenData = await checkToken(req.headers.authorization, {
@@ -136,11 +120,9 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
         req.user = user;
         req.session = session;
         req.rights = new Rights(Number(user.rights));
-        return next();
-    } catch (error) {
-        if (error instanceof HTTPError) {
-            return next(error);
-        }
-        return next(new HTTPError(error!.toString(), 400));
+        req.isAuthenticated = true;
+    } catch (e) {
+        req.isAuthenticated = false;
+        console.error("[Authentication] Token was provided, but was invalid:", e);
     }
 }
