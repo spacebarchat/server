@@ -84,6 +84,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-Offload}";
+        Slice = "system-spacebar.slice";
       };
     };
   };

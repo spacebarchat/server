@@ -106,6 +106,11 @@ in
   // secrets.options;
 
   config = lib.mkIf cfg.enable {
+    systemd.slices.system-spacebar = {
+      description = "Spacebar server";
+      documentation = [ "https://docs.spacebar.chat"];
+    };
+
     services.spacebarchat-server.uApi.extraConfiguration.Spacebar.UApi.FallbackApiEndpoint = "http://127.0.0.1:${toString cfg.apiEndpoint.localPort}";
 
     systemd.services.spacebar-api = makeServerTsService {
@@ -128,6 +133,7 @@ in
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-api";
         Type = "notify";
+        Slice = "system-spacebar.slice";
       };
     };
 
@@ -153,6 +159,7 @@ in
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-gateway";
         Type = "notify";
+        Slice = "system-spacebar.slice";
       };
     };
 
@@ -177,6 +184,7 @@ in
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/start-cdn";
         Type = "notify";
+        Slice = "system-spacebar.slice";
       };
     });
   };
