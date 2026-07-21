@@ -22,7 +22,7 @@ import { In } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
 import { Webhook, Channel, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, getPermission, WebhooksUpdateEvent, emitEvent, handleFile, ValidateName, MessageDeleteBulkEvent } from "@spacebar/util";
-import { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
+import type { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

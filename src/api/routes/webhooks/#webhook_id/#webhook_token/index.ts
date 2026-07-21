@@ -23,7 +23,7 @@ import { route } from "@spacebar/api/middlewares";
 import { Webhook, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, handleFile, ValidateName, WebhooksUpdateEvent } from "@spacebar/util";
 import { executeWebhook } from "@spacebar/api/util/handlers/Webhook";
-import { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
+import type { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 

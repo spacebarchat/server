@@ -21,7 +21,7 @@ import path from "node:path";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { ReportMenuType, ReportMenuTypeNames, CreateReportSchema } from "@spacebar/schemas";
+import { ReportMenuTypeNames, ReportMenuType, type CreateReportSchema, ReportMenuTypeNameArray } from "@spacebar/schemas";
 import { FieldErrors } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
@@ -32,7 +32,7 @@ router.get(
         description: "[EXT] Get available reporting menu types.",
         responses: {
             200: {
-                body: "Array<ReportMenuTypeNames>",
+                body: "ReportMenuTypeNames",
             },
         },
     }),
@@ -161,9 +161,7 @@ for (const type of Object.values(ReportMenuTypeNames)) {
                     );
             };
 
-            const t = Number(Object.entries(ReportMenuTypeNames).find((x) => x[1] === type)?.[0]) as ReportMenuType;
-            // TODO: did i miss anything?
-            switch (t) {
+            switch (type) {
                 case ReportMenuType.GUILD:
                 case ReportMenuType.GUILD_DISCOVERY:
                     requireFields(body, ["guild_id"]);

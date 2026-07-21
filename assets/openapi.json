@@ -3820,6 +3820,54 @@
                     "version"
                 ]
             },
+            "ReportingMenuResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "variant": {
+                        "type": "string"
+                    },
+                    "postback_url": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string"
+                    },
+                    "root_node_id": {
+                        "type": "integer"
+                    },
+                    "success_node_id": {
+                        "type": "integer"
+                    },
+                    "fail_node_id": {
+                        "type": "integer"
+                    },
+                    "nodes": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "$ref": "#/components/schemas/ReportNode"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "fail_node_id",
+                    "name",
+                    "nodes",
+                    "postback_url",
+                    "root_node_id",
+                    "success_node_id",
+                    "variant",
+                    "version"
+                ]
+            },
             "IdentifySchema": {
                 "type": "object",
                 "properties": {
@@ -14558,6 +14606,132 @@
                     "src"
                 ]
             },
+            "ReportNode": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "report_type": {
+                        "type": "string"
+                    },
+                    "key": {
+                        "type": "string"
+                    },
+                    "header": {
+                        "type": "string"
+                    },
+                    "subheader": {
+                        "type": "string"
+                    },
+                    "info": {
+                        "type": "string"
+                    },
+                    "children": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReportNodeChild"
+                        }
+                    },
+                    "elements": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReportElement"
+                        }
+                    },
+                    "button": {
+                        "$ref": "#/components/schemas/ReportButton"
+                    },
+                    "is_multi_select_required": {
+                        "type": "boolean"
+                    },
+                    "is_auto_submit": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "children",
+                    "elements",
+                    "header",
+                    "id",
+                    "is_auto_submit",
+                    "is_multi_select_required",
+                    "key"
+                ]
+            },
+            "ReportNodeChild": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "target_node_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "name",
+                    "target_node_id"
+                ]
+            },
+            "ReportElement": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": true
+                    },
+                    "should_submit_data": {
+                        "type": "boolean"
+                    },
+                    "skip_if_unlocalized": {
+                        "type": "boolean"
+                    },
+                    "is_localized": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "data",
+                    "is_localized",
+                    "name",
+                    "should_submit_data",
+                    "skip_if_unlocalized",
+                    "type"
+                ]
+            },
+            "ReportButton": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ReportButtonType"
+                    },
+                    "target": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "target",
+                    "type"
+                ]
+            },
+            "ReportButtonType": {
+                "type": "string",
+                "enum": [
+                    "submit",
+                    "done",
+                    "cancel",
+                    "next"
+                ]
+            },
             "DmChannelDTO": {
                 "type": "object",
                 "properties": {
@@ -18515,7 +18689,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Array<ReportMenuTypeNames>"
+                                    "$ref": "#/components/schemas/ReportMenuTypeNames"
                                 }
                             }
                         }

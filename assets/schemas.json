@@ -4069,6 +4069,56 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ReportingMenuResponse": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "version": {
+                "type": "string"
+            },
+            "variant": {
+                "type": "string"
+            },
+            "postback_url": {
+                "type": "string"
+            },
+            "language": {
+                "type": "string"
+            },
+            "root_node_id": {
+                "type": "integer"
+            },
+            "success_node_id": {
+                "type": "integer"
+            },
+            "fail_node_id": {
+                "type": "integer"
+            },
+            "nodes": {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "$ref": "#/definitions/ReportNode"
+                    }
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "fail_node_id",
+            "name",
+            "nodes",
+            "postback_url",
+            "root_node_id",
+            "success_node_id",
+            "variant",
+            "version"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "IdentifySchema": {
         "type": "object",
         "properties": {
@@ -15494,6 +15544,143 @@
         "required": [
             "name",
             "src"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportNode": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "report_type": {
+                "type": "string"
+            },
+            "key": {
+                "type": "string"
+            },
+            "header": {
+                "type": "string"
+            },
+            "subheader": {
+                "type": "string"
+            },
+            "info": {
+                "type": "string"
+            },
+            "children": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ReportNodeChild"
+                }
+            },
+            "elements": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ReportElement"
+                }
+            },
+            "button": {
+                "$ref": "#/definitions/ReportButton"
+            },
+            "is_multi_select_required": {
+                "type": "boolean"
+            },
+            "is_auto_submit": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "children",
+            "elements",
+            "header",
+            "id",
+            "is_auto_submit",
+            "is_multi_select_required",
+            "key"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportNodeChild": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "target_node_id": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "name",
+            "target_node_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportElement": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "data": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+            },
+            "should_submit_data": {
+                "type": "boolean"
+            },
+            "skip_if_unlocalized": {
+                "type": "boolean"
+            },
+            "is_localized": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "data",
+            "is_localized",
+            "name",
+            "should_submit_data",
+            "skip_if_unlocalized",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportButton": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/ReportButtonType"
+            },
+            "target": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "target",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportButtonType": {
+        "type": "string",
+        "enum": [
+            "submit",
+            "done",
+            "cancel",
+            "next"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
