@@ -22,6 +22,7 @@ export class IntegrationConfiguration {
 
 export class GifIntegrationConfiguration {
     klipy: GenericGifIntegrationConfiguration = new GenericGifIntegrationConfiguration();
+    originchat: GenericGifIntegrationConfiguration = new GenericGifIntegrationConfiguration();
 }
 
 export class GenericGifIntegrationConfiguration {
