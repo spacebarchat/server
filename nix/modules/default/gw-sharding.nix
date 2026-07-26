@@ -59,7 +59,7 @@ in
         }) cfg.extraGatewayPorts
       )
       // {
-        "spacebar-gateway".serviceConfig.Slice = "system-spacebar-gateway.slice";
+        "spacebar-gateway".serviceConfig.Slice = lib.mkForce "system-spacebar-gateway.slice";
       };
   };
 }
