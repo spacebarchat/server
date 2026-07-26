@@ -39,7 +39,7 @@ in
                 # things we set by default...
                 EVENT_TRANSMISSION = "unix";
                 EVENT_SOCKET_PATH = "/run/spacebar/";
-                WORKER_NAME = "sb-gateway-${port}";
+                WORKER_NAME = "sb-gateway-${toString port}";
               }
               // cfg.extraEnvironment
               // {
