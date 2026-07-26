@@ -102,18 +102,15 @@ export class SpacebarServer extends Server {
 
         this.app.use(CORS);
         this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
+        this.app.use(Authentication);
 
         const app = this.app;
         const api = Router({ mergeParams: true });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        this.app = api;
 
-        api.use(Authentication);
         await initRateLimits(api);
         await initTranslation(api);
 
-        this.routes = (await registerRoutes(this, path.join(__dirname, "routes", "/"))).filter((r) => !!r);
+        this.routes = (await registerRoutes(this, path.join(__dirname, "routes", "/"), api)).filter((r) => !!r);
 
         // 404 is not an error in express, so this should not be an error middleware
         // this is a fine place to put the 404 handler because its after we register the routes
@@ -126,8 +123,6 @@ export class SpacebarServer extends Server {
                 request: `${req.method} ${req.url}`,
             });
         });
-
-        this.app = app;
 
         //app.use("/__development", )
         //app.use("/__internals", )
