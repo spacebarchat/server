@@ -27,7 +27,7 @@ import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection, openConnections } from "./events/Connection";
 import { cleanupOnStartup } from "./util";
 
-export class Server {
+export class GatewayServer {
     public ws: ws.Server;
     public port: number;
     public server: http.Server;
@@ -64,6 +64,7 @@ export class Server {
                 }
             }, 1000);
 
+            this.server = http.createServer();
             this.server = http.createServer(async (req, res) => {
                 if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
                     res.setHeader(

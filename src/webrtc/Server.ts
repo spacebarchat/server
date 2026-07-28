@@ -26,7 +26,7 @@ import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection } from "./events/Connection";
 import { loadWebRtcLibrary, mediaServer, WRTC_PORT_MAX, WRTC_PORT_MIN, WRTC_PUBLIC_IP } from "./util";
 
-export class Server {
+export class WebrtcServer {
     public ws: ws.Server;
     public port: number;
     public server: http.Server;
