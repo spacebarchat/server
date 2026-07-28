@@ -21,38 +21,25 @@ import ws from "ws";
 import { Server, ServerOptions } from "lambert-server";
 import { initDatabase } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { Config, initEvent, JwtKeypairManager } from "@spacebar/util";
+import { Config, initEvent, JSONReplacer, JwtKeypairManager, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection } from "./events/Connection";
 import { cleanupOnStartup } from "./util";
+import morgan from "morgan";
+import { Authentication, BodyParser, CORS, ErrorHandler } from "@spacebar/api";
+import path from "node:path";
+import { red } from "picocolors";
 
 export class GatewayServer extends Server {
     public ws: ws.Server;
-    public port: number;
-    public server: http.Server;
-    public production: boolean;
-    private monitoringLoop: NodeJS.Timeout;
 
     constructor(options?: Partial<ServerOptions>) {
         super(options);
 
-        this.server = http.createServer(async (req, res) => {
-            if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
-                res.setHeader(
-                    "Set-Cookie",
-                    `__sb_sessid=${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)}; Secure; HttpOnly; SameSite=None; Path=/`,
-                );
-            }
-            const requestUrl = new URL(`http://${req.headers.host}${req.url}`);
-            if (requestUrl.pathname === "/metrics") {
-                return await Monitoring.handleRawRequest(req, res);
-            }
+        this.http = http.createServer(this.app);
 
-            res.writeHead(200).end("Online");
-        });
-
-        this.server.on("upgrade", (request, socket, head) => {
+        this.http.on("upgrade", (request, socket, head) => {
             this.ws.handleUpgrade(request, socket, head, (socket) => {
                 this.ws.emit("connection", socket, request);
             });
@@ -68,6 +55,7 @@ export class GatewayServer extends Server {
 
     async start(): Promise<void> {
         await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
         await initEvent();
@@ -75,21 +63,47 @@ export class GatewayServer extends Server {
         await cleanupOnStartup();
         await JwtKeypairManager.init();
 
-        if (!this.server.listening) {
-            this.server.listen(this.port);
-            console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
-            await SystemdLifecycle.setStatus(`Listening on 0.0.0.0:${this.port}...`);
+        const logRequests = process.env["LOG_REQUESTS"] != undefined;
+        if (logRequests) {
+            this.app.use(
+                morgan("combined", {
+                    skip: (req, res) => {
+                        let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+                        if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+                        return skip;
+                    },
+                }),
+            );
         }
+
+        this.app.set("json replacer", JSONReplacer);
+        this.app.disable("x-powered-by");
+
+        const trustedProxies = Config.get().security.trustedProxies;
+        if (trustedProxies) this.app.set("trust proxy", trustedProxies);
+
+        this.app.use(CORS);
+        this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
+        this.app.use(Authentication);
+
+        this.routes = (await registerRoutes(this, path.join(__dirname, "routes", "/"))).filter((r) => !!r);
+
+        this.app.get("/", (req, res) => res.status(200).send("Online"));
+
+        this.app.use(ErrorHandler);
+        if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
+
+        await super.start();
+        await SystemdLifecycle.setStatus(`Listening on ${this.options.host}:${this.options.port}...`);
 
         await ProcessLifecycle.Ready();
     }
 
     async stop() {
         await ProcessLifecycle.Shutdown();
-        clearInterval(this.monitoringLoop);
         this.ws.clients.forEach((x) => x.close());
         this.ws.close();
-        this.server.close();
+        this.http.close();
         await ProcessLifecycle.Finalize();
     }
 }
