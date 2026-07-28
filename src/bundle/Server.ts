@@ -40,7 +40,7 @@ server.on("request", app);
 
 const api = new SpacebarServer({ server, port, production, app });
 const cdn = new CDNServer({ server, port, production, app });
-const gateway = new GatewayServer({ server, port, production });
+const gateway = new GatewayServer({ server, port, production, app });
 const webrtc = new WebrtcServer({
     server: undefined,
     port: wrtcWsPort,
