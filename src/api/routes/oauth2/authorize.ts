@@ -1,17 +1,17 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
 	Copyright (C) 2023 Spacebar and Spacebar Contributors
-	
+
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
 	by the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
-	
+
 	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU Affero General Public License for more details.
-	
+
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
@@ -214,7 +214,7 @@ router.post(
         if (!app) throw new ApiError("Unknown Application", 10002, 404);
         if (!app.bot) throw new ApiError("OAuth2 application does not have a bot", 50010, 400);
 
-        await Member.addToGuild(app.id, body.guild_id);
+        await Member.addToGuild(app.bot.id, body.guild_id);
         if (body.permissions) {
             const role = Role.create({
                 managed: true,
@@ -228,7 +228,7 @@ router.post(
                 position: 1, // TODO: calculate actual position and move stuff around
             });
             await role.save();
-            await Member.addRole(body.guild_id, req.user_id, role.id);
+            await Member.addRole(app.bot.id, body.guild_id, role.id);
         }
 
         return res.json({
