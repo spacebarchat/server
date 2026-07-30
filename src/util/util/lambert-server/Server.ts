@@ -45,6 +45,9 @@ export class Server {
         let path = file.replace(root, ""); // remove root from path and
         path = path.split(".").slice(0, -1).join("."); // trancate .js/.ts file extension of path
         path = path.replaceAll("#", ":").replaceAll("!", "?").replaceAll("\\", "/");
+        // special handling for percent encoded path params (eg. path parts that start with "."->"%2E")
+        // neither eslint, typescript nor this code is compatible with just having a "."
+        path = path.replaceAll(/%[A-Za-z0-9]{2}/g, (match) => decodeURIComponent(match));
         if (path.endsWith("/index")) path = path.slice(0, -6); // delete index from path
         if (!path.length) path = "/"; // first root index.js file must have a / path
 

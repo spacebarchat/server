@@ -16,8 +16,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import path from "node:path";
 import { ApiError } from "./ApiError";
 
+// Environment constants
+export const ASSETS_FOLDER = path.join(__dirname, "..", "..", "..", "assets");
+export const PUBLIC_ASSETS_FOLDER = path.join(ASSETS_FOLDER, "public");
+
+// Response constants
 export const WSCodes = {
     1000: "WS_CLOSE_REQUESTED",
     4004: "TOKEN_INVALID",
