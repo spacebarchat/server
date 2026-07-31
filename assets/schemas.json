@@ -7855,6 +7855,64 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "GifIntegrationsResponse": {
+        "type": "object",
+        "properties": {
+            "providers": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                        "available": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "available"
+                    ]
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "providers"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SpacebarVersionResponse": {
+        "type": "object",
+        "properties": {
+            "implementation": {
+                "type": "string"
+            },
+            "version": {
+                "type": "object",
+                "properties": {
+                    "rev": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "lastModified": {
+                        "type": "integer"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "lastModified",
+                    "rev"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "implementation",
+            "version"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "SpacebarWellKnownLegacyResponse": {
         "type": "object",
         "properties": {

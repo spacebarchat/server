@@ -7367,6 +7367,60 @@
                     }
                 }
             },
+            "GifIntegrationsResponse": {
+                "type": "object",
+                "properties": {
+                    "providers": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "available": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "available"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "providers"
+                ]
+            },
+            "SpacebarVersionResponse": {
+                "type": "object",
+                "properties": {
+                    "implementation": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "rev": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "lastModified": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "lastModified",
+                            "rev"
+                        ]
+                    }
+                },
+                "required": [
+                    "implementation",
+                    "version"
+                ]
+            },
             "SpacebarWellKnownLegacyResponse": {
                 "type": "object",
                 "properties": {
@@ -29691,8 +29745,15 @@
                     {}
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SpacebarVersionResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -29712,8 +29773,15 @@
                     {}
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GifIntegrationsResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
