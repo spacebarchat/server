@@ -21,7 +21,7 @@ import fs, { FSWatcher } from "node:fs";
 import path from "node:path";
 import { red } from "picocolors";
 import { Gauge } from "prom-client";
-import { Stopwatch } from "@spacebar/extensions";
+import { DateBuilder, sleep, Stopwatch } from "@spacebar/extensions";
 import { Event } from "@spacebar/util";
 import { Monitoring } from "../../../monitoring/Monitoring";
 import { ProcessLifecycle } from "../../ProcessLifecycle";
@@ -60,7 +60,7 @@ export class UnixSocketWriter extends BaseEventWriter {
 
         console.log("[UnixSocketWriter] Unix socket writer initializing for", this.socketPath);
 
-        const connect = (file: string) => {
+        const connect = async (file: string) => {
             const fullPath = path.join(this.socketPath, file);
             const pid = Number(path.basename(file, ".sock"));
             console.log("[UnixSocketWriter] Attempting to connect to unix socket:", fullPath, "| proc:", getPidCmdline(pid) ?? red("No such pid: " + pid));
@@ -94,33 +94,60 @@ export class UnixSocketWriter extends BaseEventWriter {
                 return;
             }
 
-            try {
-                this.clients[fullPath] = net.createConnection(fullPath, () => {
-                    console.log("[UnixSocketWriter] Unix socket client connected to", fullPath);
-                    this.openConnectionsMetric.set(Object.entries(this.clients).length);
-                });
+            const tryConnect = () =>
+                new Promise((res, rej) => {
+                    try {
+                        this.clients[fullPath] = net.createConnection(fullPath, () => {
+                            console.log("[UnixSocketWriter] Unix socket client connected to", fullPath);
+                            this.openConnectionsMetric.set(Object.entries(this.clients).length);
+                        });
 
-                this.clients[fullPath].on("error", (err) => {
-                    // clean up after error
-                    if (this.clients[fullPath]) {
+                        this.clients[fullPath].on("error", (err) => {
+                            // clean up after error
+                            if (this.clients[fullPath]) {
+                                delete this.clients[fullPath];
+                            }
+
+                            console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
+                            rej(err);
+                        });
+
+                        // handle clean socket closure
+                        this.clients[fullPath].on("close", (hadError) => {
+                            console.log("[UnixSocketWriter] Unix socket client closed:", fullPath, "- hadError:", hadError);
+                            delete this.clients[fullPath];
+                            this.openConnectionsMetric.set(Object.entries(this.clients).length);
+                        });
+                    } catch (e) {
+                        console.error("[UnixSocketWriter] Failed to create connection to", fullPath, ":", e);
                         delete this.clients[fullPath];
+                        rej(e as Error);
                     }
-
-                    if ("code" in err && err.code == "ECONNREFUSED") {
-                        console.error("[UnixSocketWriter] Got ECONNREFUSED for socket", fullPath, " - assuming it is orphaned...");
-                        fs.unlinkSync(fullPath);
-                    } else console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
                 });
 
-                // handle clean socket closure
-                this.clients[fullPath].on("close", (hadError) => {
-                    console.log("[UnixSocketWriter] Unix socket client closed:", fullPath, "- hadError:", hadError);
-                    delete this.clients[fullPath];
-                    this.openConnectionsMetric.set(Object.entries(this.clients).length);
-                });
-            } catch (e) {
-                console.error("[UnixSocketWriter] Failed to create connection to", fullPath, ":", e);
-                delete this.clients[fullPath];
+            let tries = 0;
+            let lastError: Error | undefined = undefined;
+            while (tries++ < 10) {
+                if (tries > 1) {
+                    const delay = Math.pow(tries, 3.5);
+                    console.warn("[UnixSocketWriter] Attemption connects to", fullPath, "have been failing... Trying again in", delay, "millis...");
+                    await sleep(delay);
+                }
+
+                try {
+                    await tryConnect();
+                    break;
+                } catch (e) {
+                    lastError = e as Error;
+                }
+            }
+
+            if (tries >= 10 && lastError !== undefined) {
+                console.error("[UnixSocketWriter] Exhausted all", tries, "attempts at connecting to", fullPath, "- Error:", lastError);
+                if ("code" in lastError && lastError.code == "ECONNREFUSED") {
+                    console.error("[UnixSocketWriter] Got ECONNREFUSED for socket", fullPath, " - assuming it is orphaned...");
+                    fs.unlinkSync(fullPath);
+                }
             }
         };
 
