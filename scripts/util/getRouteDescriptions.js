@@ -77,21 +77,23 @@ RouteUtility.route = (opts) => {
 };
 
 module.exports = function getRouteDescriptions() {
-    const root = path.join(__dirname, "..", "..", "dist", "api", "routes", "/");
-    traverseDirectory({ dirname: root, recursive: true }, (file) => {
-        currentFile = file;
+    const roots = [path.join(__dirname, "..", "..", "dist", "api", "routes", "/"), path.join(__dirname, "..", "..", "dist", "api", "routes_toplevel", "/")];
+    for (const root of roots)
+        traverseDirectory({ dirname: root, recursive: true }, (file) => {
+            currentFile = file;
 
-        currentPath = file.replace(root.slice(0, -1), "");
-        currentPath = currentPath.split(".").slice(0, -1).join("."); // truncate .js/.ts file extension of path
-        currentPath = currentPath.replaceAll("#", ":").replaceAll("\\", "/"); // replace # with : for path parameters and windows paths with slashes
-        if (currentPath.endsWith("/index")) currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
+            currentPath = file.replace(root.slice(0, -1), "");
+            currentPath = currentPath.split(".").slice(0, -1).join("."); // truncate .js/.ts file extension of path
+            currentPath = currentPath.replaceAll("#", ":").replaceAll("\\", "/"); // replace # with : for path parameters and windows paths with slashes
+            currentPath = currentPath.replaceAll(/%[A-Za-z0-9]{2}/g, (match) => decodeURIComponent(match)); // special case to handle .well-known for example
+            if (currentPath.endsWith("/index")) currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
 
-        try {
-            require(file);
-        } catch (e) {
-            console.error(e);
-        }
-    });
+            try {
+                require(file);
+            } catch (e) {
+                console.error(e);
+            }
+        });
 
     return routes;
 };

@@ -115,7 +115,12 @@ function combineSchemas(schemas) {
 }
 
 function getTag(key) {
-    return key.match(/\/([\w-]+)/)[1];
+    try {
+        return key.match(/\/([\w-]*)/)[1];
+    } catch (e) {
+        console.error("openapi.js#getTag: failed to match on", key);
+        throw e;
+    }
 }
 
 const authTypes = {
@@ -199,7 +204,7 @@ function apiRoutes(missingRoutes) {
                     } else if (v.body.startsWith("API") && v.body !== "APIErrorResponse" && v.body !== "APIErrorOrCaptchaResponse") {
                         missingResponseSchemaCount++;
                         console.log(
-                            `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[33m`,
+                            `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[32m`,
                             "Route",
                             method.toUpperCase(),
                             path,
@@ -214,6 +219,15 @@ function apiRoutes(missingRoutes) {
                     };
             }
         } else {
+            console.log(
+                `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[34m`,
+                "Route",
+                method.toUpperCase(),
+                path,
+                "missing response schema:",
+                route.responses,
+                "\x1b[0m",
+            );
             obj.responses = {
                 default: {
                     description: "No description available",
