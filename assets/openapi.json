@@ -7367,6 +7367,112 @@
                     }
                 }
             },
+            "SpacebarWellKnownLegacyResponse": {
+                "type": "object",
+                "properties": {
+                    "api": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "api"
+                ]
+            },
+            "SpacebarWellKnownClientResponse": {
+                "type": "object",
+                "properties": {
+                    "api": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            },
+                            "apiVersions": {
+                                "type": "object",
+                                "properties": {
+                                    "default": {
+                                        "type": "string"
+                                    },
+                                    "active": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "active",
+                                    "default"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "apiVersions",
+                            "baseUrl"
+                        ]
+                    },
+                    "cdn": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl"
+                        ]
+                    },
+                    "gateway": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            },
+                            "encoding": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "compression": {
+                                "type": "array",
+                                "items": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl",
+                            "compression",
+                            "encoding"
+                        ]
+                    },
+                    "admin": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl"
+                        ]
+                    }
+                },
+                "required": [
+                    "api",
+                    "cdn",
+                    "gateway"
+                ]
+            },
             "ApplicationCommandOption": {
                 "type": "object",
                 "properties": {
@@ -15191,6 +15297,12 @@
     },
     "tags": [
         {
+            "name": ""
+        },
+        {
+            "name": "_spacebar"
+        },
+        {
             "name": "-"
         },
         {
@@ -15248,6 +15360,9 @@
             "name": "guilds"
         },
         {
+            "name": "healthz"
+        },
+        {
             "name": "hub-waitlist"
         },
         {
@@ -15275,6 +15390,9 @@
             "name": "read-states"
         },
         {
+            "name": "readyz"
+        },
+        {
             "name": "reporting"
         },
         {
@@ -15288,6 +15406,9 @@
         },
         {
             "name": "stage-instances"
+        },
+        {
+            "name": "static"
         },
         {
             "name": "sticker-packs"
@@ -15314,6 +15435,9 @@
             "name": "users"
         },
         {
+            "name": "verify-email"
+        },
+        {
             "name": "voice"
         },
         {
@@ -15321,6 +15445,9 @@
         },
         {
             "name": "webhooks"
+        },
+        {
+            "name": "widget"
         }
     ],
     "paths": {
@@ -21488,9 +21615,7 @@
         "/guilds/{guild_id}/shield.svg/": {
             "get": {
                 "security": [
-                    {
-                        "bearer": []
-                    }
+                    {}
                 ],
                 "responses": {
                     "200": {
@@ -29425,6 +29550,273 @@
                 },
                 "tags": [
                     "-"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/widget/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "widget"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/verify-email/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "verify-email"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/static/logo.png/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "static"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/readyz/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "readyz"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    ""
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/healthz/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "healthz"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/_spacebar/api/version/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/_spacebar/api/v1/integrations/gif/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/_spacebar/api/schemas.json/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/_spacebar/api/openapi.json/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "default": {
+                        "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/.well-known/spacebar/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "deprecated": true,
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SpacebarWellKnownLegacyResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    ""
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/.well-known/spacebar/client/": {
+            "get": {
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SpacebarWellKnownClientResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    ""
                 ],
                 "x-badges": [
                     {

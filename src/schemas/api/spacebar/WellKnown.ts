@@ -16,30 +16,27 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api/middlewares";
-import { Config } from "@spacebar/util";
-import { SpacebarWellKnownLegacyResponse } from "@spacebar/schemas/api/spacebar/WellKnown";
+export interface SpacebarWellKnownLegacyResponse {
+    api: string;
+}
 
-const router = Router({ mergeParams: true });
-
-router.get(
-    "/",
-    route({
-        spacebarOnly: true,
-        authentication: "never",
-        deprecated: true,
-        responses: {
-            200: {
-                body: "SpacebarWellKnownLegacyResponse",
-            },
-        },
-    }),
-    (req: Request, res: Response) => {
-        res.json({
-            api: (Config.get().api.endpointPublic + "/api/").replace("//api/", "/api/"),
-        } satisfies SpacebarWellKnownLegacyResponse);
-    },
-);
-
-export default router;
+export interface SpacebarWellKnownClientResponse {
+    api: {
+        baseUrl: string;
+        apiVersions: {
+            default: string;
+            active: string[];
+        };
+    };
+    cdn: {
+        baseUrl: string;
+    };
+    gateway: {
+        baseUrl: string;
+        encoding: string[];
+        compression: (string | null)[];
+    };
+    admin?: {
+        baseUrl: string;
+    };
+}

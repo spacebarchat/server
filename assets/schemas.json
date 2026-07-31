@@ -7855,6 +7855,116 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "SpacebarWellKnownLegacyResponse": {
+        "type": "object",
+        "properties": {
+            "api": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "api"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SpacebarWellKnownClientResponse": {
+        "type": "object",
+        "properties": {
+            "api": {
+                "type": "object",
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    },
+                    "apiVersions": {
+                        "type": "object",
+                        "properties": {
+                            "default": {
+                                "type": "string"
+                            },
+                            "active": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "active",
+                            "default"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "apiVersions",
+                    "baseUrl"
+                ]
+            },
+            "cdn": {
+                "type": "object",
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "baseUrl"
+                ]
+            },
+            "gateway": {
+                "type": "object",
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    },
+                    "encoding": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "compression": {
+                        "type": "array",
+                        "items": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "baseUrl",
+                    "compression",
+                    "encoding"
+                ]
+            },
+            "admin": {
+                "type": "object",
+                "properties": {
+                    "baseUrl": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "baseUrl"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "api",
+            "cdn",
+            "gateway"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCommandOption": {
         "type": "object",
         "properties": {
