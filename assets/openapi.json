@@ -15,7 +15,7 @@
     },
     "servers": [
         {
-            "url": "https://old.server.spacebar.chat/api/",
+            "url": "https://api.rory.server.spacebar.chat/api/",
             "description": "Official Spacebar Instance"
         }
     ],

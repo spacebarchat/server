@@ -33,6 +33,7 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 let missingRouteCount = 0;
 let missingResponseSchemaCount = 0;
 let missingRequestSchemaCount = 0;
+let missingResponseSchemaDeclarationCount = 0;
 
 let specification = {
     openapi: "3.1.0",
@@ -52,7 +53,7 @@ let specification = {
     },
     servers: [
         {
-            url: "https://old.server.spacebar.chat/api/",
+            url: "https://api.rory.server.spacebar.chat/api/",
             description: "Official Spacebar Instance",
         },
     ],
@@ -219,15 +220,35 @@ function apiRoutes(missingRoutes) {
                     };
             }
         } else {
-            console.log(
-                `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[34m`,
-                "Route",
-                method.toUpperCase(),
-                path,
-                "missing response schema:",
-                route.responses,
-                "\x1b[0m",
-            );
+            missingResponseSchemaDeclarationCount++;
+            // ignore static asset responses (schema-less)
+            if (
+                ![
+                    // Client web pages
+                    "/",
+                    "/widget",
+                    "/verify-email",
+                    // Generated files
+                    "/_spacebar/api/schemas.json",
+                    "/_spacebar/api/openapi.json",
+                    // Assets
+                    "/static/logo.png",
+                    // Whatever...
+                    "/readyz",
+                    "/healthz",
+                    "/-/readyz",
+                    "/-/healthz",
+                ].includes(path)
+            )
+                console.log(
+                    `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[34m`,
+                    "Route",
+                    method.toUpperCase(),
+                    path,
+                    "missing response schema:",
+                    route.responses,
+                    "\x1b[0m",
+                );
             obj.responses = {
                 default: {
                     description: "No description available",
@@ -302,9 +323,10 @@ async function main() {
         elapsedMs,
         "ms.",
     );
-    if (missingRouteCount) console.log("Found", missingRouteCount, "routes missing a route() middleware.");
-    if (missingRequestSchemaCount) console.log("Found", missingRequestSchemaCount, "routes missing request schemas.");
-    if (missingResponseSchemaCount) console.log("Found", missingResponseSchemaCount, "routes missing a response schemas.");
+    if (missingRouteCount) console.log("! Found", missingRouteCount, "routes missing a route() middleware !");
+    if (missingRequestSchemaCount) console.log("! Found", missingRequestSchemaCount, "routes missing request schemas !");
+    if (missingResponseSchemaCount) console.log("! Found", missingResponseSchemaCount, "routes missing a response schemas !");
+    if (missingResponseSchemaDeclarationCount) console.log("! Found", missingResponseSchemaDeclarationCount, "routes missing a response schema declaration !");
 }
 
 main().then(() => {});
