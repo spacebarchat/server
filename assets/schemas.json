@@ -7855,6 +7855,39 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "AttachmentListResponse": {
+        "type": "object",
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "attachment": {
+                            "$ref": "#/definitions/PublicAttachment"
+                        },
+                        "message_reference": {
+                            "$ref": "#/definitions/MessageReferenceIds"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "attachment",
+                        "message_reference"
+                    ]
+                }
+            },
+            "total": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "items",
+            "total"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GifIntegrationsResponse": {
         "type": "object",
         "properties": {
@@ -14978,15 +15011,6 @@
     "MessageReference": {
         "type": "object",
         "properties": {
-            "message_id": {
-                "type": "string"
-            },
-            "channel_id": {
-                "type": "string"
-            },
-            "guild_id": {
-                "type": "string"
-            },
             "fail_if_not_exists": {
                 "type": "boolean"
             },
@@ -14996,6 +15020,15 @@
                     1
                 ],
                 "type": "number"
+            },
+            "message_id": {
+                "type": "string"
+            },
+            "channel_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
             }
         },
         "additionalProperties": false,
@@ -16351,6 +16384,22 @@
             "icon",
             "id"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MessageReferenceIds": {
+        "type": "object",
+        "properties": {
+            "message_id": {
+                "type": "string"
+            },
+            "channel_id": {
+                "type": "string"
+            },
+            "guild_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

@@ -7367,6 +7367,37 @@
                     }
                 }
             },
+            "AttachmentListResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "attachment": {
+                                    "$ref": "#/components/schemas/PublicAttachment"
+                                },
+                                "message_reference": {
+                                    "$ref": "#/components/schemas/MessageReferenceIds"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "attachment",
+                                "message_reference"
+                            ]
+                        }
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "items",
+                    "total"
+                ]
+            },
             "GifIntegrationsResponse": {
                 "type": "object",
                 "properties": {
@@ -14085,15 +14116,6 @@
             "MessageReference": {
                 "type": "object",
                 "properties": {
-                    "message_id": {
-                        "type": "string"
-                    },
-                    "channel_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
                     "fail_if_not_exists": {
                         "type": "boolean"
                     },
@@ -14103,6 +14125,15 @@
                             1
                         ],
                         "type": "number"
+                    },
+                    "message_id": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
                     }
                 }
             },
@@ -15346,6 +15377,20 @@
                     "icon",
                     "id"
                 ]
+            },
+            "MessageReferenceIds": {
+                "type": "object",
+                "properties": {
+                    "message_id": {
+                        "type": "string"
+                    },
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    }
+                }
             }
         }
     },
@@ -29792,6 +29837,61 @@
                         "label": "Spacebar-only",
                         "color": "red"
                     }
+                ]
+            }
+        },
+        "/_spacebar/api/v1/channels/{channel_id}/attachments/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AttachmentListResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/APIErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "channel_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "channel_id"
+                    }
+                ],
+                "tags": [
+                    "_spacebar"
                 ]
             }
         },
