@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -20,7 +20,7 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { FindOptionsOrderValue, LessThan, MoreThan } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Attachment, Channel, Message } from "@spacebar/database";
+import { Attachment, Channel } from "@spacebar/database";
 import { FieldErrors, getPermission } from "@spacebar/util";
 import { AttachmentListResponse } from "@spacebar/schemas/api/spacebar/AttachmentListResponse";
 
@@ -40,13 +40,35 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        query: {
+            sort_order: {
+                description: "Sort order for results",
+                type: "string",
+                values: ["asc", "desc"],
+            },
+            limit: {
+                description: "Max. amount of items to return",
+                type: "number",
+                default: 50,
+            },
+            after: {
+                description: "Get results after $ATTACHMENT_ID (depends on sort_order)",
+                type: "string",
+                default: "[start based on sort_order]",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const { channel_id } = req.params as { [key: string]: string };
+        let { sort_order, limit, after } = req.query as { [key: string]: string };
+
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });
-        const { sort_order, limit } = req.query;
+
+        sort_order ??= "desc";
+        limit ??= "50";
+        after ??= sort_order == "asc" ? "0" : (BigInt(channel.last_message_id ?? "-1") + 1n).toString();
 
         const parsedLimit = Number(limit) || 50;
         if (parsedLimit < 1 || parsedLimit > 100) throw new HTTPError("limit must be between 1 and 100", 422);
@@ -69,7 +91,7 @@ router.get(
         const atts = await Attachment.find({
             where: {
                 channel_id: req.params.channel_id as string,
-                id: (sort_order == "asc" ? MoreThan : LessThan)((req.params.after as string) ?? "0"),
+                id: (sort_order == "asc" ? MoreThan : LessThan)(after ?? "0"),
             },
             order: {
                 id: sort_order as FindOptionsOrderValue,

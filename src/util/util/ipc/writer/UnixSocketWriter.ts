@@ -21,7 +21,7 @@ import fs, { FSWatcher } from "node:fs";
 import path from "node:path";
 import { red } from "picocolors";
 import { Gauge } from "prom-client";
-import { DateBuilder, sleep, Stopwatch } from "@spacebar/extensions";
+import { sleep, Stopwatch } from "@spacebar/extensions";
 import { Event } from "@spacebar/util";
 import { Monitoring } from "../../../monitoring/Monitoring";
 import { ProcessLifecycle } from "../../ProcessLifecycle";

@@ -63,6 +63,7 @@ export interface RouteOptions {
             required?: boolean;
             description?: string;
             values?: string[];
+            default?: unknown;
         };
     };
     deprecated?: boolean;
