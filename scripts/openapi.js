@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -25,7 +25,7 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
+const { bgRedBright, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
@@ -53,7 +53,7 @@ let specification = {
     },
     servers: [
         {
-            url: "https://api.rory.server.spacebar.chat/api/",
+            url: "https://api.rory.server.spacebar.chat/",
             description: "Official Spacebar Instance",
         },
     ],

@@ -15,7 +15,7 @@
     },
     "servers": [
         {
-            "url": "https://api.rory.server.spacebar.chat/api/",
+            "url": "https://api.rory.server.spacebar.chat/",
             "description": "Official Spacebar Instance"
         }
     ],
@@ -15402,155 +15402,26 @@
             "name": "_spacebar"
         },
         {
-            "name": "-"
-        },
-        {
-            "name": "applications"
-        },
-        {
-            "name": "attachments"
-        },
-        {
-            "name": "auth"
-        },
-        {
-            "name": "beaker"
-        },
-        {
-            "name": "channels"
-        },
-        {
-            "name": "collectibles-categories"
-        },
-        {
-            "name": "collectibles-shop"
-        },
-        {
-            "name": "connections"
-        },
-        {
-            "name": "discoverable-guilds"
-        },
-        {
-            "name": "discovery"
-        },
-        {
-            "name": "download"
-        },
-        {
-            "name": "emojis"
-        },
-        {
-            "name": "experiments"
-        },
-        {
-            "name": "games"
-        },
-        {
-            "name": "gateway"
-        },
-        {
-            "name": "gifs"
-        },
-        {
-            "name": "guild-recommendations"
-        },
-        {
-            "name": "guilds"
+            "name": "api"
         },
         {
             "name": "healthz"
         },
         {
-            "name": "hub-waitlist"
-        },
-        {
-            "name": "interactions"
-        },
-        {
-            "name": "invites"
-        },
-        {
-            "name": "oauth2"
-        },
-        {
-            "name": "outbound-promotions"
-        },
-        {
-            "name": "partners"
-        },
-        {
-            "name": "ping"
-        },
-        {
-            "name": "policies"
-        },
-        {
-            "name": "read-states"
-        },
-        {
             "name": "readyz"
-        },
-        {
-            "name": "reporting"
-        },
-        {
-            "name": "safety-hub"
-        },
-        {
-            "name": "scheduled-maintenances"
-        },
-        {
-            "name": "science"
-        },
-        {
-            "name": "stage-instances"
         },
         {
             "name": "static"
         },
         {
-            "name": "sticker-packs"
-        },
-        {
-            "name": "stickers"
-        },
-        {
-            "name": "stop"
-        },
-        {
-            "name": "store"
-        },
-        {
-            "name": "teams"
-        },
-        {
-            "name": "track"
-        },
-        {
-            "name": "updates"
-        },
-        {
-            "name": "users"
-        },
-        {
             "name": "verify-email"
-        },
-        {
-            "name": "voice"
-        },
-        {
-            "name": "warp"
-        },
-        {
-            "name": "webhooks"
         },
         {
             "name": "widget"
         }
     ],
     "paths": {
-        "/webhooks/{webhook_id}/": {
+        "/api/webhooks/{webhook_id}/": {
             "get": {
                 "security": [
                     {
@@ -15585,7 +15456,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "delete": {
@@ -15624,7 +15495,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "patch": {
@@ -15683,11 +15554,11 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             }
         },
-        "/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}/": {
+        "/api/webhooks/{webhook_id}/{webhook_token}/messages/{message_id}/": {
             "patch": {
                 "security": [
                     {}
@@ -15760,7 +15631,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "get": {
@@ -15825,7 +15696,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "delete": {
@@ -15880,11 +15751,11 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             }
         },
-        "/webhooks/{webhook_id}/{webhook_token}/": {
+        "/api/webhooks/{webhook_id}/{webhook_token}/": {
             "get": {
                 "security": [
                     {}
@@ -15926,7 +15797,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "post": {
@@ -16000,7 +15871,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "delete": {
@@ -16046,7 +15917,7 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             },
             "patch": {
@@ -16105,11 +15976,11 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             }
         },
-        "/webhooks/{webhook_id}/{webhook_token}/github/": {
+        "/api/webhooks/{webhook_id}/{webhook_token}/github/": {
             "post": {
                 "security": [
                     {}
@@ -16181,11 +16052,11 @@
                     }
                 ],
                 "tags": [
-                    "webhooks"
+                    "api"
                 ]
             }
         },
-        "/warp/license/": {
+        "/api/warp/license/": {
             "post": {
                 "security": [
                     {
@@ -16198,11 +16069,11 @@
                     }
                 },
                 "tags": [
-                    "warp"
+                    "api"
                 ]
             }
         },
-        "/voice/regions/": {
+        "/api/voice/regions/": {
             "get": {
                 "security": [
                     {
@@ -16222,11 +16093,11 @@
                     }
                 },
                 "tags": [
-                    "voice"
+                    "api"
                 ]
             }
         },
-        "/users/@me/settings/": {
+        "/api/users/@me/settings/": {
             "get": {
                 "security": [
                     {
@@ -16256,7 +16127,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -16308,11 +16179,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/settings-proto/2/": {
+        "/api/users/@me/settings-proto/2/": {
             "get": {
                 "security": [
                     {
@@ -16342,7 +16213,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -16374,11 +16245,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/settings-proto/2/json": {
+        "/api/users/@me/settings-proto/2/json": {
             "get": {
                 "security": [
                     {
@@ -16398,7 +16269,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -16446,7 +16317,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -16456,7 +16327,7 @@
                 ]
             }
         },
-        "/users/@me/settings-proto/1/": {
+        "/api/users/@me/settings-proto/1/": {
             "get": {
                 "security": [
                     {
@@ -16486,7 +16357,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -16518,11 +16389,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/settings-proto/1/json": {
+        "/api/users/@me/settings-proto/1/json": {
             "get": {
                 "security": [
                     {
@@ -16542,7 +16413,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -16590,7 +16461,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -16600,7 +16471,7 @@
                 ]
             }
         },
-        "/users/@me/relationships/": {
+        "/api/users/@me/relationships/": {
             "get": {
                 "security": [
                     {
@@ -16630,7 +16501,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "post": {
@@ -16675,11 +16546,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/relationships/{user_id}": {
+        "/api/users/@me/relationships/{user_id}": {
             "put": {
                 "security": [
                     {
@@ -16733,7 +16604,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -16789,7 +16660,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "delete": {
@@ -16835,11 +16706,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/notes/{user_id}": {
+        "/api/users/@me/notes/{user_id}": {
             "get": {
                 "security": [
                     {
@@ -16880,7 +16751,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "put": {
@@ -16926,11 +16797,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/webauthn/credentials/": {
+        "/api/users/@me/mfa/webauthn/credentials/": {
             "get": {
                 "security": [
                     {
@@ -16943,7 +16814,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "post": {
@@ -16985,11 +16856,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/webauthn/credentials/{key_id}/": {
+        "/api/users/@me/mfa/webauthn/credentials/{key_id}/": {
             "delete": {
                 "security": [
                     {
@@ -17013,11 +16884,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/totp/enable/": {
+        "/api/users/@me/mfa/totp/enable/": {
             "post": {
                 "security": [
                     {
@@ -17067,11 +16938,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/totp/disable/": {
+        "/api/users/@me/mfa/totp/disable/": {
             "post": {
                 "security": [
                     {
@@ -17111,11 +16982,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/codes/": {
+        "/api/users/@me/mfa/codes/": {
             "post": {
                 "security": [
                     {
@@ -17167,11 +17038,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mfa/codes-verification/": {
+        "/api/users/@me/mfa/codes-verification/": {
             "post": {
                 "security": [
                     {
@@ -17221,11 +17092,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/mentions": {
+        "/api/users/@me/mentions": {
             "get": {
                 "security": [
                     {
@@ -17255,11 +17126,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/library/": {
+        "/api/users/@me/library/": {
             "get": {
                 "security": [
                     {
@@ -17272,11 +17143,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/": {
+        "/api/users/@me/": {
             "get": {
                 "security": [
                     {
@@ -17296,7 +17167,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -17348,11 +17219,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/guilds/": {
+        "/api/users/@me/guilds/": {
             "get": {
                 "security": [
                     {
@@ -17372,11 +17243,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/guilds/{guild_id}": {
+        "/api/users/@me/guilds/{guild_id}": {
             "delete": {
                 "security": [
                     {
@@ -17420,11 +17291,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/guilds/premium/subscription-slots/": {
+        "/api/users/@me/guilds/premium/subscription-slots/": {
             "get": {
                 "security": [
                     {
@@ -17437,11 +17308,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/guilds/{guild_id}/settings/": {
+        "/api/users/@me/guilds/{guild_id}/settings/": {
             "get": {
                 "security": [
                     {
@@ -17468,7 +17339,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -17524,11 +17395,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/entitlements/gifts": {
+        "/api/users/@me/entitlements/gifts": {
             "get": {
                 "security": [
                     {
@@ -17541,11 +17412,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/email-settings/": {
+        "/api/users/@me/email-settings/": {
             "get": {
                 "security": [
                     {
@@ -17558,11 +17429,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/disable/": {
+        "/api/users/@me/disable/": {
             "post": {
                 "security": [
                     {
@@ -17595,11 +17466,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/devices/": {
+        "/api/users/@me/devices/": {
             "post": {
                 "security": [
                     {
@@ -17612,11 +17483,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/delete/": {
+        "/api/users/@me/delete/": {
             "post": {
                 "security": [
                     {
@@ -17649,11 +17520,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/connections/": {
+        "/api/users/@me/connections/": {
             "get": {
                 "security": [
                     {
@@ -17666,11 +17537,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/connections/{connection_name}/{connection_id}/": {
+        "/api/users/@me/connections/{connection_name}/{connection_id}/": {
             "patch": {
                 "security": [
                     {
@@ -17713,7 +17584,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "delete": {
@@ -17748,11 +17619,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/connections/{connection_name}/{connection_id}/access-token/": {
+        "/api/users/@me/connections/{connection_name}/{connection_id}/access-token/": {
             "get": {
                 "security": [
                     {
@@ -17785,11 +17656,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/collectibles-purchases/": {
+        "/api/users/@me/collectibles-purchases/": {
             "get": {
                 "security": [
                     {
@@ -17825,11 +17696,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/collectibles-marketing/": {
+        "/api/users/@me/collectibles-marketing/": {
             "get": {
                 "security": [
                     {
@@ -17872,11 +17743,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/channels/": {
+        "/api/users/@me/channels/": {
             "get": {
                 "security": [
                     {
@@ -17896,7 +17767,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "post": {
@@ -17928,11 +17799,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/billing/subscriptions/": {
+        "/api/users/@me/billing/subscriptions/": {
             "get": {
                 "security": [
                     {
@@ -17945,11 +17816,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/billing/payment-sources/": {
+        "/api/users/@me/billing/payment-sources/": {
             "get": {
                 "security": [
                     {
@@ -17962,7 +17833,7 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "post": {
@@ -17977,11 +17848,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/billing/payment-sources/{payment_source_id}": {
+        "/api/users/@me/billing/payment-sources/{payment_source_id}": {
             "get": {
                 "security": [
                     {
@@ -18005,7 +17876,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -18031,7 +17902,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "delete": {
@@ -18057,11 +17928,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/billing/location-info/": {
+        "/api/users/@me/billing/location-info/": {
             "get": {
                 "security": [
                     {
@@ -18074,11 +17945,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/billing/country-code/": {
+        "/api/users/@me/billing/country-code/": {
             "get": {
                 "security": [
                     {
@@ -18091,11 +17962,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/applications/{application_id}/entitlements/": {
+        "/api/users/@me/applications/{application_id}/entitlements/": {
             "get": {
                 "security": [
                     {
@@ -18119,11 +17990,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/affinities/users/": {
+        "/api/users/@me/affinities/users/": {
             "get": {
                 "security": [
                     {
@@ -18136,11 +18007,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/affinities/guilds/": {
+        "/api/users/@me/affinities/guilds/": {
             "get": {
                 "security": [
                     {
@@ -18153,11 +18024,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/@me/activities/statistics/applications/": {
+        "/api/users/@me/activities/statistics/applications/": {
             "get": {
                 "security": [
                     {
@@ -18170,11 +18041,11 @@
                     }
                 },
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/{user_id}/relationships/": {
+        "/api/users/{user_id}/relationships/": {
             "get": {
                 "security": [
                     {
@@ -18215,11 +18086,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/{user_id}/profile/": {
+        "/api/users/{user_id}/profile/": {
             "get": {
                 "security": [
                     {
@@ -18250,7 +18121,7 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             },
             "patch": {
@@ -18286,11 +18157,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/{user_id}/messages/": {
+        "/api/users/{user_id}/messages/": {
             "get": {
                 "security": [
                     {
@@ -18331,11 +18202,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/{user_id}/": {
+        "/api/users/{user_id}/": {
             "get": {
                 "security": [
                     {
@@ -18366,11 +18237,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/users/{user_id}/delete/": {
+        "/api/users/{user_id}/delete/": {
             "post": {
                 "x-right-required": "MANAGE_USERS",
                 "security": [
@@ -18425,11 +18296,11 @@
                     }
                 ],
                 "tags": [
-                    "users"
+                    "api"
                 ]
             }
         },
-        "/updates/": {
+        "/api/updates/": {
             "get": {
                 "security": [
                     {}
@@ -18467,11 +18338,11 @@
                     }
                 },
                 "tags": [
-                    "updates"
+                    "api"
                 ]
             }
         },
-        "/track/": {
+        "/api/track/": {
             "post": {
                 "security": [
                     {}
@@ -18482,11 +18353,11 @@
                     }
                 },
                 "tags": [
-                    "track"
+                    "api"
                 ]
             }
         },
-        "/teams/": {
+        "/api/teams/": {
             "get": {
                 "security": [
                     {
@@ -18516,7 +18387,7 @@
                     }
                 ],
                 "tags": [
-                    "teams"
+                    "api"
                 ]
             },
             "post": {
@@ -18548,11 +18419,11 @@
                     }
                 },
                 "tags": [
-                    "teams"
+                    "api"
                 ]
             }
         },
-        "/store/published-listings/skus/{sku_id}": {
+        "/api/store/published-listings/skus/{sku_id}": {
             "get": {
                 "security": [
                     {
@@ -18576,11 +18447,11 @@
                     }
                 ],
                 "tags": [
-                    "store"
+                    "api"
                 ]
             }
         },
-        "/store/published-listings/skus/{sku_id}/subscription-plans/": {
+        "/api/store/published-listings/skus/{sku_id}/subscription-plans/": {
             "get": {
                 "security": [
                     {
@@ -18604,11 +18475,11 @@
                     }
                 ],
                 "tags": [
-                    "store"
+                    "api"
                 ]
             }
         },
-        "/store/published-listings/applications/{application_id}/subscription-plans/": {
+        "/api/store/published-listings/applications/{application_id}/subscription-plans/": {
             "get": {
                 "security": [
                     {
@@ -18632,11 +18503,11 @@
                     }
                 ],
                 "tags": [
-                    "store"
+                    "api"
                 ]
             }
         },
-        "/store/published-listings/applications/{application_id}/": {
+        "/api/store/published-listings/applications/{application_id}/": {
             "get": {
                 "security": [
                     {
@@ -18660,11 +18531,11 @@
                     }
                 ],
                 "tags": [
-                    "store"
+                    "api"
                 ]
             }
         },
-        "/stop/": {
+        "/api/stop/": {
             "post": {
                 "x-right-required": "OPERATOR",
                 "security": [
@@ -18688,11 +18559,11 @@
                     }
                 },
                 "tags": [
-                    "stop"
+                    "api"
                 ]
             }
         },
-        "/stickers/{sticker_id}/": {
+        "/api/stickers/{sticker_id}/": {
             "get": {
                 "security": [
                     {
@@ -18723,11 +18594,11 @@
                     }
                 ],
                 "tags": [
-                    "stickers"
+                    "api"
                 ]
             }
         },
-        "/stickers/{sticker_id}/guild": {
+        "/api/stickers/{sticker_id}/guild": {
             "get": {
                 "security": [
                     {
@@ -18758,11 +18629,11 @@
                     }
                 ],
                 "tags": [
-                    "stickers"
+                    "api"
                 ]
             }
         },
-        "/sticker-packs/": {
+        "/api/sticker-packs/": {
             "get": {
                 "security": [
                     {
@@ -18782,11 +18653,11 @@
                     }
                 },
                 "tags": [
-                    "sticker-packs"
+                    "api"
                 ]
             }
         },
-        "/stage-instances/": {
+        "/api/stage-instances/": {
             "get": {
                 "security": [
                     {
@@ -18799,11 +18670,11 @@
                     }
                 },
                 "tags": [
-                    "stage-instances"
+                    "api"
                 ]
             }
         },
-        "/science/": {
+        "/api/science/": {
             "post": {
                 "security": [
                     {}
@@ -18814,11 +18685,11 @@
                     }
                 },
                 "tags": [
-                    "science"
+                    "api"
                 ]
             }
         },
-        "/scheduled-maintenances/upcoming.json/": {
+        "/api/scheduled-maintenances/upcoming.json/": {
             "get": {
                 "security": [
                     {}
@@ -18829,11 +18700,11 @@
                     }
                 },
                 "tags": [
-                    "scheduled-maintenances"
+                    "api"
                 ]
             }
         },
-        "/safety-hub/suspended/@me/": {
+        "/api/safety-hub/suspended/@me/": {
             "get": {
                 "security": [
                     {
@@ -18863,11 +18734,11 @@
                     }
                 },
                 "tags": [
-                    "safety-hub"
+                    "api"
                 ]
             }
         },
-        "/safety-hub/@me/": {
+        "/api/safety-hub/@me/": {
             "get": {
                 "security": [
                     {
@@ -18897,11 +18768,11 @@
                     }
                 },
                 "tags": [
-                    "safety-hub"
+                    "api"
                 ]
             }
         },
-        "/reporting/": {
+        "/api/reporting/": {
             "get": {
                 "security": [
                     {
@@ -18922,11 +18793,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/guild": {
+        "/api/reporting/menu/guild": {
             "get": {
                 "security": [
                     {
@@ -18961,11 +18832,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/guild": {
+        "/api/reporting/guild": {
             "post": {
                 "security": [
                     {
@@ -18999,11 +18870,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/guild_discovery": {
+        "/api/reporting/menu/guild_discovery": {
             "get": {
                 "security": [
                     {
@@ -19038,11 +18909,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/guild_discovery": {
+        "/api/reporting/guild_discovery": {
             "post": {
                 "security": [
                     {
@@ -19076,11 +18947,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/guild_directory_entry": {
+        "/api/reporting/menu/guild_directory_entry": {
             "get": {
                 "security": [
                     {
@@ -19115,11 +18986,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/guild_directory_entry": {
+        "/api/reporting/guild_directory_entry": {
             "post": {
                 "security": [
                     {
@@ -19153,11 +19024,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/guild_scheduled_event": {
+        "/api/reporting/menu/guild_scheduled_event": {
             "get": {
                 "security": [
                     {
@@ -19192,11 +19063,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/guild_scheduled_event": {
+        "/api/reporting/guild_scheduled_event": {
             "post": {
                 "security": [
                     {
@@ -19230,11 +19101,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/message": {
+        "/api/reporting/menu/message": {
             "get": {
                 "security": [
                     {
@@ -19269,11 +19140,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/message": {
+        "/api/reporting/message": {
             "post": {
                 "security": [
                     {
@@ -19307,11 +19178,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/stage_channel": {
+        "/api/reporting/menu/stage_channel": {
             "get": {
                 "security": [
                     {
@@ -19346,11 +19217,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/stage_channel": {
+        "/api/reporting/stage_channel": {
             "post": {
                 "security": [
                     {
@@ -19384,11 +19255,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/first_dm": {
+        "/api/reporting/menu/first_dm": {
             "get": {
                 "security": [
                     {
@@ -19423,11 +19294,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/first_dm": {
+        "/api/reporting/first_dm": {
             "post": {
                 "security": [
                     {
@@ -19461,11 +19332,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/user": {
+        "/api/reporting/menu/user": {
             "get": {
                 "security": [
                     {
@@ -19500,11 +19371,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/user": {
+        "/api/reporting/user": {
             "post": {
                 "security": [
                     {
@@ -19538,11 +19409,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/application": {
+        "/api/reporting/menu/application": {
             "get": {
                 "security": [
                     {
@@ -19577,11 +19448,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/application": {
+        "/api/reporting/application": {
             "post": {
                 "security": [
                     {
@@ -19615,11 +19486,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/menu/widget": {
+        "/api/reporting/menu/widget": {
             "get": {
                 "security": [
                     {
@@ -19654,11 +19525,11 @@
                     }
                 ],
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/reporting/widget": {
+        "/api/reporting/widget": {
             "post": {
                 "security": [
                     {
@@ -19692,11 +19563,11 @@
                     }
                 },
                 "tags": [
-                    "reporting"
+                    "api"
                 ]
             }
         },
-        "/read-states/ack-bulk/": {
+        "/api/read-states/ack-bulk/": {
             "post": {
                 "security": [
                     {
@@ -19729,11 +19600,11 @@
                     }
                 },
                 "tags": [
-                    "read-states"
+                    "api"
                 ]
             }
         },
-        "/policies/stats/": {
+        "/api/policies/stats/": {
             "get": {
                 "security": [
                     {
@@ -19763,7 +19634,7 @@
                     }
                 },
                 "tags": [
-                    "policies"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19773,7 +19644,7 @@
                 ]
             }
         },
-        "/policies/instance/limits/": {
+        "/api/policies/instance/limits/": {
             "get": {
                 "security": [
                     {
@@ -19794,7 +19665,7 @@
                     }
                 },
                 "tags": [
-                    "policies"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19804,7 +19675,7 @@
                 ]
             }
         },
-        "/policies/instance/": {
+        "/api/policies/instance/": {
             "get": {
                 "security": [
                     {}
@@ -19822,7 +19693,7 @@
                     }
                 },
                 "tags": [
-                    "policies"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19832,7 +19703,7 @@
                 ]
             }
         },
-        "/policies/instance/domains/": {
+        "/api/policies/instance/domains/": {
             "get": {
                 "security": [
                     {}
@@ -19850,7 +19721,7 @@
                     }
                 },
                 "tags": [
-                    "policies"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19860,7 +19731,7 @@
                 ]
             }
         },
-        "/policies/instance/config/": {
+        "/api/policies/instance/config/": {
             "get": {
                 "security": [
                     {
@@ -19881,7 +19752,7 @@
                     }
                 },
                 "tags": [
-                    "policies"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19891,7 +19762,7 @@
                 ]
             }
         },
-        "/ping/": {
+        "/api/ping/": {
             "get": {
                 "security": [
                     {}
@@ -19909,7 +19780,7 @@
                     }
                 },
                 "tags": [
-                    "ping"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -19919,7 +19790,7 @@
                 ]
             }
         },
-        "/partners/{guild_id}/requirements/": {
+        "/api/partners/{guild_id}/requirements/": {
             "get": {
                 "security": [
                     {
@@ -19943,11 +19814,11 @@
                     }
                 ],
                 "tags": [
-                    "partners"
+                    "api"
                 ]
             }
         },
-        "/outbound-promotions/": {
+        "/api/outbound-promotions/": {
             "get": {
                 "security": [
                     {
@@ -19960,11 +19831,11 @@
                     }
                 },
                 "tags": [
-                    "outbound-promotions"
+                    "api"
                 ]
             }
         },
-        "/oauth2/tokens/": {
+        "/api/oauth2/tokens/": {
             "get": {
                 "security": [
                     {
@@ -19977,11 +19848,11 @@
                     }
                 },
                 "tags": [
-                    "oauth2"
+                    "api"
                 ]
             }
         },
-        "/oauth2/authorize/": {
+        "/api/oauth2/authorize/": {
             "get": {
                 "security": [
                     {
@@ -20023,7 +19894,7 @@
                     }
                 ],
                 "tags": [
-                    "oauth2"
+                    "api"
                 ]
             },
             "post": {
@@ -20094,11 +19965,11 @@
                     }
                 ],
                 "tags": [
-                    "oauth2"
+                    "api"
                 ]
             }
         },
-        "/oauth2/applications/@me/": {
+        "/api/oauth2/applications/@me/": {
             "get": {
                 "security": [
                     {
@@ -20118,11 +19989,11 @@
                     }
                 },
                 "tags": [
-                    "oauth2"
+                    "api"
                 ]
             }
         },
-        "/invites/{invite_code}": {
+        "/api/invites/{invite_code}": {
             "get": {
                 "security": [
                     {}
@@ -20161,7 +20032,7 @@
                     }
                 ],
                 "tags": [
-                    "invites"
+                    "api"
                 ]
             },
             "post": {
@@ -20225,7 +20096,7 @@
                     }
                 ],
                 "tags": [
-                    "invites"
+                    "api"
                 ]
             },
             "delete": {
@@ -20278,11 +20149,11 @@
                     }
                 ],
                 "tags": [
-                    "invites"
+                    "api"
                 ]
             }
         },
-        "/interactions/": {
+        "/api/interactions/": {
             "post": {
                 "security": [
                     {
@@ -20295,11 +20166,11 @@
                     }
                 },
                 "tags": [
-                    "interactions"
+                    "api"
                 ]
             }
         },
-        "/interactions/{interaction_id}/{interaction_token}/callback/": {
+        "/api/interactions/{interaction_id}/{interaction_token}/callback/": {
             "post": {
                 "security": [
                     {}
@@ -20340,11 +20211,11 @@
                     }
                 ],
                 "tags": [
-                    "interactions"
+                    "api"
                 ]
             }
         },
-        "/hub-waitlist/signup": {
+        "/api/hub-waitlist/signup": {
             "post": {
                 "security": [
                     {
@@ -20384,11 +20255,11 @@
                     }
                 },
                 "tags": [
-                    "hub-waitlist"
+                    "api"
                 ]
             }
         },
-        "/guilds/templates/{template_code}": {
+        "/api/guilds/templates/{template_code}": {
             "get": {
                 "security": [
                     {
@@ -20439,7 +20310,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -20475,11 +20346,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/": {
+        "/api/guilds/": {
             "post": {
                 "x-right-required": "CREATE_GUILDS",
                 "security": [
@@ -20530,11 +20401,11 @@
                     }
                 },
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/automations/email-domain-lookup/": {
+        "/api/guilds/automations/email-domain-lookup/": {
             "post": {
                 "security": [
                     {
@@ -20574,11 +20445,11 @@
                     }
                 },
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/automations/email-domain-lookup/verify-code": {
+        "/api/guilds/automations/email-domain-lookup/verify-code": {
             "post": {
                 "security": [
                     {
@@ -20611,11 +20482,11 @@
                     }
                 },
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/widget.png/": {
+        "/api/guilds/{guild_id}/widget.png/": {
             "get": {
                 "security": [
                     {}
@@ -20657,11 +20528,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/widget.json/": {
+        "/api/guilds/{guild_id}/widget.json/": {
             "get": {
                 "security": [
                     {}
@@ -20700,11 +20571,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/widget/": {
+        "/api/guilds/{guild_id}/widget/": {
             "get": {
                 "security": [
                     {
@@ -20745,7 +20616,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -20809,11 +20680,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/welcome-screen/": {
+        "/api/guilds/{guild_id}/welcome-screen/": {
             "get": {
                 "security": [
                     {
@@ -20854,7 +20725,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -20911,11 +20782,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/webhooks/": {
+        "/api/guilds/{guild_id}/webhooks/": {
             "get": {
                 "x-permission-required": "MANAGE_WEBHOOKS",
                 "security": [
@@ -20948,11 +20819,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/voice-states/{user_id}/": {
+        "/api/guilds/{guild_id}/voice-states/{user_id}/": {
             "patch": {
                 "security": [
                     {
@@ -21025,11 +20896,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/vanity-url/": {
+        "/api/guilds/{guild_id}/vanity-url/": {
             "get": {
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
@@ -21081,7 +20952,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -21145,11 +21016,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/templates/": {
+        "/api/guilds/{guild_id}/templates/": {
             "get": {
                 "security": [
                     {
@@ -21180,7 +21051,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -21254,11 +21125,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/templates/{code}": {
+        "/api/guilds/{guild_id}/templates/{code}": {
             "delete": {
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
@@ -21309,7 +21180,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "put": {
@@ -21362,7 +21233,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -21425,11 +21296,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/stickers/": {
+        "/api/guilds/{guild_id}/stickers/": {
             "get": {
                 "security": [
                     {
@@ -21470,7 +21341,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -21534,11 +21405,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/stickers/{sticker_id}": {
+        "/api/guilds/{guild_id}/stickers/{sticker_id}": {
             "get": {
                 "security": [
                     {
@@ -21588,7 +21459,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -21661,7 +21532,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -21707,11 +21578,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/shield.svg/": {
+        "/api/guilds/{guild_id}/shield.svg/": {
             "get": {
                 "security": [
                     {}
@@ -21743,11 +21614,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/roles/member-counts/": {
+        "/api/guilds/{guild_id}/roles/member-counts/": {
             "get": {
                 "security": [
                     {
@@ -21771,11 +21642,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/roles/": {
+        "/api/guilds/{guild_id}/roles/": {
             "get": {
                 "security": [
                     {
@@ -21799,7 +21670,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -21863,7 +21734,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -21927,11 +21798,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/roles/{role_id}/members/": {
+        "/api/guilds/{guild_id}/roles/{role_id}/members/": {
             "patch": {
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
@@ -21965,11 +21836,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/roles/{role_id}/member-ids/": {
+        "/api/guilds/{guild_id}/roles/{role_id}/member-ids/": {
             "get": {
                 "security": [
                     {
@@ -22002,11 +21873,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/roles/{role_id}/": {
+        "/api/guilds/{guild_id}/roles/{role_id}/": {
             "get": {
                 "security": [
                     {
@@ -22066,7 +21937,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -22132,7 +22003,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -22215,11 +22086,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/regions/": {
+        "/api/guilds/{guild_id}/regions/": {
             "get": {
                 "security": [
                     {
@@ -22260,11 +22131,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/prune/": {
+        "/api/guilds/{guild_id}/prune/": {
             "get": {
                 "security": [
                     {
@@ -22295,7 +22166,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -22340,11 +22211,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/profile/": {
+        "/api/guilds/{guild_id}/profile/": {
             "get": {
                 "security": [
                     {
@@ -22375,11 +22246,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/profile/{member_id}": {
+        "/api/guilds/{guild_id}/profile/{member_id}": {
             "patch": {
                 "security": [
                     {
@@ -22449,11 +22320,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/premium/subscriptions": {
+        "/api/guilds/{guild_id}/premium/subscriptions": {
             "get": {
                 "security": [
                     {
@@ -22477,11 +22348,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/messages/search/": {
+        "/api/guilds/{guild_id}/messages/search/": {
             "get": {
                 "security": [
                     {
@@ -22532,11 +22403,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/members/": {
+        "/api/guilds/{guild_id}/members/": {
             "get": {
                 "security": [
                     {
@@ -22592,11 +22463,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/members/{member_id}/roles/{role_id}/": {
+        "/api/guilds/{guild_id}/members/{member_id}/roles/{role_id}/": {
             "delete": {
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
@@ -22649,7 +22520,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "put": {
@@ -22697,11 +22568,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/members/{member_id}/nick/": {
+        "/api/guilds/{guild_id}/members/{member_id}/nick/": {
             "patch": {
                 "security": [
                     {
@@ -22771,11 +22642,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/members/{member_id}/": {
+        "/api/guilds/{guild_id}/members/{member_id}/": {
             "get": {
                 "security": [
                     {
@@ -22835,7 +22706,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -22917,7 +22788,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "put": {
@@ -22979,7 +22850,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -23024,11 +22895,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/member-verification/": {
+        "/api/guilds/{guild_id}/member-verification/": {
             "get": {
                 "security": [
                     {
@@ -23059,11 +22930,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/invites/": {
+        "/api/guilds/{guild_id}/invites/": {
             "get": {
                 "x-permission-required": "MANAGE_GUILD",
                 "security": [
@@ -23095,11 +22966,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/integrations/": {
+        "/api/guilds/{guild_id}/integrations/": {
             "get": {
                 "security": [
                     {
@@ -23123,11 +22994,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/": {
+        "/api/guilds/{guild_id}/": {
             "get": {
                 "security": [
                     {
@@ -23178,7 +23049,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -23252,11 +23123,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/emojis/": {
+        "/api/guilds/{guild_id}/emojis/": {
             "get": {
                 "security": [
                     {
@@ -23297,7 +23168,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -23361,11 +23232,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/emojis/{emoji_id}": {
+        "/api/guilds/{guild_id}/emojis/{emoji_id}": {
             "get": {
                 "security": [
                     {
@@ -23425,7 +23296,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -23488,7 +23359,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -23534,11 +23405,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/discovery-requirements/": {
+        "/api/guilds/{guild_id}/discovery-requirements/": {
             "get": {
                 "security": [
                     {
@@ -23569,11 +23440,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/delete/": {
+        "/api/guilds/{guild_id}/delete/": {
             "post": {
                 "security": [
                     {
@@ -23617,11 +23488,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/channels/": {
+        "/api/guilds/{guild_id}/channels/": {
             "get": {
                 "security": [
                     {
@@ -23652,7 +23523,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -23716,7 +23587,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "patch": {
@@ -23773,11 +23644,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/bulk-ban/": {
+        "/api/guilds/{guild_id}/bulk-ban/": {
             "post": {
                 "x-permission-required": [
                     "BAN_MEMBERS",
@@ -23842,11 +23713,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/": {
+        "/api/guilds/{guild_id}/bans/": {
             "get": {
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
@@ -23888,11 +23759,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/search": {
+        "/api/guilds/{guild_id}/bans/search": {
             "get": {
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
@@ -23952,11 +23823,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/bans/{user_id}": {
+        "/api/guilds/{guild_id}/bans/{user_id}": {
             "get": {
                 "x-permission-required": "BAN_MEMBERS",
                 "security": [
@@ -24017,7 +23888,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "put": {
@@ -24083,7 +23954,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -24139,11 +24010,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/auto-moderation/rules/": {
+        "/api/guilds/{guild_id}/auto-moderation/rules/": {
             "get": {
                 "x-permission-required": [
                     "MANAGE_GUILD"
@@ -24187,7 +24058,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "post": {
@@ -24243,11 +24114,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/auto-moderation/rules/{rule_id}": {
+        "/api/guilds/{guild_id}/auto-moderation/rules/{rule_id}": {
             "patch": {
                 "x-permission-required": [
                     "MANAGE_GUILD"
@@ -24310,7 +24181,7 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             },
             "delete": {
@@ -24368,11 +24239,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/audit-logs/": {
+        "/api/guilds/{guild_id}/audit-logs/": {
             "get": {
                 "security": [
                     {
@@ -24396,11 +24267,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guilds/{guild_id}/application-command-index/": {
+        "/api/guilds/{guild_id}/application-command-index/": {
             "get": {
                 "security": [
                     {
@@ -24424,11 +24295,11 @@
                     }
                 ],
                 "tags": [
-                    "guilds"
+                    "api"
                 ]
             }
         },
-        "/guild-recommendations/": {
+        "/api/guild-recommendations/": {
             "get": {
                 "security": [
                     {
@@ -24448,11 +24319,11 @@
                     }
                 },
                 "tags": [
-                    "guild-recommendations"
+                    "api"
                 ]
             }
         },
-        "/gifs/trending/": {
+        "/api/gifs/trending/": {
             "get": {
                 "security": [
                     {
@@ -24490,11 +24361,11 @@
                     }
                 ],
                 "tags": [
-                    "gifs"
+                    "api"
                 ]
             }
         },
-        "/gifs/trending-gifs/": {
+        "/api/gifs/trending-gifs/": {
             "get": {
                 "security": [
                     {
@@ -24548,11 +24419,11 @@
                     }
                 ],
                 "tags": [
-                    "gifs"
+                    "api"
                 ]
             }
         },
-        "/gifs/search/": {
+        "/api/gifs/search/": {
             "get": {
                 "security": [
                     {
@@ -24607,11 +24478,11 @@
                     }
                 ],
                 "tags": [
-                    "gifs"
+                    "api"
                 ]
             }
         },
-        "/gateway/": {
+        "/api/gateway/": {
             "get": {
                 "security": [
                     {}
@@ -24629,11 +24500,11 @@
                     }
                 },
                 "tags": [
-                    "gateway"
+                    "api"
                 ]
             }
         },
-        "/gateway/bot/": {
+        "/api/gateway/bot/": {
             "get": {
                 "security": [
                     {}
@@ -24651,11 +24522,11 @@
                     }
                 },
                 "tags": [
-                    "gateway"
+                    "api"
                 ]
             }
         },
-        "/games/detectable/": {
+        "/api/games/detectable/": {
             "get": {
                 "security": [
                     {
@@ -24675,11 +24546,11 @@
                     }
                 },
                 "tags": [
-                    "games"
+                    "api"
                 ]
             }
         },
-        "/experiments/": {
+        "/api/experiments/": {
             "get": {
                 "security": [
                     {
@@ -24693,11 +24564,11 @@
                     }
                 },
                 "tags": [
-                    "experiments"
+                    "api"
                 ]
             }
         },
-        "/emojis/{emoji_id}/source/": {
+        "/api/emojis/{emoji_id}/source/": {
             "get": {
                 "security": [
                     {
@@ -24738,11 +24609,11 @@
                     }
                 ],
                 "tags": [
-                    "emojis"
+                    "api"
                 ]
             }
         },
-        "/download/": {
+        "/api/download/": {
             "get": {
                 "security": [
                     {}
@@ -24763,11 +24634,11 @@
                     }
                 },
                 "tags": [
-                    "download"
+                    "api"
                 ]
             }
         },
-        "/discovery/categories": {
+        "/api/discovery/categories": {
             "get": {
                 "security": [
                     {
@@ -24787,11 +24658,11 @@
                     }
                 },
                 "tags": [
-                    "discovery"
+                    "api"
                 ]
             }
         },
-        "/discoverable-guilds/": {
+        "/api/discoverable-guilds/": {
             "get": {
                 "security": [
                     {
@@ -24811,11 +24682,11 @@
                     }
                 },
                 "tags": [
-                    "discoverable-guilds"
+                    "api"
                 ]
             }
         },
-        "/connections/": {
+        "/api/connections/": {
             "get": {
                 "security": [
                     {
@@ -24835,11 +24706,11 @@
                     }
                 },
                 "tags": [
-                    "connections"
+                    "api"
                 ]
             }
         },
-        "/connections/{connection_name}/callback/": {
+        "/api/connections/{connection_name}/callback/": {
             "post": {
                 "security": [
                     {}
@@ -24871,11 +24742,11 @@
                     }
                 ],
                 "tags": [
-                    "connections"
+                    "api"
                 ]
             }
         },
-        "/connections/{connection_name}/authorize/": {
+        "/api/connections/{connection_name}/authorize/": {
             "get": {
                 "security": [
                     {
@@ -24899,11 +24770,11 @@
                     }
                 ],
                 "tags": [
-                    "connections"
+                    "api"
                 ]
             }
         },
-        "/connections/{connection_name}/{connection_id}/refresh/": {
+        "/api/connections/{connection_name}/{connection_id}/refresh/": {
             "post": {
                 "security": [
                     {
@@ -24936,11 +24807,11 @@
                     }
                 ],
                 "tags": [
-                    "connections"
+                    "api"
                 ]
             }
         },
-        "/collectibles-shop/": {
+        "/api/collectibles-shop/": {
             "get": {
                 "security": [
                     {
@@ -24963,11 +24834,11 @@
                     }
                 },
                 "tags": [
-                    "collectibles-shop"
+                    "api"
                 ]
             }
         },
-        "/collectibles-categories/": {
+        "/api/collectibles-categories/": {
             "get": {
                 "security": [
                     {
@@ -24990,11 +24861,11 @@
                     }
                 },
                 "tags": [
-                    "collectibles-categories"
+                    "api"
                 ]
             }
         },
-        "/channels/preload-messages/": {
+        "/api/channels/preload-messages/": {
             "post": {
                 "security": [
                     {
@@ -25034,11 +24905,11 @@
                     }
                 },
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/webhooks/": {
+        "/api/channels/{channel_id}/webhooks/": {
             "get": {
                 "x-permission-required": "MANAGE_WEBHOOKS",
                 "security": [
@@ -25071,7 +24942,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "post": {
@@ -25128,11 +24999,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/typing/": {
+        "/api/channels/{channel_id}/typing/": {
             "post": {
                 "x-permission-required": "SEND_MESSAGES",
                 "security": [
@@ -25163,11 +25034,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/threads/": {
+        "/api/channels/{channel_id}/threads/": {
             "get": {
                 "security": [
                     {
@@ -25243,7 +25114,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "post": {
@@ -25283,11 +25154,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/threads/ack": {
+        "/api/channels/{channel_id}/threads/ack": {
             "delete": {
                 "security": [
                     {
@@ -25321,11 +25192,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/threads/search": {
+        "/api/channels/{channel_id}/threads/search": {
             "get": {
                 "security": [
                     {
@@ -25376,11 +25247,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/thread-members/": {
+        "/api/channels/{channel_id}/thread-members/": {
             "get": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25408,11 +25279,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/thread-members/{user_id}": {
+        "/api/channels/{channel_id}/thread-members/{user_id}": {
             "post": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25449,7 +25320,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -25488,11 +25359,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/thread-members/@me/settings": {
+        "/api/channels/{channel_id}/thread-members/@me/settings": {
             "patch": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25520,11 +25391,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/tags/": {
+        "/api/channels/{channel_id}/tags/": {
             "post": {
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
@@ -25569,11 +25440,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/tags/{tag_id}": {
+        "/api/channels/{channel_id}/tags/{tag_id}": {
             "put": {
                 "x-permission-required": "MANAGE_CHANNELS",
                 "security": [
@@ -25627,7 +25498,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -25673,11 +25544,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/recipients/{user_id}": {
+        "/api/channels/{channel_id}/recipients/{user_id}": {
             "put": {
                 "security": [
                     {
@@ -25713,7 +25584,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -25751,11 +25622,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/purge/": {
+        "/api/channels/{channel_id}/purge/": {
             "post": {
                 "security": [
                     {
@@ -25795,11 +25666,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/post-data/": {
+        "/api/channels/{channel_id}/post-data/": {
             "post": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25837,11 +25708,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/polls/{poll_id}/expire/": {
+        "/api/channels/{channel_id}/polls/{poll_id}/expire/": {
             "post": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25875,11 +25746,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/polls/{poll_id}/answers/@me/": {
+        "/api/channels/{channel_id}/polls/{poll_id}/answers/@me/": {
             "put": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25923,11 +25794,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/polls/{poll_id}/answers/{answer_id}/": {
+        "/api/channels/{channel_id}/polls/{poll_id}/answers/{answer_id}/": {
             "get": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -25970,11 +25841,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/pins/{message_id}": {
+        "/api/channels/{channel_id}/pins/{message_id}": {
             "put": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -26024,7 +25895,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -26076,11 +25947,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/pins/": {
+        "/api/channels/{channel_id}/pins/": {
             "get": {
                 "x-permission-required": [
                     "READ_MESSAGE_HISTORY"
@@ -26124,11 +25995,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/permissions/{overwrite_id}": {
+        "/api/channels/{channel_id}/permissions/{overwrite_id}": {
             "put": {
                 "x-permission-required": "MANAGE_ROLES",
                 "security": [
@@ -26188,7 +26059,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -26227,11 +26098,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/search/": {
+        "/api/channels/{channel_id}/messages/search/": {
             "get": {
                 "security": [
                     {
@@ -26282,11 +26153,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/pins/{message_id}": {
+        "/api/channels/{channel_id}/messages/pins/{message_id}": {
             "put": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -26336,7 +26207,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -26388,11 +26259,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/pins/": {
+        "/api/channels/{channel_id}/messages/pins/": {
             "get": {
                 "x-permission-required": [
                     "READ_MESSAGE_HISTORY"
@@ -26436,11 +26307,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/bulk-delete/": {
+        "/api/channels/{channel_id}/messages/bulk-delete/": {
             "post": {
                 "security": [
                     {
@@ -26490,11 +26361,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/threads/": {
+        "/api/channels/{channel_id}/messages/{message_id}/threads/": {
             "post": {
                 "x-permission-required": "CREATE_PUBLIC_THREADS",
                 "security": [
@@ -26541,11 +26412,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/reactions/": {
+        "/api/channels/{channel_id}/messages/{message_id}/reactions/": {
             "delete": {
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
@@ -26595,11 +26466,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}": {
+        "/api/channels/{channel_id}/messages/{message_id}/reactions/{emoji}": {
             "delete": {
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
@@ -26658,7 +26529,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "get": {
@@ -26726,11 +26597,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}": {
+        "/api/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{user_id}": {
             "put": {
                 "x-right-required": "SELF_ADD_REACTIONS",
                 "x-permission-required": "READ_MESSAGE_HISTORY",
@@ -26799,7 +26670,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -26868,11 +26739,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{burst}/{user_id}": {
+        "/api/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/{burst}/{user_id}": {
             "delete": {
                 "security": [
                     {
@@ -26948,11 +26819,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/": {
+        "/api/channels/{channel_id}/messages/{message_id}/": {
             "patch": {
                 "x-right-required": "SEND_MESSAGES",
                 "x-permission-required": "SEND_MESSAGES",
@@ -27020,7 +26891,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "put": {
@@ -27090,7 +26961,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "get": {
@@ -27149,7 +27020,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -27197,11 +27068,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/crosspost/": {
+        "/api/channels/{channel_id}/messages/{message_id}/crosspost/": {
             "post": {
                 "x-permission-required": "MANAGE_MESSAGES",
                 "security": [
@@ -27242,11 +27113,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/messages/{message_id}/ack/": {
+        "/api/channels/{channel_id}/messages/{message_id}/ack/": {
             "post": {
                 "security": [
                     {
@@ -27292,11 +27163,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/invites/": {
+        "/api/channels/{channel_id}/invites/": {
             "post": {
                 "x-right-required": "CREATE_INVITES",
                 "x-permission-required": "CREATE_INSTANT_INVITE",
@@ -27352,7 +27223,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "get": {
@@ -27389,11 +27260,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/": {
+        "/api/channels/{channel_id}/": {
             "get": {
                 "x-permission-required": "VIEW_CHANNEL",
                 "security": [
@@ -27428,7 +27299,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "delete": {
@@ -27465,7 +27336,7 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             },
             "patch": {
@@ -27522,11 +27393,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/greet/": {
+        "/api/channels/{channel_id}/greet/": {
             "post": {
                 "x-permission-required": "SEND_MESSAGES",
                 "security": [
@@ -27581,11 +27452,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/directory-entries/": {
+        "/api/channels/{channel_id}/directory-entries/": {
             "get": {
                 "security": [
                     {
@@ -27626,11 +27497,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/attachments/": {
+        "/api/channels/{channel_id}/attachments/": {
             "post": {
                 "security": [
                     {
@@ -27684,11 +27555,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/channels/{channel_id}/attachments/{cloud_attachment_url}": {
+        "/api/channels/{channel_id}/attachments/{cloud_attachment_url}": {
             "delete": {
                 "security": [
                     {
@@ -27721,11 +27592,11 @@
                     }
                 ],
                 "tags": [
-                    "channels"
+                    "api"
                 ]
             }
         },
-        "/beaker/": {
+        "/api/beaker/": {
             "post": {
                 "security": [
                     {
@@ -27738,11 +27609,11 @@
                     }
                 },
                 "tags": [
-                    "beaker"
+                    "api"
                 ]
             }
         },
-        "/auth/whoami/": {
+        "/api/auth/whoami/": {
             "get": {
                 "security": [
                     {
@@ -27762,7 +27633,7 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -27772,7 +27643,7 @@
                 ]
             }
         },
-        "/auth/verify/view-backup-codes-challenge/": {
+        "/api/auth/verify/view-backup-codes-challenge/": {
             "post": {
                 "security": [
                     {}
@@ -27810,11 +27681,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/verify/resend/": {
+        "/api/auth/verify/resend/": {
             "post": {
                 "x-right-required": "RESEND_VERIFICATION_EMAIL",
                 "security": [
@@ -27846,11 +27717,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/verify/": {
+        "/api/auth/verify/": {
             "post": {
                 "security": [
                     {}
@@ -27888,11 +27759,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/sessions/": {
+        "/api/auth/sessions/": {
             "get": {
                 "security": [
                     {
@@ -27912,11 +27783,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/sessions/logout": {
+        "/api/auth/sessions/logout": {
             "post": {
                 "security": [
                     {
@@ -27939,11 +27810,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/reset/": {
+        "/api/auth/reset/": {
             "post": {
                 "security": [
                     {}
@@ -27981,11 +27852,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/register/": {
+        "/api/auth/register/": {
             "post": {
                 "security": [
                     {}
@@ -28023,11 +27894,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/mfa/webauthn/": {
+        "/api/auth/mfa/webauthn/": {
             "post": {
                 "security": [
                     {}
@@ -28065,11 +27936,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/mfa/totp/": {
+        "/api/auth/mfa/totp/": {
             "post": {
                 "security": [
                     {}
@@ -28107,11 +27978,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/logout/": {
+        "/api/auth/logout/": {
             "post": {
                 "security": [
                     {
@@ -28124,11 +27995,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/login/": {
+        "/api/auth/login/": {
             "post": {
                 "security": [
                     {}
@@ -28166,11 +28037,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/location-metadata/": {
+        "/api/auth/location-metadata/": {
             "get": {
                 "security": [
                     {}
@@ -28188,11 +28059,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/generate-registration-tokens/": {
+        "/api/auth/generate-registration-tokens/": {
             "get": {
                 "x-right-required": "CREATE_REGISTRATION_TOKENS",
                 "security": [
@@ -28231,7 +28102,7 @@
                     }
                 ],
                 "tags": [
-                    "auth"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -28241,7 +28112,7 @@
                 ]
             }
         },
-        "/auth/forgot/": {
+        "/api/auth/forgot/": {
             "post": {
                 "security": [
                     {}
@@ -28272,11 +28143,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/auth/fingerprint/": {
+        "/api/auth/fingerprint/": {
             "post": {
                 "security": [
                     {}
@@ -28294,11 +28165,11 @@
                     }
                 },
                 "tags": [
-                    "auth"
+                    "api"
                 ]
             }
         },
-        "/attachments/refresh-urls/": {
+        "/api/attachments/refresh-urls/": {
             "post": {
                 "security": [
                     {
@@ -28338,11 +28209,11 @@
                     }
                 },
                 "tags": [
-                    "attachments"
+                    "api"
                 ]
             }
         },
-        "/applications/": {
+        "/api/applications/": {
             "get": {
                 "security": [
                     {
@@ -28362,7 +28233,7 @@
                     }
                 },
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "post": {
@@ -28394,11 +28265,11 @@
                     }
                 },
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/detectable/": {
+        "/api/applications/detectable/": {
             "get": {
                 "security": [
                     {
@@ -28418,11 +28289,11 @@
                     }
                 },
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/@me/": {
+        "/api/applications/@me/": {
             "get": {
                 "security": [
                     {
@@ -28452,7 +28323,7 @@
                     }
                 },
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -28494,11 +28365,11 @@
                     }
                 },
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/skus/": {
+        "/api/applications/{application_id}/skus/": {
             "get": {
                 "security": [
                     {
@@ -28529,11 +28400,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/": {
+        "/api/applications/{application_id}/": {
             "get": {
                 "security": [
                     {
@@ -28574,7 +28445,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -28627,11 +28498,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/delete": {
+        "/api/applications/{application_id}/delete": {
             "post": {
                 "security": [
                     {
@@ -28665,11 +28536,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/guilds/{guild_id}/commands/": {
+        "/api/applications/{application_id}/guilds/{guild_id}/commands/": {
             "get": {
                 "security": [
                     {
@@ -28702,7 +28573,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "post": {
@@ -28747,7 +28618,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "put": {
@@ -28792,11 +28663,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/": {
+        "/api/applications/{application_id}/guilds/{guild_id}/commands/{command_id}/": {
             "get": {
                 "security": [
                     {
@@ -28838,7 +28709,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -28892,7 +28763,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "delete": {
@@ -28936,11 +28807,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/entitlements/": {
+        "/api/applications/{application_id}/entitlements/": {
             "get": {
                 "security": [
                     {
@@ -28971,11 +28842,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/emojis/": {
+        "/api/applications/{application_id}/emojis/": {
             "get": {
                 "security": [
                     {
@@ -29016,7 +28887,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "post": {
@@ -29079,11 +28950,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/emojis/{emoji_id}": {
+        "/api/applications/{application_id}/emojis/{emoji_id}": {
             "get": {
                 "security": [
                     {
@@ -29143,7 +29014,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -29205,7 +29076,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "delete": {
@@ -29250,11 +29121,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/commands/": {
+        "/api/applications/{application_id}/commands/": {
             "get": {
                 "security": [
                     {
@@ -29278,7 +29149,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "post": {
@@ -29314,7 +29185,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "put": {
@@ -29350,11 +29221,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/commands/{command_id}/": {
+        "/api/applications/{application_id}/commands/{command_id}/": {
             "get": {
                 "security": [
                     {
@@ -29387,7 +29258,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -29432,7 +29303,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "delete": {
@@ -29467,11 +29338,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/bot/": {
+        "/api/applications/{application_id}/bot/": {
             "post": {
                 "security": [
                     {
@@ -29512,7 +29383,7 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             },
             "patch": {
@@ -29565,11 +29436,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/applications/{application_id}/bot/reset": {
+        "/api/applications/{application_id}/bot/reset": {
             "post": {
                 "security": [
                     {
@@ -29610,11 +29481,11 @@
                     }
                 ],
                 "tags": [
-                    "applications"
+                    "api"
                 ]
             }
         },
-        "/-/readyz/": {
+        "/api/-/readyz/": {
             "get": {
                 "security": [
                     {}
@@ -29626,7 +29497,7 @@
                     }
                 },
                 "tags": [
-                    "-"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -29636,7 +29507,7 @@
                 ]
             }
         },
-        "/-/healthz/": {
+        "/api/-/healthz/": {
             "get": {
                 "security": [
                     {}
@@ -29648,7 +29519,7 @@
                     }
                 },
                 "tags": [
-                    "-"
+                    "api"
                 ],
                 "x-badges": [
                     {
@@ -29888,6 +29759,30 @@
                             "type": "string"
                         },
                         "description": "channel_id"
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Sort order for results"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Max. amount of items to return"
+                    },
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Get results after $ATTACHMENT_ID (depends on sort_order)"
                     }
                 ],
                 "tags": [

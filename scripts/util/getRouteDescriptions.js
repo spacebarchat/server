@@ -1,3 +1,23 @@
+/*
+	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published
+	by the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+require("module-alias/register");
+
 const express = require("express");
 const path = require("path");
 const { traverseDirectory } = require("lambert-server");
@@ -15,6 +35,7 @@ const methods = ["get", "post", "put", "delete", "patch"];
 const routes = new Map();
 let currentFile = "";
 let currentPath = "";
+let currentRoutePrefix = "";
 
 /*
 	For some reason, if a route exports multiple functions, it won't be registered here!
@@ -61,7 +82,7 @@ function proxy(file, apiMethod, apiPathPrefix, apiPath, ...args) {
 
     console.log(`${colorizeMethod(apiMethod).padStart("DELETE".length + 10)} ${formatPath(apiPathPrefix + apiPath)}`);
     opts.file = file.replace("/dist/", "/src/").replace(".js", ".ts");
-    routes.set(apiPathPrefix + apiPath + "|" + apiMethod, opts());
+    routes.set(currentRoutePrefix + apiPathPrefix + apiPath + "|" + apiMethod, opts());
 }
 
 express.Router = () => {
@@ -76,24 +97,28 @@ RouteUtility.route = (opts) => {
     return func;
 };
 
+function getPrefixedRouteDescriptions(routePrefix, root) {
+    currentRoutePrefix = routePrefix;
+    traverseDirectory({ dirname: root, recursive: true }, (file) => {
+        currentFile = file;
+
+        currentPath = file.replace(root.slice(0, -1), "");
+        currentPath = currentPath.split(".").slice(0, -1).join("."); // truncate .js/.ts file extension of path
+        currentPath = currentPath.replaceAll("#", ":").replaceAll("\\", "/"); // replace # with : for path parameters and windows paths with slashes
+        currentPath = currentPath.replaceAll(/%[A-Za-z0-9]{2}/g, (match) => decodeURIComponent(match)); // special case to handle .well-known for example
+        if (currentPath.endsWith("/index")) currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
+
+        try {
+            require(file);
+        } catch (e) {
+            console.error(e);
+        }
+    });
+}
+
 module.exports = function getRouteDescriptions() {
-    const roots = [path.join(__dirname, "..", "..", "dist", "api", "routes", "/"), path.join(__dirname, "..", "..", "dist", "api", "routes_toplevel", "/")];
-    for (const root of roots)
-        traverseDirectory({ dirname: root, recursive: true }, (file) => {
-            currentFile = file;
-
-            currentPath = file.replace(root.slice(0, -1), "");
-            currentPath = currentPath.split(".").slice(0, -1).join("."); // truncate .js/.ts file extension of path
-            currentPath = currentPath.replaceAll("#", ":").replaceAll("\\", "/"); // replace # with : for path parameters and windows paths with slashes
-            currentPath = currentPath.replaceAll(/%[A-Za-z0-9]{2}/g, (match) => decodeURIComponent(match)); // special case to handle .well-known for example
-            if (currentPath.endsWith("/index")) currentPath = currentPath.slice(0, "/index".length * -1); // delete index from path
-
-            try {
-                require(file);
-            } catch (e) {
-                console.error(e);
-            }
-        });
+    getPrefixedRouteDescriptions("/api", path.join(__dirname, "..", "..", "dist", "api", "routes", "/"));
+    getPrefixedRouteDescriptions("", path.join(__dirname, "..", "..", "dist", "api", "routes_toplevel", "/"));
 
     return routes;
 };
