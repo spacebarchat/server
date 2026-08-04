@@ -65,12 +65,14 @@ router.post(
             if (messages.length > maxBulkDelete) throw new HTTPError(`You cannot delete more than ${maxBulkDelete} messages`);
         }
 
-        await Message.delete({ id: In(messages), channel_id: channel_id });
+        const messageIdsInChannel = (await Message.find({ where: { id: In(messages), channel_id: channel_id }, select: { id: true } })).map((x) => x.id);
+
+        await Message.delete({ id: In(messageIdsInChannel), channel_id: channel_id });
 
         await emitEvent({
             event: "MESSAGE_DELETE_BULK",
             channel_id,
-            data: { ids: messages, channel_id, guild_id: channel.guild_id },
+            data: { ids: messageIdsInChannel, channel_id, guild_id: channel.guild_id },
         } satisfies MessageDeleteBulkEvent);
 
         res.sendStatus(204);
