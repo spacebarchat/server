@@ -42,6 +42,11 @@ in
             "127.0.0.1:${toString cfg.adminApiEndpoint.localPort}" = { };
           };
         };
+        "spacebar-webrtc" = lib.mkIf cfg.pion-sfu.enable {
+          servers = {
+            "127.0.0.1:${toString cfg.webrtcEndpoint.localPort}" = { };
+          };
+        };
       };
       virtualHosts = lib.mkIf cfg.enable {
         "${cfg.apiEndpoint.host}" = {
@@ -71,6 +76,14 @@ in
           forceSSL = cfg.adminApiEndpoint.useSsl;
           locations."/" = {
             proxyPass = "http://spacebar-admin/";
+          };
+        };
+        "${cfg.webrtcEndpoint.host}" = lib.mkIf cfg.pion-sfu.enable {
+          enableACME = cfg.webrtcEndpoint.useSsl;
+          forceSSL = cfg.webrtcEndpoint.useSsl;
+          locations."/" = {
+            proxyWebsockets = true;
+            proxyPass = "http://spacebar-webrtc/";
           };
         };
       };
