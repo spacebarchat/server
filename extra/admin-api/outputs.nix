@@ -86,6 +86,7 @@ nixpkgs.lib.recursiveUpdate (
           name = "Spacebar.Models.Api";
           projectFile = "Spacebar.Models.Api.csproj";
           srcRoot = Models/Spacebar.Models.Api;
+          projectReferences = [ proj.Spacebar-Models-Generic ];
         };
         Spacebar-Models-AdminApi = buildSpacebarDotnetModule {
           name = "Spacebar.Models.AdminApi";
