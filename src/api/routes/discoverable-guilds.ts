@@ -49,7 +49,7 @@ router.get(
             where: {
                 id: Not(In(hiddenGuildIds)),
                 discovery_excluded: false,
-                ...(categories == undefined ? {} : { primary_category_id: categories.toString() }), // TODO: isnt this an array?
+                ...(categories == undefined ? {} : { primary_category_id: Number(categories as string) }), // TODO: isnt this an array?
                 ...(showAllGuilds ? {} : { features: ArrayContains(["DISCOVERABLE"]) }),
             },
             order: {
@@ -64,11 +64,12 @@ router.get(
 
         res.send({
             total: total,
-            guilds: guilds.map((g) => ({
-                ...g,
-                discovery_weight: undefined,
-                discovery_splash: undefined,
-            })),
+            // guilds: guilds.map((g) => ({
+            //     ...g,
+            //     discovery_weight: undefined,
+            //     discovery_splash: undefined,
+            // })),
+            guilds: guilds.map((g) => g.toDiscoverableGuild()),
             offset: Number(offset || Config.get().guild.discovery.offset),
             limit: Number(limit || configLimit),
         });
