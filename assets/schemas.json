@@ -1636,309 +1636,80 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "InstanceUserDeleteSchema": {
-        "$ref": "#/definitions/InstanceUserDeleteSchemaContent",
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserSettingsUpdateSchema": {
+    "DiscoverableGuildsResponse": {
         "type": "object",
         "properties": {
-            "afk_timeout": {
+            "total": {
                 "type": "integer"
             },
-            "allow_accessibility_detection": {
-                "type": "boolean"
-            },
-            "animate_emoji": {
-                "type": "boolean"
-            },
-            "animate_stickers": {
-                "type": "integer"
-            },
-            "contact_sync_enabled": {
-                "type": "boolean"
-            },
-            "convert_emoticons": {
-                "type": "boolean"
-            },
-            "custom_status": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/CustomStatus"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "default_guilds_restricted": {
-                "type": "boolean"
-            },
-            "detect_platform_accounts": {
-                "type": "boolean"
-            },
-            "developer_mode": {
-                "type": "boolean"
-            },
-            "disable_games_tab": {
-                "type": "boolean"
-            },
-            "enable_tts_command": {
-                "type": "boolean"
-            },
-            "explicit_content_filter": {
-                "type": "integer"
-            },
-            "friend_discovery_flags": {
-                "type": "integer"
-            },
-            "friend_source_flags": {
-                "$ref": "#/definitions/FriendSourceFlags"
-            },
-            "gateway_connected": {
-                "type": "boolean"
-            },
-            "gif_auto_play": {
-                "type": "boolean"
-            },
-            "guild_folders": {
+            "guilds": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/GuildFolder"
+                    "$ref": "#/definitions/DiscoverableGuild"
                 }
             },
-            "guild_positions": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "inline_attachment_media": {
-                "type": "boolean"
-            },
-            "inline_embed_media": {
-                "type": "boolean"
-            },
-            "locale": {
-                "type": "string"
-            },
-            "message_display_compact": {
-                "type": "boolean"
-            },
-            "native_phone_integration_enabled": {
-                "type": "boolean"
-            },
-            "render_embeds": {
-                "type": "boolean"
-            },
-            "render_reactions": {
-                "type": "boolean"
-            },
-            "restricted_guilds": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "show_current_game": {
-                "type": "boolean"
-            },
-            "status": {
-                "enum": [
-                    "dnd",
-                    "idle",
-                    "invisible",
-                    "offline",
-                    "online"
-                ],
-                "type": "string"
-            },
-            "stream_notifications_enabled": {
-                "type": "boolean"
-            },
-            "theme": {
-                "enum": [
-                    "dark",
-                    "light"
-                ],
-                "type": "string"
-            },
-            "timezone_offset": {
+            "offset": {
                 "type": "integer"
             },
-            "view_nsfw_guilds": {
-                "type": "boolean"
+            "limit": {
+                "type": "integer"
             }
         },
         "additionalProperties": false,
+        "required": [
+            "guilds",
+            "limit",
+            "offset",
+            "total"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "UserSettingsSchema": {
+    "DmMessagesResponseSchema": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PartialMessage"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "EmailDomainLookupResponse": {
         "type": "object",
         "properties": {
-            "afk_timeout": {
-                "type": "integer"
-            },
-            "allow_accessibility_detection": {
-                "type": "boolean"
-            },
-            "animate_emoji": {
-                "type": "boolean"
-            },
-            "animate_stickers": {
-                "type": "integer"
-            },
-            "contact_sync_enabled": {
-                "type": "boolean"
-            },
-            "convert_emoticons": {
-                "type": "boolean"
-            },
-            "custom_status": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/CustomStatus"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "default_guilds_restricted": {
-                "type": "boolean"
-            },
-            "detect_platform_accounts": {
-                "type": "boolean"
-            },
-            "developer_mode": {
-                "type": "boolean"
-            },
-            "disable_games_tab": {
-                "type": "boolean"
-            },
-            "enable_tts_command": {
-                "type": "boolean"
-            },
-            "explicit_content_filter": {
-                "type": "integer"
-            },
-            "friend_discovery_flags": {
-                "type": "integer"
-            },
-            "friend_source_flags": {
-                "$ref": "#/definitions/FriendSourceFlags"
-            },
-            "gateway_connected": {
-                "type": "boolean"
-            },
-            "gif_auto_play": {
-                "type": "boolean"
-            },
-            "guild_folders": {
+            "guilds_info": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/GuildFolder"
+                    "$ref": "#/definitions/HubGuild"
                 }
             },
-            "guild_positions": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "inline_attachment_media": {
-                "type": "boolean"
-            },
-            "inline_embed_media": {
-                "type": "boolean"
-            },
-            "locale": {
-                "type": "string"
-            },
-            "message_display_compact": {
-                "type": "boolean"
-            },
-            "native_phone_integration_enabled": {
-                "type": "boolean"
-            },
-            "render_embeds": {
-                "type": "boolean"
-            },
-            "render_reactions": {
-                "type": "boolean"
-            },
-            "restricted_guilds": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "show_current_game": {
-                "type": "boolean"
-            },
-            "status": {
-                "enum": [
-                    "dnd",
-                    "idle",
-                    "invisible",
-                    "offline",
-                    "online"
-                ],
-                "type": "string"
-            },
-            "stream_notifications_enabled": {
-                "type": "boolean"
-            },
-            "theme": {
-                "enum": [
-                    "dark",
-                    "light"
-                ],
-                "type": "string"
-            },
-            "timezone_offset": {
-                "type": "integer"
-            },
-            "view_nsfw_guilds": {
+            "has_matching_guild": {
                 "type": "boolean"
             }
         },
         "additionalProperties": false,
         "required": [
-            "afk_timeout",
-            "allow_accessibility_detection",
-            "animate_emoji",
-            "animate_stickers",
-            "contact_sync_enabled",
-            "convert_emoticons",
-            "custom_status",
-            "default_guilds_restricted",
-            "detect_platform_accounts",
-            "developer_mode",
-            "disable_games_tab",
-            "enable_tts_command",
-            "explicit_content_filter",
-            "friend_discovery_flags",
-            "friend_source_flags",
-            "gateway_connected",
-            "gif_auto_play",
-            "guild_folders",
-            "guild_positions",
-            "inline_attachment_media",
-            "inline_embed_media",
-            "locale",
-            "message_display_compact",
-            "native_phone_integration_enabled",
-            "render_embeds",
-            "render_reactions",
-            "restricted_guilds",
-            "show_current_game",
-            "status",
-            "stream_notifications_enabled",
-            "theme",
-            "timezone_offset",
-            "view_nsfw_guilds"
+            "guilds_info",
+            "has_matching_guild"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "EmailDomainLookupVerifyCodeResponse": {
+        "type": "object",
+        "properties": {
+            "guild": {
+                "$ref": "#/definitions/Guild"
+            },
+            "joined": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "guild",
+            "joined"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InstanceUserDeleteSchema": {
+        "$ref": "#/definitions/InstanceUserDeleteSchemaContent",
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "SessionsLogoutSchema": {
@@ -2046,6 +1817,373 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UserSettingsUpdateSchema": {
+        "type": "object",
+        "properties": {
+            "activity_restricted_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "activity_joining_restricted_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "allow_accessibility_detection": {
+                "type": "boolean"
+            },
+            "allow_activity_party_privacy_friends": {
+                "type": "boolean"
+            },
+            "allow_activity_party_privacy_voice_channel": {
+                "type": "boolean"
+            },
+            "animate_emoji": {
+                "type": "boolean"
+            },
+            "animate_stickers": {
+                "type": "integer"
+            },
+            "contact_sync_enabled": {
+                "type": "boolean"
+            },
+            "convert_emoticons": {
+                "type": "boolean"
+            },
+            "custom_status": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/CustomStatus"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "default_guilds_restricted": {
+                "type": "boolean"
+            },
+            "detect_platform_accounts": {
+                "type": "boolean"
+            },
+            "developer_mode": {
+                "type": "boolean"
+            },
+            "disable_games_tab": {
+                "type": "boolean"
+            },
+            "enable_tts_command": {
+                "type": "boolean"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "friend_discovery_flags": {
+                "type": "integer"
+            },
+            "friend_source_flags": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/FriendSourceFlags"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "gif_auto_play": {
+                "type": "boolean"
+            },
+            "guild_folders": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GuildFolder"
+                }
+            },
+            "inline_attachment_media": {
+                "type": "boolean"
+            },
+            "inline_embed_media": {
+                "type": "boolean"
+            },
+            "locale": {
+                "type": "string"
+            },
+            "message_display_compact": {
+                "type": "boolean"
+            },
+            "native_phone_integration_enabled": {
+                "type": "boolean"
+            },
+            "passwordless": {
+                "type": "boolean"
+            },
+            "render_embeds": {
+                "type": "boolean"
+            },
+            "render_reactions": {
+                "type": "boolean"
+            },
+            "restricted_guilds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "show_current_game": {
+                "type": "boolean"
+            },
+            "slayer_sdk_receive_dms_in_game": {
+                "type": "integer"
+            },
+            "soundboard_volume": {
+                "type": "integer"
+            },
+            "status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "stream_notifications_enabled": {
+                "type": "boolean"
+            },
+            "theme": {
+                "enum": [
+                    "dark",
+                    "darker",
+                    "light",
+                    "midnight"
+                ],
+                "type": "string"
+            },
+            "timezone_offset": {
+                "type": "integer"
+            },
+            "view_nsfw_commands": {
+                "type": "boolean"
+            },
+            "view_nsfw_guilds": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserSettingsSchema": {
+        "type": "object",
+        "properties": {
+            "activity_restricted_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "activity_joining_restricted_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "allow_accessibility_detection": {
+                "type": "boolean"
+            },
+            "allow_activity_party_privacy_friends": {
+                "type": "boolean"
+            },
+            "allow_activity_party_privacy_voice_channel": {
+                "type": "boolean"
+            },
+            "animate_emoji": {
+                "type": "boolean"
+            },
+            "animate_stickers": {
+                "type": "integer"
+            },
+            "contact_sync_enabled": {
+                "type": "boolean"
+            },
+            "convert_emoticons": {
+                "type": "boolean"
+            },
+            "custom_status": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/CustomStatus"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "default_guilds_restricted": {
+                "type": "boolean"
+            },
+            "detect_platform_accounts": {
+                "type": "boolean"
+            },
+            "developer_mode": {
+                "type": "boolean"
+            },
+            "disable_games_tab": {
+                "type": "boolean"
+            },
+            "enable_tts_command": {
+                "type": "boolean"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "friend_discovery_flags": {
+                "type": "integer"
+            },
+            "friend_source_flags": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/FriendSourceFlags"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "gif_auto_play": {
+                "type": "boolean"
+            },
+            "guild_folders": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/GuildFolder"
+                }
+            },
+            "inline_attachment_media": {
+                "type": "boolean"
+            },
+            "inline_embed_media": {
+                "type": "boolean"
+            },
+            "locale": {
+                "type": "string"
+            },
+            "message_display_compact": {
+                "type": "boolean"
+            },
+            "native_phone_integration_enabled": {
+                "type": "boolean"
+            },
+            "passwordless": {
+                "type": "boolean"
+            },
+            "render_embeds": {
+                "type": "boolean"
+            },
+            "render_reactions": {
+                "type": "boolean"
+            },
+            "restricted_guilds": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "show_current_game": {
+                "type": "boolean"
+            },
+            "slayer_sdk_receive_dms_in_game": {
+                "type": "integer"
+            },
+            "soundboard_volume": {
+                "type": "integer"
+            },
+            "status": {
+                "enum": [
+                    "dnd",
+                    "idle",
+                    "invisible",
+                    "offline",
+                    "online"
+                ],
+                "type": "string"
+            },
+            "stream_notifications_enabled": {
+                "type": "boolean"
+            },
+            "theme": {
+                "enum": [
+                    "dark",
+                    "darker",
+                    "light",
+                    "midnight"
+                ],
+                "type": "string"
+            },
+            "timezone_offset": {
+                "type": "integer"
+            },
+            "view_nsfw_commands": {
+                "type": "boolean"
+            },
+            "view_nsfw_guilds": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "activity_joining_restricted_guild_ids",
+            "activity_restricted_guild_ids",
+            "afk_timeout",
+            "allow_accessibility_detection",
+            "allow_activity_party_privacy_friends",
+            "allow_activity_party_privacy_voice_channel",
+            "animate_emoji",
+            "animate_stickers",
+            "contact_sync_enabled",
+            "convert_emoticons",
+            "custom_status",
+            "default_guilds_restricted",
+            "detect_platform_accounts",
+            "developer_mode",
+            "disable_games_tab",
+            "enable_tts_command",
+            "explicit_content_filter",
+            "friend_discovery_flags",
+            "friend_source_flags",
+            "gif_auto_play",
+            "guild_folders",
+            "inline_attachment_media",
+            "inline_embed_media",
+            "locale",
+            "message_display_compact",
+            "native_phone_integration_enabled",
+            "passwordless",
+            "render_embeds",
+            "render_reactions",
+            "restricted_guilds",
+            "show_current_game",
+            "slayer_sdk_receive_dms_in_game",
+            "soundboard_volume",
+            "status",
+            "stream_notifications_enabled",
+            "theme",
+            "timezone_offset",
+            "view_nsfw_commands",
+            "view_nsfw_guilds"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EmojisResponse": {
         "type": "array",
         "items": {
@@ -2110,78 +2248,6 @@
         "required": [
             "id",
             "name"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DiscoverableGuildsResponse": {
-        "type": "object",
-        "properties": {
-            "total": {
-                "type": "integer"
-            },
-            "guilds": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/DiscoverableGuild"
-                }
-            },
-            "offset": {
-                "type": "integer"
-            },
-            "limit": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "guilds",
-            "limit",
-            "offset",
-            "total"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DmMessagesResponseSchema": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/PartialMessage"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "EmailDomainLookupResponse": {
-        "type": "object",
-        "properties": {
-            "guilds_info": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/HubGuild"
-                }
-            },
-            "has_matching_guild": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "guilds_info",
-            "has_matching_guild"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "EmailDomainLookupVerifyCodeResponse": {
-        "type": "object",
-        "properties": {
-            "guild": {
-                "$ref": "#/definitions/Guild"
-            },
-            "joined": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "guild",
-            "joined"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -3160,6 +3226,37 @@
         "items": {
             "$ref": "#/definitions/Team"
         },
+        "definitions": {
+            "Team": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "owner_user_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "icon",
+                    "id",
+                    "name",
+                    "owner_user_id"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "TokenResponse": {
@@ -3169,7 +3266,7 @@
                 "type": "string"
             },
             "settings": {
-                "$ref": "#/definitions/UserSettings"
+                "$ref": "#/definitions/UserSettingsSchema"
             }
         },
         "additionalProperties": false,
@@ -4884,9 +4981,6 @@
             "flags": {
                 "type": "integer"
             },
-            "verified": {
-                "type": "boolean"
-            },
             "premium_since": {
                 "type": "string",
                 "format": "date-time"
@@ -4950,6 +5044,9 @@
             },
             "phone": {
                 "type": "string"
+            },
+            "verified": {
+                "type": "boolean"
             },
             "nsfw_allowed": {
                 "type": "boolean"
@@ -5021,9 +5118,6 @@
             "flags": {
                 "type": "integer"
             },
-            "verified": {
-                "type": "boolean"
-            },
             "premium_since": {
                 "type": "string",
                 "format": "date-time"
@@ -5087,6 +5181,9 @@
             },
             "phone": {
                 "type": "string"
+            },
+            "verified": {
+                "type": "boolean"
             },
             "nsfw_allowed": {
                 "type": "boolean"
@@ -5528,6 +5625,156 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ProfileMetadataResponse": {
+        "type": "object",
+        "properties": {
+            "pronouns": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "accent_color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "theme_colors": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "popout_animation_particle_type": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/EmojiResponse"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "profile_effect": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ProfileEffect"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "pronouns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildProfileMetadataResponse": {
+        "type": "object",
+        "properties": {
+            "guild_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "accent_color": {
+                "type": "null"
+            },
+            "pronouns": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "string"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "theme_colors": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "popout_animation_particle_type": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/EmojiResponse"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "profile_effect": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ProfileEffect"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "guild_id",
+            "pronouns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserProfileResponse": {
         "type": "object",
         "properties": {
@@ -5548,19 +5795,7 @@
             "mutual_guilds": {
                 "type": "array",
                 "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "nick": {
-                            "type": "string"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "id"
-                    ]
+                    "$ref": "#/definitions/MutualGuild"
                 }
             },
             "premium_type": {
@@ -5570,18 +5805,18 @@
                 "type": "integer"
             },
             "user_profile": {
-                "$ref": "#/definitions/UserProfile"
+                "$ref": "#/definitions/ProfileMetadataResponse"
             },
             "guild_member": {
                 "$ref": "#/definitions/PublicMember"
             },
             "guild_member_profile": {
-                "$ref": "#/definitions/PublicMemberProfile"
+                "$ref": "#/definitions/GuildProfileMetadataResponse"
             },
             "badges": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/definitions/Badge"
+                    "$ref": "#/definitions/ProfileBadge"
                 }
             }
         },
@@ -9467,82 +9702,169 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "InstanceUserDeleteSchemaContent": {
+    "DiscoverableGuild": {
         "type": "object",
         "properties": {
-            "reason": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
             },
-            "persistInstanceBan": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "CustomStatus": {
-        "type": "object",
-        "properties": {
-            "emoji_id": {
+            "name": {
                 "type": "string"
             },
-            "emoji_name": {
-                "type": "string"
-            },
-            "expires_at": {
-                "type": "integer"
-            },
-            "text": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "FriendSourceFlags": {
-        "type": "object",
-        "properties": {
-            "all": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "all"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildFolder": {
-        "type": "object",
-        "properties": {
-            "color": {
+            "icon": {
                 "type": [
                     "null",
-                    "integer"
+                    "string"
                 ]
             },
-            "guild_ids": {
+            "description": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "splash": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "discovery_splash": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "features": {
                 "type": "array",
                 "items": {
                     "type": "string"
                 }
             },
-            "id": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "name": {
+            "vanity_url_code": {
                 "type": [
                     "null",
                     "string"
+                ]
+            },
+            "preferred_locale": {
+                "type": "string"
+            },
+            "premium_subscription_count": {
+                "type": "integer"
+            },
+            "approximate_member_count": {
+                "type": "integer"
+            },
+            "approximate_presence_count": {
+                "type": "integer"
+            },
+            "emojis": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/EmojiResponse"
+                }
+            },
+            "emoji_count": {
+                "type": "integer"
+            },
+            "stickers": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/StickerResponse"
+                }
+            },
+            "sticker_count": {
+                "type": "integer"
+            },
+            "auto_removed": {
+                "type": "boolean"
+            },
+            "primary_category_id": {
+                "type": "integer"
+            },
+            "primary_category": {
+                "$ref": "#/definitions/DiscoveryCategory"
+            },
+            "keywords": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "is_published": {
+                "type": "boolean"
+            },
+            "reasons_to_join": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/DiscoveryReason"
+                }
+            },
+            "social_links": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "about": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "category_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "categories": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/DiscoveryCategory"
+                }
+            },
+            "created_at": {
+                "type": "string"
+            },
+            "nsfw_properties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/DiscoveryNsfwProperties"
+                    },
+                    {
+                        "type": "null"
+                    }
                 ]
             }
         },
         "additionalProperties": false,
         "required": [
-            "guild_ids"
+            "approximate_member_count",
+            "approximate_presence_count",
+            "auto_removed",
+            "banner",
+            "description",
+            "discovery_splash",
+            "features",
+            "icon",
+            "id",
+            "is_published",
+            "keywords",
+            "name",
+            "preferred_locale",
+            "premium_subscription_count",
+            "primary_category_id",
+            "splash",
+            "vanity_url_code"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -9778,172 +10100,6 @@
             "identity_enabled",
             "identity_guild_id",
             "tag"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "DiscoverableGuild": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "description": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "splash": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "discovery_splash": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "vanity_url_code": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "preferred_locale": {
-                "type": "string"
-            },
-            "premium_subscription_count": {
-                "type": "integer"
-            },
-            "approximate_member_count": {
-                "type": "integer"
-            },
-            "approximate_presence_count": {
-                "type": "integer"
-            },
-            "emojis": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/EmojiResponse"
-                }
-            },
-            "emoji_count": {
-                "type": "integer"
-            },
-            "stickers": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/StickerResponse"
-                }
-            },
-            "sticker_count": {
-                "type": "integer"
-            },
-            "auto_removed": {
-                "type": "boolean"
-            },
-            "primary_category_id": {
-                "type": "integer"
-            },
-            "primary_category": {
-                "$ref": "#/definitions/DiscoveryCategory"
-            },
-            "keywords": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "is_published": {
-                "type": "boolean"
-            },
-            "reasons_to_join": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/DiscoveryReason"
-                }
-            },
-            "social_links": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "about": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "category_ids": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "categories": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/DiscoveryCategory"
-                }
-            },
-            "created_at": {
-                "type": "string"
-            },
-            "nsfw_properties": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/DiscoveryNsfwProperties"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "approximate_member_count",
-            "approximate_presence_count",
-            "auto_removed",
-            "banner",
-            "description",
-            "discovery_splash",
-            "features",
-            "icon",
-            "id",
-            "is_published",
-            "keywords",
-            "name",
-            "preferred_locale",
-            "premium_subscription_count",
-            "primary_category_id",
-            "splash",
-            "vanity_url_code"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -11345,7 +11501,9 @@
             "theme": {
                 "enum": [
                     "dark",
-                    "light"
+                    "darker",
+                    "light",
+                    "midnight"
                 ],
                 "type": "string",
                 "default": "dark"
@@ -11395,6 +11553,75 @@
             "theme",
             "timezone_offset",
             "view_nsfw_guilds"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CustomStatus": {
+        "type": "object",
+        "properties": {
+            "emoji_id": {
+                "type": "string"
+            },
+            "emoji_name": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": "integer"
+            },
+            "text": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "FriendSourceFlags": {
+        "type": "object",
+        "properties": {
+            "all": {
+                "type": "boolean"
+            },
+            "mutual_friends": {
+                "type": "boolean"
+            },
+            "mutual_guilds": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildFolder": {
+        "type": "object",
+        "properties": {
+            "color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "id": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "guild_ids"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -14390,6 +14617,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "InstanceUserDeleteSchemaContent": {
+        "type": "object",
+        "properties": {
+            "reason": {
+                "type": "string"
+            },
+            "persistInstanceBan": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EmojiGuild": {
         "type": "object",
         "properties": {
@@ -14729,7 +14969,7 @@
                 "type": "integer"
             },
             "type": {
-                "type": "integer"
+                "$ref": "#/definitions/HubDirectoryEntryType"
             }
         },
         "additionalProperties": false,
@@ -14741,6 +14981,14 @@
             "guild",
             "primary_category_id",
             "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "HubDirectoryEntryType": {
+        "type": "number",
+        "enum": [
+            0,
+            1
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -15552,29 +15800,17 @@
     "BackupCode": {
         "type": "object",
         "properties": {
-            "user": {
-                "$ref": "#/definitions/User"
-            },
             "code": {
                 "type": "string"
             },
             "consumed": {
                 "type": "boolean"
-            },
-            "expired": {
-                "type": "boolean"
-            },
-            "id": {
-                "type": "string"
             }
         },
         "additionalProperties": false,
         "required": [
             "code",
-            "consumed",
-            "expired",
-            "id",
-            "user"
+            "consumed"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -16550,6 +16786,27 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ProfileEffect": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "expires_at": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "expires_at",
+            "id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "PublicConnectedAccount": {
         "type": "object",
         "properties": {
@@ -16570,60 +16827,23 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "UserProfile": {
+    "MutualGuild": {
         "type": "object",
         "properties": {
-            "banner": {
+            "id": {
                 "type": "string"
             },
-            "bio": {
+            "nick": {
                 "type": "string"
-            },
-            "theme_colors": {
-                "type": "array",
-                "items": {
-                    "type": "integer"
-                }
-            },
-            "pronouns": {
-                "type": "string"
-            },
-            "accent_color": {
-                "type": "integer"
             }
         },
         "additionalProperties": false,
         "required": [
-            "bio"
+            "id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "PublicMemberProfile": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-            "guild_id": {
-                "type": "string"
-            },
-            "banner": {
-                "type": "string"
-            },
-            "bio": {
-                "type": "string"
-            },
-            "accent_color": {
-                "type": "null"
-            }
-        },
-        "required": [
-            "accent_color",
-            "banner",
-            "bio",
-            "guild_id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "Badge": {
+    "ProfileBadge": {
         "type": "object",
         "properties": {
             "id": {

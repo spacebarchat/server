@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GuildCreateResponse, RoleResponse, StickerResponse } from "@spacebar/schemas";
-import { EmojiResponse } from "@spacebar/schemas/api/guilds/Emoji";
+import { GuildCreateResponse, RoleResponse, StickerResponse, EmojiResponse } from "@spacebar/schemas";
 
 export interface MemberJoinGuildResponse {
     guild: GuildCreateResponse;

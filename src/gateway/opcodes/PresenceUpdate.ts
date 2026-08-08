@@ -18,8 +18,8 @@
 
 import { Session, User } from "@spacebar/database";
 import { WebSocket, Payload } from "@spacebar/gateway";
-import { emitEvent, InternalStatusOrder, PresenceUpdateEvent, PrivateStatus } from "@spacebar/util";
-import { ActivitySchema } from "@spacebar/schemas";
+import { emitEvent, PresenceUpdateEvent } from "@spacebar/util";
+import { ActivitySchema, InternalStatusOrder, PrivateStatus } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {

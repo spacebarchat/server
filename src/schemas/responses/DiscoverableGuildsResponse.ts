@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Snowflake, StickerResponse } from "@spacebar/schemas";
-import { EmojiResponse } from "@spacebar/schemas/api/guilds/Emoji";
+import { EmojiResponse, Snowflake, StickerResponse } from "@spacebar/schemas";
 
 export interface DiscoverableGuildsResponse {
     total: number;

@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-//TODO: remove entity import
-import { ConnectedAccount } from "@spacebar/database";
-
-export type PublicConnectedAccount = Pick<ConnectedAccount, "name" | "type" | "verified">;
+export interface PublicConnectedAccount {
+    name: string;
+    type: string;
+    verified?: boolean;
+}

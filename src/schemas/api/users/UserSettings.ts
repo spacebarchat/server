@@ -16,11 +16,17 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Snowflake } from "@spacebar/schemas";
+
 export type UserSettingsUpdateSchema = Partial<UserSettingsSchema>;
 
 export interface UserSettingsSchema {
+    activity_restricted_guild_ids: Snowflake[];
+    activity_joining_restricted_guild_ids: Snowflake[];
     afk_timeout: number;
     allow_accessibility_detection: boolean;
+    allow_activity_party_privacy_friends: boolean;
+    allow_activity_party_privacy_voice_channel: boolean;
     animate_emoji: boolean;
     animate_stickers: number;
     contact_sync_enabled: boolean;
@@ -33,24 +39,26 @@ export interface UserSettingsSchema {
     enable_tts_command: boolean;
     explicit_content_filter: number;
     friend_discovery_flags: number;
-    friend_source_flags: FriendSourceFlags;
-    gateway_connected: boolean;
+    friend_source_flags: FriendSourceFlags | null;
     gif_auto_play: boolean;
     guild_folders: GuildFolder[]; // every top guild is displayed as a "folder"
-    guild_positions: string[]; // guild ids ordered by position
     inline_attachment_media: boolean;
     inline_embed_media: boolean;
     locale: string; // en_US
     message_display_compact: boolean;
     native_phone_integration_enabled: boolean;
+    passwordless: boolean;
     render_embeds: boolean;
     render_reactions: boolean;
     restricted_guilds: string[];
     show_current_game: boolean;
+    slayer_sdk_receive_dms_in_game: number;
+    soundboard_volume: number;
     status: "online" | "offline" | "dnd" | "idle" | "invisible";
     stream_notifications_enabled: boolean;
-    theme: "dark" | "light"; // dark
+    theme: "dark" | "light" | "darker" | "midnight"; // dark
     timezone_offset: number; // e.g -60
+    view_nsfw_commands: boolean;
     view_nsfw_guilds: boolean;
 }
 
@@ -69,5 +77,7 @@ export interface GuildFolder {
 }
 
 export interface FriendSourceFlags {
-    all: boolean;
+    all?: boolean;
+    mutual_friends?: boolean;
+    mutual_guilds?: boolean;
 }

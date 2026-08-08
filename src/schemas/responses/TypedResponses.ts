@@ -20,7 +20,7 @@
 import { GeneralConfiguration, LimitsConfiguration } from "../../util/config/types";
 import { DmChannelDTO } from "../../util/dtos";
 // TODO: remove entity imports
-import { Application, BackupCode, Categories, Channel, Guild, Invite, Member, Template, Webhook } from "@spacebar/database";
+import { Application, Categories, Channel, Guild, Invite, Template } from "@spacebar/database";
 import { GuildCreateResponse, PrivateUser, PublicUser } from "@spacebar/schemas";
 
 // TODO: remove this entire file!

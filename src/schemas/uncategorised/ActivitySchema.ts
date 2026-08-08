@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove entity imports
-import { Activity, ClientStatus, SetPrivateStatus, Status } from "@spacebar/util";
+import { ClientStatus, SetPrivateStatus } from "@spacebar/schemas";
+import { Activity } from "@spacebar/util";
 
 export const ActivitySchema = {
     $afk: Boolean,

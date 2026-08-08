@@ -68,7 +68,11 @@ router.patch(
             relations: { settings: true },
         });
 
-        if (!user.settings) user.settings = UserSettings.create<UserSettings>(body);
+        if (!user.settings)
+            user.settings = UserSettings.create<UserSettings>({
+                ...body,
+                friend_source_flags: body.friend_source_flags ?? { all: true },
+            });
         else user.settings.assign(body);
 
         if (body.guild_folders) user.settings.guild_folders = body.guild_folders;

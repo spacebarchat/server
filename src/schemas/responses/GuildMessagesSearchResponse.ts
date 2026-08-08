@@ -16,10 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { Role } from "@spacebar/database";
-import { BaseMessageComponents, Embed, MessageType, Poll, PublicUser, RoleResponse } from "@spacebar/schemas";
-import { PublicAttachment } from "../api/messages/Attachments";
+import { BaseMessageComponents, Embed, MessageType, Poll, PublicUser, RoleResponse, PublicAttachment } from "@spacebar/schemas";
 
 export interface GuildMessagesSearchMessage {
     id: string;

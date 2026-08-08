@@ -16,8 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PublicAttachment } from "@spacebar/schemas/api/messages/Attachments";
-import { MessageReferenceIds } from "@spacebar/schemas";
+import { MessageReferenceIds, PublicAttachment } from "@spacebar/schemas";
 
 export interface AttachmentListResponse {
     items: {

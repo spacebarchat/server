@@ -39,6 +39,7 @@ export * from "./GuildPruneResponse";
 export * from "./GuildRecommendationsResponse";
 export * from "./GuildVanityUrl";
 export * from "./GuildVoiceRegionsResponse";
+export * from "./GuildWelcomeScreen";
 export * from "./GuildWidgetJsonResponse";
 export * from "./GuildWidgetSettingsResponse";
 export * from "./HubDirectoryEntriesResponse";
