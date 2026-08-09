@@ -3112,12 +3112,12 @@
                     "region": {
                         "type": "string"
                     },
+                    "id": {
+                        "type": "string"
+                    },
                     "insert": {
                         "type": "object",
                         "additionalProperties": false
-                    },
-                    "id": {
-                        "type": "string"
                     },
                     "channels": {
                         "type": "array",
@@ -5678,6 +5678,10 @@
                             10,
                             11,
                             12,
+                            13,
+                            14,
+                            15,
+                            16,
                             2,
                             3,
                             4,
@@ -7207,7 +7211,9 @@
                         "additionalProperties": false
                     },
                     "intents": {
-                        "type": "number"
+                        "type": "number",
+                        "properties": {},
+                        "additionalProperties": false
                     },
                     "presence": {
                         "$ref": "#/components/schemas/ActivitySchema"
@@ -7226,7 +7232,9 @@
                         "maxItems": 2,
                         "type": "array",
                         "items": {
-                            "type": "number"
+                            "type": "number",
+                            "properties": {},
+                            "additionalProperties": false
                         }
                     },
                     "guild_subscriptions": {
@@ -15061,16 +15069,14 @@
                         "default": 15
                     },
                     "maxAttachmentSize": {
-                        "type": "integer",
-                        "default": 1073741824
+                        "type": "integer"
                     },
                     "maxBulkDelete": {
                         "type": "integer",
                         "default": 1000
                     },
                     "maxEmbedDownloadSize": {
-                        "type": "integer",
-                        "default": 5242880
+                        "type": "integer"
                     },
                     "maxPreloadCount": {
                         "type": "integer",
@@ -15230,8 +15236,7 @@
                         "default": 100
                     },
                     "window": {
-                        "type": "integer",
-                        "default": 3600000
+                        "type": "integer"
                     },
                     "enabled": {
                         "type": "boolean",
