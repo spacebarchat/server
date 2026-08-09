@@ -19,6 +19,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { arrayRemove } from "@spacebar/extensions";
 import { Config, Snowflake, handleFile } from "@spacebar/util";
+import { DiscoverableGuild, GuildWelcomeScreen, IntegrationGuild } from "@spacebar/schemas";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -31,8 +32,7 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
-import { DiscoverableGuild, GuildWelcomeScreen, IntegrationGuild } from "@spacebar/schemas";
-import { Categories } from "@spacebar/database";
+import { Categories } from "./Categories";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
