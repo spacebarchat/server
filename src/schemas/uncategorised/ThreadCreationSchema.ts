@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { BaseMessageComponents, ChannelType, Embed } from "#schemas/api";
+import { BaseMessageComponents, ChannelType, Embed } from "@spacebar/schemas/api";
 import { MessageActivity } from "./MessageActivity";
 import { MessageCreateAttachment, MessageCreateCloudAttachment } from "./MessageCreateSchema";
 
