@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { GuildDefaults, UserDefaults } from ".";
+import { GuildDefaults, UserDefaults } from "./subconfigurations/defaults";
 
 export class DefaultsConfiguration {
     guild: GuildDefaults = new GuildDefaults();

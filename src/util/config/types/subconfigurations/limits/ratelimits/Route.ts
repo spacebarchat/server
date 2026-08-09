@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AuthRateLimit } from ".";
+import { AuthRateLimit } from "./Auth";
 import { RateLimitOptions } from "./RateLimitOptions";
 
 export class RouteRateLimit {
