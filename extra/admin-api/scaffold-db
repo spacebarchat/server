@@ -12,7 +12,7 @@ dropdb -U postgres sb-server-scaffold --if-exists --force || true
 createdb -U postgres sb-server-scaffold
 # - Build spacebar-ts and apply it's migrations
 pushd ../..
-npm run build:src:tsgo
+npm run build:src
 DATABASE=postgres://postgres@127.0.0.1/sb-server-scaffold npm run apply:migrations
 popd
 
