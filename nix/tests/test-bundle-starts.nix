@@ -107,7 +107,7 @@ in
             TEST_APPSETTINGS_PATH = testConfigPath;
           };
           serviceConfig = {
-            ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories";
+            ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited";
             DynamicUser = true;
             Restart = "no";
           };
