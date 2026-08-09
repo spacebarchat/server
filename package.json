@@ -81,10 +81,10 @@
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
         "amqplib": "^2.0.1",
-        "badge-maker": "^5.0.2",
+        "badge-maker": "^6.0.0",
         "bcrypt": "^6.0.0",
         "body-parser": "^2.2.2",
-        "chalk": "^5.6.2",
+        "chalk": "^6.0.0",
         "cheerio": "^1.2.0",
         "cookie-parser": "^1.4.7",
         "discord-protos": "^1.2.224",
@@ -139,7 +139,7 @@
         "jimp": "^1.6.1",
         "mailgun.js": "^13.2.0",
         "node-mailjet": "^6.0.11",
-        "nodemailer": "^8.0.11"
+        "nodemailer": "^9.0.5"
     },
     "overrides": {
         "typeorm": {
