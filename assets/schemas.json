@@ -5986,6 +5986,12 @@
                     "string"
                 ]
             },
+            "avatar_description": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
             "bio": {
                 "type": "string"
             },

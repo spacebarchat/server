@@ -5613,6 +5613,10 @@
                         "type": "string",
                         "nullable": true
                     },
+                    "avatar_description": {
+                        "type": "string",
+                        "nullable": true
+                    },
                     "bio": {
                         "type": "string"
                     },

@@ -25,6 +25,7 @@ export interface UserModifySchema {
      */
     username?: string;
     avatar?: string | null;
+    avatar_description?: string | null;
     bio?: string;
     accent_color?: number;
     banner?: string | null;
