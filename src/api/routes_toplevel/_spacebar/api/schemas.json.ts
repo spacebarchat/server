@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -16,10 +16,23 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { User, Webhook } from "@spacebar/database";
+import path from "node:path";
+import { Router, Response, Request } from "express";
+import { route } from "@spacebar/api/middlewares";
+import { ASSETS_FOLDER } from "@spacebar/util";
 
-export interface WebhookCreateResponse {
-    user: User;
-    hook: Webhook;
-}
+const router = Router({ mergeParams: true });
+
+router.get(
+    "/",
+    route({
+        spacebarOnly: true,
+        authentication: "never",
+    }),
+    (req: Request, res: Response) => {
+        res.set("Cache-Control", "public, max-age=21600");
+        return res.sendFile(path.join(ASSETS_FOLDER, "schemas.json"));
+    },
+);
+
+export default router;

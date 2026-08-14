@@ -18,7 +18,8 @@
 
 import { Config, getRights, listenEvent, RabbitMQ } from "@spacebar/util";
 import { NextFunction, Request, Response, Router } from "express";
-import { API_PREFIX_TRAILING_SLASH } from "./Authentication";
+
+export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
 // Docs: https://discord.com/developers/docs/topics/rate-limits
 

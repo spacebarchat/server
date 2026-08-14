@@ -17,13 +17,19 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), (req: Request, res: Response) => {
-    // TODO:
-    res.send({ fingerprint: "", assignments: [], guild_experiments: [] });
-});
+router.get(
+    "/",
+    route({
+        authentication: "optional",
+    }),
+    (req: Request, res: Response) => {
+        // TODO:
+        res.send({ fingerprint: "", assignments: [], guild_experiments: [] });
+    },
+);
 
 export default router;

@@ -28,7 +28,7 @@ in
   name = "test-bundle-starts" + lib.optionalString (withIpc != "unix") ("_ipc=" + withIpc);
   skipTypeCheck = true;
   skipLint = true;
-  globalTimeout = 300; # 120
+  globalTimeout = 600; # 300; # 120
 
   nodes.machine = {
     imports = [ self.nixosModules.default ];
@@ -62,9 +62,8 @@ in
               };
             };
 
-            rabbitmq = {
-              host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
-            };
+            rabbitmq.host = lib.mkIf isRabbitMqTest "amqp://guest:guest@127.0.0.1:5672";
+            security.cdnSignatureIncludeUserAgent = false;
           };
 
           nginx.enable = true;
@@ -96,13 +95,19 @@ in
           after = [
             "network-online.target"
             "spacebar-api.service"
+            "spacebar-cdn.service"
+            "spacebar-gateway.service"
           ];
-          requires = [ "spacebar-api.service" ];
+          requires = [
+            "spacebar-api.service"
+            "spacebar-cdn.service"
+            "spacebar-gateway.service"
+          ];
           environment = {
             TEST_APPSETTINGS_PATH = testConfigPath;
           };
           serviceConfig = {
-            ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited -preEnumerateTheories";
+            ExecStart = "${testBin} -reporter verbose -parallelAlgorithm aggressive -maxThreads unlimited";
             DynamicUser = true;
             Restart = "no";
           };

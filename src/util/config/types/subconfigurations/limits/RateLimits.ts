@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { RateLimitOptions, RouteRateLimit } from ".";
+import { RateLimitOptions, RouteRateLimit } from "./ratelimits";
 
 export class RateLimits {
     enabled: boolean = false;

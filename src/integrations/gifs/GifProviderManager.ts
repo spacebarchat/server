@@ -44,6 +44,7 @@ export class GifProviderManager {
     }
 
     public static getProvider(id: string): IGifProvider {
+        if (id == "tenor") id = "klipy";
         if (this._providers.has(id)) return this._providers.get(id)!;
 
         throw new Error(`Unknown GIF provider, or it is not enabled: ${id}, known GIF providers: ${this._providers.keys().toArray().join(", ")}`);

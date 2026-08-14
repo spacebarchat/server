@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { makeBadge } from "badge-maker";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Guild, Member } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
 
@@ -50,6 +50,7 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };

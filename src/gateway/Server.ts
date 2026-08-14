@@ -17,151 +17,29 @@
 */
 
 import http from "node:http";
-import { setInterval } from "node:timers";
 import ws from "ws";
+import { Server, ServerOptions } from "lambert-server";
 import { initDatabase } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
-import { checkToken, Config, initEvent, JwtKeypairManager, Rights } from "@spacebar/util";
+import { Config, initEvent, JSONReplacer, JwtKeypairManager, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
-import { Connection, openConnections } from "./events/Connection";
+import { Connection } from "./events/Connection";
 import { cleanupOnStartup } from "./util";
+import morgan from "morgan";
+import { Authentication, BodyParser, CORS, ErrorHandler } from "@spacebar/api";
+import path from "node:path";
+import { red } from "picocolors";
 
-export class Server {
+export class GatewayServer extends Server {
     public ws: ws.Server;
-    public port: number;
-    public server: http.Server;
-    public production: boolean;
-    private monitoringLoop: NodeJS.Timeout;
 
-    constructor({ port, server, production }: { port: number; server?: http.Server; production?: boolean }) {
-        this.port = port;
-        this.production = production || false;
+    constructor(options?: Partial<ServerOptions>) {
+        super(options);
 
-        if (server) this.server = server;
-        else {
-            const elu = [1, 5, 15].map(() => performance.eventLoopUtilization());
-            const eluP = [1, 5, 15].map(() => performance.eventLoopUtilization());
-            const cpu = [1, 5, 15].map(() => process.cpuUsage());
-            let sec = 0;
-            const monitoringLoop = setInterval(() => {
-                sec += 1;
-                // for some reason this behaves differently from cpuUsage, so we need an absolute reference as "previous"
-                const eluC = performance.eventLoopUtilization();
+        this.http = http.createServer(this.app);
 
-                cpu[0] = process.cpuUsage(cpu[0]);
-                elu[0] = performance.eventLoopUtilization(eluP[0]);
-                eluP[0] = eluC;
-                if (sec % 5 === 0) {
-                    cpu[1] = process.cpuUsage(cpu[1]);
-                    elu[1] = performance.eventLoopUtilization(eluP[1]);
-                    eluP[1] = eluC;
-                }
-                if (sec % 15 === 0) {
-                    cpu[2] = process.cpuUsage(cpu[2]);
-                    elu[2] = performance.eventLoopUtilization(eluP[2]);
-                    eluP[2] = eluC;
-                }
-            }, 1000);
-
-            this.server = http.createServer(async (req, res) => {
-                if (!req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
-                    res.setHeader(
-                        "Set-Cookie",
-                        `__sb_sessid=${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32)}; Secure; HttpOnly; SameSite=None; Path=/`,
-                    );
-                }
-                const requestUrl = new URL(`http://${req.headers.host}${req.url}`);
-                if (requestUrl.pathname === "/metrics") {
-                    return await Monitoring.handleRawRequest(req, res);
-                } else if (requestUrl.pathname === "/_spacebar/gateway/admin/introspect") {
-                    if (!req.headers.authorization) {
-                        return res.writeHead(401).end("Unauthorized");
-                    } else {
-                        const auth = req.headers.authorization.split(" ");
-                        const sess = await checkToken(auth[1]);
-                        if ((BigInt(sess.user.rights) & BigInt(Rights.FLAGS.OPERATOR)) === BigInt(0)) {
-                            return res.writeHead(401).end("Unauthorized");
-                        }
-                    }
-                    const useFullWsObj = requestUrl.searchParams.get("fullWs") === "true";
-                    res.setHeader("Content-Type", "application/json")
-                        .writeHead(200)
-                        .end(
-                            JSON.stringify(
-                                {
-                                    uptime: process.uptime(),
-                                    resourceUsage: process.resourceUsage(),
-                                    eventLoop: elu,
-                                    cpu: cpu.map((x) => ({
-                                        user: x.user / 1000,
-                                        system: x.system / 1000,
-                                    })),
-                                    socketStates: {
-                                        open: openConnections.length,
-                                        sessions: openConnections.map((x) =>
-                                            // console.log(x);
-                                            useFullWsObj
-                                                ? {
-                                                      ...x,
-                                                      ...{
-                                                          _events: undefined,
-                                                          _closeTimer: undefined,
-                                                          accessToken: x.accessToken?.split(".")[0] + "." + x.accessToken?.split(".")[1] + ".***",
-                                                      },
-                                                  }
-                                                : {
-                                                      wsReadystate: x.readyState,
-                                                      version: x.version,
-                                                      user_id: x.user_id,
-                                                      session_id: x.session_id,
-                                                      accessToken: x.accessToken?.split(".")[0] + "." + x.accessToken?.split(".")[1] + +".***",
-                                                      encoding: x.encoding,
-                                                      compress: x.compress,
-                                                      ipAddress: x.ipAddress,
-                                                      userAgent: x.userAgent,
-                                                      fingerprint: x.fingerprint,
-                                                      shard_count: x.shard_count,
-                                                      shard_id: x.shard_id,
-                                                      deflate: x.deflate != null,
-                                                      inflate: x.inflate != null,
-                                                      zstdEncoder: x.zstdEncoder != null,
-                                                      zstdDecoder: x.zstdDecoder != null,
-                                                      heartbeatTimeout: x.heartbeatTimeout,
-                                                      readyTimeout: x.readyTimeout,
-                                                      intents: x.intents,
-                                                      sequence: x.sequence,
-                                                      permissions: x.permissions,
-                                                      events: x.events,
-                                                      member_events: x.member_events,
-                                                      listen_options: x.listen_options,
-                                                      capabilities: x.capabilities,
-                                                      large_threshold: x.large_threshold,
-                                                      qos: x.qos,
-                                                      session: x.session,
-                                                  },
-                                        ),
-                                    },
-                                },
-                                (key, value) => {
-                                    if (value === null || value === undefined) return value;
-                                    if (Object.getPrototypeOf(value)?.constructor?.name === "Timeout") return `[Timeout] ${value._idleTimeout}ms, repeat: ${value._repeat}`;
-                                    if (Object.getPrototypeOf(value)?.constructor?.name === "BigInt") return value.toString() + "n";
-                                    return value;
-                                },
-                                2,
-                            ),
-                        );
-                    return;
-                }
-
-                res.writeHead(200).end("Online");
-            });
-
-            ProcessLifecycle.eventEmitter.on("stopping", () => clearTimeout(monitoringLoop));
-        }
-
-        this.server.on("upgrade", (request, socket, head) => {
+        this.http.on("upgrade", (request, socket, head) => {
             this.ws.handleUpgrade(request, socket, head, (socket) => {
                 this.ws.emit("connection", socket, request);
             });
@@ -177,6 +55,7 @@ export class Server {
 
     async start(): Promise<void> {
         await Monitoring.init();
+        Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
         await initEvent();
@@ -184,21 +63,47 @@ export class Server {
         await cleanupOnStartup();
         await JwtKeypairManager.init();
 
-        if (!this.server.listening) {
-            this.server.listen(this.port);
-            console.log(`[Gateway] online on 0.0.0.0:${this.port}`);
-            await SystemdLifecycle.setStatus(`Listening on 0.0.0.0:${this.port}...`);
+        const logRequests = process.env["LOG_REQUESTS"] != undefined;
+        if (logRequests) {
+            this.app.use(
+                morgan("combined", {
+                    skip: (req, res) => {
+                        let skip = !(process.env["LOG_REQUESTS"]?.includes(res.statusCode.toString()) ?? false);
+                        if (process.env["LOG_REQUESTS"]?.charAt(0) == "-") skip = !skip;
+                        return skip;
+                    },
+                }),
+            );
         }
+
+        this.app.set("json replacer", JSONReplacer);
+        this.app.disable("x-powered-by");
+
+        const trustedProxies = Config.get().security.trustedProxies;
+        if (trustedProxies) this.app.set("trust proxy", trustedProxies);
+
+        this.app.use(CORS);
+        this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
+        this.app.use(Authentication);
+
+        this.routes = (await registerRoutes(this, path.join(__dirname, "routes", "/"))).filter((r) => !!r);
+
+        this.app.get("/", (req, res) => res.status(200).send("Online"));
+
+        this.app.use(ErrorHandler);
+        if (logRequests) console.log(red(`Warning: Request logging is enabled! This will spam your console!\nTo disable this, unset the 'LOG_REQUESTS' environment variable!`));
+
+        await super.start();
+        await SystemdLifecycle.setStatus(`Listening on ${this.options.host}:${this.options.port}...`);
 
         await ProcessLifecycle.Ready();
     }
 
     async stop() {
         await ProcessLifecycle.Shutdown();
-        clearInterval(this.monitoringLoop);
         this.ws.clients.forEach((x) => x.close());
         this.ws.close();
-        this.server.close();
+        this.http.close();
         await ProcessLifecycle.Finalize();
     }
 }

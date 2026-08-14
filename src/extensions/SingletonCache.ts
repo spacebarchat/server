@@ -17,7 +17,7 @@
 */
 
 import { TimeSpan } from "./Timespan";
-import { sleep } from "./index";
+import { sleep } from "./Sleep";
 
 export class SingletonCache<T> {
     private expiry: TimeSpan;

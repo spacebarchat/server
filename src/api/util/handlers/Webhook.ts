@@ -28,7 +28,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
     const body = req.body as WebhookExecuteSchema;
     const messageId = Snowflake.generate();
 
-    const { webhook_id, token } = req.params as { [key: string]: string };
+    const { webhook_id, webhook_token } = req.params as { [key: string]: string };
 
     const webhook = await Webhook.findOne({
         where: {
@@ -37,13 +37,8 @@ export const executeWebhook = async (req: Request, res: Response) => {
         relations: { channel: true, guild: true, application: true },
     });
 
-    if (!webhook) {
-        throw DiscordApiErrors.UNKNOWN_WEBHOOK;
-    }
-
-    if (webhook.token !== token) {
-        throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
-    }
+    if (!webhook) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+    if (webhook.token !== webhook_token) throw DiscordApiErrors.INVALID_WEBHOOK_TOKEN_PROVIDED;
 
     if (body.username) {
         ValidateName(body.username);

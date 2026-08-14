@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, CloudAttachment } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { Config, Permissions } from "@spacebar/util";

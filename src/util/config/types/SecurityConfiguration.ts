@@ -17,7 +17,7 @@
 */
 
 import crypto from "node:crypto";
-import { CaptchaConfiguration, TwoFactorConfiguration } from ".";
+import { CaptchaConfiguration, TwoFactorConfiguration } from "./subconfigurations";
 
 export class SecurityConfiguration {
     captcha: CaptchaConfiguration = new CaptchaConfiguration();

@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Config, getRights } from "@spacebar/util";
 import { Request, Response, Router } from "express";
 
@@ -31,10 +31,12 @@ router.get(
             },
         },
         spacebarOnly: true,
+        authentication: "optional",
     }),
     async (req: Request, res: Response) => {
         const general = Config.get();
         let outputtedConfig;
+        // TODO: clean up
         if (req.user_id) {
             const rights = await getRights(req.user_id);
             if (rights.has("OPERATOR")) outputtedConfig = general;

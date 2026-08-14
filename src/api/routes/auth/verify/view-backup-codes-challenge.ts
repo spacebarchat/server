@@ -18,7 +18,7 @@
 
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { FieldErrors } from "@spacebar/util";
 import { BackupCodesChallengeSchema } from "@spacebar/schemas";
@@ -33,6 +33,7 @@ router.post(
             200: { body: "BackupCodesChallengeResponse" },
             400: { body: "APIErrorResponse" },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { password } = req.body as BackupCodesChallengeSchema;

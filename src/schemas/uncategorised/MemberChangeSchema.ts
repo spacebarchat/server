@@ -22,4 +22,5 @@ export interface MemberChangeSchema {
     avatar?: string | null;
     bio?: string;
     communication_disabled_until?: string | null;
+    channel_id?: string | null;
 }

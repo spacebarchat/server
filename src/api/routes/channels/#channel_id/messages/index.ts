@@ -16,7 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { handleMessage, postHandleMessage, route } from "@spacebar/api/util";
+import { handleMessage, postHandleMessage } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { Attachment, Channel, Member, Message, ReadState, Relationship, User, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
 import {
     Config,
@@ -77,7 +78,7 @@ router.get(
         },
         responses: {
             200: {
-                body: "APIMessageArray",
+                body: "PublicMessageArray",
             },
             400: {
                 body: "APIErrorResponse",
@@ -258,7 +259,7 @@ export const messageUpload = multer({
     limits: {
         fileSize: Config.get().limits.message.maxAttachmentSize,
         fields: 10,
-        // files: 1
+        files: Config.get().limits.message.maxAttachments,
     },
     storage: multer.memoryStorage(),
 }); // max upload 50 mb
@@ -291,7 +292,7 @@ router.post(
         right: "SEND_MESSAGES",
         responses: {
             200: {
-                body: "Message",
+                body: "PublicMessage",
             },
             400: {
                 body: "APIErrorResponse",

@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Spacebar.Models.Generic\Spacebar.Models.Generic.csproj" Condition="'$(ContinuousIntegrationBuild)'!='true'"/>
+        <PackageReference Include="Spacebar.Models.Generic" Version="*-preview*" Condition="'$(ContinuousIntegrationBuild)'=='true'"/>
+    </ItemGroup>
+
 </Project>

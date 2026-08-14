@@ -16,12 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove dependency on entities
-import { BackupCode, UserSettings } from "@spacebar/database";
+import { BackupCode, UserSettingsSchema } from "@spacebar/schemas";
 
 export interface TokenResponse {
     token: string;
-    settings: UserSettings;
+    settings: UserSettingsSchema;
 }
 
 export interface TokenOnlyResponse {

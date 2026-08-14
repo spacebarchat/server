@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Member, Role } from "@spacebar/database";
 import { emitEvent, GuildRoleDeleteEvent, GuildRoleUpdateEvent, handleFile } from "@spacebar/util";
 import { RoleModifySchema } from "@spacebar/schemas";

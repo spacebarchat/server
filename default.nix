@@ -61,7 +61,7 @@ let
     '';
 
     buildPhase = ''
-      npm run build:tsgo
+      npm run build
     '';
 
     installPhase = ''

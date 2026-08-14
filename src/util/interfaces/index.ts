@@ -21,4 +21,3 @@ export * from "./ConnectedAccount";
 export * from "./Event";
 export * from "./GuildWelcomeScreen";
 export * from "./Presence";
-export * from "./Status";

@@ -17,7 +17,8 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route, verifyCaptcha } from "@spacebar/api/util";
+import { verifyCaptcha } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { Config, Email } from "@spacebar/util";
 import { ForgotPasswordSchema } from "@spacebar/schemas";
@@ -34,6 +35,7 @@ router.post(
                 body: "APIErrorOrCaptchaResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { login, captcha_key } = req.body as ForgotPasswordSchema;

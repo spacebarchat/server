@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { Email } from "@spacebar/util";
 
@@ -37,6 +37,7 @@ router.post(
                 body: "APIErrorResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const user = await User.findOneOrFail({

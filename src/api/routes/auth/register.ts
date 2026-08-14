@@ -20,7 +20,8 @@ import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { MoreThan } from "typeorm";
-import { route, verifyCaptcha } from "@spacebar/api/util";
+import { verifyCaptcha } from "@spacebar/api/util";
+import { route } from "@spacebar/api/middlewares";
 import { Invite, User, ValidRegistrationToken } from "@spacebar/database";
 import { Config, FieldErrors, generateToken, IpDataClient, AbuseIpDbClient } from "@spacebar/util";
 import { RegisterSchema } from "@spacebar/schemas";
@@ -46,6 +47,7 @@ router.post(
             200: { body: "TokenOnlyResponse" },
             400: { body: "APIErrorOrCaptchaResponse" },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const totalSw = Stopwatch.startNew();

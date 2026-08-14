@@ -17,7 +17,7 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 
 const router = Router({ mergeParams: true });
 
@@ -25,6 +25,7 @@ router.post(
     "/",
     route({
         spacebarOnly: false, // Not part of the public OpenAPI schema
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         // TODO:

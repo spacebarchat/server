@@ -16,6 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+export * from "./Attachments";
 export * from "./Components";
 export * from "./Embeds";
 export * from "./Message";

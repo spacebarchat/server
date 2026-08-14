@@ -18,7 +18,7 @@
 
 import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
-import { OrmUtils } from "..";
+import { OrmUtils } from "../imports";
 import { ConfigValue } from "../config";
 import { ConfigEntity } from "../../database/entities";
 import { JsonValue } from "@protobuf-ts/runtime";

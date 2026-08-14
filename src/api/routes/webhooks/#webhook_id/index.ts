@@ -19,10 +19,10 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { In } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Webhook, Channel, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, getPermission, WebhooksUpdateEvent, emitEvent, handleFile, ValidateName, MessageDeleteBulkEvent } from "@spacebar/util";
-import { WebhookUpdateSchema } from "@spacebar/schemas";
+import type { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -32,7 +32,7 @@ router.get(
         description: "Returns a webhook object for the given id. Requires the MANAGE_WEBHOOKS permission or to be the owner of the webhook.",
         responses: {
             200: {
-                body: "APIWebhook",
+                body: "WebhookResponse",
             },
             404: {},
         },
@@ -52,8 +52,11 @@ router.get(
 
         return res.json({
             ...webhook,
+            user: webhook.user.toPartialUser(),
+            source_guild: webhook.source_guild?.toIntegrationGuild(),
+            source_channel: webhook.source_channel?.toWebhookChannel(),
             url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
-        });
+        } satisfies WebhookResponse);
     },
 );
 

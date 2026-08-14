@@ -22,7 +22,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { storage } from "@spacebar/cdn/util/Storage";
 import { Guild } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
@@ -45,6 +45,7 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };

@@ -10,6 +10,7 @@ assets/cache
 config.json
 assets/cacheMisses
 http-client.private.env.json
+.nixos-test-history
 
 .vscode/settings.json
 

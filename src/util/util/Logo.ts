@@ -16,8 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { KittyLogo } from ".";
 import { blueBright } from "picocolors";
+import { KittyLogo } from "./KittyLogo";
 
 export class Logo {
     public static async printLogo() {

@@ -118,7 +118,7 @@ export class UserSettings extends BaseClassWithoutId {
     stream_notifications_enabled: boolean = false;
 
     @Column({ nullable: true })
-    theme: "dark" | "light" = "dark"; // dark
+    theme: "dark" | "light" | "darker" | "midnight" = "dark"; // dark
 
     @Column({ nullable: true })
     timezone_offset: number = 0; // e.g -60

@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { IsNull } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand, Member } from "@spacebar/database";
 import { Snowflake } from "@spacebar/util";
 import { ApplicationCommandSchema, ApplicationCommandType } from "@spacebar/schemas";

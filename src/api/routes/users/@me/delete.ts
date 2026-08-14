@@ -19,7 +19,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Guild, Member, User, UserSettingsProtos } from "@spacebar/database";
 
 const router = Router({ mergeParams: true });

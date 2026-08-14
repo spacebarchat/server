@@ -21,6 +21,7 @@ import fs from "node:fs";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { PostgresDataSourceOptions } from "typeorm/driver/postgres/PostgresDataSourceOptions";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -67,7 +68,8 @@ export const DataSourceOptions = isHeadlessProcess
               null: "sql-null",
               undefined: "ignore",
           },
-      });
+          connectTimeoutMS: 10000,
+      } satisfies PostgresDataSourceOptions);
 
 // Gets the existing database connection
 export function getDatabase(): DataSource | null {
@@ -96,7 +98,16 @@ export async function initDatabase(): Promise<DataSource> {
 
     console.log(`[Database] ${yellow(`Connecting to ${DatabaseType} db`)}`);
 
-    dbConnection = await DataSourceOptions.initialize();
+    let retries = 0;
+    do {
+        try {
+            dbConnection = await DataSourceOptions.initialize();
+        } catch (e) {
+            console.error("[Database] Could not connect to database after", retries, "retries:", e);
+        }
+    } while (!dbConnection && retries++ < 10);
+
+    if (!dbConnection) throw new Error("[Database] FATAL: Could not connect to database!");
 
     // Crude way of detecting if the migrations table exists.
     const dbExists = async () => {

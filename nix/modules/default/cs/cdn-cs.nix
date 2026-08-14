@@ -54,6 +54,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-AdminApi}/bin/Spacebar.AdminApi";
+        Slice = "system-spacebar.slice";
       };
     };
   };

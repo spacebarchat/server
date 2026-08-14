@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2023 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -25,8 +25,7 @@ require("module-alias/register");
 const getRouteDescriptions = require("./util/getRouteDescriptions");
 const path = require("path");
 const fs = require("fs");
-const { NO_AUTHORIZATION_ROUTES } = require("../dist/api/middlewares/Authentication");
-const { bgRedBright, bgYellow, black, bgYellowBright, blue, white } = require("picocolors");
+const { bgRedBright, white } = require("picocolors");
 
 const openapiPath = path.join(__dirname, "..", "assets", "openapi.json");
 const SchemaPath = path.join(__dirname, "..", "assets", "schemas.json");
@@ -34,6 +33,7 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }));
 let missingRouteCount = 0;
 let missingResponseSchemaCount = 0;
 let missingRequestSchemaCount = 0;
+let missingResponseSchemaDeclarationCount = 0;
 
 let specification = {
     openapi: "3.1.0",
@@ -53,7 +53,7 @@ let specification = {
     },
     servers: [
         {
-            url: "https://old.server.spacebar.chat/api/",
+            url: "https://api.rory.server.spacebar.chat/",
             description: "Official Spacebar Instance",
         },
     ],
@@ -116,8 +116,19 @@ function combineSchemas(schemas) {
 }
 
 function getTag(key) {
-    return key.match(/\/([\w-]+)/)[1];
+    try {
+        return key.match(/\/([\w-]*)/)[1];
+    } catch (e) {
+        console.error("openapi.js#getTag: failed to match on", key);
+        throw e;
+    }
 }
+
+const authTypes = {
+    required: [{ bearer: [] }],
+    optional: [{ bearer: [] }, {}],
+    never: [{}],
+};
 
 function apiRoutes(missingRoutes) {
     const routes = getRouteDescriptions();
@@ -141,14 +152,7 @@ function apiRoutes(missingRoutes) {
         obj["x-permission-required"] = route.permission;
         obj["x-fires-event"] = route.event;
 
-        if (
-            !NO_AUTHORIZATION_ROUTES.some((x) => {
-                if (typeof x === "string") return (method.toUpperCase() + " " + path).startsWith(x);
-                return x.test(method.toUpperCase() + " " + path);
-            })
-        ) {
-            obj.security = [{ bearer: [] }];
-        }
+        obj.security = authTypes[route.authentication ?? "required"];
 
         if (route.description) obj.description = route.description;
         if (route.summary) obj.summary = route.summary;
@@ -192,9 +196,20 @@ function apiRoutes(missingRoutes) {
                         console.log(
                             `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[33m`,
                             "Route",
-                            method,
+                            method.toUpperCase(),
                             path,
                             "missing response schema:",
+                            v.body,
+                            "\x1b[0m",
+                        );
+                    } else if (v.body.startsWith("API") && v.body !== "APIErrorResponse" && v.body !== "APIErrorOrCaptchaResponse") {
+                        missingResponseSchemaCount++;
+                        console.log(
+                            `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[32m`,
+                            "Route",
+                            method.toUpperCase(),
+                            path,
+                            "using entity response schema:",
                             v.body,
                             "\x1b[0m",
                         );
@@ -205,6 +220,35 @@ function apiRoutes(missingRoutes) {
                     };
             }
         } else {
+            missingResponseSchemaDeclarationCount++;
+            // ignore static asset responses (schema-less)
+            if (
+                ![
+                    // Client web pages
+                    "/",
+                    "/widget",
+                    "/verify-email",
+                    // Generated files
+                    "/_spacebar/api/schemas.json",
+                    "/_spacebar/api/openapi.json",
+                    // Assets
+                    "/static/logo.png",
+                    // Whatever...
+                    "/readyz",
+                    "/healthz",
+                    "/-/readyz",
+                    "/-/healthz",
+                ].includes(path)
+            )
+                console.log(
+                    `${bgRedBright(" ")}\x1b[5m${white("\x1b[48;5;208mWARN")}${bgRedBright(" ")}\x1b[0m\x1b[34m`,
+                    "Route",
+                    method.toUpperCase(),
+                    path,
+                    "missing response schema:",
+                    route.responses,
+                    "\x1b[0m",
+                );
             obj.responses = {
                 default: {
                     description: "No description available",
@@ -279,9 +323,10 @@ async function main() {
         elapsedMs,
         "ms.",
     );
-    if (missingRouteCount) console.log("Found", missingRouteCount, "routes missing a route() middleware.");
-    if (missingRequestSchemaCount) console.log("Found", missingRequestSchemaCount, "routes missing request schemas.");
-    if (missingResponseSchemaCount) console.log("Found", missingResponseSchemaCount, "routes missing a response schemas.");
+    if (missingRouteCount) console.log("! Found", missingRouteCount, "routes missing a route() middleware !");
+    if (missingRequestSchemaCount) console.log("! Found", missingRequestSchemaCount, "routes missing request schemas !");
+    if (missingResponseSchemaCount) console.log("! Found", missingResponseSchemaCount, "routes missing a response schemas !");
+    if (missingResponseSchemaDeclarationCount) console.log("! Found", missingResponseSchemaDeclarationCount, "routes missing a response schema declaration !");
 }
 
 main().then(() => {});

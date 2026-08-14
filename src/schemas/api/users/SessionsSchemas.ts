@@ -16,9 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ActivitySchema, Snowflake } from "@spacebar/schemas";
-// TODO: remove entity import
-import { ClientStatus } from "@spacebar/util";
+import { ActivitySchema, ClientStatus, Snowflake } from "@spacebar/schemas";
 
 export type SessionsLogoutSchema = { session_ids?: Snowflake[]; session_id_hashes?: string[] };
 export type GetSessionsResponse = { user_sessions: DeviceInfo[] };

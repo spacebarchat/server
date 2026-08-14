@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });
@@ -27,6 +27,7 @@ router.post(
         responses: {
             204: {},
         },
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         // TODO:

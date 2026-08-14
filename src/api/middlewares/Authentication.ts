@@ -17,53 +17,9 @@
 */
 
 import { NextFunction, Request, Response } from "express";
-import { HTTPError } from "lambert-server/HTTPError";
 import { Session, User } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { checkToken, Rights, UserTokenData } from "@spacebar/util";
-
-export const NO_AUTHORIZATION_ROUTES = [
-    // Authentication routes
-    "POST /auth/login",
-    "POST /auth/register",
-    "GET /auth/location-metadata",
-    "POST /auth/mfa/",
-    "POST /auth/verify",
-    "POST /auth/forgot",
-    "POST /auth/reset",
-    "POST /auth/fingerprint",
-    "GET /invites/",
-    // Routes with a seperate auth system
-    /^(POST|HEAD|GET|PATCH|DELETE) \/webhooks\/\d+\/[\w-]+\/?/, // no token requires auth
-    /^POST \/interactions\/\d+\/[A-Za-z0-9_-]+\/callback/,
-    // Public information endpoints
-    "GET /ping",
-    "GET /gateway",
-    "GET /experiments",
-    "GET /updates",
-    "GET /download",
-    "GET /scheduled-maintenances/upcoming.json",
-    // Public kubernetes integration
-    "GET /-/readyz",
-    "GET /-/healthz",
-    // Client analytics
-    "POST /science",
-    "POST /track",
-    // Public policy pages
-    "GET /policies/instance/",
-    // Oauth callback
-    "/oauth2/callback",
-    // Asset delivery
-    /^(GET|HEAD) \/guilds\/\d+\/widget\.(json|png)/,
-    /^(GET|HEAD) \/guilds\/\d+\/shield\.svg/,
-    // Connections
-    /^(POST|HEAD) \/connections\/\w+\/callback/,
-    // Image proxy
-    /^(GET|HEAD) \/imageproxy\/[A-Za-z0-9+/]\/\d+x\d+\/.+/,
-];
-
-export const API_PREFIX = /^\/api(\/v\d+)?/;
-export const API_PREFIX_TRAILING_SLASH = /^\/api(\/v\d+)?\//;
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -77,13 +33,13 @@ declare global {
             session?: Session;
             rights: Rights;
             fingerprint?: string;
+            isAuthenticated: boolean;
         }
     }
 }
 
 export async function Authentication(req: Request, res: Response, next: NextFunction) {
     if (req.method === "OPTIONS") return res.sendStatus(204);
-    const url = req.url.replace(API_PREFIX, "");
 
     if (req.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid=")))
         req.fingerprint = req.headers.cookie
@@ -96,33 +52,16 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
             `__sb_sessid=${(req.fingerprint = Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 32))}; Secure; HttpOnly; SameSite=None; Path=/`,
         );
 
-    if (
-        NO_AUTHORIZATION_ROUTES.some((x) => {
-            if (typeof x !== "string") {
-                return x.test(req.method + " " + url);
-            }
+    await handleAuthentication(req);
 
-            const fullRoute = req.method + " " + url;
+    return next();
+}
 
-            if (req.method === "HEAD") {
-                const urlPart = x.split(" ").slice(1).join(" ");
-                if (urlPart.endsWith("/")) {
-                    return url.startsWith(urlPart);
-                } else {
-                    return url === urlPart;
-                }
-            }
-
-            if (x.endsWith("/")) {
-                return fullRoute.startsWith(x);
-            } else {
-                return fullRoute === x;
-            }
-        })
-    )
-        return next();
-
-    if (!req.headers.authorization) return next(new HTTPError("Missing Authorization Header", 401));
+export async function handleAuthentication(req: Request) {
+    if (!req.headers.authorization) {
+        req.isAuthenticated = false;
+        return;
+    }
 
     try {
         const { decoded, user, session } = (req.tokenData = await checkToken(req.headers.authorization, {
@@ -136,11 +75,9 @@ export async function Authentication(req: Request, res: Response, next: NextFunc
         req.user = user;
         req.session = session;
         req.rights = new Rights(Number(user.rights));
-        return next();
-    } catch (error) {
-        if (error instanceof HTTPError) {
-            return next(error);
-        }
-        return next(new HTTPError(error!.toString(), 400));
+        req.isAuthenticated = true;
+    } catch (e) {
+        req.isAuthenticated = false;
+        console.error("[Authentication] Token was provided, but was invalid:", e);
     }
 }

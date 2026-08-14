@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Guild, Member, Invite } from "@spacebar/database";
 import { Random } from "@spacebar/extensions";
 import { Config, DiscordApiErrors, Permissions } from "@spacebar/util";
@@ -47,6 +47,7 @@ router.get(
                 body: "APIErrorResponse",
             },
         },
+        authentication: "never",
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };

@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Member } from "@spacebar/database";
 import { getPermission, PermissionResolvable } from "@spacebar/util";
 
@@ -29,7 +29,7 @@ router.patch(
         requestBody: "MemberNickChangeSchema",
         responses: {
             200: {
-                body: "APIPublicMember",
+                body: "PublicMember",
             },
             400: {
                 body: "APIErrorResponse",

@@ -107,7 +107,7 @@ export default class KlipyGifProvider implements IGifProvider {
         return {
             id: result.id.toString(),
             title: result.title,
-            url: result.slug, //?
+            url: "https://klipy.com/gifs/" + result.slug,
             src: result.file.hd.mp4.url,
             gif_src: result.file.hd.gif.url,
             width: result.file.hd.gif.width,

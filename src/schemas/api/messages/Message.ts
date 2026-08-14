@@ -163,6 +163,7 @@ export interface MessageSnapshot {
     };
 }
 
+export type PublicMessageArray = PublicMessage[];
 export interface PublicMessage {
     id: Snowflake;
     channel_id: Snowflake;
@@ -233,10 +234,13 @@ export enum PotionType {
     CONFETTI = 0,
 }
 
-export interface MessageReference {
+export interface MessageReferenceIds {
     message_id?: string;
     channel_id?: string;
     guild_id?: string;
+}
+
+export interface MessageReference extends MessageReferenceIds {
     fail_if_not_exists?: boolean;
     type?: MessageReferenceType;
 }

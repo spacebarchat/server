@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, Emoji, Guild, Member } from "@spacebar/database";
 import { DiscordApiErrors } from "@spacebar/util";
 import { APIErrorResponse, EmojiGuild, EmojiSourceResponse } from "@spacebar/schemas";
@@ -50,7 +50,6 @@ router.get(
             return;
         }
 
-        // TODO: emojis can be owned by applications these days, account for this when we get there?
         if (emoji.guild_id)
             res.json({
                 type: "GUILD",

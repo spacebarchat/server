@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { In } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Emoji, Member, Message, User } from "@spacebar/database";
 import { arrayRemove } from "@spacebar/extensions";
 import {

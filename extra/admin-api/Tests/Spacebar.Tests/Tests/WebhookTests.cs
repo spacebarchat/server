@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Net.Http.Json;
+using System.Text.Json.Nodes;
 using Spacebar.Models.Generic;
 using Spacebar.Sdk.Core;
 using Spacebar.Tests.Abstractions;
@@ -19,6 +20,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     private static SpacebarClientChannel? Channel = null!;
     private static Webhook? Webhook = null!;
+    private static Message? WebhookMessage = null!;
 
     public async ValueTask InitializeAsync() {
         Client = await _userAbstraction.GetSharedUser();
@@ -39,7 +41,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
                 Assert.Equal("test", c.Result.Name);
                 Channel = Client.GetChannel(c.Result.Id);
             });
-        
+
         if (Webhook is null)
             await Channel!.CreateWebhookAsync(new() {
                 Name = "meow"
@@ -48,6 +50,11 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
                 Assert.StringNotNullOrWhitespace(w.Result.Url);
                 Webhook = w.Result;
             });
+
+        if (WebhookMessage is null)
+            WebhookMessage = await (await Assert.SuccessfullyHttpPostAsJsonAsync(Webhook.Url + "?wait=true", new JsonObject() {
+                { "content", "meow" }
+            })).Content.ReadFromJsonAsync<Message>();
     }
 
     [Fact]
@@ -59,7 +66,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         Assert.Equal("meow", wh.Name);
         Assert.StringNotNullOrWhitespace(wh.Url);
     }
-    
+
     [Fact]
     public async Task DeleteWebhookByToken() {
         var wh = await Channel!.CreateWebhookAsync(new() {
@@ -70,7 +77,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         Assert.StringNotNullOrWhitespace(wh.Url);
         await Assert.HttpSuccess(await Client.ApiHttpClient.DeleteAsync(wh.Url, TestContext.Current.CancellationToken));
     }
-    
+
     [Fact]
     public async Task DeleteWebhook() {
         var wh = await Channel!.CreateWebhookAsync(new() {
@@ -149,7 +156,7 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         if (avatarUrl != null) payload.Add("avatar_url", avatarUrl);
         if (tts != null) payload.Add("tts", tts);
         if (flags != null) payload.Add("flags", flags);
-        
+
         await Assert.SuccessfullyHttpPostAsJsonAsync(Webhook.Url + "?wait=true", payload);
     }
 
@@ -159,5 +166,33 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             { "content", "meow" },
             { "avatar_url", Client.ClientWellKnown.Api.BaseUrl + "/static/logo.png" }
         });
+    }
+
+    [Fact]
+    public async Task GetWebhookMessageById() {
+        var msg = await Assert.SuccessfullyHttpGetAsync(Webhook.Url + "/messages/" + WebhookMessage.Id);
+    }
+
+    [Fact]
+    public async Task DeleteWebhookMessageById() {
+        var msg = await Assert.SuccessfullyHttpPostAsJsonAsync(Webhook.Url + "?wait=true", new JsonObject() {
+            { "content", "meow" },
+        });
+        var actualMsg = await msg.Content.ReadFromJsonAsync<Message>();
+        await Assert.SuccessfullyHttpDeleteAsync(Webhook.Url + "/messages/" + actualMsg!.Id);
+    }
+
+    [Theory]
+    [MemberData(nameof(WebhookExecuteCombinations))]
+    public async Task EditWebhookMessageByIdWithData(string content, string? username, string? avatarUrl, bool? tts, int? flags) {
+        var payload = new JsonObject() {
+            { "content", content }
+        };
+        if (username != null) payload.Add("username", username);
+        if (avatarUrl != null) payload.Add("avatar_url", avatarUrl);
+        if (tts != null) payload.Add("tts", tts);
+        if (flags != null) payload.Add("flags", flags);
+
+        await Assert.SuccessfullyHttpPatchAsJsonAsync(Webhook.Url + "/messages/" + WebhookMessage!.Id + "?wait=true", payload);
     }
 }

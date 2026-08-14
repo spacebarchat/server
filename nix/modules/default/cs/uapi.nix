@@ -60,6 +60,7 @@ in
       );
       serviceConfig = {
         ExecStart = "${self.packages.${pkgs.stdenv.hostPlatform.system}.Spacebar-UApi}/bin/Spacebar.UApi";
+        Slice = "system-spacebar.slice";
       };
     };
   };

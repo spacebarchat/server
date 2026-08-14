@@ -18,7 +18,8 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { arrayRemove } from "@spacebar/extensions";
-import { Config, GuildWelcomeScreen, Snowflake, handleFile } from "@spacebar/util";
+import { Config, Snowflake, handleFile } from "@spacebar/util";
+import { DiscoverableGuild, GuildWelcomeScreen, IntegrationGuild } from "@spacebar/schemas";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -31,6 +32,7 @@ import { Template } from "./Template";
 import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
+import { Categories } from "./Categories";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
@@ -105,8 +107,8 @@ export class Guild extends BaseClass {
     features: string[] = []; //TODO use enum
     //TODO: https://discord.com/developers/docs/resources/guild#guild-object-guild-features
 
-    @Column({ type: "int8", nullable: true })
-    primary_category_id?: string; // TODO: this was number?
+    @Column({ type: "int2", nullable: true })
+    primary_category_id?: number;
 
     @Column({ nullable: true })
     icon?: string;
@@ -304,43 +306,62 @@ export class Guild extends BaseClass {
     @Column({ default: false })
     discovery_excluded: boolean = false;
 
-    async ToGuildSource() {
+    async toDiscoverableGuild(): Promise<DiscoverableGuild | null> {
         if (!this.features.includes("DISCOVERABLE")) {
             return null;
         }
+
         return {
             id: this.id,
             name: this.name,
-            icon: this.icon,
-            description: this.description,
-            banner: this.banner,
-            splash: this.splash,
-            discovery_splash: this.discovery_splash,
+            icon: this.icon ?? null,
+            description: this.description ?? null,
+            banner: this.banner ?? null,
+            splash: this.splash ?? null,
+            discovery_splash: this.discovery_splash ?? null,
             features: this.features,
             vanity_url_code: null,
             preferred_locale: this.preferred_locale || "en",
-            premium_subscription_count: this.premium_subscription_count,
-            approximate_member_count: await Member.countBy({
+            premium_subscription_count: this.premium_subscription_count ?? 0,
+            approximate_member_count: this.member_count ?? 1,
+            /*await Member.countBy({
                 guild_id: this.id,
-            }),
-            approximate_presence_count: await Member.countBy({
+            }),*/
+            approximate_presence_count: this.presence_count ?? 0,
+            /* await Member.countBy({
                 guild_id: this.id,
                 user: {
                     sessions: {
                         status: "online",
                     },
                 },
-            }),
-            emojis: this.emojis ?? undefined,
+            }),*/
+            emojis: this.emojis.map((e) => e.toJSON()) ?? undefined,
             emoji_count: this.emojis ? this.emojis.length : undefined,
-            stickers: this.stickers ?? undefined,
+            stickers: this.stickers.map((s) => s.toJSON()) ?? undefined,
             sticker_count: this.stickers ? this.stickers.length : undefined,
             auto_removed: false,
-            primary_category_id: this.primary_category_id,
+            primary_category_id: this.primary_category_id!,
             keywords: [],
             is_published: false,
             reasons_to_join: [],
+            created_at: new Date(Snowflake.deconstruct(this.id).timestamp).toISOString(), // TODO: make column
+            primary_category: (
+                await Categories.findOneOrFail({
+                    where: {
+                        id: this.primary_category_id!,
+                    },
+                })
+            ).toJSON(),
         };
+    }
+
+    toIntegrationGuild(): IntegrationGuild {
+        return {
+            id: this.id,
+            name: this.name,
+            icon: this.icon ?? null,
+        } satisfies IntegrationGuild;
     }
 
     static async createGuild(body: {

@@ -22,3 +22,9 @@ export interface GuildAvailableSchema {
     id: Snowflake;
     available: boolean;
 }
+
+export interface IntegrationGuild {
+    id: Snowflake;
+    name: string;
+    icon: string | null;
+}

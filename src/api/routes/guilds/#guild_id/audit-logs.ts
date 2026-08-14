@@ -17,7 +17,7 @@
 */
 
 import { Router, Response, Request } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 const router = Router({ mergeParams: true });
 
 //TODO: implement audit logs

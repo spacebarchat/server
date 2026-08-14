@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Member } from "@spacebar/database";
 import { emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile, OrmUtils, Permissions } from "@spacebar/util";
 import { MemberChangeProfileSchema } from "@spacebar/schemas";

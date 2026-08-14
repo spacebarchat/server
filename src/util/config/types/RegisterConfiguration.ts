@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { DateOfBirthConfiguration, PasswordConfiguration, RegistrationEmailConfiguration } from ".";
+import { DateOfBirthConfiguration, PasswordConfiguration, RegistrationEmailConfiguration } from "./subconfigurations";
 
 export class RegisterConfiguration {
     email: RegistrationEmailConfiguration = new RegistrationEmailConfiguration();

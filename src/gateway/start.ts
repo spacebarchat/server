@@ -24,14 +24,14 @@ moduleAlias(__dirname + "../../../package.json");
 import { config } from "dotenv";
 config({ quiet: true });
 
-import { Server } from "./Server";
+import { GatewayServer } from "./Server";
 import fs from "node:fs";
 import cluster from "node:cluster";
 
 let port = Number(process.env.PORT);
 if (isNaN(port)) port = 3002;
 
-const server = new Server({
+const server = new GatewayServer({
     port,
 });
 

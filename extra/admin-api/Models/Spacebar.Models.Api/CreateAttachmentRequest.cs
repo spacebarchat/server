@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Spacebar.Models.Generic;
 
 namespace Spacebar.Models.Api;
 
@@ -37,5 +38,21 @@ public class CreateAttachmentResponse {
 
         [JsonPropertyName("original_content_type")]
         public string? OriginalContentType { get; set; }
+    }
+}
+
+public class AttachmentListResponse {
+    [JsonPropertyName("total")]
+    public int Total { get; set; }
+
+    [JsonPropertyName("items")]
+    public List<Entry> Items { get; set; }
+
+    public class Entry {
+        [JsonPropertyName("attachment")]
+        public MessageAttachment Attachment { get; set; }
+
+        [JsonPropertyName("message_reference")]
+        public MessageReference MessageReference { get; set; }
     }
 }

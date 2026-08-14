@@ -17,9 +17,10 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { Application, User } from "./index";
 import { BaseClass } from "./BaseClass";
+import { Application } from "./Application";
 import { Guild } from "./Guild";
+import { User } from "./User";
 
 @Entity({
     name: "emojis",

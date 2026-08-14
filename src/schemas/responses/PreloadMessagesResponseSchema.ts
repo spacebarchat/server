@@ -16,7 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// TODO: remove entity import
-import { Message } from "@spacebar/database";
+import { PublicMessage } from "@spacebar/schemas";
 
-export type PreloadMessagesResponseSchema = Message[];
+export type PreloadMessagesResponseSchema = PublicMessage[];

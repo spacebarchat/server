@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Channel, Recipient, User } from "@spacebar/database";
 import { ChannelRecipientAddEvent, DiscordApiErrors, DmChannelDTO, emitEvent } from "@spacebar/util";
 import { ChannelType, PublicUserProjection } from "@spacebar/schemas";
@@ -38,6 +38,10 @@ router.put(
             where: { id: channel_id },
             relations: { recipients: true },
         });
+
+        if (!channel.recipients || channel.recipients.length == 0 || channel.recipients.filter((r) => r.user_id == req.user_id).length == 0) {
+            throw DiscordApiErrors.UNKNOWN_CHANNEL; // TODO: is this the right error
+        }
 
         if (channel.type !== ChannelType.GROUP_DM) {
             const recipients = [...new Set([...(channel.recipients?.map((r) => r.user_id) || []), user_id])];

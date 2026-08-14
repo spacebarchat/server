@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile } from "@spacebar/util";
 import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
@@ -29,7 +29,7 @@ router.get(
     route({
         responses: {
             200: {
-                body: "APIPublicMember",
+                body: "PublicMember",
             },
             403: {
                 body: "APIErrorResponse",

@@ -18,7 +18,7 @@
 
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { Config, emitEvent, FieldErrors, generateToken, handleFile, UserUpdateEvent } from "@spacebar/util";
 import { DisplayNameStyle, PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";

@@ -12,19 +12,17 @@
         "start:webrtc": "node --enable-source-maps dist/webrtc/start.js",
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
         "build:src": "tsc -b -v",
-        "build:tsgo": "npm run build:src:tsgo && npm run generate:schema && npm run generate:openapi",
-        "build:src:tsgo": "rm -rf dist/* tsconfig.tsbuildinfo && tsgo -b -v",
         "watch": "tsc -w -b .",
         "test": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/test.js",
-        "lint": "eslint .",
+        "lint": "eslint . --stats --concurrency 4",
         "setup": "npm run build && npm run generate:schema",
         "sync:db": "npm run build && node -r dotenv/config -r module-alias/register --enable-source-maps scripts/syncronise.js",
-        "generate:rights": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/rights.js",
-        "generate:schema": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/schema.js",
-        "generate:migration": "node -r dotenv/config -r module-alias/register --enable-source-maps node_modules/typeorm/cli.js migration:generate -d dist/database/Database.js",
-        "generate:openapi": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/openapi.js",
-        "add:license": "node  -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
-        "node:tests": "npm run build:src:tsgo && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
+        "generate:rights": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/rights.js",
+        "generate:schema": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/schema.js",
+        "generate:migration": "node-r dotenv/config -r module-alias/register --enable-source-maps node_modules/typeorm/cli.js migration:generate -d dist/database/Database.js",
+        "generate:openapi": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/openapi.js",
+        "add:license": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
+        "node:tests": "npm run build:src && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
         "apply:migrations": "node --enable-source-maps dist/apply-migrations.js"
     },
     "main": "dist/bundle/index.js",
@@ -65,7 +63,7 @@
         "@types/ws": "^8.18.1",
         "@typescript-eslint/eslint-plugin": "^8.61.0",
         "@typescript-eslint/parser": "^8.61.0",
-        "@typescript/native-preview": "^7.0.0-dev.20260119.1",
+        "@typescript/native": "npm:typescript@^7.0.2",
         "eslint": "^9.39.4",
         "eslint-plugin-node-import": "^1.2.0",
         "globals": "^17.6.0",
@@ -74,8 +72,8 @@
         "prettier": "^3.8.4",
         "pretty-quick": "^4.2.2",
         "ts-node": "^10.9.2",
-        "typescript": "^6.0.3",
-        "typescript-json-schema": "^0.67.4"
+        "typescript": "npm:@typescript/typescript6@^6.0.3",
+        "typescript-json-schema": "^0.68.0"
     },
     "dependencies": {
         "@spacebarchat/pion-webrtc": "^0.0.4",
@@ -83,10 +81,10 @@
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
         "amqplib": "^2.0.1",
-        "badge-maker": "^5.0.2",
+        "badge-maker": "^6.0.0",
         "bcrypt": "^6.0.0",
         "body-parser": "^2.2.2",
-        "chalk": "^5.6.2",
+        "chalk": "^6.0.0",
         "cheerio": "^1.2.0",
         "cookie-parser": "^1.4.7",
         "discord-protos": "^1.2.224",
@@ -141,7 +139,7 @@
         "jimp": "^1.6.1",
         "mailgun.js": "^13.2.0",
         "node-mailjet": "^6.0.11",
-        "nodemailer": "^8.0.11"
+        "nodemailer": "^9.0.5"
     },
     "overrides": {
         "typeorm": {
@@ -149,5 +147,9 @@
             "sqlite3": "../_EXCLUDED_",
             "mongodb": "../_EXCLUDED_"
         }
+    },
+    "allowScripts": {
+        "bcrypt@6.0.0": true,
+        "cbor-extract@2.2.2": true
     }
 }

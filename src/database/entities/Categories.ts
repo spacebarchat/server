@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { BaseClassWithoutId } from "./BaseClass";
+import { DiscoveryCategory } from "@spacebar/schemas";
 
-// TODO: categories:
+// was this an old response format? Keeping for completeness sake
 // [{
 // 	"id": 16,
 // 	"default": "Anime & Manga",
@@ -31,7 +32,6 @@ import { BaseClassWithoutId } from "./BaseClass";
 // 	},
 // 	"is_primary": false/true
 // }]
-// Also populate discord default categories
 
 @Entity({
     name: "categories",
@@ -39,19 +39,34 @@ import { BaseClassWithoutId } from "./BaseClass";
 export class Categories extends BaseClassWithoutId {
     // Not using snowflake
 
-    @PrimaryColumn({ type: "int4" })
+    @PrimaryGeneratedColumn({ type: "int2" })
     id: number;
 
     @Column({ nullable: true })
     name: string;
 
     @Column({ type: "jsonb" })
-    localizations: string;
+    localizations: CategoryLocalization;
 
     // Whether to show the category prominently (e.g. in a sidebar) instead of only secondary (e.g. in search results)
     @Column({ nullable: true })
     is_primary: boolean;
 
+    // TODO: was this removed?
     @Column({ nullable: true })
     icon?: string;
+
+    public toDiscoveryCategory(locale?: string): DiscoveryCategory {
+        locale ??= "en-US";
+        let name = this.name;
+        if (locale in this.localizations) name = this.localizations[locale] ?? this.name;
+
+        return {
+            id: this.id,
+            name: name,
+            is_primary: this.is_primary,
+        } satisfies DiscoveryCategory;
+    }
 }
+
+export type CategoryLocalization = { [locale: string]: string };

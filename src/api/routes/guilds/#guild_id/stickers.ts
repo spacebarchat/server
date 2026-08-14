@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Member, Sticker } from "@spacebar/database";
 import { GuildStickersUpdateEvent, Snowflake, emitEvent, uploadFile, Config, DiscordApiErrors } from "@spacebar/util";
 import { ModifyGuildStickerSchema, StickerFormatType, StickerType } from "@spacebar/schemas";

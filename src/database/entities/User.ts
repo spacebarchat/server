@@ -33,6 +33,7 @@ import {
     ChannelType,
     Collectibles,
     DisplayNameStyle,
+    PartialUser,
     PrimaryGuild,
     PrivateUserProjection,
     PublicUser,
@@ -220,6 +221,22 @@ export class User extends BaseClass {
             user[x] = this[x];
         });
         return user as PublicUser;
+    }
+
+    toPartialUser(): PartialUser {
+        return {
+            id: this.id,
+            username: this.username,
+            discriminator: this.discriminator,
+            global_name: undefined, // TODO when pomelo
+            avatar: this.avatar ?? null,
+            avatar_decoration_data: this.avatar_decoration_data,
+            bot: this.bot,
+            system: this.system,
+            banner: this.banner,
+            accent_color: this.accent_color,
+            public_flags: this.public_flags,
+        } satisfies PartialUser;
     }
 
     toPrivateUser(extraFields: (keyof User)[] = []) {

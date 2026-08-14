@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { IsNull } from "typeorm";
 import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand } from "@spacebar/database";
 import { FieldErrors, Snowflake } from "@spacebar/util";
 

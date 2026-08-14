@@ -17,7 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { PollAnswerCount, PollUserAnswersSchema } from "@spacebar/schemas";
 import { Message } from "@spacebar/database";
 import { DiscordApiErrors, emitEvent, ErrorList, FieldError, makeObjectErrorContent, MessagePollVoteAddEvent, MessagePollVoteRemoveEvent } from "@spacebar/util";

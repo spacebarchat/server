@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 using ArcaneLibs.Extensions;
@@ -76,7 +77,7 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
         };
         var rrRes = await Assert.SuccessfullyHttpPostAsJsonAsync(
             $"{_config.TestInstance}/api/v9/auth/register", rr);
-        
+
         var loginRes = await Assert.SuccessfullyHttpPostAsJsonAsync(
             $"{_config.TestInstance}/api/v9/auth/login",
             new LoginRequest() {
@@ -99,5 +100,31 @@ public class AuthenticationTests(ITestOutputHelper testOutputHelper, TestFixture
         var client = await _clientProvider.GetAuthenticatedClientAsync(_config.TestInstance, res.Token);
         var waRes = await Assert.HttpSuccess(await client.ApiHttpClient.GetAsync("/api/v9/auth/whoami"));
         // TODO: finish test once model exists
+    }
+
+    [Fact]
+    public async Task CannotResetPasswordWithGenericToken() {
+        var rr = new RegisterRequest() {
+            Email = $"{Guid.NewGuid().ToString()}@{Guid.NewGuid().ToString()}.tld",
+            Username = Guid.NewGuid().ToString()[..32],
+            Password = Guid.NewGuid().ToString(),
+            DateOfBirth = new(),
+            Consent = true
+        };
+        var rrRes = await Assert.SuccessfullyHttpPostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/register", rr);
+
+        using var hc = new HttpClient();
+        var resetRes = await hc.PostAsJsonAsync($"{_config.TestInstance}/api/v9/auth/reset", new JsonObject() {
+            { "token", (await rrRes.Content.ReadFromJsonAsync<RegisterResponse>(cancellationToken: TestContext.Current.CancellationToken))!.Token },
+            { "password", Guid.NewGuid().ToString() }
+        }, cancellationToken: TestContext.Current.CancellationToken);
+
+        try {
+            Assert.Equal(HttpStatusCode.BadRequest, resetRes.StatusCode); // TODO: is this even the right status code?
+        }
+        catch {
+            testOutputHelper.WriteLine(await AssertHttpExtensions.GetFormattedErrorDetails(resetRes));
+            throw;
+        }
     }
 }

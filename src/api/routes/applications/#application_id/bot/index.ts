@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { verifyToken } from "node-2fa";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Application, User } from "@spacebar/database";
 import { DiscordApiErrors, FieldErrors, createAppBotUser, generateToken, handleFile } from "@spacebar/util";
 import { BotModifySchema } from "@spacebar/schemas";
@@ -67,18 +67,19 @@ router.post(
         },
     }),
     async (req: Request, res: Response) => {
-        const bot = await User.findOneOrFail({ where: { id: req.params.application_id as string } });
-        const owner = req.user;
+        const app = await Application.findOneOrFail({ where: { id: req.params.application_id as string }, relations: { bot: true } });
+        const owner = await User.findOneOrFail({ where: { id: app.owner_id }, select: { id: true, totp_secret: true } });
 
+        if (!app.bot) throw DiscordApiErrors.OAUTH2_APPLICATION_BOT_ABSENT;
         if (owner.id != req.user_id) throw DiscordApiErrors.ACTION_NOT_AUTHORIZED_ON_APPLICATION;
 
         if (owner.totp_secret && (!req.body.code || verifyToken(owner.totp_secret, req.body.code))) throw new HTTPError(req.t("auth:login.INVALID_TOTP_CODE"), 60008);
 
-        bot.data = { hash: undefined, valid_tokens_since: new Date() };
+        app.bot.data = { hash: undefined, valid_tokens_since: new Date() };
 
-        await bot.save();
+        await app.bot.save();
 
-        const token = await generateToken(bot.id);
+        const token = await generateToken(app.bot.id);
 
         res.json({ token }).status(200);
     },

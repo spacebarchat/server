@@ -18,7 +18,7 @@
 
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { BackupCode, generateMfaBackupCodes, User } from "@spacebar/database";
 import { FieldErrors } from "@spacebar/util";
 import { MfaCodesSchema } from "@spacebar/schemas";
@@ -35,7 +35,7 @@ router.post(
         description: "This route is replaced with users/@me/mfa/codes-verification in newer clients",
         responses: {
             200: {
-                body: "APIBackupCodeArray",
+                body: "BackupCodeArray",
             },
             400: {
                 body: "APIErrorResponse",

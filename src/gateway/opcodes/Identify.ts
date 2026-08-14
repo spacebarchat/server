@@ -70,7 +70,7 @@ import { check } from "./instanceOf";
 export async function onIdentify(this: WebSocket, data: Payload) {
     const totalSw = Stopwatch.startNew();
     const taskSw = Stopwatch.startNew();
-    const gatewayShardName = `sb-gateway`;
+    const gatewayShardName = process.env.WORKER_NAME ?? `sb-gateway`;
 
     if (this.user_id) {
         // we've already identified

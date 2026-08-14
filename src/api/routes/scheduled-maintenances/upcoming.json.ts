@@ -17,13 +17,14 @@
 */
 
 import { Router, Request, Response } from "express";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 const router = Router({ mergeParams: true });
 
 router.get(
     "/",
     route({
         spacebarOnly: false, // not part of public openapi
+        authentication: "never",
     }),
     (req: Request, res: Response) => {
         res.json({

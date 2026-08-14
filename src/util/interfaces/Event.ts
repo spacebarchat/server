@@ -17,7 +17,7 @@
 */
 
 import { ConnectedAccount, Invite, Role, Emoji, Channel, User, Sticker, UserSettings, ReadState, ThreadMember } from "@spacebar/database";
-import { Activity, Presence, IReadyGuildDTO, ReadyUserGuildSettingsEntries, ReadyPrivateChannel, GuildOrUnavailable, Snowflake, PrivateStatus } from "@spacebar/util";
+import { Activity, Presence, IReadyGuildDTO, ReadyUserGuildSettingsEntries, ReadyPrivateChannel, GuildOrUnavailable, Snowflake } from "@spacebar/util";
 import { JsonValue } from "@protobuf-ts/runtime";
 import {
     ApplicationCommand,
@@ -25,6 +25,7 @@ import {
     Interaction,
     InteractionFailureReason,
     PartialEmoji,
+    PrivateStatus,
     PublicChannel,
     PublicMember,
     PublicMessage,

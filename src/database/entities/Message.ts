@@ -349,7 +349,7 @@ export class Message extends BaseClass {
             message_reference: this.message_reference ?? undefined,
             mention_everyone: this.mention_everyone ?? false,
             author: {
-                ...(this.author?.toPublicUser() ?? undefined),
+                ...(this.author?.toPartialUser() ?? undefined),
                 // Webhooks
                 username: this.username ?? this.author?.username ?? null,
                 avatar: this.avatar ?? this.author?.avatar ?? null,

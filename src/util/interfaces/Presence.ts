@@ -16,9 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ClientStatus, Status } from "./Status";
+import { ClientStatus, Status, PublicUser } from "@spacebar/schemas";
 import { Activity } from "./Activity";
-import { PublicUser } from "@spacebar/schemas";
 
 export interface Presence {
     user: PublicUser;

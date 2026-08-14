@@ -19,7 +19,7 @@
 import { randomBytes } from "node:crypto";
 import { Request, Response, Router } from "express";
 import { InteractionFailureReason, InteractionSchema, InteractionType } from "@spacebar/schemas";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Guild, Member, Message } from "@spacebar/database";
 import { Config, emitEvent, getPermission, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";
@@ -92,24 +92,26 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     }
 
     if (body.type === InteractionType.MessageComponent || body.data.type === InteractionType.ModalSubmit) {
-        interactionData.message = await Message.findOneOrFail({
-            where: { id: body.message_id, flags: undefined },
-            relations: {
-                author: true,
-                webhook: true,
-                application: true,
-                mentions: true,
-                mention_roles: true,
-                mention_channels: true,
-                sticker_items: true,
-                attachments: true,
-                thread: {
-                    recipients: {
-                        user: true,
+        interactionData.message = (
+            await Message.findOneOrFail({
+                where: { id: body.message_id, flags: undefined },
+                relations: {
+                    author: true,
+                    webhook: true,
+                    application: true,
+                    mentions: true,
+                    mention_roles: true,
+                    mention_channels: true,
+                    sticker_items: true,
+                    attachments: true,
+                    thread: {
+                        recipients: {
+                            user: true,
+                        },
                     },
                 },
-            },
-        });
+            })
+        ).toJSON();
     }
 
     await emitEvent({

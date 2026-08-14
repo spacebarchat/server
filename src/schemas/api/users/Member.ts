@@ -115,3 +115,5 @@ export type PublicMember = Omit<Pick<Member, PublicMemberKeys>, "roles"> & {
     user: PublicUser;
     roles: string[]; // only role ids not objects
 };
+
+export type PublicMemberArray = PublicMember[];

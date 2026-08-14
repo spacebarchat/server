@@ -18,7 +18,7 @@
 
 import { Request, Response, Router } from "express";
 import { IsNull, Not } from "typeorm";
-import { route } from "@spacebar/api/util/handlers/route";
+import { route } from "@spacebar/api/middlewares";
 import { Message, User } from "@spacebar/database";
 import { ChannelPinsUpdateEvent, Config, DiscordApiErrors, emitEvent, MessageCreateEvent, MessageUpdateEvent } from "@spacebar/util";
 
@@ -165,7 +165,7 @@ router.get(
         permission: ["READ_MESSAGE_HISTORY"],
         responses: {
             200: {
-                body: "APIMessageArray",
+                body: "PublicMessageArray",
             },
             400: {
                 body: "APIErrorResponse",
