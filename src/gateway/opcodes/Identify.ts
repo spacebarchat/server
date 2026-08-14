@@ -53,7 +53,6 @@ import {
     getMostRelevantSession,
     Presence,
     PresenceUpdateEvent,
-    PrivateStatus,
     ReadyEventData,
     ReadyGuildDTO,
     ReadyUserGuildSettingsEntries,
@@ -61,7 +60,17 @@ import {
     TraceNode,
     TraceRoot,
 } from "@spacebar/util";
-import { ChannelType, DefaultUserGuildSettings, DMChannel, IdentifySchema, PrivateUserProjection, PublicUser, PublicUserProjection, RelationshipType } from "@spacebar/schemas";
+import {
+    ChannelType,
+    DefaultUserGuildSettings,
+    DMChannel,
+    IdentifySchema,
+    PrivateStatus,
+    PrivateUserProjection,
+    PublicUser,
+    PublicUserProjection,
+    RelationshipType,
+} from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 // TODO: user sharding
