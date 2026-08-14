@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 #!nix-shell -i "bash" -p bash prefetch-npm-deps jq nodejs nix-output-monitor
-. "$(dirname -- "$0")/_/husky.sh"
 
 # Check if nix is available
 if [ -n "$(find "flake.lock" -mtime +7 -print)" ]; then

@@ -53,6 +53,7 @@ import {
     getMostRelevantSession,
     Presence,
     PresenceUpdateEvent,
+    PrivateStatus,
     ReadyEventData,
     ReadyGuildDTO,
     ReadyUserGuildSettingsEntries,
@@ -329,21 +330,24 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const { result: friendPresenceSessions, elapsed: friendPresenceSessionsQueryTime } = await timePromise(() =>
         friendPresenceUserIds.length === 0
             ? Promise.resolve([] as Session[])
-            : getDatabase()!.getRepository(Session).find({
-                  where: {
-                      user_id: In(friendPresenceUserIds),
-                      is_admin_session: false,
-                      status: Not(In(["offline", "invisible"])),
-                  },
-                  relations: { user: true },
-                  select: {
-                      user_id: true,
-                      status: true,
-                      activities: true,
-                      client_status: true,
-                      user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
-                  },
-              }),
+            : getDatabase()!
+                  .getRepository(Session)
+                  .find({
+                      where: {
+                          user_id: In(friendPresenceUserIds),
+                          is_admin_session: false,
+                          // "unknown" isn't part of PrivateStatus, but clients can send it on identify, so guard against it having been persisted
+                          status: Not(In(["offline", "invisible", "unknown"] as PrivateStatus[])),
+                      },
+                      relations: { user: true },
+                      select: {
+                          user_id: true,
+                          status: true,
+                          activities: true,
+                          client_status: true,
+                          user: Object.fromEntries(PublicUserProjection.map((x) => [x, true])),
+                      },
+                  }),
     );
 
     const { result: friendPresences, elapsed: generateFriendPresencesTime } = timeFunction<Presence[]>(() => {
@@ -730,7 +734,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     version: 0, // TODO
                 },
                 private_channels: channels,
-                presences: [],
+                presences: [], // TODO: Send actual data
                 session_id: this.session_id,
                 country_code: this.session?.last_seen_location_info?.country_code ?? user.settings!.locale,
                 users: Array.from(users),
@@ -897,16 +901,19 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         return {
             id: availableGuild.id,
             voice_states: availableGuild.voice_states.map((state) => VoiceState.prototype.toPublicVoiceState.apply(state)),
+            // embedded_activities is the older name for the same field, kept for clients that still read it
+            embedded_activities: [],
             activity_instances: [],
         };
     });
 
+    // TODO: ready supplemental - merged_members and guild presences are still empty
     await Send(this, {
         op: OPCodes.DISPATCH,
         t: EVENTEnum.ReadySupplemental,
         s: this.sequence++,
         d: {
-            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [] }
+            guilds: readySupplementalGuilds, // { voice_states: [], id: string, embedded_activities: [], activity_instances: [] }
             merged_members: guilds.map(() => []), // these merged members seem to be all users currently in vc in your guilds
             merged_presences: {
                 friends: friendPresences,
