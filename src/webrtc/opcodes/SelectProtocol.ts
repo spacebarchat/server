@@ -15,6 +15,7 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 import { SelectProtocolSchema, validateSchema } from "@spacebar/schemas";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, mediaServer, Send } from "@spacebar/webrtc";
 
@@ -24,7 +25,7 @@ export async function onSelectProtocol(this: WebRtcWebSocket, payload: VoicePayl
     const data = validateSchema("SelectProtocolSchema", payload.d) as SelectProtocolSchema;
 
     // UDP protocol not currently supported. Maybe in the future?
-    if (data.protocol !== "webrtc") return this.close(4000, "only webrtc protocol supported currently");
+    if (data.protocol !== "webrtc") return this.rawSocket.close(4000, "only webrtc protocol supported currently");
 
     const response = await mediaServer.onOffer(this.webRtcClient, data.sdp!, data.codecs ?? []);
 

@@ -76,6 +76,7 @@ router.get(
                         open: openConnections.length,
                         sessions: openConnections.map((x) =>
                             // console.log(x);
+                            // TODO: move to socket object
                             useFullWsObj
                                 ? {
                                       ...x,
@@ -86,7 +87,7 @@ router.get(
                                       },
                                   }
                                 : {
-                                      wsReadystate: x.readyState,
+                                      wsReadystate: x.rawSocket.readyState,
                                       version: x.version,
                                       user_id: x.user_id,
                                       session_id: x.session_id,

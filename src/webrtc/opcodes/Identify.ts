@@ -64,14 +64,14 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
             streamSession.used = true;
             await streamSession.save();
 
-            this.once("close", async () => {
+            this.rawSocket.once("close", async () => {
                 await streamSession.remove();
             });
         }
     }
 
     // if it doesnt match any then not valid token
-    if (!authenticated) return this.close(CLOSECODES.Authentication_failed);
+    if (!authenticated) return this.rawSocket.close(CLOSECODES.Authentication_failed);
 
     this.user_id = user_id;
     this.session_id = session_id;
@@ -82,10 +82,10 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
     try {
         this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
     } catch (e) {
-        return this.close(4013);
+        return this.rawSocket.close(4013);
     }
 
-    this.on("close", () => {
+    this.rawSocket.on("close", () => {
         // ice-lite media server relies on this to know when the peer went away
         mediaServer.onClientClose(this.webRtcClient!);
     });

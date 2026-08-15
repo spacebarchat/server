@@ -83,7 +83,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     if (this.user_id) {
         // we've already identified
-        return this.close(CLOSECODES.Already_authenticated);
+        return this.rawSocket.close(CLOSECODES.Already_authenticated);
     }
 
     clearTimeout(this.readyTimeout);
@@ -111,7 +111,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     const user = tokenData.user;
     if (!user) {
         console.log(`[Gateway/${this.ipAddress}] Failed to identify user`);
-        return this.close(CLOSECODES.Authentication_failed);
+        return this.rawSocket.close(CLOSECODES.Authentication_failed);
     }
 
     this.user_id = user.id;
@@ -132,7 +132,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         if (this.shard_count == null || this.shard_id == null || this.shard_id > this.shard_count || this.shard_id < 0 || this.shard_count <= 0) {
             // TODO: why do we even care about this right now?
             console.log(`[Gateway/${this.user_id}] Invalid sharding from ${user.id}: ${identify.shard}`);
-            return this.close(CLOSECODES.Invalid_shard);
+            return this.rawSocket.close(CLOSECODES.Invalid_shard);
         }
     }
     const validateIntentsAndShardingTime = taskSw.getElapsedAndReset();

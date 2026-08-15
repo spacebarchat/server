@@ -20,10 +20,10 @@ import { CLOSECODES } from "@spacebar/gateway";
 import OPCodeHandlers from "../opcodes";
 import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
 
-export async function onMessage(this: WebRtcWebSocket, buffer: Buffer) {
+export async function onMessage(socket: WebRtcWebSocket, buffer: Buffer) {
     try {
         const data: VoicePayload = JSON.parse(buffer.toString());
-        if (data.op !== VoiceOPCodes.IDENTIFY && !this.user_id) return this.close(CLOSECODES.Not_authenticated);
+        if (data.op !== VoiceOPCodes.IDENTIFY && !socket.user_id) return socket.rawSocket.close(CLOSECODES.Not_authenticated);
 
         const OPCodeHandler = OPCodeHandlers[data.op];
         if (!OPCodeHandler) {
@@ -37,7 +37,7 @@ export async function onMessage(this: WebRtcWebSocket, buffer: Buffer) {
             console.log("[WebRTC] Opcode " + VoiceOPCodes[data.op]);
         }
 
-        return await OPCodeHandler.call(this, data);
+        return await OPCodeHandler.call(socket, data);
     } catch (error) {
         console.error("[WebRTC] error", error);
         // if (!this.CLOSED && this.CLOSING) return this.close(CloseCodes.Unknown_error);

@@ -18,8 +18,8 @@
 
 import { WebSocket } from "@spacebar/gateway";
 
-export async function onClose(this: WebSocket, code: number, reason: string) {
+export async function onClose(socket: WebSocket, code: number, reason: Buffer) {
     console.log("[WebRTC] closed", code, reason.toString());
 
-    this.removeAllListeners();
+    socket.rawSocket.removeAllListeners();
 }

@@ -28,10 +28,11 @@ import { onMessage } from "./Message";
 // TODO: specify rate limit in config
 // TODO: check msg max size
 
-export async function Connection(this: WS.Server, socket: WebRtcWebSocket, request: IncomingMessage) {
+export async function Connection(this: WS.Server, rawSocket: WS, request: IncomingMessage) {
+    const socket = new WebRtcWebSocket(rawSocket);
     try {
-        socket.on("close", onClose.bind(socket));
-        socket.on("message", onMessage.bind(socket));
+        socket.rawSocket.on("close", (code, reason) => onClose(socket, code, reason));
+        socket.rawSocket.on("message", (data, isBinary) => onMessage(socket, data as Buffer));
         console.log("[WebRTC] new connection", request.url);
 
         if (process.env.WS_LOGEVENTS) {
@@ -45,7 +46,7 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
                 "pong",
                 "unexpected-response",
             ].forEach((x) => {
-                socket.on(x, (y) => console.log("[WebRTC]", x, y));
+                socket.rawSocket.on(x, (y) => console.log("[WebRTC]", x, y));
             });
         }
 
@@ -53,11 +54,11 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
 
         socket.encoding = "json";
         socket.version = Number(searchParams.get("v")) || 5;
-        if (socket.version < 3) return socket.close(CLOSECODES.Unknown_error, "invalid version");
+        if (socket.version < 3) return socket.rawSocket.close(CLOSECODES.Unknown_error, "invalid version");
 
         setHeartbeat(socket);
 
-        socket.readyTimeout = setTimeout(() => socket.close(CLOSECODES.Session_timed_out), 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), 1000 * 30);
 
         await Send(socket, {
             op: VoiceOPCodes.HELLO,
@@ -67,6 +68,6 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
         });
     } catch (error) {
         console.error("[WebRTC]", error);
-        return socket.close(CLOSECODES.Unknown_error);
+        return socket.rawSocket.close(CLOSECODES.Unknown_error);
     }
 }

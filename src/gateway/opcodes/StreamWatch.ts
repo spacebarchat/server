@@ -40,7 +40,7 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
     try {
         parsedKey = parseStreamKey(body.stream_key);
     } catch (e) {
-        return this.close(4000, "Invalid stream key");
+        return this.rawSocket.close(4000, "Invalid stream key");
     }
 
     const { type, channelId, guildId, userId } = parsedKey;
@@ -50,14 +50,14 @@ export async function onStreamWatch(this: WebSocket, data: Payload) {
         relations: { channel: true },
     });
 
-    if (!stream) return this.close(4000, "Invalid stream key");
+    if (!stream) return this.rawSocket.close(4000, "Invalid stream key");
 
-    if (type === "guild" && stream.channel.guild_id != guildId) return this.close(4000, "Invalid stream key");
+    if (type === "guild" && stream.channel.guild_id != guildId) return this.rawSocket.close(4000, "Invalid stream key");
 
     const regions = Config.get().regions;
     const guildRegion = regions.available.find((r) => r.endpoint === stream.endpoint);
 
-    if (!guildRegion) return this.close(4000, "Unknown region");
+    if (!guildRegion) return this.rawSocket.close(4000, "Unknown region");
 
     const streamSession = StreamSession.create({
         stream_id: stream.id,
