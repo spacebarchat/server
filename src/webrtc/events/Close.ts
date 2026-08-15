@@ -16,25 +16,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { WebSocket } from "@spacebar/gateway";
 import { mediaServer, Send, VoiceOPCodes, WebRtcWebSocket } from "@spacebar/webrtc";
 
-export async function onClose(this: WebRtcWebSocket, code: number, reason: string) {
+export async function onClose(socket: WebRtcWebSocket, code: number, reason: Buffer) {
     console.log("[WebRTC] closed", code, reason.toString());
 
-    if (this.user_id && this.webRtcClient) {
-        const { voiceRoomId } = this.webRtcClient;
+    if (socket.user_id && socket.webRtcClient) {
+        const { voiceRoomId } = socket.webRtcClient;
         const connectedClients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId);
 
         for (const client of connectedClients) {
             await Send(client.websocket, {
                 op: VoiceOPCodes.CLIENTS_CONNECT,
                 d: {
-                    user_id: this.user_id,
+                    user_id: socket.user_id,
                 },
             });
         }
     }
 
-    this.removeAllListeners();
+    socket.rawSocket.removeAllListeners();
 }

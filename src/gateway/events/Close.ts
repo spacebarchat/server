@@ -22,41 +22,41 @@ import { WebSocket } from "@spacebar/gateway/util";
 import { emitEvent, PresenceUpdateEvent, SessionsReplace, VoiceStateUpdateEvent, distributePresenceUpdate } from "@spacebar/util";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 
-export async function Close(this: WebSocket, code: number, reason: Buffer) {
+export async function Close(socket: WebSocket, code: number, reason: Buffer) {
     console.log("[WebSocket] closed", code, reason.toString());
-    if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
-    if (this.readyTimeout) clearTimeout(this.readyTimeout);
-    this.deflate?.close();
-    this.inflate?.close();
-    this.removeAllListeners();
+    if (socket.heartbeatTimeout) clearTimeout(socket.heartbeatTimeout);
+    if (socket.readyTimeout) clearTimeout(socket.readyTimeout);
+    socket.deflate?.close();
+    socket.inflate?.close();
+    socket.rawSocket.removeAllListeners();
 
-    if (this.session) {
-        const authSessionId = this.session?.session_id;
+    if (socket.session) {
+        const authSessionId = socket.session?.session_id;
         const closedAt = Date.now();
 
         if (!(ProcessLifecycle.state === "stopping" || ProcessLifecycle.state === "stopped"))
             setTimeout(async () => {
                 console.log("Handling presence update after disconnect");
                 try {
-                    if (authSessionId && this.user_id) {
+                    if (authSessionId && socket.user_id) {
                         const s = await Session.findOne({
-                            where: { user_id: this.user_id, session_id: authSessionId },
+                            where: { user_id: socket.user_id, session_id: authSessionId },
                         });
                         if (s && (s.last_seen?.getTime() ?? 0) <= closedAt) {
                             console.log("... updating session");
-                            await Session.update({ user_id: this.user_id, session_id: authSessionId }, { status: "offline", activities: [], client_status: {} });
-                            this.session = await Session.findOneOrFail({ where: { session_id: this.session_id } });
+                            await Session.update({ user_id: socket.user_id, session_id: authSessionId }, { status: "offline", activities: [], client_status: {} });
+                            socket.session = await Session.findOneOrFail({ where: { session_id: socket.session_id } });
                             console.log("... distributing PRESENCE_UPDATE");
-                            await distributePresenceUpdate(this.user_id, {
+                            await distributePresenceUpdate(socket.user_id, {
                                 event: "PRESENCE_UPDATE",
                                 data: {
-                                    user: (await User.findOneOrFail({ where: { id: this.user_id } })).toPublicUser(),
-                                    status: this.session!.getPublicStatus(),
-                                    client_status: this.session!.client_status,
-                                    activities: this.session!.activities,
+                                    user: (await User.findOneOrFail({ where: { id: socket.user_id } })).toPublicUser(),
+                                    status: socket.session!.getPublicStatus(),
+                                    client_status: socket.session!.client_status,
+                                    activities: socket.session!.activities,
                                 },
                                 origin: "GATEWAY_CLOSE",
-                                transaction_id: `IDENT_${this.user_id}_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)}`,
+                                transaction_id: `IDENT_${socket.user_id}_${Random.getString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6)}`,
                             } satisfies PresenceUpdateEvent);
                             console.log("... done!");
                         } else console.log("... Discarding presence update as the session reactivated");
@@ -66,13 +66,13 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
                 }
             }, 10_000);
 
-        if (!this.user_id) console.error("No user id in websocket???", this);
+        if (!socket.user_id) console.error("No user id in websocket???", socket);
         const voiceState = await VoiceState.findOne({
-            where: { user_id: this.user_id },
+            where: { user_id: socket.user_id },
         });
 
         // clear the voice state for this session if user was in voice channel
-        if (voiceState && voiceState.session_id === this.session_id && voiceState.channel_id) {
+        if (voiceState && voiceState.session_id === socket.session_id && voiceState.channel_id) {
             const prevGuildId = voiceState.guild_id;
             const prevChannelId = voiceState.channel_id;
 
@@ -104,13 +104,13 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
         }
     }
 
-    if (this.user_id) {
+    if (socket.user_id) {
         const sessions = await Session.find({
-            where: { user_id: this.user_id },
+            where: { user_id: socket.user_id },
         });
         await emitEvent({
             event: "SESSIONS_REPLACE",
-            user_id: this.user_id,
+            user_id: socket.user_id,
             data: sessions.map((x) => x.toPrivateGatewayDeviceInfo()),
         } as SessionsReplace);
         const session = sessions[0] || {
@@ -119,13 +119,13 @@ export async function Close(this: WebSocket, code: number, reason: Buffer) {
             status: "offline",
         };
 
-        const user = await User.getPublicUser(this.user_id).catch(() => undefined);
+        const user = await User.getPublicUser(socket.user_id).catch(() => undefined);
 
         // Special case: dont emit a presence update for deleted users
         if (user !== undefined)
             await emitEvent({
                 event: "PRESENCE_UPDATE",
-                user_id: this.user_id,
+                user_id: socket.user_id,
                 data: {
                     user: user,
                     activities: session.activities,

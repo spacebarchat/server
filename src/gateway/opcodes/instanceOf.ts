@@ -30,7 +30,7 @@ export function check(this: WebSocket, schema: unknown, data: unknown) {
     } catch (error) {
         console.error(error);
         // invalid payload
-        this.close(CLOSECODES.Decode_error);
+        this.rawSocket.close(CLOSECODES.Decode_error);
         throw error;
     }
 }

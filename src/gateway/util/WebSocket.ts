@@ -24,8 +24,13 @@ import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import { QoSPayload } from "../opcodes/Heartbeat";
 import { Capabilities } from "./Capabilities";
 
-export interface WebSocket extends WS {
-    recentTransactions: string[];
+export class WebSocket {
+    rawSocket: WS;
+    constructor(socket: WS) {
+        this.rawSocket = socket;
+    }
+
+    recentTransactions: string[] = [];
     version: number;
     user_id: string;
     session_id: string;
@@ -44,10 +49,10 @@ export interface WebSocket extends WS {
     heartbeatTimeout: NodeJS.Timeout;
     readyTimeout: NodeJS.Timeout;
     intents: Intents;
-    sequence: number;
-    permissions: Record<string, Permissions>;
-    events: Record<string, undefined | (() => Promise<unknown>)>;
-    member_events: Record<string, () => Promise<unknown>>;
+    sequence: number = 0;
+    permissions: Record<string, Permissions> = {};
+    events: Record<string, undefined | (() => Promise<unknown>)> = {};
+    member_events: Record<string, () => Promise<unknown>> = {};
     listen_options: ListenEventOpts;
     capabilities?: Capabilities;
     large_threshold: number;

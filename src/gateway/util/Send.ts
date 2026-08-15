@@ -69,13 +69,13 @@ export async function Send(socket: WebSocket, data: Payload) {
     }
 
     return new Promise((res, rej) => {
-        if (socket.readyState !== 1) {
+        if (socket.rawSocket.readyState !== 1) {
             // return rej("socket not open");
-            socket.close();
+            socket.rawSocket.close();
             return;
         }
 
-        socket.send(buffer, (err) => {
+        socket.rawSocket.send(buffer, (err) => {
             if (err) return rej(err);
             return res(null);
         });

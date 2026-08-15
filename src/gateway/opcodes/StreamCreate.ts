@@ -49,7 +49,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
         where: { id: body.channel_id },
     });
 
-    if (!channel || (body.type === "guild" && channel.guild_id != body.guild_id)) return this.close(4000, "invalid channel");
+    if (!channel || (body.type === "guild" && channel.guild_id != body.guild_id)) return this.rawSocket.close(4000, "invalid channel");
 
     // TODO: actually apply preferred_region from the event payload
     const regions = Config.get().regions;

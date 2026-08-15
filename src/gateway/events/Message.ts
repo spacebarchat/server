@@ -28,7 +28,7 @@ import { PayloadSchema } from "@spacebar/schemas";
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 
-export async function Message(this: WebSocket, buffer: WS.Data) {
+export async function Message(socket: WebSocket, buffer: WS.Data) {
     // TODO: compression
     let data: Payload;
 
@@ -37,60 +37,60 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
         typeof buffer === "string"
     ) {
         data = bigIntJson.parse(buffer.toString());
-    } else if (this.encoding === "json" && Buffer.isBuffer(buffer)) {
-        if (this.compress === "zlib-stream") {
+    } else if (socket.encoding === "json" && Buffer.isBuffer(buffer)) {
+        if (socket.compress === "zlib-stream") {
             try {
-                buffer = this.inflate!.process(buffer);
+                buffer = socket.inflate!.process(buffer);
             } catch {
                 buffer = buffer.toString();
             }
-        } else if (this.compress === "zstd-stream") {
+        } else if (socket.compress === "zstd-stream") {
             try {
-                buffer = await this.zstdDecoder!.decode(buffer);
+                buffer = await socket.zstdDecoder!.decode(buffer);
             } catch {
                 buffer = buffer.toString();
             }
         }
         data = bigIntJson.parse(buffer as string);
-    } else if (this.encoding === "etf" && Buffer.isBuffer(buffer) && erlpack) {
+    } else if (socket.encoding === "etf" && Buffer.isBuffer(buffer) && erlpack) {
         try {
-            // cast is ~safe: unpack returns the parsed data in the shape it was provided, @yukikaze-bot/erlpack got around this by returning `any` instead of an actual type union.
+            // cast is ~safe: unpack returns the parsed data in the shape it was provided, @yukikaze-bot/erlpack got around socket by returning `any` instead of an actual type union.
             data = erlpack.unpack(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)) as unknown as Payload;
         } catch {
-            console.error(`[Gateway/${this.user_id ?? this.ipAddress}] Failed to decode ETF payload`);
-            return this.close(CLOSECODES.Decode_error);
+            console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}] Failed to decode ETF payload`);
+            return socket.rawSocket.close(CLOSECODES.Decode_error);
         }
     } else {
-        console.error(`[Gateway/${this.user_id ?? this.ipAddress}] Unknown payload format`);
-        return this.close(CLOSECODES.Decode_error);
+        console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}] Unknown payload format`);
+        return socket.rawSocket.close(CLOSECODES.Decode_error);
     }
 
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Incomming message: ${JSON.stringify(data)}`);
+    if (process.env.WS_VERBOSE) console.log(`[Websocket] Incoming message: ${JSON.stringify(data)}`);
 
     if (process.env.WS_DUMP) {
-        const id = this.session_id || "unknown";
+        const id = socket.session_id || "unknown";
 
         await fs.mkdir(path.join("dump", id), { recursive: true });
         await fs.writeFile(path.join("dump", id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 
-        if (!this.session_id) console.log(`[Gateway/${this.user_id ?? this.ipAddress}] Unknown session id, dumping to unknown folder`);
+        if (!socket.session_id) console.log(`[Gateway/${socket.user_id ?? socket.ipAddress}] Unknown session id, dumping to unknown folder`);
     }
 
-    check.call(this, PayloadSchema, data);
+    check.call(socket, PayloadSchema, data);
 
     const OPCodeHandler = OPCodeHandlers[data.op];
     if (!OPCodeHandler) {
-        console.error(`[Gateway/${this.user_id ?? this.ipAddress}] Unknown opcode`, data.op);
-        // TODO: if all opcodes are implemented comment this out:
-        // this.close(CLOSECODES.Unknown_opcode);
+        console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}] Unknown opcode`, data.op);
+        // TODO: if all opcodes are implemented comment socket out:
+        // socket.close(CLOSECODES.Unknown_opcode);
         return;
     }
 
     try {
-        return await OPCodeHandler.call(this, data);
+        return await OPCodeHandler.call(socket, data);
     } catch (error) {
-        console.error(`[Gateway/${this.user_id ?? this.ipAddress}] Error: Op ${data.op}`, error);
-        // if (!this.CLOSED && this.CLOSING)
-        return this.close(CLOSECODES.Unknown_error);
+        console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}] Error: Op ${data.op}`, error);
+        // if (!socket.CLOSED && socket.CLOSING)
+        return socket.rawSocket.close(CLOSECODES.Unknown_error);
     }
 }
