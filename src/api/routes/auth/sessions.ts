@@ -71,7 +71,9 @@ router.post(
         }
 
         for (const session of sessions) {
+            console.log("Session pre remove:", session);
             await session.remove();
+            console.log("Session post remove:", session);
             await emitEvent({
                 session_id: session.session_id,
                 event: "SB_SESSION_REMOVE",
