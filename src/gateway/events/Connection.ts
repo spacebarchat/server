@@ -48,10 +48,12 @@ const openConnectionCount = Monitoring.attachMetric(
     }),
 );
 
-export async function Connection(this: WS.Server, socket: WebSocket, request: IncomingMessage) {
+export async function Connection(this: WS.Server, rawSocket: WS, request: IncomingMessage) {
+    const socket = new WebSocket(rawSocket);
+
     openConnections.push(socket);
     openConnectionCount.set(openConnections.length);
-    socket.on("close", () => {
+    socket.rawSocket.on("close", () => {
         const index = openConnections.indexOf(socket);
         if (index !== -1) openConnections.splice(index, 1);
         openConnectionCount.set(openConnections.length);
@@ -64,15 +66,15 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
             d: Math.round(Math.random() * 5000),
         });
 
-        const closeListeners = socket.listeners("close");
+        const closeListeners = socket.rawSocket.listeners("close");
         for (const listener of closeListeners) {
-            socket.off("close", listener);
+            socket.rawSocket.off("close", listener);
             // noinspection JSVoidFunctionReturnValueUsed - awaiting results
             const res = listener.call(socket, 1000, 0) as void | Promise<void>;
             if (res) await res;
         }
 
-        socket.close(1000);
+        socket.rawSocket.close(1000);
     };
 
     if (ProcessLifecycle.state == "stopping" || ProcessLifecycle.state == "stopped") return await onShutdown();
@@ -86,12 +88,12 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
 
     if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
         console.error("Gateway connection rejected: No IP address found.");
-        return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: IP address is required.");
+        return socket.rawSocket.close(CLOSECODES.Decode_error, "Gateway connection rejected: IP address is required.");
     }
 
     if (!socket.userAgent && Config.get().security.cdnSignatureIncludeUserAgent) {
         console.error("Gateway connection rejected: No User-Agent header found.");
-        return socket.close(CLOSECODES.Decode_error, "Gateway connection rejected: User-Agent header is required.");
+        return socket.rawSocket.close(CLOSECODES.Decode_error, "Gateway connection rejected: User-Agent header is required.");
     }
 
     if (request.headers.cookie?.split("; ").find((x) => x.startsWith("__sb_sessid="))) {
@@ -105,12 +107,9 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
     socket.session_id = "TEMP_" + genSessionId(); //Set the session of the WebSocket object
 
     try {
-        // @ts-ignore
-        socket.on("close", Close);
-        // @ts-ignore
-        socket.on("message", Message);
-
-        socket.on("error", (err) => console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}]`, err));
+        socket.rawSocket.on("close", (code, reason) => Close(socket, code, reason));
+        socket.rawSocket.on("message", (data, isBinary) => Message(socket, data as Buffer));
+        socket.rawSocket.on("error", (err) => console.error(`[Gateway/${socket.user_id ?? socket.ipAddress}]`, err));
 
         console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
@@ -125,7 +124,7 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
                 "pong",
                 "unexpected-response",
             ].forEach((x) => {
-                socket.on(x, (y) => console.log(x, y));
+                socket.rawSocket.on(x, (y) => console.log(x, y));
             });
 
         const { searchParams } = new URL(`http://localhost${request.url}`);
@@ -133,13 +132,13 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
         socket.encoding = searchParams.get("encoding") || "json";
         if (!["json", "etf"].includes(socket.encoding)) {
             console.error(`[Gateway/${socket.ipAddress}] Unknown encoding: ${socket.encoding}`);
-            return socket.close(CLOSECODES.Decode_error);
+            return socket.rawSocket.close(CLOSECODES.Decode_error);
         }
 
         socket.version = Number(searchParams.get("version")) || 8;
         if (socket.version != 8) {
             console.error(`[Gateway/${socket.ipAddress}] Invalid API version: ${socket.version}`);
-            return socket.close(CLOSECODES.Invalid_API_version);
+            return socket.rawSocket.close(CLOSECODES.Invalid_API_version);
         }
 
         // @ts-ignore
@@ -153,15 +152,9 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
                 socket.zstdDecoder = new Decoder();
             } else {
                 console.error(`[Gateway/${socket.user_id}] Unknown compression: ${socket.compress}`);
-                return socket.close(CLOSECODES.Decode_error);
+                return socket.rawSocket.close(CLOSECODES.Decode_error);
             }
         }
-
-        socket.recentTransactions = [];
-        socket.events = {};
-        socket.member_events = {};
-        socket.permissions = {};
-        socket.sequence = 0;
 
         setHeartbeat(socket);
 
@@ -172,9 +165,9 @@ export async function Connection(this: WS.Server, socket: WebSocket, request: In
             },
         });
 
-        socket.readyTimeout = setTimeout(() => socket.close(CLOSECODES.Session_timed_out), 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), 1000 * 30);
     } catch (error) {
         console.error(error);
-        return socket.close(CLOSECODES.Unknown_error);
+        return socket.rawSocket.close(CLOSECODES.Unknown_error);
     }
 }

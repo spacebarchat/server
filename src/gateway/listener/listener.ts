@@ -139,7 +139,7 @@ export async function setupListener(this: WebSocket) {
         } catch (e) {
             console.error(`[RabbitMQ] [user-${this.user_id}] Failed to re-establish subscriptions:`, e);
             // close the WebSocket - will force client to reconnect and redo subscription setup
-            this.close(4000, "Failed to re-establish event subscriptions");
+            this.rawSocket.close(4000, "Failed to re-establish event subscriptions");
         }
     };
 
@@ -156,7 +156,7 @@ export async function setupListener(this: WebSocket) {
     RabbitMQ.on("reconnected", handleReconnect);
     RabbitMQ.on("disconnected", handleDisconnect);
 
-    this.once("close", async () => {
+    this.rawSocket.once("close", async () => {
         // Unsubscribe from RabbitMQ events
         RabbitMQ.off("reconnected", handleReconnect);
         RabbitMQ.off("disconnected", handleDisconnect);
@@ -208,7 +208,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 s: this.sequence++,
                 d: opts.reconnect_delay ?? opts.data ?? 1000,
             });
-            this.close(1000); // not a discord close code, standard WS "Normal Closure"
+            this.rawSocket.close(1000); // not a discord close code, standard WS "Normal Closure"
             return;
         case "SB_SESSION_REMOVE":
             // TODO: what do we even send here?
@@ -216,7 +216,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 op: OPCODES.Invalid_Session,
                 s: this.sequence++,
             });
-            this.close(CLOSECODES.Invalid_session); // TODO: this is deprecated?
+            this.rawSocket.close(CLOSECODES.Invalid_session); // TODO: this is deprecated?
             return;
         default:
             // no special treatment
