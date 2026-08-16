@@ -373,6 +373,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     status: session.getPublicStatus(),
                     activities: session.activities,
                     client_status: session.client_status,
+                    processed_at_timestamp: session.last_seen?.getTime() ?? new Date(0).getTime(), // TODO: does this have a different meaning?
                 },
             ];
         });
