@@ -81,7 +81,7 @@
     "git-widget-placeholder": "master",
     "javascript.nodejs.core.library.configured.version": "24.11.1",
     "javascript.nodejs.core.library.typings.version": "24.11.2",
-    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/nix/modules/default",
+    "last_opened_file_path": "/home/Rory/git/spacebar/server-master/src/api/routes",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -110,6 +110,9 @@
       "directory",
       "module",
       "repository"
+    ],
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "JSON"
     ]
   }
 }]]></component>
@@ -121,11 +124,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/api/routes" />
       <recent name="$PROJECT_DIR$/nix/modules/default" />
       <recent name="$PROJECT_DIR$/src/api/routes/warp" />
       <recent name="$PROJECT_DIR$/src/util/migration/postgres" />
       <recent name="$PROJECT_DIR$/src/schemas/api/users" />
-      <recent name="$PROJECT_DIR$/src/util/entities" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/schemas/api/guilds" />
@@ -147,10 +150,13 @@
           <value>
             <map>
               <entry key="Start API" value="STOPPED" />
+              <entry key="Start API (noschema)" value="STOPPED" />
               <entry key="Start CDN" value="STOPPED" />
               <entry key="Start Gateway" value="STOPPED" />
               <entry key="Start WebRTC" value="STOPPED" />
               <entry key="Start bundle" value="STOPPED" />
+              <entry key="build" value="STOPPED" />
+              <entry key="build:src" value="STOPPED" />
               <entry key="build:src:tsgo" value="STOPPED" />
               <entry key="build:tsgo" value="STOPPED" />
             </map>
@@ -161,7 +167,14 @@
   </component>
   <component name="RunManager" selected="Compound.Start separated">
     <list>
+      <item itemvalue="Compound.Start separated (prof)" />
       <item itemvalue="Compound.Start separated" />
+      <item itemvalue="Node.js.Start API (prof)" />
+      <item itemvalue="Node.js.Start CDN (prof)" />
+      <item itemvalue="Node.js.Start Gateway (prof)" />
+      <item itemvalue="Node.js.Start WebRTC (prof)" />
+      <item itemvalue="Node.js.Start bundle (prof)" />
+      <item itemvalue="npm.Start API (noschema)" />
       <item itemvalue="npm.Start API" />
       <item itemvalue="npm.Start CDN" />
       <item itemvalue="npm.Start Gateway" />

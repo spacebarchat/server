@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start separated (prof)" type="CompoundRunConfigurationType">
+    <toRun name="Start API (prof)" type="NodeJSConfigurationType" />
+    <toRun name="Start CDN (prof)" type="NodeJSConfigurationType" />
+    <toRun name="Start Gateway (prof)" type="NodeJSConfigurationType" />
+    <toRun name="Start WebRTC (prof)" type="NodeJSConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

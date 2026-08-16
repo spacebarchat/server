@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Start API" type="js.build_tools.npm">
+  <configuration default="false" name="Start WebRTC" type="js.build_tools.npm">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
-      <script value="start:api" />
+      <script value="start:webrtc" />
     </scripts>
     <node-interpreter value="project" />
     <package-manager value="npm" />
@@ -20,7 +20,7 @@
         <package-json value="$PROJECT_DIR$/package.json" />
         <command value="run" />
         <scripts>
-          <script value="build" />
+          <script value="build:src" />
         </scripts>
         <node-interpreter value="project" />
         <envs />
