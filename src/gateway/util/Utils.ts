@@ -98,37 +98,42 @@ async function expireOldPresenceStates() {
 }
 
 export async function handleOffloadedGatewayRequest(socket: WebSocket, url: string, body: unknown): Promise<boolean> {
-    // TODO: async json object streaming
-    const resp = await fetch(url, {
-        body: JSON.stringify(body),
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${socket.accessToken}`,
-            // because the session may not have an id in the token!
-            "X-Session-Id": socket.session_id,
-            "Content-Type": "application/json",
-        },
-    });
+    try {
+        // TODO: async json object streaming
+        const resp = await fetch(url, {
+            body: JSON.stringify(body),
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${socket.accessToken}`,
+                // because the session may not have an id in the token!
+                "X-Session-Id": socket.session_id,
+                "Content-Type": "application/json",
+            },
+        });
 
-    if (!resp.ok) {
-        const text = await resp.text();
-        console.error(`[Gateway] Offloaded request to ${url} failed with status ${resp.status}: ${text}`);
-        if (resp.status === 415 || resp.status === 400) console.log(typeof body, body);
-        // throw new Error(`Offloaded request failed with status ${resp.status}: ${text}`);
+        if (!resp.ok) {
+            const text = await resp.text();
+            console.error(`[Gateway] Offloaded request to ${url} failed with status ${resp.status}: ${text}`);
+            if (resp.status === 415 || resp.status === 400) console.log(typeof body, body);
+            // throw new Error(`Offloaded request failed with status ${resp.status}: ${text}`);
+            return false;
+        }
+
+        const data = ((await resp.json()) as Event[]).toReversed();
+        while (data.length > 0) {
+            const event = data.pop()!;
+            if (process.env.WS_VERBOSE) console.log(`[Gateway] Received offloaded event: ${JSON.stringify(event)}`);
+            await Send(socket, {
+                op: OPCODES.Dispatch,
+                s: socket.sequence++,
+                t: event.event,
+                d: event.data,
+            });
+        }
+
+        return true;
+    } catch (e) {
+        console.error("Error while handling offloaded gateway request:", e);
         return false;
     }
-
-    const data = ((await resp.json()) as Event[]).toReversed();
-    while (data.length > 0) {
-        const event = data.pop()!;
-        if (process.env.WS_VERBOSE) console.log(`[Gateway] Received offloaded event: ${JSON.stringify(event)}`);
-        await Send(socket, {
-            op: OPCODES.Dispatch,
-            s: socket.sequence++,
-            t: event.event,
-            d: event.data,
-        });
-    }
-
-    return true;
 }
