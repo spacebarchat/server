@@ -69,7 +69,7 @@ router.get(
             //     discovery_weight: undefined,
             //     discovery_splash: undefined,
             // })),
-            guilds: guilds.map((g) => g.toDiscoverableGuild()),
+            guilds: await Promise.all(guilds.map((g) => g.toDiscoverableGuild())),
             offset: Number(offset || Config.get().guild.discovery.offset),
             limit: Number(limit || configLimit),
         });

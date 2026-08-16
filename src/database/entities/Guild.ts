@@ -336,9 +336,9 @@ export class Guild extends BaseClass {
                     },
                 },
             }),*/
-            emojis: this.emojis.map((e) => e.toJSON()) ?? undefined,
+            emojis: this.emojis?.map((e) => e.toJSON()) ?? undefined,
             emoji_count: this.emojis ? this.emojis.length : undefined,
-            stickers: this.stickers.map((s) => s.toJSON()) ?? undefined,
+            stickers: this.stickers?.map((s) => s.toJSON()) ?? undefined,
             sticker_count: this.stickers ? this.stickers.length : undefined,
             auto_removed: false,
             primary_category_id: this.primary_category_id!,
@@ -346,13 +346,15 @@ export class Guild extends BaseClass {
             is_published: false,
             reasons_to_join: [],
             created_at: new Date(Snowflake.deconstruct(this.id).timestamp).toISOString(), // TODO: make column
-            primary_category: (
-                await Categories.findOneOrFail({
-                    where: {
-                        id: this.primary_category_id!,
-                    },
-                })
-            ).toJSON(),
+            primary_category: this.primary_category_id
+                ? (
+                      await Categories.findOneOrFail({
+                          where: {
+                              id: this.primary_category_id!,
+                          },
+                      })
+                  ).toJSON()
+                : undefined,
         };
     }
 
