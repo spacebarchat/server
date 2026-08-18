@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 import { SelectProtocolSchema, validateSchema } from "@spacebar/schemas";
-import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, mediaServer, Send } from "@spacebar/webrtc";
+import { mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 
 export async function onSelectProtocol(this: WebRtcWebSocket, payload: VoicePayload) {
     if (!this.webRtcClient) return;
@@ -37,4 +37,32 @@ export async function onSelectProtocol(this: WebRtcWebSocket, payload: VoicePayl
             audio_codec: "opus",
         },
     });
+
+    const { voiceRoomId } = this.webRtcClient;
+    const connectedClients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId);
+    const clientConnectData = {
+        user_ids: connectedClients.values().map((c) => c.user_id),
+    };
+
+    for (const client of connectedClients) {
+        await Send(client.websocket, {
+            op: VoiceOPCodes.CLIENTS_CONNECT,
+            d: clientConnectData,
+        });
+        await Send(this, {
+            op: VoiceOPCodes.CLIENT_FLAGS,
+            d: {
+                user_id: client.user_id,
+                flags: 0, // TODO: clips flags, we currently just send "none"
+            },
+        });
+
+        await Send(this, {
+            op: VoiceOPCodes.CLIENT_PLATFORM,
+            d: {
+                user_id: client.user_id,
+                platform: 0, // TODO: send platform, currently we always say desktop...
+            },
+        });
+    }
 }
