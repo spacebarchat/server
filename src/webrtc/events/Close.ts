@@ -17,9 +17,24 @@
 */
 
 import { WebSocket } from "@spacebar/gateway";
+import { mediaServer, Send, VoiceOPCodes, WebRtcWebSocket } from "@spacebar/webrtc";
 
-export async function onClose(this: WebSocket, code: number, reason: string) {
+export async function onClose(this: WebRtcWebSocket, code: number, reason: string) {
     console.log("[WebRTC] closed", code, reason.toString());
+
+    if (this.user_id && this.webRtcClient) {
+        const { voiceRoomId } = this.webRtcClient;
+        const connectedClients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId);
+
+        for (const client of connectedClients) {
+            await Send(client.websocket, {
+                op: VoiceOPCodes.CLIENTS_CONNECT,
+                d: {
+                    user_id: this.user_id,
+                },
+            });
+        }
+    }
 
     this.removeAllListeners();
 }

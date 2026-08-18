@@ -52,7 +52,7 @@ export async function Connection(this: WS.Server, socket: WebRtcWebSocket, reque
         const { searchParams } = new URL(`http://localhost${request.url}`);
 
         socket.encoding = "json";
-        socket.version = Number(searchParams.get("v")) || 5;
+        socket.version = Number(searchParams.get("v")) || 9;
         if (socket.version < 3) return socket.close(CLOSECODES.Unknown_error, "invalid version");
 
         setHeartbeat(socket);

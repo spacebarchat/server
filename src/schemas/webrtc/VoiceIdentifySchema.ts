@@ -28,7 +28,6 @@ export interface VoiceIdentifySchema {
         rid: string;
         quality: number;
     }[];
-    // Discord keeps changing the property name of this, probably will keep changing until Dave is finalized
-    max_secure_frames_version?: number;
-    max_dave_protocol_version?: number;
+    max_secure_frames_version?: number; // pre-release Dave max version field
+    max_dave_protocol_version?: number; // final Dave max version field
 }
