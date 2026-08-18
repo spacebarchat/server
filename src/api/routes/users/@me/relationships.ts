@@ -166,12 +166,12 @@ router.delete(
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
             select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
-            relations: { relationships: { to: true } },
+            relations: { relationships: true },
         });
         const friend = await User.findOneOrFail({
             where: { id: user_id },
             select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
-            relations: { relationships: { to: true } },
+            relations: { relationships: true },
         });
 
         const relationship = user.relationships.find((x) => x.to_id === user_id);
