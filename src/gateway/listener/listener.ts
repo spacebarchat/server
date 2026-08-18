@@ -185,6 +185,7 @@ export async function setupListener(this: WebSocket) {
 async function consume(this: WebSocket, opts: EventOpts) {
     const { data, event } = opts;
     const id = (opts.guild_id || opts.channel_id || opts.user_id || opts.session_id) as string;
+    const subscription_id = (data?.id as string) || id;
     const permission = this.permissions[id] || new Permissions("ADMINISTRATOR"); // default permission for dm
 
     const consumer = consume.bind(this);
@@ -240,11 +241,11 @@ async function consume(this: WebSocket, opts: EventOpts) {
         case "RELATIONSHIP_REMOVE":
         case "CHANNEL_DELETE":
         case "GUILD_DELETE":
-            this.events[id]?.();
-            delete this.events[id];
+            this.events[subscription_id]?.();
+            delete this.events[subscription_id];
             if (event === "GUILD_DELETE" && this.ipAddress) {
                 const ban = await Ban.findOne({
-                    where: { guild_id: id, user_id: this.user_id },
+                    where: { guild_id: subscription_id, user_id: this.user_id },
                 });
 
                 if (ban) {
@@ -255,28 +256,29 @@ async function consume(this: WebSocket, opts: EventOpts) {
             break;
         case "CHANNEL_CREATE":
             if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
-            this.events[id] = await listenEvent(id, consumer, listenOpts);
+            this.events[subscription_id] = await listenEvent(subscription_id, consumer, listenOpts);
             break;
         case "RELATIONSHIP_ADD":
-            this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+            // don't let a payload without a user object stop the dispatch below
+            if (data.user?.id) this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
             break;
         case "GUILD_CREATE":
             await Promise.all([
                 ...data.channels.map(async ({ id }: { id: string }) => {
                     this.events[id] = await listenEvent(id, consumer, listenOpts);
                 }),
-                listenEvent(id, consumer, listenOpts).then((ret) => (this.events[id] = ret)),
+                listenEvent(subscription_id, consumer, listenOpts).then((ret) => (this.events[subscription_id] = ret)),
             ]);
             break;
         case "CHANNEL_UPDATE": {
-            const exists = this.events[id];
+            const exists = this.events[subscription_id];
             if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
                 if (exists) break;
-                this.events[id] = await listenEvent(id, consumer, listenOpts);
+                this.events[subscription_id] = await listenEvent(subscription_id, consumer, listenOpts);
             } else {
                 if (!exists) return; // return -> do not send channel update events for hidden channels
-                opts.cancel(id);
-                delete this.events[id];
+                opts.cancel(subscription_id);
+                delete this.events[subscription_id];
             }
             break;
         }

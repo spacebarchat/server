@@ -166,12 +166,12 @@ router.delete(
         const user = await User.findOneOrFail({
             where: { id: req.user_id },
             select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
-            relations: { relationships: true },
+            relations: { relationships: { to: true } },
         });
         const friend = await User.findOneOrFail({
             where: { id: user_id },
             select: Object.fromEntries(userProjection.map((i) => [i, true])), // TODO: cleanup
-            relations: { relationships: true },
+            relations: { relationships: { to: true } },
         });
 
         const relationship = user.relationships.find((x) => x.to_id === user_id);
@@ -236,9 +236,9 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
             await relationship.save();
         } else {
             relationship = await Relationship.create({
-                to_id: id,
+                to: friend,
                 type: RelationshipType.blocked,
-                from_id: req.user_id,
+                from: user,
             }).save();
         }
 
