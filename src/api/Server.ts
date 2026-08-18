@@ -21,30 +21,15 @@ import { Request, Response, Router } from "express";
 import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
 import { red } from "picocolors";
-import { getDatabase, initDatabase, Message } from "@spacebar/database";
-import {
-    Config,
-    ConnectionConfig,
-    ConnectionLoader,
-    Email,
-    JSONReplacer,
-    WebAuthn,
-    initEvent,
-    registerRoutes,
-    getRevInfoOrFail,
-    pendingPolls,
-    JwtKeypairManager,
-    ASSETS_FOLDER,
-    PUBLIC_ASSETS_FOLDER,
-} from "@spacebar/util";
+import { initDatabase, Message } from "@spacebar/database";
+import { GifProviderManager } from "@spacebar/integrations/gifs";
+import { Config, ConnectionConfig, ConnectionLoader, Email, JSONReplacer, WebAuthn, initEvent, registerRoutes, JwtKeypairManager } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
-import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
+// import { BcryptWorkerPool } from "../util/util/workers/bcrypt/BcryptWorkerPool";
 import { Authentication, CORS, ImageProxy, BodyParser, ErrorHandler, initRateLimits, initTranslation } from "./middlewares";
 import { initInstance } from "./util/handlers/Instance";
 import { addPendingPoll } from "./util";
-import { route } from "@spacebar/api/middlewares";
-import { GifProviderManager } from "@spacebar/integrations/gifs";
 
 export type SpacebarServerOptions = ServerOptions;
 
