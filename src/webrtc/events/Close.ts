@@ -28,7 +28,7 @@ export async function onClose(this: WebRtcWebSocket, code: number, reason: strin
 
         for (const client of connectedClients) {
             await Send(client.websocket, {
-                op: VoiceOPCodes.CLIENTS_CONNECT,
+                op: VoiceOPCodes.CLIENT_DISCONNECT,
                 d: {
                     user_id: this.user_id,
                 },
