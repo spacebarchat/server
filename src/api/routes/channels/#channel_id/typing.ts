@@ -18,8 +18,8 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Member } from "@spacebar/database";
-import { emitEvent, TypingStartEvent } from "@spacebar/util";
+import { Channel, Member, Message } from "@spacebar/database";
+import { emitEvent, getPermission, TypingStartEvent } from "@spacebar/util";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -28,6 +28,7 @@ router.post(
     route({
         permission: "SEND_MESSAGES",
         responses: {
+            200: {},
             204: {},
             404: {},
             403: {},
@@ -40,6 +41,35 @@ router.post(
         const channel = await Channel.findOneOrFail({
             where: { id: channel_id },
         });
+
+        const limit = channel.rate_limit_per_user;
+        if (limit) {
+            const lastMsgTime = (
+                await Message.findOne({
+                    where: {
+                        channel_id: channel.id,
+                        author_id: user_id,
+                    },
+                    select: { timestamp: true },
+                    order: { timestamp: "DESC" },
+                })
+            )?.timestamp;
+
+            if (lastMsgTime) {
+                const cooldown = +lastMsgTime + limit * 1000 - Date.now();
+
+                if (cooldown > 0) {
+                    const permission = await getPermission(user_id, channel.guild_id, channel);
+
+                    if (!permission.has("MANAGE_MESSAGES") && !permission.has("MANAGE_CHANNELS") && !permission.has("BYPASS_SLOWMODE")) {
+                        return res.status(200).json({
+                            message_send_cooldown_ms: cooldown,
+                        });
+                    }
+                }
+            }
+        }
+
         const member = await Member.findOne({
             where: { id: user_id, guild_id: channel.guild_id },
             relations: { roles: true, user: true },
