@@ -12109,6 +12109,44 @@
                     "channel": {
                         "$ref": "#/components/schemas/Channel"
                     },
+                    "description": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "enum": [
+                            1,
+                            128,
+                            16,
+                            2,
+                            32,
+                            4,
+                            64,
+                            8
+                        ],
+                        "type": "number"
+                    },
+                    "content_scan_version": {
+                        "type": "integer"
+                    },
+                    "placeholder_version": {
+                        "type": "integer"
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "duration_secs": {
+                        "type": "integer"
+                    },
+                    "waveform": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "clip_created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
                     "id": {
                         "type": "string"
                     }

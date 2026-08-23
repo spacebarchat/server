@@ -19,7 +19,7 @@
 import { BeforeRemove, Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { Config, deleteFile } from "@spacebar/util/util";
 import { getUrlSignature, NewUrlUserSignatureData, NewUrlSignatureData } from "@spacebar/util/Signing";
-import type { PublicAttachment } from "@spacebar/schemas/api/messages/Attachments";
+import { AttachmentFlags, PublicAttachment } from "@spacebar/schemas/api/messages/Attachments";
 import { BaseClass } from "./BaseClass";
 
 @Entity({
@@ -61,19 +61,46 @@ export class Attachment extends BaseClass {
     })
     channel: import("./Channel").Channel;
 
+    @Column({ nullable: true, type: "character varying" })
+    description?: string;
+
+    @Column({ nullable: true, type: "int2" })
+    flags?: AttachmentFlags;
+
+    @Column({ nullable: true, type: "int2" })
+    content_scan_version?: number;
+
+    @Column({ nullable: true, type: "int2" })
+    placeholder_version?: number;
+
+    @Column({ nullable: true, type: "character varying" })
+    placeholder?: string;
+
+    @Column({ nullable: true, type: "float8" })
+    duration_secs?: number;
+
+    @Column({ nullable: true, type: "character varying" })
+    waveform?: string;
+
+    @Column({ nullable: true, type: "character varying" })
+    title?: string;
+
+    @Column({ nullable: true, type: "timestamp with time zone" })
+    clip_created_at?: Date;
+
     @BeforeRemove()
     onDelete() {
         return deleteFile(new URL(this.toJSON().url).pathname);
     }
 
-    toJSON() {
+    toJSON(): PublicAttachment {
         const channelId = this.channel_id ?? this.channel?.id ?? this.message?.channel_id;
         const messageId = this.message_id ?? this.message?.id;
         return {
             ...this,
             url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
             proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
-        };
+        } satisfies PublicAttachment;
     }
     signUrls(data: NewUrlUserSignatureData): PublicAttachment {
         const att = Attachment.prototype.toJSON.apply(this);
