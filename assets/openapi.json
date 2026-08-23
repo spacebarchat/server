@@ -4630,42 +4630,10 @@
                         "items": {
                             "anyOf": [
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "id"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateAttachment"
                                 },
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        },
-                                        "uploaded_filename": {
-                                            "type": "string"
-                                        },
-                                        "original_content_type": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "uploaded_filename"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateCloudAttachment"
                                 }
                             ]
                         }
@@ -4896,42 +4864,10 @@
                         "items": {
                             "anyOf": [
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "id"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateAttachment"
                                 },
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        },
-                                        "uploaded_filename": {
-                                            "type": "string"
-                                        },
-                                        "original_content_type": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "uploaded_filename"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateCloudAttachment"
                                 }
                             ]
                         }
@@ -5920,20 +5856,7 @@
                     "attachments": {
                         "type": "array",
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "filename": {
-                                    "type": "string"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "filename",
-                                "id"
-                            ]
+                            "$ref": "#/components/schemas/MessageCreateAttachment"
                         }
                     },
                     "flags": {
@@ -6141,42 +6064,10 @@
                                 "items": {
                                     "anyOf": [
                                         {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "filename": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "additionalProperties": false,
-                                            "required": [
-                                                "filename",
-                                                "id"
-                                            ]
+                                            "$ref": "#/components/schemas/MessageCreateAttachment"
                                         },
                                         {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "filename": {
-                                                    "type": "string"
-                                                },
-                                                "uploaded_filename": {
-                                                    "type": "string"
-                                                },
-                                                "original_content_type": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "additionalProperties": false,
-                                            "required": [
-                                                "filename",
-                                                "uploaded_filename"
-                                            ]
+                                            "$ref": "#/components/schemas/MessageCreateCloudAttachment"
                                         }
                                     ]
                                 }
@@ -13327,12 +13218,6 @@
                     "size": {
                         "type": "integer"
                     },
-                    "height": {
-                        "type": "integer"
-                    },
-                    "width": {
-                        "type": "integer"
-                    },
                     "content_type": {
                         "type": "string"
                     },
@@ -13341,6 +13226,56 @@
                     },
                     "proxy_url": {
                         "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "enum": [
+                            1,
+                            128,
+                            16,
+                            2,
+                            32,
+                            4,
+                            64,
+                            8
+                        ],
+                        "type": "number"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "width": {
+                        "type": "integer"
+                    },
+                    "content_scan_version": {
+                        "type": "integer"
+                    },
+                    "placeholder_version": {
+                        "type": "integer"
+                    },
+                    "placeholder": {
+                        "type": "string"
+                    },
+                    "duration_secs": {
+                        "type": "integer"
+                    },
+                    "waveform": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "clip_created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "clip_participants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PartialUser"
+                        }
                     }
                 },
                 "required": [
@@ -15324,6 +15259,110 @@
                     "id"
                 ]
             },
+            "MessageCreateAttachment": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "duration_secs": {
+                        "type": "integer"
+                    },
+                    "waveform": {
+                        "type": "string"
+                    },
+                    "is_clip": {
+                        "type": "boolean"
+                    },
+                    "is_thumbnail": {
+                        "type": "boolean"
+                    },
+                    "is_remix": {
+                        "type": "boolean"
+                    },
+                    "is_spoiler": {
+                        "type": "boolean"
+                    },
+                    "clip_created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "clip_participant_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "filename",
+                    "id"
+                ]
+            },
+            "MessageCreateCloudAttachment": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "duration_secs": {
+                        "type": "integer"
+                    },
+                    "waveform": {
+                        "type": "string"
+                    },
+                    "is_clip": {
+                        "type": "boolean"
+                    },
+                    "is_thumbnail": {
+                        "type": "boolean"
+                    },
+                    "is_remix": {
+                        "type": "boolean"
+                    },
+                    "is_spoiler": {
+                        "type": "boolean"
+                    },
+                    "clip_created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "clip_participant_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "uploaded_filename": {
+                        "type": "string"
+                    },
+                    "original_content_type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "filename",
+                    "uploaded_filename"
+                ]
+            },
             "InteractionCallbackType": {
                 "type": "number",
                 "enum": [
@@ -15443,42 +15482,10 @@
                         "items": {
                             "anyOf": [
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "id"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateAttachment"
                                 },
                                 {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "filename": {
-                                            "type": "string"
-                                        },
-                                        "uploaded_filename": {
-                                            "type": "string"
-                                        },
-                                        "original_content_type": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "additionalProperties": false,
-                                    "required": [
-                                        "filename",
-                                        "uploaded_filename"
-                                    ]
+                                    "$ref": "#/components/schemas/MessageCreateCloudAttachment"
                                 }
                             ]
                         }
@@ -25520,6 +25527,9 @@
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "No description available"
+                    },
                     "204": {
                         "description": "No description available"
                     },
