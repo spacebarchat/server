@@ -663,13 +663,20 @@ export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateClou
     const cloneRespBody = (await cloneResponse.json()) as { success: boolean; new_path: string };
 
     const realAtt = Attachment.create({
+        channel_id: destinationChannelId,
+        message_id: destinationMessageId,
+
         filename: attEnt.userFilename,
         size: attEnt.size,
         height: attEnt.height,
         width: attEnt.width,
         content_type: attEnt.contentType || attEnt.userOriginalContentType,
-        channel_id: destinationChannelId,
-        message_id: destinationMessageId,
+
+        title: cAtt.title,
+        duration_secs: cAtt.duration_secs,
+        clip_created_at: cAtt.clip_created_at,
+        description: cAtt.description,
+        waveform: cAtt.waveform,
     });
     console.log("[Message] Converted cloud attachment to", realAtt);
     return realAtt;
