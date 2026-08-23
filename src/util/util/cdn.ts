@@ -18,14 +18,14 @@
 
 import FormData from "form-data";
 import { HTTPError } from "lambert-server/HTTPError";
-import { Attachment } from "../../database/entities";
+import { InternalCdnAttachment } from "@spacebar/util/dtos/MessageOptions";
 import { Config } from "./Config";
 
 export async function uploadFile(
     path: string,
     // These are the only props we use, don't need to enforce the full type.
     file?: Pick<Express.Multer.File, "mimetype" | "originalname" | "buffer">,
-): Promise<Attachment> {
+): Promise<InternalCdnAttachment> {
     if (!file?.buffer) throw new HTTPError("Missing file in body");
 
     const form = new FormData();
@@ -42,7 +42,7 @@ export async function uploadFile(
         method: "POST",
         body: form.getBuffer(),
     });
-    const result = (await response.json()) as Attachment;
+    const result = (await response.json()) as InternalCdnAttachment;
 
     if (response.status !== 200) throw result;
     return result;

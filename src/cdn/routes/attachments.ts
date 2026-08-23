@@ -23,6 +23,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { CloudAttachment } from "@spacebar/database";
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
 import { storage, multer, cache } from "../util";
+import { InternalCdnAttachment } from "@spacebar/util/dtos/MessageOptions";
 
 const router = Router({ mergeParams: true });
 
@@ -45,16 +46,20 @@ router.post("/:channel_id/:message_id", multer.single("file"), async (req: Reque
     let width;
     let height;
     if (mimetype.includes("image")) {
-        const dimensions = imageSize(buffer);
-        if (dimensions) {
-            width = dimensions.width;
-            height = dimensions.height;
+        try {
+            const dimensions = imageSize(buffer);
+            if (dimensions) {
+                width = dimensions.width;
+                height = dimensions.height;
+            }
+        } catch (e) {
+            console.warn("Failed to get image size for attachment of type", mimetype, "because of", e);
         }
     }
 
     const finalUrl = `${endpoint}/${path}`;
 
-    const file = {
+    const file: InternalCdnAttachment = {
         id: Snowflake.generate(),
         channel_id,
         message_id,

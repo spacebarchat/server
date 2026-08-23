@@ -416,7 +416,7 @@ router.post(
         for (const currFile of files) {
             try {
                 const file = await uploadFile(`/attachments/${channel.id}/${messageId}`, currFile);
-                attachments.push(Attachment.create(file));
+                attachments.push(file);
             } catch (error) {
                 return res.status(400).json({ message: error?.toString() });
             }
@@ -436,7 +436,7 @@ router.post(
             timestamp: new Date(),
         });
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore dont care2
+        // @ts-ignore dont care
         message.edited_timestamp = null;
 
         if (channel.isDm()) {

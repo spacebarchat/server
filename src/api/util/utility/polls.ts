@@ -16,10 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { sendMessage } from "@spacebar/api";
 import { EmbedType, MessageReferenceType, MessageType, PollAnswerCount } from "@spacebar/schemas";
 import { pendingPolls } from "@spacebar/util";
-import { MessageOptions, sendMessage } from "../handlers/Message";
 import { Message } from "@spacebar/database";
+import { MessageOptions } from "@spacebar/util/dtos/MessageOptions";
 
 export async function generatePollResultsMessage(options: MessageOptions): Promise<MessageOptions> {
     // TODO: shouldnt this get saved?

@@ -128,7 +128,7 @@ router.post(
             for (const currFile of files) {
                 try {
                     const file = await uploadFile(`/attachments/${channel.id}/${thread.id}`, currFile);
-                    attachments.push(Attachment.create(file));
+                    attachments.push(file);
                 } catch (error) {
                     return res.status(400).json({ message: error?.toString() });
                 }

@@ -47,23 +47,21 @@ import {
 } from "@spacebar/util";
 import {
     ActionRowComponent,
+    AttachmentFlags,
     BaseMessageComponents,
     ButtonStyle,
     ChannelType,
-    Embed,
     EmbedType,
     MessageComponentType,
-    MessageCreateAttachment,
     MessageCreateCloudAttachment,
-    MessageCreateSchema,
     MessageReferenceType,
     MessageType,
-    Reaction,
     ReadStateType,
     UnfurledMediaItem,
     v1CompTypes,
 } from "@spacebar/schemas";
 import { addPendingPoll } from "../utility/polls";
+import { MessageOptionAttachment, MessageOptions } from "@spacebar/util/dtos/MessageOptions";
 
 const allow_empty = false;
 // TODO: check webhook, application, system author, stickers
@@ -597,24 +595,6 @@ export async function sendMessage(opts: MessageOptions) {
     return message;
 }
 
-type MessageOptionAttachment = MessageCreateAttachment | MessageCreateCloudAttachment | Attachment;
-export interface MessageOptions extends MessageCreateSchema {
-    id?: string;
-    type?: MessageType;
-    pinned?: boolean;
-    author_id?: string;
-    webhook_id?: string;
-    application_id?: string;
-    embeds?: Embed[] | null;
-    reactions?: Reaction[];
-    channel_id?: string;
-    attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment | Attachment)[]; // why are we masking this?
-    edited_timestamp?: Date;
-    timestamp?: Date;
-    username?: string;
-    avatar_url?: string;
-}
-
 // Makes for concise code, inspired by Nix' lib.trace
 function logPassthru<T>(obj: T, ...data: unknown[]) {
     console.log(...data);
@@ -626,8 +606,28 @@ export async function processMessageOptionAttachments(source: MessageOptions, de
     console.log("[Message] Processing attachments for message", source.id, "->", source.attachments);
     const tasks = source.attachments?.map(async (src): Promise<Attachment> => {
         if (src instanceof Attachment) return logPassthru(src, logp, `Got Attachment instance`);
-        if (isCloudAttachment(src))
-            return logPassthru(await convertCloudAttachmentToAttachment(src, destination.channel_id!, destination.id), logp, "Got MessageCreateCloudAttachment contents");
+        if (isCloudAttachment(src)) {
+            const result = logPassthru(await convertCloudAttachmentToAttachment(src, destination.channel_id!, destination.id), logp, "Got MessageCreateCloudAttachment contents");
+
+            result.flags = 0 as AttachmentFlags;
+            result.flags &= (src.is_clip ? 1 : 0) * (AttachmentFlags.IS_CLIP as number);
+            result.flags &= (src.is_remix ? 1 : 0) * (AttachmentFlags.IS_REMIX as number);
+            result.flags &= (src.is_thumbnail ? 1 : 0) * (AttachmentFlags.IS_THUMBNAIL as number);
+            result.flags &= (src.is_spoiler ? 1 : 0) * (AttachmentFlags.IS_SPOILER as number);
+            return logPassthru(result, logp, "Got MessageCreateCloudAttachment contents");
+        }
+        if (isInternalCdnAttachment(src)) {
+            const result = Attachment.create({
+                ...src,
+            });
+
+            // result.flags = 0 as AttachmentFlags;
+            // result.flags &= (src.is_clip ? 1 : 0) * (AttachmentFlags.IS_CLIP as number);
+            // result.flags &= (src.is_remix ? 1 : 0) * (AttachmentFlags.IS_REMIX as number);
+            // result.flags &= (src.is_thumbnail ? 1 : 0) * (AttachmentFlags.IS_THUMBNAIL as number);
+            // result.flags &= (src.is_spoiler ? 1 : 0) * (AttachmentFlags.IS_SPOILER as number);
+            return result;
+        }
         throw new Error(logp + " Unhandled attachment: " + JSON.stringify(src));
     });
 
@@ -641,14 +641,18 @@ export function isCloudAttachment(attachment: MessageOptionAttachment) {
     return "uploaded_filename" in attachment;
 }
 
-export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateCloudAttachment, destinationChannelId: string, destinationMessageId: string) {
-    const attEnt = await CloudAttachment.findOneOrFail({
+export function isInternalCdnAttachment(attachment: MessageOptionAttachment) {
+    return "url" in attachment;
+}
+
+export async function convertCloudAttachmentToAttachment(cloudAttachmentReference: MessageCreateCloudAttachment, destinationChannelId: string, destinationMessageId: string) {
+    const cloudAttachment = await CloudAttachment.findOneOrFail({
         where: {
-            uploadFilename: cAtt.uploaded_filename,
+            uploadFilename: cloudAttachmentReference.uploaded_filename,
         },
     });
 
-    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${attEnt.uploadFilename}/clone_to_message/${destinationMessageId}`, {
+    const cloneResponse = await fetch(`${Config.get().cdn.endpointPrivate}/attachments/${cloudAttachment.uploadFilename}/clone_to_message/${destinationMessageId}`, {
         method: "POST",
         headers: {
             signature: Config.get().security.requestSignature || "",
@@ -656,7 +660,7 @@ export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateClou
     });
 
     if (!cloneResponse.ok) {
-        console.error(`[Message] Failed to clone attachment ${attEnt.userFilename} to message ${destinationMessageId}`);
+        console.error(`[Message] Failed to clone attachment ${cloudAttachment.userFilename} to message ${destinationMessageId}`);
         throw new HTTPError("Failed to process attachment: " + (await cloneResponse.text()), 500);
     }
 
@@ -666,18 +670,19 @@ export async function convertCloudAttachmentToAttachment(cAtt: MessageCreateClou
         channel_id: destinationChannelId,
         message_id: destinationMessageId,
 
-        filename: attEnt.userFilename,
-        size: attEnt.size,
-        height: attEnt.height,
-        width: attEnt.width,
-        content_type: attEnt.contentType || attEnt.userOriginalContentType,
+        filename: cloudAttachment.userFilename,
+        size: cloudAttachment.size,
+        height: cloudAttachment.height,
+        width: cloudAttachment.width,
+        content_type: cloudAttachment.contentType || cloudAttachment.userOriginalContentType,
 
-        title: cAtt.title,
-        duration_secs: cAtt.duration_secs,
-        clip_created_at: cAtt.clip_created_at,
-        description: cAtt.description,
-        waveform: cAtt.waveform,
+        title: cloudAttachmentReference.title,
+        duration_secs: cloudAttachmentReference.duration_secs,
+        clip_created_at: cloudAttachmentReference.clip_created_at,
+        description: cloudAttachmentReference.description,
+        waveform: cloudAttachmentReference.waveform,
     });
+
     console.log("[Message] Converted cloud attachment to", realAtt);
     return realAtt;
 }
