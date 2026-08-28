@@ -14975,12 +14975,17 @@
                     "maxBio": {
                         "type": "integer",
                         "default": 190
+                    },
+                    "maxPronouns": {
+                        "type": "integer",
+                        "default": 40
                     }
                 },
                 "required": [
                     "maxBio",
                     "maxFriends",
                     "maxGuilds",
+                    "maxPronouns",
                     "maxUsername"
                 ]
             },
