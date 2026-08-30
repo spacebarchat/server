@@ -50,7 +50,7 @@ router.get(
                 limits_message_maxAttachmentSize: general.limits.message.maxAttachmentSize,
                 limits_message_maxEmbedDownloadSize: general.limits.message.maxEmbedDownloadSize,
                 limits_channel_maxWebhooks: general.limits.channel.maxWebhooks,
-                register_dateOfBirth_requiredc: general.register.dateOfBirth.required,
+                register_dateOfBirth_required: general.register.dateOfBirth.required,
                 register_password_required: general.register.password.required,
                 register_disabled: general.register.disabled,
                 register_requireInvite: general.register.requireInvite,
