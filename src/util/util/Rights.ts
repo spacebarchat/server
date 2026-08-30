@@ -38,13 +38,13 @@ export class Rights extends BitField {
         UNUSED_1: BitFlag(1),
         MANAGE_GUILDS: BitFlag(2), // Manage all guilds instance-wide
         MANAGE_MESSAGES: BitFlag(3), // Can't see other messages but delete/edit them in channels that they can see
-		UNUSED_2: BitFlag(4), //PREVIOUS IDENTITY: MANAGE_RATE_LIMITS
+        UNUSED_2: BitFlag(4), //PREVIOUS IDENTITY: MANAGE_RATE_LIMITS
         UNUSED_3: BitFlag(5), //PREVIOUS IDENTITY: MANAGE_ROUTING - can create custom message routes to any channel/guild
         UNUSED_4: BitFlag(6), //PREVIOUS IDENTITY: MANAGE_TICKETS - can respond to and resolve support tickets
         MANAGE_USERS: BitFlag(7),
         UNUSED_5: BitFlag(8), //PREVIOUS IDENTITY ADD_MEMBERS - can manually add any members in their guilds
         BYPASS_RATE_LIMITS: BitFlag(9),
-		UNUSED_6: BitFlag(10), //PREVIOUS IDENTITY: CREATE_APPLICATIONS
+        UNUSED_6: BitFlag(10), //PREVIOUS IDENTITY: CREATE_APPLICATIONS
         UNUSED_7: BitFlag(11), //PREVIOUS IDENTITY: CREATE_CHANNELS - can create guild channels or threads in the guilds that they have permission
         UNUSED_8: BitFlag(12), //PREVIOUS IDENTITY: CREATE_DMS
         UNUSED_9: BitFlag(13), //PREVIOUS IDENTITY: CREATE_DM_GROUPS - can create group DMs or custom orphan channels
@@ -73,7 +73,7 @@ export class Rights extends BitField {
         // can leave the guilds or group DMs that they joined on their own (one can always leave a guild or group DMs they have been force-added)
         PRESENCE: BitFlag(35),
         // inverts the presence confidentiality default (OPERATOR's presence is not routed by default, others' are) for a given user
-		UNUSED_22: BitFlag(36), //PREVIOUS IDENTITY: SELF_ADD_DISCOVERABLE - can mark discoverable guilds that they have permissions to mark as discoverable
+        UNUSED_22: BitFlag(36), //PREVIOUS IDENTITY: SELF_ADD_DISCOVERABLE - can mark discoverable guilds that they have permissions to mark as discoverable
         UNUSED_23: BitFlag(37), //PREVIOUS IDENTITY: MANAGE_GUILD_DIRECTORY - can change anything in the primary guild directory
         UNUSED_24: BitFlag(38), //PREVIOUS IDENTITY: POGGERS - can send confetti, screenshake, random user mention (@someone)
         UNUSED_25: BitFlag(39), //PREVIOUS IDENTITY: USE_ACHIEVEMENTS - can use achievements and cheers
