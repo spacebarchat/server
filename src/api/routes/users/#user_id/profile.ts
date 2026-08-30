@@ -187,6 +187,18 @@ router.patch("/", route({ requestBody: "UserProfileModifySchema" }), async (req:
         }
     }
 
+    if (body.pronouns) {
+        const { maxPronouns } = Config.get().limits.user;
+        if (body.pronouns.length > maxPronouns) {
+            throw FieldErrors({
+                pronouns: {
+                    code: "PRONOUNS_INVALID",
+                    message: `Pronouns must be less than ${maxPronouns} in length`,
+                },
+            });
+        }
+    }
+
     user.assign(body);
     await user.save();
 
