@@ -7511,6 +7511,43 @@
                     "$ref": "#/components/schemas/ApplicationCommandCreateSchema"
                 }
             },
+            "OAuth2UserInfoResponse": {
+                "type": "object",
+                "properties": {
+                    "sub": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email_verified": {
+                        "type": "boolean"
+                    },
+                    "preferred_username": {
+                        "type": "string"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "picture": {
+                        "type": "string"
+                    },
+                    "locale": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "email_verified",
+                    "locale",
+                    "nickname",
+                    "picture",
+                    "preferred_username",
+                    "sub"
+                ]
+            },
             "AttachmentListResponse": {
                 "type": "object",
                 "properties": {
@@ -20334,6 +20371,31 @@
                 "responses": {
                     "default": {
                         "description": "No description available"
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            }
+        },
+        "/api/oauth2/userinfo/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get standard OAuth2 user info",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuth2UserInfoResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [

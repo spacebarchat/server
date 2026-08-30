@@ -8015,6 +8015,49 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "OAuth2UserInfoResponse": {
+        "type": "object",
+        "properties": {
+            "sub": {
+                "type": "string"
+            },
+            "email": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "email_verified": {
+                "type": "boolean"
+            },
+            "preferred_username": {
+                "type": "string"
+            },
+            "nickname": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "picture": {
+                "type": "string"
+            },
+            "locale": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "email",
+            "email_verified",
+            "locale",
+            "nickname",
+            "picture",
+            "preferred_username",
+            "sub"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "AttachmentListResponse": {
         "type": "object",
         "properties": {
