@@ -16,11 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AutomodRuleSchema, ChannelPermissionOverwrite, PartialUser, PublicChannel, WebhookResponse } from "@spacebar/schemas";
+import { AutomodRuleSchema, ChannelPermissionOverwrite, PartialUser, PublicChannel, Snowflake, WebhookResponse } from "@spacebar/schemas";
 
 // Note: some audit log event types have some special keys: https://docs.discord.food/resources/audit-log#audit-log-change-exceptions
 export interface AuditLogResponse {
-    audit_log_entries: unknown[]; // TODO: type
+    audit_log_entries: AuditLogEntry[];
     application_commands: unknown[]; // TODO: type
     auto_moderation_rules: AutomodRuleSchema[];
     guild_scheduled_events: unknown[]; // TODO: type
@@ -28,6 +28,16 @@ export interface AuditLogResponse {
     threads: PublicChannel[];
     users: PartialUser[];
     webhooks: WebhookResponse[];
+}
+
+export interface AuditLogEntry {
+    id: Snowflake;
+    action_type: AuditLogEvents;
+    user_id: Snowflake | null;
+    target_id: Snowflake | null;
+    changes?: AuditLogChange[];
+    options?: unknown;
+    reason?: string;
 }
 
 export enum AuditLogEvents {

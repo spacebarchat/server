@@ -7058,7 +7058,9 @@
         "properties": {
             "audit_log_entries": {
                 "type": "array",
-                "items": {}
+                "items": {
+                    "$ref": "#/definitions/AuditLogEntry"
+                }
             },
             "application_commands": {
                 "type": "array",
@@ -16816,6 +16818,335 @@
             "id",
             "name"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AuditLogEntry": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "action_type": {
+                "$ref": "#/definitions/AuditLogEvents"
+            },
+            "user_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "target_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "changes": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AuditLogChange"
+                }
+            },
+            "options": {},
+            "reason": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "action_type",
+            "id",
+            "target_id",
+            "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AuditLogEvents": {
+        "type": "number",
+        "enum": [
+            1,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            40,
+            41,
+            42,
+            50,
+            51,
+            52,
+            60,
+            61,
+            62,
+            72,
+            73,
+            74,
+            75,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            90,
+            91,
+            92,
+            100,
+            101,
+            102,
+            110,
+            111,
+            112,
+            121,
+            130,
+            131,
+            132,
+            140,
+            141,
+            142,
+            143,
+            144,
+            145,
+            146,
+            150,
+            151,
+            163,
+            164,
+            165,
+            166,
+            167,
+            171,
+            172,
+            180,
+            190,
+            191,
+            192,
+            193,
+            194,
+            200,
+            201,
+            202,
+            210,
+            211,
+            212,
+            213
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AuditLogChange": {
+        "type": "object",
+        "properties": {
+            "new_value": {
+                "$ref": "#/definitions/AuditLogChangeValue"
+            },
+            "old_value": {
+                "$ref": "#/definitions/AuditLogChangeValue"
+            },
+            "key": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "key"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AuditLogChangeValue": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "icon_hash": {
+                "type": "string"
+            },
+            "splash_hash": {
+                "type": "string"
+            },
+            "discovery_splash_hash": {
+                "type": "string"
+            },
+            "banner_hash": {
+                "type": "string"
+            },
+            "owner_id": {
+                "type": "string"
+            },
+            "region": {
+                "type": "string"
+            },
+            "preferred_locale": {
+                "type": "string"
+            },
+            "afk_channel_id": {
+                "type": "string"
+            },
+            "afk_timeout": {
+                "type": "integer"
+            },
+            "rules_channel_id": {
+                "type": "string"
+            },
+            "public_updates_channel_id": {
+                "type": "string"
+            },
+            "mfa_level": {
+                "type": "integer"
+            },
+            "verification_level": {
+                "type": "integer"
+            },
+            "explicit_content_filter": {
+                "type": "integer"
+            },
+            "default_message_notifications": {
+                "type": "integer"
+            },
+            "vanity_url_code": {
+                "type": "string"
+            },
+            "$add": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "$remove": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "prune_delete_days": {
+                "type": "integer"
+            },
+            "widget_enabled": {
+                "type": "boolean"
+            },
+            "widget_channel_id": {
+                "type": "string"
+            },
+            "system_channel_id": {
+                "type": "string"
+            },
+            "position": {
+                "type": "integer"
+            },
+            "topic": {
+                "type": "string"
+            },
+            "bitrate": {
+                "type": "integer"
+            },
+            "permission_overwrites": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ChannelPermissionOverwrite"
+                }
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "application_id": {
+                "type": "string"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "permissions": {
+                "type": "string"
+            },
+            "color": {
+                "type": "integer"
+            },
+            "hoist": {
+                "type": "boolean"
+            },
+            "mentionable": {
+                "type": "boolean"
+            },
+            "allow": {
+                "type": "string"
+            },
+            "deny": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "channel_id": {
+                "type": "string"
+            },
+            "inviter_id": {
+                "type": "string"
+            },
+            "max_uses": {
+                "type": "integer"
+            },
+            "uses": {
+                "type": "integer"
+            },
+            "max_age": {
+                "type": "integer"
+            },
+            "temporary": {
+                "type": "boolean"
+            },
+            "deaf": {
+                "type": "boolean"
+            },
+            "mute": {
+                "type": "boolean"
+            },
+            "nick": {
+                "type": "string"
+            },
+            "avatar_hash": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "type": {
+                "type": "integer"
+            },
+            "enable_emoticons": {
+                "type": "boolean"
+            },
+            "expire_behavior": {
+                "type": "integer"
+            },
+            "expire_grace_period": {
+                "type": "integer"
+            },
+            "user_limit": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GameActivity": {
