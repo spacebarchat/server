@@ -16,7 +16,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ChannelPermissionOverwrite } from "@spacebar/schemas";
+import { AutomodRuleSchema, ChannelPermissionOverwrite, PartialUser, PublicChannel, WebhookResponse } from "@spacebar/schemas";
+
+export interface AuditLogResponse {
+    audit_log_entries: unknown[]; // TODO: type
+    application_commands: unknown[]; // TODO: type
+    auto_moderation_rules: AutomodRuleSchema[];
+    guild_scheduled_events: unknown[]; // TODO: type
+    integrations: unknown[]; // TODO: type
+    threads: PublicChannel[];
+    users: PartialUser[];
+    webhooks: WebhookResponse[];
+}
 
 export enum AuditLogEvents {
     // guild level

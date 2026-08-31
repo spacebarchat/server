@@ -6602,6 +6602,61 @@
                     "user"
                 ]
             },
+            "AuditLogResponse": {
+                "type": "object",
+                "properties": {
+                    "audit_log_entries": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "application_commands": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "auto_moderation_rules": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodRuleSchema"
+                        }
+                    },
+                    "guild_scheduled_events": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "integrations": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "threads": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PublicChannel"
+                        }
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PartialUser"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookResponse"
+                        }
+                    }
+                },
+                "required": [
+                    "application_commands",
+                    "audit_log_entries",
+                    "auto_moderation_rules",
+                    "guild_scheduled_events",
+                    "integrations",
+                    "threads",
+                    "users",
+                    "webhooks"
+                ]
+            },
             "GuildProfileResponse": {
                 "type": "object",
                 "properties": {
@@ -24847,14 +24902,22 @@
         },
         "/api/guilds/{guild_id}/audit-logs/": {
             "get": {
+                "x-permission-required": "VIEW_AUDIT_LOG",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuditLogResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -24866,6 +24929,60 @@
                             "type": "string"
                         },
                         "description": "guild_id"
+                    },
+                    {
+                        "name": "before",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Entries before this ID"
+                    },
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Entries after this ID"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Amount of results to return"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "User ID of the user taking the action"
+                    },
+                    {
+                        "name": "target_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "User ID of the user targeted by the action"
+                    },
+                    {
+                        "name": "action_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        },
+                        "description": "Type of audit log event"
                     }
                 ],
                 "tags": [

@@ -7053,6 +7053,63 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "AuditLogResponse": {
+        "type": "object",
+        "properties": {
+            "audit_log_entries": {
+                "type": "array",
+                "items": {}
+            },
+            "application_commands": {
+                "type": "array",
+                "items": {}
+            },
+            "auto_moderation_rules": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodRuleSchema"
+                }
+            },
+            "guild_scheduled_events": {
+                "type": "array",
+                "items": {}
+            },
+            "integrations": {
+                "type": "array",
+                "items": {}
+            },
+            "threads": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/PublicChannel"
+                }
+            },
+            "users": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/PartialUser"
+                }
+            },
+            "webhooks": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/WebhookResponse"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application_commands",
+            "audit_log_entries",
+            "auto_moderation_rules",
+            "guild_scheduled_events",
+            "integrations",
+            "threads",
+            "users",
+            "webhooks"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GuildProfileResponse": {
         "type": "object",
         "properties": {
