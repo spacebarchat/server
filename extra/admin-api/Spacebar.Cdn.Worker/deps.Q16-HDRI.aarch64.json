@@ -1,8 +1,8 @@
 [
   {
     "pname": "ArcaneLibs",
-    "version": "1.0.1-preview.20260619-035441",
-    "hash": "sha256-jNEGd8Ccgkk4A8ZMaJO4QDExmsf9q7TeuhiNESos3Q4="
+    "version": "1.0.1-preview.20260827-231533",
+    "hash": "sha256-9Wo5cL23gJ0n1AVQ+EckBrAnCMVEpImEMUBvAbprdKg="
   },
   {
     "pname": "Magick.NET-Q16-HDRI-OpenMP-arm64",

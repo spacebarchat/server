@@ -15237,6 +15237,9 @@
             },
             "shared_client_theme": {
                 "$ref": "#/definitions/SharedClientTheme"
+            },
+            "webhook": {
+                "$ref": "#/definitions/PublicMessageWebhook"
             }
         },
         "additionalProperties": false,
@@ -15256,7 +15259,8 @@
             "pinned",
             "timestamp",
             "tts",
-            "type"
+            "type",
+            "webhook"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -15702,6 +15706,43 @@
             "base_mix",
             "colors",
             "gradient_angle"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicMessageWebhook": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "$ref": "#/definitions/WebhookType"
+            },
+            "name": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "application_id": {
+                "type": "string"
+            },
+            "source_guild_id": {
+                "type": "string"
+            },
+            "source_channel_id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "application_id",
+            "avatar",
+            "name",
+            "source_channel_id",
+            "source_guild_id",
+            "type",
+            "user_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

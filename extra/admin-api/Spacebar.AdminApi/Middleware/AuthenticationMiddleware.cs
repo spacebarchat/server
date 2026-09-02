@@ -7,7 +7,6 @@ namespace Spacebar.AdminApi.Middleware;
 
 public class AuthenticationMiddleware(
     ILogger<AuthenticationMiddleware> logger,
-    SpacebarAspNetAuthenticationService authService,
     SpacebarAuthenticationConfiguration config,
     RequestDelegate next) {
     public async Task InvokeAsync(HttpContext context, IServiceProvider sp) {
@@ -15,6 +14,9 @@ public class AuthenticationMiddleware(
             await next(context);
             return;
         }
+
+        await using var spScope = sp.CreateAsyncScope();
+        var authService = spScope.ServiceProvider.GetRequiredService<SpacebarAspNetAuthenticationService>();
 
         TokenValidationResult? res = null;
         try {
