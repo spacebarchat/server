@@ -20,7 +20,7 @@ let
 in
 pkgs.buildNpmPackage {
   pname = "spacebar-server-ts-node_modules";
-  nodejs = pkgs.nodejs_24;
+  nodejs = pkgs.nodejs_26;
   version = builtins.hashFile "sha256" ./package.json;
 
   meta = with lib; {

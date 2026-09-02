@@ -2,7 +2,7 @@
 {
   pkgs,
   lib,
-  nodejs,
+  nodejs_26,
   ...
 }:
 
@@ -34,7 +34,7 @@ let
   srcHash = builtins.substring 11 32 (toString filteredSrc);
   unwrapped = pkgs.stdenv.mkDerivation {
     pname = "spacebar-server-ts-unwrapped";
-    nodejs = pkgs.nodejs_24;
+    nodejs = pkgs.nodejs_26;
     version = "1.0.0-" + srcHash;
 
     meta = with lib; {
@@ -50,7 +50,7 @@ let
     dontStrip = true;
 
     nativeBuildInputs = with pkgs; [
-      nodejs
+      nodejs_26
       (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
     ];
 
@@ -89,7 +89,7 @@ let
     '';
   };
 in
-pkgs.stdenv.mkDerivation {
+pkgs.stdenv.mkDerivation rec {
   pname = "spacebar-server-ts";
   nodejs = unwrapped.nodejs;
   version = "1.0.0-" + rVersion;
@@ -120,9 +120,9 @@ pkgs.stdenv.mkDerivation {
     echo "Creating wrappers for start scripts"
     for i in $out/dist/**/start.js
     do
-      makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/start-`dirname ''${i#$out/dist/}` --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $i
+      makeWrapper ${nodejs}/bin/node $out/bin/start-`dirname ''${i#$out/dist/}` --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $i
     done
-    makeWrapper ${pkgs.nodejs_24}/bin/node $out/bin/apply-migrations --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/dist/apply-migrations.js
+    makeWrapper ${nodejs}/bin/node $out/bin/apply-migrations --prefix NODE_PATH : $out/node_modules --add-flags --enable-source-maps --add-flags $out/dist/apply-migrations.js
   '';
   passthru.tests = pkgs.runCommand "spacebar-server-ts-all-tests" rec {
     bundleStarts = pkgs.testers.runNixOSTest (import ./nix/tests/test-bundle-starts.nix { inherit self; });
