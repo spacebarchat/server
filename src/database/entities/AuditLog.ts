@@ -36,12 +36,7 @@ export class AuditLog extends BaseClass {
     guild?: Guild;
 
     @Column({ nullable: true })
-    @RelationId((auditlog: AuditLog) => auditlog.target)
     target_id: string | null;
-
-    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
-    @ManyToOne(() => User)
-    target?: User | null;
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.user)
