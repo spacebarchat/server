@@ -244,3 +244,34 @@ export interface AuditLogIntegrationChange {
     expire_behavior?: number;
     expire_grace_period?: number;
 }
+
+export type AuditLogChanges = {
+    [K in AuditLogEvents]: AuditLogChange<AuditLog
+}
+
+// falls back to AuditLogChangeValue
+export type AuditLogChanges = {
+    [K in AuditLogEvents]: AuditLogChange<AuditLogChangeValue>[];
+} & {
+    [AuditLogEvents.GUILD_UPDATE]: AuditLogChange<AuditLogGuildChange>[];
+    [AuditLogEvents.CHANNEL_CREATE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.CHANNEL_UPDATE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.CHANNEL_DELETE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.CHANNEL_OVERWRITE_CREATE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.CHANNEL_OVERWRITE_UPDATE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.CHANNEL_OVERWRITE_DELETE]: AuditLogChange<AuditLogChannelChange>[];
+    [AuditLogEvents.MEMBER_UPDATE]: AuditLogChange<AuditLogMemberChange>[];
+    [AuditLogEvents.MEMBER_ROLE_UPDATE]: AuditLogChange<AuditLogMemberChange>[];
+    [AuditLogEvents.ROLE_CREATE]: AuditLogChange<AuditLogRoleChange>[];
+    [AuditLogEvents.ROLE_UPDATE]: AuditLogChange<AuditLogRoleChange>[];
+    [AuditLogEvents.ROLE_DELETE]: AuditLogChange<AuditLogRoleChange>[];
+    [AuditLogEvents.INVITE_CREATE]: AuditLogChange<AuditLogInviteChange>[];
+    [AuditLogEvents.INVITE_UPDATE]: AuditLogChange<AuditLogInviteChange>[];
+    [AuditLogEvents.INVITE_DELETE]: AuditLogChange<AuditLogInviteChange>[];
+    [AuditLogEvents.INTEGRATION_UPDATE]: AuditLogChange<AuditLogIntegrationChange>[];
+};
+
+export type TypedAuditLogEntry<E extends AuditLogEvents> = Omit<AuditLogEntry, "action_type" | "changes"> & {
+    action_type: E;
+    changes?: AuditLogChanges[E];
+};
