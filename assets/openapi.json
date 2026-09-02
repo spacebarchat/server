@@ -14301,6 +14301,9 @@
                     },
                     "shared_client_theme": {
                         "$ref": "#/components/schemas/SharedClientTheme"
+                    },
+                    "webhook": {
+                        "$ref": "#/components/schemas/PublicMessageWebhook"
                     }
                 },
                 "required": [
@@ -14319,7 +14322,8 @@
                     "pinned",
                     "timestamp",
                     "tts",
-                    "type"
+                    "type",
+                    "webhook"
                 ]
             },
             "PublicChannel": {
@@ -14721,6 +14725,41 @@
                     "base_mix",
                     "colors",
                     "gradient_angle"
+                ]
+            },
+            "PublicMessageWebhook": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/WebhookType"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "application_id": {
+                        "type": "string"
+                    },
+                    "source_guild_id": {
+                        "type": "string"
+                    },
+                    "source_channel_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "application_id",
+                    "avatar",
+                    "name",
+                    "source_channel_id",
+                    "source_guild_id",
+                    "type",
+                    "user_id"
                 ]
             },
             "RefreshedUrl": {

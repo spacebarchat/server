@@ -18,7 +18,7 @@
 
 // TODO: remove entity import
 import { Sticker } from "@spacebar/database";
-import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake } from "@spacebar/schemas";
+import { Embed, MessageActivity, MessageComponent, PartialUser, Poll, PublicChannel, Snowflake, WebhookType } from "@spacebar/schemas";
 import { PublicAttachment } from "./Attachments";
 
 export enum MessageType {
@@ -207,6 +207,18 @@ export interface PublicMessage {
     // soundboard_sounds?: SoundboardSound[];
     potions?: Potion[];
     shared_client_theme?: SharedClientTheme;
+    // spacebar extension
+    webhook: PublicMessageWebhook;
+}
+
+export interface PublicMessageWebhook {
+    type: WebhookType;
+    name: string;
+    avatar: string;
+    user_id: string;
+    application_id: string;
+    source_guild_id: string | undefined;
+    source_channel_id: string;
 }
 
 export interface SharedClientTheme {

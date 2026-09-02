@@ -22,7 +22,7 @@ import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { WebhookType } from "@spacebar/schemas";
+import { PublicMessageWebhook, WebhookType } from "@spacebar/schemas";
 
 @Entity({
     name: "webhooks",
@@ -101,4 +101,16 @@ export class Webhook extends BaseClass {
     source_channel: Channel;
 
     url: string;
+
+    public toMessageWebhook(): PublicMessageWebhook {
+        return {
+            type: this.type,
+            name: this.name,
+            avatar: this.avatar,
+            user_id: this.user_id,
+            application_id: this.application_id,
+            source_guild_id: this.source_guild_id,
+            source_channel_id: this.source_channel_id,
+        };
+    }
 }

@@ -341,7 +341,7 @@ export class Message extends BaseClass {
             nonce: this.nonce ?? undefined,
             tts: this.tts ?? false,
             guild: this.guild ?? undefined,
-            webhook: this.webhook ?? undefined,
+            webhook: this.webhook?.toMessageWebhook() ?? undefined,
             interaction: this.interaction ?? undefined,
             interaction_metadata: this.interaction_metadata ?? undefined,
             reactions: this.reactions ?? undefined,
@@ -362,7 +362,7 @@ export class Message extends BaseClass {
             pinned: this.pinned,
             thread: this.thread ? this.thread.toJSON() : this.thread,
             referenced_message: this.referenced_message && !shallow ? this.referenced_message.toJSON(true) : undefined,
-        };
+        } satisfies PublicMessage;
     }
 
     toPartialMessage(): PartialMessage {
