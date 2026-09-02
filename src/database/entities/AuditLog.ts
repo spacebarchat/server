@@ -16,15 +16,29 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
+import { Guild } from "./Guild";
 import { User } from "./User";
-import { AuditLogChange, AuditLogEvents } from "@spacebar/schemas";
+import { AuditLogChange, AuditLogEntry, AuditLogEvents } from "@spacebar/schemas";
 
 @Entity({
     name: "audit_logs",
 })
 export class AuditLog extends BaseClass {
+    @Column({ nullable: true })
+    @RelationId((auditlog: AuditLog) => auditlog.guild)
+    @Index("IDX_audit_log_guild_id")
+    guild_id: string;
+
+    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_guild_id" })
+    @ManyToOne(() => Guild)
+    guild?: Guild;
+
+    @Column({ nullable: true })
+    @RelationId((auditlog: AuditLog) => auditlog.target)
+    target_id: string;
+
     @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
     @ManyToOne(() => User)
     target?: User;
@@ -58,4 +72,16 @@ export class AuditLog extends BaseClass {
 
     @Column({ nullable: true })
     reason?: string;
+
+    toAuditLogEntry(): AuditLogEntry {
+        return {
+            id: this.id,
+            action_type: this.action_type,
+            reason: this.reason,
+            user_id: this.user_id,
+            target_id: this.target_id,
+            options: this.options,
+            changes: this.changes,
+        } satisfies AuditLogEntry;
+    }
 }
