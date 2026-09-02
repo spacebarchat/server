@@ -30,7 +30,7 @@ builder.Services.AddDbContextPool<SpacebarDbContext>(options => {
         .UseNpgsql(builder.Configuration.GetConnectionString("Spacebar"))
         .EnableDetailedErrors();
 });
-builder.Services.AddScoped<SpacebarAuthenticationConfiguration>();
+builder.Services.AddSingleton<SpacebarAuthenticationConfiguration>();
 builder.Services.AddScoped<SpacebarAuthenticationService>();
 builder.Services.AddScoped<SpacebarAspNetAuthenticationService>();
 // builder.Services.AddSingleton<RabbitMQConfiguration>();
