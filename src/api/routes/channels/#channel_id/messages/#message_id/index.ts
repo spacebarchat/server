@@ -21,7 +21,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import multer from "multer";
 import { handleMessage, postHandleMessage } from "@spacebar/api/util";
 import { route } from "@spacebar/api/middlewares";
-import { Attachment, Channel, Message } from "@spacebar/database";
+import { Attachment, AuditLog, Channel, Message } from "@spacebar/database";
 import {
     MessageCreateEvent,
     MessageDeleteEvent,
@@ -35,7 +35,7 @@ import {
     NewUrlUserSignatureData,
     DiscordApiErrors,
 } from "@spacebar/util";
-import { MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
+import { AuditLogEvents, MessageCreateAttachment, MessageCreateCloudAttachment, MessageCreateSchema, MessageEditSchema, ChannelType } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 // TODO: message content/embed string length limit
@@ -307,6 +307,15 @@ router.delete(
                 guild_id: channel.guild_id,
             },
         } satisfies MessageDeleteEvent);
+
+        if (channel.guild_id) {
+            await AuditLog.createAuditLog({
+                guild_id: channel.guild_id,
+                user_id: req.user_id,
+                target_id: message_id,
+                action_type: AuditLogEvents.MESSAGE_DELETE,
+            });
+        }
 
         res.sendStatus(204);
     },

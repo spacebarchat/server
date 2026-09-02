@@ -19,8 +19,9 @@
 import { Request, Response, Router } from "express";
 import { IsNull, Not } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Message, User } from "@spacebar/database";
+import { AuditLog, Message, User } from "@spacebar/database";
 import { ChannelPinsUpdateEvent, Config, DiscordApiErrors, emitEvent, MessageCreateEvent, MessageUpdateEvent } from "@spacebar/util";
+import { AuditLogEvents } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -107,6 +108,15 @@ router.put(
             } satisfies MessageCreateEvent),
         ]);
 
+        if (message.guild_id) {
+            await AuditLog.createAuditLog({
+                guild_id: message.guild_id,
+                user_id: req.user_id,
+                target_id: message_id,
+                action_type: AuditLogEvents.MESSAGE_PIN,
+            });
+        }
+
         res.sendStatus(204);
     },
 );
@@ -154,6 +164,15 @@ router.delete(
                 },
             } satisfies ChannelPinsUpdateEvent),
         ]);
+
+        if (message.guild_id) {
+            await AuditLog.createAuditLog({
+                guild_id: message.guild_id,
+                user_id: req.user_id,
+                target_id: message_id,
+                action_type: AuditLogEvents.MESSAGE_UNPIN,
+            });
+        }
 
         res.sendStatus(204);
     },
