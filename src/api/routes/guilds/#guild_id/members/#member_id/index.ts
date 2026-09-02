@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
+import { AuditLog, Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile } from "@spacebar/util";
-import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
+import { AuditLogEvents, MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -233,6 +233,14 @@ router.delete(
         }
 
         await Member.removeFromGuild(member_id, guild_id);
+        if (member_id !== "@me" && member_id !== req.user_id) {
+            await AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: member_id,
+                action_type: AuditLogEvents.MEMBER_KICK,
+            });
+        }
         res.sendStatus(204);
     },
 );
