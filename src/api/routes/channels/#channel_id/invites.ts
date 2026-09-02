@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
+import { AuditLog, Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
-import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
+import { AuditLogEvents, InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
 import { Random } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
@@ -83,6 +83,13 @@ router.post(
             data,
             guild_id,
         } satisfies InviteCreateEvent);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: invite.code,
+            action_type: AuditLogEvents.INVITE_CREATE,
+        });
 
         res.status(201).send(data);
     },
