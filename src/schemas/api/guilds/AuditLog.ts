@@ -245,33 +245,100 @@ export interface AuditLogIntegrationChange {
     expire_grace_period?: number;
 }
 
-export type AuditLogChanges = {
-    [K in AuditLogEvents]: AuditLogChange<AuditLog
+export interface GuildUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.GUILD_UPDATE;
+    changes?: AuditLogChange<AuditLogGuildChange>[];
 }
 
-// falls back to AuditLogChangeValue
-export type AuditLogChanges = {
-    [K in AuditLogEvents]: AuditLogChange<AuditLogChangeValue>[];
-} & {
-    [AuditLogEvents.GUILD_UPDATE]: AuditLogChange<AuditLogGuildChange>[];
-    [AuditLogEvents.CHANNEL_CREATE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.CHANNEL_UPDATE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.CHANNEL_DELETE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.CHANNEL_OVERWRITE_CREATE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.CHANNEL_OVERWRITE_UPDATE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.CHANNEL_OVERWRITE_DELETE]: AuditLogChange<AuditLogChannelChange>[];
-    [AuditLogEvents.MEMBER_UPDATE]: AuditLogChange<AuditLogMemberChange>[];
-    [AuditLogEvents.MEMBER_ROLE_UPDATE]: AuditLogChange<AuditLogMemberChange>[];
-    [AuditLogEvents.ROLE_CREATE]: AuditLogChange<AuditLogRoleChange>[];
-    [AuditLogEvents.ROLE_UPDATE]: AuditLogChange<AuditLogRoleChange>[];
-    [AuditLogEvents.ROLE_DELETE]: AuditLogChange<AuditLogRoleChange>[];
-    [AuditLogEvents.INVITE_CREATE]: AuditLogChange<AuditLogInviteChange>[];
-    [AuditLogEvents.INVITE_UPDATE]: AuditLogChange<AuditLogInviteChange>[];
-    [AuditLogEvents.INVITE_DELETE]: AuditLogChange<AuditLogInviteChange>[];
-    [AuditLogEvents.INTEGRATION_UPDATE]: AuditLogChange<AuditLogIntegrationChange>[];
-};
+export interface ChannelCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_CREATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
 
-export type TypedAuditLogEntry<E extends AuditLogEvents> = Omit<AuditLogEntry, "action_type" | "changes"> & {
-    action_type: E;
-    changes?: AuditLogChanges[E];
-};
+export interface ChannelUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_UPDATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_DELETE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_CREATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_UPDATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_DELETE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface MemberUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.MEMBER_UPDATE;
+    changes?: AuditLogChange<AuditLogMemberChange>[];
+}
+
+export interface MemberRoleUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.MEMBER_ROLE_UPDATE;
+    changes?: AuditLogChange<AuditLogMemberChange>[];
+}
+
+export interface RoleCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_CREATE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface RoleUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_UPDATE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface RoleDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_DELETE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface InviteCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_CREATE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface InviteUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_UPDATE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface InviteDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_DELETE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface IntegrationUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INTEGRATION_UPDATE;
+    changes?: AuditLogChange<AuditLogIntegrationChange>[];
+}
+
+export type AuditLogEntryData =
+    | GuildUpdateEntry
+    | ChannelCreateEntry
+    | ChannelUpdateEntry
+    | ChannelDeleteEntry
+    | ChannelOverwriteCreateEntry
+    | ChannelOverwriteUpdateEntry
+    | ChannelOverwriteDeleteEntry
+    | MemberUpdateEntry
+    | MemberRoleUpdateEntry
+    | RoleCreateEntry
+    | RoleUpdateEntry
+    | RoleDeleteEntry
+    | InviteCreateEntry
+    | InviteUpdateEntry
+    | InviteDeleteEntry
+    | IntegrationUpdateEntry;
