@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Member, Role } from "@spacebar/database";
+import { AuditLog, Member, Role } from "@spacebar/database";
 import { emitEvent, GuildRoleDeleteEvent, GuildRoleUpdateEvent, handleFile } from "@spacebar/util";
-import { RoleModifySchema } from "@spacebar/schemas";
+import { AuditLogEvents, RoleModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -75,6 +75,12 @@ router.delete(
             Role.delete({
                 id: role_id,
                 guild_id: guild_id,
+            }),
+            AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: role_id,
+                action_type: AuditLogEvents.ROLE_DELETE,
             }),
             emitEvent({
                 event: "GUILD_ROLE_DELETE",
@@ -132,6 +138,12 @@ router.patch(
 
         await Promise.all([
             role.save(),
+            AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: role_id,
+                action_type: AuditLogEvents.ROLE_UPDATE,
+            }),
             emitEvent({
                 event: "GUILD_ROLE_UPDATE",
                 guild_id,
