@@ -31,25 +31,25 @@ export class AuditLog extends BaseClass {
     @Index("IDX_audit_log_guild_id")
     guild_id: string;
 
-    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_audit_log_guild_id" })
     @ManyToOne(() => Guild)
     guild?: Guild;
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.target)
-    target_id: string;
+    target_id: string | null;
 
     @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
     @ManyToOne(() => User)
-    target?: User;
+    target?: User | null;
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.user)
-    user_id: string;
+    user_id: string | null;
 
     @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_audit_log_source_user_id" })
     @ManyToOne(() => User, (user: User) => user.id)
-    user: User;
+    user?: User | null;
 
     @Column({ type: "int" })
     action_type: AuditLogEvents;
@@ -59,14 +59,13 @@ export class AuditLog extends BaseClass {
         delete_member_days?: string;
         members_removed?: string;
         channel_id?: string;
-        messaged_id?: string;
+        message_id?: string;
         count?: string;
         id?: string;
         type?: string;
         role_name?: string;
     };
 
-    @Column()
     @Column({ type: "jsonb" })
     changes: AuditLogChange[];
 

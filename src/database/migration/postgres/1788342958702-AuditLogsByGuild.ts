@@ -7,7 +7,7 @@ export class AuditLogsByGuild1788342958702 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "audit_logs" ADD "guild_id" character varying`);
         await queryRunner.query(`CREATE INDEX "IDX_audit_log_guild_id" ON "audit_logs"  ("guild_id") `);
         await queryRunner.query(
-            `ALTER TABLE "audit_logs" ADD CONSTRAINT "FK_audit_log_guild_id" FOREIGN KEY ("target_id") REFERENCES "guilds"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+            `ALTER TABLE "audit_logs" ADD CONSTRAINT "FK_audit_log_guild_id" FOREIGN KEY ("guild_id") REFERENCES "guilds"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
         );
     }
 
