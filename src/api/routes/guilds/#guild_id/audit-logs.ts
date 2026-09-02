@@ -18,7 +18,9 @@
 
 import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { AuditLogResponse } from "@spacebar/schemas";
+import { AuditLogEntry, AuditLogEvents, AuditLogResponse } from "@spacebar/schemas";
+import { AuditLog, User } from "@spacebar/database";
+import { FindManyOptions, FindOptionsWhere, In, LessThan, MoreThan } from "typeorm";
 const router = Router({ mergeParams: true });
 
 //TODO: implement audit logs
@@ -65,17 +67,48 @@ router.get(
             },
         },
     }),
-    (req: Request, res: Response) => {
-        res.json({
-            audit_log_entries: [],
+    async (req: Request, res: Response) => {
+        const guildId = req.params.guild_id as string;
+        const limit = Math.min(100, Number(req.query.limit ?? "50"));
+        const direction = req.query.before ? "DESC" : req.query.after ? "ASC" : "DESC";
+        const directionality = req.query.before ? { id: LessThan(req.query.before as string) } : req.query.after ? { id: MoreThan(req.query.after as string) } : undefined;
+
+        const query = {
+            where: {
+                guild_id: guildId,
+                ...(directionality ?? {}),
+            },
+            order: {
+                id: direction,
+            },
+            take: limit,
+        } satisfies FindManyOptions<AuditLog>;
+
+        if (req.query.user_id) (query.where as FindOptionsWhere<AuditLog>).user_id = req.query.user_id as string;
+        if (req.query.target_id) (query.where as FindOptionsWhere<AuditLog>).target_id = req.query.target_id as string;
+        if (req.query.action_type) (query.where as FindOptionsWhere<AuditLog>).action_type = Number(req.query.action_type as string) as AuditLogEvents;
+
+        const auditLogEntries: AuditLogEntry[] = (await AuditLog.find(query)).map((x) => x.toAuditLogEntry());
+        const resp: AuditLogResponse = {
+            audit_log_entries: auditLogEntries,
             users: [],
-            integrations: [],
-            webhooks: [],
-            guild_scheduled_events: [],
-            threads: [],
-            application_commands: [],
-            auto_moderation_rules: [],
-        } satisfies AuditLogResponse);
+            integrations: [], // TODO once schemas exist
+            webhooks: [], // TODO once schemas exist
+            guild_scheduled_events: [], // TODO once schemas exist
+            threads: [], // TODO once schemas exist
+            application_commands: [], // TODO once schemas exist
+            auto_moderation_rules: [], // TODO once schemas exist
+        };
+
+        resp.users = (
+            await User.find({
+                where: {
+                    id: In(auditLogEntries.flatMap((ale) => [ale.user_id, ale.target_id]).filter((x) => x != null)),
+                },
+            })
+        ).map((x) => x.toPartialUser());
+
+        res.json(resp);
     },
 );
 export default router;
