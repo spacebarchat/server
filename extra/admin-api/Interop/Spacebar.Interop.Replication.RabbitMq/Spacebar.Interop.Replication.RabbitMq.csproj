@@ -12,9 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260619-035441" />
-      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.8" />
-      <PackageReference Include="RabbitMQ.Client" Version="7.2.1" />
+      <PackageReference Include="ArcaneLibs" Version="1.0.1-preview.20260827-231533" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.11" />
+      <PackageReference Include="RabbitMQ.Client" Version="7.2.2" />
     </ItemGroup>
 
 </Project>
