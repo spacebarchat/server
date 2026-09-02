@@ -20,8 +20,9 @@ import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { In } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Webhook, Channel, Message } from "@spacebar/database";
+import { AuditLog, Webhook, Channel, Message } from "@spacebar/database";
 import { Config, DiscordApiErrors, getPermission, WebhooksUpdateEvent, emitEvent, handleFile, ValidateName, MessageDeleteBulkEvent } from "@spacebar/util";
+import { AuditLogEvents } from "@spacebar/schemas";
 import type { WebhookResponse, WebhookUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
@@ -116,6 +117,15 @@ router.delete(
             },
         } satisfies WebhooksUpdateEvent);
 
+        if (webhook.guild_id) {
+            await AuditLog.createAuditLog({
+                guild_id: webhook.guild_id,
+                user_id: req.user_id,
+                target_id: webhook_id,
+                action_type: AuditLogEvents.WEBHOOK_DELETE,
+            });
+        }
+
         res.sendStatus(204);
     },
 );
@@ -181,6 +191,15 @@ router.patch(
                 },
             } satisfies WebhooksUpdateEvent),
         ]);
+
+        if (webhook.guild_id) {
+            await AuditLog.createAuditLog({
+                guild_id: webhook.guild_id,
+                user_id: req.user_id,
+                target_id: webhook_id,
+                action_type: AuditLogEvents.WEBHOOK_UPDATE,
+            });
+        }
 
         res.json(webhook);
     },

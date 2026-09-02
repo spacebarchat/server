@@ -20,9 +20,9 @@ import crypto from "node:crypto";
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Application, Channel, User, Webhook } from "@spacebar/database";
+import { Application, AuditLog, Channel, User, Webhook } from "@spacebar/database";
 import { Config, DiscordApiErrors, handleFile, ValidateName } from "@spacebar/util";
-import { isTextChannel, WebhookCreateSchema, WebhookResponse, WebhookType } from "@spacebar/schemas";
+import { AuditLogEvents, isTextChannel, WebhookCreateSchema, WebhookResponse, WebhookType } from "@spacebar/schemas";
 import { trimSpecial } from "@spacebar/extensions";
 
 const router: Router = Router({ mergeParams: true });
@@ -111,6 +111,13 @@ router.post(
         }).save();
 
         const user = await User.getPublicUser(req.user_id);
+
+        await AuditLog.createAuditLog({
+            guild_id: channel.guild_id,
+            user_id: req.user_id,
+            target_id: hook.id,
+            action_type: AuditLogEvents.WEBHOOK_CREATE,
+        });
 
         return res.json({
             ...hook,
