@@ -84,21 +84,23 @@ export class AuditLog extends BaseClass {
         } satisfies AuditLogEntry;
     }
 
-    static async createAuditLog(options: {
+    static async createAuditLog(data: {
         guild_id: string;
         user_id: string;
         target_id?: string;
         action_type: AuditLogEvents;
         changes?: AuditLogChange[];
+        options?: AuditLog["options"];
         reason?: string;
     }): Promise<AuditLog> {
         const entry = AuditLog.create({
-            guild_id: options.guild_id,
-            user_id: options.user_id,
-            target_id: options.target_id,
-            action_type: options.action_type,
-            changes: options.changes ?? [],
-            reason: options.reason,
+            guild_id: data.guild_id,
+            user_id: data.user_id,
+            target_id: data.target_id,
+            action_type: data.action_type,
+            changes: data.changes ?? [],
+            options: data.options,
+            reason: data.reason,
         });
         return entry.save();
     }

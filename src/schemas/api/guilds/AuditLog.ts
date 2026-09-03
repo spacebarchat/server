@@ -164,7 +164,8 @@ export type AuditLogChangeValue =
     | AuditLogMemberChange
     | AuditLogChannelChange
     | AuditLogInviteChange
-    | AuditLogIntegrationChange;
+    | AuditLogIntegrationChange
+    | object[];
 
 export interface AuditLogGuildChange {
     name?: string;
