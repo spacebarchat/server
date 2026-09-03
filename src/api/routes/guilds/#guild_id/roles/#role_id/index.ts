@@ -131,6 +131,16 @@ router.patch(
         const role = await Role.findOneOrFail({
             where: { id: role_id, guild: { id: guild_id } },
         });
+        const oldRole: Partial<Role> = {
+            name: role.name,
+            color: role.color,
+            hoist: role.hoist,
+            mentionable: role.mentionable,
+            permissions: role.permissions,
+            icon: role.icon,
+            unicode_emoji: role.unicode_emoji,
+            position: role.position,
+        };
         role.assign({
             ...body,
             permissions: String((req.permission?.bitfield || 0n) & BigInt(body.permissions || "0")),
@@ -143,6 +153,16 @@ router.patch(
                 user_id: req.user_id,
                 target_id: role_id,
                 action_type: AuditLogEvents.ROLE_UPDATE,
+                changes: AuditLog.computeChanges(oldRole, role, [
+                    "name",
+                    "color",
+                    "hoist",
+                    "mentionable",
+                    "permissions",
+                    "icon",
+                    "unicode_emoji",
+                    "position",
+                ]),
             }),
             emitEvent({
                 event: "GUILD_ROLE_UPDATE",

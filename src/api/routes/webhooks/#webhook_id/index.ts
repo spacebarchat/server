@@ -171,6 +171,11 @@ router.patch(
         }
 
         const channel_id = body.channel_id || webhook.channel_id;
+        const oldWebhook: Partial<Webhook> = {
+            name: webhook.name,
+            avatar: webhook.avatar,
+            channel_id: webhook.channel_id,
+        };
         webhook.assign(body);
 
         if (body.channel_id)
@@ -198,6 +203,7 @@ router.patch(
                 user_id: req.user_id,
                 target_id: webhook_id,
                 action_type: AuditLogEvents.WEBHOOK_UPDATE,
+                changes: AuditLog.computeChanges(oldWebhook, webhook, ["name", "avatar", "channel_id"]),
             });
         }
 

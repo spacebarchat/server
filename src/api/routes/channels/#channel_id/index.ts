@@ -222,6 +222,19 @@ router.patch(
             throw new FieldError(400, "Invalid form body", errors);
         }
 
+        const oldChannel: Partial<Channel> = {
+            name: channel.name,
+            topic: channel.topic,
+            bitrate: channel.bitrate,
+            nsfw: channel.nsfw,
+            rate_limit_per_user: channel.rate_limit_per_user,
+            position: channel.position,
+            parent_id: channel.parent_id,
+            type: channel.type,
+            user_limit: channel.user_limit,
+            permission_overwrites: channel.permission_overwrites,
+        };
+
         channel.assign(payload);
         if (channel.thread_metadata) {
             if (payload.archived !== undefined) {
@@ -252,6 +265,18 @@ router.patch(
                 user_id: req.user_id,
                 target_id: channel_id,
                 action_type: AuditLogEvents.CHANNEL_UPDATE,
+                changes: AuditLog.computeChanges(oldChannel, channel, [
+                    "name",
+                    "topic",
+                    "bitrate",
+                    "nsfw",
+                    "rate_limit_per_user",
+                    "position",
+                    "parent_id",
+                    "type",
+                    "user_limit",
+                    "permission_overwrites",
+                ]),
             });
         }
 

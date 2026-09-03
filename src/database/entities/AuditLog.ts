@@ -20,7 +20,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeor
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { AuditLogChange, AuditLogEntry, AuditLogEvents } from "@spacebar/schemas";
+import { AuditLogChange, AuditLogChangeValue, AuditLogEntry, AuditLogEvents } from "@spacebar/schemas";
 
 @Entity({
     name: "audit_logs",
@@ -101,5 +101,20 @@ export class AuditLog extends BaseClass {
             reason: options.reason,
         });
         return entry.save();
+    }
+
+    static computeChanges<T extends object>(oldValue: Partial<T>, newValue: T, keys: (keyof T)[]): AuditLogChange[] {
+        return keys.flatMap((key) => {
+            const oldVal = oldValue[key] as unknown;
+            const newVal = newValue[key] as unknown;
+            if (oldVal === newVal) return [];
+            return [
+                {
+                    key: key as string,
+                    ...(oldVal !== undefined && oldVal !== null ? { old_value: oldVal as AuditLogChangeValue } : {}),
+                    ...(newVal !== undefined && newVal !== null ? { new_value: newVal as AuditLogChangeValue } : {}),
+                },
+            ];
+        });
     }
 }
