@@ -23,7 +23,6 @@ import { AuditLog, User } from "@spacebar/database";
 import { FindManyOptions, FindOptionsWhere, In, LessThan, MoreThan } from "typeorm";
 const router = Router({ mergeParams: true });
 
-//TODO: implement audit logs
 router.get(
     "/",
     route({

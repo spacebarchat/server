@@ -74,6 +74,7 @@ router.post(
         await AuditLog.createAuditLog({
             guild_id,
             user_id: req.user_id,
+            target_id: channel.id,
             action_type: AuditLogEvents.CHANNEL_CREATE
         });
 
