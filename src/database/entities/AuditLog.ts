@@ -107,14 +107,14 @@ export class AuditLog extends BaseClass {
 
     static computeChanges<T extends object>(oldValue: Partial<T>, newValue: T, keys: (keyof T)[]): AuditLogChange[] {
         return keys.flatMap((key) => {
-            const oldVal = oldValue[key] as unknown;
-            const newVal = newValue[key] as unknown;
+            const oldVal = oldValue[key] as AuditLogChangeValue;
+            const newVal = newValue[key] as AuditLogChangeValue;
             if (oldVal === newVal) return [];
             return [
                 {
                     key: key as string,
-                    ...(oldVal !== undefined && oldVal !== null ? { old_value: oldVal as AuditLogChangeValue } : {}),
-                    ...(newVal !== undefined && newVal !== null ? { new_value: newVal as AuditLogChangeValue } : {}),
+                    ...(oldVal !== undefined && oldVal !== null ? { old_value: oldVal } : {}),
+                    ...(newVal !== undefined && newVal !== null ? { new_value: newVal } : {}),
                 },
             ];
         });
