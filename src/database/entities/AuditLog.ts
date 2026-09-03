@@ -36,15 +36,20 @@ export class AuditLog extends BaseClass {
     guild?: Guild;
 
     @Column({ nullable: true })
-    target_id: string | null;
+    @RelationId((auditlog: AuditLog) => auditlog.target)
+    target_id?: string;
+
+    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
+    @ManyToOne(() => User)
+    target?: User;
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.user)
-    user_id: string | null;
+    user_id?: string;
 
     @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_audit_log_source_user_id" })
     @ManyToOne(() => User, (user: User) => user.id)
-    user?: User | null;
+    user?: User;
 
     @Column({ type: "int" })
     action_type: AuditLogEvents;
@@ -82,7 +87,7 @@ export class AuditLog extends BaseClass {
     static async createAuditLog(options: {
         guild_id: string;
         user_id: string;
-        target_id?: string | null;
+        target_id?: string;
         action_type: AuditLogEvents;
         changes?: AuditLogChange[];
         reason?: string;
@@ -90,7 +95,7 @@ export class AuditLog extends BaseClass {
         const entry = AuditLog.create({
             guild_id: options.guild_id,
             user_id: options.user_id,
-            target_id: options.target_id ?? null,
+            target_id: options.target_id,
             action_type: options.action_type,
             changes: options.changes ?? [],
             reason: options.reason,

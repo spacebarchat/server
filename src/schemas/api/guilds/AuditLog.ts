@@ -33,8 +33,8 @@ export interface AuditLogResponse {
 export interface AuditLogEntry {
     id: Snowflake;
     action_type: AuditLogEvents;
-    user_id: Snowflake | null;
-    target_id: Snowflake | null;
+    user_id?: Snowflake;
+    target_id?: Snowflake;
     changes?: AuditLogChange[];
     options?: unknown;
     reason?: string;
