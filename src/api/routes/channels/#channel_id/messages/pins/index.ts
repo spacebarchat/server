@@ -114,6 +114,9 @@ router.put(
                 user_id: req.user_id,
                 target_id: message_id,
                 action_type: AuditLogEvents.MESSAGE_PIN,
+                options: {
+                    channel_id,
+                },
             });
         }
 
@@ -171,6 +174,9 @@ router.delete(
                 user_id: req.user_id,
                 target_id: message_id,
                 action_type: AuditLogEvents.MESSAGE_UNPIN,
+                options: {
+                    channel_id,
+                },
             });
         }
 

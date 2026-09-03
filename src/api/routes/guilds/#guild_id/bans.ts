@@ -239,6 +239,9 @@ router.put(
                 target_id: banned_user_id,
                 action_type: AuditLogEvents.MEMBER_BAN_ADD,
                 reason: req.body.reason,
+                options: {
+                    delete_member_days: String(Math.floor(deleteMessagesMs / 86400000)),
+                },
             }),
             emitEvent({
                 event: "GUILD_BAN_ADD",

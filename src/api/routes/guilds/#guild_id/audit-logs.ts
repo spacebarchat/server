@@ -18,8 +18,9 @@
 
 import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { AuditLogEntry, AuditLogEvents, AuditLogResponse } from "@spacebar/schemas";
-import { AuditLog, User } from "@spacebar/database";
+import { AuditLogEntry, AuditLogEvents, AuditLogResponse, WebhookResponse } from "@spacebar/schemas";
+import { ApplicationCommand, AuditLog, Channel, User, Webhook } from "@spacebar/database";
+import { Config } from "@spacebar/util";
 import { FindManyOptions, FindOptionsWhere, In, LessThan, MoreThan } from "typeorm";
 const router = Router({ mergeParams: true });
 
@@ -91,21 +92,53 @@ router.get(
         const resp: AuditLogResponse = {
             audit_log_entries: auditLogEntries,
             users: [],
-            integrations: [], // TODO once schemas exist
-            webhooks: [], // TODO once schemas exist
-            guild_scheduled_events: [], // TODO once schemas exist
-            threads: [], // TODO once schemas exist
-            application_commands: [], // TODO once schemas exist
-            auto_moderation_rules: [], // TODO once schemas exist
+            integrations: [], // TODO: no Integration entity yet
+            webhooks: [],
+            guild_scheduled_events: [], // TODO: no GuildScheduledEvent entity yet
+            threads: [],
+            application_commands: [],
+            auto_moderation_rules: [], // TODO: no AutomodRule serialization yet
         };
 
-        resp.users = (
-            await User.find({
+        const targetIdsFor = (actionTypes: AuditLogEvents[]): string[] =>
+            auditLogEntries
+                .filter((ale) => actionTypes.includes(ale.action_type))
+                .map((ale) => ale.target_id)
+                .filter((x) => x != null);
+
+        const webhookIds = targetIdsFor([AuditLogEvents.WEBHOOK_CREATE, AuditLogEvents.WEBHOOK_UPDATE, AuditLogEvents.WEBHOOK_DELETE]);
+        const threadIds = targetIdsFor([AuditLogEvents.THREAD_CREATE, AuditLogEvents.THREAD_UPDATE, AuditLogEvents.THREAD_DELETE]);
+        const applicationCommandIds = targetIdsFor([AuditLogEvents.APPLICATION_COMMAND_PERMISSION_UPDATE]);
+
+        const [users, webhooks, threads, applicationCommands] = await Promise.all([
+            User.find({
                 where: {
                     id: In(auditLogEntries.flatMap((ale) => [ale.user_id, ale.target_id]).filter((x) => x != null)),
                 },
-            })
-        ).map((x) => x.toPartialUser());
+            }),
+            webhookIds.length
+                ? Webhook.find({
+                      where: { id: In(webhookIds) },
+                      relations: { user: true, channel: true, source_channel: true, guild: true, source_guild: true, application: true },
+                  })
+                : Promise.resolve([]),
+            threadIds.length ? Channel.find({ where: { id: In(threadIds) } }) : Promise.resolve([]),
+            applicationCommandIds.length ? ApplicationCommand.find({ where: { id: In(applicationCommandIds) } }) : Promise.resolve([]),
+        ]);
+
+        resp.users = users.map((x) => x.toPartialUser());
+        resp.webhooks = webhooks.map(
+            (webhook) =>
+                ({
+                    ...webhook,
+                    user: webhook.user?.toPartialUser(),
+                    source_guild: webhook.source_guild?.toIntegrationGuild(),
+                    source_channel: webhook.source_channel?.toWebhookChannel(),
+                    url: Config.get().api.endpointPublic + "/webhooks/" + webhook.id + "/" + webhook.token,
+                }) satisfies WebhookResponse,
+        );
+        resp.threads = threads.map((x) => x.toJSON());
+        resp.application_commands = applicationCommands;
 
         res.json(resp);
     },
