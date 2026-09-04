@@ -81,6 +81,12 @@ public class AuthenticatedSpacebarClient {
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
         return (await resp.Content.ReadFromJsonAsync<List<Guild>>())!;
     }
+
+    public async Task LogOutAsync()
+    {
+        var resp = await ApiHttpClient.PostAsJsonAsync("auth/logout", new {});
+        if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
+    }
 }
 
 public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long channelId) {
@@ -204,7 +210,7 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
             // logger.LogInformation("Got gateway message: {msg}", msg);
             if (msg.Opcode == GatewayOpcode.S2CHello) {
                 _ = _runHeartbeatLoop(msg.GetData<HelloResponse>()!.HeartbeatInterval, _cts.Token).ContinueWith(ct => {
-                    logger.LogWarning("Heartbeat loop exited!");
+                    logger.LogWarning("Heartbeat loop exited! ({code}: {reason})", RawClientWebSocket.CloseStatus, RawClientWebSocket.CloseStatusDescription);
                     if (ct.IsFaulted) throw ct.Exception;
                 });
                 IdentifyData.Token = token;
