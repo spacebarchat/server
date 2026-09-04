@@ -1,7 +1,9 @@
+@using System.Diagnostics
 @using ArcaneLibs.Blazor.Components.Services
 @using ArcaneLibs.Extensions
 @using Spacebar.Client.WebCore
 @using Spacebar.Client.WebCore.Client
+@using Spacebar.Models.Api
 @using Spacebar.Models.Gateway
 @using Spacebar.Sdk.Core
 @inject SessionStore sessionStore
@@ -17,12 +19,15 @@
     private DebugBanner _dbgBanner = null!;
     private bool _readyReceived = false;
 
-    public ClientManager() {
-        ClientAvailable = Task.Run(async () => {
+    public ClientManager()
+    {
+        ClientAvailable = Task.Run(async () =>
+        {
             while (Client is null) await Task.Delay(50);
             ClientAvailable = null;
         });
-        ClientReady = Task.Run(async () => {
+        ClientReady = Task.Run(async () =>
+        {
             while (!_readyReceived) await Task.Delay(50);
             ClientAvailable = null;
         });
@@ -38,40 +43,40 @@
     public Task? ClientAvailable { get; set; }
     public Task? ClientReady { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         if (!firstRender) return;
         await _dbgBanner.SetStatus("Preparing for launch!");
         await Task.Delay(125);
         var session = await sessionStore.GetCurrentSessionAsync();
-        if (session != null) {
+        if (session != null)
+        {
             Client = await clientProvider.GetAuthenticatedClientAsync(session.ServerName, session.AccessToken);
             await _dbgBanner.SetStatus($"Got authenticated client for {session.ProfileCache.Username}#{session.ProfileCache.Discriminator} on {session.ServerName}! Connecting to gateway...");
-            Client.Gateway.IdentifyData.ClientProperties = new IdentifyClientProperties() {
+            Client.Gateway.IdentifyData.ClientProperties = new IdentifyClientProperties()
+            {
                 HasClientMods = false,
-                ApplicationArchitecture = "wasm"
+                ApplicationArchitecture = "wasm",
             }.ToJsonNode().AsObject();
             StateHasChanged();
-            await Client.Gateway.Connect();
-            _ = Client.Gateway.Start().ContinueWith(ct => {
-                jsConsole.Warn("[ClientManager] Heartbeat loop exited!");
-                if (ct.IsFaulted) {
-                    jsConsole.Error("Unhandled exception during gateway connection:", ct.Exception.ToString());
-                    throw ct.Exception;
-                }
-            });
-            Client.Gateway.OnceGatewayMessage.Add(async msg => {
-                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
+            _ = RunInnerLoopAsync();
+            Client.Gateway.OnceGatewayMessage.Add(async msg =>
+            {
+                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" })
+                {
                     await _dbgBanner.SetStatus($"Got READY from gateway, deserializing...");
                     var content = msg.GetData<ReadyResponse>();
                     await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling...");
                     // ClientState.Guilds.AddRange(content.Guilds.ToDictionary(x=>x.Id, x=>x));
-                    foreach (var guild in content.Guilds) {
+                    foreach (var guild in content.Guilds)
+                    {
                         ClientState.Guilds.Add(guild.Id, guild);
                         await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling... guilds ({ClientState.Guilds.Count})");
                         await Task.Delay(1);
                     }
 
-                    foreach (var guild in content.Relationships) {
+                    foreach (var guild in content.Relationships)
+                    {
                         // ClientState.Relationships.Add(guild.Id, guild);
                         await _dbgBanner.SetStatus($"Deserialized READY from gateway, handling... guilds ({ClientState.Guilds.Count}), relationships (0)");
                         await Task.Delay(1);
@@ -84,20 +89,66 @@
                     return false;
                 }
 
-                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY_SUPPLEMENTAL" }) {
+                if (msg is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY_SUPPLEMENTAL" })
+                {
                     await _dbgBanner.SetStatus("Received READY_SUPPLEMENTAL...");
                     await jsConsole.Info("Parsed ready_supplemental payload", new { original = msg.EventData });
-                    _ =_dbgBanner.SetStatus(null, 1750);
+                    _ = _dbgBanner.SetStatus(null, 1750);
                     return true;
                 }
 
                 return false;
             });
         }
-        else {
+        else
+        {
             await _dbgBanner.SetStatus("No session marked as current... :(");
             await _dbgBanner.SetStatus(null, 1750);
         }
+    }
+
+    private async Task RunInnerLoopAsync()
+    {
+        var tries = 1;
+        while (true)
+        {
+            var uptime = Stopwatch.StartNew();
+            try
+            {
+                int delay = (int)((tries++ * 1.2) * 250);
+                await jsConsole.Info("Starting gateway connection in", delay, "ms.");
+                await Task.Delay(delay);
+                await Client.Gateway.Connect();
+                await Client.Gateway.Start();
+            }
+            catch (Exception e)
+            {
+                await Client.Gateway.Disconnect();
+                await jsConsole.Warn($"[ClientManager] Heartbeat loop exited! ({Client.Gateway.RawClientWebSocket.CloseStatus}: {Client.Gateway.RawClientWebSocket.CloseStatusDescription})");
+                await jsConsole.Error("Unhandled exception during gateway connection:", e.ToString());
+                _ = _dbgBanner.SetStatus("Unhandled exception during gateway connection: " + string.Join("\n", e.ToString().Split("\n").Where(x => !x.Trim().StartsWith("at "))));
+                if (uptime.Elapsed.TotalSeconds < 3)
+                {
+                    try
+                    {
+                        await _dbgBanner.SetStatus("Attempting to validate token...");
+                        await Client.GetCurrentUser();
+                    }
+                    catch (Exception ve)
+                    {
+                        await _dbgBanner.SetStatus(ve.ToString());
+                        await jsConsole.Error(ve.ToString());
+                        if (ve is SpacebarApiException { Code: 40001 })
+                        {
+                            await _dbgBanner.SetStatus("Invalid access token, please sign in again!");
+                            return;
+                        }
+                    }
+                }
+                await Task.Delay(1);
+            }
+        }
+        // ReSharper disable once FunctionNeverReturns
     }
 
 }

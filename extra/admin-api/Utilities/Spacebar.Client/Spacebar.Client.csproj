@@ -6,6 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
         <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+        <UseSystemResourceKeys>false</UseSystemResourceKeys>
+        <UseSizeOptimizedLinq>false</UseSizeOptimizedLinq> <!-- makes Linq slightly faster -->
+        <DebuggerSupport>true</DebuggerSupport>
+        <TrimmerRemoveSymbols>false</TrimmerRemoveSymbols>
 
         <!-- copied from https://cgit.rory.gay/matrix/tools/MatrixUtils.git/tree/MatrixUtils.Web/MatrixUtils.Web.csproj -->
         <LinkIncremental>true</LinkIncremental>
