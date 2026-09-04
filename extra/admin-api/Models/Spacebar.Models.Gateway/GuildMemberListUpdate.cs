@@ -103,7 +103,7 @@ public class GuildMemberListSyncItemJsonConverter : JsonConverter<GuildMemberLis
     {
         var n = JsonSerializer.Deserialize<JsonObject>(ref reader, options);
         if (n.ContainsKey("group")) return n.Deserialize<GuildMemberListSyncItem.RoleEntry>();
-        if (n.ContainsKey("member")) return n.Deserialize<GuildMemberListSyncItem>();
+        if (n.ContainsKey("member")) return n.Deserialize<GuildMemberListSyncItem.MemberEntry>();
         throw new InvalidOperationException("Could not determine sync item type for keys " + string.Join(", ", n.Select(x => x.Key)));
     }
 
