@@ -13,6 +13,7 @@ lib.recursiveUpdate
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
     environment = secrets.systemdEnvironment;
+    stopIfChanged = false;
     serviceConfig = {
       LoadCredential = secrets.systemdLoadCredentials;
 

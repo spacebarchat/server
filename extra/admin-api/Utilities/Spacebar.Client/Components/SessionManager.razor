@@ -1,16 +1,21 @@
 @using ArcaneLibs.Blazor.Components
 @using ArcaneLibs.Blazor.Components.Services
 @using Spacebar.Client.WebCore
+@using Spacebar.Sdk.Core
 @inject SessionStore sessionStore
+@inject SpacebarClientProviderService clientProvider
 @inject JsConsoleService jsConsole
 
 <DebugBanner Name="@GetType().Name" @ref="_dbgBanner"/>
-@if (_sessionPickerVisible) {
+@if (_sessionPickerVisible)
+{
     <ModalWindow Title="Session manager" OnCloseClickedAsync="@(() => SetSessionPickerVisible(false))">
-        @foreach (var (sessionId, session) in _sessionEntries) {
+        @foreach (var (sessionId, session) in _sessionEntries)
+        {
             <LinkButton
                 OnClickAsync="@(() => SetCurrentSessionAsync(sessionId))">@(session.ProfileCache?.Username ?? "Unknown user")#@(session.ProfileCache?.Discriminator ?? "0000") <sub
                     class="code">on @session.ServerName</sub></LinkButton>
+            <LinkButton OnClickAsync="@(() => RemoveSessionAsync(sessionId))">x</LinkButton>
         }
         <br/><br/>
         <LinkButton href="/login">Log in</LinkButton>
@@ -24,7 +29,8 @@
 
     private Dictionary<Guid, SessionEntry> _sessionEntries = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         if (!firstRender) return;
         await _dbgBanner.SetStatus("Crunching numbers...");
         _sessionPickerVisible = await sessionStore.GetCurrentSessionAsync() == null;
@@ -32,7 +38,8 @@
         await _dbgBanner.SetStatus(null, 1000);
     }
 
-    public async Task SetSessionPickerVisible(bool visible = true) {
+    public async Task SetSessionPickerVisible(bool visible = true)
+    {
         await jsConsole.Info("[SessionManager] showing session picker...");
         _sessionEntries = visible ? await sessionStore.GetAllSessionsAsync() : [];
         _sessionPickerVisible = visible;
@@ -40,13 +47,35 @@
         await Task.Delay(1);
     }
 
-    private async Task SetCurrentSessionAsync(Guid sessionId) {
+    private async Task SetCurrentSessionAsync(Guid sessionId)
+    {
         _sessionPickerVisible = false;
         StateHasChanged();
         await sessionStore.SetCurrentSessionAsync(sessionId);
         var cs = await sessionStore.GetCurrentSessionAsync();
         await _dbgBanner.SetStatus($"Current session changed to {cs!.ProfileCache?.Username}#{cs.ProfileCache?.Discriminator} ({cs.ProfileCache.Id}) / {sessionId.ToString()}!");
         await _dbgBanner.SetStatus(null, 3000);
+    }
+
+    private async Task RemoveSessionAsync(Guid sessionId)
+    {
+        try
+        {
+            await _dbgBanner.SetStatus("Trying to log out...");
+            var sess = _sessionEntries[sessionId];
+            var client = await clientProvider.GetAuthenticatedClientAsync(sess.ServerName, sess.AccessToken);
+            await client.LogOutAsync();
+        }
+        catch (Exception e)
+        {
+            await _dbgBanner.SetStatus("Failed to log out, removing anyway: " + string.Join("\n", e.ToString().Split("\n").Where(x => !x.Trim().StartsWith("at "))));
+            await Task.Delay(1000);
+        }
+
+        await sessionStore.RemoveSessionAsync(sessionId);
+        await _dbgBanner.SetStatus("Session removed successfully!");
+        await _dbgBanner.SetStatus(null, 1000);
+        await SetSessionPickerVisible();
     }
 
 }

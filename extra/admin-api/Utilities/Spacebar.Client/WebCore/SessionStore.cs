@@ -33,6 +33,17 @@ public class SessionStore(ILogger<SessionStore> logger, LocalStorageService loca
     public async Task SetCurrentSessionAsync(Guid sessionId) {
         await localStorage.SetItemAsJsonAsync(CurrentSessionKey, sessionId);
     }
+
+    public async Task RemoveSessionAsync(Guid sessionId)
+    {
+        var sessions = await GetAllSessionsAsync();
+        sessions.Remove(sessionId);
+        await localStorage.SetItemAsJsonAsync(AllSessionsKey, sessions);
+        
+        if (await localStorage.ContainsKeyAsync(CurrentSessionKey))
+            if (await localStorage.GetItemFromJsonAsync<Guid>(CurrentSessionKey) == sessionId)
+                await localStorage.RemoveItemAsync(CurrentSessionKey);
+    }
 }
 
 public class SessionEntry {
