@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Recipient } from "@spacebar/database";
+import { AuditLog, Channel, Recipient } from "@spacebar/database";
 import { ChannelDeleteEvent, ChannelUpdateEvent, emitEvent, handleFile, Config, FieldError, ErrorList, makeObjectErrorContent } from "@spacebar/util";
-import { ChannelModifySchema, ChannelType } from "@spacebar/schemas";
+import { AuditLogEvents, ChannelModifySchema, ChannelType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 // TODO: delete channel
@@ -119,6 +119,12 @@ router.delete(
 
             await Promise.all([
                 Channel.deleteChannel(channel),
+                AuditLog.createAuditLog({
+                    guild_id: channel.guild_id as string,
+                    user_id: req.user_id,
+                    target_id: channel_id,
+                    action_type: AuditLogEvents.CHANNEL_DELETE,
+                }),
                 emitEvent({
                     event: "CHANNEL_DELETE",
                     data: channel.toJSON(),
@@ -216,6 +222,19 @@ router.patch(
             throw new FieldError(400, "Invalid form body", errors);
         }
 
+        const oldChannel: Partial<Channel> = {
+            name: channel.name,
+            topic: channel.topic,
+            bitrate: channel.bitrate,
+            nsfw: channel.nsfw,
+            rate_limit_per_user: channel.rate_limit_per_user,
+            position: channel.position,
+            parent_id: channel.parent_id,
+            type: channel.type,
+            user_limit: channel.user_limit,
+            permission_overwrites: channel.permission_overwrites,
+        };
+
         channel.assign(payload);
         if (channel.thread_metadata) {
             if (payload.archived !== undefined) {
@@ -239,6 +258,27 @@ router.patch(
                 channel_id,
             } satisfies ChannelUpdateEvent),
         ]);
+
+        if (channel.guild_id && !channel.isThread()) {
+            await AuditLog.createAuditLog({
+                guild_id: channel.guild_id,
+                user_id: req.user_id,
+                target_id: channel_id,
+                action_type: AuditLogEvents.CHANNEL_UPDATE,
+                changes: AuditLog.computeChanges(oldChannel, channel, [
+                    "name",
+                    "topic",
+                    "bitrate",
+                    "nsfw",
+                    "rate_limit_per_user",
+                    "position",
+                    "parent_id",
+                    "type",
+                    "user_limit",
+                    "permission_overwrites",
+                ]),
+            });
+        }
 
         res.send(channel);
     },

@@ -33,8 +33,8 @@ export interface AuditLogResponse {
 export interface AuditLogEntry {
     id: Snowflake;
     action_type: AuditLogEvents;
-    user_id: Snowflake | null;
-    target_id: Snowflake | null;
+    user_id?: Snowflake;
+    target_id?: Snowflake;
     changes?: AuditLogChange[];
     options?: unknown;
     reason?: string;
@@ -152,13 +152,22 @@ export enum AuditLogEvents {
     GUILD_MIGRATE_BYPASS_SLOWMODE_PERMISSION = 213,
 }
 
-export interface AuditLogChange {
-    new_value?: AuditLogChangeValue;
-    old_value?: AuditLogChangeValue;
+export interface AuditLogChange<T = AuditLogChangeValue> {
+    new_value?: T;
+    old_value?: T;
     key: string;
 }
 
-export interface AuditLogChangeValue {
+export type AuditLogChangeValue =
+    | AuditLogGuildChange
+    | AuditLogRoleChange
+    | AuditLogMemberChange
+    | AuditLogChannelChange
+    | AuditLogInviteChange
+    | AuditLogIntegrationChange
+    | object[];
+
+export interface AuditLogGuildChange {
     name?: string;
     description?: string;
     icon_hash?: string;
@@ -177,25 +186,49 @@ export interface AuditLogChangeValue {
     explicit_content_filter?: number;
     default_message_notifications?: number;
     vanity_url_code?: string;
-    $add?: object[]; // TODO: These types are bad.
-    $remove?: object[];
-    prune_delete_days?: number;
     widget_enabled?: boolean;
     widget_channel_id?: string;
     system_channel_id?: string;
-    position?: number;
-    topic?: string;
-    bitrate?: number;
-    permission_overwrites?: ChannelPermissionOverwrite[];
-    nsfw?: boolean;
-    application_id?: string;
-    rate_limit_per_user?: number;
-    permissions?: string;
+    prune_delete_days?: number;
+}
+
+export interface AuditLogRoleChange {
+    name?: string;
+    description?: string;
     color?: number;
     hoist?: boolean;
     mentionable?: boolean;
+    permissions?: string;
+    icon?: string;
+    unicode_emoji?: string;
+    position?: number;
+}
+
+export interface AuditLogMemberChange {
+    nick?: string;
+    avatar_hash?: string;
+    deaf?: boolean;
+    mute?: boolean;
+    $add?: object[]; // TODO: These types are bad.
+    $remove?: object[];
+}
+
+export interface AuditLogChannelChange {
+    name?: string;
+    topic?: string;
+    bitrate?: number;
+    nsfw?: boolean;
+    rate_limit_per_user?: number;
+    position?: number;
+    parent_id?: string;
+    type?: number;
+    user_limit?: number;
+    permission_overwrites?: ChannelPermissionOverwrite[];
     allow?: string;
     deny?: string;
+}
+
+export interface AuditLogInviteChange {
     code?: string;
     channel_id?: string;
     inviter_id?: string;
@@ -203,14 +236,110 @@ export interface AuditLogChangeValue {
     uses?: number;
     max_age?: number;
     temporary?: boolean;
-    deaf?: boolean;
-    mute?: boolean;
-    nick?: string;
-    avatar_hash?: string;
+}
+
+export interface AuditLogIntegrationChange {
+    application_id?: string;
     id?: string;
-    type?: number;
     enable_emoticons?: boolean;
     expire_behavior?: number;
     expire_grace_period?: number;
-    user_limit?: number;
 }
+
+export interface GuildUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.GUILD_UPDATE;
+    changes?: AuditLogChange<AuditLogGuildChange>[];
+}
+
+export interface ChannelCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_CREATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_UPDATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_DELETE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_CREATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_UPDATE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface ChannelOverwriteDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.CHANNEL_OVERWRITE_DELETE;
+    changes?: AuditLogChange<AuditLogChannelChange>[];
+}
+
+export interface MemberUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.MEMBER_UPDATE;
+    changes?: AuditLogChange<AuditLogMemberChange>[];
+}
+
+export interface MemberRoleUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.MEMBER_ROLE_UPDATE;
+    changes?: AuditLogChange<AuditLogMemberChange>[];
+}
+
+export interface RoleCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_CREATE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface RoleUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_UPDATE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface RoleDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.ROLE_DELETE;
+    changes?: AuditLogChange<AuditLogRoleChange>[];
+}
+
+export interface InviteCreateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_CREATE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface InviteUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_UPDATE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface InviteDeleteEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INVITE_DELETE;
+    changes?: AuditLogChange<AuditLogInviteChange>[];
+}
+
+export interface IntegrationUpdateEntry extends AuditLogEntry {
+    action_type: AuditLogEvents.INTEGRATION_UPDATE;
+    changes?: AuditLogChange<AuditLogIntegrationChange>[];
+}
+
+export type AuditLogEntryData =
+    | GuildUpdateEntry
+    | ChannelCreateEntry
+    | ChannelUpdateEntry
+    | ChannelDeleteEntry
+    | ChannelOverwriteCreateEntry
+    | ChannelOverwriteUpdateEntry
+    | ChannelOverwriteDeleteEntry
+    | MemberUpdateEntry
+    | MemberRoleUpdateEntry
+    | RoleCreateEntry
+    | RoleUpdateEntry
+    | RoleDeleteEntry
+    | InviteCreateEntry
+    | InviteUpdateEntry
+    | InviteDeleteEntry
+    | IntegrationUpdateEntry;
