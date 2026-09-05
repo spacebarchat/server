@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { PartialUser } from "@spacebar/schemas";
+import { base64str, float, PartialUser } from "@spacebar/schemas";
 
 export interface PublicAttachment {
     filename: string;
@@ -39,8 +39,8 @@ export interface PublicAttachment {
     placeholder?: string;
 
     // voice messages
-    duration_secs?: number;
-    waveform?: string; // base64 byte array
+    duration_secs?: float;
+    waveform?: base64str; // base64 byte array
 
     // clips
     title?: string; // clips only? Documentation kinda sucks...

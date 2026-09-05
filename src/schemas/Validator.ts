@@ -43,7 +43,7 @@ export const ajv = new Ajv({
     allErrors: true,
     parseDate: true,
     allowDate: true,
-    schemas: schemas,
+    // schemas: schemas,
     coerceTypes: true,
     messages: true,
     strict: true,
@@ -52,6 +52,7 @@ export const ajv = new Ajv({
 });
 
 addFormats(ajv);
+ajv.addSchema(schemas);
 
 export function validateSchema<G extends object>(schema: string, data: G): G {
     const valid = ajv.validate(schema, data);

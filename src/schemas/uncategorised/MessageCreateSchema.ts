@@ -17,14 +17,27 @@
 */
 
 import { Snowflake } from "../Identifiers";
-import { InteractionType, AllowedMentions, MessageReference, ApplicationCommandType, BaseMessageComponents, Embed, PollAnswer, PollMedia, PublicUser } from "@spacebar/schemas";
+import {
+    InteractionType,
+    AllowedMentions,
+    MessageReference,
+    ApplicationCommandType,
+    BaseMessageComponents,
+    Embed,
+    PollAnswer,
+    PollMedia,
+    PublicUser,
+    float,
+    base64str,
+} from "@spacebar/schemas";
 
 export type BaseMessageCreateAttachment = {
     filename: string;
     title?: string; // clips only?
     description?: string; // alt text
-    duration_secs?: number; //flat
-    waveform?: string; //base64 byte array
+
+    duration_secs?: float; //flat
+    waveform?: base64str; //base64 byte array
 
     is_clip?: boolean;
     is_thumbnail?: boolean;

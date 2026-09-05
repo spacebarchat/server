@@ -14273,10 +14273,12 @@
                 "type": "string"
             },
             "duration_secs": {
-                "type": "integer"
+                "type": ": number",
+                "format": ": float"
             },
             "waveform": {
-                "type": "string"
+                "type": ": string",
+                "format": ": byte"
             },
             "title": {
                 "type": "string"
@@ -15785,7 +15787,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@749": {
+                    "__@unscopables@751": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -15911,17 +15913,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@747": {
+                            "__@iterator@749": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@749": {
+                            "__@unscopables@751": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@749",
+                    "__@unscopables@751",
                     "length"
                 ]
             },
@@ -16486,10 +16488,12 @@
                 "type": "string"
             },
             "duration_secs": {
-                "type": "integer"
+                "type": ": number",
+                "format": ": float"
             },
             "waveform": {
-                "type": "string"
+                "type": ": string",
+                "format": ": byte"
             },
             "is_clip": {
                 "type": "boolean"
@@ -16537,10 +16541,12 @@
                 "type": "string"
             },
             "duration_secs": {
-                "type": "integer"
+                "type": ": number",
+                "format": ": float"
             },
             "waveform": {
-                "type": "string"
+                "type": ": string",
+                "format": ": byte"
             },
             "is_clip": {
                 "type": "boolean"
