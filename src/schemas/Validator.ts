@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import Ajv from "ajv";
+import Ajv, { SchemaObject } from "ajv";
 import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
@@ -39,20 +39,25 @@ const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }).rep
 // 	}
 // }
 
-export const ajv = new Ajv({
-    allErrors: true,
-    parseDate: true,
-    allowDate: true,
-    // schemas: schemas,
-    coerceTypes: true,
-    messages: true,
-    strict: true,
-    strictRequired: true,
-    allowUnionTypes: true,
-});
+export const ajv = (function () {
+    console.log("[Validation] Initializing Ajv with", Object.entries(schemas).length, "schemas...");
+    const _ajv = new Ajv({
+        allErrors: true,
+        parseDate: true,
+        allowDate: true,
+        // schemas: schemas,
+        coerceTypes: true,
+        messages: true,
+        strict: true,
+        strictRequired: true,
+        allowUnionTypes: true,
+    });
 
-addFormats(ajv);
-ajv.addSchema(schemas);
+    addFormats(_ajv);
+    Object.entries(schemas).forEach((s) => _ajv.addSchema(s[1] as SchemaObject, s[0]));
+
+    return _ajv;
+})();
 
 export function validateSchema<G extends object>(schema: string, data: G): G {
     const valid = ajv.validate(schema, data);

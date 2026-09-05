@@ -13391,12 +13391,12 @@
                         "type": "string"
                     },
                     "duration_secs": {
-                        "type": ": number",
-                        "format": ": float"
+                        "type": "number",
+                        "format": "float"
                     },
                     "waveform": {
-                        "type": ": string",
-                        "format": ": byte"
+                        "type": "string",
+                        "format": "byte"
                     },
                     "title": {
                         "type": "string"
@@ -15450,12 +15450,12 @@
                         "type": "string"
                     },
                     "duration_secs": {
-                        "type": ": number",
-                        "format": ": float"
+                        "type": "number",
+                        "format": "float"
                     },
                     "waveform": {
-                        "type": ": string",
-                        "format": ": byte"
+                        "type": "string",
+                        "format": "byte"
                     },
                     "is_clip": {
                         "type": "boolean"
@@ -15501,12 +15501,12 @@
                         "type": "string"
                     },
                     "duration_secs": {
-                        "type": ": number",
-                        "format": ": float"
+                        "type": "number",
+                        "format": "float"
                     },
                     "waveform": {
-                        "type": ": string",
-                        "format": ": byte"
+                        "type": "string",
+                        "format": "byte"
                     },
                     "is_clip": {
                         "type": "boolean"
