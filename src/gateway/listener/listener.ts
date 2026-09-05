@@ -239,12 +239,14 @@ async function consume(this: WebSocket, opts: EventOpts) {
             break;
         case "RELATIONSHIP_REMOVE":
         case "CHANNEL_DELETE":
-        case "GUILD_DELETE":
-            this.events[id]?.();
-            delete this.events[id];
+        case "GUILD_DELETE": {
+            const removed_id = data.id as string;
+            if (!removed_id) break;
+            this.events[removed_id]?.();
+            delete this.events[removed_id];
             if (event === "GUILD_DELETE" && this.ipAddress) {
                 const ban = await Ban.findOne({
-                    where: { guild_id: id, user_id: this.user_id },
+                    where: { guild_id: removed_id, user_id: this.user_id },
                 });
 
                 if (ban) {
@@ -253,30 +255,37 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 }
             }
             break;
-        case "CHANNEL_CREATE":
+        }
+        case "CHANNEL_CREATE": {
             if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
-            this.events[id] = await listenEvent(id, consumer, listenOpts);
+            const channel_id = data.id as string;
+            this.events[channel_id] = await listenEvent(channel_id, consumer, listenOpts);
             break;
+        }
         case "RELATIONSHIP_ADD":
-            this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+            // don't let a payload without a user object stop the dispatch below
+            if (data.user?.id) this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
             break;
-        case "GUILD_CREATE":
+        case "GUILD_CREATE": {
+            const guild_id = data.id as string;
             await Promise.all([
                 ...data.channels.map(async ({ id }: { id: string }) => {
                     this.events[id] = await listenEvent(id, consumer, listenOpts);
                 }),
-                listenEvent(id, consumer, listenOpts).then((ret) => (this.events[id] = ret)),
+                listenEvent(guild_id, consumer, listenOpts).then((ret) => (this.events[guild_id] = ret)),
             ]);
             break;
+        }
         case "CHANNEL_UPDATE": {
-            const exists = this.events[id];
+            const channel_id = data.id as string;
+            const exists = this.events[channel_id];
             if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
                 if (exists) break;
-                this.events[id] = await listenEvent(id, consumer, listenOpts);
+                this.events[channel_id] = await listenEvent(channel_id, consumer, listenOpts);
             } else {
                 if (!exists) return; // return -> do not send channel update events for hidden channels
-                opts.cancel(id);
-                delete this.events[id];
+                opts.cancel(channel_id);
+                delete this.events[channel_id];
             }
             break;
         }

@@ -236,9 +236,9 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
             await relationship.save();
         } else {
             relationship = await Relationship.create({
-                to_id: id,
+                to: friend,
                 type: RelationshipType.blocked,
-                from_id: req.user_id,
+                from: user,
             }).save();
         }
 
