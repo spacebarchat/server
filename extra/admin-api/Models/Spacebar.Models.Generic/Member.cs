@@ -175,6 +175,12 @@ public class MemberJsonConverter : JsonConverter<Member>
                 writer.WritePropertyName("roles");
                 JsonSerializer.Serialize(writer, value.Roles);
             }
+
+            if (value is MemberWithPresence mwp && mwp.Presence != null)
+            {
+                writer.WritePropertyName("presence");
+                JsonSerializer.Serialize(writer, mwp.Presence);
+            }
         }
         writer.WriteEndObject();
     }
