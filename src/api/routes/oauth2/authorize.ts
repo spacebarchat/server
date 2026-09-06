@@ -193,7 +193,6 @@ router.post(
             });
         }
 
-        // TODO: ensure guild_id is not an empty string
         // TODO: captcha verification
         // TODO: MFA verification
 

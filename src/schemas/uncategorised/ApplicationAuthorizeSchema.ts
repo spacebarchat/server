@@ -18,6 +18,9 @@
 
 export interface ApplicationAuthorizeSchema {
     authorize: boolean;
+	/**
+	 * @minLength 1
+	 */
     guild_id: string;
     permissions: string;
     captcha_key?: string;
