@@ -1,17 +1,4 @@
 {
-    "CreateFingerprintResponse": {
-        "type": "object",
-        "properties": {
-            "fingerprint": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "fingerprint"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "ApplicationCommandSchema": {
         "type": "object",
         "properties": {
@@ -242,6 +229,7 @@
                 "type": "boolean"
             },
             "guild_id": {
+                "minLength": 1,
                 "type": "string"
             },
             "permissions": {
@@ -3632,9 +3620,6 @@
     "APIPrivateUser": {
         "type": "object",
         "properties": {
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
@@ -3702,6 +3687,9 @@
             },
             "mfa_enabled": {
                 "type": "boolean"
+            },
+            "email": {
+                "type": "string"
             },
             "phone": {
                 "type": "string"
@@ -3769,9 +3757,6 @@
             "newToken": {
                 "type": "string"
             },
-            "email": {
-                "type": "string"
-            },
             "id": {
                 "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
                 "type": "string"
@@ -3839,6 +3824,9 @@
             },
             "mfa_enabled": {
                 "type": "boolean"
+            },
+            "email": {
+                "type": "string"
             },
             "phone": {
                 "type": "string"
@@ -7651,9 +7639,7 @@
                 "additionalProperties": false
             },
             "intents": {
-                "type": "number",
-                "properties": {},
-                "additionalProperties": false
+                "type": "bigint"
             },
             "presence": {
                 "$ref": "#/definitions/ActivitySchema"
@@ -7672,9 +7658,7 @@
                 "maxItems": 2,
                 "type": "array",
                 "items": {
-                    "type": "number",
-                    "properties": {},
-                    "additionalProperties": false
+                    "type": "bigint"
                 }
             },
             "guild_subscriptions": {
@@ -8315,6 +8299,19 @@
             "api",
             "cdn",
             "gateway"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CreateFingerprintResponse": {
+        "type": "object",
+        "properties": {
+            "fingerprint": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "fingerprint"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -15787,7 +15784,7 @@
                     "length": {
                         "type": "integer"
                     },
-                    "__@unscopables@751": {
+                    "__@unscopables@744": {
                         "type": "object",
                         "additionalProperties": false,
                         "patternProperties": {
@@ -15913,17 +15910,17 @@
                             "with": {
                                 "type": "boolean"
                             },
-                            "__@iterator@749": {
+                            "__@iterator@742": {
                                 "type": "boolean"
                             },
-                            "__@unscopables@751": {
+                            "__@unscopables@744": {
                                 "type": "boolean"
                             }
                         }
                     }
                 },
                 "required": [
-                    "__@unscopables@751",
+                    "__@unscopables@744",
                     "length"
                 ]
             },
@@ -16265,18 +16262,10 @@
                 "type": "boolean",
                 "default": false
             },
-            "ip": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "global": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "error": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "routes": {
-                "$ref": "#/definitions/RouteRateLimit"
-            }
+            "ip": {},
+            "global": {},
+            "error": {},
+            "routes": {}
         },
         "additionalProperties": false,
         "required": [
@@ -16285,71 +16274,6 @@
             "global",
             "ip",
             "routes"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RateLimitOptions": {
-        "type": "object",
-        "properties": {
-            "bot": {
-                "type": "integer"
-            },
-            "count": {
-                "type": "integer"
-            },
-            "window": {
-                "type": "integer"
-            },
-            "onyIp": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "count",
-            "window"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RouteRateLimit": {
-        "type": "object",
-        "properties": {
-            "guild": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "webhook": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "channel": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "auth": {
-                "$ref": "#/definitions/AuthRateLimit"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "auth",
-            "channel",
-            "guild",
-            "webhook"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AuthRateLimit": {
-        "type": "object",
-        "properties": {
-            "login": {
-                "$ref": "#/definitions/RateLimitOptions"
-            },
-            "register": {
-                "$ref": "#/definitions/RateLimitOptions"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "login",
-            "register"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
