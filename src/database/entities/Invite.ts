@@ -22,6 +22,7 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
+import { InviteType, PublicInvite } from "@spacebar/schemas/api/guilds/Invite";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
@@ -104,10 +105,26 @@ export class Invite extends BaseClassWithoutId {
         if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
         return false;
     }
-    toPublicJSON() {
+    toPublicJSON(): PublicInvite {
         return {
-            ...this,
-            inviter: this.inviter.toPublicUser(),
+            code: this.code,
+            type: InviteType.GUILD, // TODO: support other invite types
+            channel: this.channel.toJSON(),
+            guild_id: this.guild_id,
+            guild: this.guild.toInviteGuild(),
+            profile: this.guild.toGuildProfile(),
+            inviter: this.inviter.toPartialUser(),
+            flags: this.flags,
+            expires_at: this.expires_at?.toString() ?? null,
+            approximate_member_count: this.guild.member_count,
+            approximate_presence_count: this.guild.presence_count,
+            is_nickname_changeable: true, // TODO
+            new_member: true, // TODO
+            roles: [], // TODO
+            show_verification_form: false, // TODO
+            target_type: undefined, // TODO
+            target_user: undefined, // TODO
+            target_users_job_status: undefined, // TODO
         };
     }
 

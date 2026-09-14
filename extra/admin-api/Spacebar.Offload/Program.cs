@@ -1,14 +1,10 @@
-using System.Diagnostics.Metrics;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using ArcaneLibs.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using Spacebar.Interop.Authentication;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Models.Db.Contexts;
-using Spacebar.Models.Generic;
 
 var builder = WebApplication.CreateBuilder(args);
 if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("APPSETTINGS_PATH")))

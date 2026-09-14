@@ -19,6 +19,7 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
 import { Invite, PublicInviteRelation } from "@spacebar/database";
+import { InviteListResponse } from "@spacebar/schemas/api/guilds/Invite";
 
 const router = Router({ mergeParams: true });
 
@@ -28,7 +29,7 @@ router.get(
         permission: "MANAGE_GUILD",
         responses: {
             200: {
-                body: "APIInviteArray",
+                body: "InviteListResponse",
             },
         },
     }),
@@ -48,7 +49,7 @@ router.get(
                 }),
         );
 
-        return res.json(invites.filter((i) => !i.isExpired()));
+        return res.json(invites.filter((i) => !i.isExpired()).map((x) => x.toPublicJSON()) satisfies InviteListResponse);
     },
 );
 

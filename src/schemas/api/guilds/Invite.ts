@@ -20,17 +20,18 @@ import { Snowflake } from "../../Identifiers";
 import { PartialUser } from "../users";
 import { GuildNsfwLevel, GuildPremiumTier, GuildVerificationLevel } from "./GuildSchema";
 import { GuildProfileResponse, PublicChannel, RoleColors } from "@spacebar/schemas";
-import { Role } from "@spacebar/database";
 
-export interface Invite {
+export type InviteListResponse = PublicInvite[];
+
+export interface PublicInvite {
     code: string;
-    type: number;
+    type: InviteType;
     channel: PublicChannel | null; // TODO: Figure out what fields this is *supposed* to have as it's labeled as "Partial channel object"
     guild_id?: Snowflake;
     guild?: InviteGuild;
     profile?: GuildProfileResponse;
     inviter?: PartialUser;
-    flags?: number;
+    flags?: InviteFlags;
     target_type?: number;
     target_user?: PartialUser;
     // target_application?: PartialApplication; // TODO - voice activities
@@ -43,6 +44,19 @@ export interface Invite {
     show_verification_form?: boolean;
     is_nickname_changeable?: boolean;
     target_users_job_status?: InviteTargetUsersJob; // TODO
+}
+
+export enum InviteType {
+    GUILD = 0,
+    GROUP_DM = 1,
+    FRIEND = 2,
+}
+
+export enum InviteFlags {
+    IS_GUEST_INVITE = 1 << 0, // temporary voice channel access
+    IS_VIEWED = 1 << 1, // TODO
+    IS_ENHANCED = 1 << 2, // Unknown
+    IS_APPLICATION_BYPASS = 1 << 3, // Bypass guild join requests -> pending=false
 }
 
 export interface InviteTargetUsersJob {

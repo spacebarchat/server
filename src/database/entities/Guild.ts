@@ -18,8 +18,17 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { arrayRemove } from "@spacebar/extensions";
-import { Config, Snowflake, handleFile } from "@spacebar/util";
-import { DiscoverableGuild, GuildWelcomeScreen, IntegrationGuild } from "@spacebar/schemas";
+import { Config, handleFile, Snowflake } from "@spacebar/util";
+import {
+    DiscoverableGuild,
+    GuildNsfwLevel,
+    GuildPremiumTier,
+    GuildProfileResponse,
+    GuildVerificationLevel,
+    GuildVisibilityLevel,
+    GuildWelcomeScreen,
+    IntegrationGuild,
+} from "@spacebar/schemas";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
@@ -33,6 +42,7 @@ import { User } from "./User";
 import { VoiceState } from "./VoiceState";
 import { Webhook } from "./Webhook";
 import { Categories } from "./Categories";
+import { InviteGuild } from "@spacebar/schemas/api/guilds/Invite";
 // TODO: application_command_count, application_command_counts: {1: 0, 2: 0, 3: 0}
 // TODO: guild_scheduled_events
 // TODO: stage_instances
@@ -511,5 +521,49 @@ export class Guild extends BaseClass {
             template_id: undefined,
             presence_count: undefined,
         };
+    }
+
+    toInviteGuild(): InviteGuild {
+        return {
+            id: this.id,
+            name: this.name,
+            icon: this.icon ?? null,
+            description: this.description ?? null,
+            banner: this.banner ?? null,
+            splash: this.splash ?? null,
+            verification_level: this.verification_level ?? GuildVerificationLevel.NONE,
+            features: this.features,
+            vanity_url_code: null, //this.vanity_url_code, // TODO: store this in db?
+            premium_subscription_count: this.premium_subscription_count,
+            premium_tier: this.premium_tier ?? GuildPremiumTier.NONE,
+            nsfw: this.nsfw,
+            nsfw_level: this.nsfw_level ?? GuildNsfwLevel.DEFAULT,
+        } satisfies InviteGuild;
+    }
+
+    toGuildProfile(): GuildProfileResponse {
+        return {
+            id: this.id,
+            name: this.name,
+            icon_hash: this.icon ?? null,
+            member_count: this.member_count ?? 0,
+            online_count: this.presence_count ?? 0,
+            description: this.description ?? "",
+            brand_color_primary: undefined, // TODO
+            game_application_ids: [], // TODO
+            game_activity: {}, // TODO
+            tag: null, // TODO
+            badge: null, // TODO
+            badge_color_primary: "", // TODO
+            badge_color_secondary: "", // TODO
+            badge_hash: "", // TODO
+            traits: [], // TODO
+            features: this.features, // TODO: should we filter this?
+            visibility: GuildVisibilityLevel.PUBLIC, // TODO
+            custom_banner_hash: this.discovery_splash ?? null,
+            premium_subscription_count: this.premium_subscription_count ?? 0,
+            premium_tier: this.premium_tier ?? GuildPremiumTier.NONE,
+            banner_hash: null, // Deprecated, TODO: clan banner hash
+        } satisfies GuildProfileResponse;
     }
 }

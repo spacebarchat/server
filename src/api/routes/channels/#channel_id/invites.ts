@@ -23,6 +23,7 @@ import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/da
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
 import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
 import { Random } from "@spacebar/extensions";
+import { InviteListResponse } from "@spacebar/schemas/api/guilds/Invite";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -94,7 +95,7 @@ router.get(
         permission: "MANAGE_CHANNELS",
         responses: {
             200: {
-                body: "APIInviteArray",
+                body: "InviteListResponse",
             },
             404: {},
         },
@@ -110,12 +111,14 @@ router.get(
         }
         const { guild_id } = channel;
 
-        const invites = await Invite.find({
-            where: { guild_id, channel_id },
-            relations: Object.fromEntries(PublicInviteRelation.map((i) => [i, true])), //TODO: cleanup
-        });
+        const invites = (
+            await Invite.find({
+                where: { guild_id, channel_id },
+                relations: Object.fromEntries(PublicInviteRelation.map((i) => [i, true])), //TODO: cleanup
+            })
+        ).map((x) => x.toPublicJSON());
 
-        res.status(200).send(invites);
+        res.status(200).send(invites satisfies InviteListResponse);
     },
 );
 

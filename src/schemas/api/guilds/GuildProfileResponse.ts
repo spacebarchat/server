@@ -16,6 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { GuildPremiumTier } from "@spacebar/schemas";
+
 export interface GuildProfileResponse {
     id: string;
     name: string;
@@ -23,12 +25,12 @@ export interface GuildProfileResponse {
     member_count: number;
     online_count: number;
     description: string;
-    brand_color_primary: string;
+    brand_color_primary?: string;
     banner_hash: string | null;
     game_application_ids: string[];
     game_activity: { [id: string]: GameActivity };
     tag: string | null;
-    badge: GuildBadgeType;
+    badge: GuildBadgeType | null;
     badge_color_primary: string;
     badge_color_secondary: string;
     badge_hash: string;
@@ -37,7 +39,7 @@ export interface GuildProfileResponse {
     visibility: GuildVisibilityLevel;
     custom_banner_hash: string | null;
     premium_subscription_count: number;
-    premium_tier: number;
+    premium_tier: GuildPremiumTier;
 }
 
 export interface GameActivity {

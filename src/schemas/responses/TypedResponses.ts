@@ -37,7 +37,6 @@ export type ApplicationDetectableResponse = unknown[];
 export type ApplicationEntitlementsResponse = unknown[];
 export type ApplicationSkusResponse = unknown[];
 export type APIApplicationArray = Application[];
-export type APIInviteArray = Invite[];
 export type APIDiscoveryCategoryArray = Categories[];
 export type APIChannelArray = Channel[];
 
