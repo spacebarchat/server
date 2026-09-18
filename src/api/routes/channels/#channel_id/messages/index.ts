@@ -373,7 +373,7 @@ router.post(
                     ],
                 });
 
-                if (relationship?.type === RelationshipType.blocked) {
+                if (relationship?.type === RelationshipType.BLOCKED) {
                     throw DiscordApiErrors.CANNOT_MESSAGE_USER;
                 }
             }

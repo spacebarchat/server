@@ -38,7 +38,7 @@ export function getMostRelevantSession(sessions: Session[]) {
 
 export async function distributePresenceUpdate(userId: string, data: PresenceUpdateEvent) {
     let relationships: Relationship[] | undefined = await Relationship.find({
-        where: { from_id: userId, type: RelationshipType.friends },
+        where: { from_id: userId, type: RelationshipType.FRIEND },
         select: { from_id: true, to_id: true },
     });
     for (const rel of relationships)

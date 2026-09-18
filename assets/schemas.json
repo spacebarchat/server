@@ -186,6 +186,159 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "JsonArray": {
+        "type": "object",
+        "additionalProperties": false,
+        "patternProperties": {
+            "^[0-9]+$": {
+                "$ref": "#/definitions/JsonValue"
+            }
+        },
+        "properties": {
+            "length": {
+                "type": "integer"
+            },
+            "__@unscopables@751": {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "type": "boolean"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "boolean"
+                    },
+                    "toString": {
+                        "type": "boolean"
+                    },
+                    "toLocaleString": {
+                        "type": "boolean"
+                    },
+                    "pop": {
+                        "type": "boolean"
+                    },
+                    "push": {
+                        "type": "boolean"
+                    },
+                    "concat": {
+                        "type": "boolean"
+                    },
+                    "join": {
+                        "type": "boolean"
+                    },
+                    "reverse": {
+                        "type": "boolean"
+                    },
+                    "shift": {
+                        "type": "boolean"
+                    },
+                    "slice": {
+                        "type": "boolean"
+                    },
+                    "sort": {
+                        "type": "boolean"
+                    },
+                    "splice": {
+                        "type": "boolean"
+                    },
+                    "unshift": {
+                        "type": "boolean"
+                    },
+                    "indexOf": {
+                        "type": "boolean"
+                    },
+                    "lastIndexOf": {
+                        "type": "boolean"
+                    },
+                    "every": {
+                        "type": "boolean"
+                    },
+                    "some": {
+                        "type": "boolean"
+                    },
+                    "forEach": {
+                        "type": "boolean"
+                    },
+                    "map": {
+                        "type": "boolean"
+                    },
+                    "filter": {
+                        "type": "boolean"
+                    },
+                    "reduce": {
+                        "type": "boolean"
+                    },
+                    "reduceRight": {
+                        "type": "boolean"
+                    },
+                    "find": {
+                        "type": "boolean"
+                    },
+                    "findIndex": {
+                        "type": "boolean"
+                    },
+                    "fill": {
+                        "type": "boolean"
+                    },
+                    "copyWithin": {
+                        "type": "boolean"
+                    },
+                    "entries": {
+                        "type": "boolean"
+                    },
+                    "keys": {
+                        "type": "boolean"
+                    },
+                    "values": {
+                        "type": "boolean"
+                    },
+                    "includes": {
+                        "type": "boolean"
+                    },
+                    "flatMap": {
+                        "type": "boolean"
+                    },
+                    "flat": {
+                        "type": "boolean"
+                    },
+                    "at": {
+                        "type": "boolean"
+                    },
+                    "findLast": {
+                        "type": "boolean"
+                    },
+                    "findLastIndex": {
+                        "type": "boolean"
+                    },
+                    "toReversed": {
+                        "type": "boolean"
+                    },
+                    "toSorted": {
+                        "type": "boolean"
+                    },
+                    "toSpliced": {
+                        "type": "boolean"
+                    },
+                    "with": {
+                        "type": "boolean"
+                    },
+                    "__@iterator@749": {
+                        "type": "boolean"
+                    },
+                    "__@unscopables@751": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "required": [
+            "__@unscopables@751",
+            "length"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "InstanceUserDeleteSchema": {
         "$ref": "#/definitions/InstanceUserDeleteSchemaContent",
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -194,6 +347,207 @@
         "type": "array",
         "items": {
             "$ref": "#/definitions/PublicMember"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PartialRelationshipSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/RelationshipType"
+            },
+            "nickname": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "stranger_request": {
+                "type": "boolean"
+            },
+            "user_ignored": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "nickname",
+            "type",
+            "user_ignored"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipListSchema": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/RelationshipSchema"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/RelationshipType"
+            },
+            "user": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "nickname": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "is_spam_request": {
+                "type": "boolean"
+            },
+            "stranger_request": {
+                "type": "boolean"
+            },
+            "user_ignored": {
+                "type": "boolean"
+            },
+            "origin_application_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "since": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "has_played_game": {
+                "type": "boolean"
+            },
+            "note": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "nickname",
+            "type",
+            "user",
+            "user_ignored"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SendRelationshipRequestSchema": {
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "note": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "discriminator",
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipCreateSchema": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "enum": [
+                    -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "type": "number"
+            },
+            "from_friend_suggestion": {
+                "type": "boolean"
+            },
+            "confirm_stranger_request": {
+                "type": "boolean"
+            },
+            "note": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipModifySchema": {
+        "type": "object",
+        "properties": {
+            "nickname": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserMutualRelationResponse": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "public_flags": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "discriminator",
+            "id",
+            "public_flags",
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserMutualRelationsResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/UserMutualRelationResponse"
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -2080,6 +2434,13 @@
             "nonce",
             "regenerate_nonce"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BackupCodeArray": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/BackupCode"
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "CollectiblesCategoriesResponse": {
@@ -4338,66 +4699,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "UserRelationResponse": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "avatar": {
-                "type": "string"
-            },
-            "public_flags": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "discriminator",
-            "id",
-            "public_flags",
-            "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserRelationsResponse": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/UserRelationResponse"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserRelationshipsResponse": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/RelationshipType"
-            },
-            "nickname": {
-                "type": "null"
-            },
-            "user": {
-                "$ref": "#/definitions/PublicUser"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "id",
-            "nickname",
-            "type",
-            "user"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "WebAuthnCreateResponse": {
         "type": "object",
         "properties": {
@@ -5246,52 +5547,6 @@
             "consent",
             "username"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPostSchema": {
-        "type": "object",
-        "properties": {
-            "discriminator": {
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "discriminator",
-            "username"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPatchSchema": {
-        "type": "object",
-        "properties": {
-            "nickname": {
-                "type": "string"
-            }
-        },
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipPutSchema": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "enum": [
-                    1,
-                    2,
-                    3,
-                    4
-                ],
-                "type": "number"
-            },
-            "confirm_stranger_request": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "RequestGuildMembersSchema": {
@@ -7477,6 +7732,13 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ReportMenuTypeNameArray": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/ReportMenuType"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ReportingMenuResponse": {
         "type": "object",
         "properties": {
@@ -8458,6 +8720,179 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "JsonValue": {
+        "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
+        "anyOf": [
+            {
+                "description": "Represents a JSON object.",
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/definitions/JsonValue"
+                }
+            },
+            {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "$ref": "#/definitions/JsonValue"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "integer"
+                    },
+                    "__@unscopables@751": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "type": "boolean"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "boolean"
+                            },
+                            "toString": {
+                                "type": "boolean"
+                            },
+                            "toLocaleString": {
+                                "type": "boolean"
+                            },
+                            "pop": {
+                                "type": "boolean"
+                            },
+                            "push": {
+                                "type": "boolean"
+                            },
+                            "concat": {
+                                "type": "boolean"
+                            },
+                            "join": {
+                                "type": "boolean"
+                            },
+                            "reverse": {
+                                "type": "boolean"
+                            },
+                            "shift": {
+                                "type": "boolean"
+                            },
+                            "slice": {
+                                "type": "boolean"
+                            },
+                            "sort": {
+                                "type": "boolean"
+                            },
+                            "splice": {
+                                "type": "boolean"
+                            },
+                            "unshift": {
+                                "type": "boolean"
+                            },
+                            "indexOf": {
+                                "type": "boolean"
+                            },
+                            "lastIndexOf": {
+                                "type": "boolean"
+                            },
+                            "every": {
+                                "type": "boolean"
+                            },
+                            "some": {
+                                "type": "boolean"
+                            },
+                            "forEach": {
+                                "type": "boolean"
+                            },
+                            "map": {
+                                "type": "boolean"
+                            },
+                            "filter": {
+                                "type": "boolean"
+                            },
+                            "reduce": {
+                                "type": "boolean"
+                            },
+                            "reduceRight": {
+                                "type": "boolean"
+                            },
+                            "find": {
+                                "type": "boolean"
+                            },
+                            "findIndex": {
+                                "type": "boolean"
+                            },
+                            "fill": {
+                                "type": "boolean"
+                            },
+                            "copyWithin": {
+                                "type": "boolean"
+                            },
+                            "entries": {
+                                "type": "boolean"
+                            },
+                            "keys": {
+                                "type": "boolean"
+                            },
+                            "values": {
+                                "type": "boolean"
+                            },
+                            "includes": {
+                                "type": "boolean"
+                            },
+                            "flatMap": {
+                                "type": "boolean"
+                            },
+                            "flat": {
+                                "type": "boolean"
+                            },
+                            "at": {
+                                "type": "boolean"
+                            },
+                            "findLast": {
+                                "type": "boolean"
+                            },
+                            "findLastIndex": {
+                                "type": "boolean"
+                            },
+                            "toReversed": {
+                                "type": "boolean"
+                            },
+                            "toSorted": {
+                                "type": "boolean"
+                            },
+                            "toSpliced": {
+                                "type": "boolean"
+                            },
+                            "with": {
+                                "type": "boolean"
+                            },
+                            "__@iterator@749": {
+                                "type": "boolean"
+                            },
+                            "__@unscopables@751": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "__@unscopables@751",
+                    "length"
+                ]
+            },
+            {
+                "type": [
+                    "null",
+                    "string",
+                    "integer",
+                    "boolean"
+                ]
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "InstanceUserDeleteSchemaContent": {
         "type": "object",
         "properties": {
@@ -8773,6 +9208,116 @@
             "identity_enabled",
             "identity_guild_id",
             "tag"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RelationshipType": {
+        "type": "number",
+        "enum": [
+            -1,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PartialUser": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": "string"
+            },
+            "global_name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "avatar": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "avatar_decoration_data": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/AvatarDecorationData"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "collectibles": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Collectibles"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "display_name_styles": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/DisplayNameStyle"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "primary_guild": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PrimaryGuild"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "bot": {
+                "type": "boolean"
+            },
+            "system": {
+                "type": "boolean"
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "accent_color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "public_flags": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "avatar",
+            "discriminator",
+            "id",
+            "username"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -9423,102 +9968,6 @@
             0,
             1,
             2
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PartialUser": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "username": {
-                "type": "string"
-            },
-            "discriminator": {
-                "type": "string"
-            },
-            "global_name": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "avatar": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "avatar_decoration_data": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/AvatarDecorationData"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "collectibles": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/Collectibles"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "display_name_styles": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/DisplayNameStyle"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "primary_guild": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/PrimaryGuild"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "bot": {
-                "type": "boolean"
-            },
-            "system": {
-                "type": "boolean"
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "accent_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "public_flags": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "avatar",
-            "discriminator",
-            "id",
-            "username"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -10226,6 +10675,22 @@
             "type": {
                 "$ref": "#/definitions/RelationshipType"
             },
+            "user_ignored": {
+                "type": "boolean"
+            },
+            "note": {
+                "type": "string"
+            },
+            "stranger_request": {
+                "type": "boolean"
+            },
+            "is_spam_request": {
+                "type": "boolean"
+            },
+            "since": {
+                "type": "string",
+                "format": "date-time"
+            },
             "id": {
                 "type": "string"
             }
@@ -10235,19 +10700,11 @@
             "from",
             "from_id",
             "id",
+            "is_spam_request",
             "to",
             "to_id",
-            "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RelationshipType": {
-        "type": "number",
-        "enum": [
-            4,
-            3,
-            2,
-            1
+            "type",
+            "user_ignored"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -14499,6 +14956,23 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "BackupCode": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            },
+            "consumed": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "code",
+            "consumed"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "CollectiblesCategoryItem": {
         "type": "object",
         "properties": {
@@ -16091,196 +16565,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "JsonValue": {
-        "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
-        "anyOf": [
-            {
-                "description": "Represents a JSON object.",
-                "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/definitions/JsonValue"
-                }
-            },
-            {
-                "type": "object",
-                "additionalProperties": false,
-                "patternProperties": {
-                    "^[0-9]+$": {
-                        "$ref": "#/definitions/JsonValue"
-                    }
-                },
-                "properties": {
-                    "length": {
-                        "type": "integer"
-                    },
-                    "__@unscopables@751": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "patternProperties": {
-                            "^[0-9]+$": {
-                                "type": "boolean"
-                            }
-                        },
-                        "properties": {
-                            "length": {
-                                "type": "boolean"
-                            },
-                            "toString": {
-                                "type": "boolean"
-                            },
-                            "toLocaleString": {
-                                "type": "boolean"
-                            },
-                            "pop": {
-                                "type": "boolean"
-                            },
-                            "push": {
-                                "type": "boolean"
-                            },
-                            "concat": {
-                                "type": "boolean"
-                            },
-                            "join": {
-                                "type": "boolean"
-                            },
-                            "reverse": {
-                                "type": "boolean"
-                            },
-                            "shift": {
-                                "type": "boolean"
-                            },
-                            "slice": {
-                                "type": "boolean"
-                            },
-                            "sort": {
-                                "type": "boolean"
-                            },
-                            "splice": {
-                                "type": "boolean"
-                            },
-                            "unshift": {
-                                "type": "boolean"
-                            },
-                            "indexOf": {
-                                "type": "boolean"
-                            },
-                            "lastIndexOf": {
-                                "type": "boolean"
-                            },
-                            "every": {
-                                "type": "boolean"
-                            },
-                            "some": {
-                                "type": "boolean"
-                            },
-                            "forEach": {
-                                "type": "boolean"
-                            },
-                            "map": {
-                                "type": "boolean"
-                            },
-                            "filter": {
-                                "type": "boolean"
-                            },
-                            "reduce": {
-                                "type": "boolean"
-                            },
-                            "reduceRight": {
-                                "type": "boolean"
-                            },
-                            "find": {
-                                "type": "boolean"
-                            },
-                            "findIndex": {
-                                "type": "boolean"
-                            },
-                            "fill": {
-                                "type": "boolean"
-                            },
-                            "copyWithin": {
-                                "type": "boolean"
-                            },
-                            "entries": {
-                                "type": "boolean"
-                            },
-                            "keys": {
-                                "type": "boolean"
-                            },
-                            "values": {
-                                "type": "boolean"
-                            },
-                            "includes": {
-                                "type": "boolean"
-                            },
-                            "flatMap": {
-                                "type": "boolean"
-                            },
-                            "flat": {
-                                "type": "boolean"
-                            },
-                            "at": {
-                                "type": "boolean"
-                            },
-                            "findLast": {
-                                "type": "boolean"
-                            },
-                            "findLastIndex": {
-                                "type": "boolean"
-                            },
-                            "toReversed": {
-                                "type": "boolean"
-                            },
-                            "toSorted": {
-                                "type": "boolean"
-                            },
-                            "toSpliced": {
-                                "type": "boolean"
-                            },
-                            "with": {
-                                "type": "boolean"
-                            },
-                            "__@iterator@749": {
-                                "type": "boolean"
-                            },
-                            "__@unscopables@751": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                },
-                "required": [
-                    "__@unscopables@751",
-                    "length"
-                ]
-            },
-            {
-                "type": [
-                    "null",
-                    "string",
-                    "integer",
-                    "boolean"
-                ]
-            }
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "BackupCode": {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "string"
-            },
-            "consumed": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "code",
-            "consumed"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "DmChannelDTO": {
         "type": "object",
         "properties": {
@@ -17536,6 +17820,22 @@
         "required": [
             "name",
             "src"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ReportMenuType": {
+        "type": "string",
+        "enum": [
+            "guild",
+            "guild_discovery",
+            "guild_directory_entry",
+            "guild_scheduled_event",
+            "message",
+            "stage_channel",
+            "first_dm",
+            "user",
+            "application",
+            "widget"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

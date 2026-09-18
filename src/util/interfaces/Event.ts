@@ -25,12 +25,14 @@ import {
     Interaction,
     InteractionFailureReason,
     PartialEmoji,
+    PartialRelationshipSchema,
     PrivateStatus,
     PublicChannel,
     PublicMember,
     PublicMessage,
     PublicUser,
     PublicVoiceState,
+    RelationshipSchema,
     RelationshipType,
     UserPrivate,
 } from "@spacebar/schemas";
@@ -53,13 +55,6 @@ export interface Event {
 
 export interface InvalidatedEvent extends Event {
     event: "INVALIDATED";
-}
-
-export interface PublicRelationship {
-    id: string;
-    user: PublicUser;
-    type: RelationshipType;
-    nickname?: string;
 }
 
 // ! END Custom Events that shouldn't get sent to the client but processed by the server
@@ -97,7 +92,7 @@ export interface ReadyEventData {
     user_settings?: UserSettings;
     user_settings_proto?: string;
     user_settings_proto_json?: JsonValue;
-    relationships?: PublicRelationship[]; // TODO
+    relationships?: RelationshipSchema[]; // TODO
     read_state: {
         entries: ReadState[]; // TODO
         partial: boolean;
@@ -582,22 +577,18 @@ export interface MessageAckEvent extends Event {
 
 export interface RelationshipAddEvent extends Event {
     event: "RELATIONSHIP_ADD";
-    data: PublicRelationship & {
+    data: RelationshipSchema & {
         should_notify?: boolean;
-        user: PublicUser;
     };
 }
 export interface RelationshipUpdateEvent extends Event {
     event: "RELATIONSHIP_UPDATE";
-    data: PublicRelationship & {
-        should_notify?: boolean;
-        user: PublicUser;
-    };
+    data: PartialRelationshipSchema;
 }
 
 export interface RelationshipRemoveEvent extends Event {
     event: "RELATIONSHIP_REMOVE";
-    data: Omit<PublicRelationship, "nickname">;
+    data: PartialRelationshipSchema;
 }
 
 export interface GatewaySessionClientInfo {

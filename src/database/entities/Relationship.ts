@@ -19,7 +19,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
-import { RelationshipType } from "@spacebar/schemas";
+import { PartialRelationshipSchema, RelationshipSchema, RelationshipType } from "@spacebar/schemas";
 
 @Entity({
     name: "relationships",
@@ -52,12 +52,44 @@ export class Relationship extends BaseClass {
     @Column({ type: "int" })
     type: RelationshipType;
 
+    @Column()
+    user_ignored: boolean;
+
+    @Column({ nullable: true })
+    note?: string;
+
+    @Column({ nullable: true })
+    stranger_request?: boolean;
+
+    @Column({ nullable: true })
+    is_spam_request: boolean;
+
+    @Column({ nullable: true, type: "timestamp with time zone" })
+    since?: Date;
+
     toPublicRelationship() {
         return {
             id: this.to?.id || this.to_id,
             type: this.type,
-            nickname: this.nickname,
-            user: this.to?.toPublicUser(),
-        };
+            nickname: this.nickname ?? null,
+            user: this.to?.toPartialUser(),
+            user_ignored: this.user_ignored,
+            note: this.note,
+            stranger_request: this.stranger_request,
+            is_spam_request: this.is_spam_request,
+            origin_application_id: undefined, // we dont support this oauth behavior yet
+            since: this.since,
+        } satisfies RelationshipSchema;
+    }
+
+    toPartialRelationship(): PartialRelationshipSchema {
+        return {
+            id: this.to?.id ?? this.to_id,
+            nickname: this.nickname ?? null,
+            type: this.type,
+            user_ignored: this.user_ignored,
+            since: this.since,
+            stranger_request: this.stranger_request,
+        } satisfies PartialRelationshipSchema;
     }
 }

@@ -19,13 +19,14 @@
 import { route } from "@spacebar/api/middlewares";
 import { User } from "@spacebar/database";
 import { Request, Response, Router } from "express";
-import { UserRelationsResponse } from "@spacebar/schemas";
+import { UserMutualRelationsResponse } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
 router.get(
     "/",
     route({
+        description: "Get mutual relationships",
         responses: {
             200: { body: "UserRelationsResponse" },
             404: {
@@ -34,7 +35,7 @@ router.get(
         },
     }),
     async (req: Request, res: Response) => {
-        const mutual_relations: UserRelationsResponse = [];
+        const mutual_relations: UserMutualRelationsResponse = [];
 
         const requested_relations = await User.findOneOrFail({
             where: { id: req.params.user_id as string },

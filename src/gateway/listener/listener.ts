@@ -57,7 +57,7 @@ export async function setupListener(this: WebSocket) {
         Relationship.find({
             where: {
                 from_id: this.user_id,
-                type: RelationshipType.friends,
+                type: RelationshipType.FRIEND,
             },
         }),
     ]);

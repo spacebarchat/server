@@ -335,7 +335,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     const userMetaQueryTime = taskSw.getElapsedAndReset();
 
-    const friendPresenceUserIds = [...new Set(relationships.filter((relationship) => relationship.type === RelationshipType.friends).map((relationship) => relationship.to_id))];
+    const friendPresenceUserIds = [...new Set(relationships.filter((relationship) => relationship.type === RelationshipType.FRIEND).map((relationship) => relationship.to_id))];
     const { result: friendPresenceSessions, elapsed: friendPresenceSessionsQueryTime } = await timePromise(() =>
         friendPresenceUserIds.length === 0
             ? Promise.resolve([] as Session[])

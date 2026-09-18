@@ -1,6 +1,9 @@
 {
     "include": [
-        "MessageInteractionSchema"
+        "MessageInteractionSchema",
+        "BackupCodeArray",
+        "MessageListResponse",
+        "ReportMenuTypeNames"
     ],
     "includeRe": [
         "^MessageComponentType\\..*",

@@ -205,6 +205,157 @@
                     "type"
                 ]
             },
+            "JsonArray": {
+                "type": "object",
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "$ref": "#/components/schemas/JsonValue"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "integer"
+                    },
+                    "__@unscopables@751": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "type": "boolean"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "boolean"
+                            },
+                            "toString": {
+                                "type": "boolean"
+                            },
+                            "toLocaleString": {
+                                "type": "boolean"
+                            },
+                            "pop": {
+                                "type": "boolean"
+                            },
+                            "push": {
+                                "type": "boolean"
+                            },
+                            "concat": {
+                                "type": "boolean"
+                            },
+                            "join": {
+                                "type": "boolean"
+                            },
+                            "reverse": {
+                                "type": "boolean"
+                            },
+                            "shift": {
+                                "type": "boolean"
+                            },
+                            "slice": {
+                                "type": "boolean"
+                            },
+                            "sort": {
+                                "type": "boolean"
+                            },
+                            "splice": {
+                                "type": "boolean"
+                            },
+                            "unshift": {
+                                "type": "boolean"
+                            },
+                            "indexOf": {
+                                "type": "boolean"
+                            },
+                            "lastIndexOf": {
+                                "type": "boolean"
+                            },
+                            "every": {
+                                "type": "boolean"
+                            },
+                            "some": {
+                                "type": "boolean"
+                            },
+                            "forEach": {
+                                "type": "boolean"
+                            },
+                            "map": {
+                                "type": "boolean"
+                            },
+                            "filter": {
+                                "type": "boolean"
+                            },
+                            "reduce": {
+                                "type": "boolean"
+                            },
+                            "reduceRight": {
+                                "type": "boolean"
+                            },
+                            "find": {
+                                "type": "boolean"
+                            },
+                            "findIndex": {
+                                "type": "boolean"
+                            },
+                            "fill": {
+                                "type": "boolean"
+                            },
+                            "copyWithin": {
+                                "type": "boolean"
+                            },
+                            "entries": {
+                                "type": "boolean"
+                            },
+                            "keys": {
+                                "type": "boolean"
+                            },
+                            "values": {
+                                "type": "boolean"
+                            },
+                            "includes": {
+                                "type": "boolean"
+                            },
+                            "flatMap": {
+                                "type": "boolean"
+                            },
+                            "flat": {
+                                "type": "boolean"
+                            },
+                            "at": {
+                                "type": "boolean"
+                            },
+                            "findLast": {
+                                "type": "boolean"
+                            },
+                            "findLastIndex": {
+                                "type": "boolean"
+                            },
+                            "toReversed": {
+                                "type": "boolean"
+                            },
+                            "toSorted": {
+                                "type": "boolean"
+                            },
+                            "toSpliced": {
+                                "type": "boolean"
+                            },
+                            "with": {
+                                "type": "boolean"
+                            },
+                            "__@iterator@749": {
+                                "type": "boolean"
+                            },
+                            "__@unscopables@751": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "__@unscopables@751",
+                    "length"
+                ]
+            },
             "InstanceUserDeleteSchema": {
                 "$ref": "#/components/schemas/InstanceUserDeleteSchemaContent"
             },
@@ -212,6 +363,181 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/PublicMember"
+                }
+            },
+            "PartialRelationshipSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "stranger_request": {
+                        "type": "boolean"
+                    },
+                    "user_ignored": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nickname",
+                    "type",
+                    "user_ignored"
+                ]
+            },
+            "RelationshipListSchema": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/RelationshipSchema"
+                }
+            },
+            "RelationshipSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/RelationshipType"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_spam_request": {
+                        "type": "boolean"
+                    },
+                    "stranger_request": {
+                        "type": "boolean"
+                    },
+                    "user_ignored": {
+                        "type": "boolean"
+                    },
+                    "origin_application_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "has_played_game": {
+                        "type": "boolean"
+                    },
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nickname",
+                    "type",
+                    "user",
+                    "user_ignored"
+                ]
+            },
+            "SendRelationshipRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "discriminator",
+                    "username"
+                ]
+            },
+            "RelationshipCreateSchema": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [
+                            -1,
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        "type": "number"
+                    },
+                    "from_friend_suggestion": {
+                        "type": "boolean"
+                    },
+                    "confirm_stranger_request": {
+                        "type": "boolean"
+                    },
+                    "note": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "RelationshipModifySchema": {
+                "type": "object",
+                "properties": {
+                    "nickname": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserMutualRelationResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "discriminator",
+                    "id",
+                    "public_flags",
+                    "username"
+                ]
+            },
+            "UserMutualRelationsResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/UserMutualRelationResponse"
                 }
             },
             "SessionsLogoutSchema": {
@@ -1983,6 +2309,12 @@
                     "nonce",
                     "regenerate_nonce"
                 ]
+            },
+            "BackupCodeArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/BackupCode"
+                }
             },
             "CollectiblesCategoriesResponse": {
                 "type": "array",
@@ -4067,61 +4399,6 @@
                     "user_profile"
                 ]
             },
-            "UserRelationResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "discriminator",
-                    "id",
-                    "public_flags",
-                    "username"
-                ]
-            },
-            "UserRelationsResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/UserRelationResponse"
-                }
-            },
-            "UserRelationshipsResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/RelationshipType"
-                    },
-                    "nickname": {
-                        "type": "null"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/PublicUser"
-                    }
-                },
-                "required": [
-                    "id",
-                    "nickname",
-                    "type",
-                    "user"
-                ]
-            },
             "WebAuthnCreateResponse": {
                 "type": "object",
                 "properties": {
@@ -4918,46 +5195,6 @@
                     "consent",
                     "username"
                 ]
-            },
-            "RelationshipPostSchema": {
-                "type": "object",
-                "properties": {
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "discriminator",
-                    "username"
-                ]
-            },
-            "RelationshipPatchSchema": {
-                "type": "object",
-                "properties": {
-                    "nickname": {
-                        "type": "string"
-                    }
-                }
-            },
-            "RelationshipPutSchema": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "enum": [
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "type": "number"
-                    },
-                    "confirm_stranger_request": {
-                        "type": "boolean"
-                    }
-                }
             },
             "RequestGuildMembersSchema": {
                 "type": "object",
@@ -6980,6 +7217,12 @@
                     "version"
                 ]
             },
+            "ReportMenuTypeNameArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/ReportMenuType"
+                }
+            },
             "ReportingMenuResponse": {
                 "type": "object",
                 "properties": {
@@ -7911,6 +8154,178 @@
                     "filename"
                 ]
             },
+            "JsonValue": {
+                "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
+                "anyOf": [
+                    {
+                        "description": "Represents a JSON object.",
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/JsonValue"
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "$ref": "#/components/schemas/JsonValue"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "integer"
+                            },
+                            "__@unscopables@751": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "patternProperties": {
+                                    "^[0-9]+$": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "properties": {
+                                    "length": {
+                                        "type": "boolean"
+                                    },
+                                    "toString": {
+                                        "type": "boolean"
+                                    },
+                                    "toLocaleString": {
+                                        "type": "boolean"
+                                    },
+                                    "pop": {
+                                        "type": "boolean"
+                                    },
+                                    "push": {
+                                        "type": "boolean"
+                                    },
+                                    "concat": {
+                                        "type": "boolean"
+                                    },
+                                    "join": {
+                                        "type": "boolean"
+                                    },
+                                    "reverse": {
+                                        "type": "boolean"
+                                    },
+                                    "shift": {
+                                        "type": "boolean"
+                                    },
+                                    "slice": {
+                                        "type": "boolean"
+                                    },
+                                    "sort": {
+                                        "type": "boolean"
+                                    },
+                                    "splice": {
+                                        "type": "boolean"
+                                    },
+                                    "unshift": {
+                                        "type": "boolean"
+                                    },
+                                    "indexOf": {
+                                        "type": "boolean"
+                                    },
+                                    "lastIndexOf": {
+                                        "type": "boolean"
+                                    },
+                                    "every": {
+                                        "type": "boolean"
+                                    },
+                                    "some": {
+                                        "type": "boolean"
+                                    },
+                                    "forEach": {
+                                        "type": "boolean"
+                                    },
+                                    "map": {
+                                        "type": "boolean"
+                                    },
+                                    "filter": {
+                                        "type": "boolean"
+                                    },
+                                    "reduce": {
+                                        "type": "boolean"
+                                    },
+                                    "reduceRight": {
+                                        "type": "boolean"
+                                    },
+                                    "find": {
+                                        "type": "boolean"
+                                    },
+                                    "findIndex": {
+                                        "type": "boolean"
+                                    },
+                                    "fill": {
+                                        "type": "boolean"
+                                    },
+                                    "copyWithin": {
+                                        "type": "boolean"
+                                    },
+                                    "entries": {
+                                        "type": "boolean"
+                                    },
+                                    "keys": {
+                                        "type": "boolean"
+                                    },
+                                    "values": {
+                                        "type": "boolean"
+                                    },
+                                    "includes": {
+                                        "type": "boolean"
+                                    },
+                                    "flatMap": {
+                                        "type": "boolean"
+                                    },
+                                    "flat": {
+                                        "type": "boolean"
+                                    },
+                                    "at": {
+                                        "type": "boolean"
+                                    },
+                                    "findLast": {
+                                        "type": "boolean"
+                                    },
+                                    "findLastIndex": {
+                                        "type": "boolean"
+                                    },
+                                    "toReversed": {
+                                        "type": "boolean"
+                                    },
+                                    "toSorted": {
+                                        "type": "boolean"
+                                    },
+                                    "toSpliced": {
+                                        "type": "boolean"
+                                    },
+                                    "with": {
+                                        "type": "boolean"
+                                    },
+                                    "__@iterator@749": {
+                                        "type": "boolean"
+                                    },
+                                    "__@unscopables@751": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "__@unscopables@751",
+                            "length"
+                        ]
+                    },
+                    {
+                        "type": [
+                            "null",
+                            "string",
+                            "integer",
+                            "boolean"
+                        ]
+                    }
+                ]
+            },
             "InstanceUserDeleteSchemaContent": {
                 "type": "object",
                 "properties": {
@@ -8199,6 +8614,105 @@
                     "identity_enabled",
                     "identity_guild_id",
                     "tag"
+                ]
+            },
+            "RelationshipType": {
+                "type": "number",
+                "enum": [
+                    -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ]
+            },
+            "PartialUser": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string"
+                    },
+                    "global_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "avatar_decoration_data": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/AvatarDecorationData"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "collectibles": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Collectibles"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "display_name_styles": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/DisplayNameStyle"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "primary_guild": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PrimaryGuild"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "bot": {
+                        "type": "boolean"
+                    },
+                    "system": {
+                        "type": "boolean"
+                    },
+                    "banner": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "accent_color": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "public_flags": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "avatar",
+                    "discriminator",
+                    "id",
+                    "username"
                 ]
             },
             "Activity": {
@@ -8791,92 +9305,6 @@
                     0,
                     1,
                     2
-                ]
-            },
-            "PartialUser": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "discriminator": {
-                        "type": "string"
-                    },
-                    "global_name": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "avatar": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "avatar_decoration_data": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/AvatarDecorationData"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "collectibles": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Collectibles"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "display_name_styles": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/DisplayNameStyle"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "primary_guild": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/PrimaryGuild"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "bot": {
-                        "type": "boolean"
-                    },
-                    "system": {
-                        "type": "boolean"
-                    },
-                    "banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "accent_color": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "public_flags": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "avatar",
-                    "discriminator",
-                    "id",
-                    "username"
                 ]
             },
             "ThreadMetadata": {
@@ -9562,6 +9990,22 @@
                     "type": {
                         "$ref": "#/components/schemas/RelationshipType"
                     },
+                    "user_ignored": {
+                        "type": "boolean"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "stranger_request": {
+                        "type": "boolean"
+                    },
+                    "is_spam_request": {
+                        "type": "boolean"
+                    },
+                    "since": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
                     "id": {
                         "type": "string"
                     }
@@ -9570,18 +10014,11 @@
                     "from",
                     "from_id",
                     "id",
+                    "is_spam_request",
                     "to",
                     "to_id",
-                    "type"
-                ]
-            },
-            "RelationshipType": {
-                "type": "number",
-                "enum": [
-                    4,
-                    3,
-                    2,
-                    1
+                    "type",
+                    "user_ignored"
                 ]
             },
             "ConnectedAccount": {
@@ -13592,6 +14029,21 @@
                     3
                 ]
             },
+            "BackupCode": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "consumed": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "code",
+                    "consumed"
+                ]
+            },
             "CollectiblesCategoryItem": {
                 "type": "object",
                 "properties": {
@@ -15054,193 +15506,6 @@
                     "refreshed"
                 ]
             },
-            "JsonValue": {
-                "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
-                "anyOf": [
-                    {
-                        "description": "Represents a JSON object.",
-                        "type": "object",
-                        "additionalProperties": {
-                            "$ref": "#/components/schemas/JsonValue"
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "patternProperties": {
-                            "^[0-9]+$": {
-                                "$ref": "#/components/schemas/JsonValue"
-                            }
-                        },
-                        "properties": {
-                            "length": {
-                                "type": "integer"
-                            },
-                            "__@unscopables@751": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "patternProperties": {
-                                    "^[0-9]+$": {
-                                        "type": "boolean"
-                                    }
-                                },
-                                "properties": {
-                                    "length": {
-                                        "type": "boolean"
-                                    },
-                                    "toString": {
-                                        "type": "boolean"
-                                    },
-                                    "toLocaleString": {
-                                        "type": "boolean"
-                                    },
-                                    "pop": {
-                                        "type": "boolean"
-                                    },
-                                    "push": {
-                                        "type": "boolean"
-                                    },
-                                    "concat": {
-                                        "type": "boolean"
-                                    },
-                                    "join": {
-                                        "type": "boolean"
-                                    },
-                                    "reverse": {
-                                        "type": "boolean"
-                                    },
-                                    "shift": {
-                                        "type": "boolean"
-                                    },
-                                    "slice": {
-                                        "type": "boolean"
-                                    },
-                                    "sort": {
-                                        "type": "boolean"
-                                    },
-                                    "splice": {
-                                        "type": "boolean"
-                                    },
-                                    "unshift": {
-                                        "type": "boolean"
-                                    },
-                                    "indexOf": {
-                                        "type": "boolean"
-                                    },
-                                    "lastIndexOf": {
-                                        "type": "boolean"
-                                    },
-                                    "every": {
-                                        "type": "boolean"
-                                    },
-                                    "some": {
-                                        "type": "boolean"
-                                    },
-                                    "forEach": {
-                                        "type": "boolean"
-                                    },
-                                    "map": {
-                                        "type": "boolean"
-                                    },
-                                    "filter": {
-                                        "type": "boolean"
-                                    },
-                                    "reduce": {
-                                        "type": "boolean"
-                                    },
-                                    "reduceRight": {
-                                        "type": "boolean"
-                                    },
-                                    "find": {
-                                        "type": "boolean"
-                                    },
-                                    "findIndex": {
-                                        "type": "boolean"
-                                    },
-                                    "fill": {
-                                        "type": "boolean"
-                                    },
-                                    "copyWithin": {
-                                        "type": "boolean"
-                                    },
-                                    "entries": {
-                                        "type": "boolean"
-                                    },
-                                    "keys": {
-                                        "type": "boolean"
-                                    },
-                                    "values": {
-                                        "type": "boolean"
-                                    },
-                                    "includes": {
-                                        "type": "boolean"
-                                    },
-                                    "flatMap": {
-                                        "type": "boolean"
-                                    },
-                                    "flat": {
-                                        "type": "boolean"
-                                    },
-                                    "at": {
-                                        "type": "boolean"
-                                    },
-                                    "findLast": {
-                                        "type": "boolean"
-                                    },
-                                    "findLastIndex": {
-                                        "type": "boolean"
-                                    },
-                                    "toReversed": {
-                                        "type": "boolean"
-                                    },
-                                    "toSorted": {
-                                        "type": "boolean"
-                                    },
-                                    "toSpliced": {
-                                        "type": "boolean"
-                                    },
-                                    "with": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@749": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@751": {
-                                        "type": "boolean"
-                                    }
-                                }
-                            }
-                        },
-                        "required": [
-                            "__@unscopables@751",
-                            "length"
-                        ]
-                    },
-                    {
-                        "type": [
-                            "null",
-                            "string",
-                            "integer",
-                            "boolean"
-                        ]
-                    }
-                ]
-            },
-            "BackupCode": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "string"
-                    },
-                    "consumed": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "code",
-                    "consumed"
-                ]
-            },
             "DmChannelDTO": {
                 "type": "object",
                 "properties": {
@@ -16400,6 +16665,21 @@
                 "required": [
                     "name",
                     "src"
+                ]
+            },
+            "ReportMenuType": {
+                "type": "string",
+                "enum": [
+                    "guild",
+                    "guild_discovery",
+                    "guild_directory_entry",
+                    "guild_scheduled_event",
+                    "message",
+                    "stage_channel",
+                    "first_dm",
+                    "user",
+                    "application",
+                    "widget"
                 ]
             },
             "ReportNode": {
@@ -17634,7 +17914,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserRelationshipsResponse"
+                                    "$ref": "#/components/schemas/RelationshipListSchema"
                                 }
                             }
                         }
@@ -17665,7 +17945,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RelationshipPostSchema"
+                                "$ref": "#/components/schemas/SendRelationshipRequestSchema"
                             }
                         }
                     }
@@ -17712,7 +17992,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RelationshipPutSchema"
+                                "$ref": "#/components/schemas/RelationshipCreateSchema"
                             }
                         }
                     }
@@ -17768,7 +18048,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RelationshipPatchSchema"
+                                "$ref": "#/components/schemas/RelationshipModifySchema"
                             }
                         }
                     }
@@ -19202,6 +19482,7 @@
                         "bearer": []
                     }
                 ],
+                "description": "Get mutual relationships",
                 "responses": {
                     "200": {
                         "description": "",

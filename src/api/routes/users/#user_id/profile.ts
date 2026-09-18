@@ -115,8 +115,8 @@ router.get("/", route({ responses: { 200: { body: "UserProfileResponse" } } }), 
     let mutual_friends_count = 0;
 
     if (with_mutual_friends == "true" || with_mutual_friends_count == "true") {
-        const relationshipsSelf = await Relationship.find({ where: { from_id: req.user_id, type: RelationshipType.friends } });
-        const relationshipsUser = await Relationship.find({ where: { from_id: user_id, type: RelationshipType.friends } });
+        const relationshipsSelf = await Relationship.find({ where: { from_id: req.user_id, type: RelationshipType.FRIEND } });
+        const relationshipsUser = await Relationship.find({ where: { from_id: user_id, type: RelationshipType.FRIEND } });
         const relationshipsIntersection = relationshipsSelf.filter((r1) => relationshipsUser.some((r2) => r2.to_id === r1.to_id));
         if (with_mutual_friends_count) mutual_friends_count = relationshipsIntersection.length;
         if (with_mutual_friends) {

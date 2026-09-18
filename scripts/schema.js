@@ -157,7 +157,7 @@ async function main() {
     process.stdout.write("Generating schema list... ");
     let schemas = generator.getUserSymbols().filter((x) => {
         return (
-            (x.endsWith("Schema") || x.endsWith("Response") || x.startsWith("API")) &&
+            (x.endsWith("Schema") || x.endsWith("Response") || x.startsWith("API") || x.endsWith("Array")) &&
             // !ExcludeAndWarn.some((exc) => {
             // 	const match = exc instanceof RegExp ? exc.test(x) : x === exc;
             // 	if (match) console.warn("Warning: Excluding schema", x);
