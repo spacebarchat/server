@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Relationship, User } from "@spacebar/database";
+import { Member, Relationship, User } from "@spacebar/database";
 import { Config, DiscordApiErrors, RelationshipAddEvent, RelationshipRemoveEvent, RelationshipUpdateEvent, emitEvent } from "@spacebar/util";
 import { PublicUserProjection, RelationshipType, RelationshipModifySchema, RelationshipListSchema } from "@spacebar/schemas";
 
@@ -239,6 +239,7 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
                 to_id: id,
                 type: RelationshipType.BLOCKED,
                 from_id: req.user_id,
+                since: new Date(),
             }).save();
         }
 
@@ -265,17 +266,26 @@ async function updateRelationship(req: Request, res: Response, friend: User, typ
     const { maxFriends } = Config.get().limits.user;
     if (user.relationships.length >= maxFriends) throw DiscordApiErrors.MAXIMUM_FRIENDS.withParams(maxFriends);
 
+    let isStrangerRequest = true;
+    const ownMemberships = (await Member.find({ where: { id: req.user_id }, select: { guild_id: true } })).map((x) => x.guild_id);
+    const targetMemberships = (await Member.find({ where: { id: req.user_id }, select: { guild_id: true } })).map((x) => x.guild_id);
+
+    if (ownMemberships.filter((x) => targetMemberships.includes(x)).length > 0) isStrangerRequest = false;
+
     let incoming_relationship = Relationship.create({
         nickname: undefined,
         type: RelationshipType.INCOMING_REQUEST,
         to: user,
         from: friend,
+        since: new Date(),
+        stranger_request: isStrangerRequest,
     });
     let outgoing_relationship = Relationship.create({
         nickname: undefined,
         type: RelationshipType.OUTGOING_REQUEST,
         to: friend,
         from: user,
+        since: new Date(),
     });
 
     if (friendRequest) {
