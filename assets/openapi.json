@@ -1026,6 +1026,18 @@
                     "$ref": "#/components/schemas/PublicInvite"
                 }
             },
+            "PublicAvatarDecorationListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PublicAvatarDecoration"
+                }
+            },
+            "PrivateAvatarDecorationListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PrivateAvatarDecoration"
+                }
+            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -13718,6 +13730,83 @@
                     1,
                     2,
                     3
+                ]
+            },
+            "PublicAvatarDecoration": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "approved": {
+                        "type": "boolean"
+                    },
+                    "uploader": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "approved",
+                    "available",
+                    "id",
+                    "public",
+                    "uploader"
+                ]
+            },
+            "PrivateAvatarDecoration": {
+                "type": "object",
+                "properties": {
+                    "allowed_user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "approved": {
+                        "type": "boolean"
+                    },
+                    "uploader": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "allowed_guild_ids",
+                    "allowed_role_ids",
+                    "allowed_user_ids",
+                    "approved",
+                    "available",
+                    "id",
+                    "public",
+                    "uploader"
                 ]
             },
             "ErrorList": {
@@ -31360,6 +31449,37 @@
                 ],
                 "tags": [
                     "_spacebar"
+                ]
+            }
+        },
+        "/_spacebar/api/v1/avatar_decorations/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get available avatar decorations",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicAvatarDecorationListResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
                 ]
             }
         },

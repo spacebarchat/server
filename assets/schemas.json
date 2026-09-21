@@ -1048,6 +1048,20 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PublicAvatarDecorationListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PublicAvatarDecoration"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PrivateAvatarDecorationListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PrivateAvatarDecoration"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "FieldErrorResponse": {
         "type": "object",
         "properties": {
@@ -14622,6 +14636,87 @@
             1,
             2,
             3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicAvatarDecoration": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "approved": {
+                "type": "boolean"
+            },
+            "uploader": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "public": {
+                "type": "boolean"
+            },
+            "available": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "approved",
+            "available",
+            "id",
+            "public",
+            "uploader"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PrivateAvatarDecoration": {
+        "type": "object",
+        "properties": {
+            "allowed_user_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "allowed_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "allowed_role_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "approved": {
+                "type": "boolean"
+            },
+            "uploader": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "public": {
+                "type": "boolean"
+            },
+            "available": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allowed_guild_ids",
+            "allowed_role_ids",
+            "allowed_user_ids",
+            "approved",
+            "available",
+            "id",
+            "public",
+            "uploader"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

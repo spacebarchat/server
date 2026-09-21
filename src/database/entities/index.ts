@@ -21,6 +21,7 @@ export * from "./ApplicationCommand";
 export * from "./Attachment";
 export * from "./AuditLog";
 export * from "./AutomodRule";
+export * from "./AvatarDecoration";
 export * from "./BackupCodes";
 export * from "./Badge";
 export * from "./Ban";
