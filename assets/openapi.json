@@ -1026,18 +1026,6 @@
                     "$ref": "#/components/schemas/PublicInvite"
                 }
             },
-            "PublicAvatarDecorationListResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/PublicAvatarDecoration"
-                }
-            },
-            "PrivateAvatarDecorationListResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/PrivateAvatarDecoration"
-                }
-            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -7283,6 +7271,348 @@
                     "version"
                 ]
             },
+            "AttachmentListResponse": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "attachment": {
+                                    "$ref": "#/components/schemas/PublicAttachment"
+                                },
+                                "message_reference": {
+                                    "$ref": "#/components/schemas/MessageReferenceIds"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "attachment",
+                                "message_reference"
+                            ]
+                        }
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "items",
+                    "total"
+                ]
+            },
+            "PublicAvatarDecorationListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PublicAvatarDecorationResponse"
+                }
+            },
+            "PrivateAvatarDecorationListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PrivateAvatarDecorationResponse"
+                }
+            },
+            "PublicAvatarDecorationResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "approved": {
+                        "type": "boolean"
+                    },
+                    "uploader": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "approved",
+                    "available",
+                    "id",
+                    "public",
+                    "uploader"
+                ]
+            },
+            "PrivateAvatarDecorationResponse": {
+                "type": "object",
+                "properties": {
+                    "allowed_user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "approved": {
+                        "type": "boolean"
+                    },
+                    "uploader": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "allowed_guild_ids",
+                    "allowed_role_ids",
+                    "allowed_user_ids",
+                    "approved",
+                    "available",
+                    "id",
+                    "public",
+                    "uploader"
+                ]
+            },
+            "UpdateAvatarDecorationSchema": {
+                "type": "object",
+                "properties": {
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "allowed_user_ids": {
+                        "type": "object",
+                        "properties": {
+                            "add": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "remove": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "allowed_guild_ids": {
+                        "type": "object",
+                        "properties": {
+                            "add": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "remove": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    },
+                    "allowed_role_ids": {
+                        "type": "object",
+                        "properties": {
+                            "add": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "remove": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "GifIntegrationsResponse": {
+                "type": "object",
+                "properties": {
+                    "providers": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "available": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "available"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "providers"
+                ]
+            },
+            "SpacebarVersionResponse": {
+                "type": "object",
+                "properties": {
+                    "implementation": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "object",
+                        "properties": {
+                            "rev": {
+                                "type": [
+                                    "null",
+                                    "string"
+                                ]
+                            },
+                            "lastModified": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "lastModified",
+                            "rev"
+                        ]
+                    }
+                },
+                "required": [
+                    "implementation",
+                    "version"
+                ]
+            },
+            "SpacebarWellKnownLegacyResponse": {
+                "type": "object",
+                "properties": {
+                    "api": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "api"
+                ]
+            },
+            "SpacebarWellKnownClientResponse": {
+                "type": "object",
+                "properties": {
+                    "api": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            },
+                            "apiVersions": {
+                                "type": "object",
+                                "properties": {
+                                    "default": {
+                                        "type": "string"
+                                    },
+                                    "active": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "active",
+                                    "default"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "apiVersions",
+                            "baseUrl"
+                        ]
+                    },
+                    "cdn": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl"
+                        ]
+                    },
+                    "gateway": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            },
+                            "encoding": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "compression": {
+                                "type": "array",
+                                "items": {
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ]
+                                }
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl",
+                            "compression",
+                            "encoding"
+                        ]
+                    },
+                    "admin": {
+                        "type": "object",
+                        "properties": {
+                            "baseUrl": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "baseUrl"
+                        ]
+                    }
+                },
+                "required": [
+                    "api",
+                    "cdn",
+                    "gateway"
+                ]
+            },
             "IdentifySchema": {
                 "type": "object",
                 "properties": {
@@ -7802,197 +8132,6 @@
                     "picture",
                     "preferred_username",
                     "sub"
-                ]
-            },
-            "AttachmentListResponse": {
-                "type": "object",
-                "properties": {
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "attachment": {
-                                    "$ref": "#/components/schemas/PublicAttachment"
-                                },
-                                "message_reference": {
-                                    "$ref": "#/components/schemas/MessageReferenceIds"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "attachment",
-                                "message_reference"
-                            ]
-                        }
-                    },
-                    "total": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "items",
-                    "total"
-                ]
-            },
-            "GifIntegrationsResponse": {
-                "type": "object",
-                "properties": {
-                    "providers": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "object",
-                            "properties": {
-                                "available": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "available"
-                            ]
-                        }
-                    }
-                },
-                "required": [
-                    "providers"
-                ]
-            },
-            "SpacebarVersionResponse": {
-                "type": "object",
-                "properties": {
-                    "implementation": {
-                        "type": "string"
-                    },
-                    "version": {
-                        "type": "object",
-                        "properties": {
-                            "rev": {
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            },
-                            "lastModified": {
-                                "type": "integer"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "lastModified",
-                            "rev"
-                        ]
-                    }
-                },
-                "required": [
-                    "implementation",
-                    "version"
-                ]
-            },
-            "SpacebarWellKnownLegacyResponse": {
-                "type": "object",
-                "properties": {
-                    "api": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "api"
-                ]
-            },
-            "SpacebarWellKnownClientResponse": {
-                "type": "object",
-                "properties": {
-                    "api": {
-                        "type": "object",
-                        "properties": {
-                            "baseUrl": {
-                                "type": "string"
-                            },
-                            "apiVersions": {
-                                "type": "object",
-                                "properties": {
-                                    "default": {
-                                        "type": "string"
-                                    },
-                                    "active": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "additionalProperties": false,
-                                "required": [
-                                    "active",
-                                    "default"
-                                ]
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "apiVersions",
-                            "baseUrl"
-                        ]
-                    },
-                    "cdn": {
-                        "type": "object",
-                        "properties": {
-                            "baseUrl": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "baseUrl"
-                        ]
-                    },
-                    "gateway": {
-                        "type": "object",
-                        "properties": {
-                            "baseUrl": {
-                                "type": "string"
-                            },
-                            "encoding": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "compression": {
-                                "type": "array",
-                                "items": {
-                                    "type": [
-                                        "null",
-                                        "string"
-                                    ]
-                                }
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "baseUrl",
-                            "compression",
-                            "encoding"
-                        ]
-                    },
-                    "admin": {
-                        "type": "object",
-                        "properties": {
-                            "baseUrl": {
-                                "type": "string"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "baseUrl"
-                        ]
-                    }
-                },
-                "required": [
-                    "api",
-                    "cdn",
-                    "gateway"
                 ]
             },
             "ApplicationCommandOption": {
@@ -13730,83 +13869,6 @@
                     1,
                     2,
                     3
-                ]
-            },
-            "PublicAvatarDecoration": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "approved": {
-                        "type": "boolean"
-                    },
-                    "uploader": {
-                        "$ref": "#/components/schemas/PartialUser"
-                    },
-                    "public": {
-                        "type": "boolean"
-                    },
-                    "available": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "approved",
-                    "available",
-                    "id",
-                    "public",
-                    "uploader"
-                ]
-            },
-            "PrivateAvatarDecoration": {
-                "type": "object",
-                "properties": {
-                    "allowed_user_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "allowed_guild_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "allowed_role_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "approved": {
-                        "type": "boolean"
-                    },
-                    "uploader": {
-                        "$ref": "#/components/schemas/PartialUser"
-                    },
-                    "public": {
-                        "type": "boolean"
-                    },
-                    "available": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "allowed_guild_ids",
-                    "allowed_role_ids",
-                    "allowed_user_ids",
-                    "approved",
-                    "available",
-                    "id",
-                    "public",
-                    "uploader"
                 ]
             },
             "ErrorList": {
@@ -31472,6 +31534,58 @@
                         }
                     }
                 },
+                "tags": [
+                    "_spacebar"
+                ],
+                "x-badges": [
+                    {
+                        "label": "Spacebar-only",
+                        "color": "red"
+                    }
+                ]
+            }
+        },
+        "/_spacebar/api/v1/avatar_decorations/{id}/": {
+            "patch": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "description": "Get available avatar decorations",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAvatarDecorationSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicAvatarDecorationListResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    }
+                ],
                 "tags": [
                     "_spacebar"
                 ],

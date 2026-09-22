@@ -17,8 +17,7 @@
 */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeorm";
-import { AvatarDecorationData } from "@spacebar/schemas";
-import { PublicAvatarDecoration } from "@spacebar/schemas/api/spacebar/AvatarDecorations";
+import { AvatarDecorationData, PublicAvatarDecorationResponse } from "@spacebar/schemas";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
 
@@ -62,13 +61,13 @@ export class AvatarDecorations extends BaseClass {
         } satisfies AvatarDecorationData;
     }
 
-    toPublicAvatarDecoration(opts?: {available: boolean}): PublicAvatarDecoration {
+    toPublicAvatarDecoration(opts?: { available: boolean }): PublicAvatarDecorationResponse {
         return {
             id: this.id,
             approved: this.approved,
             uploader: this.uploader.toPartialUser(),
             public: this.public,
-            available: opts?.available ?? this.public
-        } satisfies PublicAvatarDecoration;
+            available: opts?.available ?? this.public,
+        } satisfies PublicAvatarDecorationResponse;
     }
 }
