@@ -669,27 +669,10 @@
                         "type": "integer"
                     },
                     "theme_colors": {
+                        "type": "array",
                         "items": {
                             "type": "integer"
-                        },
-                        "anyOf": [
-                            {
-                                "type": "array",
-                                "items": [
-                                    {
-                                        "type": "integer"
-                                    },
-                                    {
-                                        "type": "integer"
-                                    }
-                                ],
-                                "minItems": 2,
-                                "maxItems": 2
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        }
                     },
                     "popout_animation_particle_type": {
                         "type": "string",

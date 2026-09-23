@@ -227,6 +227,7 @@ export class UserProfileModifySchema {
      */
     accent_color?: number | null;
     /**
+     * @type array
      * @items.type integer
      */
     theme_colors?: [number, number] | null;
