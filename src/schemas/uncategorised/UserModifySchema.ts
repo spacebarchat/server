@@ -57,4 +57,6 @@ export interface UserModifySchema {
     display_name_colors?: number[];
     display_name_effect_id?: User_DisplayNameEffect;
     display_name_font_id?: User_DisplayNameFont;
+
+    avatar_decoration_sku_id?: string | null;
 }

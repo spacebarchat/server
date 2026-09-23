@@ -20,11 +20,12 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeor
 import { AvatarDecorationData, PublicAvatarDecorationResponse } from "@spacebar/schemas";
 import { BaseClass } from "./BaseClass";
 import { User } from "./User";
+import { Member } from "./Member";
 
 @Entity({
     name: "avatar_decorations",
 })
-export class AvatarDecorations extends BaseClass {
+export class AvatarDecoration extends BaseClass {
     @Column({})
     asset: string;
 
@@ -32,7 +33,7 @@ export class AvatarDecorations extends BaseClass {
     approved: boolean;
 
     @Column({ nullable: true })
-    @RelationId((deco: AvatarDecorations) => deco.uploader)
+    @RelationId((deco: AvatarDecoration) => deco.uploader)
     @Index("IDX_avatar_decoration_uploader_id")
     uploader_id: string;
 
@@ -69,5 +70,26 @@ export class AvatarDecorations extends BaseClass {
             public: this.public,
             available: opts?.available ?? this.public,
         } satisfies PublicAvatarDecorationResponse;
+    }
+
+    async canUseAvatarDecoration(user_id: string): Promise<boolean> {
+        if (!this.approved) return false;
+        if (this.uploader_id == user_id) return true;
+        if (this.allowed_user_ids.includes(user_id)) return true;
+
+        let memberships: Member[];
+        if (this.allowed_guild_ids.length > 0) {
+            memberships ??= await Member.find({ select: { guild_id: true, roles: { id: true } }, where: { id: user_id }, relations: { roles: true } });
+            const guildIds = memberships.map((x) => x.guild_id);
+            for (const allowedGuildId of this.allowed_guild_ids) if (guildIds.includes(allowedGuildId)) return true;
+        }
+
+        if (this.allowed_role_ids.length > 0) {
+            memberships ??= await Member.find({ select: { guild_id: true, roles: true }, where: { id: user_id } });
+            const roleIds = memberships.flatMap((x) => x.roles.map((x) => x.id));
+            for (const allowedRoleId of this.allowed_role_ids) if (roleIds.includes(allowedRoleId)) return true;
+        }
+
+        return false;
     }
 }

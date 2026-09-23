@@ -17,10 +17,11 @@
 */
 
 import { Request } from "express";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
 import { Config, Email, FieldErrors, Snowflake } from "@spacebar/util";
 import { Stopwatch, trimSpecial, Random } from "@spacebar/extensions";
 import { BaseClass } from "./BaseClass";
+import { AvatarDecoration } from "./AvatarDecoration";
 import { Channel } from "./Channel";
 import { ConnectedAccount } from "./ConnectedAccount";
 import { Member } from "./Member";
@@ -197,6 +198,14 @@ export class User extends BaseClass {
     @Column({ type: "jsonb", nullable: true })
     primary_guild?: PrimaryGuild;
 
+    @JoinColumn({ name: "avatar_decoration_id", foreignKeyConstraintName: "FK_user_avatar_decoration_id" })
+    @OneToOne(() => AvatarDecoration, { onDelete: "SET NULL", nullable: true })
+    avatar_decoration?: AvatarDecoration;
+
+    @Column({ type: "int8", nullable: true })
+    @RelationId((user: User) => user.avatar_decoration)
+    avatar_decoration_id?: string;
+
     // TODO: I don't like this method?
     validate() {
         if (this.discriminator) {
@@ -220,6 +229,9 @@ export class User extends BaseClass {
         PublicUserProjection.forEach((x) => {
             user[x] = this[x];
         });
+
+        if (this.avatar_decoration) (<PublicUser>user).avatar_decoration_data = this.avatar_decoration.toJSON();
+
         return user as PublicUser;
     }
 
@@ -230,7 +242,12 @@ export class User extends BaseClass {
             discriminator: this.discriminator,
             global_name: undefined, // TODO when pomelo
             avatar: this.avatar ?? null,
-            avatar_decoration_data: this.avatar_decoration_data,
+            avatar_decoration_data: this.avatar_decoration
+                ? {
+                      ...this.avatar_decoration?.toJSON(),
+                      ...this.avatar_decoration_data,
+                  }
+                : null,
             bot: this.bot,
             system: this.system,
             banner: this.banner,
@@ -246,6 +263,9 @@ export class User extends BaseClass {
         [...PrivateUserProjection, ...extraFields].forEach((x) => {
             user[x] = this[x];
         });
+
+        if (this.avatar_decoration) (<UserPrivate>user).avatar_decoration_data = this.avatar_decoration.toJSON();
+
         return user as UserPrivate;
     }
 

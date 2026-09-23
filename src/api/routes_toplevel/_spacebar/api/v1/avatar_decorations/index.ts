@@ -19,7 +19,7 @@
 import { Router, Response, Request } from "express";
 import { Raw } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { AvatarDecorations, Member } from "@spacebar/database";
+import { AvatarDecoration, Member } from "@spacebar/database";
 import { PublicAvatarDecorationListResponse } from "@spacebar/schemas/api/spacebar/AvatarDecorations";
 import { arrayDistinctBy } from "@spacebar/extensions";
 
@@ -40,7 +40,7 @@ router.get(
         const memberships = await Member.find({ select: { guild_id: true, roles: { id: true } }, relations: { roles: true }, where: { id: req.user_id } });
 
         const decos = (
-            await AvatarDecorations.find({
+            await AvatarDecoration.find({
                 where: [
                     { approved: true, public: true },
                     { approved: true, uploader_id: req.user_id },

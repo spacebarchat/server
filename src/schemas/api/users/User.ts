@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ConnectedAccountSchema, Snowflake, UserSettingsSchema } from "@spacebar/schemas";
+import { base64str, ConnectedAccountSchema, Snowflake, UserSettingsSchema } from "@spacebar/schemas";
 // TODO: maybe move the one thing this depends on to
 import { BitField } from "@spacebar/util/util";
 // TODO: remove entity import
@@ -211,4 +211,28 @@ export class UserFlags extends BitField {
         COLLABORATOR: 1n << 50n,
         RESTRICTED_COLLABORATOR: 1n << 51n,
     };
+}
+
+// OAuth2 only (account.global_name.update) - why can this be null?
+export class UserAccountModifySchema {
+    global_name?: string | null;
+}
+
+export class UserProfileModifySchema {
+    pronouns?: string | null;
+    bio?: string | null;
+    banner?: base64str | null;
+    /**
+     * @type integer
+     */
+    accent_color?: number | null;
+    /**
+     * @items.type integer
+     */
+    theme_colors?: [number, number] | null;
+    //@deprecated - what even was this
+    popout_animation_particle_type?: Snowflake | null;
+    //@deprecated - what even was this
+    emoji_id?: Snowflake | null;
+    profile_effect_id?: Snowflake | null;
 }

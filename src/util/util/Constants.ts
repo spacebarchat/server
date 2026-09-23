@@ -864,6 +864,9 @@ export const DiscordApiErrors = {
     get CANNOT_SELF_REDEEM_GIFT() {
         return new ApiError("Cannot self-redeem this gift", 50054);
     },
+    get INVALID_SKU() {
+        return new ApiError("Invalid SKU", 50057);
+    },
     get PAYMENT_SOURCE_REQUIRED() {
         return new ApiError("Payment source required to redeem gift", 50070);
     },

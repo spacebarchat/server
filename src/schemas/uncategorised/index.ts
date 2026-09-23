@@ -79,7 +79,6 @@ export * from "./UserDeleteSchema";
 export * from "./UserGuildSettingsSchema";
 export * from "./UserModifySchema";
 export * from "./UserNoteUpdateSchema";
-export * from "./UserProfileModifySchema";
 export * from "./VanityUrlSchema";
 export * from "./VerifyEmailSchema";
 export * from "./VoiceStateUpdateSchema";

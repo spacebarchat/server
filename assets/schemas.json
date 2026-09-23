@@ -656,6 +656,88 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "UserAccountModifySchema": {
+        "type": "object",
+        "properties": {
+            "global_name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserProfileModifySchema": {
+        "type": "object",
+        "properties": {
+            "pronouns": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "bio": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "accent_color": {
+                "type": "integer"
+            },
+            "theme_colors": {
+                "items": {
+                    "type": "integer"
+                },
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "integer"
+                            }
+                        ],
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "popout_animation_particle_type": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "profile_effect_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserSettingsUpdateSchema": {
         "type": "object",
         "properties": {
@@ -6100,6 +6182,12 @@
                     9
                 ],
                 "type": "number"
+            },
+            "avatar_decoration_sku_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
             }
         },
         "additionalProperties": false,
@@ -6116,44 +6204,6 @@
         "required": [
             "note"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "UserProfileModifySchema": {
-        "type": "object",
-        "properties": {
-            "bio": {
-                "type": "string"
-            },
-            "accent_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "pronouns": {
-                "type": "string"
-            },
-            "theme_colors": {
-                "items": [
-                    {
-                        "type": "integer"
-                    },
-                    {
-                        "type": "integer"
-                    }
-                ],
-                "type": "array",
-                "minItems": 2,
-                "maxItems": 2
-            }
-        },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "VanityUrlSchema": {
@@ -10611,6 +10661,12 @@
             "primary_guild": {
                 "$ref": "#/definitions/PrimaryGuild"
             },
+            "avatar_decoration": {
+                "$ref": "#/definitions/AvatarDecoration"
+            },
+            "avatar_decoration_id": {
+                "type": "string"
+            },
             "tag": {
                 "type": "string"
             },
@@ -11218,6 +11274,60 @@
             "public_key",
             "user",
             "user_id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AvatarDecoration": {
+        "type": "object",
+        "properties": {
+            "asset": {
+                "type": "string"
+            },
+            "approved": {
+                "type": "boolean"
+            },
+            "uploader_id": {
+                "type": "string"
+            },
+            "uploader": {
+                "$ref": "#/definitions/User"
+            },
+            "public": {
+                "type": "boolean"
+            },
+            "allowed_user_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "allowed_guild_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "allowed_role_ids": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allowed_guild_ids",
+            "allowed_role_ids",
+            "allowed_user_ids",
+            "approved",
+            "asset",
+            "id",
+            "public",
+            "uploader",
+            "uploader_id"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

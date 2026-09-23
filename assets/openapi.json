@@ -641,6 +641,70 @@
                     "user_sessions"
                 ]
             },
+            "UserAccountModifySchema": {
+                "type": "object",
+                "properties": {
+                    "global_name": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
+            "UserProfileModifySchema": {
+                "type": "object",
+                "properties": {
+                    "pronouns": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bio": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "accent_color": {
+                        "type": "integer"
+                    },
+                    "theme_colors": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "anyOf": [
+                            {
+                                "type": "array",
+                                "items": [
+                                    {
+                                        "type": "integer"
+                                    },
+                                    {
+                                        "type": "integer"
+                                    }
+                                ],
+                                "minItems": 2,
+                                "maxItems": 2
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "popout_animation_particle_type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emoji_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "profile_effect_id": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                }
+            },
             "UserSettingsUpdateSchema": {
                 "type": "object",
                 "properties": {
@@ -5706,6 +5770,10 @@
                             9
                         ],
                         "type": "number"
+                    },
+                    "avatar_decoration_sku_id": {
+                        "type": "string",
+                        "nullable": true
                     }
                 }
             },
@@ -5719,38 +5787,6 @@
                 "required": [
                     "note"
                 ]
-            },
-            "UserProfileModifySchema": {
-                "type": "object",
-                "properties": {
-                    "bio": {
-                        "type": "string"
-                    },
-                    "accent_color": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "pronouns": {
-                        "type": "string"
-                    },
-                    "theme_colors": {
-                        "items": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ],
-                        "type": "array",
-                        "minItems": 2,
-                        "maxItems": 2
-                    }
-                }
             },
             "VanityUrlSchema": {
                 "type": "object",
@@ -9925,6 +9961,12 @@
                     "primary_guild": {
                         "$ref": "#/components/schemas/PrimaryGuild"
                     },
+                    "avatar_decoration": {
+                        "$ref": "#/components/schemas/AvatarDecoration"
+                    },
+                    "avatar_decoration_id": {
+                        "type": "string"
+                    },
                     "tag": {
                         "type": "string"
                     },
@@ -10516,6 +10558,58 @@
                     "public_key",
                     "user",
                     "user_id"
+                ]
+            },
+            "AvatarDecoration": {
+                "type": "object",
+                "properties": {
+                    "asset": {
+                        "type": "string"
+                    },
+                    "approved": {
+                        "type": "boolean"
+                    },
+                    "uploader_id": {
+                        "type": "string"
+                    },
+                    "uploader": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "public": {
+                        "type": "boolean"
+                    },
+                    "allowed_user_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_guild_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "allowed_role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "allowed_guild_ids",
+                    "allowed_role_ids",
+                    "allowed_user_ids",
+                    "approved",
+                    "asset",
+                    "id",
+                    "public",
+                    "uploader",
+                    "uploader_id"
                 ]
             },
             "Guild": {

@@ -19,8 +19,8 @@
 import bcrypt from "bcrypt";
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { User } from "@spacebar/database";
-import { Config, emitEvent, FieldErrors, generateToken, handleFile, UserUpdateEvent } from "@spacebar/util";
+import { AvatarDecoration, User } from "@spacebar/database";
+import { ApiError, Config, DiscordApiErrors, emitEvent, FieldErrors, generateToken, handleFile, UserUpdateEvent } from "@spacebar/util";
 import { DisplayNameStyle, PrivateUserProjection, UserModifySchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
@@ -213,6 +213,21 @@ router.patch(
             else {
                 user.display_name_styles ??= {} as unknown as DisplayNameStyle;
                 user.display_name_styles!.colors = body.display_name_colors;
+            }
+        }
+
+        if ("avatar_decoration_sku_id" in body) {
+            if (!body.avatar_decoration_sku_id) {
+                user.avatar_decoration_data = undefined;
+                user.avatar_decoration_id = undefined;
+            } else {
+                const avatarDecoration = await AvatarDecoration.findOne({ where: { id: body.avatar_decoration_sku_id } });
+                if (!avatarDecoration) throw FieldErrors({ avatar_decoration_sku_id: { code: "50057", message: "Invalid SKU" } });
+
+                if (!(await avatarDecoration.canUseAvatarDecoration(req.user_id)))
+                    throw FieldErrors({ avatar_decoration_sku_id: { code: "40018", message: "You do not have access to this avatar decoration" } }); // TODO: find a better code
+
+                user.avatar_decoration_id = body.avatar_decoration_sku_id;
             }
         }
 

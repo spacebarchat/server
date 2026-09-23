@@ -18,7 +18,7 @@
 
 import { Router, Response, Request } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { AvatarDecorations } from "@spacebar/database";
+import { AvatarDecoration } from "@spacebar/database";
 import { PublicAvatarDecorationResponse, UpdateAvatarDecorationSchema } from "@spacebar/schemas/api/spacebar/AvatarDecorations";
 import { ApiError } from "@spacebar/util";
 
@@ -38,7 +38,7 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const changes = req.body as UpdateAvatarDecorationSchema;
-        const deco = await AvatarDecorations.findOneOrFail({ where: { id: req.params.id as string } });
+        const deco = await AvatarDecoration.findOneOrFail({ where: { id: req.params.id as string } });
 
         if (deco.uploader_id !== req.user_id) throw new ApiError("You do not have permission to update this avatar decoration", 0, 403);
 
