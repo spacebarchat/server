@@ -17,19 +17,18 @@
 */
 
 import http from "node:http";
+import path from "node:path";
+import morgan from "morgan";
+import { red } from "picocolors";
 import ws from "ws";
 import { Server, ServerOptions } from "lambert-server";
 import { initDatabase } from "@spacebar/database";
-import { Random } from "@spacebar/extensions";
 import { Config, initEvent, JSONReplacer, JwtKeypairManager, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import { Connection } from "./events/Connection";
 import { cleanupOnStartup } from "./util";
-import morgan from "morgan";
 import { Authentication, BodyParser, CORS, ErrorHandler } from "@spacebar/api";
-import path from "node:path";
-import { red } from "picocolors";
 
 export class GatewayServer extends Server {
     public ws: ws.Server;
@@ -37,7 +36,7 @@ export class GatewayServer extends Server {
     constructor(options?: Partial<ServerOptions>) {
         super(options);
 
-        this.http = http.createServer(this.app);
+        this.http ??= http.createServer(this.app);
 
         this.http.on("upgrade", (request, socket, head) => {
             this.ws.handleUpgrade(request, socket, head, (socket) => {
