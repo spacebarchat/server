@@ -100,7 +100,7 @@
         "i18next": "^26.4.1",
         "i18next-fs-backend": "^2.6.7",
         "i18next-http-middleware": "^3.9.8",
-        "image-size": "^2.0.2",
+        "image-size": "^2.0.3",
         "json-bigint": "^1.0.0",
         "jsonwebtoken": "^9.0.3",
         "module-alias": "^2.3.4",
