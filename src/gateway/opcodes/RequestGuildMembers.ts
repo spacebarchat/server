@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
+import { Brackets, FindManyOptions, ILike, In, MoreThan } from "typeorm";
 import { getDatabase, Member, Session } from "@spacebar/database";
 import { DateBuilder } from "@spacebar/extensions";
 import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
@@ -92,29 +92,41 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
             },
         });
     } else if (memberCount > this.large_threshold) {
-        // find all members who are online, have a role, have a nickname, or are in a voice channel, as well as respecting the query and user_ids
         const db = getDatabase();
         if (!db) throw new Error("Database not initialized");
-        const repo = db.getRepository(Member);
-        const q = repo
-            .createQueryBuilder("member")
-            .where("member.guild_id = :guild_id", { guild_id })
-            .leftJoinAndSelect("member.roles", "role")
-            .leftJoinAndSelect("member.user", "user")
-            .leftJoinAndSelect("user.sessions", "session")
-            .andWhere("',' || member.roles || ',' NOT LIKE :everyoneRoleIdList", { everyoneRoleIdList: "%," + guild_id + ",%" })
-            .addOrderBy("user.username", "ASC")
-            .limit(memberFind.take);
 
-        if (query && query != "") {
+        // select member indexes first and load roles after
+        const q = db
+            .getRepository(Member)
+            .createQueryBuilder("member")
+            .select("member.index", "index")
+            .addSelect("user.username", "username")
+            .distinct(true)
+            .leftJoin("member.user", "user")
+            .where("member.guild_id = :guild_id", { guild_id })
+            .orderBy("user.username", "ASC");
+        if (memberFind.take) q.limit(memberFind.take);
+
+        if (query) {
             q.andWhere(`user.username ILIKE :query`, {
                 query: `${query}%`,
             });
-        } else if (user_ids) {
-            q.andWhere(`user.id IN (:...user_ids)`, { user_ids });
+        } else if (user_ids && user_ids.length > 0) {
+            q.andWhere(`member.id IN (:...user_ids)`, { user_ids });
+        } else {
+            q.leftJoin("member.roles", "role", "role.id <> :guild_id", { guild_id })
+                .leftJoin("user.sessions", "session", "session.status NOT IN (:...offline)", { offline: ["offline", "invisible"] })
+                .andWhere(new Brackets((qb) => qb.where("role.id IS NOT NULL").orWhere("member.nick IS NOT NULL").orWhere("session.id IS NOT NULL")));
         }
 
-        members = await q.getMany();
+        const indexes = (await q.getRawMany<{ index: string | number }>()).map((row) => String(row.index));
+        members = indexes.length
+            ? await Member.find({
+                  where: { index: In(indexes) },
+                  relations: { user: true, roles: true },
+              })
+            : [];
+        members.sort((a, b) => a.user.username.localeCompare(b.user.username));
     } else {
         if (query) {
             // @ts-expect-error memberFind.where is very much defined
