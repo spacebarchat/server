@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Guild, Member } from "@spacebar/database";
+import { Channel, Guild, Member, AuditLog } from "@spacebar/database";
 import { DiscordApiErrors, GuildUpdateEvent, Permissions, SpacebarApiErrors, emitEvent, getPermission, getRights, handleFile } from "@spacebar/util";
-import { GuildCreateResponse, GuildUpdateSchema } from "@spacebar/schemas";
+import { AuditLogEvents, AuditLogGuildChange, GuildCreateResponse, GuildUpdateSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -123,6 +123,28 @@ router.patch(
         }
 
         // TODO: check if body ids are valid
+        const oldGuild: Partial<AuditLogGuildChange> = {
+            name: guild.name,
+            description: guild.description,
+            icon_hash: guild.icon,
+            splash_hash: guild.splash,
+            discovery_splash_hash: guild.discovery_splash,
+            banner_hash: guild.banner,
+            owner_id: guild.owner_id,
+            region: guild.region,
+            preferred_locale: guild.preferred_locale,
+            afk_channel_id: guild.afk_channel_id ?? undefined,
+            afk_timeout: guild.afk_timeout,
+            rules_channel_id: guild.rules_channel_id ?? undefined,
+            public_updates_channel_id: guild.public_updates_channel_id ?? undefined,
+            mfa_level: guild.mfa_level,
+            verification_level: guild.verification_level,
+            explicit_content_filter: guild.explicit_content_filter,
+            default_message_notifications: guild.default_message_notifications,
+            widget_enabled: guild.widget_enabled,
+            widget_channel_id: guild.widget_channel_id,
+            system_channel_id: guild.system_channel_id ?? undefined,
+        };
         guild.assign(body);
 
         if (body.public_updates_channel_id == "1") {
@@ -212,6 +234,58 @@ router.patch(
                 guild_id,
             } satisfies GuildUpdateEvent),
         ]);
+
+        const newGuild: Partial<AuditLogGuildChange> = {
+            name: guild.name,
+            description: guild.description,
+            icon_hash: guild.icon,
+            splash_hash: guild.splash,
+            discovery_splash_hash: guild.discovery_splash,
+            banner_hash: guild.banner,
+            owner_id: guild.owner_id,
+            region: guild.region,
+            preferred_locale: guild.preferred_locale,
+            afk_channel_id: guild.afk_channel_id ?? undefined,
+            afk_timeout: guild.afk_timeout,
+            rules_channel_id: guild.rules_channel_id ?? undefined,
+            public_updates_channel_id: guild.public_updates_channel_id ?? undefined,
+            mfa_level: guild.mfa_level,
+            verification_level: guild.verification_level,
+            explicit_content_filter: guild.explicit_content_filter,
+            default_message_notifications: guild.default_message_notifications,
+            widget_enabled: guild.widget_enabled,
+            widget_channel_id: guild.widget_channel_id,
+            system_channel_id: guild.system_channel_id ?? undefined,
+        };
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: guild_id,
+            action_type: AuditLogEvents.GUILD_UPDATE,
+            changes: AuditLog.computeChanges(oldGuild, newGuild, [
+                "name",
+                "description",
+                "icon_hash",
+                "splash_hash",
+                "discovery_splash_hash",
+                "banner_hash",
+                "owner_id",
+                "region",
+                "preferred_locale",
+                "afk_channel_id",
+                "afk_timeout",
+                "rules_channel_id",
+                "public_updates_channel_id",
+                "mfa_level",
+                "verification_level",
+                "explicit_content_filter",
+                "default_message_notifications",
+                "widget_enabled",
+                "widget_channel_id",
+                "system_channel_id",
+            ]),
+        });
 
         return res.json(data);
     },

@@ -17,7 +17,8 @@
 */
 
 import { route } from "@spacebar/api/middlewares";
-import { Member } from "@spacebar/database";
+import { AuditLog, Member } from "@spacebar/database";
+import { AuditLogEvents } from "@spacebar/schemas";
 import { Request, Response, Router } from "express";
 
 const router = Router({ mergeParams: true });
@@ -37,6 +38,13 @@ router.delete(
         const { guild_id, role_id, member_id } = req.params as { [key: string]: string };
 
         await Member.removeRole(member_id, guild_id, role_id);
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: member_id,
+            action_type: AuditLogEvents.MEMBER_ROLE_UPDATE,
+            changes: [{ key: "$remove", new_value: [{ id: role_id }] }],
+        });
         res.sendStatus(204);
     },
 );
@@ -54,6 +62,13 @@ router.put(
         const { guild_id, role_id, member_id } = req.params as { [key: string]: string };
 
         await Member.addRole(member_id, guild_id, role_id);
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: member_id,
+            action_type: AuditLogEvents.MEMBER_ROLE_UPDATE,
+            changes: [{ key: "$add", new_value: [{ id: role_id }] }],
+        });
         res.sendStatus(204);
     },
 );

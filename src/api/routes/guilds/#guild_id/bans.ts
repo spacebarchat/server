@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Ban, Member, User } from "@spacebar/database";
+import { AuditLog, Ban, Member, User } from "@spacebar/database";
 import { DiscordApiErrors, GuildBanAddEvent, GuildBanRemoveEvent, emitEvent } from "@spacebar/util";
-import { BanCreateSchema, BanRegistrySchema, GuildBanResponse, GuildBansResponse, PublicUser } from "@spacebar/schemas";
+import { AuditLogEvents, BanCreateSchema, BanRegistrySchema, GuildBanResponse, GuildBansResponse, PublicUser } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -233,6 +233,16 @@ router.put(
         await Promise.all([
             Member.removeFromGuild(banned_user_id, guild_id),
             ban.save(),
+            AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: banned_user_id,
+                action_type: AuditLogEvents.MEMBER_BAN_ADD,
+                reason: req.body.reason,
+                options: {
+                    delete_member_days: String(Math.floor(deleteMessagesMs / 86400000)),
+                },
+            }),
             emitEvent({
                 event: "GUILD_BAN_ADD",
                 data: {
@@ -276,7 +286,12 @@ router.delete(
                 user_id: user_id,
                 guild_id,
             }),
-
+            AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: user_id,
+                action_type: AuditLogEvents.MEMBER_BAN_REMOVE,
+            }),
             emitEvent({
                 event: "GUILD_BAN_REMOVE",
                 data: {

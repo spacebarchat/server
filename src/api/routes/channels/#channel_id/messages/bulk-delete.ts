@@ -19,8 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Message } from "@spacebar/database";
+import { Channel, Message, AuditLog } from "@spacebar/database";
 import { Config, emitEvent, getPermission, getRights, MessageDeleteBulkEvent } from "@spacebar/util";
+import { AuditLogEvents } from "@spacebar/schemas";
 import { In } from "typeorm";
 
 const router: Router = Router({ mergeParams: true });
@@ -49,6 +50,7 @@ router.post(
             where: { id: channel_id },
         });
         if (!channel.guild_id) throw new HTTPError("Can't bulk delete dm channel messages", 400);
+        const guild_id = channel.guild_id;
 
         const rights = await getRights(req.user_id);
         rights.hasThrow("SELF_DELETE_MESSAGES");
@@ -74,6 +76,16 @@ router.post(
             channel_id,
             data: { ids: messageIdsInChannel, channel_id, guild_id: channel.guild_id },
         } satisfies MessageDeleteBulkEvent);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            action_type: AuditLogEvents.MESSAGE_BULK_DELETE,
+            options: {
+                channel_id,
+                count: String(messageIdsInChannel.length),
+            },
+        });
 
         res.sendStatus(204);
     },

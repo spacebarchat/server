@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { Not } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Member, Role } from "@spacebar/database";
+import { Member, Role, AuditLog } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, GuildRoleCreateEvent, GuildRoleUpdateEvent, Snowflake } from "@spacebar/util";
-import { RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";
+import { AuditLogEvents, RoleModifySchema, RolePositionUpdateSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -89,6 +89,12 @@ router.post(
 
         await Promise.all([
             role.save(),
+            AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: role.id,
+                action_type: AuditLogEvents.ROLE_CREATE,
+            }),
             // Move all existing roles up one position, to accommodate the new role
             Role.createQueryBuilder("roles")
                 .where({
