@@ -17,48 +17,46 @@
 */
 
 import { Router, Response, Request } from "express";
-import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
-import { AvatarDecoration } from "@spacebar/database";
-import { storage, setCacheControl } from "../util";
+import { fileTypeFromBuffer } from "file-type";
+import { storage, setCacheControl } from "../../../util";
 
 const router = Router({ mergeParams: true });
 
-router.get("/:avatar_decoration_data_asset", setCacheControl, async (req: Request, res: Response) => {
-    const { avatar_decoration_data_asset } = req.params as { [key: string]: string };
-    const path = `avatar-decoration-presets/${avatar_decoration_data_asset}`;
+router.get("/:sku_id/static", setCacheControl, async (req: Request, res: Response) => {
+    const { sku_id } = req.params as { [key: string]: string };
+    const basePath = `collectibles-shop/${sku_id}`;
 
-    const file = await storage.get(path);
-    if (!file) {
-        if (!(await tryReturnFromCollectiblesShop(req, res, avatar_decoration_data_asset))) return;
-        else throw new HTTPError("not found", 404);
-    }
-    const type = await fileTypeFromBuffer(file);
+    let file: Buffer<ArrayBufferLike> | null;
+    if (await storage.exists(basePath + "/static")) {
+        file = await storage.get(basePath + "/static");
+    } else if (await storage.exists(basePath + "/animated")) {
+        file = await storage.get(basePath + "/animated");
+    } else throw new HTTPError("not found", 404);
+
+    const type = await fileTypeFromBuffer(file!);
 
     res.set("Content-Type", type?.mime);
 
     return res.send(file);
 });
 
-async function tryReturnFromCollectiblesShop(req: Request, res: Response, avatar_decoration_data_asset: string) {
-    const coll = await AvatarDecoration.findOne({ where: { asset: avatar_decoration_data_asset } });
-    if (!coll) return false;
-
-    const basePath = `collectibles-shop/${coll.id}`;
+router.get("/:sku_id/animated", setCacheControl, async (req: Request, res: Response) => {
+    const { sku_id } = req.params as { [key: string]: string };
+    const basePath = `collectibles-shop/${sku_id}`;
 
     let file: Buffer<ArrayBufferLike> | null;
     if (await storage.exists(basePath + "/animated")) {
         file = await storage.get(basePath + "/animated");
     } else if (await storage.exists(basePath + "/static")) {
         file = await storage.get(basePath + "/static");
-    } else return false;
+    } else throw new HTTPError("not found", 404);
 
     const type = await fileTypeFromBuffer(file!);
 
     res.set("Content-Type", type?.mime);
 
-    res.send(file);
-    return true;
-}
+    return res.send(file);
+});
 
 export default router;

@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache, cacheNotFound } from "../util";
+import { storage, multer, setCacheControl, setCacheControlNotFound } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -60,13 +60,13 @@ router.post("/:emoji_id", multer.single("file"), async (req: Request, res: Respo
     });
 });
 
-router.get("/:emoji_id", cache, async (req: Request, res: Response) => {
+router.get("/:emoji_id", setCacheControl, async (req: Request, res: Response) => {
     let { emoji_id } = req.params as { [key: string]: string };
     emoji_id = emoji_id.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${emoji_id}`;
 
     const file = await storage.get(path);
-    if (!file) return cacheNotFound(req, res);
+    if (!file) return setCacheControlNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);

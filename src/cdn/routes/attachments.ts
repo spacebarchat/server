@@ -22,7 +22,7 @@ import imageSize from "image-size";
 import { HTTPError } from "lambert-server/HTTPError";
 import { CloudAttachment } from "@spacebar/database";
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
-import { storage, multer, cache } from "../util";
+import { storage, multer, setCacheControl } from "../util";
 import { InternalCdnAttachment } from "@spacebar/util/dtos/MessageOptions";
 
 const router = Router({ mergeParams: true });
@@ -75,7 +75,7 @@ router.post("/:channel_id/:message_id", multer.single("file"), async (req: Reque
     return res.json(file);
 });
 
-router.get("/:channel_id/:message_id/:filename", cache, async (req: Request, res: Response) => {
+router.get("/:channel_id/:message_id/:filename", setCacheControl, async (req: Request, res: Response) => {
     const { channel_id, message_id, filename } = req.params as { [key: string]: string };
     // const { format } = req.query;
 

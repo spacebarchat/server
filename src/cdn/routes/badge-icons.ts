@@ -19,11 +19,11 @@
 import { Router, Response, Request } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { fileTypeFromBuffer } from "file-type";
-import { storage, cache } from "../util";
+import { storage, setCacheControl } from "../util";
 
 const router = Router({ mergeParams: true });
 
-router.get("/:badge_id", cache, async (req: Request, res: Response) => {
+router.get("/:badge_id", setCacheControl, async (req: Request, res: Response) => {
     const { badge_id } = req.params as { [key: string]: string };
     const path = `badge-icons/${badge_id}`;
 

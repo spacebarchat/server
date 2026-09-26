@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache } from "../util";
+import { storage, multer, setCacheControl } from "../util";
 
 //Role icons ---> avatars.ts modified
 
@@ -58,7 +58,7 @@ router.post("/:role_id", multer.single("file"), async (req: Request, res: Respon
     });
 });
 
-router.get("/:role_id", cache, async (req: Request, res: Response) => {
+router.get("/:role_id", setCacheControl, async (req: Request, res: Response) => {
     const { role_id } = req.params as { [key: string]: string };
     //role_id = role_id.split(".")[0]; // remove .file extension
     const path = `role-icons/${role_id}`;
@@ -72,7 +72,7 @@ router.get("/:role_id", cache, async (req: Request, res: Response) => {
     return res.send(file);
 });
 
-router.get("/:role_id/:hash", cache, async (req: Request, res: Response) => {
+router.get("/:role_id/:hash", setCacheControl, async (req: Request, res: Response) => {
     const { role_id, hash } = req.params as { [key: string]: string };
     //hash = hash.split(".")[0]; // remove .file extension
     const requested_extension = hash.split(".")[1];

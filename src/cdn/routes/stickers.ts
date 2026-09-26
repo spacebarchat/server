@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache, cacheNotFound } from "../util";
+import { storage, multer, setCacheControl, setCacheControlNotFound } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -60,13 +60,13 @@ router.post("/:sticker_id", multer.single("file"), async (req: Request, res: Res
     });
 });
 
-router.get("/:sticker_id", cache, async (req: Request, res: Response) => {
+router.get("/:sticker_id", setCacheControl, async (req: Request, res: Response) => {
     let { sticker_id } = req.params as { [key: string]: string };
     sticker_id = sticker_id.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${sticker_id}`;
 
     const file = await storage.get(path);
-    if (!file) return cacheNotFound(req, res);
+    if (!file) return setCacheControlNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);

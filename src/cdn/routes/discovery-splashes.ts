@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache, cacheNotFound } from "../util";
+import { storage, multer, setCacheControl, setCacheControlNotFound } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -60,13 +60,13 @@ router.post("/:guild_id", multer.single("file"), async (req: Request, res: Respo
     });
 });
 
-router.get("/:guild_id", cache, async (req: Request, res: Response) => {
+router.get("/:guild_id", setCacheControl, async (req: Request, res: Response) => {
     let { guild_id } = req.params as { [key: string]: string };
     guild_id = guild_id.split(".")[0]; // remove .file extension
     const path = `${pathPrefix}/${guild_id}`;
 
     const file = await storage.get(path);
-    if (!file) return cacheNotFound(req, res);
+    if (!file) return setCacheControlNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -81,7 +81,7 @@ export const getAvatar = async (req: Request, res: Response) => {
     const path = `${pathPrefix}/${guild_id}/${hash}`;
 
     const file = await storage.get(path);
-    if (!file) return cacheNotFound(req, res);
+    if (!file) return setCacheControlNotFound(req, res);
     const type = await fileTypeFromBuffer(file);
 
     res.set("Content-Type", type?.mime);
@@ -89,7 +89,7 @@ export const getAvatar = async (req: Request, res: Response) => {
     return res.send(file);
 };
 
-router.get("/:guild_id/:hash", cache, getAvatar);
+router.get("/:guild_id/:hash", setCacheControl, getAvatar);
 
 router.delete("/:guild_id/:id", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");

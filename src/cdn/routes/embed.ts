@@ -21,7 +21,7 @@ import { join } from "node:path";
 import { Request, Response, Router } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
-import { cache } from "../util";
+import { setCacheControl } from "../util";
 
 const defaultAvatarHashMap = new Map([
     ["0", "4a8562cf00887030c416d3ec2d46385a"],
@@ -59,7 +59,7 @@ async function getFile(path: string) {
     }
 }
 
-router.get("/avatars/:id", cache, async (req: Request, res: Response) => {
+router.get("/avatars/:id", setCacheControl, async (req: Request, res: Response) => {
     let { id } = req.params as { [key: string]: string };
     id = id.split(".")[0]; // remove .file extension
     const hash = defaultAvatarHashMap.get(id);
@@ -75,7 +75,7 @@ router.get("/avatars/:id", cache, async (req: Request, res: Response) => {
     return res.send(file);
 });
 
-router.get("/group-avatars/:id", cache, async (req: Request, res: Response) => {
+router.get("/group-avatars/:id", setCacheControl, async (req: Request, res: Response) => {
     let { id } = req.params as { [key: string]: string };
     id = id.split(".")[0]; // remove .file extension
     const hash = defaultGroupDMAvatarHashMap.get(id);

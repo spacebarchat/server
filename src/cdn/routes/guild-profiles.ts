@@ -21,7 +21,7 @@ import { Request, Response, Router } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, cache } from "../util";
+import { storage, multer, setCacheControl } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -59,7 +59,7 @@ router.post("/", multer.single("file"), async (req: Request, res: Response) => {
     });
 });
 
-router.get("/", cache, async (req: Request, res: Response) => {
+router.get("/", setCacheControl, async (req: Request, res: Response) => {
     const { guild_id } = req.params as { [key: string]: string };
     let { user_id } = req.params as { [key: string]: string };
     user_id = user_id.split(".")[0]; // remove .file extension
@@ -74,7 +74,7 @@ router.get("/", cache, async (req: Request, res: Response) => {
     return res.send(file);
 });
 
-router.get("/:hash", cache, async (req: Request, res: Response) => {
+router.get("/:hash", setCacheControl, async (req: Request, res: Response) => {
     const { guild_id, user_id } = req.params as { [key: string]: string };
     let { hash } = req.params as { [key: string]: string };
     hash = hash.split(".")[0]; // remove .file extension

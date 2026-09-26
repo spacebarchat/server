@@ -18,13 +18,13 @@
 
 import { NextFunction, Response, Request } from "express";
 
-export function cache(req: Request, res: Response, next: NextFunction) {
+export function setCacheControl(req: Request, res: Response, next: NextFunction) {
     const cacheDuration = 21600; // 6 hours
     res.setHeader("Cache-Control", `public, max-age=${cacheDuration}, s-maxage=${cacheDuration}, immutable`);
     next();
 }
 
-export function cacheNotFound(req: Request, res: Response) {
+export function setCacheControlNotFound(req: Request, res: Response) {
     const cacheDuration = 60; // 1 minute
     res.setHeader("Cache-Control", `public, max-age=${cacheDuration}, s-maxage=${cacheDuration}, immutable`);
     res.status(404).send(req.path + " not found");
