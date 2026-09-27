@@ -98,8 +98,8 @@ export class Attachment extends BaseClass {
         const messageId = this.message_id ?? this.message?.id;
         return {
             ...this,
-            url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
-            proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${messageId}/${this.filename}`,
+            url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${this.id}/${this.filename}`,
+            proxy_url: `${Config.get().cdn.endpointPublic}/attachments/${channelId}/${this.id}/${this.filename}`,
         } satisfies PublicAttachment;
     }
     signUrls(data: NewUrlUserSignatureData): PublicAttachment {
