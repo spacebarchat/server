@@ -21,7 +21,7 @@ import { Router, Response, Request } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Config } from "@spacebar/util";
-import { storage, multer, setCacheControl, setCacheControlNotFound } from "../util";
+import { storage, multer, setCacheControl, setCacheControlNotFound, validateServerAuth } from "../util";
 
 // TODO: check premium and animated pfp are allowed in the config
 // TODO: generate different sizes of icon
@@ -35,8 +35,7 @@ const ALLOWED_MIME_TYPES = [...ANIMATED_MIME_TYPES, ...STATIC_MIME_TYPES];
 const router = Router({ mergeParams: true });
 
 const pathPrefix = "app-assets";
-router.post("/:guild_id", multer.single("file"), async (req: Request, res: Response) => {
-    if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
+router.post("/:guild_id", validateServerAuth, multer.single("file"), async (req: Request, res: Response) => {
     if (!req.file) throw new HTTPError("Missing file");
     const { buffer, size } = req.file;
     const { guild_id } = req.params as { [key: string]: string };
