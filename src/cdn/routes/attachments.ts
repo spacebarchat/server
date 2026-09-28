@@ -20,7 +20,7 @@ import { Request, Response, Router } from "express";
 import { fileTypeFromBuffer } from "file-type";
 import imageSize from "image-size";
 import { HTTPError } from "lambert-server/HTTPError";
-import { CloudAttachment } from "@spacebar/database";
+import { Attachment, CloudAttachment } from "@spacebar/database";
 import { Config, hasValidSignature, NewUrlUserSignatureData, Snowflake, UrlSignResult } from "@spacebar/util";
 import { storage, multer, setCacheControl } from "../util";
 import { InternalCdnAttachment } from "@spacebar/util/dtos/MessageOptions";
@@ -30,8 +30,7 @@ const router = Router({ mergeParams: true });
 const SANITIZED_CONTENT_TYPE = ["text/html", "text/mhtml", "multipart/related", "application/xhtml+xml"];
 
 router.post("/:channel_id/:message_id", multer.single("file"), async (req: Request, res: Response) => {
-    if (req.headers.signature !== Config.get().security.requestSignature)
-        throw new HTTPError(`Invalid request signature, expected '${Config.get().security.requestSignature}', got ${req.headers.signature}`);
+    if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 
     if (!req.file) throw new HTTPError("file missing");
 
@@ -76,11 +75,11 @@ router.post("/:channel_id/:message_id", multer.single("file"), async (req: Reque
     return res.json(file);
 });
 
-router.get("/:channel_id/:message_id/:filename", setCacheControl, async (req: Request, res: Response) => {
-    const { channel_id, message_id, filename } = req.params as { [key: string]: string };
+router.get("/:channel_id/:attachment_id/:filename", setCacheControl, async (req: Request, res: Response) => {
+    const { channel_id, attachment_id, filename } = req.params as { [key: string]: string };
     // const { format } = req.query;
 
-    const path = `attachments/${channel_id}/${message_id}/${filename}`;
+    const path = `attachments/${channel_id}/${attachment_id}/${filename}`;
 
     const fullUrl = (req.headers["x-forwarded-proto"] ?? req.protocol) + "://" + (req.headers["x-forwarded-host"] ?? req.hostname) + req.originalUrl;
 
@@ -103,7 +102,22 @@ router.get("/:channel_id/:message_id/:filename", setCacheControl, async (req: Re
 
     if (!hasValidAuth) return res.status(404).send("This content is no longer available.");
 
-    const file = await storage.get(path);
+    let file = await storage.get(path);
+    if (!file) {
+        const att = await Attachment.findOne({
+            where: {
+                channel_id,
+                id: attachment_id,
+            },
+        });
+
+        if (att) {
+            const attPath = `attachments/${channel_id}/${att.message_id}/${filename}`;
+            if (!(await storage.exists(attPath))) throw new HTTPError("File not found");
+            await storage.move(attPath, path);
+            file = await storage.get(path);
+        }
+    }
     if (!file) throw new HTTPError("File not found");
     const type = await fileTypeFromBuffer(file);
     let content_type = type?.mime || "application/octet-stream";
@@ -117,11 +131,11 @@ router.get("/:channel_id/:message_id/:filename", setCacheControl, async (req: Re
     return res.send(file);
 });
 
-router.delete("/:channel_id/:message_id/:filename", async (req: Request, res: Response) => {
+router.delete("/:channel_id/:attachment_id/:filename", async (req: Request, res: Response) => {
     if (req.headers.signature !== Config.get().security.requestSignature) throw new HTTPError("Invalid request signature");
 
-    const { channel_id, message_id, filename } = req.params as { [key: string]: string };
-    const path = `attachments/${channel_id}/${message_id}/${filename}`;
+    const { channel_id, attachment_id, filename } = req.params as { [key: string]: string };
+    const path = `attachments/${channel_id}/${attachment_id}/${filename}`;
 
     await storage.delete(path);
 
