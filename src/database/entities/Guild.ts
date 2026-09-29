@@ -317,10 +317,6 @@ export class Guild extends BaseClass {
     discovery_excluded: boolean = false;
 
     async toDiscoverableGuild(): Promise<DiscoverableGuild | null> {
-        if (!this.features.includes("DISCOVERABLE")) {
-            return null;
-        }
-
         return {
             id: this.id,
             name: this.name,
