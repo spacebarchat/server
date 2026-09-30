@@ -19,6 +19,7 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
 import { Sticker } from "@spacebar/database";
+import { Config } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -49,8 +50,13 @@ router.get(
     async (req: Request, res: Response) => {
         const { sticker_id } = req.params as { [key: string]: string };
         const sticker = await Sticker.findOne({ where: { id: sticker_id }, relations: { guild: true } });
-        res.json(await sticker?.guild?.toDiscoverableGuild());
-    },
+
+        const showAllGuilds = Config.get().guild.discovery.showAllGuilds;
+        const guild = sticker?.guild;
+
+        if (guild) {
+        res.json(showAllGuilds || guild.features.includes("DISCOVERABLE") ? await guild?.toDiscoverableGuild() : null);
+    }},
 );
 
 export default router;
