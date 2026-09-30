@@ -85,6 +85,9 @@ router.post(
                     webhook.avatar = hash;
                     await webhook.save();
                 }
+
+                res.write(" Moving file...");
+                await storage.move(`avatars/${user_id}/${dirEnt}`, `avatars/${user_id}/${hash}`);
             }
 
             res.write("\n");
