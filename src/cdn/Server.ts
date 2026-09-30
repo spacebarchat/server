@@ -19,7 +19,7 @@
 import path from "node:path";
 import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
-import { CORS, BodyParser } from "@spacebar/api/middlewares";
+import { CORS, BodyParser, Authentication } from "@spacebar/api/middlewares";
 import { Attachment, initDatabase } from "@spacebar/database";
 import { Config, JwtKeypairManager, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
@@ -67,6 +67,7 @@ export class CDNServer extends Server {
 
         this.app.disable("x-powered-by");
 
+        this.app.use(Authentication);
         this.app.use(ErrorHandler);
         this.app.use(CORS);
         this.app.use(BodyParser({ inflate: true, limit: "10mb" }));
