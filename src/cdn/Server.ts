@@ -21,7 +21,7 @@ import morgan from "morgan";
 import { Server, ServerOptions } from "lambert-server/Server";
 import { CORS, BodyParser } from "@spacebar/api/middlewares";
 import { Attachment, initDatabase } from "@spacebar/database";
-import { Config, registerRoutes } from "@spacebar/util";
+import { Config, JwtKeypairManager, registerRoutes } from "@spacebar/util";
 import { ProcessLifecycle, SystemdLifecycle } from "../util/util/ProcessLifecycle";
 import { Monitoring } from "../util/monitoring/Monitoring";
 import guildProfilesRoute from "./routes/guild-profiles";
@@ -42,6 +42,7 @@ export class CDNServer extends Server {
         Monitoring.attach(this.app);
         await initDatabase();
         await Config.init();
+        await JwtKeypairManager.init();
 
         this.migrateAttachments().then(
             (_) => console.log("[CDN] Successfully migrated attachments"),
