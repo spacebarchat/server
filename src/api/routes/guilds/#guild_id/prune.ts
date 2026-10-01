@@ -19,7 +19,8 @@
 import { Request, Response, Router } from "express";
 import { IsNull, LessThan } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Guild, Member } from "@spacebar/database";
+import { Guild, Member, AuditLog } from "@spacebar/database";
+import { AuditLogEvents } from "@spacebar/schemas";
 import { Snowflake } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
@@ -119,6 +120,16 @@ router.post(
         const members = await inactiveMembers(guild_id, req.user_id, days, roles as string[]);
 
         await Promise.all(members.map((x) => Member.removeFromGuild(x.id, guild_id)));
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            action_type: AuditLogEvents.MEMBER_PRUNE,
+            options: {
+                delete_member_days: String(days),
+                members_removed: String(members.length),
+            },
+        });
 
         res.send({ purged: members.length });
     },

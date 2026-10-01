@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Member, Role } from "@spacebar/database";
+import { Channel, Member, Role, AuditLog } from "@spacebar/database";
 import { ChannelUpdateEvent, emitEvent } from "@spacebar/util";
-import { ChannelPermissionOverwriteSchema, ChannelPermissionOverwrite, ChannelPermissionOverwriteType } from "@spacebar/schemas";
+import { AuditLogEvents, ChannelPermissionOverwriteSchema, ChannelPermissionOverwrite, ChannelPermissionOverwriteType } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -47,6 +47,7 @@ router.put(
             where: { id: channel_id },
         });
         if (!channel.guild_id) throw new HTTPError("Channel not found", 404);
+        const guild_id = channel.guild_id;
         channel.position = await Channel.calculatePosition(channel_id, channel.guild_id, channel.guild);
 
         if (body.type === ChannelPermissionOverwriteType.role) {
@@ -55,7 +56,10 @@ router.put(
             if (!(await Member.count({ where: { id: overwrite_id } }))) throw new HTTPError("user not found", 404);
         } else throw new HTTPError("type not supported", 501);
 
-        let overwrite: ChannelPermissionOverwrite | undefined = channel.permission_overwrites?.find((x) => x.id === overwrite_id);
+        const existingOverwrite = channel.permission_overwrites?.find((x) => x.id === overwrite_id);
+        const oldAllow = existingOverwrite?.allow;
+        const oldDeny = existingOverwrite?.deny;
+        let overwrite = existingOverwrite;
         if (!overwrite) {
             overwrite = {
                 id: overwrite_id,
@@ -76,6 +80,18 @@ router.put(
                 data: channel.toJSON(),
             } satisfies ChannelUpdateEvent),
         ]);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: overwrite_id,
+            action_type: existingOverwrite ? AuditLogEvents.CHANNEL_OVERWRITE_UPDATE : AuditLogEvents.CHANNEL_OVERWRITE_CREATE,
+            changes: AuditLog.computeChanges(
+                { allow: oldAllow, deny: oldDeny },
+                { allow: overwrite.allow, deny: overwrite.deny },
+                ["allow", "deny"],
+            ),
+        });
 
         return res.sendStatus(204);
     },
@@ -100,6 +116,13 @@ router.delete("/:overwrite_id", route({ permission: "MANAGE_ROLES", responses: {
             data: channel.toJSON(),
         } satisfies ChannelUpdateEvent),
     ]);
+
+    await AuditLog.createAuditLog({
+        guild_id: channel.guild_id,
+        user_id: req.user_id,
+        target_id: overwrite_id,
+        action_type: AuditLogEvents.CHANNEL_OVERWRITE_DELETE,
+    });
 
     return res.sendStatus(204);
 });
