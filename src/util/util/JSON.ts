@@ -36,3 +36,28 @@ export function JSONReplacer(this: { [key: string]: unknown }, key: string, valu
 
     return value;
 }
+
+/**
+ * Walk an object tree and null out circular references in-place,
+ * while preserving shared (non-circular) references.
+ */
+export function cleanCircularRefs<T>(data: T): T {
+    const ancestors = new Set<object>();
+    function walk(val: unknown): unknown {
+        if (val === null || typeof val !== "object") return val;
+        if (ancestors.has(val)) return null;
+        ancestors.add(val);
+        if (Array.isArray(val)) {
+            for (let i = 0; i < val.length; i++) {
+                val[i] = walk(val[i]) as (typeof val)[number];
+            }
+        } else {
+            for (const key of Object.keys(val as Record<string, unknown>)) {
+                (val as Record<string, unknown>)[key] = walk((val as Record<string, unknown>)[key]);
+            }
+        }
+        ancestors.delete(val);
+        return val;
+    }
+    return walk(data) as T;
+}
