@@ -49,7 +49,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
         throw DiscordApiErrors.CANNOT_SEND_EMPTY_MESSAGE;
     }
 
-    const wait = req.query.wait === "true";
+    const wait = req.query.wait === "true" || req.query.wait === "1";
     const thread_id = typeof req.query.thread_id === "string" ? req.query.thread_id : undefined;
 
     if (!wait) {
