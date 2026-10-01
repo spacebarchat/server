@@ -34,24 +34,47 @@ async function getMembers(guild_id: string, range: [number, number]) {
         throw new Error("range is not a valid array");
     }
 
+    const offset = Number(range[0]) || 0;
+    const count = Number(range[1]) >= offset ? Number(range[1]) - offset + 1 : 100;
+
     let members: Member[] = [];
     try {
-        members =
-            (await getDatabase()
-                ?.getRepository(Member)
+        const repo = getDatabase()?.getRepository(Member);
+        if (repo) {
+            // page over members not joined rows because joining roles and sessions gives one row per role session
+            const page: { index: string | number }[] = await repo
                 .createQueryBuilder("member")
+                .select("member.index", "index")
+                .leftJoin("member.roles", "role")
+                .leftJoin("member.user", "user")
+                .leftJoin("user.sessions", "session")
                 .where("member.guild_id = :guild_id", { guild_id })
-                .leftJoinAndSelect("member.roles", "role")
-                .leftJoinAndSelect("member.user", "user")
-                .leftJoinAndSelect("user.sessions", "session")
-                .addSelect("user.settings")
-                .addSelect("CASE WHEN session.status IS NULL OR session.status = 'offline' OR session.status = 'invisible' THEN 0 ELSE 1 END", "_status")
+                .groupBy("member.index")
+                .addGroupBy("user.username")
+                .addSelect("MAX(CASE WHEN session.status IS NULL OR session.status = 'offline' OR session.status = 'invisible' THEN 0 ELSE 1 END)", "_status")
+                .addSelect("MAX(role.position)", "_position")
                 .orderBy("_status", "DESC")
-                .addOrderBy("role.position", "DESC")
+                .addOrderBy("_position", "DESC")
                 .addOrderBy("user.username", "ASC")
-                .offset(Number(range[0]) || 0)
-                .limit(Number(range[1]) || 100)
-                .getMany()) ?? [];
+                .offset(offset)
+                .limit(count)
+                .getRawMany();
+
+            const indexes = page.map((row) => String(row.index));
+            if (indexes.length) {
+                const loaded = await repo
+                    .createQueryBuilder("member")
+                    .leftJoinAndSelect("member.roles", "role")
+                    .leftJoinAndSelect("member.user", "user")
+                    .leftJoinAndSelect("user.sessions", "session")
+                    .addSelect("user.settings")
+                    .where("member.index IN (:...indexes)", { indexes })
+                    .getMany();
+
+                const byIndex = new Map(loaded.map((member) => [String(member.index), member]));
+                members = indexes.map((index) => byIndex.get(index)).filter((member): member is Member => !!member);
+            }
+        }
     } catch (e) {
         console.error(`LazyRequest`, e);
     }
@@ -74,7 +97,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
                 .flat()
                 .map((role) => [role.id, role] as [string, Role]),
         ).values(),
-    ];
+    ].sort((a, b) => b.position - a.position); // members land in their highest role's group
     member_roles.push(
         member_roles.splice(
             member_roles.findIndex((x) => x.id === x.guild_id),
