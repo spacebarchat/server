@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Spacebar.AdminApi.Extensions;
+using Spacebar.DataMappings.Generic;
 using Spacebar.Interop.Authentication;
 using Spacebar.Interop.Authentication.AspNetCore;
 using Spacebar.Interop.Replication.Abstractions;
@@ -280,6 +281,15 @@ public class UserController(
             await foreach (var membership in memberships) {
                 db2.Members.Remove(membership);
                 guildIds.Add(membership.GuildId.ToString());
+                await replication.SendAsync<GuildMemberEvents.Remove>(new() {
+                    Event = "MESSAGE_BULK_DELETE",
+                    GuildId = membership.GuildId,
+                    Payload = new() {
+                        GuildId = membership.GuildId,
+                        User = user.ToPartialUser() // TODO PublicUser?
+                    },
+                    Origin = "AdminApi/DeleteUser",
+                });
             }
 
             await db2.SaveChangesAsync();

@@ -26,6 +26,16 @@ nixpkgs.lib.recursiveUpdate (
     {
       packages = {
         # Data mappings
+        Spacebar-DataMappings-AdminApi = buildSpacebarDotnetModule {
+          name = "Spacebar.DataMappings.AdminApi";
+          projectFile = "Spacebar.DataMappings.AdminApi.csproj";
+          nugetDeps = DataMappings/Spacebar.DataMappings.AdminApi/deps.json;
+          srcRoot = DataMappings/Spacebar.DataMappings.AdminApi;
+          projectReferences = [
+            proj.Spacebar-Models-Db
+            proj.Spacebar-Models-AdminApi
+          ];
+        };
         Spacebar-DataMappings-Generic = buildSpacebarDotnetModule {
           name = "Spacebar.DataMappings.Generic";
           projectFile = "Spacebar.DataMappings.Generic.csproj";
@@ -176,6 +186,8 @@ nixpkgs.lib.recursiveUpdate (
           srcRoot = ./Spacebar.AdminApi;
           packNupkg = false;
           projectReferences = [
+            proj.Spacebar-DataMappings-AdminApi
+            proj.Spacebar-DataMappings-Generic
             proj.Spacebar-Interop-Authentication
             proj.Spacebar-Interop-Authentication-AspNetCore
             proj.Spacebar-Interop-Replication-Abstractions
