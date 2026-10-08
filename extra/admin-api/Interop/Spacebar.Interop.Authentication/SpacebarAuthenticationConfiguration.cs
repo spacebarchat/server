@@ -14,5 +14,5 @@ public class SpacebarAuthenticationConfiguration {
     public string? OverrideDid { get; set; }
     public bool DisableAuthentication { get; set; } = false;
     public bool Enforce2FA { get; set; } = true;
-    public TimeSpan AuthCacheExpiry { get; set; } = TimeSpan.FromSeconds(30);
+    public TimeSpan AuthCacheExpiry { get; set; } = TimeSpan.FromSeconds(300);
 }

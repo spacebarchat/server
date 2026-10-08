@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -183,8 +184,21 @@ public class UserController(
             .SingleAsync(x => x.Id == id);
     }
 
+    // TODO remove me and move into separate class
+    private static readonly long EPOCH = 1420070400000;
+    private static ThreadLocal<int> INCREMENT = new ThreadLocal<int>(() => 0);
+
+    private static long GenerateSnowflake() {
+        long time = (DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - EPOCH) << 22;
+        long worker = (Thread.CurrentThread.ManagedThreadId % 31) << 17;
+        long process = (Process.GetCurrentProcess().Id % 31) << 12;
+        long increment = INCREMENT.Value++;
+        increment %= 4096;
+        return time | worker | process | increment;
+    }
+
     [HttpGet("{id}/delete")]
-    public async IAsyncEnumerable<AsyncActionResult> DeleteUser(long id, [FromQuery] int messageDeleteChunkSize = 100) {
+    public async IAsyncEnumerable<AsyncActionResult> DeleteUser(long id, [FromQuery] int messageDeleteChunkSize = 100, [FromQuery] bool ban = false) {
         (await auth.GetCurrentUserAsync(Request)).GetRights().AssertHasAllRights(SpacebarRights.Rights.OPERATOR);
 
         var user = await db.Users.FindAsync(id);
@@ -192,6 +206,29 @@ public class UserController(
             Console.WriteLine($"User {id} not found");
             yield return new AsyncActionResult("ERROR", new { entity = "User", id, message = "User not found" });
             yield break;
+        }
+
+        if (ban) {
+            var userBanId = GenerateSnowflake();
+            db.InstanceBans.Add(new() {
+                Id = userBanId,
+                UserId = id,
+                CreatedAt = DateTime.Now,
+                Reason = "<Admin API/Delete> No reason specified"
+            });
+            await db.SaveChangesAsync();
+
+            foreach (var session in await db.Sessions.Where(x => x.UserId == id && x.LastSeenIp != null).ToListAsync())
+                if (session.LastSeenIp is not null)
+                    db.InstanceBans.Add(new() {
+                        Id = GenerateSnowflake(),
+                        IpAddress = session.LastSeenIp,
+                        CreatedAt = DateTime.Now,
+                        IsFromOtherInstanceBan = true,
+                        OriginInstanceBanId = userBanId,
+                        Reason = "<Admin API/Delete/prop> No reason specified"
+                    });
+            await db.SaveChangesAsync();
         }
 
         user.Data = "{}";
@@ -233,6 +270,27 @@ public class UserController(
                 await db.Database.ExecuteSqlRawAsync("REINDEX TABLE messages");
             }
         }
+
+        var mq = db.Members.Where(x => x.Id == id);
+        await using var ctx = sp.CreateAsyncScope();
+        await using var db2 = ctx.ServiceProvider.GetRequiredService<SpacebarDbContext>();
+        while (await mq.AnyAsync()) {
+            var memberships = mq.Take(100).AsAsyncEnumerable();
+            List<string> guildIds = [];
+            await foreach (var membership in memberships) {
+                db2.Members.Remove(membership);
+                guildIds.Add(membership.GuildId.ToString());
+            }
+
+            await db2.SaveChangesAsync();
+
+            yield return new("MEMBERSHIP_DELETE", new {
+                guild_ids = guildIds
+            });
+        }
+
+        db.Users.Remove(user);
+        await db.SaveChangesAsync();
     }
 
     // [HttpGet("{id}/Dms")]
