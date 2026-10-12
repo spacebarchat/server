@@ -7689,7 +7689,13 @@
                             "referrer_current": {
                                 "type": "string"
                             },
+                            "$referrer_current": {
+                                "type": "string"
+                            },
                             "referring_domain_current": {
+                                "type": "string"
+                            },
+                            "$referring_domain_current": {
                                 "type": "string"
                             },
                             "release_channel": {
@@ -9063,9 +9069,7 @@
                     }
                 },
                 "required": [
-                    "flags",
                     "name",
-                    "session_id",
                     "type"
                 ]
             },

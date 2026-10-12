@@ -103,7 +103,9 @@ export interface IdentifySchema {
         referring_domain?: string;
         $referring_domain?: string;
         referrer_current?: string;
+        $referrer_current?: string;
         referring_domain_current?: string;
+        $referring_domain_current?: string;
         release_channel?: "stable" | "dev" | "ptb" | "canary" | string;
         client_build_number?: number;
         client_event_source?: string;

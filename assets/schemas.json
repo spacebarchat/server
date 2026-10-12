@@ -8239,7 +8239,13 @@
                     "referrer_current": {
                         "type": "string"
                     },
+                    "$referrer_current": {
+                        "type": "string"
+                    },
                     "referring_domain_current": {
+                        "type": "string"
+                    },
+                    "$referring_domain_current": {
                         "type": "string"
                     },
                     "release_channel": {
@@ -9692,9 +9698,7 @@
         },
         "additionalProperties": false,
         "required": [
-            "flags",
             "name",
-            "session_id",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
