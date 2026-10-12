@@ -109,7 +109,7 @@ export interface IdentifySchema {
         system_locale?: string;
         qos_token?: string;
     };
-    intents?: bigint; // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt
+    intents?: number;
     presence?: ActivitySchema;
     compress?: boolean;
     large_threshold?: number;
@@ -118,7 +118,7 @@ export interface IdentifySchema {
      * @minItems 2
      * @maxItems 2
      */
-    shard?: bigint[]; // puyo: changed from [bigint, bigint] because it breaks openapi
+    shard?: number[]; // puyo: changed from [bigint, bigint] because it breaks openapi
     guild_subscriptions?: boolean;
     capabilities?: number;
     client_state?: {

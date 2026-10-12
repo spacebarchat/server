@@ -35,8 +35,8 @@ export interface WebSocket extends WS {
     ipAddress?: string;
     userAgent?: string; // for cdn request signing
     fingerprint?: string;
-    shard_count?: bigint;
-    shard_id?: bigint;
+    shard_count?: number;
+    shard_id?: number;
     deflate?: Deflate;
     inflate?: Inflate;
     zstdEncoder?: Encoder;

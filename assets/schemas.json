@@ -8264,9 +8264,7 @@
                 "additionalProperties": false
             },
             "intents": {
-                "type": "number",
-                "properties": {},
-                "additionalProperties": false
+                "type": "integer"
             },
             "presence": {
                 "$ref": "#/definitions/ActivitySchema"
@@ -8285,9 +8283,7 @@
                 "maxItems": 2,
                 "type": "array",
                 "items": {
-                    "type": "number",
-                    "properties": {},
-                    "additionalProperties": false
+                    "type": "integer"
                 }
             },
             "guild_subscriptions": {
