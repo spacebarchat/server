@@ -50,7 +50,7 @@ export interface Activity {
         match?: string; // the secret for a specific instanced match
     };
     instance?: boolean;
-    flags: string; // activity flags OR d together, describes what the payload includes
+    flags?: string; // activity flags OR d together, describes what the payload includes
 
     // Spotify and other rich presence data
     id?: string;
@@ -63,7 +63,7 @@ export interface Activity {
         artist_ids?: string[];
         type?: "track" | "episode";
     };
-    session_id: string;
+    session_id?: string;
 }
 
 export enum ActivityType {
