@@ -61,7 +61,6 @@ import {
     TraceRoot,
 } from "@spacebar/util";
 import {
-    ajv,
     ChannelType,
     DefaultUserGuildSettings,
     DMChannel,
@@ -74,7 +73,6 @@ import {
     validateSchema,
 } from "@spacebar/schemas";
 import { check } from "./instanceOf";
-import { AnyValidateFunction } from "ajv/dist/core";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config

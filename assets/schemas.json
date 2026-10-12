@@ -8227,7 +8227,13 @@
                     "referrer": {
                         "type": "string"
                     },
+                    "$referrer": {
+                        "type": "string"
+                    },
                     "referring_domain": {
+                        "type": "string"
+                    },
+                    "$referring_domain": {
                         "type": "string"
                     },
                     "referrer_current": {
@@ -8237,12 +8243,6 @@
                         "type": "string"
                     },
                     "release_channel": {
-                        "enum": [
-                            "canary",
-                            "dev",
-                            "ptb",
-                            "stable"
-                        ],
                         "type": "string"
                     },
                     "client_build_number": {
@@ -8258,6 +8258,30 @@
                         "type": "string"
                     },
                     "qos_token": {
+                        "type": "string"
+                    },
+                    "has_client_mods": {
+                        "type": "boolean"
+                    },
+                    "client_launch_id": {
+                        "type": "string"
+                    },
+                    "launch_signature": {
+                        "type": "string"
+                    },
+                    "client_heartbeat_session_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "client_app_state": {
+                        "type": "string"
+                    },
+                    "is_fast_connect": {
+                        "type": "boolean"
+                    },
+                    "gateway_connect_reasons": {
                         "type": "string"
                     }
                 },
