@@ -41,7 +41,10 @@ export async function onSelectProtocol(this: WebRtcWebSocket, payload: VoicePayl
     const { voiceRoomId } = this.webRtcClient;
     const connectedClients = mediaServer.getClientsForRtcServer<WebRtcWebSocket>(voiceRoomId);
     const clientConnectData = {
-        user_ids: connectedClients.values().map((c) => c.user_id),
+        user_ids: connectedClients
+            .values()
+            .map((c) => c.user_id)
+            .toArray(),
     };
 
     for (const client of connectedClients) {
