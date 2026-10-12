@@ -76,7 +76,7 @@
         "typescript-json-schema": "^0.68.0"
     },
     "dependencies": {
-        "@spacebarchat/pion-webrtc": "^0.0.4",
+        "@spacebarchat/pion-webrtc": "^0.0.5",
         "@toondepauw/node-zstd": "^2.0.0",
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
