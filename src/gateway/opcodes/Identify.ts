@@ -61,6 +61,7 @@ import {
     TraceRoot,
 } from "@spacebar/util";
 import {
+    ajv,
     ChannelType,
     DefaultUserGuildSettings,
     DMChannel,
@@ -70,8 +71,10 @@ import {
     PublicUser,
     PublicUserProjection,
     RelationshipType,
+    validateSchema,
 } from "@spacebar/schemas";
 import { check } from "./instanceOf";
+import { AnyValidateFunction } from "ajv/dist/core";
 
 // TODO: user sharding
 // TODO: check privileged intents, if defined in the config
@@ -89,7 +92,13 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     clearTimeout(this.readyTimeout);
 
     // Check payload matches schema
-    check.call(this, IdentifySchema, data.d);
+    try {
+        data.d = validateSchema<IdentifySchema>("IdentifySchema", data.d);
+    } catch (e) {
+        console.error("AJV validation of Identify schema failed:", e);
+        check.call(this, IdentifySchema, data.d);
+    }
+
     const identify: IdentifySchema = data.d;
 
     this.capabilities = new Capabilities(identify.capabilities || 0);

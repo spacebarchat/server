@@ -8197,7 +8197,7 @@
                     "os": {
                         "type": "string"
                     },
-                    "os_atch": {
+                    "os_arch": {
                         "type": "string"
                     },
                     "browser": {

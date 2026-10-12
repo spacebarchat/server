@@ -89,7 +89,7 @@ export interface IdentifySchema {
     properties: {
         // bruh discord really uses $ in the property key, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
         os?: string;
-        os_atch?: string;
+        os_arch?: string;
         browser?: string;
         device?: string;
         $os?: string;
