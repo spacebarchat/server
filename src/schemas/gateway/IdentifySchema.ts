@@ -85,6 +85,7 @@ export const IdentifySchema = {
 
 export interface IdentifySchema {
     token: string;
+    qos_token?: string;
     properties: {
         // bruh discord really uses $ in the property key, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
         os?: string;
@@ -106,7 +107,7 @@ export interface IdentifySchema {
         client_event_source?: string;
         client_version?: string;
         system_locale?: string;
-		qos_token?: string;
+        qos_token?: string;
     };
     intents?: bigint; // discord uses a Integer for bitfields we use bigints tho. | instanceOf will automatically convert the Number to a BigInt
     presence?: ActivitySchema;

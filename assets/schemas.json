@@ -8188,6 +8188,9 @@
             "token": {
                 "type": "string"
             },
+            "qos_token": {
+                "type": "string"
+            },
             "properties": {
                 "type": "object",
                 "properties": {
