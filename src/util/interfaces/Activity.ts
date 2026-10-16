@@ -65,6 +65,7 @@ export interface Activity {
         album_id?: string;
         artist_ids?: string[];
         type?: "track" | "episode";
+        label?: string; // undocumented
     };
     session_id?: string;
 }
