@@ -7790,6 +7790,18 @@
                             },
                             "gateway_connect_reasons": {
                                 "type": "string"
+                            },
+                            "window_manager": {
+                                "type": "string"
+                            },
+                            "distro": {
+                                "type": "string"
+                            },
+                            "runtime_environment": {
+                                "type": "string"
+                            },
+                            "display_server": {
+                                "type": "string"
                             }
                         },
                         "additionalProperties": false

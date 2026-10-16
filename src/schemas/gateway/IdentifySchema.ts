@@ -119,6 +119,10 @@ export interface IdentifySchema {
         client_app_state?: string;
         is_fast_connect?: boolean;
         gateway_connect_reasons?: string;
+        window_manager?: string;
+        distro?: string;
+        runtime_environment?: string;
+        display_server?: string;
     };
     intents?: number;
     presence?: ActivitySchema;
