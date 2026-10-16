@@ -73,7 +73,9 @@ export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors) 
     if (errors == null) return [];
     return errors.map((e) => {
         let instancePath = e.instancePath;
-        if (e.keyword === "additionalProperties") instancePath += `/${e.params.additionalProperty}`;
+        if (e.keyword == "additionalProperties") instancePath += `/${e.params.additionalProperty}`;
+
+        console.log("Resolving:", { instancePath, eInstancePath: e.instancePath, eKeyword: e.keyword, eParams: e.params });
         return getInvalidSchemaValue(data, instancePath);
     });
 }
