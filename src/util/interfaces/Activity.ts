@@ -41,8 +41,11 @@ export interface Activity {
     assets?: {
         large_image?: string; // the id for a large asset of the activity, usually a snowflake
         large_text?: string; // text displayed when hovering over the large image of the activity
+        large_url?: string;
         small_image?: string; // the id for a small asset of the activity, usually a snowflake
         small_text?: string; // text displayed when hovering over the small image of the activity
+        small_url?: string;
+        invite_cover_image?: string;
     };
     secrets?: {
         join?: string; // the secret for joining a party
