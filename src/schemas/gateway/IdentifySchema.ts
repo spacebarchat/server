@@ -123,6 +123,8 @@ export interface IdentifySchema {
         distro?: string;
         runtime_environment?: string;
         display_server?: string;
+        device_model_name?: string;
+        app_arch?: string;
     };
     intents?: number;
     presence?: ActivitySchema;

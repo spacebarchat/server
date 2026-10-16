@@ -8352,6 +8352,12 @@
                     },
                     "display_server": {
                         "type": "string"
+                    },
+                    "device_model_name": {
+                        "type": "string"
+                    },
+                    "app_arch": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false
