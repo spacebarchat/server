@@ -64,6 +64,7 @@ import {
     ChannelType,
     DefaultUserGuildSettings,
     DMChannel,
+    getInvalidSchemaValues,
     IdentifySchema,
     PrivateStatus,
     PrivateUserProjection,
@@ -94,6 +95,12 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         data.d = validateSchema<IdentifySchema>("IdentifySchema", data.d);
     } catch (e) {
         console.error("AJV validation of Identify schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(data.d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
         check.call(this, IdentifySchema, data.d);
     }
 

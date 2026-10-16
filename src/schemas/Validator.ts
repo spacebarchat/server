@@ -20,6 +20,7 @@ import Ajv, { SchemaObject } from "ajv";
 import addFormats from "ajv-formats";
 import fs from "node:fs";
 import path from "node:path";
+import instance from "@spacebar/api/routes/policies/instance";
 
 const SchemaPath = path.join(__dirname, "..", "..", "assets", "schemas.json");
 const schemas = JSON.parse(fs.readFileSync(SchemaPath, { encoding: "utf8" }).replaceAll("#/definitions/", ""));
@@ -66,4 +67,15 @@ export function validateSchema<G extends object>(schema: string, data: G): G {
         throw ajv.errors;
     }
     return data;
+}
+
+export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors) {
+    if (errors == null) return [];
+    return errors.map((e) => getInvalidSchemaValue(data, e.instancePath));
+}
+
+function getInvalidSchemaValue(data: object, instancePath: string) {
+    const actualInstancePath = instancePath.startsWith("/") ? instancePath.slice(1) : instancePath;
+    if (actualInstancePath.includes("/")) return getInvalidSchemaValue(data, actualInstancePath.split("/")[0]);
+    return { instancePath, value: data };
 }
