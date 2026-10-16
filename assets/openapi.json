@@ -8462,10 +8462,19 @@
                             "large_text": {
                                 "type": "string"
                             },
+                            "large_url": {
+                                "type": "string"
+                            },
                             "small_image": {
                                 "type": "string"
                             },
                             "small_text": {
+                                "type": "string"
+                            },
+                            "small_url": {
+                                "type": "string"
+                            },
+                            "invite_cover_image": {
                                 "type": "string"
                             }
                         },

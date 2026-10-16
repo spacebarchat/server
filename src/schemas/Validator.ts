@@ -71,7 +71,11 @@ export function validateSchema<G extends object>(schema: string, data: G): G {
 
 export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors) {
     if (errors == null) return [];
-    return errors.map((e) => getInvalidSchemaValue(data, e.instancePath));
+    return errors.map((e) => {
+        let instancePath = e.instancePath;
+        if (e.keyword === "additionalProperties") instancePath += `/${e.params.additionalProperty}`;
+        return getInvalidSchemaValue(data, instancePath);
+    });
 }
 
 function getInvalidSchemaValue(data: object, instancePath: string) {
