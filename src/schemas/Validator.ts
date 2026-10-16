@@ -82,6 +82,10 @@ export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors) 
 
 function getInvalidSchemaValue(data: object, instancePath: string) {
     const actualInstancePath = instancePath.startsWith("/") ? instancePath.slice(1) : instancePath;
-    if (actualInstancePath.includes("/")) return getInvalidSchemaValue(data, actualInstancePath.split("/")[0]);
+    if (actualInstancePath.includes("/")) {
+        const nextProp = actualInstancePath.split("/")[0];
+        const nextPath = actualInstancePath.split("/").slice(1).join("/");
+        return getInvalidSchemaValue((<Record<string, object>>data)[nextProp], nextPath);
+    }
     return { instancePath, value: data };
 }
