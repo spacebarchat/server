@@ -23,12 +23,14 @@ export interface Activity {
     created_at?: number; // unix timestamp of when the activity was added to the user's session
     timestamps?: {
         // unix timestamps for start and/or end of the game
-        start: number;
-        end: number;
+        start?: number;
+        end?: number;
     };
     application_id?: string; // application id for the game
     details?: string;
+    details_url?: string;
     state?: string;
+    status_display_type?: ActivityStatusDisplayType | null;
     emoji?: {
         name: string;
         id?: string;
@@ -76,4 +78,10 @@ export enum ActivityType {
     LISTENING = 2,
     CUSTOM = 4,
     COMPETING = 5,
+}
+
+export enum ActivityStatusDisplayType {
+    NAME = 0,
+    STATE = 1,
+    DETAILS = 2,
 }
