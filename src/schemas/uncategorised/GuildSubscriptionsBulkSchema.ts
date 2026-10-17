@@ -38,7 +38,7 @@ export interface LazyRequestSchema {
     };
     activities?: boolean;
     threads?: boolean;
-    typing?: true;
+    typing?: boolean;
     members?: string[];
     member_updates?: boolean;
     thread_member_lists?: unknown[];

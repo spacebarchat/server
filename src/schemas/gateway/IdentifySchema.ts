@@ -127,6 +127,8 @@ export interface IdentifySchema {
         device_model_name?: string;
         app_arch?: string;
         installation_id?: string;
+        os_sdk_version?: string;
+        native_build_number?: string;
     };
     intents?: number;
     presence?: ActivitySchema;

@@ -1255,7 +1255,6 @@
                 "type": "boolean"
             },
             "typing": {
-                "const": true,
                 "type": "boolean"
             },
             "members": {
@@ -1300,7 +1299,6 @@
                 "type": "boolean"
             },
             "typing": {
-                "const": true,
                 "type": "boolean"
             },
             "members": {
@@ -8421,6 +8419,12 @@
                     },
                     "installation_id": {
                         "type": "string"
+                    },
+                    "os_sdk_version": {
+                        "type": "string"
+                    },
+                    "native_build_number": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false
@@ -9076,11 +9080,7 @@
                         "type": "integer"
                     }
                 },
-                "additionalProperties": false,
-                "required": [
-                    "end",
-                    "start"
-                ]
+                "additionalProperties": false
             },
             "application_id": {
                 "type": "string"
@@ -9088,8 +9088,26 @@
             "details": {
                 "type": "string"
             },
+            "details_url": {
+                "type": "string"
+            },
             "state": {
                 "type": "string"
+            },
+            "status_display_type": {
+                "anyOf": [
+                    {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "number"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "emoji": {
                 "anyOf": [
@@ -9128,6 +9146,9 @@
                         "items": {
                             "type": "integer"
                         }
+                    },
+                    "privacy": {
+                        "$ref": "#/definitions/ActivityPartyPrivacy"
                     }
                 },
                 "additionalProperties": false
@@ -9237,8 +9258,49 @@
             0,
             1,
             2,
+            3,
             4,
-            5
+            5,
+            6
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ActivityPartyPrivacy": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "privacy": {
+                "$ref": "#/definitions/ActivityPartyPrivacyLevel"
+            },
+            "size": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "integer"
+                    },
+                    {
+                        "type": "integer"
+                    }
+                ],
+                "minItems": 2,
+                "maxItems": 2
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "privacy",
+            "size"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ActivityPartyPrivacyLevel": {
+        "type": "number",
+        "enum": [
+            0,
+            1
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
