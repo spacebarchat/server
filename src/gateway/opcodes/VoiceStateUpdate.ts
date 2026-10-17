@@ -45,6 +45,10 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
     }
 
     const body = data.d as VoiceStateUpdateSchema;
+    // TODO: should this be null?
+    if (body.channel_id == "") body.channel_id = undefined;
+    if (body.guild_id == "") body.guild_id = undefined;
+
     const isNew = body.channel_id === null && body.guild_id === null;
     let isChanged = false;
 
