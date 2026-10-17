@@ -89,7 +89,7 @@ export async function onStreamDelete(this: WebSocket, data: Payload) {
         voiceState.member = await Member.findOneOrFail({
             where: {
                 id: voiceState.user_id,
-                guild_id: voiceState.guild_id,
+                guild_id: voiceState.guild_id!, // TODO: DM calls?
             },
         });
 

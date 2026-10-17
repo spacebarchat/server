@@ -80,7 +80,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 
     const voiceRoomId = type === "stream" ? server_id : voiceState!.channel_id;
     try {
-        this.webRtcClient = await mediaServer.join(voiceRoomId, this.user_id, this, type!);
+        this.webRtcClient = await mediaServer.join(voiceRoomId!, this.user_id, this, type!);
     } catch (e) {
         return this.close(4013);
     }

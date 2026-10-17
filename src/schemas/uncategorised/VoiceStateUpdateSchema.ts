@@ -18,8 +18,8 @@
 
 //TODO need more testing when community guild and voice stage channel are working
 export interface VoiceStateUpdateSchema {
-    guild_id?: string;
-    channel_id?: string;
+    guild_id?: string | null;
+    channel_id?: string | null;
     self_mute: boolean;
     self_deaf: boolean;
     self_video?: boolean;

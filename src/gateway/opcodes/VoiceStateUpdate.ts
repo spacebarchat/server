@@ -46,8 +46,8 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
 
     const body = data.d as VoiceStateUpdateSchema;
     // TODO: should this be null?
-    if (body.channel_id == "") body.channel_id = undefined;
-    if (body.guild_id == "") body.guild_id = undefined;
+    if (body.channel_id === "") body.channel_id = null;
+    if (body.guild_id === "") body.guild_id = null;
 
     const isNew = body.channel_id === null && body.guild_id === null;
     let isChanged = false;
@@ -100,8 +100,8 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
                 channel_id: null,
                 guild_id: null,
             },
-            guild_id: prevState?.guild_id,
-            channel_id: prevState?.channel_id,
+            guild_id: prevState?.guild_id ?? undefined, // should this be null?
+            channel_id: prevState?.channel_id ?? undefined, // should this be null?
         });
     }
 
@@ -110,7 +110,7 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
     //TODO this may fail
     if (body.guild_id) {
         const member = await Member.findOne({
-            where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
+            where: { id: voiceState.user_id, guild_id: voiceState.guild_id! },
             relations: { user: true, roles: true },
         });
 
@@ -133,16 +133,17 @@ export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
                 ...voiceState.toPublicVoiceState(),
                 member: member?.toPublicMember(),
             },
-            guild_id: voiceState.guild_id,
-            channel_id: voiceState.channel_id,
+            guild_id: voiceState.guild_id || undefined, // TODO: should this be null?
+            channel_id: voiceState.channel_id || undefined, // TODO: should this be null?
             user_id: voiceState.user_id,
         } satisfies VoiceStateUpdateEvent),
     ]);
 
     //If it's null it means that we are leaving the channel and this event is not needed
     if ((isNew || isChanged) && voiceState.channel_id !== null) {
+        // TODO: DM calls?
         const guild = await Guild.findOne({
-            where: { id: voiceState.guild_id },
+            where: { id: voiceState.guild_id! },
         });
         const regions = Config.get().regions;
         let guildRegion: ConfigVoiceRegion | undefined;

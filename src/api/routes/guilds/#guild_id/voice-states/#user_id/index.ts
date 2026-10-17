@@ -47,7 +47,7 @@ router.patch(
         const { guild_id } = req.params as { [key: string]: string };
         const user_id = req.params.user_id === "@me" ? req.user_id : (req.params.user_id as string);
 
-        const perms = await getPermission(req.user_id, guild_id, body.channel_id);
+        const perms = await getPermission(req.user_id, guild_id, body.channel_id!);
 
         /*
 	From https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state
@@ -63,7 +63,7 @@ router.patch(
         const voiceState = await VoiceState.findOne({
             where: {
                 guild_id,
-                channel_id: body.channel_id,
+                channel_id: body.channel_id!,
                 user_id,
             },
         });
@@ -71,7 +71,7 @@ router.patch(
 
         voiceState.assign(body);
         const channel = await Channel.findOneOrFail({
-            where: { guild_id, id: body.channel_id },
+            where: { guild_id, id: body.channel_id! },
         });
         if (channel.type !== ChannelType.GUILD_STAGE_VOICE) {
             throw DiscordApiErrors.CANNOT_EXECUTE_ON_THIS_CHANNEL_TYPE;
@@ -80,7 +80,7 @@ router.patch(
         voiceState.member = await Member.findOneOrFail({
             where: {
                 id: voiceState.user_id,
-                guild_id: voiceState.guild_id,
+                guild_id: voiceState.guild_id!,
             },
         });
 

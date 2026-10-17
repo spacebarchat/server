@@ -5881,10 +5881,12 @@
                 "type": "object",
                 "properties": {
                     "guild_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "self_mute": {
                         "type": "boolean"
@@ -14031,13 +14033,15 @@
                 "type": "object",
                 "properties": {
                     "guild_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "guild": {
                         "$ref": "#/components/schemas/Guild"
                     },
                     "channel_id": {
-                        "type": "string"
+                        "type": "string",
+                        "nullable": true
                     },
                     "channel": {
                         "$ref": "#/components/schemas/Channel"

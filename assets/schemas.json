@@ -6305,10 +6305,16 @@
         "type": "object",
         "properties": {
             "guild_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "self_mute": {
                 "type": "boolean"
@@ -14976,13 +14982,19 @@
         "type": "object",
         "properties": {
             "guild_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "guild": {
                 "$ref": "#/definitions/Guild"
             },
             "channel_id": {
-                "type": "string"
+                "type": [
+                    "null",
+                    "string"
+                ]
             },
             "channel": {
                 "$ref": "#/definitions/Channel"

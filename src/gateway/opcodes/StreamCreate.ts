@@ -52,7 +52,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
 
     if (body.guild_id) {
         voiceState.member = await Member.findOneOrFail({
-            where: { id: voiceState.user_id, guild_id: voiceState.guild_id },
+            where: { id: voiceState.user_id, guild_id: voiceState.guild_id! }, // TODO: dm calls?
             relations: { user: true, roles: true },
         });
     }
@@ -133,7 +133,7 @@ export async function onStreamCreate(this: WebSocket, data: Payload) {
             ...voiceState.toPublicVoiceState(),
             member: voiceState.member.toPublicMember(),
         },
-        guild_id: voiceState.guild_id,
+        guild_id: voiceState.guild_id!, // TODO: figure out how this works for DM calls
         channel_id: voiceState.channel_id,
     } satisfies VoiceStateUpdateEvent);
 
