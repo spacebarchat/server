@@ -39,6 +39,7 @@ export interface Activity {
     party?: {
         id?: string;
         size?: number[]; // used to show the party's current and maximum size // TODO: array length 2
+        privacy?: ActivityPartyPrivacy;
     };
     assets?: {
         large_image?: string; // the id for a large asset of the activity, usually a snowflake
@@ -76,12 +77,25 @@ export enum ActivityType {
     GAME = 0,
     STREAMING = 1,
     LISTENING = 2,
+    WATCHING = 3,
     CUSTOM = 4,
     COMPETING = 5,
+    HANG = 6,
 }
 
 export enum ActivityStatusDisplayType {
     NAME = 0,
     STATE = 1,
     DETAILS = 2,
+}
+
+export interface ActivityPartyPrivacy {
+    id: string;
+    privacy: ActivityPartyPrivacyLevel; // unsure if nullable
+    size: [number, number]; // current/max
+}
+
+export enum ActivityPartyPrivacyLevel {
+    PRIVATE = 0,
+    PUBLIC = 1,
 }
