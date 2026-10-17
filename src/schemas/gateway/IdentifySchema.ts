@@ -129,6 +129,8 @@ export interface IdentifySchema {
         installation_id?: string;
         os_sdk_version?: string;
         native_build_number?: string;
+        device_vendor_id?: string;
+        design_id?: string;
     };
     intents?: number;
     presence?: ActivitySchema;

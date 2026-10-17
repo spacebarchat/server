@@ -8425,6 +8425,12 @@
                     },
                     "native_build_number": {
                         "type": "string"
+                    },
+                    "device_vendor_id": {
+                        "type": "string"
+                    },
+                    "design_id": {
+                        "type": "string"
                     }
                 },
                 "additionalProperties": false
