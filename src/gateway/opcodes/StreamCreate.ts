@@ -20,11 +20,25 @@ import { Channel, Member, Stream, StreamSession, VoiceState } from "@spacebar/da
 import { genVoiceToken, Payload, WebSocket, generateStreamKey } from "@spacebar/gateway";
 import { Config, emitEvent, Snowflake, StreamCreateEvent, StreamServerUpdateEvent, VoiceStateUpdateEvent } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { StreamCreateSchema } from "@spacebar/schemas";
+import { getInvalidSchemaValues, IdentifySchema, StreamCreateSchema, validateSchema } from "@spacebar/schemas";
 
 export async function onStreamCreate(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamCreateSchema, data.d);
+
+    // Check payload matches schema
+    try {
+        data.d = validateSchema<StreamCreateSchema>("StreamCreateSchema", data.d);
+    } catch (e) {
+        console.error("AJV validation of StreamCreate schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(data.d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, StreamCreateSchema, data.d);
+    }
+
     const body = data.d as StreamCreateSchema;
 
     if (body.channel_id.trim().length === 0) return;

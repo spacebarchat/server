@@ -20,7 +20,7 @@ import { FindManyOptions, ILike, In, MoreThan } from "typeorm";
 import { getDatabase, Member, Session } from "@spacebar/database";
 import { DateBuilder } from "@spacebar/extensions";
 import { WebSocket, Payload, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
-import { RequestGuildMembersSchema } from "@spacebar/schemas";
+import { getInvalidSchemaValues, IdentifySchema, RequestGuildMembersSchema, validateSchema } from "@spacebar/schemas";
 import { Config, getPermission, GuildMembersChunkEvent, Presence } from "@spacebar/util";
 import { check } from "./instanceOf";
 
@@ -37,7 +37,19 @@ export async function onRequestGuildMembers(this: WebSocket, { d }: Payload) {
         if (await handleOffloadedGatewayRequest(this, Config.get().offload.gateway.guildMembersUrl!, guildIds)) return;
     }
 
-    check.call(this, RequestGuildMembersSchema, d);
+    // Check payload matches schema
+    try {
+        d = validateSchema<RequestGuildMembersSchema>("RequestGuildMembersSchema", d);
+    } catch (e) {
+        console.error("AJV validation of RequestGuildMembers schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, RequestGuildMembersSchema, d);
+    }
 
     const { presences, nonce, query: requestQuery } = d as RequestGuildMembersSchema;
     let { limit, user_ids, guild_id } = d as RequestGuildMembersSchema;

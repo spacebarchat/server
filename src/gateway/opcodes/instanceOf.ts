@@ -20,6 +20,7 @@ import { instanceOf } from "lambert-server/check";
 import { WebSocket } from "@spacebar/gateway";
 import { CLOSECODES } from "../util/Constants";
 
+//@deprecated
 export function check(this: WebSocket, schema: unknown, data: unknown) {
     try {
         const error = instanceOf(schema, data, { path: "body" });

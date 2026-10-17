@@ -77,6 +77,7 @@ export async function Message(this: WebSocket, buffer: WS.Data) {
         if (!this.session_id) console.log(`[Gateway/${this.user_id ?? this.ipAddress}] Unknown session id, dumping to unknown folder`);
     }
 
+    // TODO: somehow make this schema work with AJV
     check.call(this, PayloadSchema, data);
 
     const OPCodeHandler = OPCodeHandlers[data.op];

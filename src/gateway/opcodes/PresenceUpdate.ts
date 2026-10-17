@@ -19,12 +19,26 @@
 import { Session, User } from "@spacebar/database";
 import { WebSocket, Payload } from "@spacebar/gateway";
 import { emitEvent, PresenceUpdateEvent } from "@spacebar/util";
-import { ActivitySchema, InternalStatusOrder, PrivateStatus } from "@spacebar/schemas";
+import { ActivitySchema, getInvalidSchemaValues, IdentifySchema, InternalStatusOrder, PrivateStatus, validateSchema } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
     const startTime = Date.now();
-    check.call(this, ActivitySchema, d);
+
+    // Check payload matches schema
+    try {
+        d = validateSchema<ActivitySchema>("ActivitySchema", d);
+    } catch (e) {
+        console.error("AJV validation of Activity schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, ActivitySchema, d);
+    }
+
     const presence = d as ActivitySchema;
 
     if (d.status === "unknown") {

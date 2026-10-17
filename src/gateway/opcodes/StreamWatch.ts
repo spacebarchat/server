@@ -20,12 +20,26 @@ import { Not } from "typeorm";
 import { Stream, StreamSession } from "@spacebar/database";
 import { genVoiceToken, parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
 import { Config, emitEvent, StreamCreateEvent, StreamServerUpdateEvent } from "@spacebar/util";
-import { StreamWatchSchema } from "@spacebar/schemas";
+import { getInvalidSchemaValues, IdentifySchema, StreamWatchSchema, validateSchema } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 
 export async function onStreamWatch(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamWatchSchema, data.d);
+
+    // Check payload matches schema
+    try {
+        data.d = validateSchema<StreamWatchSchema>("StreamWatchSchema", data.d);
+    } catch (e) {
+        console.error("AJV validation of StreamWatch schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(data.d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, StreamWatchSchema, data.d);
+    }
+
     const body = data.d as StreamWatchSchema;
 
     // TODO: apply perms: check if user is allowed to watch

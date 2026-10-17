@@ -20,11 +20,25 @@ import { Member, Stream, VoiceState } from "@spacebar/database";
 import { parseStreamKey, Payload, WebSocket } from "@spacebar/gateway";
 import { emitEvent, StreamDeleteEvent, VoiceStateUpdateEvent } from "@spacebar/util";
 import { check } from "./instanceOf";
-import { StreamDeleteSchema } from "@spacebar/schemas";
+import { getInvalidSchemaValues, IdentifySchema, StreamDeleteSchema, validateSchema } from "@spacebar/schemas";
 
 export async function onStreamDelete(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, StreamDeleteSchema, data.d);
+
+    // Check payload matches schema
+    try {
+        data.d = validateSchema<StreamDeleteSchema>("StreamDeleteSchema", data.d);
+    } catch (e) {
+        console.error("AJV validation of StreamDelete schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(data.d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, StreamDeleteSchema, data.d);
+    }
+
     const body = data.d as StreamDeleteSchema;
 
     let parsedKey: {

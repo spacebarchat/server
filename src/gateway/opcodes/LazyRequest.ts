@@ -20,7 +20,7 @@ import murmur from "murmurhash-js/murmurhash3_gc";
 import { getDatabase, Member, Role, Session, User, Channel } from "@spacebar/database";
 import { arrayPartition, Stopwatch } from "@spacebar/extensions";
 import { WebSocket, Payload, handlePresenceUpdate, OPCODES, Send, handleOffloadedGatewayRequest } from "@spacebar/gateway";
-import { LazyRequestSchema } from "@spacebar/schemas";
+import { getInvalidSchemaValues, IdentifySchema, LazyRequestSchema, validateSchema } from "@spacebar/schemas";
 import { getPermission, listenEvent, Presence, Permissions, getMostRelevantSession, Config } from "@spacebar/util";
 import { check } from "./instanceOf";
 import { start } from "node:repl";
@@ -153,8 +153,22 @@ async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
 
 export async function onLazyRequest(this: WebSocket, { d }: Payload) {
     const sw = Stopwatch.startNew();
-    // TODO: check data
-    check.call(this, LazyRequestSchema, d);
+
+    // TODO: check data - 2026/10/16 is this still relevant?
+    // Check payload matches schema
+    try {
+        d = validateSchema<LazyRequestSchema>("LazyRequestSchema", d);
+    } catch (e) {
+        console.error("AJV validation of LazyRequest schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, LazyRequestSchema, d);
+    }
+
     // noinspection JSUnusedLocalSymbols - TODO: implement typing/activities subscriptions
     const { guild_id, typing, channels, activities, members } = d as LazyRequestSchema;
 

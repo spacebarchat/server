@@ -19,7 +19,7 @@
 import { Guild, Member, VoiceState } from "@spacebar/database";
 import { Payload, WebSocket, genVoiceToken } from "@spacebar/gateway";
 import { Config, emitEvent, VoiceServerUpdateEvent, VoiceStateUpdateEvent } from "@spacebar/util";
-import { ConfigVoiceRegion, VoiceStateUpdateSchema } from "@spacebar/schemas";
+import { ConfigVoiceRegion, getInvalidSchemaValues, validateSchema, VoiceStateUpdateSchema } from "@spacebar/schemas";
 import { check } from "./instanceOf";
 // TODO: check if a voice server is setup
 
@@ -29,7 +29,21 @@ import { check } from "./instanceOf";
 
 export async function onVoiceStateUpdate(this: WebSocket, data: Payload) {
     const startTime = Date.now();
-    check.call(this, VoiceStateUpdateSchema, data.d);
+
+    // Check payload matches schema
+    try {
+        data.d = validateSchema<VoiceStateUpdateSchema>("VoiceStateUpdateSchema", data.d);
+    } catch (e) {
+        console.error("AJV validation of VoiceStateUpdate schema failed:", e);
+        console.error("Provided values:");
+        if (Array.isArray(e))
+            for (const invalidSchemaValue of getInvalidSchemaValues(data.d, e)) {
+                console.error(`${invalidSchemaValue.instancePath}:`, invalidSchemaValue.value);
+            }
+
+        check.call(this, VoiceStateUpdateSchema, data.d);
+    }
+
     const body = data.d as VoiceStateUpdateSchema;
     const isNew = body.channel_id === null && body.guild_id === null;
     let isChanged = false;
