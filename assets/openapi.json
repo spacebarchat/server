@@ -7776,7 +7776,13 @@
                             "referrer": {
                                 "type": "string"
                             },
+                            "referer": {
+                                "type": "string"
+                            },
                             "$referrer": {
+                                "type": "string"
+                            },
+                            "$referer": {
                                 "type": "string"
                             },
                             "referring_domain": {
@@ -7855,6 +7861,9 @@
                                 "type": "string"
                             },
                             "app_arch": {
+                                "type": "string"
+                            },
+                            "installation_id": {
                                 "type": "string"
                             }
                         },
@@ -8486,22 +8495,29 @@
                         "type": "string"
                     },
                     "emoji": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string"
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "animated": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "animated",
+                                    "name"
+                                ]
                             },
-                            "id": {
-                                "type": "string"
-                            },
-                            "animated": {
-                                "type": "boolean"
+                            {
+                                "type": "null"
                             }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "animated",
-                            "name"
                         ]
                     },
                     "party": {

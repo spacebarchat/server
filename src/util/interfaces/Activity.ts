@@ -33,7 +33,7 @@ export interface Activity {
         name: string;
         id?: string;
         animated: boolean;
-    };
+    } | null;
     party?: {
         id?: string;
         size?: number[]; // used to show the party's current and maximum size // TODO: array length 2

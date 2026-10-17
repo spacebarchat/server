@@ -87,7 +87,6 @@ export interface IdentifySchema {
     token: string;
     qos_token?: string;
     properties: {
-        // bruh discord really uses $ in the property key, so we need to double prefix it, because instanceOf treats $ (prefix) as a optional key
         os?: string;
         os_arch?: string;
         browser?: string;
@@ -99,7 +98,9 @@ export interface IdentifySchema {
         browser_version?: string;
         os_version?: string;
         referrer?: string;
+        referer?: string;
         $referrer?: string;
+        $referer?: string;
         referring_domain?: string;
         $referring_domain?: string;
         referrer_current?: string;
@@ -125,6 +126,7 @@ export interface IdentifySchema {
         display_server?: string;
         device_model_name?: string;
         app_arch?: string;
+        installation_id?: string;
     };
     intents?: number;
     presence?: ActivitySchema;
