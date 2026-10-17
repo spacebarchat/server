@@ -75,7 +75,7 @@
         "^Destroy.*",
         "^Template\\..*",
         "^Webhook\\..*",
-        "^(BigDecimal|BigInteger|Blob|Boolean|Document|Error|LazyRequest|List|Map|Normalized|Numeric|StreamingBlob|TimestampDateTime|TimestampHttpDate|TimestampEpochSeconds|Simple)Schema",
+        "^(BigDecimal|BigInteger|Blob|Boolean|Document|Error|List|Map|Normalized|Numeric|StreamingBlob|TimestampDateTime|TimestampHttpDate|TimestampEpochSeconds|Simple)Schema",
         "^((Create|Update)Contact(|List))Response$",
         "^(T|Unt)agResourceResponse$",
         "^Put",

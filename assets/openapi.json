@@ -1218,6 +1218,52 @@
                     }
                 }
             },
+            "LazyRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "channels": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "activities": {
+                        "type": "boolean"
+                    },
+                    "threads": {
+                        "type": "boolean"
+                    },
+                    "typing": {
+                        "const": true,
+                        "type": "boolean"
+                    },
+                    "members": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "member_updates": {
+                        "type": "boolean"
+                    },
+                    "thread_member_lists": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "guild_id"
+                ]
+            },
             "GuildTemplateCreateSchema": {
                 "type": "object",
                 "properties": {
@@ -8551,6 +8597,9 @@
                                     "episode",
                                     "track"
                                 ],
+                                "type": "string"
+                            },
+                            "label": {
                                 "type": "string"
                             }
                         },
