@@ -18,7 +18,7 @@
 
 export interface Activity {
     name: string; // the activity's name
-    type: ActivityType; // activity type // TODO: check if its between range 0-5
+    type: ActivityType; // activity type // TODO: check if its between range 0-5 // TODO: should this default to GAME?
     url?: string; // stream url, is validated when type is 1
     created_at?: number; // unix timestamp of when the activity was added to the user's session
     timestamps?: {
