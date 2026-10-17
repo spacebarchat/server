@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
+import { AuditLog, Emoji, Guild, Member, Role, Sticker } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, getPermission, getRights, GuildMemberUpdateEvent, handleFile } from "@spacebar/util";
-import { MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
+import { AuditLogChange, AuditLogEvents, AuditLogMemberChange, MemberChangeSchema, PublicMemberProjection, PublicUserProjection } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -118,6 +118,12 @@ router.patch(
 
         if (body.avatar) body.avatar = await handleFile(`/guilds/${guild_id}/users/${member_id}/avatars`, body.avatar as string);
 
+        const oldMember: Partial<AuditLogMemberChange> = {
+            nick: member.nick,
+            avatar_hash: member.avatar,
+        };
+        const oldRoleIds = member.roles.map((r) => r.id).filter((id) => id !== guild_id);
+
         member.assign(body);
 
         // must do this after the assign because the body roles array
@@ -148,6 +154,37 @@ router.patch(
             guild_id,
             data: { ...member, roles: member.roles.map((x) => x.id) },
         } satisfies GuildMemberUpdateEvent);
+
+        const memberChanges = AuditLog.computeChanges(
+            oldMember,
+            { nick: member.nick, avatar_hash: member.avatar },
+            ["nick", "avatar_hash"],
+        );
+        if (memberChanges.length) {
+            await AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: member_id,
+                action_type: AuditLogEvents.MEMBER_UPDATE,
+                changes: memberChanges,
+            });
+        }
+
+        const newRoleIds = member.roles.map((r) => r.id).filter((id) => id !== guild_id);
+        const addedRoles = newRoleIds.filter((id) => !oldRoleIds.includes(id));
+        const removedRoles = oldRoleIds.filter((id) => !newRoleIds.includes(id));
+        if (addedRoles.length || removedRoles.length) {
+            const roleChanges: AuditLogChange[] = [];
+            if (addedRoles.length) roleChanges.push({ key: "$add", new_value: addedRoles.map((id) => ({ id })) });
+            if (removedRoles.length) roleChanges.push({ key: "$remove", new_value: removedRoles.map((id) => ({ id })) });
+            await AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: member_id,
+                action_type: AuditLogEvents.MEMBER_ROLE_UPDATE,
+                changes: roleChanges,
+            });
+        }
 
         res.json(member);
     },
@@ -233,6 +270,14 @@ router.delete(
         }
 
         await Member.removeFromGuild(member_id, guild_id);
+        if (member_id !== "@me" && member_id !== req.user_id) {
+            await AuditLog.createAuditLog({
+                guild_id,
+                user_id: req.user_id,
+                target_id: member_id,
+                action_type: AuditLogEvents.MEMBER_KICK,
+            });
+        }
         res.sendStatus(204);
     },
 );

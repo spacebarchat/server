@@ -20,7 +20,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, RelationId } from "typeor
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
-import { AuditLogChange, AuditLogEntry, AuditLogEvents } from "@spacebar/schemas";
+import { AuditLogChange, AuditLogChangeValue, AuditLogEntry, AuditLogEvents } from "@spacebar/schemas";
 
 @Entity({
     name: "audit_logs",
@@ -31,13 +31,13 @@ export class AuditLog extends BaseClass {
     @Index("IDX_audit_log_guild_id")
     guild_id: string;
 
-    @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_guild_id" })
+    @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_audit_log_guild_id" })
     @ManyToOne(() => Guild)
     guild?: Guild;
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.target)
-    target_id: string;
+    target_id?: string;
 
     @JoinColumn({ name: "target_id", foreignKeyConstraintName: "FK_audit_log_target_user_id" })
     @ManyToOne(() => User)
@@ -45,11 +45,11 @@ export class AuditLog extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((auditlog: AuditLog) => auditlog.user)
-    user_id: string;
+    user_id?: string;
 
     @JoinColumn({ name: "user_id", foreignKeyConstraintName: "FK_audit_log_source_user_id" })
     @ManyToOne(() => User, (user: User) => user.id)
-    user: User;
+    user?: User;
 
     @Column({ type: "int" })
     action_type: AuditLogEvents;
@@ -59,14 +59,13 @@ export class AuditLog extends BaseClass {
         delete_member_days?: string;
         members_removed?: string;
         channel_id?: string;
-        messaged_id?: string;
+        message_id?: string;
         count?: string;
         id?: string;
         type?: string;
         role_name?: string;
     };
 
-    @Column()
     @Column({ type: "jsonb" })
     changes: AuditLogChange[];
 
@@ -83,5 +82,41 @@ export class AuditLog extends BaseClass {
             options: this.options,
             changes: this.changes,
         } satisfies AuditLogEntry;
+    }
+
+    static async createAuditLog(data: {
+        guild_id: string;
+        user_id: string;
+        target_id?: string;
+        action_type: AuditLogEvents;
+        changes?: AuditLogChange[];
+        options?: AuditLog["options"];
+        reason?: string;
+    }): Promise<AuditLog> {
+        const entry = AuditLog.create({
+            guild_id: data.guild_id,
+            user_id: data.user_id,
+            target_id: data.target_id,
+            action_type: data.action_type,
+            changes: data.changes ?? [],
+            options: data.options,
+            reason: data.reason,
+        });
+        return entry.save();
+    }
+
+    static computeChanges<T extends object>(oldValue: Partial<T>, newValue: T, keys: (keyof T)[]): AuditLogChange[] {
+        return keys.flatMap((key) => {
+            const oldVal = oldValue[key] as AuditLogChangeValue;
+            const newVal = newValue[key] as AuditLogChangeValue;
+            if (oldVal === newVal) return [];
+            return [
+                {
+                    key: key as string,
+                    ...(oldVal !== undefined && oldVal !== null ? { old_value: oldVal } : {}),
+                    ...(newVal !== undefined && newVal !== null ? { new_value: newVal } : {}),
+                },
+            ];
+        });
     }
 }
