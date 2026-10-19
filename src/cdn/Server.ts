@@ -66,7 +66,6 @@ export class CDNServer extends Server {
         if (trustedProxies) this.app.set("trust proxy", trustedProxies);
 
         this.app.disable("x-powered-by");
-        this.http.keepAliveTimeout = 10000;
 
         this.app.use(Authentication);
         this.app.use(ErrorHandler);
@@ -82,6 +81,7 @@ export class CDNServer extends Server {
         if (process.env.LOG_ROUTES !== "false") console.log("[Server] Route /guilds/:guild_id/users/:user_id/banners registered");
 
         await super.start();
+        this.http.keepAliveTimeout = 10000; // can't be in configuration section because super.starts initialises it...
         await SystemdLifecycle.setStatus(`Listening on ${this.options.host}:${this.options.port}...`);
         await ProcessLifecycle.Ready();
     }
