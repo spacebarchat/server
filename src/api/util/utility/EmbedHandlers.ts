@@ -89,6 +89,24 @@ const tryParseInt = (str: string | undefined) => {
     }
 };
 
+const getAmazonImage = ($: cheerio.CheerioAPI) => {
+    const imgElem = $("#landingImage") || $("#imgBlkFront") || $(".a-dynamic-image");
+    if (!imgElem) return undefined;
+
+    // these seem to always be highest res
+    if (imgElem.attr("data-old-hires")) return imgElem.attr("data-old-hires");
+
+    // ... but idk if they're always available
+    const dynAttr = imgElem.attr("data-a-dynamic-image");
+    if (dynAttr) {
+        const dynAttrCt: Record<string, [number, number]> = JSON.parse(dynAttr);
+        return Object.keys(dynAttrCt).sort((a, b) => dynAttrCt[b][0] - dynAttrCt[a][0])[0];
+    }
+
+    // just in case amazon changes something
+    return imgElem.attr("src") || undefined;
+};
+
 export const getMetaDescriptions = (text: string) => {
     const $ = cheerio.load(text);
 
@@ -106,6 +124,7 @@ export const getMetaDescriptions = (text: string) => {
         url: getMeta($, "og:url"),
         youtube_embed: getMeta($, "og:video:secure_url"),
         site_name: getMeta($, "og:site_name"),
+        amazon_image: getAmazonImage($),
 
         $,
     };
@@ -177,6 +196,7 @@ export const EmbedHandlers: {
         // TODO: handle video
 
         if (!metas.image) metas.image = metas.image_fallback;
+        if (!metas.image) metas.image = metas.amazon_image;
 
         if (metas.image && (!metas.width || !metas.height)) {
             metas.image = new URL(metas.image, url).toString();
@@ -627,7 +647,7 @@ export async function getOrUpdateEmbedCache(urls: string[], cb?: (url: string, e
     return embeds;
 }
 
-async function generateEmbedSingle(link: string, cb?: (url: string, embeds: Embed[]) => Promise<void>): Promise<EmbedCache | null> {
+export async function generateEmbedSingle(link: string, cb?: (url: string, embeds: Embed[]) => Promise<void>): Promise<EmbedCache | null> {
     const url = new URL(link);
     const handler = url.hostname === new URL(Config.get().cdn.endpointPublic!).hostname ? EmbedHandlers["self"] : (EmbedHandlers[url.hostname] ?? EmbedHandlers["default"]);
     try {
