@@ -32,9 +32,7 @@ export function CORS(req: Request, res: Response, next: NextFunction) {
         "default-src *  data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval'; script-src * data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src * data: blob: 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src * data: blob: ; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';",
     );
 
-    if (req.method === "OPTIONS") {
-        res.status(204).send();
-        return;
-    }
+    if (req.method === "OPTIONS") return res.sendStatus(204);
+
     next();
 }
