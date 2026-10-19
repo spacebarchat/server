@@ -66,6 +66,7 @@ export class CDNServer extends Server {
         if (trustedProxies) this.app.set("trust proxy", trustedProxies);
 
         this.app.disable("x-powered-by");
+        this.http.keepAliveTimeout = 10000;
 
         this.app.use(Authentication);
         this.app.use(ErrorHandler);
