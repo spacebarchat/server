@@ -33,7 +33,7 @@ export function CORS(req: Request, res: Response, next: NextFunction) {
     );
 
     if (req.method === "OPTIONS") {
-        res.status(204).end();
+        res.status(204).send();
         return;
     }
     next();
