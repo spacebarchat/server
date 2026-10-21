@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Emoji, Member } from "@spacebar/database";
+import { Emoji, Member, AuditLog } from "@spacebar/database";
 import { Config, DiscordApiErrors, GuildEmojisUpdateEvent, Snowflake, emitEvent, handleFile } from "@spacebar/util";
-import { EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
+import { AuditLogEvents, EmojiCreateSchema, EmojiModifySchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -135,6 +135,13 @@ router.post(
             },
         } satisfies GuildEmojisUpdateEvent);
 
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: emoji.id,
+            action_type: AuditLogEvents.EMOJI_CREATE,
+        });
+
         return res.status(201).json(emoji);
     },
 );
@@ -159,7 +166,7 @@ router.patch(
 
         if (body.name?.includes("-")) body.name = body.name?.replaceAll("-", ""); // Dashes are invalid apparently
 
-        await Emoji.findOneOrFail({
+        const oldEmoji = await Emoji.findOneOrFail({
             where: { guild_id: guild_id, id: emoji_id },
         });
 
@@ -177,6 +184,14 @@ router.patch(
                 emojis: await Emoji.find({ where: { guild_id: guild_id } }),
             },
         } satisfies GuildEmojisUpdateEvent);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: emoji_id,
+            action_type: AuditLogEvents.EMOJI_UPDATE,
+            changes: AuditLog.computeChanges({ name: oldEmoji.name }, { name: emoji.name }, ["name"]),
+        });
 
         return res.json(emoji);
     },
@@ -209,6 +224,13 @@ router.delete(
                 emojis: await Emoji.find({ where: { guild_id: guild_id } }),
             },
         } satisfies GuildEmojisUpdateEvent);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: emoji_id,
+            action_type: AuditLogEvents.EMOJI_DELETE,
+        });
 
         res.sendStatus(204);
     },

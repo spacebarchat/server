@@ -18,9 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Guild } from "@spacebar/database";
+import { AuditLog, Channel, Guild } from "@spacebar/database";
 import { ChannelUpdateEvent, emitEvent } from "@spacebar/util";
-import { ChannelCreateSchema, ChannelReorderSchema } from "@spacebar/schemas";
+import { AuditLogEvents, ChannelCreateSchema, ChannelReorderSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -70,6 +70,13 @@ router.post(
 
         const channel = await Channel.createChannel({ ...body, guild_id }, req.user_id);
         channel.position = await Channel.calculatePosition(channel.id, guild_id, channel.guild);
+
+        await AuditLog.createAuditLog({
+            guild_id,
+            user_id: req.user_id,
+            target_id: channel.id,
+            action_type: AuditLogEvents.CHANNEL_CREATE
+        });
 
         res.status(201).json(channel);
     },
