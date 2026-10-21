@@ -35,6 +35,8 @@ This repository contains:
 - [Utility and Database Models](/src/util)
 - [Spacebar Admin API (C#)](/extra/admin-api/Spacebar.AdminApi)
 - [HTTP CDN server (C#)](/extra/admin-api/Spacebar.Cdn)
+- [End to end test suite (C#)](/extra/admin-api/Tests/Spacebar.Tests)
+- [C# SDK](/extra/admin-api/Utilities/Spacebar.Sdk)
 - [Various other C# utilities](/extra/admin-api)
 
 ## [Documentation](https://docs.spacebar.chat)
