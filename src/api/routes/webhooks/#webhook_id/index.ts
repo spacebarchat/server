@@ -163,12 +163,20 @@ router.patch(
         const channel_id = body.channel_id || webhook.channel_id;
         webhook.assign(body);
 
-        if (body.channel_id)
-            webhook.assign({
-                channel: await Channel.findOneOrFail({
-                    where: { id: channel_id },
-                }),
+        if (body.channel_id) {
+            // source channel
+            if (!(await getPermission(req.user_id, webhook.guild_id, webhook.channel_id)).has("MANAGE_WEBHOOKS")) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+
+            //target channel
+            const targetChannel = await Channel.findOneOrFail({
+                where: { id: channel_id },
             });
+            if (!(await getPermission(req.user_id, targetChannel.guild_id, targetChannel.id)).has("MANAGE_WEBHOOKS")) throw DiscordApiErrors.UNKNOWN_WEBHOOK;
+
+            webhook.assign({
+                channel: targetChannel,
+            });
+        }
 
         await Promise.all([
             webhook.save(),

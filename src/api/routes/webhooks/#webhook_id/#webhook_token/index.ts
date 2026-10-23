@@ -193,6 +193,8 @@ router.patch(
             ValidateName(body.name);
         }
 
+        if ("channel_id" in body) throw new HTTPError("Cannot self-move webhook between channels");
+
         webhook.assign(body);
 
         await Promise.all([
