@@ -28,7 +28,7 @@ const router: Router = Router({ mergeParams: true });
 router.put(
     "/:message_id",
     route({
-        permission: "VIEW_CHANNEL",
+        permission: "PIN_MESSAGES",
         responses: {
             204: {},
             403: {},
@@ -42,12 +42,9 @@ router.put(
         const { channel_id, message_id } = req.params as { [key: string]: string };
 
         const message = await Message.findOneOrFail({
-            where: { id: message_id },
+            where: { id: message_id, channel_id: channel_id },
             relations: { author: true },
         });
-
-        // * in dm channels anyone can pin messages -> only check for guilds
-        if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
         const pinned_count = await Message.count({
             where: { channel: { id: channel_id }, pinned_at: Not(IsNull()) },
@@ -115,7 +112,7 @@ router.put(
 router.delete(
     "/:message_id",
     route({
-        permission: "VIEW_CHANNEL",
+        permission: "PIN_MESSAGES",
         responses: {
             204: {},
             403: {},
@@ -132,8 +129,6 @@ router.delete(
             where: { id: message_id },
             relations: { author: true },
         });
-
-        if (message.guild_id) req.permission?.hasThrow("MANAGE_MESSAGES");
 
         message.pinned_at = null;
 

@@ -78,9 +78,9 @@ export class Permissions extends BitField {
         SET_VOICE_CHANNEL_STATUS: BitFlag(48),
         SEND_POLLS: BitFlag(49),
         USE_EXTERNAL_APPS: BitFlag(50),
-        UNUSED_13: BitFlag(51),
+        PIN_MESSAGES: BitFlag(51),
         BYPASS_SLOWMODE: BitFlag(52),
-
+        MANAGE_OFFICIAL_MESSAGES: BitFlag(53),
         /**
          * CUSTOM PERMISSIONS ideas:
          * - allow user to dm members
@@ -175,20 +175,7 @@ export class Permissions extends BitField {
             if (channel?.owner_id === user.id) return new Permissions("ADMINISTRATOR");
             if (channel.recipient_ids.includes(user.id)) {
                 // Default dm permissions
-                return new Permissions([
-                    "VIEW_CHANNEL",
-                    "SEND_MESSAGES",
-                    "STREAM",
-                    "ADD_REACTIONS",
-                    "EMBED_LINKS",
-                    "ATTACH_FILES",
-                    "READ_MESSAGE_HISTORY",
-                    "MENTION_EVERYONE",
-                    "USE_EXTERNAL_EMOJIS",
-                    "CONNECT",
-                    "SPEAK",
-                    "MANAGE_CHANNELS",
-                ]);
+                return new Permissions(Permissions.DEFAULT_DM_PERMISSIONS);
             }
 
             return new Permissions();
@@ -225,7 +212,8 @@ export class Permissions extends BitField {
             Permissions.FLAGS.USE_EXTERNAL_EMOJIS |
             Permissions.FLAGS.CONNECT |
             Permissions.FLAGS.SPEAK |
-            Permissions.FLAGS.MANAGE_CHANNELS,
+            Permissions.FLAGS.MANAGE_CHANNELS |
+            Permissions.FLAGS.PIN_MESSAGES,
     );
     static ALL: Permissions = new Permissions(Object.values(Permissions.FLAGS).reduce((total, val) => total | val, BigInt(0)));
 }
