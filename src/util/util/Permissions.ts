@@ -151,11 +151,13 @@ export class Permissions extends BitField {
         user: { id: string; roles: string[]; communication_disabled_until: Date | null; flags: number };
         guild: { id: string; owner_id: string; roles: Role[] };
         channel?: {
+            guild_id?: string;
             overwrites?: ChannelPermissionOverwrite[];
             recipient_ids?: string[] | null;
             owner_id?: string;
         };
     }) {
+        if (channel?.guild_id && channel?.guild_id != guild.id) throw new HTTPError("Target channel does not belong to guild");
         if (user.id === "0") return new Permissions("ADMINISTRATOR"); // system user id
         if (guild?.owner_id === user.id) return new Permissions(Permissions.ALL);
 

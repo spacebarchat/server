@@ -27,7 +27,7 @@ const router: Router = Router({ mergeParams: true });
 router.get(
     "/",
     route({
-        permission: ["MANAGE_GUILD"],
+        permission: "MANAGE_GUILD",
         responses: {
             200: {
                 body: "AutomodRuleSchemaWithId[]",
@@ -48,7 +48,7 @@ router.post(
     "/",
     route({
         // requestBody: "AutomodRuleSchema",
-        permission: ["MANAGE_GUILD"],
+        permission: "MANAGE_GUILD",
         responses: {
             200: {
                 body: "AutomodRuleSchemaWithId",
@@ -74,10 +74,11 @@ router.post(
         const data = req.body as AutomodRuleSchema;
 
         const created = AutomodRule.create({
+            ...data,
             creator: await User.findOneOrFail({
                 where: { id: data.creator_id },
             }),
-            ...data,
+            guild_id: req.params.guild_id as string,
         });
 
         const savedRule = await AutomodRule.save(created);
@@ -89,7 +90,7 @@ router.patch(
     "/:rule_id",
     route({
         // requestBody: "AutomodRuleSchema
-        permission: ["MANAGE_GUILD"],
+        permission: "MANAGE_GUILD",
         responses: {
             200: {
                 body: "AutomodRuleSchemaWithId",
@@ -104,9 +105,10 @@ router.patch(
     }),
     async (req: Request, res: Response) => {
         const { rule_id } = req.params as { [key: string]: string };
-        const rule = await AutomodRule.findOneOrFail({
-            where: { id: rule_id },
+        const rule = await AutomodRule.findOne({
+            where: { id: rule_id, guild_id: req.params.guild_id as string },
         });
+        if (!rule) throw new HTTPError("Automod rule not found", 404);
 
         const data = req.body as AutomodRuleSchema;
 
@@ -119,7 +121,7 @@ router.patch(
 router.delete(
     "/:rule_id",
     route({
-        permission: ["MANAGE_GUILD"],
+        permission: "MANAGE_GUILD",
         responses: {
             204: {},
             403: {
@@ -132,6 +134,10 @@ router.delete(
     }),
     async (req: Request, res: Response) => {
         const { rule_id } = req.params as { [key: string]: string };
+        const rule = await AutomodRule.findOne({
+            where: { id: rule_id, guild_id: req.params.guild_id as string },
+        });
+        if (!rule) throw new HTTPError("Automod rule not found", 404);
         await AutomodRule.delete({ id: rule_id });
         return res.status(204).send();
     },
