@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="GitHub Workflow JSON Schema">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="GitHub Workflow JSON Schema" />
+              <option name="relativePathToSchema" value="jar://$APPLICATION_HOME_DIR$/plugins/vcs-github/lib/modules/intellij.vcs.github.json.jar!/schemas/github-workflow.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value=".github/workflows/workflow_gate.yaml" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>
