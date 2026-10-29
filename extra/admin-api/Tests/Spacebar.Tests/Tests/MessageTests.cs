@@ -173,10 +173,11 @@ public class MessageTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
                 }
             }
         };
+        testOutputHelper.WriteLine(content.ToJson(indent: true));
         var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/messages", content,
             cancellationToken: TestContext.Current.CancellationToken));
         var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
-        // testOutputHelper.WriteLine(json.ToJson(indent: true));
+        testOutputHelper.WriteLine(json.ToJson(indent: true));
         var msg = json.Deserialize<Message>();
         Assert.Equal("meow", msg.Content);
         Assert.Single(msg.Attachments);

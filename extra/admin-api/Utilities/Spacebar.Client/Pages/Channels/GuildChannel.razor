@@ -6,6 +6,8 @@
 @using Spacebar.Client.Components
 @using Spacebar.Models.Gateway
 @using Spacebar.Models.Generic
+@using ArcaneLibs.Blazor.Components.Services
+@using Spacebar.Client.Components
 @inject JsConsoleService jsConsole
 
 <style>@_guildCss</style>
@@ -53,7 +55,7 @@
             foreach (var role in App.ClientManager.ClientState.Guilds[GuildId].Roles) {
                 _guildCss += $$"""
                                .role_{{role.Id}} {
-                                 color: #{{role.Colors.PrimaryColor.ToString("X6")}};
+                                 color: #{{role.Colors.PrimaryColor:X6}};
                                }
 
                                """;
