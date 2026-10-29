@@ -52,6 +52,7 @@ export const ajv = (function () {
         strict: true,
         strictRequired: true,
         allowUnionTypes: true,
+        discriminator: true
     });
 
     addFormats(_ajv);

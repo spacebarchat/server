@@ -48,6 +48,7 @@ const settings = {
     noExtraProps: true,
     defaultProps: false,
     useTypeOfKeyword: true, // should help catch functions?
+    validationKeywords: ["discriminator"],
 };
 
 const baseClassProperties = [
