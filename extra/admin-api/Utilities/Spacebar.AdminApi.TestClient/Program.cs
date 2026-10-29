@@ -10,6 +10,7 @@ using Microsoft.JSInterop;
 using Microsoft.JSInterop.WebAssembly;
 using Spacebar.AdminApi.TestClient;
 using Spacebar.AdminApi.TestClient.Services;
+using Spacebar.Sdk.Core;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -62,4 +63,6 @@ builder.Services.AddBlazoredLocalStorageAsSingleton(config => {
 builder.Services.AddSingleton<JsConsoleService>();
 builder.Services.AddSingleton(sp => (WebAssemblyJSRuntime)sp.GetRequiredService<IJSRuntime>());
 builder.Services.AddSingleton(sp => (IJSInProcessRuntime)sp.GetRequiredService<IJSRuntime>());
+builder.Services.AddSingleton<SpacebarClientProviderService>();
+builder.Services.AddSingleton<SpacebarClientWellKnownResolverService>();
 await builder.Build().RunAsync();

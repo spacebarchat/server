@@ -26,7 +26,7 @@ public static class SpacebarRights {
         UNUSED_11 = 1ul << 17, //PREVIOUS IDENTITY: CREATE_TEMPLATES
         UNUSED_12 = 1ul << 18, //PREVIOUS IDENTITY: CREATE_WEBHOOKS
         JOIN_GUILDS = 1ul << 19,
-        UNUSED_13 = 1ul << 20, //PREVIOUS IDENTITY: PIN_MESSAGES
+        PIN_MESSAGES = 1ul << 20, //PREVIOUS IDENTITY: PIN_MESSAGES
         SELF_ADD_REACTIONS = 1ul << 21,
         SELF_DELETE_MESSAGES = 1ul << 22,
         SELF_EDIT_MESSAGES = 1ul << 23,

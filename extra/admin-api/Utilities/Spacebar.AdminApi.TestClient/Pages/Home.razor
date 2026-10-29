@@ -1,11 +1,25 @@
 ﻿@page "/"
 @using System.Net.Http.Headers
 @using Spacebar.AdminApi.TestClient.Services
+@using Spacebar.Sdk.Core
 @inject Config Config
 @inject ILocalStorageService LocalStorage
+@inject SpacebarClientWellKnownResolverService WellKnownResolver
 
 <PageTitle>Home</PageTitle>
 
+<span style="@($"color: {(IsServerNameValid ? "green" : "red")};")">Spacebar instance: </span>
+<InputText @bind-Value:get="Config.ApiUrl" @bind-Value:set="@(async (v) => {
+                                                                if (v is null) return;
+                                                                var wk = await WellKnownResolver.ResolveClientWellKnown(v);
+                                                                Config.ApiUrl = wk.Api.BaseUrl;
+                                                                Config.CdnUrl = wk.Cdn.BaseUrl;
+                                                                Config.GatewayUrl = wk.Gateway.BaseUrl;
+                                                                if (wk.Admin is not null)
+                                                                    Config.AdminUrl = wk.Admin.BaseUrl;
+                                                                await ValidateAndSaveConfig();
+                                                            })"/>
+<br/>
 <span style="@($"color: {(IsApiUrlValid ? "green" : "red")};")">Spacebar API URL: </span>
 <InputText @bind-Value:get="Config.ApiUrl" @bind-Value:set="@(async (v) => {
                                                                 Config.ApiUrl = v!;
@@ -41,6 +55,7 @@
 
 @code {
 
+    private bool IsServerNameValid { get; set; }
     private bool IsApiUrlValid { get; set; }
 
     // private bool IsGatewayUrlValid { get; set; }

@@ -10,11 +10,12 @@
 
         <UseBlazorWebAssembly>true</UseBlazorWebAssembly>
         <BlazorEnableCompression>false</BlazorEnableCompression>
+        <CompressionEnabled>false</CompressionEnabled>
         <BlazorCacheBootResources>false</BlazorCacheBootResources>
-        <!--        <RunAOTCompilation>true</RunAOTCompilation>-->
+        <!-- <RunAOTCompilation>true</RunAOTCompilation> -->
         <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
         <InvariantGlobalization>true</InvariantGlobalization>
-<!--        <RuntimeFrameworkVersion>10.0.2-servicing.25570.103</RuntimeFrameworkVersion>-->
+        <!-- <RuntimeFrameworkVersion>10.0.2-servicing.25570.103</RuntimeFrameworkVersion> -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -44,6 +45,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Models\Spacebar.Models.AdminApi\Spacebar.Models.AdminApi.csproj" />
       <ProjectReference Include="..\..\Models\Spacebar.Models.Config\Spacebar.Models.Config.csproj" />
+      <ProjectReference Include="..\Spacebar.Sdk\Spacebar.Sdk.csproj" />
     </ItemGroup>
 
 </Project>

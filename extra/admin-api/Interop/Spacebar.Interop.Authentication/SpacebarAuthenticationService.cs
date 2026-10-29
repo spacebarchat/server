@@ -32,10 +32,20 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
     public async Task InitializeAsync() {
         if (_isInitialised) return;
 
+        if (!File.Exists(config.PublicKeyPath)) {
+            logger.LogCritical("SpacebarAuthenticationService: Public key not found at {path}", config.PublicKeyPath);
+            throw new Exception("Authentication failed");
+        }
+
         var publicKeyFile = await File.ReadAllTextAsync(config.PublicKeyPath);
         var rawPublicKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
         rawPublicKey.ImportFromPem(publicKeyFile);
         _publicKey = new ECDsaSecurityKey(rawPublicKey);
+
+        if (!File.Exists(config.PublicKeyPath)) {
+            logger.LogCritical("SpacebarAuthenticationService: Private key not found at {path}", config.PrivateKeyPath);
+            throw new Exception("Authentication failed");
+        }
 
         var privateKeyFile = await File.ReadAllTextAsync(config.PrivateKeyPath);
         var rawPrivateKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
@@ -51,7 +61,7 @@ public class SpacebarAuthenticationService(ILogger<SpacebarAuthenticationService
         var res = await Handler.ValidateTokenAsync(token, TokenValidationParameters);
 
         if ((!res.IsValid || res.Exception is not null) && !config.DisableAuthentication) {
-            logger.LogInformation("Invalid token");
+            logger.LogWarning("Invalid token: {e}", res.Exception?.ToString() ?? "Unknown failure");
             throw res.Exception ?? new UnauthorizedAccessException("Token was invalid");
         }
 
