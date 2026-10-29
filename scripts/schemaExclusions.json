@@ -7,7 +7,9 @@
     ],
     "includeRe": [
         "^MessageComponentType\\..*",
-        "^InteractionCallbackType\\..*"
+        "^InteractionCallbackType\\..*",
+        "^AutomodRuleTriggerType\\..*",
+        "^AutomodRuleActionType\\..*"
     ],
     "manual": [
         "DefaultSchema",

@@ -47,7 +47,7 @@ router.get(
 router.post(
     "/",
     route({
-        // requestBody: "AutomodRuleSchema",
+        requestBody: "AutomodRuleSchema",
         permission: "MANAGE_GUILD",
         responses: {
             200: {
@@ -63,25 +63,26 @@ router.post(
     }),
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };
-        if (req.user_id !== req.body.creator_id) throw new HTTPError("You can't create a rule for someone else", 403);
 
-        if (guild_id !== req.body.guild_id) throw new HTTPError("You can't create a rule for another guild", 403);
-
-        if (req.body.id) {
-            throw new HTTPError("You can't specify an ID for a new rule", 400);
-        }
+        if ("id" in req.body) throw new HTTPError("You can't specify an ID for a new rule", 400);
+        if ("user_id" in req.body && req.user_id !== req.body.creator_id) throw new HTTPError("You can't create a rule for someone else", 403);
+        if ("guild_id" in req.body && guild_id !== req.body.guild_id) throw new HTTPError("You can't create a rule for another guild", 403);
 
         const data = req.body as AutomodRuleSchema;
 
         const created = AutomodRule.create({
+            ...{ exempt_roles: [], exempt_channels: [] },
             ...data,
             creator: await User.findOneOrFail({
-                where: { id: data.creator_id },
+                where: { id: req.user_id },
             }),
             guild_id: req.params.guild_id as string,
         });
 
+        created.position = await AutomodRule.count({ where: { guild_id } });
+
         const savedRule = await AutomodRule.save(created);
+        console.log(savedRule);
         return res.json(savedRule);
     },
 );
@@ -89,7 +90,7 @@ router.post(
 router.patch(
     "/:rule_id",
     route({
-        // requestBody: "AutomodRuleSchema
+        requestBody: "AutomodRuleSchema",
         permission: "MANAGE_GUILD",
         responses: {
             200: {
@@ -110,9 +111,13 @@ router.patch(
         });
         if (!rule) throw new HTTPError("Automod rule not found", 404);
 
+        if ("id" in req.body) throw new HTTPError("You can't specify an ID for a rule", 400);
+        if ("user_id" in req.body && req.user_id !== req.body.creator_id) throw new HTTPError("You can't modify a rule for someone else", 403);
+        if ("guild_id" in req.body && req.params.guild_id !== req.body.guild_id) throw new HTTPError("You can't modify a rule for another guild", 403);
+
         const data = req.body as AutomodRuleSchema;
 
-        AutomodRule.merge(rule, data);
+        AutomodRule.merge<AutomodRule>(rule, data);
         const savedRule = await AutomodRule.save(rule);
         return res.json(savedRule);
     },

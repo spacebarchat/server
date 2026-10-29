@@ -334,167 +334,6 @@
                     "permissions"
                 ]
             },
-            "AutomodMentionSpamRuleSchema": {
-                "type": "object",
-                "properties": {
-                    "mention_total_limit": {
-                        "type": "integer"
-                    },
-                    "mention_raid_protection_enabled": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "mention_raid_protection_enabled",
-                    "mention_total_limit"
-                ]
-            },
-            "AutomodSuspectedSpamRuleSchema": {
-                "type": "object"
-            },
-            "AutomodCommonlyFlaggedWordsRuleSchema": {
-                "type": "object",
-                "properties": {
-                    "allow_list": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "presets": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "integer"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    }
-                },
-                "required": [
-                    "allow_list",
-                    "presets"
-                ]
-            },
-            "AutomodCustomWordsRuleSchema": {
-                "type": "object",
-                "properties": {
-                    "allow_list": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "keyword_filter": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "regex_patterns": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    }
-                },
-                "required": [
-                    "allow_list",
-                    "keyword_filter",
-                    "regex_patterns"
-                ]
-            },
-            "AutomodRuleSchema": {
-                "type": "object",
-                "properties": {
-                    "creator_id": {
-                        "type": "string"
-                    },
-                    "enabled": {
-                        "type": "boolean"
-                    },
-                    "event_type": {
-                        "type": "integer"
-                    },
-                    "exempt_channels": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "exempt_roles": {
-                        "type": "array",
-                        "items": [
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "position": {
-                        "type": "integer"
-                    },
-                    "trigger_type": {
-                        "type": "integer"
-                    },
-                    "trigger_metadata": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/AutomodMentionSpamRuleSchema"
-                            },
-                            {
-                                "$ref": "#/components/schemas/AutomodSuspectedSpamRuleSchema"
-                            },
-                            {
-                                "$ref": "#/components/schemas/AutomodCommonlyFlaggedWordsRuleSchema"
-                            },
-                            {
-                                "$ref": "#/components/schemas/AutomodCustomWordsRuleSchema"
-                            }
-                        ]
-                    }
-                },
-                "required": [
-                    "creator_id",
-                    "enabled",
-                    "event_type",
-                    "exempt_channels",
-                    "exempt_roles",
-                    "guild_id",
-                    "name",
-                    "position",
-                    "trigger_metadata",
-                    "trigger_type"
-                ]
-            },
             "BackupCodesChallengeSchema": {
                 "type": "object",
                 "properties": {
@@ -6914,6 +6753,100 @@
                     "webhooks"
                 ]
             },
+            "BaseAutomodRuleSchema": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name"
+                ]
+            },
+            "AutomodRuleSchema": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "trigger_metadata": {
+                                "$ref": "#/components/schemas/AutomodCustomWordsRuleMetadata"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "trigger_metadata"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "trigger_metadata": {
+                                "$ref": "#/components/schemas/AutomodKeywordPresetRuleMetadata"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "trigger_metadata"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "trigger_metadata": {
+                                "$ref": "#/components/schemas/AutomodMentionSpamRuleMetadata"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "trigger_metadata"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "trigger_metadata": {
+                                "$ref": "#/components/schemas/AutomodUserProfileRuleMetadata"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "trigger_metadata"
+                        ]
+                    }
+                ]
+            },
             "GuildProfileResponse": {
                 "type": "object",
                 "properties": {
@@ -8545,22 +8478,7 @@
                         ]
                     },
                     "party": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string"
-                            },
-                            "size": {
-                                "type": "array",
-                                "items": {
-                                    "type": "integer"
-                                }
-                            },
-                            "privacy": {
-                                "$ref": "#/components/schemas/ActivityPartyPrivacy"
-                            }
-                        },
-                        "additionalProperties": false
+                        "$ref": "#/components/schemas/ActivityParty"
                     },
                     "assets": {
                         "type": "object",
@@ -8671,7 +8589,7 @@
                     6
                 ]
             },
-            "ActivityPartyPrivacy": {
+            "ActivityParty": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -8682,16 +8600,9 @@
                     },
                     "size": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "integer"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ],
-                        "minItems": 2,
-                        "maxItems": 2
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -16748,6 +16659,231 @@
                         "type": "integer"
                     }
                 }
+            },
+            "AutomodCustomWordsRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "keyword_filter": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "regex_patterns": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "keyword_filter",
+                    "regex_patterns"
+                ]
+            },
+            "AutomodKeywordPresetRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "presets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodKeywordPresetType"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "presets"
+                ]
+            },
+            "AutomodKeywordPresetType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "AutomodMentionSpamRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "mention_total_limit": {
+                        "type": "integer"
+                    },
+                    "mention_raid_protection_enabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "mention_raid_protection_enabled",
+                    "mention_total_limit"
+                ]
+            },
+            "AutomodUserProfileRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "keyword_filter": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "regex_patterns": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "keyword_filter",
+                    "regex_patterns"
+                ]
+            },
+            "AutomodRuleEventType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2
+                ]
+            },
+            "AutomodAction": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "$ref": "#/components/schemas/AutomodRuleActionType.BLOCK_MESSAGE"
+                            },
+                            "metadata": {
+                                "type": "object",
+                                "properties": {
+                                    "custom_message": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "metadata",
+                            "type"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "$ref": "#/components/schemas/AutomodRuleActionType.SEND_ALERT_MESSAGE"
+                            },
+                            "metadata": {
+                                "type": "object",
+                                "properties": {
+                                    "channel_id": {
+                                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "channel_id"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "metadata",
+                            "type"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "$ref": "#/components/schemas/AutomodRuleActionType.TIMEOUT_USER"
+                            },
+                            "metadata": {
+                                "type": "object",
+                                "properties": {
+                                    "duration_seconds": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "duration_seconds"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "metadata",
+                            "type"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "$ref": "#/components/schemas/AutomodRuleActionType.QUARANTINE_USER"
+                            },
+                            "metadata": {
+                                "type": "object",
+                                "properties": {
+                                    "duration_seconds": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "required": [
+                                    "duration_seconds"
+                                ]
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "metadata",
+                            "type"
+                        ]
+                    }
+                ]
+            },
+            "AutomodRuleActionType.BLOCK_MESSAGE": {
+                "type": "number",
+                "const": 1
+            },
+            "AutomodRuleActionType.SEND_ALERT_MESSAGE": {
+                "type": "number",
+                "const": 2
+            },
+            "AutomodRuleActionType.TIMEOUT_USER": {
+                "type": "number",
+                "const": 3
+            },
+            "AutomodRuleActionType.QUARANTINE_USER": {
+                "type": "number",
+                "const": 4
             },
             "GameActivity": {
                 "type": "object",
@@ -25997,9 +26133,7 @@
         },
         "/api/guilds/{guild_id}/auto-moderation/rules/": {
             "get": {
-                "x-permission-required": [
-                    "MANAGE_GUILD"
-                ],
+                "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
                         "bearer": []
@@ -26043,14 +26177,22 @@
                 ]
             },
             "post": {
-                "x-permission-required": [
-                    "MANAGE_GUILD"
-                ],
+                "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AutomodRuleSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -26101,14 +26243,22 @@
         },
         "/api/guilds/{guild_id}/auto-moderation/rules/{rule_id}": {
             "patch": {
-                "x-permission-required": [
-                    "MANAGE_GUILD"
-                ],
+                "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AutomodRuleSchema"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -26166,9 +26316,7 @@
                 ]
             },
             "delete": {
-                "x-permission-required": [
-                    "MANAGE_GUILD"
-                ],
+                "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
                         "bearer": []
@@ -27911,7 +28059,7 @@
         },
         "/api/channels/{channel_id}/pins/{message_id}": {
             "put": {
-                "x-permission-required": "VIEW_CHANNEL",
+                "x-permission-required": "PIN_MESSAGES",
                 "security": [
                     {
                         "bearer": []
@@ -27963,7 +28111,7 @@
                 ]
             },
             "delete": {
-                "x-permission-required": "VIEW_CHANNEL",
+                "x-permission-required": "PIN_MESSAGES",
                 "security": [
                     {
                         "bearer": []
@@ -28223,7 +28371,7 @@
         },
         "/api/channels/{channel_id}/messages/pins/{message_id}": {
             "put": {
-                "x-permission-required": "VIEW_CHANNEL",
+                "x-permission-required": "PIN_MESSAGES",
                 "security": [
                     {
                         "bearer": []
@@ -28275,7 +28423,7 @@
                 ]
             },
             "delete": {
-                "x-permission-required": "VIEW_CHANNEL",
+                "x-permission-required": "PIN_MESSAGES",
                 "security": [
                     {
                         "bearer": []

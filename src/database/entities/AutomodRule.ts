@@ -17,7 +17,7 @@
 */
 
 import { BaseClass } from "./BaseClass";
-import { Entity, JoinColumn, ManyToOne, Column } from "typeorm";
+import { Entity, JoinColumn, ManyToOne, Column, RelationId } from "typeorm";
 import { User } from "./User";
 import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, AutomodRuleTriggerType } from "@spacebar/schemas";
 
@@ -25,6 +25,10 @@ import { AutomodAction, AutomodRuleEventType, AutomodRuleTriggerMetadata, Automo
     name: "automod_rules",
 })
 export class AutomodRule extends BaseClass {
+    @Column()
+    @RelationId((automod: AutomodRule) => automod.creator)
+    creator_id: string;
+
     @JoinColumn({ name: "creator_id", foreignKeyConstraintName: "FK_automod_rule_creator_id" })
     @ManyToOne(() => User, { onDelete: "CASCADE" })
     creator: User;
@@ -57,8 +61,7 @@ export class AutomodRule extends BaseClass {
         type: "jsonb",
         nullable: true,
     })
-    trigger_metadata?: // this is null for "Block suspected spam content"
-    AutomodRuleTriggerMetadata;
+    trigger_metadata?: AutomodRuleTriggerMetadata | undefined; // may be undefined for trigger types that have no metadata
 
     @Column({
         type: "jsonb",

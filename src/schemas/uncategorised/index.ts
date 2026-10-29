@@ -18,7 +18,6 @@
 
 export * from "./ActivitySchema";
 export * from "./ApplicationAuthorizeSchema";
-export * from "./AutomodRuleSchema";
 export * from "./BackupCodesChallengeSchema";
 export * from "./BanCreateSchema";
 export * from "./BanModeratorSchema";

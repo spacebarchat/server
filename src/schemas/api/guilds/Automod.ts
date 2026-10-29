@@ -1,6 +1,6 @@
 /*
 	Spacebar: A FOSS re-implementation and extension of the Discord.com backend.
-	Copyright (C) 2025 Spacebar and Spacebar Contributors
+	Copyright (C) 2026 Spacebar and Spacebar Contributors
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -18,21 +18,59 @@
 
 import { Snowflake } from "../../Identifiers";
 
-export type AutomodRuleTriggerMetadata = AutomodMentionSpamRule | AutomodSuspectedSpamRule | AutomodCommonlyFlaggedWordsRule | AutomodCustomWordsRule;
+interface BaseAutomodRuleSchema {
+    enabled: boolean;
+    event_type: AutomodRuleEventType;
+    exempt_channels?: Snowflake[];
+    exempt_roles?: Snowflake[];
+    name: string;
+    actions: AutomodAction[];
+}
 
-export class AutomodMentionSpamRule {
+type WithTrigger<T, M> = BaseAutomodRuleSchema & {
+    trigger_type: T;
+} & M extends never
+    ? { trigger_metadata?: never }
+    : { trigger_metadata: M };
+
+type KeywordRule = WithTrigger<AutomodRuleTriggerType.KEYWORD, AutomodCustomWordsRuleMetadata>;
+type HarmfulLinkRule = WithTrigger<AutomodRuleTriggerType.HARMFUL_LINK, never>;
+type SpamRule = WithTrigger<AutomodRuleTriggerType.SPAM, never>;
+type KeywordPresetRule = WithTrigger<AutomodRuleTriggerType.KEYWORD_PRESET, AutomodKeywordPresetRuleMetadata>;
+type MentionSpamRule = WithTrigger<AutomodRuleTriggerType.MENTION_SPAM, AutomodMentionSpamRuleMetadata>;
+type UserProfileRule = WithTrigger<AutomodRuleTriggerType.USER_PROFILE, AutomodUserProfileRuleMetadata>;
+type GuildPolicyRule = WithTrigger<AutomodRuleTriggerType.GUILD_POLICY, never>;
+
+export type AutomodRuleSchema = KeywordRule | HarmfulLinkRule | SpamRule | KeywordPresetRule | MentionSpamRule | UserProfileRule | GuildPolicyRule;
+
+export type AutomodRuleSchemaWithId = AutomodRuleSchema & {
+    id: Snowflake;
+    creator_id: Snowflake;
+    guild_id: Snowflake;
+    position: number;
+    exempt_roles?: Snowflake[];
+};
+
+export type AutomodRuleTriggerMetadata = AutomodCustomWordsRuleMetadata | AutomodKeywordPresetRuleMetadata | AutomodMentionSpamRuleMetadata | AutomodUserProfileRuleMetadata;
+
+export interface AutomodMentionSpamRuleMetadata {
     mention_total_limit: number;
     mention_raid_protection_enabled: boolean;
 }
 
-export class AutomodSuspectedSpamRule {}
-
-export class AutomodCommonlyFlaggedWordsRule {
+export interface AutomodKeywordPresetRuleMetadata {
     allow_list: string[];
     presets: AutomodKeywordPresetType[];
 }
 
-export class AutomodCustomWordsRule {
+export interface AutomodCustomWordsRuleMetadata {
+    allow_list: string[];
+    keyword_filter: string[];
+    regex_patterns: string[];
+}
+
+// the same as custom words, but separate to allow divergence
+export interface AutomodUserProfileRuleMetadata {
     allow_list: string[];
     keyword_filter: string[];
     regex_patterns: string[];
@@ -42,6 +80,7 @@ export enum AutomodRuleEventType {
     MESSAGE_SEND = 1,
     GUILD_MEMBER_EVENT = 2,
 }
+
 export enum AutomodRuleTriggerType {
     KEYWORD = 1,
     HARMFUL_LINK = 2,
@@ -68,27 +107,19 @@ export enum AutomodRuleActionType {
 export type AutomodAction =
     | {
           type: AutomodRuleActionType.BLOCK_MESSAGE;
-          metadata: {
-              custom_message?: string;
-          };
+          metadata: { custom_message?: string };
       }
     | {
           type: AutomodRuleActionType.SEND_ALERT_MESSAGE;
-          metadata: {
-              channel_id: Snowflake;
-          };
+          metadata: { channel_id: Snowflake };
       }
     | {
           type: AutomodRuleActionType.TIMEOUT_USER;
-          metadata: {
-              duration_seconds: number;
-          };
+          metadata: { duration_seconds: number };
       }
     | {
           type: AutomodRuleActionType.QUARANTINE_USER;
-          metadata: {
-              duration_seconds: number;
-          };
+          metadata: { duration_seconds: number };
       };
 
 // TODO

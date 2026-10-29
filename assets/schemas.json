@@ -322,177 +322,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "AutomodMentionSpamRuleSchema": {
-        "type": "object",
-        "properties": {
-            "mention_total_limit": {
-                "type": "integer"
-            },
-            "mention_raid_protection_enabled": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "mention_raid_protection_enabled",
-            "mention_total_limit"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodSuspectedSpamRuleSchema": {
-        "type": "object",
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodCommonlyFlaggedWordsRuleSchema": {
-        "type": "object",
-        "properties": {
-            "allow_list": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "presets": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "integer"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "allow_list",
-            "presets"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodCustomWordsRuleSchema": {
-        "type": "object",
-        "properties": {
-            "allow_list": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "keyword_filter": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "regex_patterns": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "allow_list",
-            "keyword_filter",
-            "regex_patterns"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodRuleSchema": {
-        "type": "object",
-        "properties": {
-            "creator_id": {
-                "type": "string"
-            },
-            "enabled": {
-                "type": "boolean"
-            },
-            "event_type": {
-                "type": "integer"
-            },
-            "exempt_channels": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "exempt_roles": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    }
-                ],
-                "minItems": 1,
-                "maxItems": 1
-            },
-            "guild_id": {
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
-            },
-            "trigger_type": {
-                "type": "integer"
-            },
-            "trigger_metadata": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/AutomodMentionSpamRuleSchema"
-                    },
-                    {
-                        "$ref": "#/definitions/AutomodSuspectedSpamRuleSchema"
-                    },
-                    {
-                        "$ref": "#/definitions/AutomodCommonlyFlaggedWordsRuleSchema"
-                    },
-                    {
-                        "$ref": "#/definitions/AutomodCustomWordsRuleSchema"
-                    }
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "creator_id",
-            "enabled",
-            "event_type",
-            "exempt_channels",
-            "exempt_roles",
-            "guild_id",
-            "name",
-            "position",
-            "trigger_metadata",
-            "trigger_type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "BackupCodesChallengeSchema": {
         "type": "object",
         "properties": {
@@ -7416,6 +7245,103 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "BaseAutomodRuleSchema": {
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleSchema": {
+        "anyOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "trigger_metadata": {
+                        "$ref": "#/definitions/AutomodCustomWordsRuleMetadata"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "trigger_metadata"
+                ]
+            },
+            {
+                "type": "object",
+                "additionalProperties": false
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "trigger_metadata": {
+                        "$ref": "#/definitions/AutomodKeywordPresetRuleMetadata"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "trigger_metadata"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "trigger_metadata": {
+                        "$ref": "#/definitions/AutomodMentionSpamRuleMetadata"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "trigger_metadata"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "trigger_metadata": {
+                        "$ref": "#/definitions/AutomodUserProfileRuleMetadata"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "trigger_metadata"
+                ]
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "GuildProfileResponse": {
         "type": "object",
         "properties": {
@@ -9142,22 +9068,7 @@
                 ]
             },
             "party": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "size": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "privacy": {
-                        "$ref": "#/definitions/ActivityPartyPrivacy"
-                    }
-                },
-                "additionalProperties": false
+                "$ref": "#/definitions/ActivityParty"
             },
             "assets": {
                 "type": "object",
@@ -9271,7 +9182,7 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ActivityPartyPrivacy": {
+    "ActivityParty": {
         "type": "object",
         "properties": {
             "id": {
@@ -9282,16 +9193,9 @@
             },
             "size": {
                 "type": "array",
-                "items": [
-                    {
-                        "type": "integer"
-                    },
-                    {
-                        "type": "integer"
-                    }
-                ],
-                "minItems": 2,
-                "maxItems": 2
+                "items": {
+                    "type": "integer"
+                }
             }
         },
         "additionalProperties": false,
@@ -17898,6 +17802,246 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodCustomWordsRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "keyword_filter": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "regex_patterns": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "keyword_filter",
+            "regex_patterns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodKeywordPresetRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "presets": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodKeywordPresetType"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "presets"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodKeywordPresetType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodMentionSpamRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "mention_total_limit": {
+                "type": "integer"
+            },
+            "mention_raid_protection_enabled": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "mention_raid_protection_enabled",
+            "mention_total_limit"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodUserProfileRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "keyword_filter": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "regex_patterns": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "keyword_filter",
+            "regex_patterns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleEventType": {
+        "type": "number",
+        "enum": [
+            1,
+            2
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodAction": {
+        "anyOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/AutomodRuleActionType.BLOCK_MESSAGE"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "custom_message": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/AutomodRuleActionType.SEND_ALERT_MESSAGE"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "channel_id": {
+                                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "channel_id"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/AutomodRuleActionType.TIMEOUT_USER"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "duration_seconds": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "duration_seconds"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/definitions/AutomodRuleActionType.QUARANTINE_USER"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "duration_seconds": {
+                                "type": "integer"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "duration_seconds"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "metadata",
+                    "type"
+                ]
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleActionType.BLOCK_MESSAGE": {
+        "type": "number",
+        "const": 1,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleActionType.SEND_ALERT_MESSAGE": {
+        "type": "number",
+        "const": 2,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleActionType.TIMEOUT_USER": {
+        "type": "number",
+        "const": 3,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleActionType.QUARANTINE_USER": {
+        "type": "number",
+        "const": 4,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GameActivity": {
