@@ -122,9 +122,6 @@ router.patch(
             guild.features = body.features;
         }
 
-        // TODO: check if body ids are valid
-        guild.assign(body);
-
         if (body.public_updates_channel_id == "1") {
             // create an updates channel for them
             const channel = await Channel.createChannel(
@@ -149,7 +146,7 @@ router.patch(
 
             await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
-            guild.public_updates_channel_id = channel.id;
+            body.public_updates_channel_id = channel.id;
         } else if (body.public_updates_channel_id != undefined) {
             // ensure channel exists in this guild
             await Channel.findOneOrFail({
@@ -182,7 +179,7 @@ router.patch(
 
             await Guild.insertChannelInOrder(guild.id, channel.id, 0, guild);
 
-            guild.rules_channel_id = channel.id;
+            body.rules_channel_id = channel.id;
         } else if (body.rules_channel_id != undefined) {
             // ensure channel exists in this guild
             await Channel.findOneOrFail({
@@ -190,6 +187,8 @@ router.patch(
                 select: { id: true },
             });
         }
+
+        guild.assign(body);
 
         const data = guild.toJSON();
         // TODO: guild hashes
