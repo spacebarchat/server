@@ -26,6 +26,6 @@ public class UserAbstraction(Config _config, SpacebarClientProviderService _clie
 
     private static AuthenticatedSpacebarClient? _authenticatedSpacebarClient;
     public async Task<AuthenticatedSpacebarClient> GetSharedUser() {
-        return _authenticatedSpacebarClient ??= await GetFreshUser();
+        return _authenticatedSpacebarClient ??= await GetFreshUser(true);
     }
 }

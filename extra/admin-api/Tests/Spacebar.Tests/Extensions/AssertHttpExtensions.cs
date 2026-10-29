@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.Encodings.Web;
 using System.Text.Json.Nodes;
 
 namespace Spacebar.Tests.Extensions;
@@ -9,7 +10,8 @@ public static class AssertHttpExtensions {
     public static async Task<string> GetFormattedErrorDetails(HttpResponseMessage res) {
         return res.Content.Headers.ContentType?.MediaType == "application/json"
             ? (await res.Content.ReadFromJsonAsync<JsonObject>())!.ToJsonString(new() {
-                WriteIndented = true
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping // i hate unicode escaping for basic characters like quotes
             })
             : await res.Content.ReadAsStringAsync();
     }
