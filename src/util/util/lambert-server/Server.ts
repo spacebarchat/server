@@ -74,6 +74,7 @@ export class Server {
             const err = new Error(`[Server] Failed to register route ${path}: ${error}`);
             err.stack = (err.stack ?? "") + "\n  Inner exception: " + (<Error>error).stack!.replaceAll("/:", "/index.ts:");
             console.error(err);
+            if (process.env.ROUTE_REGISTER_FAILURE_IS_FATAL == "true") process.exit(1);
         }
     }
 
