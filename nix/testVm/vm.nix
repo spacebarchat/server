@@ -45,7 +45,6 @@
 
   boot = {
     initrd = {
-      systemd.enable = true;
       systemd.emergencyAccess = true;
     };
     kernelParams = [

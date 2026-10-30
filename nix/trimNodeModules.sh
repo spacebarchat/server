@@ -5,7 +5,7 @@ echo "Removing CLI scripts..."
 for f in ./node_modules/.bin/*; do
   rm -f "$(realpath $f)" $f
 done
-find ./node_modules -type d -name '.bin' | while read -r dir; do
+find ./node_modules -type d -name '.bin' -type l ! -lname '*/index.cjs' ! -lname 'index.cjs' | while read -r dir; do
   echo "Removing CLI scripts from $dir..."
   for f in "$dir"/*; do
     rm -f "$(realpath $f)" $f

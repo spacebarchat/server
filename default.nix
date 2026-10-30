@@ -72,7 +72,7 @@ let
       npm prune --omit dev --no-save --offline
       rm -v dist/src.tsbuildinfo
       rm -rv scripts
-      time ${./nix/trimNodeModules.sh}
+      # time ${./nix/trimNodeModules.sh}
 
       # Copy outputs
       echo "Installing package into $out"

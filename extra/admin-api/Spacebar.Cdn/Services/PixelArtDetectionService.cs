@@ -3,7 +3,7 @@ using ImageMagick;
 namespace Spacebar.AdminApi.TestClient.Services.Services;
 
 public class PixelArtDetectionService {
-    public bool IsPixelArt<T>(IMagickImage<T> img) where T : struct, IConvertible {
+    public bool IsPixelArt<T>(IMagickImage<T> img) where T : unmanaged {
         // Simple heuristic: if the image has a limited color palette and sharp edges, consider it pixel art
         var colorCount = img.Histogram().Count;
         var edgeThreshold = 20; // Arbitrary threshold for edge detection
@@ -19,7 +19,7 @@ public class PixelArtDetectionService {
         return isPixelArt;
     }
 
-    public bool IsCartoonArt<T>(IMagickImage<T> img) where T : struct, IConvertible {
+    public bool IsCartoonArt<T>(IMagickImage<T> img) where T : unmanaged {
         // Simple heuristic: if the image has a limited color palette and smooth edges, consider it cartoon art
         var colorCount = img.Histogram().Count;
         var edgeThreshold = 5; // Lower threshold for smoother edges
@@ -33,7 +33,7 @@ public class PixelArtDetectionService {
         return isCartoonArt;
     }
 
-    public IMagickImage<T> RenderEdges<T>(IMagickImage<T> img, double radius = 1) where T : struct, IConvertible {
+    public IMagickImage<T> RenderEdges<T>(IMagickImage<T> img, double radius = 1) where T : unmanaged {
         var edgeImg = img.Clone();
         // edgeImg.Edge(radius);
         edgeImg.WaveletDenoise(new Percentage(50));

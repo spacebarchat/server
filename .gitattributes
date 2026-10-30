@@ -2,7 +2,8 @@
 *.sh -crlf
 *.nix -crlf
 .husky/pre-commit -crlf
-package-lock.json -diff
-flake.lock -diff
-assets/schemas.json -diff
-assets/openapi.json -diff
+package-lock.json -diff linguist-generated
+flake.lock -diff linguist-generated
+assets/schemas.json -diff linguist-generated
+assets/openapi.json -diff linguist-generated
+.idea/ linguist-generated
