@@ -453,6 +453,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
         timePromise(() =>
             ThreadMember.find({
                 where: { member_idx: In(members.map(({ index }) => index)) },
+                relations: {
+                    member: true,
+                },
             }),
         ),
         timePromise(() =>
