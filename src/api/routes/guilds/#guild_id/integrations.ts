@@ -21,7 +21,19 @@ import { route } from "@spacebar/api/middlewares";
 const router = Router({ mergeParams: true });
 
 //TODO: implement integrations list
-router.get("/", route({}), (req: Request, res: Response) => {
-    res.json([]);
-});
+router.get(
+    "/",
+    route({
+        permission: "MANAGE_GUILD",
+        responses: {
+            200: {
+                body: "Integration[]",
+            },
+        },
+    }),
+    (req: Request, res: Response) => {
+        // TODO: anything that isnt bots
+        res.json([]);
+    },
+);
 export default router;

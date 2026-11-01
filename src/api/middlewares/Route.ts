@@ -135,6 +135,7 @@ export function route(opts: RouteOptions) {
     opts.authentication ??= "required";
 
     return async (req: Request, res: Response, next: NextFunction) => {
+        if (opts.deprecated) res.set("x-sb-deprecated", "true");
         if (opts.authentication === "required" && !req.isAuthenticated) throw DiscordApiErrors.UNAUTHORIZED;
 
         if (opts.permission) {

@@ -25090,14 +25090,22 @@
         },
         "/api/guilds/{guild_id}/integrations/": {
             "get": {
+                "x-permission-required": "MANAGE_GUILD",
                 "security": [
                     {
                         "bearer": []
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Integration[]"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [

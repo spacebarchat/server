@@ -15,11 +15,14 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 export * from "./AuditLog";
 export * from "./Automod";
 export * from "./Emoji";
 export * from "./GuildProfileResponse";
+export * from "./GuildScheduledEvents";
 export * from "./GuildSchema";
+export * from "./Integrations";
 export * from "./Role";
 export * from "./Sticker";
 export * from "./VoiceState";
