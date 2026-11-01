@@ -1550,6 +1550,12 @@
                     "$ref": "#/components/schemas/PublicMember"
                 }
             },
+            "PaymentSourceListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PaymentSource"
+                }
+            },
             "PartialRelationshipSchema": {
                 "type": "object",
                 "properties": {
@@ -3122,6 +3128,218 @@
                     "name",
                     "type",
                     "verified"
+                ]
+            },
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ChannelType"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Recipient"
+                        }
+                    },
+                    "thread_members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ThreadMember"
+                        }
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/Guild"
+                    },
+                    "parent_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "parent": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "last_pin_timestamp": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Invite"
+                        }
+                    },
+                    "retention_policy_id": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Message"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/VoiceState"
+                        }
+                    },
+                    "read_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ReadState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/components/schemas/ThreadMetadata"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "flags",
+                    "id",
+                    "nsfw",
+                    "owner",
+                    "parent_id",
+                    "position",
+                    "type"
                 ]
             },
             "PreloadMessagesResponseSchema": {
@@ -6115,6 +6333,17 @@
                     "thread_ids"
                 ]
             },
+            "PostDataResponse": {
+                "type": "object",
+                "properties": {
+                    "threads": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CPostData%3E"
+                    }
+                },
+                "required": [
+                    "threads"
+                ]
+            },
             "TagCreateSchema": {
                 "type": "object",
                 "properties": {
@@ -6613,6 +6842,12 @@
                     "custom_id",
                     "id"
                 ]
+            },
+            "PublicThreadMembersResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PublicThreadMember"
+                }
             },
             "WebhookCreateResponse": {
                 "type": "object",
@@ -8139,6 +8374,12 @@
                     "$ref": "#/components/schemas/VoiceRegionResponse"
                 }
             },
+            "InviteListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PublicInvite"
+                }
+            },
             "FieldErrorResponse": {
                 "type": "object",
                 "properties": {
@@ -8157,12 +8398,6 @@
                     "errors",
                     "message"
                 ]
-            },
-            "InviteListResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/PublicInvite"
-                }
             },
             "RouteResponse": {
                 "type": "object",
@@ -10395,184 +10630,6 @@
                     "widget_enabled"
                 ]
             },
-            "Channel": {
-                "type": "object",
-                "properties": {
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ChannelType"
-                    },
-                    "recipients": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Recipient"
-                        }
-                    },
-                    "thread_members": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ThreadMember"
-                        }
-                    },
-                    "last_message_id": {
-                        "type": "string"
-                    },
-                    "guild_id": {
-                        "type": "string"
-                    },
-                    "guild": {
-                        "$ref": "#/components/schemas/Guild"
-                    },
-                    "parent_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "parent": {
-                        "$ref": "#/components/schemas/Channel"
-                    },
-                    "owner_id": {
-                        "type": "string"
-                    },
-                    "owner": {
-                        "$ref": "#/components/schemas/User"
-                    },
-                    "last_pin_timestamp": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "default_auto_archive_duration": {
-                        "type": "integer"
-                    },
-                    "permission_overwrites": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ChannelPermissionOverwrite"
-                        }
-                    },
-                    "video_quality_mode": {
-                        "type": "integer"
-                    },
-                    "bitrate": {
-                        "type": "integer"
-                    },
-                    "user_limit": {
-                        "type": "integer"
-                    },
-                    "nsfw": {
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "rate_limit_per_user": {
-                        "type": "integer"
-                    },
-                    "topic": {
-                        "type": "string"
-                    },
-                    "invites": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Invite"
-                        }
-                    },
-                    "retention_policy_id": {
-                        "type": "string"
-                    },
-                    "messages": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Message"
-                        }
-                    },
-                    "voice_states": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/VoiceState"
-                        }
-                    },
-                    "read_states": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ReadState"
-                        }
-                    },
-                    "webhooks": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Webhook"
-                        }
-                    },
-                    "flags": {
-                        "type": "integer",
-                        "default": 0
-                    },
-                    "default_thread_rate_limit_per_user": {
-                        "type": "integer",
-                        "default": 0
-                    },
-                    "thread_metadata": {
-                        "$ref": "#/components/schemas/ThreadMetadata"
-                    },
-                    "member_count": {
-                        "type": "integer"
-                    },
-                    "message_count": {
-                        "type": "integer"
-                    },
-                    "total_message_sent": {
-                        "type": "integer"
-                    },
-                    "available_tags": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Tag"
-                        }
-                    },
-                    "applied_tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "position": {
-                        "description": "Must be calculated Channel.calculatePosition",
-                        "type": "integer"
-                    },
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "created_at",
-                    "flags",
-                    "id",
-                    "nsfw",
-                    "owner",
-                    "parent_id",
-                    "position",
-                    "type"
-                ]
-            },
             "ChannelType": {
                 "type": "number",
                 "enum": [
@@ -11531,7 +11588,7 @@
                         "type": "boolean"
                     },
                     "mute_config": {
-                        "$ref": "#/components/schemas/ThreadMemberMuteConfig"
+                        "$ref": "#/components/schemas/MuteConfig"
                     },
                     "flags": {
                         "$ref": "#/components/schemas/ThreadMemberFlags"
@@ -11871,18 +11928,6 @@
                     "end_time",
                     "selected_time_window"
                 ]
-            },
-            "ThreadMemberMuteConfig": {
-                "type": "object",
-                "properties": {
-                    "end_time": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "selected_time_window": {
-                        "type": "integer"
-                    }
-                }
             },
             "ThreadMemberFlags": {
                 "type": "number",
@@ -14207,40 +14252,6 @@
                     "locked"
                 ]
             },
-            "Tag": {
-                "type": "object",
-                "properties": {
-                    "channel_id": {
-                        "type": "string"
-                    },
-                    "channel": {
-                        "$ref": "#/components/schemas/Channel"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "moderated": {
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "emoji_id": {
-                        "type": "string"
-                    },
-                    "emoji_name": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "channel",
-                    "channel_id",
-                    "id",
-                    "moderated",
-                    "name"
-                ]
-            },
             "Ban": {
                 "type": "object",
                 "properties": {
@@ -14549,6 +14560,153 @@
                     "premium_type",
                     "public_flags",
                     "username"
+                ]
+            },
+            "PaymentSource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "brand": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "last_4": {
+                        "type": "string"
+                    },
+                    "billing_address": {
+                        "$ref": "#/components/schemas/BillingAddress"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PaymentSourceType"
+                    },
+                    "payment_gateway": {
+                        "$ref": "#/components/schemas/PaymentGateway"
+                    },
+                    "payment_gateway_source_id": {
+                        "type": "string"
+                    },
+                    "default": {
+                        "type": "boolean"
+                    },
+                    "invalid": {
+                        "type": "boolean"
+                    },
+                    "flags": {
+                        "$ref": "#/components/schemas/PaymentSourceFlags"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "expires_month": {
+                        "type": "integer"
+                    },
+                    "expires_year": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "bank": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "billing_address",
+                    "default",
+                    "deleted_at",
+                    "flags",
+                    "id",
+                    "invalid",
+                    "payment_gateway",
+                    "type"
+                ]
+            },
+            "BillingAddress": {
+                "type": "object",
+                "properties": {
+                    "line_1": {
+                        "type": "string"
+                    },
+                    "line_2": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "city",
+                    "country",
+                    "line_1",
+                    "name"
+                ]
+            },
+            "PaymentSourceType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19
+                ]
+            },
+            "PaymentGateway": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            },
+            "PaymentSourceFlags": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2
                 ]
             },
             "EmojiGuild": {
@@ -15095,7 +15253,7 @@
                         "$ref": "#/components/schemas/ThreadMetadata"
                     },
                     "member": {
-                        "$ref": "#/components/schemas/ThreadMember"
+                        "$ref": "#/components/schemas/PublicThreadMember"
                     },
                     "default_auto_archive_duration": {
                         "type": "integer",
@@ -15174,6 +15332,45 @@
                     "type"
                 ]
             },
+            "PublicThreadMember": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "join_timestamp": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "$ref": "#/components/schemas/ThreadMemberFlags"
+                    },
+                    "muted": {
+                        "type": "boolean"
+                    },
+                    "mute_config": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MuteConfig"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "member": {
+                        "$ref": "#/components/schemas/PublicMember"
+                    }
+                },
+                "required": [
+                    "flags",
+                    "join_timestamp"
+                ]
+            },
             "MessageActivity": {
                 "type": "object",
                 "properties": {
@@ -15230,6 +15427,40 @@
                         "type": "string"
                     }
                 }
+            },
+            "Tag_1": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
             },
             "Potion": {
                 "type": "object",
@@ -15634,11 +15865,27 @@
                 "properties": {
                     "maxEmojis": {
                         "type": "integer",
-                        "default": 100
+                        "default": 1000
+                    },
+                    "commandLimits": {
+                        "$ref": "#/components/schemas/CommandLimits"
                     }
                 },
                 "required": [
+                    "commandLimits",
                     "maxEmojis"
+                ]
+            },
+            "CommandLimits": {
+                "type": "object",
+                "properties": {
+                    "maxNameLength": {
+                        "type": "integer",
+                        "default": 32
+                    }
+                },
+                "required": [
+                    "maxNameLength"
                 ]
             },
             "UserLimits": {
@@ -17117,9 +17364,6 @@
                     }
                 }
             },
-            "ErrorList": {
-                "type": "object"
-            },
             "PublicInvite": {
                 "type": "object",
                 "properties": {
@@ -17389,6 +17633,9 @@
                     2,
                     3
                 ]
+            },
+            "ErrorList": {
+                "type": "object"
             }
         }
     },
@@ -19826,8 +20073,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceListResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -19841,8 +20095,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceListResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -19858,8 +20119,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSource"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -19884,8 +20152,15 @@
                     }
                 ],
                 "responses": {
-                    "default": {
-                        "description": "No description available"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaymentSourceListResponse"
+                                }
+                            }
+                        }
                     }
                 },
                 "parameters": [
@@ -27482,7 +27757,14 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicThreadMembersResponse"
+                                }
+                            }
+                        }
                     },
                     "403": {
                         "description": "No description available"
@@ -27911,7 +28193,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "No description available"
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostDataResponse"
+                                }
+                            }
+                        }
                     },
                     "403": {
                         "description": "No description available"
@@ -29413,7 +29702,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Invite"
+                                    "$ref": "#/components/schemas/PublicInvite"
                                 }
                             }
                         }

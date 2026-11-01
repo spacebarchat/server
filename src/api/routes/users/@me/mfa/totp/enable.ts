@@ -51,12 +51,11 @@ router.post(
             select: { id: true, data: true, email: true },
         });
 
-        // TODO: Are guests allowed to enable 2fa?
         if (user.data.hash) {
             if (!(await bcrypt.compare(body.password, user.data.hash))) {
                 throw new HTTPError(req.t("auth:login.INVALID_PASSWORD"));
             }
-        }
+        } else throw new HTTPError("Guests cannot enable 2FA, please set a password first!", 403);
 
         if (!body.secret) throw new HTTPError(req.t("auth:login.INVALID_TOTP_SECRET"), 60005);
 

@@ -31,7 +31,6 @@ router.post(
         spacebarOnly: false, // Not part of public openapi
     }),
     (req: Request, res: Response) => {
-        // TODO:
         res.sendStatus(204);
     },
 );

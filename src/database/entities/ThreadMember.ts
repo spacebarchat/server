@@ -18,26 +18,12 @@
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { ThreadMembersUpdateEvent } from "../../util/interfaces";
+import { HTTPError } from "lambert-server/HTTPError";
 import { emitEvent } from "@spacebar/util/util";
+import { MuteConfig, PublicThreadMember, ThreadMemberFlags } from "@spacebar/schemas";
 import { BaseClassWithoutId } from "./BaseClass";
 import { Channel } from "./Channel";
-import { HTTPError } from "lambert-server/HTTPError";
 import { Member } from "./Member";
-
-// TODO: move
-interface ThreadMemberMuteConfig {
-    end_time?: Date;
-    selected_time_window?: number;
-}
-
-// TODO: move
-export enum ThreadMemberFlags {
-    NONE = 0,
-    HAS_INTERACTED = 1 << 0,
-    ALL_MESSAGES = 1 << 1,
-    ONLY_MENTIONS = 1 << 2,
-    NO_MESSAGES = 1 << 3,
-}
 
 @Entity("thread_members")
 @Index(["id", "member_idx"], { unique: true })
@@ -72,7 +58,7 @@ export class ThreadMember extends BaseClassWithoutId {
     muted: boolean;
 
     @Column({ nullable: true, type: "jsonb" })
-    mute_config?: ThreadMemberMuteConfig;
+    mute_config?: MuteConfig;
 
     @Column()
     flags: ThreadMemberFlags;
@@ -93,20 +79,18 @@ export class ThreadMember extends BaseClassWithoutId {
             }))
         )
             throw new HTTPError("You are not member of this thread", 403);
-        // // use promise all to execute all promises at the same time -> save time
-        // TODO: check for bugs
+
         if (channel.member_count) channel.member_count--;
         return Promise.all([
             ThreadMember.delete({
                 id: thread_id,
                 member_idx: member_id,
             }),
-            // 	//Guild.decrement({ id: guild_id }, "member_count", -1),
 
             emitEvent({
                 event: "THREAD_MEMBERS_UPDATE",
                 data: {
-                    guild_id: channel.guild_id!, // TODO: is this the right fix?
+                    guild_id: channel.guild_id!,
                     id: channel.id,
                     member_count: channel.member_count ?? 0,
                     removed_member_ids: [member_id],
@@ -114,6 +98,18 @@ export class ThreadMember extends BaseClassWithoutId {
                 channel_id: thread_id,
             } satisfies ThreadMembersUpdateEvent),
         ]);
+    }
+
+    toJSON(): PublicThreadMember {
+        return {
+            id: this.id,
+            flags: this.flags,
+            join_timestamp: this.join_timestamp.toISOString(),
+            member: this.member.toPublicMember(),
+            mute_config: this.mute_config,
+            muted: this.muted,
+            user_id: this.member.id,
+        } satisfies PublicThreadMember;
     }
 
     // static async addRole(user_id: string, guild_id: string, role_id: string) {

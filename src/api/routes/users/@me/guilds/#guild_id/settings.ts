@@ -21,6 +21,8 @@ import { route } from "@spacebar/api/middlewares";
 import { Channel, Member } from "@spacebar/database";
 import { OrmUtils } from "@spacebar/util";
 import { UserGuildSettingsSchema } from "@spacebar/schemas";
+import { In } from "typeorm";
+import { HTTPError } from "lambert-server";
 
 const router = Router({ mergeParams: true });
 
@@ -60,10 +62,8 @@ router.patch(
         const body = req.body as UserGuildSettingsSchema;
 
         if (body.channel_overrides) {
-            // TODO: rewrite to a single query?
-            for (const channel in body.channel_overrides) {
-                await Channel.findOneOrFail({ where: { id: channel } });
-            }
+            const channels = await Channel.find({ where: { id: In(Object.keys(body.channel_overrides)), guild_id: req.params.guild_id as string } });
+            if (channels.length != Object.keys(body.channel_overrides).length) throw new HTTPError("Could not find one or more channels.", 404);
         }
 
         const user = await Member.findOneOrFail({

@@ -18,7 +18,7 @@
 
 import { handleMessage, postHandleMessage } from "@spacebar/api/util";
 import { route } from "@spacebar/api/middlewares";
-import { Attachment, Channel, Member, Message, ReadState, Relationship, User, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
+import { Attachment, Channel, Member, Message, ReadState, Relationship, User, ThreadMember } from "@spacebar/database";
 import {
     Config,
     DiscordApiErrors,
@@ -52,6 +52,7 @@ import {
     Reaction,
     ReadStateType,
     RelationshipType,
+    ThreadMemberFlags,
 } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });

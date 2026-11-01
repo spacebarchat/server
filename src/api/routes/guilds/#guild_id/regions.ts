@@ -38,7 +38,6 @@ router.get(
     async (req: Request, res: Response) => {
         const { guild_id } = req.params as { [key: string]: string };
         const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
-        //TODO we should use an enum for guild's features and not hardcoded strings
         return res.json(await getVoiceRegions(req.ip!, guild.features.includes("VIP_REGIONS")));
     },
 );

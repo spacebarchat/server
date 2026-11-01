@@ -84,7 +84,7 @@ router.post(
             role: TeamMemberRole.ADMIN,
         }).save();
 
-        res.json(team.toJSON() satisfies Team);
+        res.json(team.toJSON());
     },
 );
 

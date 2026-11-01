@@ -21,7 +21,7 @@ import { messageUpload } from "./messages";
 import { In } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
 import { Channel, Member, Message } from "@spacebar/database";
-import { PostDataSchema, PublicMessage } from "@spacebar/schemas";
+import { PostDataResponse, PostDataSchema, PublicMessage } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -43,7 +43,9 @@ router.post(
         requestBody: "PostDataSchema",
         permission: "VIEW_CHANNEL",
         responses: {
-            200: {},
+            200: {
+                body: "PostDataResponse",
+            },
             403: {},
         },
     }),
@@ -54,6 +56,7 @@ router.post(
                 id: In(body),
             },
         });
+
         const [messages, members] = await Promise.all([
             Message.find({
                 where: {
@@ -81,17 +84,18 @@ router.post(
                 },
             }),
         ]);
+
         await Message.fillReplies(messages);
-        const objRet: { threads: Record<string, { first_message: null | PublicMessage; owner: null | Member }> } = { threads: {} };
+        const threadPostData: PostDataResponse = { threads: {} };
         for (const thread of threads) {
-            const owner = members.find(({ id }) => id === thread.owner_id)?.toJSON() || null;
-            const first_message = messages.find(({ channel_id }) => channel_id === thread.id)?.toJSON() || null;
-            objRet.threads[thread.id] = {
+            const owner = members.find(({ id }) => id === thread.owner_id)?.toPublicMember() ?? null;
+            const first_message = messages.find(({ channel_id }) => channel_id === thread.id)?.toJSON() ?? null;
+            threadPostData.threads[thread.id] = {
                 owner,
                 first_message,
             };
         }
-        return res.json(objRet);
+        return res.json(threadPostData);
     },
 );
 

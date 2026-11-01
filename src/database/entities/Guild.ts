@@ -21,6 +21,8 @@ import { arrayRemove } from "@spacebar/extensions";
 import { Config, handleFile, Snowflake } from "@spacebar/util";
 import {
     DiscoverableGuild,
+    DiscoveryCategory,
+    EmojiResponse,
     GuildNsfwLevel,
     GuildPremiumTier,
     GuildProfileResponse,
@@ -28,6 +30,7 @@ import {
     GuildVisibilityLevel,
     GuildWelcomeScreen,
     IntegrationGuild,
+    StickerResponse,
 } from "@spacebar/schemas";
 import { Ban } from "./Ban";
 import { BaseClass } from "./BaseClass";
@@ -342,9 +345,9 @@ export class Guild extends BaseClass {
                     },
                 },
             }),*/
-            emojis: this.emojis?.map((e) => e.toJSON()) ?? undefined,
+            emojis: (this.emojis?.map((e) => e.toJSON()) as EmojiResponse[]) ?? undefined,
             emoji_count: this.emojis ? this.emojis.length : undefined,
-            stickers: this.stickers?.map((s) => s.toJSON()) ?? undefined,
+            stickers: (this.stickers?.map((s) => s.toJSON()) as StickerResponse[]) ?? undefined,
             sticker_count: this.stickers ? this.stickers.length : undefined,
             auto_removed: false,
             primary_category_id: this.primary_category_id!,
@@ -353,13 +356,13 @@ export class Guild extends BaseClass {
             reasons_to_join: [],
             created_at: new Date(Snowflake.deconstruct(this.id).timestamp).toISOString(), // TODO: make column
             primary_category: this.primary_category_id
-                ? (
+                ? ((
                       await Categories.findOneOrFail({
                           where: {
                               id: this.primary_category_id!,
                           },
                       })
-                  ).toJSON()
+                  ).toJSON() as DiscoveryCategory)
                 : undefined,
         };
     }

@@ -109,7 +109,6 @@ router.patch(
         if (body.features) {
             const diff = guild.features.filter((x) => !body.features?.includes(x)).concat(body.features.filter((x) => !guild.features.includes(x)));
 
-            // TODO move these
             const MUTABLE_FEATURES = ["COMMUNITY", "INVITES_DISABLED", "DISCOVERABLE"];
 
             for (const feature of diff) {

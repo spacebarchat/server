@@ -26,6 +26,7 @@ import { BanCreateSchema, BanRegistrySchema, GuildBanResponse, GuildBansResponse
 const router: Router = Router({ mergeParams: true });
 
 /* TODO: Deleting the secrets is just a temporary go-around. Views should be implemented for both safety and better handling. */
+// Emma [it/its] @ Rory& - 2026-11-01 - what secrets?
 
 router.get(
     "/",

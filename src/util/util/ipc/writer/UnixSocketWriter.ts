@@ -108,7 +108,7 @@ export class UnixSocketWriter extends BaseEventWriter {
                                 delete this.clients[fullPath];
                             }
 
-                            console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", err);
+                            console.error("[UnixSocketWriter] Unix socket client error on", fullPath, ":", summariseError(err));
                             rej(err);
                         });
 
@@ -127,7 +127,7 @@ export class UnixSocketWriter extends BaseEventWriter {
 
             let tries = 0;
             let lastError: Error | undefined = undefined;
-            while (tries++ < 10) {
+            while (tries++ < 9) {
                 if (tries > 1) {
                     const delay = Math.pow(tries, 3.5);
                     console.warn("[UnixSocketWriter] Attemption connects to", fullPath, "have been failing... Trying again in", delay, "millis...");
@@ -143,7 +143,7 @@ export class UnixSocketWriter extends BaseEventWriter {
             }
 
             if (tries >= 10 && lastError !== undefined) {
-                console.error("[UnixSocketWriter] Exhausted all", tries, "attempts at connecting to", fullPath, "- Error:", lastError);
+                console.error("[UnixSocketWriter] Exhausted all", tries, "attempts at connecting to", fullPath, "-", summariseError(lastError));
                 if ("code" in lastError && lastError.code == "ECONNREFUSED") {
                     console.error("[UnixSocketWriter] Got ECONNREFUSED for socket", fullPath, " - assuming it is orphaned...");
                     fs.unlinkSync(fullPath);
@@ -285,4 +285,14 @@ function getPidCmdline(pid: number): string | null {
     } catch (e) {
         return null;
     }
+}
+
+function summariseError(err: Error) {
+    // we dont care about these:
+    if ("syscall" in err && err.syscall == "connect") {
+        if ("code" in err && err.code == "ECONNREFUSED") return "Error: " + err.message;
+        if ("code" in err && err.code == "ENOENT") return "Error: " + err.message;
+    }
+
+    return err;
 }

@@ -17,6 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Tag as Tag_ } from "@spacebar/schemas";
 import { BaseClass } from "./BaseClass";
 import { Channel } from "./Channel";
 
@@ -45,13 +46,13 @@ export class Tag extends BaseClass {
     @Column({ nullable: true })
     emoji_name?: string;
 
-    toJSON() {
+    toJSON(): Tag_ {
         return {
             name: this.name,
             id: this.id,
             moderated: this.moderated,
-            emoji_id: this.emoji_id,
-            emoji_name: this.emoji_name,
+            emoji_id: this.emoji_id ?? null,
+            emoji_name: this.emoji_name ?? null,
         };
     }
 }

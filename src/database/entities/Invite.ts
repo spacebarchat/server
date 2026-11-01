@@ -22,7 +22,7 @@ import { Channel } from "./Channel";
 import { Guild } from "./Guild";
 import { Member } from "./Member";
 import { User } from "./User";
-import { InviteType, PublicInvite } from "@spacebar/schemas/api/guilds/Invite";
+import { InviteCreateEventData, InviteType, PublicInvite } from "@spacebar/schemas/api/guilds/Invite";
 
 export const PublicInviteRelation = ["inviter", "guild", "channel"];
 
@@ -105,6 +105,7 @@ export class Invite extends BaseClassWithoutId {
         if (this.max_uses !== 0 && this.uses >= this.max_uses) return true;
         return false;
     }
+
     toPublicJSON(): PublicInvite {
         return {
             code: this.code,
@@ -126,6 +127,26 @@ export class Invite extends BaseClassWithoutId {
             target_user: undefined, // TODO
             target_users_job_status: undefined, // TODO
         };
+    }
+
+    toGatewayInviteCreateData(): InviteCreateEventData {
+        return {
+            code: this.code,
+            type: InviteType.GUILD, // TODO: support other invite types
+            channel_id: this.channel_id ?? this.channel.id,
+            guild_id: this.guild_id ?? this.channel.guild_id,
+            inviter: this.inviter.toPartialUser(),
+            expires_at: this.expires_at?.toString() ?? null,
+            target_type: undefined, // TODO
+            target_user: undefined, // TODO
+            created_at: this.created_at.toISOString(),
+            max_age: this.max_age,
+            max_uses: this.max_uses,
+            temporary: this.temporary,
+            uses: this.uses,
+            role_ids: [], // TODO
+            target_application: undefined, // TODO
+        } satisfies InviteCreateEventData;
     }
 
     static async joinGuild(user_id: string, code: string) {

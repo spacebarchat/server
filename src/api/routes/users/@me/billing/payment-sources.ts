@@ -47,34 +47,63 @@ const example = {
     default: false,
 };
 
-router.get("/", route({}), (req: Request, res: Response) => {
-    // TODO: schema
-    res.json([example]).status(200);
-});
+router.get(
+    "/",
+    route({
+        responses: {
+            200: { body: "PaymentSourceListResponse" },
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.json([example]).status(200);
+    },
+);
 
-router.post("/", route({}), (req: Request, res: Response) => {
-    // TODO: schema
-    res.json([example]).status(200);
-});
+router.post(
+    "/",
+    route({
+        responses: {
+            200: { body: "PaymentSourceListResponse" },
+        },
+    }),
+    // TODO: request schema
+    (req: Request, res: Response) => {
+        res.json([example]).status(200);
+    },
+);
 
-router.get("/:payment_source_id", route({}), (req: Request, res: Response) => {
-    // TODO: schema
-    res.json({
-        ...example,
-        id: req.route.payment_source_id,
-    }).status(200);
-});
+router.get(
+    "/:payment_source_id",
+    route({
+        responses: {
+            200: { body: "PaymentSource" },
+        },
+    }),
+    (req: Request, res: Response) => {
+        res.json({
+            ...example,
+            id: req.route.payment_source_id,
+        }).status(200);
+    },
+);
 
-router.patch("/:payment_source_id", route({}), (req: Request, res: Response) => {
-    // TODO: schema
-    res.json({
-        ...example,
-        id: req.route.payment_source_id,
-    }).status(200);
-});
+router.patch(
+    "/:payment_source_id",
+    route({
+        responses: {
+            200: { body: "PaymentSourceListResponse" },
+        },
+    }),
+    (req: Request, res: Response) => {
+        // TODO: request schema
+        res.json({
+            ...example,
+            id: req.route.payment_source_id,
+        }).status(200);
+    },
+);
 
 router.delete("/:payment_source_id", route({}), (req: Request, res: Response) => {
-    // TODO: schema
     res.status(204);
 });
 

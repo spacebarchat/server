@@ -64,10 +64,11 @@ router.get("/", route({}), async (req: Request, res: Response) => {
             guild_id: command.guild_id,
             name: command.name,
             name_localizations: command.name_localizations,
-            // name_localized: // TODO: make this work
+            name_localized: (command.name_localizations && req.user.settings?.locale ? command.name_localizations[req.user.settings.locale] : null) ?? command.name,
             description: command.description,
             description_localizations: command.description_localizations,
-            // description_localized: // TODO: make this work
+            description_localized:
+                (command.description_localizations && req.user.settings?.locale ? command.description_localizations[req.user.settings.locale] : null) ?? command.description,
             options: command.type === ApplicationCommandType.CHAT_INPUT ? command.options : undefined,
             default_member_permissions: command.default_member_permissions,
             dm_permission: command.dm_permission,

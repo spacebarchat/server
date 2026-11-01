@@ -17,5 +17,10 @@
 */
 
 export class ApplicationLimits {
-    maxEmojis: number = 100;
+    maxEmojis: number = 1000;
+    commandLimits: CommandLimits = new CommandLimits();
+}
+
+export class CommandLimits {
+    maxNameLength: number = 32;
 }

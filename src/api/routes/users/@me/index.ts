@@ -153,7 +153,6 @@ router.patch(
         }
 
         if (body.discriminator) {
-            // TODO: HACK - maybe make this optional?
             if (!/^\d{4}$/.test(body.discriminator)) {
                 throw FieldErrors({
                     discriminator: {

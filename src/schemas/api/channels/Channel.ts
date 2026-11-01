@@ -17,10 +17,10 @@
 */
 
 // TODO: remove entity imports
-import { Channel, Recipient, Tag, ThreadMember } from "@spacebar/database";
+import { Channel, Recipient } from "@spacebar/database";
 import { HTTPError } from "lambert-server/HTTPError";
 import { Snowflake } from "../../Identifiers";
-import { PartialUser, PublicMember } from "../users";
+import { MuteConfig, PartialUser, PublicMember } from "../users";
 
 export enum ChannelType {
     GUILD_TEXT = 0, // a text channel within a guild
@@ -127,7 +127,7 @@ export interface PublicChannel {
     member_count?: number;
     member_ids_preview?: Snowflake[];
     thread_metadata?: ThreadMetadata;
-    member?: ThreadMember;
+    member?: PublicThreadMember;
     default_auto_archive_duration?: number | null;
     default_thread_rate_limit_per_user?: number;
     permissions?: string;
@@ -149,4 +149,31 @@ export interface PublicChannel {
     // linked_lobby?: LinkedLobby | null; // TODO
     is_linkable?: boolean;
     is_viewable_and_writeable_by_all_members?: boolean;
+}
+
+export type PublicThreadMembersResponse = PublicThreadMember[];
+export interface PublicThreadMember {
+    id?: Snowflake;
+    user_id?: Snowflake;
+    join_timestamp: string;
+    flags: ThreadMemberFlags;
+    muted?: boolean;
+    mute_config?: MuteConfig | null;
+    member?: PublicMember;
+}
+
+export enum ThreadMemberFlags {
+    NONE = 0,
+    HAS_INTERACTED = 1 << 0,
+    ALL_MESSAGES = 1 << 1,
+    ONLY_MENTIONS = 1 << 2,
+    NO_MESSAGES = 1 << 3,
+}
+
+export interface Tag {
+    id: Snowflake;
+    name: string;
+    moderated: boolean;
+    emoji_id: Snowflake | null;
+    emoji_name: string | null;
 }

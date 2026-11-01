@@ -19,7 +19,7 @@
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand } from "@spacebar/database";
-import { FieldErrors, Snowflake } from "@spacebar/util";
+import { Config, FieldErrors, Snowflake } from "@spacebar/util";
 import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
@@ -68,12 +68,11 @@ router.patch(
             body.type = 1;
         }
 
-        if (body.name.trim().length < 1 || body.name.trim().length > 32) {
-            // TODO: configurable?
+        if (body.name.trim().length < 1 || body.name.trim().length > Config.get().limits.application.commandLimits.maxNameLength) {
             throw FieldErrors({
                 name: {
                     code: "BASE_TYPE_BAD_LENGTH",
-                    message: `Must be between 1 and 32 in length.`,
+                    message: `Must be between 1 and ${Config.get().limits.application.commandLimits.maxNameLength} in length.`,
                 },
             });
         }

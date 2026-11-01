@@ -21,9 +21,9 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
 import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
-import { InviteCreateSchema, isTextChannel } from "@spacebar/schemas";
+import { InviteCreateSchema, isTextChannel, PublicUserProjection } from "@spacebar/schemas";
 import { Random } from "@spacebar/extensions";
-import { InviteListResponse } from "@spacebar/schemas/api/guilds/Invite";
+import { InviteListResponse, PublicInvite } from "@spacebar/schemas/api/guilds/Invite";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -35,7 +35,7 @@ router.post(
         right: "CREATE_INVITES",
         responses: {
             201: {
-                body: "Invite",
+                body: "PublicInvite",
             },
             404: {},
             400: {
@@ -71,21 +71,20 @@ router.post(
             guild_id,
             channel_id: channel_id,
             inviter_id: user_id,
+            inviter: await User.findOneOrFail({
+                where: { id: req.user_id },
+                select: Object.fromEntries(PublicUserProjection.map((i) => [i, true])), // TODO: clean up
+            }),
             flags: body.flags ?? 0,
         }).save();
 
-        const data = invite.toJSON();
-        data.inviter = await User.getPublicUser(req.user_id);
-        data.guild = await Guild.findOne({ where: { id: guild_id } });
-        data.channel = channel;
-
         await emitEvent({
             event: "INVITE_CREATE",
-            data,
+            data: invite.toGatewayInviteCreateData(),
             guild_id,
         } satisfies InviteCreateEvent);
 
-        res.status(201).send(data);
+        res.status(201).send(invite.toPublicJSON());
     },
 );
 

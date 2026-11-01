@@ -19,7 +19,7 @@
 import { Snowflake } from "../../Identifiers";
 import { PartialUser } from "../users";
 import { GuildNsfwLevel, GuildPremiumTier, GuildVerificationLevel } from "./GuildSchema";
-import { GuildProfileResponse, PublicChannel, RoleColors } from "@spacebar/schemas";
+import { Application, GuildProfileResponse, PublicChannel, RoleColors } from "@spacebar/schemas";
 
 export type InviteListResponse = PublicInvite[];
 
@@ -99,4 +99,22 @@ export interface InviteRole {
     colors: RoleColors;
     icon?: string | null;
     unicode_emoji?: string | null;
+}
+
+export interface InviteCreateEventData {
+    code: string;
+    type: InviteType;
+    channel_id: Snowflake;
+    guild_id: Snowflake;
+    inviter?: PartialUser;
+    target_type?: number;
+    target_user?: PartialUser;
+    target_application?: Application; // PartialApplication
+    role_ids?: Snowflake[];
+    expires_at: string | null;
+    created_at: string;
+    uses: number;
+    max_uses: number;
+    max_age: number;
+    temporary: boolean;
 }

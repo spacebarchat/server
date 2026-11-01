@@ -558,7 +558,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     return message;
 }
 
-// TODO: cache link result in db
 export async function postHandleMessage(message: Message) {
     message.clean_data();
 
@@ -773,25 +772,21 @@ async function handleMessageMentionsAsync(message: Message) {
                 mention_roles: true,
             },
         });
+
         if (referencedMessage && referencedMessage.author_id !== message.author_id) {
-            message.mentions.push(
-                // @ts-expect-error it does not like the .toPublicUser() lol
-                (await User.findOne({ where: { id: referencedMessage.author_id } }))!.toPublicUser(),
-            );
+            const user = await User.findOne({ where: { id: referencedMessage.author_id } });
+            if (user) message.mentions.push(user);
         }
 
         if (message.embeds[0]?.type === EmbedType.poll_result) {
-            message.mentions.push(
-                // @ts-expect-error it does not like the .toPublicUser() lol
-                (await User.findOne({ where: { id: message.author_id } }))!.toPublicUser(),
-            );
+            const user = await User.findOne({ where: { id: message.author_id } });
+            if (user) message.mentions.push(user);
         }
 
         if (message.message_reference.type === MessageReferenceType.FORWARD) {
             message.type = MessageType.DEFAULT;
 
             if (message.referenced_message) {
-                // TODO: mention_roles and mentions arrays - not needed it seems, but discord still returns that
                 message.message_snapshots = [message.referenced_message.toSnapshot()];
             }
         }

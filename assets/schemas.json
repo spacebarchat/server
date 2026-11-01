@@ -1643,6 +1643,13 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PaymentSourceListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PaymentSource"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "PartialRelationshipSchema": {
         "type": "object",
         "properties": {
@@ -3341,6 +3348,228 @@
         "type": "array",
         "items": {
             "$ref": "#/definitions/PublicMessage"
+        },
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ChannelType"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Recipient"
+                        }
+                    },
+                    "thread_members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ThreadMember"
+                        }
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/definitions/Guild"
+                    },
+                    "parent_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "parent": {
+                        "$ref": "#/definitions/Channel"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/definitions/User"
+                    },
+                    "last_pin_timestamp": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Invite"
+                        }
+                    },
+                    "retention_policy_id": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Message"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/VoiceState"
+                        }
+                    },
+                    "read_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ReadState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Webhook"
+                        }
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/definitions/ThreadMetadata"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Tag_1"
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "created_at",
+                    "flags",
+                    "id",
+                    "nsfw",
+                    "owner",
+                    "parent_id",
+                    "position",
+                    "type"
+                ]
+            }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -6556,6 +6785,19 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PostDataResponse": {
+        "type": "object",
+        "properties": {
+            "threads": {
+                "$ref": "#/definitions/Record%3Cstring%2CPostData%3E"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "threads"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "TagCreateSchema": {
         "type": "object",
         "properties": {
@@ -6723,6 +6965,228 @@
         "items": {
             "$ref": "#/definitions/PublicMessage"
         },
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ChannelType"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Recipient"
+                        }
+                    },
+                    "thread_members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ThreadMember"
+                        }
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/definitions/Guild"
+                    },
+                    "parent_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "parent": {
+                        "$ref": "#/definitions/Channel"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/definitions/User"
+                    },
+                    "last_pin_timestamp": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Invite"
+                        }
+                    },
+                    "retention_policy_id": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Message"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/VoiceState"
+                        }
+                    },
+                    "read_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ReadState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Webhook"
+                        }
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/definitions/ThreadMetadata"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Tag_1"
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "created_at",
+                    "flags",
+                    "id",
+                    "nsfw",
+                    "owner",
+                    "parent_id",
+                    "position",
+                    "type"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "PollUserAnswersSchema": {
@@ -6879,6 +7343,228 @@
             "type",
             "version"
         ],
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            },
+            "Channel": {
+                "type": "object",
+                "properties": {
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "type": {
+                        "$ref": "#/definitions/ChannelType"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Recipient"
+                        }
+                    },
+                    "thread_members": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ThreadMember"
+                        }
+                    },
+                    "last_message_id": {
+                        "type": "string"
+                    },
+                    "guild_id": {
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/definitions/Guild"
+                    },
+                    "parent_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "parent": {
+                        "$ref": "#/definitions/Channel"
+                    },
+                    "owner_id": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "$ref": "#/definitions/User"
+                    },
+                    "last_pin_timestamp": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "nsfw": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "type": "string"
+                    },
+                    "invites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Invite"
+                        }
+                    },
+                    "retention_policy_id": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Message"
+                        }
+                    },
+                    "voice_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/VoiceState"
+                        }
+                    },
+                    "read_states": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/ReadState"
+                        }
+                    },
+                    "webhooks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Webhook"
+                        }
+                    },
+                    "flags": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/definitions/ThreadMetadata"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/Tag_1"
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "position": {
+                        "description": "Must be calculated Channel.calculatePosition",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "created_at",
+                    "flags",
+                    "id",
+                    "nsfw",
+                    "owner",
+                    "parent_id",
+                    "position",
+                    "type"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ApplicationCreateSchema": {
@@ -7089,6 +7775,13 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PublicThreadMembersResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PublicThreadMember"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "WebhookCreateResponse": {
         "type": "object",
         "properties": {
@@ -7244,6 +7937,43 @@
             "users",
             "webhooks"
         ],
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            }
+        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "BaseAutomodRuleSchema": {
@@ -8703,6 +9433,50 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "InviteListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PublicInvite"
+        },
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "FieldErrorResponse": {
         "type": "object",
         "properties": {
@@ -8722,13 +9496,6 @@
             "errors",
             "message"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteListResponse": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/PublicInvite"
-        },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "RouteResponse": {
@@ -12324,7 +13091,7 @@
                 "type": "boolean"
             },
             "mute_config": {
-                "$ref": "#/definitions/ThreadMemberMuteConfig"
+                "$ref": "#/definitions/MuteConfig"
             },
             "flags": {
                 "$ref": "#/definitions/ThreadMemberFlags"
@@ -12681,20 +13448,6 @@
             "end_time",
             "selected_time_window"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "ThreadMemberMuteConfig": {
-        "type": "object",
-        "properties": {
-            "end_time": {
-                "type": "string",
-                "format": "date-time"
-            },
-            "selected_time_window": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ThreadMemberFlags": {
@@ -15522,6 +16275,164 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PaymentSource": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "brand": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            },
+            "last_4": {
+                "type": "string"
+            },
+            "billing_address": {
+                "$ref": "#/definitions/BillingAddress"
+            },
+            "type": {
+                "$ref": "#/definitions/PaymentSourceType"
+            },
+            "payment_gateway": {
+                "$ref": "#/definitions/PaymentGateway"
+            },
+            "payment_gateway_source_id": {
+                "type": "string"
+            },
+            "default": {
+                "type": "boolean"
+            },
+            "invalid": {
+                "type": "boolean"
+            },
+            "flags": {
+                "$ref": "#/definitions/PaymentSourceFlags"
+            },
+            "deleted_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "expires_month": {
+                "type": "integer"
+            },
+            "expires_year": {
+                "type": "integer"
+            },
+            "email": {
+                "type": "string"
+            },
+            "bank": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "billing_address",
+            "default",
+            "deleted_at",
+            "flags",
+            "id",
+            "invalid",
+            "payment_gateway",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "BillingAddress": {
+        "type": "object",
+        "properties": {
+            "line_1": {
+                "type": "string"
+            },
+            "line_2": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "name": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "city",
+            "country",
+            "line_1",
+            "name"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PaymentSourceType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PaymentGateway": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PaymentSourceFlags": {
+        "type": "number",
+        "enum": [
+            1,
+            2
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EmojiGuild": {
         "type": "object",
         "properties": {
@@ -16111,7 +17022,7 @@
                 "$ref": "#/definitions/ThreadMetadata"
             },
             "member": {
-                "$ref": "#/definitions/ThreadMember"
+                "$ref": "#/definitions/PublicThreadMember"
             },
             "default_auto_archive_duration": {
                 "type": [
@@ -16208,6 +17119,47 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "PublicThreadMember": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "user_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "join_timestamp": {
+                "type": "string"
+            },
+            "flags": {
+                "$ref": "#/definitions/ThreadMemberFlags"
+            },
+            "muted": {
+                "type": "boolean"
+            },
+            "mute_config": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/MuteConfig"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "member": {
+                "$ref": "#/definitions/PublicMember"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "flags",
+            "join_timestamp"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "MessageActivity": {
         "type": "object",
         "properties": {
@@ -16268,6 +17220,42 @@
             }
         },
         "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "Tag_1": {
+        "type": "object",
+        "properties": {
+            "channel_id": {
+                "type": "string"
+            },
+            "channel": {
+                "$ref": "#/definitions/Channel"
+            },
+            "name": {
+                "type": "string"
+            },
+            "moderated": {
+                "type": "boolean",
+                "default": false
+            },
+            "emoji_id": {
+                "type": "string"
+            },
+            "emoji_name": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel",
+            "channel_id",
+            "id",
+            "moderated",
+            "name"
+        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "Potion": {
@@ -16699,12 +17687,30 @@
         "properties": {
             "maxEmojis": {
                 "type": "integer",
-                "default": 100
+                "default": 1000
+            },
+            "commandLimits": {
+                "$ref": "#/definitions/CommandLimits"
             }
         },
         "additionalProperties": false,
         "required": [
+            "commandLimits",
             "maxEmojis"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "CommandLimits": {
+        "type": "object",
+        "properties": {
+            "maxNameLength": {
+                "type": "integer",
+                "default": 32
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "maxNameLength"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -18302,11 +19308,6 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "ErrorList": {
-        "type": "object",
-        "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "PublicInvite": {
         "type": "object",
         "properties": {
@@ -18605,6 +19606,11 @@
             2,
             3
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ErrorList": {
+        "type": "object",
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     }
 }

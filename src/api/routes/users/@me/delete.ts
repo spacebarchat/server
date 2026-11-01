@@ -52,8 +52,6 @@ router.post(
             }
         }
 
-        // TODO: decrement guild member count
-
         if (correctpass) {
             // Check if the user owns any guilds.
             const ownedGuilds = await Guild.findOne({ where: { owner_id: req.user_id } });

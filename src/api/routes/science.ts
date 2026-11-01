@@ -30,7 +30,6 @@ router.post(
         authentication: "never",
     }),
     (req: Request, res: Response) => {
-        // TODO:
         res.sendStatus(204);
     },
 );

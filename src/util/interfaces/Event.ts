@@ -30,12 +30,14 @@ import {
     PublicChannel,
     PublicMember,
     PublicMessage,
+    PublicThreadMember,
     PublicUser,
     PublicVoiceState,
     RelationshipSchema,
     RelationshipType,
     UserPrivate,
 } from "@spacebar/schemas";
+import { InviteCreateEventData } from "@spacebar/schemas/api/guilds/Invite";
 
 export interface Event {
     guild_id?: string;
@@ -320,10 +322,7 @@ export interface GuildRoleDeleteEvent extends Event {
 
 export interface InviteCreateEvent extends Event {
     event: "INVITE_CREATE";
-    data: Omit<Invite, "guild" | "channel"> & {
-        channel_id: string;
-        guild_id?: string;
-    };
+    data: InviteCreateEventData;
 }
 
 export interface InviteDeleteEvent extends Event {
@@ -665,7 +664,7 @@ export interface ThreadMembersUpdateEvent extends Event {
         id: string;
         guild_id: string;
         member_count: number;
-        added_members?: (ThreadMember & { user_id: string })[];
+        added_members?: PublicThreadMember[];
         removed_member_ids?: string[];
     };
 }

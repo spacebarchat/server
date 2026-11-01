@@ -19,9 +19,9 @@
 import { Request, Response, Router } from "express";
 import { MoreThan } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
-import { Channel, Member, ThreadMember, ThreadMemberFlags } from "@spacebar/database";
+import { Channel, Member, ThreadMember } from "@spacebar/database";
 import { emitEvent, Permissions, ThreadCreateEvent, ThreadDeleteEvent, ThreadMembersUpdateEvent } from "@spacebar/util";
-import { ChannelType, Snowflake } from "@spacebar/schemas";
+import { ChannelType, Snowflake, ThreadMemberFlags } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
@@ -29,7 +29,9 @@ router.get(
     "/",
     route({
         responses: {
-            200: {},
+            200: {
+                body: "PublicThreadMembersResponse",
+            },
             403: {},
         },
         permission: "VIEW_CHANNEL",
@@ -51,12 +53,14 @@ router.get(
         }
 
         return res.send(
-            await ThreadMember.find({
-                where: { channel: { id: channel_id }, ...(after ? { user_id: MoreThan(after) } : {}) },
-                take: limit ? parseInt(limit) : 50,
-                order: { member_idx: "ASC" },
-                relations: { ...(with_member ? { member: true } : {}) },
-            }),
+            (
+                await ThreadMember.find({
+                    where: { channel: { id: channel_id }, ...(after ? { user_id: MoreThan(after) } : {}) },
+                    take: limit ? parseInt(limit) : 50,
+                    order: { member_idx: "ASC" },
+                    relations: { ...(with_member ? { member: true } : {}) },
+                })
+            ).map((m) => m.toJSON()),
         );
     },
 );

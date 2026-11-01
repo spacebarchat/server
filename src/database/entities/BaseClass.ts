@@ -76,9 +76,7 @@ export class BaseClassWithoutId extends BaseEntity {
         return this;
     }
 
-    // TODO: fix eslint
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    toJSON(): any {
+    toJSON(): unknown {
         this.clean_data();
         return Object.fromEntries(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

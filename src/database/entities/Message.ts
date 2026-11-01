@@ -390,7 +390,7 @@ export class Message extends BaseClass {
                 embeds: this.embeds,
                 flags: this.flags,
                 mention_roles: this.mention_roles?.map((x) => x.id),
-                mentions: this.mentions.map((x) => x.toPublicUser() as unknown as PartialUser), // TODO: write a proper method for this
+                mentions: this.mentions.map((x) => x.toPartialUser()),
                 timestamp: this.timestamp,
                 type: this.type,
             },

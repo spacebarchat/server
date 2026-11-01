@@ -37,8 +37,6 @@ router.post(
     async (req: Request, res: Response) => {
         const body = req.body as AckBulkSchema;
 
-        // TODO: what is read_state_type ?
-
         await Promise.all([
             // for every new state
             ...body.read_states.map(async (x) => {
