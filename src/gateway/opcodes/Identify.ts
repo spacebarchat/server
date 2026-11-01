@@ -461,6 +461,9 @@ export async function onIdentify(this: WebSocket, data: Payload) {
                     type: In([ChannelType.GUILD_NEWS_THREAD, ChannelType.GUILD_PUBLIC_THREAD]),
                     guild_id: In(memberGuildIds),
                 },
+                relations: {
+                    owner: true,
+                },
             }),
         ),
     ]);
