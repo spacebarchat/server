@@ -91,8 +91,7 @@ public class AutomodTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
             AutomodTriggerType.GuildPolicy => new AutomodRuleCreateRequest.GuildPolicy(),
             _ => throw new ArgumentOutOfRangeException(nameof(triggerType), triggerType, null)
         };
-
-        // TriggerType = triggerType,
+        
         automodRule.Enabled = true;
         automodRule.EventType = eventType;
         automodRule.Actions = actions.CastOrToList();

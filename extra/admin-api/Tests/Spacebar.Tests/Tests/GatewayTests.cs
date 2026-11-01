@@ -21,8 +21,7 @@ public class GatewayTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
     public async ValueTask InitializeAsync() {
         testOutputHelper.WriteLine("Running InitializeAsync");
-        // All these tests can share a single client
-        Client = await _userAbstraction.GetSharedUser();
+        Client = await _userAbstraction.GetFreshUser(true);
     }
 
     [Fact]

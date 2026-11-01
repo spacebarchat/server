@@ -4,6 +4,7 @@ using System.Net.WebSockets;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using ArcaneLibs.Extensions;
+using Microsoft.Extensions.Logging;
 using Spacebar.Models.Gateway;
 using Spacebar.Models.Generic;
 using Spacebar.Sdk.Core;
@@ -15,40 +16,41 @@ using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace Spacebar.Tests.Tests;
 
-public class PresenceTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture), IAsyncLifetime
-{
+public class PresenceTests(ITestOutputHelper testOutputHelper, TestFixture fixture) : TestBed<TestFixture>(testOutputHelper, fixture), IAsyncLifetime {
     private readonly Config _config = fixture.GetRequiredService<Config>(testOutputHelper);
     private readonly UserAbstraction _userAbstraction = fixture.GetRequiredService<UserAbstraction>(testOutputHelper);
 
     private static AuthenticatedSpacebarClient Client { get; set; } = null!;
 
-    public async ValueTask InitializeAsync()
-    {
+    public async ValueTask InitializeAsync() {
         testOutputHelper.WriteLine("Running InitializeAsync");
-        // All these tests can share a single client
-        Client = await _userAbstraction.GetSharedUser();
+        Client = await _userAbstraction.GetFreshUser(true);
     }
 
     [Fact]
-    public async Task CanSendCustomPresence()
-    {
-        Client.Gateway.OnceGatewayMessage.Add(async payload =>
-        {
-            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" })
-            {
+    public async Task CanSendCustomPresence() {
+        var resolved = false;
+        var resolvedTask = Task.Run(async () => {
+            // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
+            while (!resolved) {
+                testOutputHelper.WriteLine("Waiting for lock to resolve...");
+                await Task.Delay(100);
+            }
+        }, TestContext.Current.CancellationToken);
+        Client.Gateway.OnceGatewayMessage.Add(async payload => {
+            if (payload is { Opcode: GatewayOpcode.S2CDispatch, DispatchEventType: "READY" }) {
                 _testOutputHelper.WriteLine("Sending presence...");
 
-                var presencePayload = new JsonObject()
-                {
+                var presencePayload = new JsonObject() {
                     { "status", "online" },
                     { "since", 0 },
-                    { "afk", false },
-                    { "activities", new JsonArray() {
+                    { "afk", false }, {
+                        "activities", new JsonArray() {
                             new JsonObject() {
                                 { "name", "Custom Status" },
                                 { "type", 4 },
-                                { "state", "meowmeow custom status meow meow" },
-                                { "timestamps", new JsonObject() {
+                                { "state", "meowmeow custom status meow meow" }, {
+                                    "timestamps", new JsonObject() {
                                         { "end", 1788544741128 }
                                     }
                                 },
@@ -59,12 +61,12 @@ public class PresenceTests(ITestOutputHelper testOutputHelper, TestFixture fixtu
                     }
                 };
 
-                await Client.Gateway.RawClientWebSocket.SendAsync(JsonSerializer.SerializeToUtf8Bytes(new GatewayPayload()
-                {
+                await Client.Gateway.RawClientWebSocket.SendAsync(JsonSerializer.SerializeToUtf8Bytes(new GatewayPayload() {
                     Opcode = GatewayOpcode.C2SPresenceUpdate,
                     EventData = presencePayload.ToJsonNode().AsObject()
                 }), WebSocketMessageType.Text, WebSocketMessageFlags.EndOfMessage, CancellationToken.None);
                 _testOutputHelper.WriteLine("Sent presence payload...");
+                resolved = true;
                 return true;
             }
 
@@ -73,13 +75,15 @@ public class PresenceTests(ITestOutputHelper testOutputHelper, TestFixture fixtu
         });
         // Client.Gateway.TraceGatewayMessages = true;
         await Client.Gateway.Connect();
-        try
-        {
-            await Client.Gateway.Start();
-        }
-        catch (Exception e)
-        {
-            Assert.True(Client.Gateway.RawClientWebSocket.State == WebSocketState.Open, $"Client.Gateway.RawClientWebSocket.State is {Client.Gateway.RawClientWebSocket.State}: {Client.Gateway.RawClientWebSocket.CloseStatus}/{Client.Gateway.RawClientWebSocket.CloseStatusDescription}");
-        }
+        _ = Client.Gateway.Start().ContinueWith(_ => {
+            Assert.True(Client.Gateway.RawClientWebSocket.State == WebSocketState.Open,
+                $"Client.Gateway.RawClientWebSocket.State is {Client.Gateway.RawClientWebSocket.State}: {Client.Gateway.RawClientWebSocket.CloseStatus}/{Client.Gateway.RawClientWebSocket.CloseStatusDescription}");
+        }, TestContext.Current.CancellationToken);
+
+        await resolvedTask;
+        _testOutputHelper.WriteLine("Presence lock resolved...");
+        await Task.Delay(250, TestContext.Current.CancellationToken);
+        Assert.True(Client.Gateway.RawClientWebSocket.State == WebSocketState.Open,
+            $"Client.Gateway.RawClientWebSocket.State is {Client.Gateway.RawClientWebSocket.State}: {Client.Gateway.RawClientWebSocket.CloseStatus}/{Client.Gateway.RawClientWebSocket.CloseStatusDescription}");
     }
 }
