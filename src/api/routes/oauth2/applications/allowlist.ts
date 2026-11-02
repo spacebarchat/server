@@ -18,16 +18,9 @@
 
 import { Request, Response, Router } from "express";
 import { route } from "@spacebar/api/middlewares";
-import { Application, User } from "@spacebar/database";
-import { Config, DiscordApiErrors } from "@spacebar/util";
-import {
-    AllowlistAcceptSchema,
-    AllowlistAddRequestSchema,
-    AllowlistedUser,
-    ApplicationAllowlistResponse,
-    ApplicationMembershipState,
-    PublicUserProjection,
-} from "@spacebar/schemas";
+import { Application } from "@spacebar/database";
+import { DiscordApiErrors } from "@spacebar/util";
+import { AllowlistAcceptSchema } from "@spacebar/schemas";
 
 const router: Router = Router({ mergeParams: true });
 
