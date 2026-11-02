@@ -18,6 +18,7 @@
 
 export class ApplicationLimits {
     maxEmojis: number = 1000;
+    maxTesters: number = 50;
     commandLimits: CommandLimits = new CommandLimits();
 }
 

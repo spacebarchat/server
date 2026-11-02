@@ -6647,6 +6647,38 @@
                     "version"
                 ]
             },
+            "ApplicationAllowlistResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AllowlistedUser"
+                }
+            },
+            "AllowlistAddRequestSchema": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "discriminator": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "username"
+                ]
+            },
+            "AllowlistAcceptSchema": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "token"
+                ]
+            },
             "ApplicationCreateSchema": {
                 "type": "object",
                 "properties": {
@@ -15839,13 +15871,18 @@
                         "type": "integer",
                         "default": 1000
                     },
+                    "maxTesters": {
+                        "type": "integer",
+                        "default": 50
+                    },
                     "commandLimits": {
                         "$ref": "#/components/schemas/CommandLimits"
                     }
                 },
                 "required": [
                     "commandLimits",
-                    "maxEmojis"
+                    "maxEmojis",
+                    "maxTesters"
                 ]
             },
             "CommandLimits": {
@@ -16523,6 +16560,28 @@
                     "features",
                     "id",
                     "locale"
+                ]
+            },
+            "AllowlistedUser": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "state": {
+                        "$ref": "#/components/schemas/ApplicationMembershipState"
+                    }
+                },
+                "required": [
+                    "state",
+                    "user"
+                ]
+            },
+            "ApplicationMembershipState": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2
                 ]
             },
             "IntegrationGuild": {
@@ -22578,6 +22637,40 @@
                 ]
             }
         },
+        "/api/oauth2/applications/allowlist/accept": {
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AllowlistAcceptSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AllowlistedUser"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            }
+        },
         "/api/oauth2/applications/@me/": {
             "get": {
                 "security": [
@@ -22597,6 +22690,121 @@
                         }
                     }
                 },
+                "tags": [
+                    "api"
+                ]
+            }
+        },
+        "/api/oauth2/applications/{id}/allowlist/": {
+            "get": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApplicationAllowlistResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    }
+                ],
+                "tags": [
+                    "api"
+                ]
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AllowlistAddRequestSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AllowlistedUser"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    }
+                ],
+                "tags": [
+                    "api"
+                ]
+            }
+        },
+        "/api/oauth2/applications/{id}/allowlist/{user_id}": {
+            "delete": {
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No description available"
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "id"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "user_id"
+                    }
+                ],
                 "tags": [
                     "api"
                 ]

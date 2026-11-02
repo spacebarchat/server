@@ -7567,6 +7567,45 @@
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "ApplicationAllowlistResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/AllowlistedUser"
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AllowlistAddRequestSchema": {
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string"
+            },
+            "discriminator": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "username"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AllowlistAcceptSchema": {
+        "type": "object",
+        "properties": {
+            "token": {
+                "type": "string"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "token"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "ApplicationCreateSchema": {
         "type": "object",
         "properties": {
@@ -17661,6 +17700,10 @@
                 "type": "integer",
                 "default": 1000
             },
+            "maxTesters": {
+                "type": "integer",
+                "default": 50
+            },
             "commandLimits": {
                 "$ref": "#/definitions/CommandLimits"
             }
@@ -17668,7 +17711,8 @@
         "additionalProperties": false,
         "required": [
             "commandLimits",
-            "maxEmojis"
+            "maxEmojis",
+            "maxTesters"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -18408,6 +18452,31 @@
             "features",
             "id",
             "locale"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AllowlistedUser": {
+        "type": "object",
+        "properties": {
+            "user": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "state": {
+                "$ref": "#/definitions/ApplicationMembershipState"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "state",
+            "user"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "ApplicationMembershipState": {
+        "type": "number",
+        "enum": [
+            1,
+            2
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },

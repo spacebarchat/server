@@ -344,3 +344,20 @@ export enum EmbeddedActivityReleasePhase {
     SOFT_LAUNCH_MULTI_GEO = "soft_launch_multi_geo",
     GLOBAL_LAUNCH = "global_launch",
 }
+
+export type ApplicationAllowlistResponse = AllowlistedUser[];
+export interface AllowlistedUser {
+    user: PartialUser;
+    state: ApplicationMembershipState;
+}
+export enum ApplicationMembershipState {
+    INVITED = 1,
+    ACCEPTED = 2,
+}
+export interface AllowlistAddRequestSchema {
+    username: string;
+    discriminator?: string | null;
+}
+export interface AllowlistAcceptSchema {
+    token: string;
+}
