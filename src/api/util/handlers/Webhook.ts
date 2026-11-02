@@ -22,9 +22,10 @@ import { MoreThan } from "typeorm";
 import { handleMessage, postHandleMessage } from "./Message";
 import { Attachment, Channel, Message, Webhook } from "@spacebar/database";
 import { Config, DiscordApiErrors, emitEvent, FieldErrors, MessageCreateEvent, Snowflake, uploadFile, ValidateName } from "@spacebar/util";
-import { WebhookExecuteSchema } from "@spacebar/schemas";
+import { MessageCreateAttachment, MessageCreateCloudAttachment, WebhookExecuteSchema } from "@spacebar/schemas";
 
 export const executeWebhook = async (req: Request, res: Response) => {
+    console.log(req.body);
     const body = req.body as WebhookExecuteSchema;
     const messageId = Snowflake.generate();
 
@@ -56,7 +57,7 @@ export const executeWebhook = async (req: Request, res: Response) => {
         res.status(204).send();
     }
 
-    const attachments: Attachment[] = [];
+    const attachments: (Attachment | MessageCreateAttachment | MessageCreateCloudAttachment)[] = body.attachments ?? [];
 
     if (!webhook.channel.isWritable()) {
         if (wait) {

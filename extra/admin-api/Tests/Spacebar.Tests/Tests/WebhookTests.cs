@@ -1,5 +1,9 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using ArcaneLibs.Extensions;
+using Spacebar.Models.Api;
 using Spacebar.Models.Generic;
 using Spacebar.Sdk.Core;
 using Spacebar.Tests.Abstractions;
@@ -194,5 +198,95 @@ public class WebhookTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
         if (flags != null) payload.Add("flags", flags);
 
         await Assert.SuccessfullyHttpPatchAsJsonAsync(Webhook.Url + "/messages/" + WebhookMessage!.Id + "?wait=true", payload);
+    }
+
+    [Fact]
+    public async Task SendWebhookMessageMultipart() {
+        var content = new MultipartFormDataContent();
+        content.Add(JsonContent.Create(new JsonObject() {
+            { "content", "meow" }
+        }), "payload_json");
+        await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync(Webhook.Url + "?wait=true", content, cancellationToken: TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task SendWebhookFileMessageMultipart() {
+        var content = new MultipartFormDataContent();
+        content.Add(JsonContent.Create(new JsonObject() {
+            { "content", "meow" },
+            // BUG: https://docs.discord.food/reference#uploading-files - attachments should be allowed
+            // {
+            // "attachments", new JsonArray() {
+            // new JsonObject() {
+            // { "id", 0 },
+            // { "filename", "hellorld.txt" }
+            // }
+            // }
+            // }
+        }), "payload_json");
+        content.Add(
+            new ByteArrayContent("Hellorld!"u8.ToArray()) {
+                Headers = {
+                    ContentType = new MediaTypeHeaderValue("text/plain", "utf-8"),
+                    ContentDisposition = new ContentDispositionHeaderValue("form-data") {
+                        Name = "files[0]",
+                        FileName = "hellorld.txt"
+                    }
+                }
+            }
+        );
+
+        // testOutputHelper.WriteLine(await content.ReadAsStringAsync());
+
+        var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsync(Webhook.Url + "?wait=true", content,
+            cancellationToken: TestContext.Current.CancellationToken));
+        var json = (await res.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken));
+        // testOutputHelper.WriteLine(json.ToJson(indent: true));
+        var msg = json.Deserialize<Message>();
+        Assert.Equal("meow", msg.Content);
+    }
+
+    [Fact]
+    public async Task SendWebhookFileMessageCloud() {
+        var createAttResp = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync($"channels/{Channel.Id}/attachments", new CreateAttachmentRequest() {
+            Files = [
+                new() {
+                    Id = 0,
+                    FileName = "hellorld.txt",
+                    FileSize = "Hellorld!".Length
+                }
+            ]
+        }, cancellationToken: TestContext.Current.CancellationToken));
+        var createAttRespContent = await createAttResp.Content.ReadFromJsonAsync<JsonObject>(cancellationToken: TestContext.Current.CancellationToken);
+        // testOutputHelper.WriteLine(createAttRespContent?.ToString());
+
+        var createAtt = createAttRespContent.Deserialize<CreateAttachmentResponse>();
+        foreach (var attFile in createAtt.Attachments)
+            await Assert.HttpSuccess(await Client.ApiHttpClient.PutAsync(attFile.UploadUrl, new ByteArrayContent("Hellorld!"u8.ToArray()) {
+                Headers = {
+                    ContentType = new MediaTypeHeaderValue("text/plain")
+                }
+            }, TestContext.Current.CancellationToken));
+
+        var content = new JsonObject() {
+            { "content", "meow" }, {
+                "attachments", new JsonArray() {
+                    new JsonObject() {
+                        { "id", createAtt.Attachments[0].Id.ToString() },
+                        { "filename", "hellorld.txt" },
+                        { "uploaded_filename", createAtt.Attachments[0].UploadFileName },
+                        { "original_content_type", "text/plain" },
+                    }
+                }
+            }
+        };
+        testOutputHelper.WriteLine(content.ToJson(indent: true));
+        var res = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync(Webhook.Url + "?wait=true", content,
+            cancellationToken: TestContext.Current.CancellationToken));
+        var json = (await res.Content.ReadFromJsonAsync<JsonObject>());
+        testOutputHelper.WriteLine(json.ToJson(indent: true));
+        var msg = json.Deserialize<Message>();
+        Assert.Equal("meow", msg.Content);
+        Assert.Single(msg.Attachments);
     }
 }
