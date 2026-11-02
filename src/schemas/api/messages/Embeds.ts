@@ -24,7 +24,7 @@ export interface Embed {
     timestamp?: Date; // timestamp of embed content
     color?: number; // color code of the embed
     footer?: {
-        text: string;
+        text?: string; // optional so clients sending `footer: {}` (eg. Codeberg) validate; textless footers are dropped on save
         icon_url?: string;
         proxy_icon_url?: string;
     }; // footer object	footer information

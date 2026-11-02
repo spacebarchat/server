@@ -530,6 +530,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
         return attachment;
     }
     for (const embed of message.embeds) {
+        if (embed.footer && !embed.footer.text) delete embed.footer;
         const footer = embed.footer;
         const footerAttachment = fetchAttachment(footer?.icon_url);
         if (footerAttachment !== undefined) {

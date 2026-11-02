@@ -24,7 +24,7 @@ export interface WebhookExecuteSchema {
     username?: string;
     avatar_url?: string;
     tts?: boolean;
-    embeds?: Embed[];
+    embeds?: Embed[] | null;
     allowed_mentions?: AllowedMentions;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     components?: any[];
