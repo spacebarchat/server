@@ -177,7 +177,10 @@ export function route(opts: RouteOptions) {
                             message: x.message || "",
                         }),
                 );
-                if (process.env.LOG_VALIDATION_ERRORS) console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+                if (process.env.LOG_VALIDATION_ERRORS) {
+                    console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+                    if (process.env.LOG_VALIDATION_ERROR_SCHEMAS) console.log(validate.schema);
+                }
                 throw FieldErrors(fields, validate.errors!);
             }
         }

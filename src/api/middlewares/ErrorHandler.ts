@@ -20,6 +20,7 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPError } from "lambert-server/HTTPError";
 import { ApiError, FieldError, FieldErrors } from "@spacebar/util";
 import { StringLengthOutOfBoundsException } from "@spacebar/extensions";
+import { getInvalidSchemaValues } from "@spacebar/schemas";
 const EntityNotFoundErrorRegex = /"(\w+)"/;
 
 export function ErrorHandler(error: Error & { type?: string }, req: Request, res: Response, next: NextFunction) {
@@ -75,7 +76,14 @@ export function ErrorHandler(error: Error & { type?: string }, req: Request, res
 
         if (httpcode > 511) httpcode = 400;
 
-        res.status(httpcode).json({ code, message, errors, _ajvErrors, request: `${req.method} ${req.url}` });
+        res.status(httpcode).json({
+            code,
+            message,
+            errors,
+            _ajvErrors,
+            _ajvResolved: _ajvErrors == undefined ? undefined : getInvalidSchemaValues(req.body, _ajvErrors),
+            request: `${req.method} ${req.url}`,
+        });
     } catch (error) {
         console.error(`[Internal Server Error] 500`, error);
         return res.status(500).json({ code: 500, message: `Internal server error while handling error`, request: `${req.method} ${req.url}` });

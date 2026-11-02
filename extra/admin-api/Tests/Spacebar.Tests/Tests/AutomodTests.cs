@@ -107,6 +107,7 @@ public class AutomodTests(ITestOutputHelper testOutputHelper, TestFixture fixtur
 
         automodRule.Name = Guid.NewGuid().ToString();
 
+        _testOutputHelper.WriteLine(automodRule.ToJson());
         var r = await Assert.HttpSuccess(await Client.ApiHttpClient.PostAsJsonAsync(
             $"guilds/{Guild.Id}/auto-moderation/rules",
             automodRule,

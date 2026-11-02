@@ -7030,56 +7030,25 @@
             "AutomodRuleSchema": {
                 "anyOf": [
                     {
-                        "type": "object",
-                        "properties": {
-                            "trigger_metadata": {
-                                "$ref": "#/components/schemas/AutomodCustomWordsRuleMetadata"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "trigger_metadata"
-                        ]
+                        "$ref": "#/components/schemas/KeywordRule"
                     },
                     {
-                        "type": "object",
-                        "additionalProperties": false
+                        "$ref": "#/components/schemas/KeywordPresetRule"
                     },
                     {
-                        "type": "object",
-                        "properties": {
-                            "trigger_metadata": {
-                                "$ref": "#/components/schemas/AutomodKeywordPresetRuleMetadata"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "trigger_metadata"
-                        ]
+                        "$ref": "#/components/schemas/MentionSpamRule"
                     },
                     {
-                        "type": "object",
-                        "properties": {
-                            "trigger_metadata": {
-                                "$ref": "#/components/schemas/AutomodMentionSpamRuleMetadata"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "trigger_metadata"
-                        ]
+                        "$ref": "#/components/schemas/UserProfileRule"
                     },
                     {
-                        "type": "object",
-                        "properties": {
-                            "trigger_metadata": {
-                                "$ref": "#/components/schemas/AutomodUserProfileRuleMetadata"
-                            }
-                        },
-                        "additionalProperties": false,
-                        "required": [
-                            "trigger_metadata"
-                        ]
+                        "$ref": "#/components/schemas/HarmfulLinkRule"
+                    },
+                    {
+                        "$ref": "#/components/schemas/GuildPolicyRule"
+                    },
+                    {
+                        "$ref": "#/components/schemas/SpamRule"
                     }
                 ]
             },
@@ -16908,104 +16877,50 @@
                     }
                 }
             },
-            "AutomodCustomWordsRuleMetadata": {
+            "KeywordRule": {
                 "type": "object",
                 "properties": {
-                    "allow_list": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "keyword_filter": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "regex_patterns": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "required": [
-                    "allow_list",
-                    "keyword_filter",
-                    "regex_patterns"
-                ]
-            },
-            "AutomodKeywordPresetRuleMetadata": {
-                "type": "object",
-                "properties": {
-                    "allow_list": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "presets": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/AutomodKeywordPresetType"
-                        }
-                    }
-                },
-                "required": [
-                    "allow_list",
-                    "presets"
-                ]
-            },
-            "AutomodKeywordPresetType": {
-                "type": "number",
-                "enum": [
-                    1,
-                    2,
-                    3
-                ]
-            },
-            "AutomodMentionSpamRuleMetadata": {
-                "type": "object",
-                "properties": {
-                    "mention_total_limit": {
-                        "type": "integer"
-                    },
-                    "mention_raid_protection_enabled": {
+                    "enabled": {
                         "type": "boolean"
-                    }
-                },
-                "required": [
-                    "mention_raid_protection_enabled",
-                    "mention_total_limit"
-                ]
-            },
-            "AutomodUserProfileRuleMetadata": {
-                "type": "object",
-                "properties": {
-                    "allow_list": {
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
                     },
-                    "keyword_filter": {
+                    "exempt_roles": {
                         "type": "array",
                         "items": {
                             "type": "string"
                         }
                     },
-                    "regex_patterns": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/AutomodAction"
                         }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.KEYWORD"
+                    },
+                    "trigger_metadata": {
+                        "$ref": "#/components/schemas/AutomodCustomWordsRuleMetadata"
                     }
                 },
                 "required": [
-                    "allow_list",
-                    "keyword_filter",
-                    "regex_patterns"
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_metadata",
+                    "trigger_type"
                 ]
             },
             "AutomodRuleEventType": {
@@ -17132,6 +17047,398 @@
             "AutomodRuleActionType.QUARANTINE_USER": {
                 "type": "number",
                 "const": 4
+            },
+            "AutomodRuleTriggerType.KEYWORD": {
+                "type": "number",
+                "const": 1
+            },
+            "AutomodCustomWordsRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "keyword_filter": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "regex_patterns": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "keyword_filter",
+                    "regex_patterns"
+                ]
+            },
+            "KeywordPresetRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.KEYWORD_PRESET"
+                    },
+                    "trigger_metadata": {
+                        "$ref": "#/components/schemas/AutomodKeywordPresetRuleMetadata"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_metadata",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.KEYWORD_PRESET": {
+                "type": "number",
+                "const": 4
+            },
+            "AutomodKeywordPresetRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "presets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodKeywordPresetType"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "presets"
+                ]
+            },
+            "AutomodKeywordPresetType": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "MentionSpamRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.MENTION_SPAM"
+                    },
+                    "trigger_metadata": {
+                        "$ref": "#/components/schemas/AutomodMentionSpamRuleMetadata"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_metadata",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.MENTION_SPAM": {
+                "type": "number",
+                "const": 5
+            },
+            "AutomodMentionSpamRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "mention_total_limit": {
+                        "type": "integer"
+                    },
+                    "mention_raid_protection_enabled": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "mention_raid_protection_enabled",
+                    "mention_total_limit"
+                ]
+            },
+            "UserProfileRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.USER_PROFILE"
+                    },
+                    "trigger_metadata": {
+                        "$ref": "#/components/schemas/AutomodUserProfileRuleMetadata"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_metadata",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.USER_PROFILE": {
+                "type": "number",
+                "const": 6
+            },
+            "AutomodUserProfileRuleMetadata": {
+                "type": "object",
+                "properties": {
+                    "allow_list": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "keyword_filter": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "regex_patterns": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "allow_list",
+                    "keyword_filter",
+                    "regex_patterns"
+                ]
+            },
+            "HarmfulLinkRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.HARMFUL_LINK"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.HARMFUL_LINK": {
+                "type": "number",
+                "const": 2
+            },
+            "GuildPolicyRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.GUILD_POLICY"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.GUILD_POLICY": {
+                "type": "number",
+                "const": 7
+            },
+            "SpamRule": {
+                "type": "object",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "event_type": {
+                        "$ref": "#/components/schemas/AutomodRuleEventType"
+                    },
+                    "exempt_channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "exempt_roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AutomodAction"
+                        }
+                    },
+                    "trigger_type": {
+                        "$ref": "#/components/schemas/AutomodRuleTriggerType.SPAM"
+                    }
+                },
+                "required": [
+                    "actions",
+                    "enabled",
+                    "event_type",
+                    "name",
+                    "trigger_type"
+                ]
+            },
+            "AutomodRuleTriggerType.SPAM": {
+                "type": "number",
+                "const": 3
             },
             "GameActivity": {
                 "type": "object",

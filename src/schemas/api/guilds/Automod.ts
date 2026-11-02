@@ -27,19 +27,13 @@ interface BaseAutomodRuleSchema {
     actions: AutomodAction[];
 }
 
-type WithTrigger<T, M> = BaseAutomodRuleSchema & {
-    trigger_type: T;
-} & M extends never
-    ? { trigger_metadata?: never }
-    : { trigger_metadata: M };
-
-type KeywordRule = WithTrigger<AutomodRuleTriggerType.KEYWORD, AutomodCustomWordsRuleMetadata>;
-type HarmfulLinkRule = WithTrigger<AutomodRuleTriggerType.HARMFUL_LINK, never>;
-type SpamRule = WithTrigger<AutomodRuleTriggerType.SPAM, never>;
-type KeywordPresetRule = WithTrigger<AutomodRuleTriggerType.KEYWORD_PRESET, AutomodKeywordPresetRuleMetadata>;
-type MentionSpamRule = WithTrigger<AutomodRuleTriggerType.MENTION_SPAM, AutomodMentionSpamRuleMetadata>;
-type UserProfileRule = WithTrigger<AutomodRuleTriggerType.USER_PROFILE, AutomodUserProfileRuleMetadata>;
-type GuildPolicyRule = WithTrigger<AutomodRuleTriggerType.GUILD_POLICY, never>;
+type KeywordRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.KEYWORD; trigger_metadata: AutomodCustomWordsRuleMetadata };
+type KeywordPresetRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.KEYWORD_PRESET; trigger_metadata: AutomodKeywordPresetRuleMetadata };
+type MentionSpamRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.MENTION_SPAM; trigger_metadata: AutomodMentionSpamRuleMetadata };
+type UserProfileRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.USER_PROFILE; trigger_metadata: AutomodUserProfileRuleMetadata };
+type HarmfulLinkRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.HARMFUL_LINK; trigger_metadata?: never };
+type GuildPolicyRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.GUILD_POLICY; trigger_metadata?: never };
+type SpamRule = BaseAutomodRuleSchema & { trigger_type: AutomodRuleTriggerType.SPAM; trigger_metadata?: never };
 
 export type AutomodRuleSchema = KeywordRule | HarmfulLinkRule | SpamRule | KeywordPresetRule | MentionSpamRule | UserProfileRule | GuildPolicyRule;
 

@@ -8019,56 +8019,25 @@
     "AutomodRuleSchema": {
         "anyOf": [
             {
-                "type": "object",
-                "properties": {
-                    "trigger_metadata": {
-                        "$ref": "#/definitions/AutomodCustomWordsRuleMetadata"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "trigger_metadata"
-                ]
+                "$ref": "#/definitions/KeywordRule"
             },
             {
-                "type": "object",
-                "additionalProperties": false
+                "$ref": "#/definitions/KeywordPresetRule"
             },
             {
-                "type": "object",
-                "properties": {
-                    "trigger_metadata": {
-                        "$ref": "#/definitions/AutomodKeywordPresetRuleMetadata"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "trigger_metadata"
-                ]
+                "$ref": "#/definitions/MentionSpamRule"
             },
             {
-                "type": "object",
-                "properties": {
-                    "trigger_metadata": {
-                        "$ref": "#/definitions/AutomodMentionSpamRuleMetadata"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "trigger_metadata"
-                ]
+                "$ref": "#/definitions/UserProfileRule"
             },
             {
-                "type": "object",
-                "properties": {
-                    "trigger_metadata": {
-                        "$ref": "#/definitions/AutomodUserProfileRuleMetadata"
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "trigger_metadata"
-                ]
+                "$ref": "#/definitions/HarmfulLinkRule"
+            },
+            {
+                "$ref": "#/definitions/GuildPolicyRule"
+            },
+            {
+                "$ref": "#/definitions/SpamRule"
             }
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -18811,112 +18780,51 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "AutomodCustomWordsRuleMetadata": {
-        "type": "object",
-        "properties": {
-            "allow_list": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "keyword_filter": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "regex_patterns": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            }
-        },
+    "KeywordRule": {
         "additionalProperties": false,
-        "required": [
-            "allow_list",
-            "keyword_filter",
-            "regex_patterns"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodKeywordPresetRuleMetadata": {
         "type": "object",
         "properties": {
-            "allow_list": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "presets": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/AutomodKeywordPresetType"
-                }
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "allow_list",
-            "presets"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodKeywordPresetType": {
-        "type": "number",
-        "enum": [
-            1,
-            2,
-            3
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodMentionSpamRuleMetadata": {
-        "type": "object",
-        "properties": {
-            "mention_total_limit": {
-                "type": "integer"
-            },
-            "mention_raid_protection_enabled": {
+            "enabled": {
                 "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "mention_raid_protection_enabled",
-            "mention_total_limit"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "AutomodUserProfileRuleMetadata": {
-        "type": "object",
-        "properties": {
-            "allow_list": {
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
                 "type": "array",
                 "items": {
                     "type": "string"
                 }
             },
-            "keyword_filter": {
+            "exempt_roles": {
                 "type": "array",
                 "items": {
                     "type": "string"
                 }
             },
-            "regex_patterns": {
+            "name": {
+                "type": "string"
+            },
+            "actions": {
                 "type": "array",
                 "items": {
-                    "type": "string"
+                    "$ref": "#/definitions/AutomodAction"
                 }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.KEYWORD"
+            },
+            "trigger_metadata": {
+                "$ref": "#/definitions/AutomodCustomWordsRuleMetadata"
             }
         },
-        "additionalProperties": false,
         "required": [
-            "allow_list",
-            "keyword_filter",
-            "regex_patterns"
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_metadata",
+            "trigger_type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -19049,6 +18957,426 @@
     "AutomodRuleActionType.QUARANTINE_USER": {
         "type": "number",
         "const": 4,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.KEYWORD": {
+        "type": "number",
+        "const": 1,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodCustomWordsRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "keyword_filter": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "regex_patterns": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "keyword_filter",
+            "regex_patterns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "KeywordPresetRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.KEYWORD_PRESET"
+            },
+            "trigger_metadata": {
+                "$ref": "#/definitions/AutomodKeywordPresetRuleMetadata"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_metadata",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.KEYWORD_PRESET": {
+        "type": "number",
+        "const": 4,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodKeywordPresetRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "presets": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodKeywordPresetType"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "presets"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodKeywordPresetType": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "MentionSpamRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.MENTION_SPAM"
+            },
+            "trigger_metadata": {
+                "$ref": "#/definitions/AutomodMentionSpamRuleMetadata"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_metadata",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.MENTION_SPAM": {
+        "type": "number",
+        "const": 5,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodMentionSpamRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "mention_total_limit": {
+                "type": "integer"
+            },
+            "mention_raid_protection_enabled": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "mention_raid_protection_enabled",
+            "mention_total_limit"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "UserProfileRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.USER_PROFILE"
+            },
+            "trigger_metadata": {
+                "$ref": "#/definitions/AutomodUserProfileRuleMetadata"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_metadata",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.USER_PROFILE": {
+        "type": "number",
+        "const": 6,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodUserProfileRuleMetadata": {
+        "type": "object",
+        "properties": {
+            "allow_list": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "keyword_filter": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "regex_patterns": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "allow_list",
+            "keyword_filter",
+            "regex_patterns"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "HarmfulLinkRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.HARMFUL_LINK"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.HARMFUL_LINK": {
+        "type": "number",
+        "const": 2,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildPolicyRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.GUILD_POLICY"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.GUILD_POLICY": {
+        "type": "number",
+        "const": 7,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "SpamRule": {
+        "additionalProperties": false,
+        "type": "object",
+        "properties": {
+            "enabled": {
+                "type": "boolean"
+            },
+            "event_type": {
+                "$ref": "#/definitions/AutomodRuleEventType"
+            },
+            "exempt_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "exempt_roles": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "name": {
+                "type": "string"
+            },
+            "actions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/AutomodAction"
+                }
+            },
+            "trigger_type": {
+                "$ref": "#/definitions/AutomodRuleTriggerType.SPAM"
+            }
+        },
+        "required": [
+            "actions",
+            "enabled",
+            "event_type",
+            "name",
+            "trigger_type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "AutomodRuleTriggerType.SPAM": {
+        "type": "number",
+        "const": 3,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GameActivity": {

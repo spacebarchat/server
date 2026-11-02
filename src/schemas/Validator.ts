@@ -52,7 +52,7 @@ export const ajv = (function () {
         strict: true,
         strictRequired: true,
         allowUnionTypes: true,
-        discriminator: true
+        discriminator: true,
     });
 
     addFormats(_ajv);
@@ -70,23 +70,28 @@ export function validateSchema<G extends object>(schema: string, data: G): G {
     return data;
 }
 
-export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors) {
+export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors): { instancePath: string; value: unknown; keyword: string }[] {
     if (errors == null) return [];
-    return errors.map((e) => {
-        let instancePath = e.instancePath;
-        if (e.keyword == "additionalProperties") instancePath += `/${e.params.additionalProperty}`;
+    return errors
+        .map((e) => {
+            let instancePath = e.instancePath;
+            if (e.keyword == "additionalProperties") instancePath += `/${e.params.additionalProperty}`;
+            else if (e.keyword == "required") return { instancePath: instancePath + `/${e.params.missingProperty}`, value: "<<undefined>>", keyword: e.keyword };
+            else if (e.keyword == "anyOf") return { instancePath: instancePath, value: "<<irrelevant>>", keyword: e.keyword };
 
-        console.log("Resolving:", { instancePath, eInstancePath: e.instancePath, eKeyword: e.keyword, eParams: e.params });
-        return getInvalidSchemaValue(data, instancePath);
-    });
+            console.log("Resolving:", { instancePath, eInstancePath: e.instancePath, eKeyword: e.keyword, eParams: e.params });
+            return { ...getInvalidSchemaValue(data, instancePath), keyword: e.keyword };
+        })
+        .filter((x) => x != undefined);
 }
 
-function getInvalidSchemaValue(data: object, instancePath: string) {
+function getInvalidSchemaValue(data: object, instancePath: string): { instancePath: string; value: unknown } {
     const actualInstancePath = instancePath.startsWith("/") ? instancePath.slice(1) : instancePath;
-    if (actualInstancePath.includes("/")) {
+    if (actualInstancePath.trim().length > 0) {
+        // includes("/")
         const nextProp = actualInstancePath.split("/")[0];
         const nextPath = actualInstancePath.split("/").slice(1).join("/");
-        return getInvalidSchemaValue((<Record<string, object>>data)[nextProp], nextPath);
+        return { instancePath, value: getInvalidSchemaValue((<Record<string, object>>data)[nextProp], nextPath).value };
     }
     return { instancePath, value: data };
 }
