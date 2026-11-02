@@ -36,4 +36,5 @@ export interface ApplicationModifySchema {
 		scopes: string[];
 		permissions: string;
 	};*/
+    private_channel_obfuscation_enabled?: boolean;
 }

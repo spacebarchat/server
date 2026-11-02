@@ -6712,6 +6712,9 @@
                     },
                     "guild_id": {
                         "type": "string"
+                    },
+                    "private_channel_obfuscation_enabled": {
+                        "type": "boolean"
                     }
                 }
             },
