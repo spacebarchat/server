@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId, Index } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
 import { User } from "./User";
@@ -50,6 +50,7 @@ export class Sticker extends BaseClass {
     pack: import("./StickerPack").StickerPack;
 
     @Column({ nullable: true })
+    @Index("IDX_sticker_guild_id", { where: "guild_id IS NOT NULL" })
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_sticker_guild_id" })

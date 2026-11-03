@@ -17,7 +17,7 @@
 */
 
 import { HTTPError } from "lambert-server/HTTPError";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, RelationId, Index } from "typeorm";
 import { DmChannelDTO } from "../../util/dtos";
 import { ChannelCreateEvent, ChannelRecipientRemoveEvent, ThreadCreateEvent, ThreadMembersUpdateEvent } from "../../util/interfaces";
 import { InvisibleCharacters, Snowflake, emitEvent, getPermission, Permissions, Config, DiscordApiErrors } from "@spacebar/util/util";
@@ -70,6 +70,7 @@ export class Channel extends BaseClass {
 
     @Column({ nullable: true })
     @RelationId((channel: Channel) => channel.guild)
+    @Index("IDX_channel_guild_id", { where: "guild_id IS NOT NULL" })
     guild_id?: string;
 
     @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_channel_guild_id" })

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId, Index } from "typeorm";
 import { BaseClass } from "./BaseClass";
 import { Application } from "./Application";
 import { Guild } from "./Guild";
@@ -33,6 +33,7 @@ export class Emoji extends BaseClass {
     available: boolean; // whether this emoji can be used, may be false due to various reasons
 
     @Column({ nullable: true })
+    @Index("IDX_emoji_guild_id", { where: "guild_id IS NOT NULL" })
     guild_id: string | null;
 
     @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_emoji_guild_id" })

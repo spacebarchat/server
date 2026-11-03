@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Column, Entity, JoinColumn, ManyToOne, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, RelationId, Index } from "typeorm";
 
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
@@ -28,6 +28,7 @@ import { RoleColors } from "@spacebar/schemas";
 export class Role extends BaseClass {
     @Column()
     @RelationId((role: Role) => role.guild)
+    @Index("IDX_role_guild_id")
     guild_id: string;
 
     @JoinColumn({ name: "guild_id", foreignKeyConstraintName: "FK_role_guild_id" })
