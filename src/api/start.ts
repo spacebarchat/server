@@ -28,7 +28,7 @@ import cluster from "node:cluster";
 import os from "node:os";
 import fs from "node:fs";
 import { SpacebarServer } from "./Server";
-import { EnvConfig } from "@spacebar/util";
+import { EnvConfig } from "@spacebar/util/config/EnvConfig";
 
 let cores = 1;
 try {
