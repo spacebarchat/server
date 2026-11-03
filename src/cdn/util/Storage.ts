@@ -19,6 +19,7 @@
 import path from "node:path";
 import fs from "node:fs";
 import { red } from "picocolors";
+import { EnvConfig } from "@spacebar/util";
 process.cwd();
 
 export interface Storage {
@@ -33,8 +34,8 @@ export interface Storage {
 
 let storage: Storage;
 
-if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
-    let location = process.env.STORAGE_LOCATION;
+if (EnvConfig.get().cdn.storageProvider === "file" || !EnvConfig.get().cdn.storageProvider) {
+    let location = EnvConfig.get().cdn.storageLocation;
     if (location) {
         location = path.resolve(location);
     } else {
@@ -47,16 +48,16 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
 
     const { FileStorage } = require("./FileStorage");
     storage = new FileStorage();
-} else if (process.env.STORAGE_PROVIDER === "s3") {
+} else if (EnvConfig.get().cdn.storageProvider === "s3") {
+    const region = EnvConfig.get().cdn.storageRegion;
+    const bucket = EnvConfig.get().cdn.storageBucket;
+
     try {
         require("@aws-sdk/client-s3");
     } catch (e) {
         console.error(red(`[CDN] AWS S3 SDK not installed. Please run 'npm install --no-save @aws-sdk/client-s3' to use the S3 storage provider.`));
         process.exit(1);
     }
-
-    const region = process.env.STORAGE_REGION,
-        bucket = process.env.STORAGE_BUCKET;
 
     if (!region) {
         console.error(`[CDN] You must provide a region when using the S3 storage provider.`);
@@ -75,7 +76,7 @@ if (process.env.STORAGE_PROVIDER === "file" || !process.env.STORAGE_PROVIDER) {
     }
 
     // in the S3 provider, this should be the root path in the bucket
-    let location = process.env.STORAGE_LOCATION;
+    let location = EnvConfig.get().cdn.storageLocation;
 
     if (!location) {
         console.warn(`[CDN] STORAGE_LOCATION unconfigured for S3 provider, defaulting to the bucket root...`);

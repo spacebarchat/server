@@ -1,0 +1,15 @@
+{
+	"gateway": {
+		"endpointPublic": "ws://localhost:3001"
+	},
+	"cdn": {
+		"endpointPrivate": "http://localhost:3001",
+		"endpointPublic": "http://localhost:3001"
+	},
+	"api": {
+		"endpointPublic": "http://localhost:3001/api/v9/"
+	},
+	"rabbitmq": {
+		"host": null
+	}
+}

@@ -59,6 +59,7 @@ import {
     SessionsReplace,
     TraceNode,
     TraceRoot,
+    EnvConfig,
 } from "@spacebar/util";
 import {
     ChannelType,
@@ -130,6 +131,10 @@ export async function onIdentify(this: WebSocket, data: Payload) {
 
     this.user_id = user.id;
     this.session = tokenData.session;
+    this.logUserRef = EnvConfig.get().logging.gatewayLogging.logUserId
+        ? `${user.id}${EnvConfig.get().logging.gatewayLogging.logSessionId ? `/${this.session_id}` : ""}`
+        : `${user.username.substring(0, 16).padStart(16, " ")}#${user.discriminator}`;
+
     const userQueryTime = taskSw.getElapsedAndReset();
 
     // Check intents
@@ -961,7 +966,7 @@ export async function onIdentify(this: WebSocket, data: Payload) {
     await setupListener.call(this);
     console.log(
         `[Gateway/${this.user_id}] IDENTIFY ${this.user_id} in ${totalSw.elapsed().totalMilliseconds}ms`,
-        process.env.LOG_GATEWAY_TRACES ? JSON.stringify(d._trace, null, 2) : "",
+        EnvConfig.get().logging.gatewayLogging.logTraces ? JSON.stringify(d._trace, null, 2) : "",
     );
 
     // actually send presence updates - not using distributePresenceUpdate because we already have all of the data at hand

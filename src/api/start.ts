@@ -28,6 +28,7 @@ import cluster from "node:cluster";
 import os from "node:os";
 import fs from "node:fs";
 import { SpacebarServer } from "./Server";
+import { EnvConfig } from "@spacebar/util/config/EnvConfig";
 
 let cores = 1;
 try {
@@ -40,7 +41,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
     console.log(`Primary PID: ${process.pid}`);
 
     // Fork workers.
-    for (let i = 0; i < cores; i++) {
+    for (let i = 0; i < EnvConfig.get().threads; i++) {
         cluster.fork();
     }
 
@@ -49,7 +50,7 @@ if (cluster.isPrimary && process.env.NODE_ENV == "production") {
         cluster.fork();
     });
 } else {
-    const port = Number(process.env.PORT) || 3001;
+    const port = EnvConfig.get().port || 3001;
 
     if (fs.existsSync("/proc/self/comm")) fs.writeFileSync("/proc/self/comm", `spacebar-api-${cluster.worker ? cluster.worker.id : port}`);
     process.title = `sb-api-${cluster.worker ? cluster.worker.id : port}`;

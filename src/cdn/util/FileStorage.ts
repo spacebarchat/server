@@ -22,11 +22,12 @@ import { join, dirname } from "node:path";
 import { Readable } from "node:stream";
 import { Storage } from "./Storage";
 import ExifTransformer from "exif-be-gone";
+import { EnvConfig } from "@spacebar/util";
 
 export class FileStorage implements Storage {
     getFsPath(path: string): string {
         // STORAGE_LOCATION has a default value in start.ts
-        const root = process.env.STORAGE_LOCATION || "../";
+        const root = EnvConfig.get().cdn.storageLocation || "../";
         const filename = join(root, path);
 
         if (path.indexOf("\0") !== -1 || !filename.startsWith(root)) throw new Error("invalid path");

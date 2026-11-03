@@ -16,8 +16,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { StreamSession, VoiceState } from "@spacebar/database";
+import { StreamSession, VoiceState, User } from "@spacebar/database";
 import { CLOSECODES } from "@spacebar/gateway";
+import { EnvConfig } from "@spacebar/util";
 import { validateSchema, VoiceIdentifySchema } from "@spacebar/schemas";
 import { generateSsrc, mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
 import { SSRCs } from "@spacebarchat/spacebar-webrtc-types";
@@ -75,6 +76,11 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
 
     this.user_id = user_id;
     this.session_id = session_id;
+
+    const user = await User.findOneOrFail({ where: { id: user_id } });
+    this.logUserRef = EnvConfig.get().logging.gatewayLogging.logUserId
+        ? `${user.id}${EnvConfig.get().logging.gatewayLogging.logSessionId ? `/${this.session_id}` : ""}`
+        : `${user.username.substring(0, 16).padStart(16, " ")}#${user.discriminator}`;
 
     this.type = type;
 

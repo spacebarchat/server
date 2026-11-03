@@ -25,7 +25,7 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { InstanceBan, Session, User } from "@spacebar/database";
 import { Random, sleep, Stopwatch, TimeSpan } from "@spacebar/extensions";
 import { Config } from "./Config";
-import { OrmUtils } from "@spacebar/util";
+import { OrmUtils, EnvConfig } from "@spacebar/util";
 import { clearInterval, setInterval } from "node:timers";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 
@@ -52,7 +52,7 @@ export type UserTokenData = {
 };
 
 function logAuth(text: string) {
-    if (process.env.LOG_AUTH !== "true") return;
+    if (!EnvConfig.get().logging.logAuthentication) return;
     console.log(`[AUTH] ${text}`);
 }
 

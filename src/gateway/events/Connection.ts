@@ -27,7 +27,7 @@ import { Close } from "./Close";
 import { Message } from "./Message";
 import { Deflate, Inflate } from "fast-zlib";
 import { URL } from "node:url";
-import { Config } from "@spacebar/util";
+import { Config, EnvConfig } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 import { Monitoring } from "../../util/monitoring/Monitoring";
@@ -85,6 +85,7 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
 
     socket.ipAddress = ipAddress;
     socket.userAgent = request.headers["user-agent"] as string;
+    socket.logUserRef = "[Unauthenticated]";
 
     if (!ipAddress && Config.get().security.cdnSignatureIncludeIp) {
         console.error("Gateway connection rejected: No IP address found.");
@@ -113,19 +114,12 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
 
         console.log(`[Gateway] New connection from ${ipAddress}, total ${this.clients.size}`);
 
-        if (process.env.WS_LOGEVENTS)
-            [
-                "close",
-                "error",
-                "upgrade",
-                //"message",
-                "open",
-                "ping",
-                "pong",
-                "unexpected-response",
-            ].forEach((x) => {
-                socket.rawSocket.on(x, (y) => console.log(x, y));
-            });
+        if (EnvConfig.get().logging.gatewayLogging.logHttp)
+            ["close", "error", "upgrade", "open", "ping", "pong", "unexpected-response", ...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : [])].forEach(
+                (x) => {
+                    socket.rawSocket.on(x, (y) => console.log(x, y));
+                },
+            );
 
         const { searchParams } = new URL(`http://localhost${request.url}`);
         // @ts-ignore

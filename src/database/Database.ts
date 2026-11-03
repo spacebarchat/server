@@ -22,6 +22,7 @@ import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
 import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
 import { PostgresDataSourceOptions } from "typeorm/driver/postgres/PostgresDataSourceOptions";
+import { EnvConfig } from "../util/config";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -36,7 +37,7 @@ if (!process.env) {
 }
 if (process.argv[1]?.endsWith("scripts/openapi.js")) isHeadlessProcess = true;
 
-if (!process.env.DATABASE && !isHeadlessProcess) {
+if (!EnvConfig.get().database.url && !isHeadlessProcess) {
     console.log(
         red(
             "DATABASE environment variable not set! Please set it to your database connection string.\n" + "Example for postgres: postgres://user:password@localhost:5432/database",
@@ -45,7 +46,7 @@ if (!process.env.DATABASE && !isHeadlessProcess) {
     process.exit(1);
 }
 
-const dbConnectionString = process.env.DATABASE!;
+const dbConnectionString = EnvConfig.get().database.url!;
 export const DatabaseType = isHeadlessProcess ? "postgres" : dbConnectionString.split(":")[0]?.replace("+srv", "");
 const applyMigrations = process.env.APPLY_DB_MIGRATIONS !== "false";
 const MIGRATIONLOCK = 1;
@@ -56,10 +57,12 @@ export const DataSourceOptions = isHeadlessProcess
           //@ts-ignore type 'string' is not 'sqlite' | 'postgres' | etc etc
           type: DatabaseType,
           charset: "utf8mb4",
-          url: process.env.DATABASE,
+          url: EnvConfig.get().database.url,
           entities: [path.join(__dirname, "entities", "*.js")],
-          synchronize: !!process.env.DB_SYNC,
-          logging: !!process.env.DB_LOGGING,
+          synchronize: EnvConfig.get().database.unsafeSchemaSync,
+          logging: EnvConfig.get().logging.logDatabaseQueries,
+          // Figure out why this doesn't work someday.
+          // relationLoadStrategy: EnvConfig.get().database.disableJoins ? "query" : undefined, // mirrors DB_NO_JOINS
           bigNumberStrings: false,
           supportBigNumbers: true,
           name: "default",
@@ -82,14 +85,14 @@ export function getDatabase(): DataSource | null {
 export async function initDatabase(): Promise<DataSource> {
     if (dbConnection) return dbConnection;
 
-    if (!process.env.DB_SYNC) {
+    if (!EnvConfig.get().database.unsafeSchemaSync) {
         const supported = ["postgres"];
         if (!supported.includes(DatabaseType)) {
             console.log(
                 "[Database]" +
                     red(
                         ` We don't have migrations for DB type '${DatabaseType}'` +
-                            ` To ignore, set DB_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
+                            ` To ignore, set DB_UNSAFE_SCHEMA_SYNC=true in your env. https://docs.spacebar.chat/setup/server/configuration/env/`,
                     ),
             );
             process.exit(1);

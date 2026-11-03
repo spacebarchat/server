@@ -19,68 +19,97 @@
 import { existsSync } from "node:fs";
 import fs from "node:fs/promises";
 import { OrmUtils } from "../imports";
-import { ConfigValue } from "../config";
+import { ConfigValue, EnvConfig } from "../config";
 import { ConfigEntity } from "../../database/entities";
 import { JsonValue } from "@protobuf-ts/runtime";
-import { bold, red, redBright } from "picocolors";
+import { bold, red, redBright, yellow, yellowBright } from "picocolors";
 
-// TODO: yaml instead of json
-const overridePath = process.env.CONFIG_PATH ?? "";
-
-let config: ConfigValue;
-let pairs: ConfigEntity[];
+let cachedConfig: ConfigValue;
+let cachedConfigWithOverrides: ConfigValue | undefined;
+let cachedPairs: ConfigEntity[];
 
 // TODO: use events to inform about config updates
 // Config keys are separated with _
 
 export class Config {
     public static async init(force: boolean = false) {
-        if (config && !force) return config;
+        if ((cachedConfigWithOverrides || cachedConfig) && !force) return cachedConfigWithOverrides ?? cachedConfig;
         console.log("[Config] Loading configuration...");
-        if (!process.env.CONFIG_PATH) {
-            if (process.env.CONFIG_SOURCE !== "database") {
-                console.log("[Config]:", redBright("Warning:"), bold("Database driven configuration has been deprecated"));
-                console.log("[Config]:", redBright("Warning:"), "Please migrate to JSON configuration by setting CONFIG_PATH=/path/to/config.json");
-                console.log("[Config]:", redBright("Warning:"), "  or set CONFIG_SOURCE=database to ignore this warning for now.");
-                console.log("[Config]:", redBright("Warning:"), "");
-                console.log("[Config]:", redBright("Warning:"), "Note that this option will be removed soon, and lack hereof will stop the server from starting!");
-            }
 
-            pairs = await validateConfig();
-            config = pairsToConfig(pairs);
-        } else {
-            console.log(`[Config] Using CONFIG_PATH rather than database:`, process.env.CONFIG_PATH);
-            if (existsSync(process.env.CONFIG_PATH)) {
-                const file = JSON.parse((await fs.readFile(process.env.CONFIG_PATH)).toString());
-                config = file;
-            } else config = new ConfigValue();
-            pairs = generatePairs(config);
+        const { path: jsonPath, enabled: jsonEnabled, mode: jsonMode, writebackEnabled: jsonWritebackEnabled } = EnvConfig.get().configuration;
+        let jsonConfig: ConfigValue;
+
+        if (jsonEnabled) console.log(`[Config] Using JSON configuration file at ${jsonPath} in '${jsonMode}' mode.`);
+        else {
+            // TODO: CONFIG_SOURCE not implemented
+            console.log("[Config]:", redBright("Warning:"), bold("Database driven configuration has been deprecated"));
+            console.log("[Config]:", redBright("Warning:"), "Please migrate to JSON configuration by setting CONFIG_PATH=/path/to/config.json");
+            console.log("[Config]:", redBright("Warning:"), "  or set CONFIG_SOURCE=database to ignore this warning for now.");
+            console.log("[Config]:", redBright("Warning:"), "");
+            console.log("[Config]:", redBright("Warning:"), "Note that this option will be removed soon, and lack hereof will stop the server from starting!");
         }
 
-        // If a config doesn't exist, create it.
-        if (Object.keys(config).length == 0) config = new ConfigValue();
+        if (jsonEnabled && jsonMode === "single") {
+            if (!existsSync(jsonPath)) throw new Error(`[Config] CONFIG_PATH does not exist, but CONFIG_MODE is set to 'single'. Please ensure the file at ${jsonPath} exists.`);
+            jsonConfig = JSON.parse((await fs.readFile(jsonPath)).toString());
 
-        config = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, config);
+            // merge with defaults to allow partial configs
+            cachedConfig = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, jsonConfig);
+            return await saveConfig(cachedConfig); // handle writeback if enabled
+        }
+
+        if (jsonEnabled && existsSync(jsonPath) && jsonMode === "overwrite") {
+            console.log(`[Config] Loading configuration from JSON file at ${jsonPath}...`);
+            jsonConfig = JSON.parse((await fs.readFile(jsonPath)).toString());
+            console.log("[Config] Overwriting database configuration with JSON configuration...");
+            await saveConfigToDatabaseAtomic(jsonConfig);
+        }
+
+        console.log("[Config] Loading configuration from database...");
+        cachedPairs = await validateConfig();
+        cachedConfig = pairsToConfig(cachedPairs);
+
+        // If a config doesn't exist, create it.
+        if (Object.keys(cachedConfig).length == 0) cachedConfig = new ConfigValue();
+
+        cachedConfig = OrmUtils.mergeDeep({}, { ...new ConfigValue() }, cachedConfig);
+
+        let ret = await this.set(cachedConfig);
+
+        if (jsonEnabled && existsSync(jsonPath) && jsonMode === "override") {
+            console.log(`[Config] Loading configuration from JSON file at ${jsonPath}...`);
+            jsonConfig = JSON.parse((await fs.readFile(jsonPath)).toString());
+            console.log("[Config] Overriding database configuration values with JSON configuration...");
+            ret = cachedConfigWithOverrides = OrmUtils.mergeDeep({}, cachedConfig, jsonConfig);
+        }
+
+        const changes = getChanges(ret!);
+        for (const [key, change] of Object.entries(changes)) {
+            if (change.type === "changed") {
+                console.log(yellowBright(`[Config] Setting '${key}' has been changed from '${JSON.stringify(change.old)}' to '${JSON.stringify(change.new)}'`));
+            } else if (change.type === "unknown") {
+                console.log(yellow(`[Config] Unknown setting '${key}' with value '${JSON.stringify(change.new)}'`));
+            }
+        }
 
         // TODO: factor this out someday
-        if (process.env.CDN_SIGNATURE_PATH) config.security.cdnSignatureKey = await Config.readSecret("CDN_SIGNATURE_PATH");
-        if (process.env.LEGACY_JWT_SECRET_PATH) config.security.jwtSecret = await Config.readSecret("LEGACY_JWT_SECRET_PATH");
-        if (process.env.MAILJET_API_KEY_PATH) config.email.mailjet.apiKey = await Config.readSecret("MAILJET_API_KEY_PATH");
-        if (process.env.MAILJET_API_SECRET_PATH) config.email.mailjet.apiSecret = await Config.readSecret("MAILJET_API_SECRET_PATH");
-        if (process.env.SMTP_PASSWORD_PATH) config.email.smtp.password = await Config.readSecret("SMTP_PASSWORD_PATH");
-        if (process.env.GIF_API_KEY_PATH) config.gif.apiKey = await Config.readSecret("GIF_API_KEY_PATH");
-        if (process.env.RABBITMQ_HOST) config.rabbitmq.host = process.env.RABBITMQ_HOST.trim();
-        if (process.env.RABBITMQ_HOST_PATH) config.rabbitmq.host = await Config.readSecret("RABBITMQ_HOST_PATH");
-        if (process.env.ABUSEIPDB_API_KEY_PATH) config.security.abuseIpDbApiKey = await Config.readSecret("ABUSEIPDB_API_KEY_PATH");
-        if (process.env.CAPTCHA_SECRET_KEY_PATH) config.security.captcha.secret = await Config.readSecret("CAPTCHA_SECRET_KEY_PATH");
-        if (process.env.CAPTCHA_SITE_KEY_PATH) config.security.captcha.sitekey = await Config.readSecret("CAPTCHA_SITE_KEY_PATH");
-        if (process.env.IPDATA_API_KEY_PATH) config.security.ipdataApiKey = await Config.readSecret("IPDATA_API_KEY_PATH");
-        if (process.env.REQUEST_SIGNATURE_PATH) config.security.requestSignature = await Config.readSecret("REQUEST_SIGNATURE_PATH");
-        if (process.env.KLIPY_API_KEY_PATH) config.integrations.gifs.klipy.apiKeyPath = process.env.KLIPY_API_KEY_PATH;
+        if (process.env.CDN_SIGNATURE_PATH) ret!.security.cdnSignatureKey = await Config.readSecret("CDN_SIGNATURE_PATH");
+        if (process.env.LEGACY_JWT_SECRET_PATH) ret!.security.jwtSecret = await Config.readSecret("LEGACY_JWT_SECRET_PATH");
+        if (process.env.MAILJET_API_KEY_PATH) ret!.email.mailjet.apiKey = await Config.readSecret("MAILJET_API_KEY_PATH");
+        if (process.env.MAILJET_API_SECRET_PATH) ret!.email.mailjet.apiSecret = await Config.readSecret("MAILJET_API_SECRET_PATH");
+        if (process.env.SMTP_PASSWORD_PATH) ret!.email.smtp.password = await Config.readSecret("SMTP_PASSWORD_PATH");
+        if (process.env.GIF_API_KEY_PATH) ret!.gif.apiKey = await Config.readSecret("GIF_API_KEY_PATH");
+        if (process.env.RABBITMQ_HOST) ret!.rabbitmq.host = process.env.RABBITMQ_HOST.trim();
+        if (process.env.RABBITMQ_HOST_PATH) ret!.rabbitmq.host = await Config.readSecret("RABBITMQ_HOST_PATH");
+        if (process.env.ABUSEIPDB_API_KEY_PATH) ret!.security.abuseIpDbApiKey = await Config.readSecret("ABUSEIPDB_API_KEY_PATH");
+        if (process.env.CAPTCHA_SECRET_KEY_PATH) ret!.security.captcha.secret = await Config.readSecret("CAPTCHA_SECRET_KEY_PATH");
+        if (process.env.CAPTCHA_SITE_KEY_PATH) ret!.security.captcha.sitekey = await Config.readSecret("CAPTCHA_SITE_KEY_PATH");
+        if (process.env.IPDATA_API_KEY_PATH) ret!.security.ipdataApiKey = await Config.readSecret("IPDATA_API_KEY_PATH");
+        if (process.env.REQUEST_SIGNATURE_PATH) ret!.security.requestSignature = await Config.readSecret("REQUEST_SIGNATURE_PATH");
+        if (process.env.KLIPY_API_KEY_PATH) ret!.integrations.gifs.klipy.apiKeyPath = process.env.KLIPY_API_KEY_PATH;
 
-        await this.set(config);
-        validateFinalConfig(config);
-        return config;
+        validateFinalConfig(ret!);
+        return ret;
     }
 
     private static async readSecret(name: string) {
@@ -91,8 +120,9 @@ export class Config {
         process.stdout.write("\n");
         return res;
     }
+
     public static get() {
-        if (!config) {
+        if (!cachedConfig) {
             // If we haven't initialised the config yet, return default config.
             // Typeorm instantiates each entity once when initialising database,
             // which means when we use config values as default values in entity classes,
@@ -101,18 +131,18 @@ export class Config {
             return new ConfigValue();
         }
 
-        return config;
+        return cachedConfigWithOverrides ?? cachedConfig;
     }
     public static set(val: Partial<ConfigValue>) {
-        if (!config || !val) return;
-        config = OrmUtils.mergeDeep(config);
+        if (!cachedConfig || !val) return;
+        cachedConfig = OrmUtils.mergeDeep(cachedConfig, val);
 
-        return applyConfig(config);
+        return saveConfig(val);
     }
 }
 
 // TODO: better types
-const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
+function generatePairs(obj: object | null, key = ""): ConfigEntity[] {
     if (typeof obj == "object" && obj != null) {
         return Object.keys(obj)
             .map((k) =>
@@ -126,18 +156,35 @@ const generatePairs = (obj: object | null, key = ""): ConfigEntity[] => {
     ret.key = key;
     ret.value = obj;
     return [ret];
-};
+}
 
-async function applyConfig(val: ConfigValue) {
-    if (process.env.CONFIG_PATH)
-        if (!process.env.CONFIG_READONLY) await fs.writeFile(overridePath, JSON.stringify(val, null, 4));
-        else console.log("[WARNING] JSON config file in use, and writing is disabled! Programmatic config changes will not be persisted, and your config will not get updated!");
-    else {
-        const pairs = generatePairs(val);
-        // keys are sorted to try to influence database order...
-        await Promise.all(pairs.sort((x, y) => (x.key > y.key ? 1 : -1)).map((pair) => pair.save()));
-    }
-    return val;
+async function saveConfig(val: Partial<ConfigValue>) {
+    const merged = OrmUtils.mergeDeep({}, cachedConfig, val) as ConfigValue;
+    if (EnvConfig.get().configuration.enabled) {
+        if (EnvConfig.get().configuration.writebackEnabled) {
+            await fs.writeFile(EnvConfig.get().configuration.path, JSON.stringify(merged, null, 4));
+        } else {
+            console.log("[Config/WARN] JSON config file in use, and writeback is disabled!");
+            console.log("[Config/WARN] Programmatic config changes will not be persisted, and your config will not get updated!");
+            console.log("[Config/WARN] Please check regularly to make adjustments as necessary!");
+        }
+
+        if (EnvConfig.get().configuration.mode == "overwrite") await saveConfigToDatabaseAtomic(val);
+    } else await saveConfigToDatabaseAtomic(val); // not using a JSON file
+
+    return merged;
+}
+
+// Atomically save changes to database
+async function saveConfigToDatabaseAtomic(val: Partial<ConfigValue>) {
+    const pairs = generatePairs(val);
+    const pairsToUpdate =
+        cachedPairs === undefined ? pairs : pairs.filter((p) => cachedPairs.some((cp) => cp.key === p.key && JSON.stringify(cp.value) !== JSON.stringify(p.value)));
+
+    if (pairsToUpdate.length > 0) console.log("[Config] Atomic update:", pairsToUpdate);
+
+    // keys are sorted to try to influence database order...
+    await Promise.all(pairsToUpdate.sort((x, y) => (x.key > y.key ? 1 : -1)).map((pair) => pair.save()));
 }
 
 function pairsToConfig(pairs: ConfigEntity[]) {
@@ -169,7 +216,7 @@ function pairsToConfig(pairs: ConfigEntity[]) {
 const validateConfig = async () => {
     let hasErrored = false;
     const totalStartTime = new Date();
-    const config = await ConfigEntity.find({ select: { key: true } });
+    const config = await ConfigEntity.find({ select: { key: true }, order: { key: "ASC" } });
 
     for (const row in config) {
         // extension methods...
@@ -182,7 +229,7 @@ const validateConfig = async () => {
             if (!found) continue;
             config[row] = found;
         } catch (e) {
-            console.error(`Config key '${config[row].key}' has invalid JSON value : ${(e as Error)?.message}`);
+            console.error(`Config key '${config[row].key}' has invalid JSON value: ${(e as Error)?.message}`);
             hasErrored = true;
         }
     }
@@ -233,4 +280,21 @@ function validateFinalConfig(config: ConfigValue) {
         console.error("[Config] Hint: if you're just testing with bundle (`npm run start`), you can set all endpoint URLs to [proto]://localhost:3001");
         process.exit(1);
     } else console.log("[Config] Configuration validated successfully.");
+}
+
+function getChanges(config: ConfigValue) {
+    const defaultPairs = generatePairs(new ConfigValue());
+    const newPairs = generatePairs(cachedConfig);
+    const ignoredKeys = ["general_instanceId", "security_requestSignature", "security_jwtSecret", "security_cdnSignatureKey"];
+    const changes: { [key: string]: { type: "changed" | "unknown"; old?: string | number | boolean | null | undefined; new: string | number | boolean | null | undefined } } = {};
+
+    for (const newPair of newPairs) {
+        const defaultPair = defaultPairs.find((p) => p.key === newPair.key);
+        if (defaultPair && JSON.stringify(defaultPair.value) !== JSON.stringify(newPair.value) && !ignoredKeys.includes(newPair.key)) {
+            changes[newPair.key] = { type: "changed", old: defaultPair.value, new: newPair.value };
+        } else if (!defaultPair) {
+            changes[newPair.key] = { type: "unknown", new: newPair.value };
+        }
+    }
+    return changes;
 }

@@ -26,9 +26,10 @@ config({ quiet: true });
 
 import fs from "node:fs";
 import cluster from "node:cluster";
+import { EnvConfig } from "@spacebar/util";
 import { WebrtcServer } from "./Server";
 
-const port = Number(process.env.PORT) || 3004;
+const port = EnvConfig.get().port || 3004;
 
 const server = new WebrtcServer({
     port,

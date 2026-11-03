@@ -30,10 +30,10 @@ import os from "node:os";
 import "reflect-metadata";
 import { red, bold, yellow, cyan, blueBright, redBright } from "picocolors";
 import { centerString } from "@spacebar/extensions";
-import { getRevInfoOrFail, Logo } from "@spacebar/util";
+import { getRevInfoOrFail, Logo, EnvConfig } from "@spacebar/util";
 import { initStats } from "./stats";
 
-const cores = process.env.THREADS ? parseInt(process.env.THREADS) : 1;
+const cores = EnvConfig.get().threads;
 
 if (cluster.isPrimary) {
     const revInfo = getRevInfoOrFail();
@@ -69,6 +69,7 @@ if (cluster.isPrimary) {
             // Fork workers.
             for (let i = 0; i < cores; i++) {
                 cluster.fork();
+                console.log(`[Process] Worker ${cyan(i)} started.`);
                 console.log(`[Process] Worker ${cyan(i)} started.`);
             }
 

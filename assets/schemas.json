@@ -1956,6 +1956,221 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "JsonArray": {
+        "type": "object",
+        "additionalProperties": false,
+        "patternProperties": {
+            "^[0-9]+$": {
+                "$ref": "#/definitions/JsonValue"
+            }
+        },
+        "properties": {
+            "length": {
+                "type": "integer"
+            },
+            "__@unscopables@751": {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "type": "boolean"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "boolean"
+                    },
+                    "toString": {
+                        "type": "boolean"
+                    },
+                    "toLocaleString": {
+                        "type": "boolean"
+                    },
+                    "pop": {
+                        "type": "boolean"
+                    },
+                    "push": {
+                        "type": "boolean"
+                    },
+                    "concat": {
+                        "type": "boolean"
+                    },
+                    "join": {
+                        "type": "boolean"
+                    },
+                    "reverse": {
+                        "type": "boolean"
+                    },
+                    "shift": {
+                        "type": "boolean"
+                    },
+                    "slice": {
+                        "type": "boolean"
+                    },
+                    "sort": {
+                        "type": "boolean"
+                    },
+                    "splice": {
+                        "type": "boolean"
+                    },
+                    "unshift": {
+                        "type": "boolean"
+                    },
+                    "indexOf": {
+                        "type": "boolean"
+                    },
+                    "lastIndexOf": {
+                        "type": "boolean"
+                    },
+                    "every": {
+                        "type": "boolean"
+                    },
+                    "some": {
+                        "type": "boolean"
+                    },
+                    "forEach": {
+                        "type": "boolean"
+                    },
+                    "map": {
+                        "type": "boolean"
+                    },
+                    "filter": {
+                        "type": "boolean"
+                    },
+                    "reduce": {
+                        "type": "boolean"
+                    },
+                    "reduceRight": {
+                        "type": "boolean"
+                    },
+                    "find": {
+                        "type": "boolean"
+                    },
+                    "findIndex": {
+                        "type": "boolean"
+                    },
+                    "fill": {
+                        "type": "boolean"
+                    },
+                    "copyWithin": {
+                        "type": "boolean"
+                    },
+                    "entries": {
+                        "type": "boolean"
+                    },
+                    "keys": {
+                        "type": "boolean"
+                    },
+                    "values": {
+                        "type": "boolean"
+                    },
+                    "includes": {
+                        "type": "boolean"
+                    },
+                    "flatMap": {
+                        "type": "boolean"
+                    },
+                    "flat": {
+                        "type": "boolean"
+                    },
+                    "at": {
+                        "type": "boolean"
+                    },
+                    "findLast": {
+                        "type": "boolean"
+                    },
+                    "findLastIndex": {
+                        "type": "boolean"
+                    },
+                    "toReversed": {
+                        "type": "boolean"
+                    },
+                    "toSorted": {
+                        "type": "boolean"
+                    },
+                    "toSpliced": {
+                        "type": "boolean"
+                    },
+                    "with": {
+                        "type": "boolean"
+                    },
+                    "__@iterator@749": {
+                        "type": "boolean"
+                    },
+                    "__@unscopables@751": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "required": [
+            "__@unscopables@751",
+            "length"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildAvailableSchema": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "available": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "available",
+            "id"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteListResponse": {
+        "type": "array",
+        "items": {
+            "$ref": "#/definitions/PublicInvite"
+        },
+        "definitions": {
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean"
+                    },
+                    "emoji_id": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "emoji_name": {
+                        "type": [
+                            "null",
+                            "string"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "emoji_id",
+                    "emoji_name",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "UserAccountModifySchema": {
         "type": "object",
         "properties": {
@@ -3586,159 +3801,6 @@
         "additionalProperties": false,
         "required": [
             "refreshed_urls"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "JsonArray": {
-        "type": "object",
-        "additionalProperties": false,
-        "patternProperties": {
-            "^[0-9]+$": {
-                "$ref": "#/definitions/JsonValue"
-            }
-        },
-        "properties": {
-            "length": {
-                "type": "integer"
-            },
-            "__@unscopables@751": {
-                "type": "object",
-                "additionalProperties": false,
-                "patternProperties": {
-                    "^[0-9]+$": {
-                        "type": "boolean"
-                    }
-                },
-                "properties": {
-                    "length": {
-                        "type": "boolean"
-                    },
-                    "toString": {
-                        "type": "boolean"
-                    },
-                    "toLocaleString": {
-                        "type": "boolean"
-                    },
-                    "pop": {
-                        "type": "boolean"
-                    },
-                    "push": {
-                        "type": "boolean"
-                    },
-                    "concat": {
-                        "type": "boolean"
-                    },
-                    "join": {
-                        "type": "boolean"
-                    },
-                    "reverse": {
-                        "type": "boolean"
-                    },
-                    "shift": {
-                        "type": "boolean"
-                    },
-                    "slice": {
-                        "type": "boolean"
-                    },
-                    "sort": {
-                        "type": "boolean"
-                    },
-                    "splice": {
-                        "type": "boolean"
-                    },
-                    "unshift": {
-                        "type": "boolean"
-                    },
-                    "indexOf": {
-                        "type": "boolean"
-                    },
-                    "lastIndexOf": {
-                        "type": "boolean"
-                    },
-                    "every": {
-                        "type": "boolean"
-                    },
-                    "some": {
-                        "type": "boolean"
-                    },
-                    "forEach": {
-                        "type": "boolean"
-                    },
-                    "map": {
-                        "type": "boolean"
-                    },
-                    "filter": {
-                        "type": "boolean"
-                    },
-                    "reduce": {
-                        "type": "boolean"
-                    },
-                    "reduceRight": {
-                        "type": "boolean"
-                    },
-                    "find": {
-                        "type": "boolean"
-                    },
-                    "findIndex": {
-                        "type": "boolean"
-                    },
-                    "fill": {
-                        "type": "boolean"
-                    },
-                    "copyWithin": {
-                        "type": "boolean"
-                    },
-                    "entries": {
-                        "type": "boolean"
-                    },
-                    "keys": {
-                        "type": "boolean"
-                    },
-                    "values": {
-                        "type": "boolean"
-                    },
-                    "includes": {
-                        "type": "boolean"
-                    },
-                    "flatMap": {
-                        "type": "boolean"
-                    },
-                    "flat": {
-                        "type": "boolean"
-                    },
-                    "at": {
-                        "type": "boolean"
-                    },
-                    "findLast": {
-                        "type": "boolean"
-                    },
-                    "findLastIndex": {
-                        "type": "boolean"
-                    },
-                    "toReversed": {
-                        "type": "boolean"
-                    },
-                    "toSorted": {
-                        "type": "boolean"
-                    },
-                    "toSpliced": {
-                        "type": "boolean"
-                    },
-                    "with": {
-                        "type": "boolean"
-                    },
-                    "__@iterator@749": {
-                        "type": "boolean"
-                    },
-                    "__@unscopables@751": {
-                        "type": "boolean"
-                    }
-                }
-            }
-        },
-        "required": [
-            "__@unscopables@751",
-            "length"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -8240,24 +8302,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "GuildAvailableSchema": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "available": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "available",
-            "id"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "RoleResponse": {
         "type": "object",
         "properties": {
@@ -9441,50 +9485,6 @@
         "type": "array",
         "items": {
             "$ref": "#/definitions/VoiceRegionResponse"
-        },
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteListResponse": {
-        "type": "array",
-        "items": {
-            "$ref": "#/definitions/PublicInvite"
-        },
-        "definitions": {
-            "Tag": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "moderated": {
-                        "type": "boolean"
-                    },
-                    "emoji_id": {
-                        "type": [
-                            "null",
-                            "string"
-                        ]
-                    },
-                    "emoji_name": {
-                        "type": [
-                            "null",
-                            "string"
-                        ]
-                    }
-                },
-                "additionalProperties": false,
-                "required": [
-                    "emoji_id",
-                    "emoji_name",
-                    "id",
-                    "moderated",
-                    "name"
-                ]
-            }
         },
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -16444,6 +16444,820 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
+    "JsonValue": {
+        "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
+        "anyOf": [
+            {
+                "description": "Represents a JSON object.",
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/definitions/JsonValue"
+                }
+            },
+            {
+                "type": "object",
+                "additionalProperties": false,
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "$ref": "#/definitions/JsonValue"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "integer"
+                    },
+                    "__@unscopables@751": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "type": "boolean"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "boolean"
+                            },
+                            "toString": {
+                                "type": "boolean"
+                            },
+                            "toLocaleString": {
+                                "type": "boolean"
+                            },
+                            "pop": {
+                                "type": "boolean"
+                            },
+                            "push": {
+                                "type": "boolean"
+                            },
+                            "concat": {
+                                "type": "boolean"
+                            },
+                            "join": {
+                                "type": "boolean"
+                            },
+                            "reverse": {
+                                "type": "boolean"
+                            },
+                            "shift": {
+                                "type": "boolean"
+                            },
+                            "slice": {
+                                "type": "boolean"
+                            },
+                            "sort": {
+                                "type": "boolean"
+                            },
+                            "splice": {
+                                "type": "boolean"
+                            },
+                            "unshift": {
+                                "type": "boolean"
+                            },
+                            "indexOf": {
+                                "type": "boolean"
+                            },
+                            "lastIndexOf": {
+                                "type": "boolean"
+                            },
+                            "every": {
+                                "type": "boolean"
+                            },
+                            "some": {
+                                "type": "boolean"
+                            },
+                            "forEach": {
+                                "type": "boolean"
+                            },
+                            "map": {
+                                "type": "boolean"
+                            },
+                            "filter": {
+                                "type": "boolean"
+                            },
+                            "reduce": {
+                                "type": "boolean"
+                            },
+                            "reduceRight": {
+                                "type": "boolean"
+                            },
+                            "find": {
+                                "type": "boolean"
+                            },
+                            "findIndex": {
+                                "type": "boolean"
+                            },
+                            "fill": {
+                                "type": "boolean"
+                            },
+                            "copyWithin": {
+                                "type": "boolean"
+                            },
+                            "entries": {
+                                "type": "boolean"
+                            },
+                            "keys": {
+                                "type": "boolean"
+                            },
+                            "values": {
+                                "type": "boolean"
+                            },
+                            "includes": {
+                                "type": "boolean"
+                            },
+                            "flatMap": {
+                                "type": "boolean"
+                            },
+                            "flat": {
+                                "type": "boolean"
+                            },
+                            "at": {
+                                "type": "boolean"
+                            },
+                            "findLast": {
+                                "type": "boolean"
+                            },
+                            "findLastIndex": {
+                                "type": "boolean"
+                            },
+                            "toReversed": {
+                                "type": "boolean"
+                            },
+                            "toSorted": {
+                                "type": "boolean"
+                            },
+                            "toSpliced": {
+                                "type": "boolean"
+                            },
+                            "with": {
+                                "type": "boolean"
+                            },
+                            "__@iterator@749": {
+                                "type": "boolean"
+                            },
+                            "__@unscopables@751": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "__@unscopables@751",
+                    "length"
+                ]
+            },
+            {
+                "type": [
+                    "null",
+                    "string",
+                    "integer",
+                    "boolean"
+                ]
+            }
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicInvite": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/InviteType"
+            },
+            "channel": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PublicChannel"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "guild_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "guild": {
+                "$ref": "#/definitions/InviteGuild"
+            },
+            "profile": {
+                "$ref": "#/definitions/GuildProfileResponse"
+            },
+            "inviter": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "flags": {
+                "enum": [
+                    1,
+                    2,
+                    4,
+                    8
+                ],
+                "type": "number"
+            },
+            "target_type": {
+                "type": "integer"
+            },
+            "target_user": {
+                "$ref": "#/definitions/PartialUser"
+            },
+            "roles": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/InviteRole"
+                }
+            },
+            "approximate_member_count": {
+                "type": "integer"
+            },
+            "approximate_presence_count": {
+                "type": "integer"
+            },
+            "expires_at": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "new_member": {
+                "type": "boolean"
+            },
+            "show_verification_form": {
+                "type": "boolean"
+            },
+            "is_nickname_changeable": {
+                "type": "boolean"
+            },
+            "target_users_job_status": {
+                "$ref": "#/definitions/InviteTargetUsersJob"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "channel",
+            "code",
+            "expires_at",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteType": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicChannel": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "type": {
+                "$ref": "#/definitions/ChannelType"
+            },
+            "guild_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "position": {
+                "type": "integer"
+            },
+            "permission_overwrites": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/ChannelPermissionOverwrite"
+                }
+            },
+            "name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "topic": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "last_message_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "last_pin_timestamp": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "bitrate": {
+                "type": "integer"
+            },
+            "user_limit": {
+                "type": "integer"
+            },
+            "rate_limit_per_user": {
+                "type": "integer"
+            },
+            "recipients": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/PartialUser"
+                }
+            },
+            "recipient_flags": {
+                "type": "integer"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "managed": {
+                "type": "boolean"
+            },
+            "blocked_user_warning_dismissed": {
+                "type": "boolean"
+            },
+            "application_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "owner_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "owner": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PublicMember"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "parent_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "rtc_region": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "video_quality_mode": {
+                "type": "integer"
+            },
+            "total_message_sent": {
+                "type": "integer"
+            },
+            "message_count": {
+                "type": "integer"
+            },
+            "member_count": {
+                "type": "integer"
+            },
+            "member_ids_preview": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "thread_metadata": {
+                "$ref": "#/definitions/ThreadMetadata"
+            },
+            "member": {
+                "$ref": "#/definitions/PublicThreadMember"
+            },
+            "default_auto_archive_duration": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "default_thread_rate_limit_per_user": {
+                "type": "integer"
+            },
+            "permissions": {
+                "type": "string"
+            },
+            "flags": {
+                "type": "integer"
+            },
+            "available_tags": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/Tag"
+                }
+            },
+            "applied_tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "default_reaction_emoji": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "default_forum_layout": {
+                "type": "integer"
+            },
+            "default_sort_order": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "default_tag_setting": {
+                "type": "string"
+            },
+            "is_message_request": {
+                "type": "boolean"
+            },
+            "is_message_request_timestamp": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "is_spam": {
+                "type": "boolean"
+            },
+            "theme_color": {
+                "type": [
+                    "null",
+                    "integer"
+                ]
+            },
+            "status": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "hd_streaming_until": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "hd_streaming_buyer_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "is_linkable": {
+                "type": "boolean"
+            },
+            "is_viewable_and_writeable_by_all_members": {
+                "type": "boolean"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "id",
+            "type"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "PublicThreadMember": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "user_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "join_timestamp": {
+                "type": "string"
+            },
+            "flags": {
+                "$ref": "#/definitions/ThreadMemberFlags"
+            },
+            "muted": {
+                "type": "boolean"
+            },
+            "mute_config": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/MuteConfig"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "member": {
+                "$ref": "#/definitions/PublicMember"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "flags",
+            "join_timestamp"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteGuild": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "description": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "banner": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "splash": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "verification_level": {
+                "$ref": "#/definitions/GuildVerificationLevel"
+            },
+            "features": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "vanity_url_code": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "premium_subscription_count": {
+                "type": "integer"
+            },
+            "premium_tier": {
+                "$ref": "#/definitions/GuildPremiumTier"
+            },
+            "nsfw": {
+                "type": "boolean"
+            },
+            "nsfw_level": {
+                "$ref": "#/definitions/GuildNsfwLevel"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "banner",
+            "description",
+            "features",
+            "icon",
+            "id",
+            "name",
+            "nsfw",
+            "nsfw_level",
+            "premium_tier",
+            "splash",
+            "vanity_url_code",
+            "verification_level"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildVerificationLevel": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildPremiumTier": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildNsfwLevel": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GameActivity": {
+        "type": "object",
+        "properties": {
+            "activity_level": {
+                "type": "integer"
+            },
+            "activity_score": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "activity_level",
+            "activity_score"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildTrait": {
+        "type": "object",
+        "properties": {
+            "emoji_id": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji_name": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "emoji_animated": {
+                "type": "boolean"
+            },
+            "label": {
+                "type": "string"
+            },
+            "position": {
+                "type": "integer"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "emoji_animated",
+            "emoji_id",
+            "emoji_name",
+            "label",
+            "position"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "GuildVisibilityLevel": {
+        "type": "number",
+        "enum": [
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteRole": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "position": {
+                "type": "integer"
+            },
+            "color": {
+                "type": "integer"
+            },
+            "colors": {
+                "$ref": "#/definitions/RoleColors"
+            },
+            "icon": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            },
+            "unicode_emoji": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "color",
+            "colors",
+            "id",
+            "name",
+            "position"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteTargetUsersJob": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "$ref": "#/definitions/InviteTargetUsersJobStatus"
+            },
+            "total_users": {
+                "type": "integer"
+            },
+            "processed_users": {
+                "type": "integer"
+            },
+            "created_at": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "completed_at": {
+                "anyOf": [
+                    {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
+            },
+            "error_message": {
+                "type": [
+                    "null",
+                    "string"
+                ]
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "completed_at",
+            "created_at",
+            "error_message",
+            "processed_users",
+            "status",
+            "total_users"
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InviteTargetUsersJobStatus": {
+        "type": "number",
+        "enum": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
     "EmojiGuild": {
         "type": "object",
         "properties": {
@@ -16901,276 +17715,6 @@
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "PublicChannel": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/ChannelType"
-            },
-            "guild_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
-            },
-            "permission_overwrites": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/ChannelPermissionOverwrite"
-                }
-            },
-            "name": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "topic": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "nsfw": {
-                "type": "boolean"
-            },
-            "last_message_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "last_pin_timestamp": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "bitrate": {
-                "type": "integer"
-            },
-            "user_limit": {
-                "type": "integer"
-            },
-            "rate_limit_per_user": {
-                "type": "integer"
-            },
-            "recipients": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/PartialUser"
-                }
-            },
-            "recipient_flags": {
-                "type": "integer"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "managed": {
-                "type": "boolean"
-            },
-            "blocked_user_warning_dismissed": {
-                "type": "boolean"
-            },
-            "application_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "owner_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "owner": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/PublicMember"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "parent_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "rtc_region": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "video_quality_mode": {
-                "type": "integer"
-            },
-            "total_message_sent": {
-                "type": "integer"
-            },
-            "message_count": {
-                "type": "integer"
-            },
-            "member_count": {
-                "type": "integer"
-            },
-            "member_ids_preview": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "thread_metadata": {
-                "$ref": "#/definitions/ThreadMetadata"
-            },
-            "member": {
-                "$ref": "#/definitions/PublicThreadMember"
-            },
-            "default_auto_archive_duration": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "default_thread_rate_limit_per_user": {
-                "type": "integer"
-            },
-            "permissions": {
-                "type": "string"
-            },
-            "flags": {
-                "type": "integer"
-            },
-            "available_tags": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/Tag"
-                }
-            },
-            "applied_tags": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "default_reaction_emoji": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "default_forum_layout": {
-                "type": "integer"
-            },
-            "default_sort_order": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "default_tag_setting": {
-                "type": "string"
-            },
-            "is_message_request": {
-                "type": "boolean"
-            },
-            "is_message_request_timestamp": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "is_spam": {
-                "type": "boolean"
-            },
-            "theme_color": {
-                "type": [
-                    "null",
-                    "integer"
-                ]
-            },
-            "status": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "hd_streaming_until": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "hd_streaming_buyer_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "is_linkable": {
-                "type": "boolean"
-            },
-            "is_viewable_and_writeable_by_all_members": {
-                "type": "boolean"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "id",
-            "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PublicThreadMember": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "user_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "join_timestamp": {
-                "type": "string"
-            },
-            "flags": {
-                "$ref": "#/definitions/ThreadMemberFlags"
-            },
-            "muted": {
-                "type": "boolean"
-            },
-            "mute_config": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/MuteConfig"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "member": {
-                "$ref": "#/definitions/PublicMember"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "flags",
-            "join_timestamp"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "MessageActivity": {
         "type": "object",
         "properties": {
@@ -17387,179 +17931,6 @@
         "required": [
             "original",
             "refreshed"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "JsonValue": {
-        "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
-        "anyOf": [
-            {
-                "description": "Represents a JSON object.",
-                "type": "object",
-                "additionalProperties": {
-                    "$ref": "#/definitions/JsonValue"
-                }
-            },
-            {
-                "type": "object",
-                "additionalProperties": false,
-                "patternProperties": {
-                    "^[0-9]+$": {
-                        "$ref": "#/definitions/JsonValue"
-                    }
-                },
-                "properties": {
-                    "length": {
-                        "type": "integer"
-                    },
-                    "__@unscopables@751": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "patternProperties": {
-                            "^[0-9]+$": {
-                                "type": "boolean"
-                            }
-                        },
-                        "properties": {
-                            "length": {
-                                "type": "boolean"
-                            },
-                            "toString": {
-                                "type": "boolean"
-                            },
-                            "toLocaleString": {
-                                "type": "boolean"
-                            },
-                            "pop": {
-                                "type": "boolean"
-                            },
-                            "push": {
-                                "type": "boolean"
-                            },
-                            "concat": {
-                                "type": "boolean"
-                            },
-                            "join": {
-                                "type": "boolean"
-                            },
-                            "reverse": {
-                                "type": "boolean"
-                            },
-                            "shift": {
-                                "type": "boolean"
-                            },
-                            "slice": {
-                                "type": "boolean"
-                            },
-                            "sort": {
-                                "type": "boolean"
-                            },
-                            "splice": {
-                                "type": "boolean"
-                            },
-                            "unshift": {
-                                "type": "boolean"
-                            },
-                            "indexOf": {
-                                "type": "boolean"
-                            },
-                            "lastIndexOf": {
-                                "type": "boolean"
-                            },
-                            "every": {
-                                "type": "boolean"
-                            },
-                            "some": {
-                                "type": "boolean"
-                            },
-                            "forEach": {
-                                "type": "boolean"
-                            },
-                            "map": {
-                                "type": "boolean"
-                            },
-                            "filter": {
-                                "type": "boolean"
-                            },
-                            "reduce": {
-                                "type": "boolean"
-                            },
-                            "reduceRight": {
-                                "type": "boolean"
-                            },
-                            "find": {
-                                "type": "boolean"
-                            },
-                            "findIndex": {
-                                "type": "boolean"
-                            },
-                            "fill": {
-                                "type": "boolean"
-                            },
-                            "copyWithin": {
-                                "type": "boolean"
-                            },
-                            "entries": {
-                                "type": "boolean"
-                            },
-                            "keys": {
-                                "type": "boolean"
-                            },
-                            "values": {
-                                "type": "boolean"
-                            },
-                            "includes": {
-                                "type": "boolean"
-                            },
-                            "flatMap": {
-                                "type": "boolean"
-                            },
-                            "flat": {
-                                "type": "boolean"
-                            },
-                            "at": {
-                                "type": "boolean"
-                            },
-                            "findLast": {
-                                "type": "boolean"
-                            },
-                            "findLastIndex": {
-                                "type": "boolean"
-                            },
-                            "toReversed": {
-                                "type": "boolean"
-                            },
-                            "toSorted": {
-                                "type": "boolean"
-                            },
-                            "toSpliced": {
-                                "type": "boolean"
-                            },
-                            "with": {
-                                "type": "boolean"
-                            },
-                            "__@iterator@749": {
-                                "type": "boolean"
-                            },
-                            "__@unscopables@751": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                },
-                "required": [
-                    "__@unscopables@751",
-                    "length"
-                ]
-            },
-            {
-                "type": [
-                    "null",
-                    "string",
-                    "integer",
-                    "boolean"
-                ]
-            }
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
@@ -19451,77 +19822,6 @@
         "const": 3,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "GameActivity": {
-        "type": "object",
-        "properties": {
-            "activity_level": {
-                "type": "integer"
-            },
-            "activity_score": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "activity_level",
-            "activity_score"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildTrait": {
-        "type": "object",
-        "properties": {
-            "emoji_id": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "emoji_name": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "emoji_animated": {
-                "type": "boolean"
-            },
-            "label": {
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "emoji_animated",
-            "emoji_id",
-            "emoji_name",
-            "label",
-            "position"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildVisibilityLevel": {
-        "type": "number",
-        "enum": [
-            1,
-            2,
-            3
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildPremiumTier": {
-        "type": "number",
-        "enum": [
-            0,
-            1,
-            2,
-            3
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
     "GifTrendingCategory": {
         "type": "object",
         "properties": {
@@ -19706,306 +20006,6 @@
             }
         },
         "additionalProperties": false,
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "PublicInvite": {
-        "type": "object",
-        "properties": {
-            "code": {
-                "type": "string"
-            },
-            "type": {
-                "$ref": "#/definitions/InviteType"
-            },
-            "channel": {
-                "anyOf": [
-                    {
-                        "$ref": "#/definitions/PublicChannel"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "guild_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "guild": {
-                "$ref": "#/definitions/InviteGuild"
-            },
-            "profile": {
-                "$ref": "#/definitions/GuildProfileResponse"
-            },
-            "inviter": {
-                "$ref": "#/definitions/PartialUser"
-            },
-            "flags": {
-                "enum": [
-                    1,
-                    2,
-                    4,
-                    8
-                ],
-                "type": "number"
-            },
-            "target_type": {
-                "type": "integer"
-            },
-            "target_user": {
-                "$ref": "#/definitions/PartialUser"
-            },
-            "roles": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/definitions/InviteRole"
-                }
-            },
-            "approximate_member_count": {
-                "type": "integer"
-            },
-            "approximate_presence_count": {
-                "type": "integer"
-            },
-            "expires_at": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "new_member": {
-                "type": "boolean"
-            },
-            "show_verification_form": {
-                "type": "boolean"
-            },
-            "is_nickname_changeable": {
-                "type": "boolean"
-            },
-            "target_users_job_status": {
-                "$ref": "#/definitions/InviteTargetUsersJob"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "channel",
-            "code",
-            "expires_at",
-            "type"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteType": {
-        "type": "number",
-        "enum": [
-            0,
-            1,
-            2
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteGuild": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "description": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "banner": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "splash": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "verification_level": {
-                "$ref": "#/definitions/GuildVerificationLevel"
-            },
-            "features": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
-            "vanity_url_code": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "premium_subscription_count": {
-                "type": "integer"
-            },
-            "premium_tier": {
-                "$ref": "#/definitions/GuildPremiumTier"
-            },
-            "nsfw": {
-                "type": "boolean"
-            },
-            "nsfw_level": {
-                "$ref": "#/definitions/GuildNsfwLevel"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "banner",
-            "description",
-            "features",
-            "icon",
-            "id",
-            "name",
-            "nsfw",
-            "nsfw_level",
-            "premium_tier",
-            "splash",
-            "vanity_url_code",
-            "verification_level"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildVerificationLevel": {
-        "type": "number",
-        "enum": [
-            0,
-            1,
-            2,
-            3,
-            4
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "GuildNsfwLevel": {
-        "type": "number",
-        "enum": [
-            0,
-            1,
-            2,
-            3
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteRole": {
-        "type": "object",
-        "properties": {
-            "id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "name": {
-                "type": "string"
-            },
-            "position": {
-                "type": "integer"
-            },
-            "color": {
-                "type": "integer"
-            },
-            "colors": {
-                "$ref": "#/definitions/RoleColors"
-            },
-            "icon": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            },
-            "unicode_emoji": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "color",
-            "colors",
-            "id",
-            "name",
-            "position"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteTargetUsersJob": {
-        "type": "object",
-        "properties": {
-            "status": {
-                "$ref": "#/definitions/InviteTargetUsersJobStatus"
-            },
-            "total_users": {
-                "type": "integer"
-            },
-            "processed_users": {
-                "type": "integer"
-            },
-            "created_at": {
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "completed_at": {
-                "anyOf": [
-                    {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            },
-            "error_message": {
-                "type": [
-                    "null",
-                    "string"
-                ]
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "completed_at",
-            "created_at",
-            "error_message",
-            "processed_users",
-            "status",
-            "total_users"
-        ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "InviteTargetUsersJobStatus": {
-        "type": "number",
-        "enum": [
-            0,
-            1,
-            2,
-            3
-        ],
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "ErrorList": {

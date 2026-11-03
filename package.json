@@ -13,6 +13,7 @@
         "build": "npm run build:src && npm run generate:schema && npm run generate:openapi",
         "build:src": "tsc -b -v",
         "watch": "tsc -w -b .",
+        "clean": "rm -rf dist/",
         "test": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/test.js",
         "lint": "eslint . --stats --concurrency 4",
         "setup": "npm run build && npm run generate:schema",
@@ -23,7 +24,8 @@
         "generate:openapi": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/openapi.js",
         "add:license": "node -r dotenv/config -r module-alias/register --enable-source-maps scripts/license.js",
         "node:tests": "npm run build:src && node -r dotenv/config -r module-alias/register --enable-source-maps --test --experimental-test-coverage dist/**/*.test.js",
-        "apply:migrations": "node --enable-source-maps dist/apply-migrations.js"
+        "apply:migrations": "node --enable-source-maps dist/apply-migrations.js",
+        "apply:config": "node dist/applyConfig.js"
     },
     "main": "dist/bundle/index.js",
     "types": "src/bundle/index.ts",
@@ -35,9 +37,6 @@
     "license": "AGPL-3.0-only",
     "bugs": {
         "url": "https://github.com/spacebarchat/server/issues"
-    },
-    "imports": {
-        "#*": "./dist/*/index.js"
     },
     "homepage": "https://spacebar.chat",
     "devDependencies": {

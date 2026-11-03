@@ -1832,6 +1832,213 @@
                     "user_sessions"
                 ]
             },
+            "JsonArray": {
+                "type": "object",
+                "patternProperties": {
+                    "^[0-9]+$": {
+                        "$ref": "#/components/schemas/JsonValue"
+                    }
+                },
+                "properties": {
+                    "length": {
+                        "type": "integer"
+                    },
+                    "__@unscopables@751": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "type": "boolean"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "boolean"
+                            },
+                            "toString": {
+                                "type": "boolean"
+                            },
+                            "toLocaleString": {
+                                "type": "boolean"
+                            },
+                            "pop": {
+                                "type": "boolean"
+                            },
+                            "push": {
+                                "type": "boolean"
+                            },
+                            "concat": {
+                                "type": "boolean"
+                            },
+                            "join": {
+                                "type": "boolean"
+                            },
+                            "reverse": {
+                                "type": "boolean"
+                            },
+                            "shift": {
+                                "type": "boolean"
+                            },
+                            "slice": {
+                                "type": "boolean"
+                            },
+                            "sort": {
+                                "type": "boolean"
+                            },
+                            "splice": {
+                                "type": "boolean"
+                            },
+                            "unshift": {
+                                "type": "boolean"
+                            },
+                            "indexOf": {
+                                "type": "boolean"
+                            },
+                            "lastIndexOf": {
+                                "type": "boolean"
+                            },
+                            "every": {
+                                "type": "boolean"
+                            },
+                            "some": {
+                                "type": "boolean"
+                            },
+                            "forEach": {
+                                "type": "boolean"
+                            },
+                            "map": {
+                                "type": "boolean"
+                            },
+                            "filter": {
+                                "type": "boolean"
+                            },
+                            "reduce": {
+                                "type": "boolean"
+                            },
+                            "reduceRight": {
+                                "type": "boolean"
+                            },
+                            "find": {
+                                "type": "boolean"
+                            },
+                            "findIndex": {
+                                "type": "boolean"
+                            },
+                            "fill": {
+                                "type": "boolean"
+                            },
+                            "copyWithin": {
+                                "type": "boolean"
+                            },
+                            "entries": {
+                                "type": "boolean"
+                            },
+                            "keys": {
+                                "type": "boolean"
+                            },
+                            "values": {
+                                "type": "boolean"
+                            },
+                            "includes": {
+                                "type": "boolean"
+                            },
+                            "flatMap": {
+                                "type": "boolean"
+                            },
+                            "flat": {
+                                "type": "boolean"
+                            },
+                            "at": {
+                                "type": "boolean"
+                            },
+                            "findLast": {
+                                "type": "boolean"
+                            },
+                            "findLastIndex": {
+                                "type": "boolean"
+                            },
+                            "toReversed": {
+                                "type": "boolean"
+                            },
+                            "toSorted": {
+                                "type": "boolean"
+                            },
+                            "toSpliced": {
+                                "type": "boolean"
+                            },
+                            "with": {
+                                "type": "boolean"
+                            },
+                            "__@iterator@749": {
+                                "type": "boolean"
+                            },
+                            "__@unscopables@751": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "__@unscopables@751",
+                    "length"
+                ]
+            },
+            "GuildAvailableSchema": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "available",
+                    "id"
+                ]
+            },
+            "Tag": {
+                "type": "object",
+                "properties": {
+                    "channel_id": {
+                        "type": "string"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "moderated": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "emoji_id": {
+                        "type": "string"
+                    },
+                    "emoji_name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "channel_id",
+                    "id",
+                    "moderated",
+                    "name"
+                ]
+            },
+            "InviteListResponse": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/PublicInvite"
+                }
+            },
             "UserAccountModifySchema": {
                 "type": "object",
                 "properties": {
@@ -3130,40 +3337,6 @@
                     "verified"
                 ]
             },
-            "Tag": {
-                "type": "object",
-                "properties": {
-                    "channel_id": {
-                        "type": "string"
-                    },
-                    "channel": {
-                        "$ref": "#/components/schemas/Channel"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "moderated": {
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "emoji_id": {
-                        "type": "string"
-                    },
-                    "emoji_name": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "channel",
-                    "channel_id",
-                    "id",
-                    "moderated",
-                    "name"
-                ]
-            },
             "Channel": {
                 "type": "object",
                 "properties": {
@@ -3360,157 +3533,6 @@
                 },
                 "required": [
                     "refreshed_urls"
-                ]
-            },
-            "JsonArray": {
-                "type": "object",
-                "patternProperties": {
-                    "^[0-9]+$": {
-                        "$ref": "#/components/schemas/JsonValue"
-                    }
-                },
-                "properties": {
-                    "length": {
-                        "type": "integer"
-                    },
-                    "__@unscopables@751": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "patternProperties": {
-                            "^[0-9]+$": {
-                                "type": "boolean"
-                            }
-                        },
-                        "properties": {
-                            "length": {
-                                "type": "boolean"
-                            },
-                            "toString": {
-                                "type": "boolean"
-                            },
-                            "toLocaleString": {
-                                "type": "boolean"
-                            },
-                            "pop": {
-                                "type": "boolean"
-                            },
-                            "push": {
-                                "type": "boolean"
-                            },
-                            "concat": {
-                                "type": "boolean"
-                            },
-                            "join": {
-                                "type": "boolean"
-                            },
-                            "reverse": {
-                                "type": "boolean"
-                            },
-                            "shift": {
-                                "type": "boolean"
-                            },
-                            "slice": {
-                                "type": "boolean"
-                            },
-                            "sort": {
-                                "type": "boolean"
-                            },
-                            "splice": {
-                                "type": "boolean"
-                            },
-                            "unshift": {
-                                "type": "boolean"
-                            },
-                            "indexOf": {
-                                "type": "boolean"
-                            },
-                            "lastIndexOf": {
-                                "type": "boolean"
-                            },
-                            "every": {
-                                "type": "boolean"
-                            },
-                            "some": {
-                                "type": "boolean"
-                            },
-                            "forEach": {
-                                "type": "boolean"
-                            },
-                            "map": {
-                                "type": "boolean"
-                            },
-                            "filter": {
-                                "type": "boolean"
-                            },
-                            "reduce": {
-                                "type": "boolean"
-                            },
-                            "reduceRight": {
-                                "type": "boolean"
-                            },
-                            "find": {
-                                "type": "boolean"
-                            },
-                            "findIndex": {
-                                "type": "boolean"
-                            },
-                            "fill": {
-                                "type": "boolean"
-                            },
-                            "copyWithin": {
-                                "type": "boolean"
-                            },
-                            "entries": {
-                                "type": "boolean"
-                            },
-                            "keys": {
-                                "type": "boolean"
-                            },
-                            "values": {
-                                "type": "boolean"
-                            },
-                            "includes": {
-                                "type": "boolean"
-                            },
-                            "flatMap": {
-                                "type": "boolean"
-                            },
-                            "flat": {
-                                "type": "boolean"
-                            },
-                            "at": {
-                                "type": "boolean"
-                            },
-                            "findLast": {
-                                "type": "boolean"
-                            },
-                            "findLastIndex": {
-                                "type": "boolean"
-                            },
-                            "toReversed": {
-                                "type": "boolean"
-                            },
-                            "toSorted": {
-                                "type": "boolean"
-                            },
-                            "toSpliced": {
-                                "type": "boolean"
-                            },
-                            "with": {
-                                "type": "boolean"
-                            },
-                            "__@iterator@749": {
-                                "type": "boolean"
-                            },
-                            "__@unscopables@751": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                },
-                "required": [
-                    "__@unscopables@751",
-                    "length"
                 ]
             },
             "SettingsProtoResponse": {
@@ -7233,22 +7255,6 @@
                     "visibility"
                 ]
             },
-            "GuildAvailableSchema": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "available": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "available",
-                    "id"
-                ]
-            },
             "RoleResponse": {
                 "type": "object",
                 "properties": {
@@ -8376,12 +8382,6 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/VoiceRegionResponse"
-                }
-            },
-            "InviteListResponse": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/PublicInvite"
                 }
             },
             "FieldErrorResponse": {
@@ -14713,6 +14713,745 @@
                     2
                 ]
             },
+            "JsonValue": {
+                "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
+                "anyOf": [
+                    {
+                        "description": "Represents a JSON object.",
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/JsonValue"
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "patternProperties": {
+                            "^[0-9]+$": {
+                                "$ref": "#/components/schemas/JsonValue"
+                            }
+                        },
+                        "properties": {
+                            "length": {
+                                "type": "integer"
+                            },
+                            "__@unscopables@751": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "patternProperties": {
+                                    "^[0-9]+$": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "properties": {
+                                    "length": {
+                                        "type": "boolean"
+                                    },
+                                    "toString": {
+                                        "type": "boolean"
+                                    },
+                                    "toLocaleString": {
+                                        "type": "boolean"
+                                    },
+                                    "pop": {
+                                        "type": "boolean"
+                                    },
+                                    "push": {
+                                        "type": "boolean"
+                                    },
+                                    "concat": {
+                                        "type": "boolean"
+                                    },
+                                    "join": {
+                                        "type": "boolean"
+                                    },
+                                    "reverse": {
+                                        "type": "boolean"
+                                    },
+                                    "shift": {
+                                        "type": "boolean"
+                                    },
+                                    "slice": {
+                                        "type": "boolean"
+                                    },
+                                    "sort": {
+                                        "type": "boolean"
+                                    },
+                                    "splice": {
+                                        "type": "boolean"
+                                    },
+                                    "unshift": {
+                                        "type": "boolean"
+                                    },
+                                    "indexOf": {
+                                        "type": "boolean"
+                                    },
+                                    "lastIndexOf": {
+                                        "type": "boolean"
+                                    },
+                                    "every": {
+                                        "type": "boolean"
+                                    },
+                                    "some": {
+                                        "type": "boolean"
+                                    },
+                                    "forEach": {
+                                        "type": "boolean"
+                                    },
+                                    "map": {
+                                        "type": "boolean"
+                                    },
+                                    "filter": {
+                                        "type": "boolean"
+                                    },
+                                    "reduce": {
+                                        "type": "boolean"
+                                    },
+                                    "reduceRight": {
+                                        "type": "boolean"
+                                    },
+                                    "find": {
+                                        "type": "boolean"
+                                    },
+                                    "findIndex": {
+                                        "type": "boolean"
+                                    },
+                                    "fill": {
+                                        "type": "boolean"
+                                    },
+                                    "copyWithin": {
+                                        "type": "boolean"
+                                    },
+                                    "entries": {
+                                        "type": "boolean"
+                                    },
+                                    "keys": {
+                                        "type": "boolean"
+                                    },
+                                    "values": {
+                                        "type": "boolean"
+                                    },
+                                    "includes": {
+                                        "type": "boolean"
+                                    },
+                                    "flatMap": {
+                                        "type": "boolean"
+                                    },
+                                    "flat": {
+                                        "type": "boolean"
+                                    },
+                                    "at": {
+                                        "type": "boolean"
+                                    },
+                                    "findLast": {
+                                        "type": "boolean"
+                                    },
+                                    "findLastIndex": {
+                                        "type": "boolean"
+                                    },
+                                    "toReversed": {
+                                        "type": "boolean"
+                                    },
+                                    "toSorted": {
+                                        "type": "boolean"
+                                    },
+                                    "toSpliced": {
+                                        "type": "boolean"
+                                    },
+                                    "with": {
+                                        "type": "boolean"
+                                    },
+                                    "__@iterator@749": {
+                                        "type": "boolean"
+                                    },
+                                    "__@unscopables@751": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "__@unscopables@751",
+                            "length"
+                        ]
+                    },
+                    {
+                        "type": [
+                            "null",
+                            "string",
+                            "integer",
+                            "boolean"
+                        ]
+                    }
+                ]
+            },
+            "PublicInvite": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/InviteType"
+                    },
+                    "channel": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PublicChannel"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "guild_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "guild": {
+                        "$ref": "#/components/schemas/InviteGuild"
+                    },
+                    "profile": {
+                        "$ref": "#/components/schemas/GuildProfileResponse"
+                    },
+                    "inviter": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "flags": {
+                        "enum": [
+                            1,
+                            2,
+                            4,
+                            8
+                        ],
+                        "type": "number"
+                    },
+                    "target_type": {
+                        "type": "integer"
+                    },
+                    "target_user": {
+                        "$ref": "#/components/schemas/PartialUser"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InviteRole"
+                        }
+                    },
+                    "approximate_member_count": {
+                        "type": "integer"
+                    },
+                    "approximate_presence_count": {
+                        "type": "integer"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "new_member": {
+                        "type": "boolean"
+                    },
+                    "show_verification_form": {
+                        "type": "boolean"
+                    },
+                    "is_nickname_changeable": {
+                        "type": "boolean"
+                    },
+                    "target_users_job_status": {
+                        "$ref": "#/components/schemas/InviteTargetUsersJob"
+                    }
+                },
+                "required": [
+                    "channel",
+                    "code",
+                    "expires_at",
+                    "type"
+                ]
+            },
+            "InviteType": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ]
+            },
+            "PublicChannel": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ChannelType"
+                    },
+                    "guild_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "permission_overwrites": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ChannelPermissionOverwrite"
+                        }
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "topic": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "last_message_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last_pin_timestamp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "bitrate": {
+                        "type": "integer"
+                    },
+                    "user_limit": {
+                        "type": "integer"
+                    },
+                    "rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "recipients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PartialUser"
+                        }
+                    },
+                    "recipient_flags": {
+                        "type": "integer"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "managed": {
+                        "type": "boolean"
+                    },
+                    "blocked_user_warning_dismissed": {
+                        "type": "boolean"
+                    },
+                    "application_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "owner_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "owner": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PublicMember"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "parent_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "rtc_region": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "video_quality_mode": {
+                        "type": "integer"
+                    },
+                    "total_message_sent": {
+                        "type": "integer"
+                    },
+                    "message_count": {
+                        "type": "integer"
+                    },
+                    "member_count": {
+                        "type": "integer"
+                    },
+                    "member_ids_preview": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "thread_metadata": {
+                        "$ref": "#/components/schemas/ThreadMetadata"
+                    },
+                    "member": {
+                        "$ref": "#/components/schemas/PublicThreadMember"
+                    },
+                    "default_auto_archive_duration": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "default_thread_rate_limit_per_user": {
+                        "type": "integer"
+                    },
+                    "permissions": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "type": "integer"
+                    },
+                    "available_tags": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Tag"
+                        }
+                    },
+                    "applied_tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "default_reaction_emoji": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "default_forum_layout": {
+                        "type": "integer"
+                    },
+                    "default_sort_order": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "default_tag_setting": {
+                        "type": "string"
+                    },
+                    "is_message_request": {
+                        "type": "boolean"
+                    },
+                    "is_message_request_timestamp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_spam": {
+                        "type": "boolean"
+                    },
+                    "theme_color": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hd_streaming_until": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "hd_streaming_buyer_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_linkable": {
+                        "type": "boolean"
+                    },
+                    "is_viewable_and_writeable_by_all_members": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type"
+                ]
+            },
+            "PublicThreadMember": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "join_timestamp": {
+                        "type": "string"
+                    },
+                    "flags": {
+                        "$ref": "#/components/schemas/ThreadMemberFlags"
+                    },
+                    "muted": {
+                        "type": "boolean"
+                    },
+                    "mute_config": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/MuteConfig"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "member": {
+                        "$ref": "#/components/schemas/PublicMember"
+                    }
+                },
+                "required": [
+                    "flags",
+                    "join_timestamp"
+                ]
+            },
+            "InviteGuild": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "splash": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "verification_level": {
+                        "$ref": "#/components/schemas/GuildVerificationLevel"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "vanity_url_code": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "premium_subscription_count": {
+                        "type": "integer"
+                    },
+                    "premium_tier": {
+                        "$ref": "#/components/schemas/GuildPremiumTier"
+                    },
+                    "nsfw": {
+                        "type": "boolean"
+                    },
+                    "nsfw_level": {
+                        "$ref": "#/components/schemas/GuildNsfwLevel"
+                    }
+                },
+                "required": [
+                    "banner",
+                    "description",
+                    "features",
+                    "icon",
+                    "id",
+                    "name",
+                    "nsfw",
+                    "nsfw_level",
+                    "premium_tier",
+                    "splash",
+                    "vanity_url_code",
+                    "verification_level"
+                ]
+            },
+            "GuildVerificationLevel": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ]
+            },
+            "GuildPremiumTier": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "GuildNsfwLevel": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "GameActivity": {
+                "type": "object",
+                "properties": {
+                    "activity_level": {
+                        "type": "integer"
+                    },
+                    "activity_score": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "activity_level",
+                    "activity_score"
+                ]
+            },
+            "GuildTrait": {
+                "type": "object",
+                "properties": {
+                    "emoji_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emoji_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "emoji_animated": {
+                        "type": "boolean"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "emoji_animated",
+                    "emoji_id",
+                    "emoji_name",
+                    "label",
+                    "position"
+                ]
+            },
+            "GuildVisibilityLevel": {
+                "type": "number",
+                "enum": [
+                    1,
+                    2,
+                    3
+                ]
+            },
+            "InviteRole": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "color": {
+                        "type": "integer"
+                    },
+                    "colors": {
+                        "$ref": "#/components/schemas/RoleColors"
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "unicode_emoji": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "color",
+                    "colors",
+                    "id",
+                    "name",
+                    "position"
+                ]
+            },
+            "InviteTargetUsersJob": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/InviteTargetUsersJobStatus"
+                    },
+                    "total_users": {
+                        "type": "integer"
+                    },
+                    "processed_users": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "completed_at": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "error_message": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "completed_at",
+                    "created_at",
+                    "error_message",
+                    "processed_users",
+                    "status",
+                    "total_users"
+                ]
+            },
+            "InviteTargetUsersJobStatus": {
+                "type": "number",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            },
             "EmojiGuild": {
                 "type": "object",
                 "properties": {
@@ -15139,242 +15878,6 @@
                     "webhook"
                 ]
             },
-            "PublicChannel": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ChannelType"
-                    },
-                    "guild_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "position": {
-                        "type": "integer"
-                    },
-                    "permission_overwrites": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ChannelPermissionOverwrite"
-                        }
-                    },
-                    "name": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "topic": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "nsfw": {
-                        "type": "boolean"
-                    },
-                    "last_message_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "last_pin_timestamp": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "bitrate": {
-                        "type": "integer"
-                    },
-                    "user_limit": {
-                        "type": "integer"
-                    },
-                    "rate_limit_per_user": {
-                        "type": "integer"
-                    },
-                    "recipients": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/PartialUser"
-                        }
-                    },
-                    "recipient_flags": {
-                        "type": "integer"
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "managed": {
-                        "type": "boolean"
-                    },
-                    "blocked_user_warning_dismissed": {
-                        "type": "boolean"
-                    },
-                    "application_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "owner_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "owner": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/PublicMember"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "parent_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "rtc_region": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "video_quality_mode": {
-                        "type": "integer"
-                    },
-                    "total_message_sent": {
-                        "type": "integer"
-                    },
-                    "message_count": {
-                        "type": "integer"
-                    },
-                    "member_count": {
-                        "type": "integer"
-                    },
-                    "member_ids_preview": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "thread_metadata": {
-                        "$ref": "#/components/schemas/ThreadMetadata"
-                    },
-                    "member": {
-                        "$ref": "#/components/schemas/PublicThreadMember"
-                    },
-                    "default_auto_archive_duration": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "default_thread_rate_limit_per_user": {
-                        "type": "integer"
-                    },
-                    "permissions": {
-                        "type": "string"
-                    },
-                    "flags": {
-                        "type": "integer"
-                    },
-                    "available_tags": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Tag"
-                        }
-                    },
-                    "applied_tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "default_reaction_emoji": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "default_forum_layout": {
-                        "type": "integer"
-                    },
-                    "default_sort_order": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "default_tag_setting": {
-                        "type": "string"
-                    },
-                    "is_message_request": {
-                        "type": "boolean"
-                    },
-                    "is_message_request_timestamp": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "is_spam": {
-                        "type": "boolean"
-                    },
-                    "theme_color": {
-                        "type": "integer",
-                        "nullable": true
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "hd_streaming_until": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "hd_streaming_buyer_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "is_linkable": {
-                        "type": "boolean"
-                    },
-                    "is_viewable_and_writeable_by_all_members": {
-                        "type": "boolean"
-                    }
-                },
-                "required": [
-                    "id",
-                    "type"
-                ]
-            },
-            "PublicThreadMember": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "user_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "join_timestamp": {
-                        "type": "string"
-                    },
-                    "flags": {
-                        "$ref": "#/components/schemas/ThreadMemberFlags"
-                    },
-                    "muted": {
-                        "type": "boolean"
-                    },
-                    "mute_config": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/MuteConfig"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "member": {
-                        "$ref": "#/components/schemas/PublicMember"
-                    }
-                },
-                "required": [
-                    "flags",
-                    "join_timestamp"
-                ]
-            },
             "MessageActivity": {
                 "type": "object",
                 "properties": {
@@ -15576,178 +16079,6 @@
                 "required": [
                     "original",
                     "refreshed"
-                ]
-            },
-            "JsonValue": {
-                "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
-                "anyOf": [
-                    {
-                        "description": "Represents a JSON object.",
-                        "type": "object",
-                        "additionalProperties": {
-                            "$ref": "#/components/schemas/JsonValue"
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "patternProperties": {
-                            "^[0-9]+$": {
-                                "$ref": "#/components/schemas/JsonValue"
-                            }
-                        },
-                        "properties": {
-                            "length": {
-                                "type": "integer"
-                            },
-                            "__@unscopables@751": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "patternProperties": {
-                                    "^[0-9]+$": {
-                                        "type": "boolean"
-                                    }
-                                },
-                                "properties": {
-                                    "length": {
-                                        "type": "boolean"
-                                    },
-                                    "toString": {
-                                        "type": "boolean"
-                                    },
-                                    "toLocaleString": {
-                                        "type": "boolean"
-                                    },
-                                    "pop": {
-                                        "type": "boolean"
-                                    },
-                                    "push": {
-                                        "type": "boolean"
-                                    },
-                                    "concat": {
-                                        "type": "boolean"
-                                    },
-                                    "join": {
-                                        "type": "boolean"
-                                    },
-                                    "reverse": {
-                                        "type": "boolean"
-                                    },
-                                    "shift": {
-                                        "type": "boolean"
-                                    },
-                                    "slice": {
-                                        "type": "boolean"
-                                    },
-                                    "sort": {
-                                        "type": "boolean"
-                                    },
-                                    "splice": {
-                                        "type": "boolean"
-                                    },
-                                    "unshift": {
-                                        "type": "boolean"
-                                    },
-                                    "indexOf": {
-                                        "type": "boolean"
-                                    },
-                                    "lastIndexOf": {
-                                        "type": "boolean"
-                                    },
-                                    "every": {
-                                        "type": "boolean"
-                                    },
-                                    "some": {
-                                        "type": "boolean"
-                                    },
-                                    "forEach": {
-                                        "type": "boolean"
-                                    },
-                                    "map": {
-                                        "type": "boolean"
-                                    },
-                                    "filter": {
-                                        "type": "boolean"
-                                    },
-                                    "reduce": {
-                                        "type": "boolean"
-                                    },
-                                    "reduceRight": {
-                                        "type": "boolean"
-                                    },
-                                    "find": {
-                                        "type": "boolean"
-                                    },
-                                    "findIndex": {
-                                        "type": "boolean"
-                                    },
-                                    "fill": {
-                                        "type": "boolean"
-                                    },
-                                    "copyWithin": {
-                                        "type": "boolean"
-                                    },
-                                    "entries": {
-                                        "type": "boolean"
-                                    },
-                                    "keys": {
-                                        "type": "boolean"
-                                    },
-                                    "values": {
-                                        "type": "boolean"
-                                    },
-                                    "includes": {
-                                        "type": "boolean"
-                                    },
-                                    "flatMap": {
-                                        "type": "boolean"
-                                    },
-                                    "flat": {
-                                        "type": "boolean"
-                                    },
-                                    "at": {
-                                        "type": "boolean"
-                                    },
-                                    "findLast": {
-                                        "type": "boolean"
-                                    },
-                                    "findLastIndex": {
-                                        "type": "boolean"
-                                    },
-                                    "toReversed": {
-                                        "type": "boolean"
-                                    },
-                                    "toSorted": {
-                                        "type": "boolean"
-                                    },
-                                    "toSpliced": {
-                                        "type": "boolean"
-                                    },
-                                    "with": {
-                                        "type": "boolean"
-                                    },
-                                    "__@iterator@749": {
-                                        "type": "boolean"
-                                    },
-                                    "__@unscopables@751": {
-                                        "type": "boolean"
-                                    }
-                                }
-                            }
-                        },
-                        "required": [
-                            "__@unscopables@751",
-                            "length"
-                        ]
-                    },
-                    {
-                        "type": [
-                            "null",
-                            "string",
-                            "integer",
-                            "boolean"
-                        ]
-                    }
                 ]
             },
             "DmChannelDTO": {
@@ -17502,67 +17833,6 @@
                 "type": "number",
                 "const": 3
             },
-            "GameActivity": {
-                "type": "object",
-                "properties": {
-                    "activity_level": {
-                        "type": "integer"
-                    },
-                    "activity_score": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "activity_level",
-                    "activity_score"
-                ]
-            },
-            "GuildTrait": {
-                "type": "object",
-                "properties": {
-                    "emoji_id": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "emoji_name": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "emoji_animated": {
-                        "type": "boolean"
-                    },
-                    "label": {
-                        "type": "string"
-                    },
-                    "position": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "emoji_animated",
-                    "emoji_id",
-                    "emoji_name",
-                    "label",
-                    "position"
-                ]
-            },
-            "GuildVisibilityLevel": {
-                "type": "number",
-                "enum": [
-                    1,
-                    2,
-                    3
-                ]
-            },
-            "GuildPremiumTier": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ]
-            },
             "GifTrendingCategory": {
                 "type": "object",
                 "properties": {
@@ -17732,276 +18002,6 @@
                         "type": "string"
                     }
                 }
-            },
-            "PublicInvite": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/InviteType"
-                    },
-                    "channel": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/PublicChannel"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "guild_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "guild": {
-                        "$ref": "#/components/schemas/InviteGuild"
-                    },
-                    "profile": {
-                        "$ref": "#/components/schemas/GuildProfileResponse"
-                    },
-                    "inviter": {
-                        "$ref": "#/components/schemas/PartialUser"
-                    },
-                    "flags": {
-                        "enum": [
-                            1,
-                            2,
-                            4,
-                            8
-                        ],
-                        "type": "number"
-                    },
-                    "target_type": {
-                        "type": "integer"
-                    },
-                    "target_user": {
-                        "$ref": "#/components/schemas/PartialUser"
-                    },
-                    "roles": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/InviteRole"
-                        }
-                    },
-                    "approximate_member_count": {
-                        "type": "integer"
-                    },
-                    "approximate_presence_count": {
-                        "type": "integer"
-                    },
-                    "expires_at": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "new_member": {
-                        "type": "boolean"
-                    },
-                    "show_verification_form": {
-                        "type": "boolean"
-                    },
-                    "is_nickname_changeable": {
-                        "type": "boolean"
-                    },
-                    "target_users_job_status": {
-                        "$ref": "#/components/schemas/InviteTargetUsersJob"
-                    }
-                },
-                "required": [
-                    "channel",
-                    "code",
-                    "expires_at",
-                    "type"
-                ]
-            },
-            "InviteType": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2
-                ]
-            },
-            "InviteGuild": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "description": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "banner": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "splash": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "verification_level": {
-                        "$ref": "#/components/schemas/GuildVerificationLevel"
-                    },
-                    "features": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "vanity_url_code": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "premium_subscription_count": {
-                        "type": "integer"
-                    },
-                    "premium_tier": {
-                        "$ref": "#/components/schemas/GuildPremiumTier"
-                    },
-                    "nsfw": {
-                        "type": "boolean"
-                    },
-                    "nsfw_level": {
-                        "$ref": "#/components/schemas/GuildNsfwLevel"
-                    }
-                },
-                "required": [
-                    "banner",
-                    "description",
-                    "features",
-                    "icon",
-                    "id",
-                    "name",
-                    "nsfw",
-                    "nsfw_level",
-                    "premium_tier",
-                    "splash",
-                    "vanity_url_code",
-                    "verification_level"
-                ]
-            },
-            "GuildVerificationLevel": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    4
-                ]
-            },
-            "GuildNsfwLevel": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ]
-            },
-            "InviteRole": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "position": {
-                        "type": "integer"
-                    },
-                    "color": {
-                        "type": "integer"
-                    },
-                    "colors": {
-                        "$ref": "#/components/schemas/RoleColors"
-                    },
-                    "icon": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "unicode_emoji": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "color",
-                    "colors",
-                    "id",
-                    "name",
-                    "position"
-                ]
-            },
-            "InviteTargetUsersJob": {
-                "type": "object",
-                "properties": {
-                    "status": {
-                        "$ref": "#/components/schemas/InviteTargetUsersJobStatus"
-                    },
-                    "total_users": {
-                        "type": "integer"
-                    },
-                    "processed_users": {
-                        "type": "integer"
-                    },
-                    "created_at": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "completed_at": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "format": "date-time"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "error_message": {
-                        "type": "string",
-                        "nullable": true
-                    }
-                },
-                "required": [
-                    "completed_at",
-                    "created_at",
-                    "error_message",
-                    "processed_users",
-                    "status",
-                    "total_users"
-                ]
-            },
-            "InviteTargetUsersJobStatus": {
-                "type": "number",
-                "enum": [
-                    0,
-                    1,
-                    2,
-                    3
-                ]
             },
             "ErrorList": {
                 "type": "object"

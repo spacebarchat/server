@@ -23,6 +23,7 @@ import WS from "ws";
 import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
+import { EnvConfig } from "@spacebar/util";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config
@@ -35,23 +36,17 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
         socket.rawSocket.on("message", (data, isBinary) => onMessage(socket, data as Buffer));
         console.log("[WebRTC] new connection", request.url);
 
-        if (process.env.WS_LOGEVENTS) {
-            [
-                "close",
-                "error",
-                "upgrade",
-                //"message",
-                "open",
-                "ping",
-                "pong",
-                "unexpected-response",
-            ].forEach((x) => {
-                socket.rawSocket.on(x, (y) => console.log("[WebRTC]", x, y));
-            });
+        if (EnvConfig.get().logging.gatewayLogging.logHttp) {
+            ["close", "error", "upgrade", "open", "ping", "pong", "unexpected-response", ...(EnvConfig.get().logging.gatewayLogging.logHttpMessages ? ["message"] : [])].forEach(
+                (x) => {
+                    socket.rawSocket.on(x, (y) => console.log("[WebRTC]", x, y));
+                },
+            );
         }
 
         const { searchParams } = new URL(`http://localhost${request.url}`);
 
+        socket.logUserRef = "[Unauthenticated]";
         socket.encoding = "json";
         socket.version = Number(searchParams.get("v")) || 9;
         if (socket.version < 3) return socket.rawSocket.close(CLOSECODES.Unknown_error, "invalid version");

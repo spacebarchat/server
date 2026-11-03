@@ -16,7 +16,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, Payload, WebSocket } from "@spacebar/gateway";
+import { CLOSECODES, Payload, WebSocket, OPCODES } from "@spacebar/gateway";
 import * as erlpack from "harmony-erlpack";
 import fs from "node:fs/promises";
 import BigIntJson from "json-bigint";
@@ -26,6 +26,7 @@ import OPCodeHandlers from "../opcodes";
 import { check } from "../opcodes/instanceOf";
 import { PayloadSchema } from "@spacebar/schemas";
 import { HTTPError } from "lambert-server";
+import { EnvConfig } from "@spacebar/util";
 
 const bigIntJson = BigIntJson({ storeAsString: true });
 
@@ -66,13 +67,23 @@ export async function Message(socket: WebSocket, buffer: WS.Data) {
         return socket.rawSocket.close(CLOSECODES.Decode_error);
     }
 
-    if (process.env.WS_VERBOSE) console.log(`[Websocket] Incoming message: ${JSON.stringify(data)}`);
+    const logging = EnvConfig.get().logging.gatewayLogging;
+    if (logging.enabled) {
+        const opcodeName = OPCODES[data.op];
 
-    if (process.env.WS_DUMP) {
+        let message = `[Gateway] <~ ${socket.logUserRef} ${opcodeName}(${data.op})`;
+        if (data.t !== undefined) message += ` ${data.t}`;
+        if (data.s !== undefined) message += ` Seq=${data.s}`;
+        if (logging.logPayload) message += ` ${JSON.stringify(data.d)}`;
+        console.log(message);
+    }
+
+    const dumpPath = EnvConfig.get().logging.dumpGatewayEventPath;
+    if (dumpPath) {
         const id = socket.session_id || "unknown";
 
-        await fs.mkdir(path.join("dump", id), { recursive: true });
-        await fs.writeFile(path.join("dump", id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
+        await fs.mkdir(path.join(dumpPath!, id), { recursive: true });
+        await fs.writeFile(path.join(dumpPath!, id, `${Date.now()}.in.json`), JSON.stringify(data, null, 2));
 
         if (!socket.session_id) console.log(`[Gateway/${socket.user_id ?? socket.ipAddress}] Unknown session id, dumping to unknown folder`);
     }
