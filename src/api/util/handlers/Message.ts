@@ -858,7 +858,8 @@ async function handleMessageMentionsAsync(message: Message) {
             let pinged = mention_everyone || channel.type === ChannelType.DM || channel.type === ChannelType.GROUP_DM;
             if (!pinged) pinged = !!message.mentions.find((user) => user.id === id);
             // TODO: can we somehow rewrite this into an In(...) query?
-            if (!pinged) pinged = !!(await Member.find({ where: { id, roles: Or(...message.mention_roles.map(({ id }) => Equal(id))) } }));
+            // TODO: do role mentions even make sense on ephemeral messages???
+            if (!pinged && message.mention_roles.length) pinged = !!(await Member.find({ where: { id, roles: Or(...message.mention_roles.map(({ id }) => Equal(id))) } }));
             if (pinged) {
                 //stuff
             }
