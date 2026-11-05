@@ -82,9 +82,8 @@ public class AuthenticatedSpacebarClient {
         return (await resp.Content.ReadFromJsonAsync<List<Guild>>())!;
     }
 
-    public async Task LogOutAsync()
-    {
-        var resp = await ApiHttpClient.PostAsJsonAsync("auth/logout", new {});
+    public async Task LogOutAsync() {
+        var resp = await ApiHttpClient.PostAsJsonAsync("auth/logout", new { });
         if (!resp.IsSuccessStatusCode) throw SpacebarApiException.FromJson((await resp.Content.ReadFromJsonAsync<JsonObject>())!);
     }
 }
@@ -136,9 +135,9 @@ public class SpacebarClientChannel(AuthenticatedSpacebarClient client, long chan
         return (await resp.Content.ReadFromJsonAsync<Channel>())!;
     }
 
-//     public async Task SendMessageAsync(MessageSchema messageSchema) {
-//         throw new NotImplementedException();
-//     }
+    //     public async Task SendMessageAsync(MessageSchema messageSchema) {
+    //         throw new NotImplementedException();
+    //     }
 }
 
 public class SpacebarClientGuild(AuthenticatedSpacebarClient client, long guildId) {
@@ -186,7 +185,10 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
 
     public IdentifyRequest IdentifyData { get; } = new() {
         Intents = (GatewayIntentFlags?)0xFFFFFFFF, // too lazy to do math, just gimme everything
-        Capabilities = 0
+        Capabilities = 0,
+        ClientProperties = new() {
+            
+        }
     };
 
     public List<Func<GatewayPayload, Task>> OnGatewayMessage { get; } = [];
@@ -216,7 +218,11 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
                 IdentifyData.Token = token;
                 await RawClientWebSocket.SendAsync(JsonSerializer.SerializeToUtf8Bytes(new GatewayPayload() {
                     Opcode = GatewayOpcode.C2SIdentify, // Identify
-                    EventData = IdentifyData.ToJsonNode().AsObject()
+                    EventData = JsonSerializer.SerializeToNode(IdentifyData, new JsonSerializerOptions() {
+                        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                    })!.AsObject()
+                }, new JsonSerializerOptions() {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 }), WebSocketMessageType.Text, WebSocketMessageFlags.EndOfMessage, CancellationToken.None);
             }
             else if (msg.Opcode == GatewayOpcode.S2CHeartbeatAck) {
@@ -249,14 +255,16 @@ public class AuthenticatedSpacebarGatewayClient(ILogger<AuthenticatedSpacebarGat
         while (RawClientWebSocket.State < WebSocketState.Closed) {
             await RawClientWebSocket.SendAsync(JsonSerializer.SerializeToUtf8Bytes(new GatewayPayload() {
                 Opcode = GatewayOpcode.C2SQoSHeartbeat, // QoS Heartbeat
-                EventData = new QoSHeartbeatRequest() {
+                EventData = JsonSerializer.SerializeToNode(new QoSHeartbeatRequest() {
                     Sequence = Sequence,
                     QoSPayload = new() {
                         Active = true,
                         Reasons = ["foregrounded"],
                         Version = 27
                     }
-                }.ToJsonNode().AsObject()
+                }, new JsonSerializerOptions() {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                })!.AsObject()
             }), WebSocketMessageType.Text, WebSocketMessageFlags.EndOfMessage, ct);
             await Task.Delay(interval, ct);
         }
