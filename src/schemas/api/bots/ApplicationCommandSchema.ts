@@ -21,14 +21,10 @@ import { ApplicationCommandOption, Snowflake, StringStringDictionary } from "@sp
 export interface ApplicationCommandSchema {
     id?: Snowflake;
     type?: ApplicationCommandType;
-    application_id: Snowflake;
-    guild_id?: Snowflake;
     name: string;
     name_localizations?: StringStringDictionary;
-    name_localized?: string | null;
     description: string;
     description_localizations?: StringStringDictionary;
-    description_localized?: string | null;
     options?: ApplicationCommandOption[];
     default_member_permissions: string | null;
     /*
@@ -38,10 +34,19 @@ export interface ApplicationCommandSchema {
     permissions?: ApplicationCommandIndexPermissions;
     nsfw?: boolean;
     integration_types?: ApplicationIntegrationType[];
-    global_popularity_rank?: number;
     contexts?: InteractionContextType[];
     version: Snowflake;
     handler?: ApplicationCommandHandlerType;
+}
+
+export type ApplicationCommandListResponse = ApplicationCommandResponse[];
+export interface ApplicationCommandResponse extends ApplicationCommandSchema {
+    id: Snowflake;
+    application_id: Snowflake;
+    guild_id?: Snowflake;
+    name_localized?: string | null;
+    description_localized?: string | null;
+    global_popularity_rank?: number;
 }
 
 export interface ApplicationCommandIndexPermissions {

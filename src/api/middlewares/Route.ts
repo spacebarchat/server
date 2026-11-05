@@ -19,7 +19,7 @@
 import { DiscordApiErrors, EVENT, FieldErrors, PermissionResolvable, Permissions, RightResolvable, Rights, SpacebarApiErrors, getPermission, getRights } from "@spacebar/util";
 import { AnyValidateFunction } from "ajv/dist/core";
 import { NextFunction, Request, Response } from "express";
-import { ajv } from "@spacebar/schemas";
+import { ajv, getInvalidSchemaValues } from "@spacebar/schemas";
 import { BigNumber } from "bignumber.js";
 
 const ignoredRequestSchemas = [
@@ -179,6 +179,12 @@ export function route(opts: RouteOptions) {
                 );
                 if (process.env.LOG_VALIDATION_ERRORS) {
                     console.log(`[VALIDATION ERROR] ${req.method} ${req.originalUrl} - SCHEMA='${opts.requestBody}' -`, validate?.errors);
+                    if (process.env.LOG_VALIDATION_ERRORS_RESOLVED) {
+                        const resolved = getInvalidSchemaValues(req.body, validate.errors!);
+                        for (const res of resolved) {
+                            console.log(`[VALIDATION ERROR]`, res.keyword, res.instancePath, res.value);
+                        }
+                    }
                     if (process.env.LOG_VALIDATION_ERROR_SCHEMAS) console.log(validate.schema);
                 }
                 throw FieldErrors(fields, validate.errors!);

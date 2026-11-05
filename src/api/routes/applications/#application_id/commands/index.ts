@@ -18,29 +18,44 @@
 
 import { Request, Response, Router } from "express";
 import { IsNull } from "typeorm";
-import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
+import { ApplicationCommandCreateSchema, ApplicationCommandListResponse, ApplicationCommandSchema } from "@spacebar/schemas";
 import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand } from "@spacebar/database";
 import { Config, FieldErrors, Snowflake } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-    const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+router.get(
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "ApplicationCommandListResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
 
-    if (!applicationExists) {
-        res.status(404).send({ code: 404, message: "Unknown application" });
-        return;
-    }
+        if (!applicationExists) {
+            res.status(404).send({ code: 404, message: "Unknown application" });
+            return;
+        }
 
-    const command = await ApplicationCommand.find({ where: { application_id: req.params.application_id as string } });
-    res.send(command);
-});
+        const commands = await ApplicationCommand.find({ where: { application_id: req.params.application_id as string } });
+        res.send(commands.map((c) => c.toApplicationCommandResponse(req.user.settings?.locale)) satisfies ApplicationCommandListResponse);
+    },
+);
 
 router.post(
     "/",
     route({
         requestBody: "ApplicationCommandCreateSchema",
+        responses: {
+            200: {
+                body: "ApplicationCommandResponse",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -65,8 +80,7 @@ router.post(
             });
         }
 
-        const commandForDb: ApplicationCommandSchema = {
-            application_id: req.params.application_id as string,
+        const commandForDb: Partial<ApplicationCommand> = {
             name: body.name.trim(),
             name_localizations: body.name_localizations,
             description: body.description?.trim() || "",
@@ -86,13 +100,23 @@ router.post(
         const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id as string, name: body.name.trim() } });
 
         if (commandExists) {
-            await ApplicationCommand.update({ application_id: req.params.application_id as string, name: body.name.trim() }, commandForDb);
+            await ApplicationCommand.update({ application_id: req.params.application_id as string, name: body.name.trim(), guild_id: IsNull() }, commandForDb);
         } else {
             commandForDb.id = Snowflake.generate(); // Have to be done that way so the id doesn't change
-            await ApplicationCommand.save(commandForDb);
+            await ApplicationCommand.save({
+                ...commandForDb,
+                application_id: req.params.application_id as string,
+            });
         }
 
-        res.send(body);
+        const resultingCommand = await ApplicationCommand.findOneOrFail({
+            where: {
+                application_id: req.params.application_id as string,
+                name: body.name.trim(),
+                version: commandForDb.version,
+            },
+        });
+        res.send(resultingCommand.toApplicationCommandResponse());
     },
 );
 
@@ -100,6 +124,11 @@ router.put(
     "/",
     route({
         requestBody: "BulkApplicationCommandCreateSchema",
+        responses: {
+            200: {
+                body: "ApplicationCommandListResponse",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -121,6 +150,8 @@ router.put(
             await ApplicationCommand.delete({ application_id: req.params.application_id as string, guild_id: IsNull(), id: command.id });
         }
 
+        const resultingCommands: ApplicationCommand[] = [];
+
         for (const command of body) {
             if (!command.type) {
                 command.type = 1;
@@ -135,8 +166,7 @@ router.put(
                 });
             }
 
-            const commandForDb: ApplicationCommandSchema = {
-                application_id: req.params.application_id as string,
+            const commandForDb: Partial<ApplicationCommand> = {
                 name: command.name.trim(),
                 name_localizations: command.name_localizations,
                 description: command.description?.trim() || "",
@@ -154,16 +184,25 @@ router.put(
             };
 
             const commandExists = await ApplicationCommand.exists({ where: { application_id: req.params.application_id as string, name: command.name.trim() } });
+            const commandKey = { application_id: req.params.application_id as string, name: command.name.trim(), guild_id: IsNull() };
 
             if (commandExists) {
-                await ApplicationCommand.update({ application_id: req.params.application_id as string, name: command.name.trim() }, commandForDb);
+                await ApplicationCommand.update(commandKey, commandForDb);
             } else {
                 commandForDb.id = Snowflake.generate(); // Have to be done that way so the id doesn't change
-                await ApplicationCommand.save(commandForDb);
+                await ApplicationCommand.save({
+                    ...commandForDb,
+                    application_id: req.params.application_id as string,
+                });
             }
+
+            const resultingCommand = await ApplicationCommand.findOneOrFail({
+                where: commandKey,
+            });
+            resultingCommands.push(resultingCommand);
         }
 
-        res.send(body);
+        res.send(resultingCommands.map((c) => c.toApplicationCommandResponse()) satisfies ApplicationCommandListResponse);
     },
 );
 

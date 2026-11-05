@@ -17,6 +17,7 @@
 */
 
 import { Request, Response, Router } from "express";
+import { FindOptionsWhere } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand, Guild, Member } from "@spacebar/database";
 import { Config, FieldErrors, Snowflake } from "@spacebar/util";
@@ -24,42 +25,57 @@ import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@space
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-    const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+router.get(
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "ApplicationCommandResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
 
-    if (!applicationExists) {
-        res.status(404).send({ code: 404, message: "Unknown application" });
-        return;
-    }
+        if (!applicationExists) {
+            res.status(404).send({ code: 404, message: "Unknown application" });
+            return;
+        }
 
-    const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
+        const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
 
-    if (!guildExists) {
-        res.status(404).send({ code: 404, message: "Unknown Server" });
-        return;
-    }
+        if (!guildExists) {
+            res.status(404).send({ code: 404, message: "Unknown Server" });
+            return;
+        }
 
-    if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
-        res.status(401).send({ code: 401, message: "Missing Access" });
-        return;
-    }
+        if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
+            res.status(401).send({ code: 401, message: "Missing Access" });
+            return;
+        }
 
-    const command = await ApplicationCommand.findOne({
-        where: { application_id: req.params.application_id as string, id: req.params.command_id as string, guild_id: req.params.guild_id as string },
-    });
+        const command = await ApplicationCommand.findOne({
+            where: { application_id: req.params.application_id as string, id: req.params.command_id as string, guild_id: req.params.guild_id as string },
+        });
 
-    if (!command) {
-        res.status(404).send({ code: 404, message: "Unknown application command" });
-        return;
-    }
+        if (!command) {
+            res.status(404).send({ code: 404, message: "Unknown application command" });
+            return;
+        }
 
-    res.send(command);
-});
+        res.send(command.toApplicationCommandResponse(req.user.settings?.locale));
+    },
+);
 
 router.patch(
     "/",
     route({
         requestBody: "ApplicationCommandCreateSchema",
+        responses: {
+            200: {
+                body: "ApplicationCommandResponse",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -96,8 +112,7 @@ router.patch(
             });
         }
 
-        const commandForDb: ApplicationCommandSchema = {
-            application_id: req.params.application_id as string,
+        const commandForDb: Partial<ApplicationCommand> = {
             name: body.name.trim(),
             name_localizations: body.name_localizations,
             description: body.description?.trim() || "",
@@ -114,8 +129,56 @@ router.patch(
             version: Snowflake.generate(),
         };
 
+        const commandKey: FindOptionsWhere<ApplicationCommand> = {
+            application_id: req.params.application_id as string,
+            guild_id: req.params.guild_id as string,
+            id: req.params.command_id as string,
+            name: body.name.trim(),
+        };
+
+        const commandExists = await ApplicationCommand.exists({ where: commandKey });
+
+        if (!commandExists) {
+            res.status(404).send({ code: 404, message: "Unknown application command" });
+            return;
+        }
+
+        await ApplicationCommand.update(commandKey, commandForDb);
+        const resultingCommand = await ApplicationCommand.findOneOrFail({ where: commandKey });
+
+        res.send(resultingCommand.toApplicationCommandResponse());
+    },
+);
+
+router.delete(
+    "/",
+    route({
+        responses: {
+            204: {},
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+
+        if (!applicationExists) {
+            res.status(404).send({ code: 404, message: "Unknown application" });
+            return;
+        }
+
+        const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
+
+        if (!guildExists) {
+            res.status(404).send({ code: 404, message: "Unknown Server" });
+            return;
+        }
+
+        if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
+            res.status(401).send({ code: 401, message: "Missing Access" });
+            return;
+        }
+
         const commandExists = await ApplicationCommand.exists({
-            where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string, name: body.name.trim() },
+            where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string },
         });
 
         if (!commandExists) {
@@ -123,45 +186,9 @@ router.patch(
             return;
         }
 
-        await ApplicationCommand.update(
-            { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string, name: body.name.trim() },
-            commandForDb,
-        );
-        res.send(commandForDb);
+        await ApplicationCommand.delete({ application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string });
+        res.sendStatus(204);
     },
 );
-
-router.delete("/", route({}), async (req: Request, res: Response) => {
-    const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
-
-    if (!applicationExists) {
-        res.status(404).send({ code: 404, message: "Unknown application" });
-        return;
-    }
-
-    const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
-
-    if (!guildExists) {
-        res.status(404).send({ code: 404, message: "Unknown Server" });
-        return;
-    }
-
-    if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
-        res.status(401).send({ code: 401, message: "Missing Access" });
-        return;
-    }
-
-    const commandExists = await ApplicationCommand.exists({
-        where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string },
-    });
-
-    if (!commandExists) {
-        res.status(404).send({ code: 404, message: "Unknown application command" });
-        return;
-    }
-
-    await ApplicationCommand.delete({ application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: req.params.command_id as string });
-    res.sendStatus(204);
-});
 
 export default router;

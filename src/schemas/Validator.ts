@@ -79,7 +79,7 @@ export function getInvalidSchemaValues(data: object, errors: typeof ajv.errors):
             else if (e.keyword == "required") return { instancePath: instancePath + `/${e.params.missingProperty}`, value: "<<undefined>>", keyword: e.keyword };
             else if (e.keyword == "anyOf") return { instancePath: instancePath, value: "<<irrelevant>>", keyword: e.keyword };
 
-            console.log("Resolving:", { instancePath, eInstancePath: e.instancePath, eKeyword: e.keyword, eParams: e.params });
+            // console.log("Resolving:", { instancePath, eInstancePath: e.instancePath, eKeyword: e.keyword, eParams: e.params });
             return { ...getInvalidSchemaValue(data, instancePath), keyword: e.keyword };
         })
         .filter((x) => x != undefined);

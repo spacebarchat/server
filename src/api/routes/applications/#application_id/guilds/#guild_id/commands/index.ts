@@ -17,41 +17,57 @@
 */
 
 import { Request, Response, Router } from "express";
+import { FindOptionsWhere } from "typeorm";
 import { route } from "@spacebar/api/middlewares";
 import { Application, ApplicationCommand, Guild, Member } from "@spacebar/database";
 import { Config, FieldErrors, Snowflake } from "@spacebar/util";
-import { ApplicationCommandCreateSchema, ApplicationCommandSchema } from "@spacebar/schemas";
+import { ApplicationCommandCreateSchema, ApplicationCommandSchema, ApplicationCommandListResponse } from "@spacebar/schemas";
 
 const router = Router({ mergeParams: true });
 
-router.get("/", route({}), async (req: Request, res: Response) => {
-    const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
+router.get(
+    "/",
+    route({
+        responses: {
+            200: {
+                body: "ApplicationCommandResponse",
+            },
+        },
+    }),
+    async (req: Request, res: Response) => {
+        const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
 
-    if (!applicationExists) {
-        res.status(404).send({ code: 404, message: "Unknown application" });
-        return;
-    }
+        if (!applicationExists) {
+            res.status(404).send({ code: 404, message: "Unknown application" });
+            return;
+        }
 
-    const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
+        const guildExists = await Guild.exists({ where: { id: req.params.guild_id as string } });
 
-    if (!guildExists) {
-        res.status(404).send({ code: 404, message: "Unknown Server" });
-        return;
-    }
+        if (!guildExists) {
+            res.status(404).send({ code: 404, message: "Unknown Server" });
+            return;
+        }
 
-    if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
-        res.status(401).send({ code: 401, message: "Missing Access" });
-        return;
-    }
+        if (!(await Member.exists({ where: { id: req.params.application_id as string, guild_id: req.params.guild_id as string } }))) {
+            res.status(401).send({ code: 401, message: "Missing Access" });
+            return;
+        }
 
-    const command = await ApplicationCommand.find({ where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string } });
-    res.send(command);
-});
+        const command = await ApplicationCommand.find({ where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string } });
+        res.send(command);
+    },
+);
 
 router.post(
     "/",
     route({
         requestBody: "ApplicationCommandCreateSchema",
+        responses: {
+            200: {
+                body: "ApplicationCommandResponse",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -88,8 +104,7 @@ router.post(
             });
         }
 
-        const commandForDb: ApplicationCommandSchema = {
-            application_id: req.params.application_id as string,
+        const commandForDb: Partial<ApplicationCommand> = {
             guild_id: req.params.guild_id as string,
             name: body.name.trim(),
             name_localizations: body.name_localizations,
@@ -115,7 +130,10 @@ router.post(
             await ApplicationCommand.update({ application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, name: body.name.trim() }, commandForDb);
         } else {
             commandForDb.id = Snowflake.generate(); // Have to be done that way so the id doesn't change
-            await ApplicationCommand.save(commandForDb);
+            await ApplicationCommand.save({
+                ...commandForDb,
+                application_id: req.params.application_id as string,
+            });
         }
 
         res.send(body);
@@ -126,6 +144,11 @@ router.put(
     "/",
     route({
         requestBody: "BulkApplicationCommandCreateSchema",
+        responses: {
+            200: {
+                body: "ApplicationCommandListResponse",
+            },
+        },
     }),
     async (req: Request, res: Response) => {
         const applicationExists = await Application.exists({ where: { id: req.params.application_id as string } });
@@ -158,6 +181,7 @@ router.put(
         for (const command of commandsNotInArray) {
             await ApplicationCommand.delete({ application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, id: command.id });
         }
+        const resultingCommands: ApplicationCommand[] = [];
 
         for (const command of body) {
             if (!command.type) {
@@ -173,8 +197,7 @@ router.put(
                 });
             }
 
-            const commandForDb: ApplicationCommandSchema = {
-                application_id: req.params.application_id as string,
+            const commandForDb: Partial<ApplicationCommand> = {
                 guild_id: req.params.guild_id as string,
                 name: command.name.trim(),
                 name_localizations: command.name_localizations,
@@ -192,19 +215,29 @@ router.put(
                 version: Snowflake.generate(),
             };
 
-            const commandExists = await ApplicationCommand.exists({
-                where: { application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, name: command.name },
-            });
+            const commandKey: FindOptionsWhere<ApplicationCommand> = {
+                application_id: req.params.application_id as string,
+                guild_id: req.params.guild_id as string,
+                name: command.name,
+            };
+
+            const commandExists = await ApplicationCommand.exists({ where: commandKey });
 
             if (commandExists) {
-                await ApplicationCommand.update({ application_id: req.params.application_id as string, guild_id: req.params.guild_id as string, name: command.name }, commandForDb);
+                await ApplicationCommand.update(commandKey, commandForDb);
             } else {
                 commandForDb.id = Snowflake.generate(); // Have to be done that way so the id doesn't change
-                await ApplicationCommand.save(commandForDb);
+                await ApplicationCommand.save({
+                    ...commandForDb,
+                    application_id: req.params.application_id as string,
+                });
             }
+
+            const resultingCommand = await ApplicationCommand.findOneOrFail({ where: commandKey });
+            resultingCommands.push(resultingCommand);
         }
 
-        res.send(body);
+        res.send(resultingCommands.map((c) => c.toApplicationCommandResponse()) satisfies ApplicationCommandListResponse);
     },
 );
 

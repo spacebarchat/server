@@ -18,15 +18,17 @@
 
 import { Column, Entity } from "typeorm";
 import { BaseClass } from "./BaseClass";
-import type {
+import {
     ApplicationCommandHandlerType,
     ApplicationCommandOption,
     ApplicationCommandIndexPermissions,
     Snowflake,
     ApplicationIntegrationType,
     InteractionContextType,
+    ApplicationCommandResponse,
 } from "@spacebar/schemas";
 import { ApplicationCommandType } from "@spacebar/schemas/api/bots/ApplicationCommandSchema";
+import { getLocalizedValue } from "@spacebar/util";
 
 @Entity({
     name: "application_commands",
@@ -85,4 +87,29 @@ export class ApplicationCommand extends BaseClass {
 
     @Column({ default: 0 })
     handler?: ApplicationCommandHandlerType;
+
+    toApplicationCommandResponse(locale?: string): ApplicationCommandResponse {
+        return {
+            id: this.id,
+            type: this.type,
+            application_id: this.application_id,
+            guild_id: this.guild_id,
+            name: this.name,
+            name_localizations: this.name_localizations,
+            name_localized: getLocalizedValue(locale, this.name_localizations, this.name),
+            description: this.description,
+            description_localizations: this.description_localizations,
+            description_localized: getLocalizedValue(locale, this.description_localizations, this.description),
+            options: this.type === ApplicationCommandType.CHAT_INPUT ? this.options : undefined,
+            default_member_permissions: this.default_member_permissions,
+            dm_permission: this.dm_permission,
+            permissions: this.permissions,
+            nsfw: this.nsfw,
+            integration_types: this.integration_types,
+            global_popularity_rank: this.global_popularity_rank,
+            contexts: this.contexts,
+            version: this.version,
+            handler: this.handler,
+        } satisfies ApplicationCommandResponse;
+    }
 }

@@ -16,10 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ApplicationSku, PartialUser, Snowflake, Team } from "@spacebar/schemas";
+import { ApplicationSku, PartialUser, Snowflake, Team, StringStringDictionary, ChannelType, ApplicationCommandResponse } from "@spacebar/schemas";
 
 export interface ApplicationCommand {
-    id: string;
+    id: Snowflake;
     application_id: string;
     name: string;
     description: string;
@@ -29,14 +29,23 @@ export interface ApplicationCommand {
 export interface ApplicationCommandOption {
     type: ApplicationCommandOptionType;
     name: string;
+    name_localizations?: StringStringDictionary;
     description: string;
+    description_localizations?: StringStringDictionary;
     required?: boolean;
+    autocomplete?: boolean;
+    min_length?: number;
+    max_length?: number;
+    min_value?: number;
+    max_value?: number;
+    channel_types?: ChannelType[];
     choices?: ApplicationCommandOptionChoice[];
     options?: ApplicationCommandOption[];
 }
 
 export interface ApplicationCommandOptionChoice {
     name: string;
+    name_localizations?: StringStringDictionary;
     value: string | number;
 }
 
@@ -61,6 +70,24 @@ export interface ApplicationCommandInteractionDataOption {
     name: string;
     value?: unknown;
     options?: ApplicationCommandInteractionDataOption[];
+}
+
+export interface ApplicationCommandIndexApplication {
+    id: Snowflake;
+    name: string;
+    description: string;
+    icon: string | null;
+    permissions?: unknown; // TODO
+    bot?: PartialUser;
+    bot_id?: Snowflake;
+    flags: string;
+    embedded_activity_config?: Pick<EmbeddedActivityConfig, "supported_platforms">; // TODO: is this correct?
+}
+
+export interface ApplicationCommandIndexResponse {
+    applications: ApplicationCommandIndexApplication[];
+    application_commands: ApplicationCommandResponse[];
+    version: Snowflake;
 }
 
 export interface Application {
@@ -346,18 +373,22 @@ export enum EmbeddedActivityReleasePhase {
 }
 
 export type ApplicationAllowlistResponse = AllowlistedUser[];
+
 export interface AllowlistedUser {
     user: PartialUser;
     state: ApplicationMembershipState;
 }
+
 export enum ApplicationMembershipState {
     INVITED = 1,
     ACCEPTED = 2,
 }
+
 export interface AllowlistAddRequestSchema {
     username: string;
     discriminator?: string | null;
 }
+
 export interface AllowlistAcceptSchema {
     token: string;
 }

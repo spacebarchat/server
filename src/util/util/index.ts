@@ -29,6 +29,7 @@ export * from "./Intents";
 export * from "./InvisibleCharacters";
 export * from "./JSON";
 export * from "./KittyLogo";
+export * from "./Localization";
 export * from "./Logo";
 export * from "./MessageFlags";
 export * from "./networking";

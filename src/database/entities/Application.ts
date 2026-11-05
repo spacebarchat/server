@@ -17,6 +17,7 @@
 */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
+import { ApplicationCommandIndexApplication } from "@spacebar/schemas";
 import { BaseClass } from "./BaseClass";
 import { Team } from "./Team";
 import { User } from "./User";
@@ -148,4 +149,18 @@ export class Application extends BaseClass {
         onDelete: "CASCADE",
     })
     emojis: Emoji[];
+
+    toCommandIndexApplication(): ApplicationCommandIndexApplication {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            icon: this.icon ?? null,
+            permissions: undefined, // TODO
+            bot: this.bot?.toPartialUser(),
+            bot_id: this.bot?.id ?? this.id, // TODO HACK: this is uh, an assumption as bot users are created with the app's id
+            flags: this.flags.toString(),
+            embedded_activity_config: undefined,
+        } satisfies ApplicationCommandIndexApplication;
+    }
 }
