@@ -20,7 +20,7 @@ import { randomBytes } from "node:crypto";
 import { Request, Response, Router } from "express";
 import { InteractionFailureReason, InteractionSchema, InteractionType } from "@spacebar/schemas";
 import { route } from "@spacebar/api/middlewares";
-import { Guild, Member, Message } from "@spacebar/database";
+import { Guild, Member, Message, Channel } from "@spacebar/database";
 import { Config, emitEvent, getPermission, InteractionCreateEvent, InteractionFailureEvent, Snowflake } from "@spacebar/util";
 import { pendingInteractions } from "@spacebar/util/imports/Interactions";
 import { InteractionCreateSchema } from "@spacebar/schemas/api/bots/InteractionCreateSchema";
@@ -43,11 +43,14 @@ router.post("/", route({}), async (req: Request, res: Response) => {
     } satisfies InteractionCreateEvent);
 
     const user = req.user;
+    const channel = await Channel.findOneOrFail({ where: { id: body.channel_id } });
+    (await channel.getUserPermissions({ user_id: req.user_id })).hasThrow("USE_APPLICATION_COMMANDS");
 
     const interactionData: Partial<InteractionCreateSchema> = {
         id: interactionId,
         application_id: body.application_id,
         channel_id: body.channel_id,
+        channel: channel.toJSON(),
         type: body.type,
         token: interactionToken,
         version: 1,
