@@ -550,6 +550,9 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
             author!.icon_url = authorAttachment.toJSON().url;
             author!.proxy_icon_url = authorAttachment.toJSON().proxy_url;
         }
+
+        // we need to handle false-y values (empty string) here, so cant use ??=
+        embed.type ||= EmbedType.rich;
     }
     message.attachments = message.attachments?.filter((_, index) => !attachmentsToRemove.has(index));
 
@@ -560,12 +563,6 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
 
 export async function postHandleMessage(message: Message) {
     message.clean_data();
-
-    message.embeds ??= [];
-    message.embeds.forEach((embed) => {
-        // we need to handle false-y values (empty string) here, so cant use ??=
-        embed.type ||= EmbedType.rich;
-    });
 
     if (message.isWebhook || (await getPermission(message.author_id, message.channel.guild_id, message.channel_id)).has(Permissions.FLAGS.EMBED_LINKS))
         await fillMessageUrlEmbeds(message);
