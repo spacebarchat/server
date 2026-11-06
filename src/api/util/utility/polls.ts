@@ -27,7 +27,7 @@ export async function generatePollResultsMessage(options: MessageOptions): Promi
     const message = Message.create({
         ...options,
         message_reference: options.message_reference ?? undefined,
-        poll: options.poll,
+        poll: options.poll ?? undefined,
         // sticker_items: stickers,
         // guild_id: options.guild_id,
         channel_id: options.channel_id,

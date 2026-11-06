@@ -75,14 +75,13 @@ export interface MessageCreateSchema {
     file?: { filename: string };
     // TODO: we should create an interface for attachments
     attachments?: (MessageCreateAttachment | MessageCreateCloudAttachment)[];
-    sticker_ids?: string[] | null; // null check: fixes Discord-Go
-    components?: BaseMessageComponents[] | null; // null check: fixes Discord-Go
-    // TODO: Fix TypeScript errors in src\api\util\handlers\Message.ts once this is enabled
-    poll?: PollCreationSchema;
+    sticker_ids?: string[] | null;
+    components?: BaseMessageComponents[] | null;
+    poll?: PollCreationSchema | null;
     enforce_nonce?: boolean; // For Discord compatibility, it's the default behavior here
-    applied_tags?: string[]; // Not implemented yet, for webhooks in forums
-    thread_name?: string; // Not implemented yet, for webhooks
-    avatar_url?: string; // Not implemented yet, for webhooks
+    applied_tags?: string[]; // TODO: Not implemented yet, for webhooks in forums
+    thread_name?: string; // TODO: Not implemented yet, for webhooks
+    avatar_url?: string; // TODO: Not implemented yet, for webhooks
     interaction?: MessageInteractionSchema;
     interaction_metadata?: MessageInteractionSchema;
 }

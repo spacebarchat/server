@@ -5714,7 +5714,14 @@
                 ]
             },
             "poll": {
-                "$ref": "#/definitions/PollCreationSchema"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PollCreationSchema"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "enforce_nonce": {
                 "type": "boolean"
@@ -5858,7 +5865,14 @@
                 ]
             },
             "poll": {
-                "$ref": "#/definitions/PollCreationSchema"
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/PollCreationSchema"
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             },
             "flags": {
                 "type": "integer"

@@ -317,7 +317,7 @@ export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const message = Message.create({
         ...opts,
         message_reference: opts.message_reference ?? undefined,
-        poll: opts.poll,
+        poll: opts.poll ?? undefined,
         sticker_items: stickers,
         guild_id: channel.guild_id,
         channel_id: opts.channel_id,

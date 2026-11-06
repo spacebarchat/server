@@ -5091,7 +5091,14 @@
                         ]
                     },
                     "poll": {
-                        "$ref": "#/components/schemas/PollCreationSchema"
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PollCreationSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "enforce_nonce": {
                         "type": "boolean"
@@ -5229,7 +5236,14 @@
                         ]
                     },
                     "poll": {
-                        "$ref": "#/components/schemas/PollCreationSchema"
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/PollCreationSchema"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     },
                     "flags": {
                         "type": "integer"
