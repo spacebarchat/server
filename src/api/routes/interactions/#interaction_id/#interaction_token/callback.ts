@@ -59,7 +59,7 @@ router.post(
                 // TODO
                 break;
             case InteractionCallbackType.ACKNOWLEDGE:
-                // Deprected
+                // Deprecated
                 break;
             case InteractionCallbackType.CHANNEL_MESSAGE:
                 // TODO

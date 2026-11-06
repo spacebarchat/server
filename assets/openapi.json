@@ -8768,6 +8768,9 @@
                     },
                     "version": {
                         "type": "string"
+                    },
+                    "resolved": {
+                        "$ref": "#/components/schemas/InteractionResolvedData"
                     }
                 },
                 "required": [
@@ -8803,6 +8806,29 @@
                     "file_size",
                     "filename"
                 ]
+            },
+            "InteractionResolvedData": {
+                "type": "object",
+                "properties": {
+                    "users": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CPartialUser%3E"
+                    },
+                    "members": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2Cnever%3E"
+                    },
+                    "roles": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CRoleResponse%3E"
+                    },
+                    "channels": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CPublicChannel%3E"
+                    },
+                    "messages": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CPublicMessage%3E"
+                    },
+                    "attachments": {
+                        "$ref": "#/components/schemas/Record%3Cstring%2CPublicAttachment%3E"
+                    }
+                }
             },
             "JsonValue": {
                 "description": "Represents any possible JSON value:\n- number\n- string\n- boolean\n- null\n- object (with any JSON value as property)\n- array (with any JSON value as element)",
@@ -13070,19 +13096,7 @@
                         "type": "string"
                     },
                     "tags": {
-                        "type": "object",
-                        "properties": {
-                            "bot_id": {
-                                "type": "string"
-                            },
-                            "integration_id": {
-                                "type": "string"
-                            },
-                            "premium_subscriber": {
-                                "type": "boolean"
-                            }
-                        },
-                        "additionalProperties": false
+                        "$ref": "#/components/schemas/RoleTags"
                     },
                     "flags": {
                         "type": "integer"
@@ -13108,6 +13122,35 @@
                     "permissions",
                     "position"
                 ]
+            },
+            "RoleTags": {
+                "type": "object",
+                "properties": {
+                    "bot_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "integration_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "subscription_listing_id": {
+                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                        "type": "string"
+                    },
+                    "premium_subscriber": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "available_for_purchase": {
+                        "type": "boolean",
+                        "nullable": true
+                    },
+                    "guild_connections": {
+                        "type": "boolean",
+                        "nullable": true
+                    }
+                }
             },
             "UserGuildSettings": {
                 "type": "object",
@@ -15766,35 +15809,6 @@
                     "tts",
                     "type"
                 ]
-            },
-            "RoleTags": {
-                "type": "object",
-                "properties": {
-                    "bot_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "integration_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "subscription_listing_id": {
-                        "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                        "type": "string"
-                    },
-                    "premium_subscriber": {
-                        "type": "boolean",
-                        "nullable": true
-                    },
-                    "available_for_purchase": {
-                        "type": "boolean",
-                        "nullable": true
-                    },
-                    "guild_connections": {
-                        "type": "boolean",
-                        "nullable": true
-                    }
-                }
             },
             "GuildVanityUrl": {
                 "type": "object",

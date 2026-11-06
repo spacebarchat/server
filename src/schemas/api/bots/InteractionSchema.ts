@@ -16,7 +16,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { AllowedMentions, ApplicationCommandOption, Embed, Snowflake, UploadAttachmentRequestSchema } from "@spacebar/schemas";
+import {
+    AllowedMentions,
+    ApplicationCommandOption,
+    Embed,
+    Snowflake,
+    UploadAttachmentRequestSchema,
+    PartialUser,
+    PublicMember,
+    RoleResponse,
+    PublicChannel,
+    PublicMessage,
+    PublicAttachment,
+} from "@spacebar/schemas";
 
 export interface InteractionSchema {
     type: InteractionType;
@@ -34,7 +46,7 @@ export interface InteractionSchema {
     source?: string;
 }
 
-interface InteractionData {
+export interface InteractionData {
     application_command: object;
     attachments: UploadAttachmentRequestSchema[];
     id: string;
@@ -42,6 +54,18 @@ interface InteractionData {
     options: ApplicationCommandOption[];
     type: number;
     version: string;
+    resolved?: InteractionResolvedData;
+}
+
+// is this just what PartialMember is?
+export type InteractionResolvedPartialMember = PublicMember & { mute: undefined; deaf: undefined; user: undefined };
+export interface InteractionResolvedData {
+    users?: Record<Snowflake, PartialUser>;
+    members?: Record<Snowflake, InteractionResolvedPartialMember>; // PartialMember
+    roles?: Record<Snowflake, RoleResponse>;
+    channels?: Record<Snowflake, PublicChannel>; //PartialChannel
+    messages?: Record<Snowflake, PublicMessage>;
+    attachments?: Record<Snowflake, PublicAttachment>;
 }
 
 export interface Interaction {

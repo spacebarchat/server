@@ -17,7 +17,7 @@
 */
 
 import { Channel, Emoji, Guild, Role, Sticker } from "../../database/entities";
-import { ChannelOverride, ChannelType, PublicMember, PublicUser, UserGuildSettings } from "@spacebar/schemas";
+import { ChannelOverride, ChannelType, PublicMember, PublicUser, UserGuildSettings, RoleResponse } from "@spacebar/schemas";
 
 // TODO: this is not the best place for this type
 export type ReadyUserGuildSettingsEntries = Omit<UserGuildSettings, "channel_overrides"> & {
@@ -86,7 +86,7 @@ export interface IReadyGuildDTO {
         nsfw: boolean;
         id: string;
     };
-    roles: Role[];
+    roles: RoleResponse[];
     stage_instances: unknown[];
     stickers: Sticker[];
     threads: unknown[];
@@ -143,7 +143,7 @@ export class ReadyGuildDTO implements IReadyGuildDTO {
         nsfw: boolean;
         id: string;
     };
-    roles: Role[];
+    roles: RoleResponse[];
     stage_instances: unknown[];
     stickers: Sticker[];
     threads: unknown[];

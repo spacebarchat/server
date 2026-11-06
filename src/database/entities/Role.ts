@@ -20,7 +20,7 @@ import { Column, Entity, JoinColumn, ManyToOne, RelationId, Index } from "typeor
 
 import { BaseClass } from "./BaseClass";
 import { Guild } from "./Guild";
-import { RoleColors } from "@spacebar/schemas";
+import { RoleColors, RoleResponse, RoleTags } from "@spacebar/schemas";
 
 @Entity({
     name: "roles",
@@ -65,11 +65,7 @@ export class Role extends BaseClass {
     unicode_emoji?: string;
 
     @Column({ type: "jsonb", nullable: true })
-    tags?: {
-        bot_id?: string;
-        integration_id?: string;
-        premium_subscriber?: boolean;
-    };
+    tags?: RoleTags;
 
     @Column({ default: 0 })
     flags: number;
@@ -77,9 +73,10 @@ export class Role extends BaseClass {
     @Column({ nullable: false, type: "jsonb" })
     colors: RoleColors;
 
-    toJSON(): Role {
+    toJSON(): RoleResponse {
         return {
             ...this,
+            description: null, // TODO: this seems to only be used for onboarding, cba
             tags: this.tags ?? undefined,
         };
     }

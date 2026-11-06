@@ -10021,6 +10021,9 @@
             },
             "version": {
                 "type": "string"
+            },
+            "resolved": {
+                "$ref": "#/definitions/InteractionResolvedData"
             }
         },
         "additionalProperties": false,
@@ -10059,6 +10062,31 @@
             "file_size",
             "filename"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "InteractionResolvedData": {
+        "type": "object",
+        "properties": {
+            "users": {
+                "$ref": "#/definitions/Record%3Cstring%2CPartialUser%3E"
+            },
+            "members": {
+                "$ref": "#/definitions/Record%3Cstring%2Cnever%3E"
+            },
+            "roles": {
+                "$ref": "#/definitions/Record%3Cstring%2CRoleResponse%3E"
+            },
+            "channels": {
+                "$ref": "#/definitions/Record%3Cstring%2CPublicChannel%3E"
+            },
+            "messages": {
+                "$ref": "#/definitions/Record%3Cstring%2CPublicMessage%3E"
+            },
+            "attachments": {
+                "$ref": "#/definitions/Record%3Cstring%2CPublicAttachment%3E"
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "JsonValue": {
@@ -14851,19 +14879,7 @@
                 "type": "string"
             },
             "tags": {
-                "type": "object",
-                "properties": {
-                    "bot_id": {
-                        "type": "string"
-                    },
-                    "integration_id": {
-                        "type": "string"
-                    },
-                    "premium_subscriber": {
-                        "type": "boolean"
-                    }
-                },
-                "additionalProperties": false
+                "$ref": "#/definitions/RoleTags"
             },
             "flags": {
                 "type": "integer"
@@ -14890,6 +14906,43 @@
             "permissions",
             "position"
         ],
+        "$schema": "http://json-schema.org/draft-07/schema#"
+    },
+    "RoleTags": {
+        "type": "object",
+        "properties": {
+            "bot_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "integration_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "subscription_listing_id": {
+                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
+                "type": "string"
+            },
+            "premium_subscriber": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "available_for_purchase": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            },
+            "guild_connections": {
+                "type": [
+                    "null",
+                    "boolean"
+                ]
+            }
+        },
+        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "UserGuildSettings": {
@@ -17713,43 +17766,6 @@
             "tts",
             "type"
         ],
-        "$schema": "http://json-schema.org/draft-07/schema#"
-    },
-    "RoleTags": {
-        "type": "object",
-        "properties": {
-            "bot_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "integration_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "subscription_listing_id": {
-                "description": "A Twitter-like snowflake, except the epoch is 2015-01-01T00:00:00.000Z\n```\nIf we have a snowflake '266241948824764416' we can represent it as binary:\n\n64                                          22     17     12          0\n 000000111011000111100001101001000101000000  00001  00000  000000000000\n      number of ms since Discord epoch       worker  pid    increment\n```",
-                "type": "string"
-            },
-            "premium_subscriber": {
-                "type": [
-                    "null",
-                    "boolean"
-                ]
-            },
-            "available_for_purchase": {
-                "type": [
-                    "null",
-                    "boolean"
-                ]
-            },
-            "guild_connections": {
-                "type": [
-                    "null",
-                    "boolean"
-                ]
-            }
-        },
-        "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "GuildVanityUrl": {
