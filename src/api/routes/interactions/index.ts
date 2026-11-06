@@ -180,7 +180,7 @@ async function resolveInteractionDataRecursive(opts: ApplicationCommandOption[],
                 // TODO: different schema, cba to fix right now
                 if ("value" in opt && !(<string>opt.value in res.users)) {
                     if (!scope.guild_id) throw new Error("Cannot resolve users/members in non-guild context");
-                    const member = await Member.findOneOrFail({ where: { id: opt.value as string }, relations: { user: true } });
+                    const member = await Member.findOneOrFail({ where: { id: opt.value as string, guild_id: scope.guild_id }, relations: { user: true, roles: true } });
                     res.members[opt.value as string] = { ...member.toPublicMember(), mute: undefined, deaf: undefined, user: undefined } as InteractionResolvedPartialMember;
                     res.users[opt.value as string] = member.user.toPartialUser();
                 }
