@@ -7598,7 +7598,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -7618,13 +7617,13 @@
                 "$ref": "#/definitions/MessageWSourceCallback"
             },
             {
-                "$ref": "#/definitions/MessageDWSourceCallback"
+                "$ref": "#/definitions/DeferredChannelMessageWithSourceCallback"
             },
             {
                 "$ref": "#/definitions/MessageUpdateCallback"
             },
             {
-                "$ref": "#/definitions/MessageDUpdateCallback"
+                "$ref": "#/definitions/DeferredMessageUpdateCallback"
             }
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -9315,6 +9314,12 @@
                     },
                     "os_version": {
                         "type": "string"
+                    },
+                    "os_version_is_release": {
+                        "type": "boolean"
+                    },
+                    "os_build_revision": {
+                        "type": "integer"
                     },
                     "referrer": {
                         "type": "string"
@@ -18932,7 +18937,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -18952,7 +18956,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -18972,7 +18975,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -19051,7 +19053,7 @@
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "MessageDWSourceCallback": {
+    "DeferredChannelMessageWithSourceCallback": {
         "type": "object",
         "properties": {
             "type": {
@@ -19063,7 +19065,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"
@@ -19095,7 +19096,7 @@
         "const": 7,
         "$schema": "http://json-schema.org/draft-07/schema#"
     },
-    "MessageDUpdateCallback": {
+    "DeferredMessageUpdateCallback": {
         "type": "object",
         "properties": {
             "type": {
@@ -19107,7 +19108,6 @@
         },
         "additionalProperties": false,
         "required": [
-            "data",
             "type"
         ],
         "$schema": "http://json-schema.org/draft-07/schema#"

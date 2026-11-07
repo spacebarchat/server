@@ -6664,7 +6664,6 @@
                     "data": {}
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },
@@ -6683,13 +6682,13 @@
                         "$ref": "#/components/schemas/MessageWSourceCallback"
                     },
                     {
-                        "$ref": "#/components/schemas/MessageDWSourceCallback"
+                        "$ref": "#/components/schemas/DeferredChannelMessageWithSourceCallback"
                     },
                     {
                         "$ref": "#/components/schemas/MessageUpdateCallback"
                     },
                     {
-                        "$ref": "#/components/schemas/MessageDUpdateCallback"
+                        "$ref": "#/components/schemas/DeferredMessageUpdateCallback"
                     }
                 ]
             },
@@ -8096,6 +8095,12 @@
                             },
                             "os_version": {
                                 "type": "string"
+                            },
+                            "os_version_is_release": {
+                                "type": "boolean"
+                            },
+                            "os_build_revision": {
+                                "type": "integer"
                             },
                             "referrer": {
                                 "type": "string"
@@ -16891,7 +16896,6 @@
                     "data": {}
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },
@@ -16908,7 +16912,6 @@
                     "data": {}
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },
@@ -16925,7 +16928,6 @@
                     "data": {}
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },
@@ -16997,7 +16999,7 @@
                     }
                 }
             },
-            "MessageDWSourceCallback": {
+            "DeferredChannelMessageWithSourceCallback": {
                 "type": "object",
                 "properties": {
                     "type": {
@@ -17008,7 +17010,6 @@
                     }
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },
@@ -17035,7 +17036,7 @@
                 "type": "number",
                 "const": 7
             },
-            "MessageDUpdateCallback": {
+            "DeferredMessageUpdateCallback": {
                 "type": "object",
                 "properties": {
                     "type": {
@@ -17046,7 +17047,6 @@
                     }
                 },
                 "required": [
-                    "data",
                     "type"
                 ]
             },

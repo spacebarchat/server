@@ -97,6 +97,8 @@ export interface IdentifySchema {
         browser_user_agent?: string;
         browser_version?: string;
         os_version?: string;
+        os_version_is_release?: boolean;
+        os_build_revision?: number;
         referrer?: string;
         referer?: string;
         $referrer?: string;
