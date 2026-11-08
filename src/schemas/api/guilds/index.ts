@@ -23,6 +23,7 @@ export * from "./GuildProfileResponse";
 export * from "./GuildScheduledEvents";
 export * from "./GuildSchema";
 export * from "./Integrations";
+export * from "./Invite";
 export * from "./Role";
 export * from "./Sticker";
 export * from "./VoiceState";

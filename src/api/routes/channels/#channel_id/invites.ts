@@ -21,9 +21,8 @@ import { HTTPError } from "lambert-server/HTTPError";
 import { route } from "@spacebar/api/middlewares";
 import { Channel, Guild, Invite, PublicInviteRelation, User } from "@spacebar/database";
 import { InviteCreateEvent, emitEvent } from "@spacebar/util";
-import { InviteCreateSchema, isTextChannel, PublicUserProjection } from "@spacebar/schemas";
+import { InviteCreateSchema, isTextChannel, PublicUserProjection, InviteListResponse, PublicInvite } from "@spacebar/schemas";
 import { Random } from "@spacebar/extensions";
-import { InviteListResponse, PublicInvite } from "@spacebar/schemas/api/guilds/Invite";
 
 const router: Router = Router({ mergeParams: true });
 
@@ -58,6 +57,8 @@ router.post(
         }
         const { guild_id } = channel;
 
+        const guild = await Guild.findOneOrFail({ where: { id: guild_id } });
+
         const expires_at = body.max_age == 0 || body.max_age == undefined ? undefined : new Date(body.max_age * 1000 + Date.now());
 
         const invite = await Invite.create({
@@ -69,7 +70,9 @@ router.post(
             expires_at,
             created_at: new Date(),
             guild_id,
+            guild,
             channel_id: channel_id,
+            channel: channel,
             inviter_id: user_id,
             inviter: await User.findOneOrFail({
                 where: { id: req.user_id },
