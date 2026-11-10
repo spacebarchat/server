@@ -22,7 +22,7 @@ import { handleComps, sendMessage } from "@spacebar/api/util";
 import { route } from "@spacebar/api/middlewares";
 import { Message, User } from "@spacebar/database";
 import { InteractionCallbacksSchema, InteractionCallbackType, InteractionFailureReason, MessageType } from "@spacebar/schemas";
-import { Config, emitEvent, InteractionSuccessEvent, MessageUpdateEvent, pendingInteractions, InteractionFailureEvent } from "@spacebar/util";
+import { Config, emitEvent, InteractionSuccessEvent, MessageUpdateEvent, pendingInteractions, InteractionFailureEvent, MessageFlags } from "@spacebar/util";
 
 const router = Router({ mergeParams: true });
 
@@ -116,9 +116,38 @@ router.post(
 
                 break;
             }
-            case InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE:
-                // TODO
+            case InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE: {
+                const user = await User.findOneOrFail({ where: { id: interaction.userId } });
+                await sendMessage({
+                    type: MessageType.APPLICATION_COMMAND,
+                    timestamp: new Date(),
+                    application_id: interaction.applicationId,
+                    channel_id: interaction.channelId,
+                    author_id: interaction.applicationId,
+                    nonce: interaction.nonce,
+                    content: "",
+                    flags: Number(MessageFlags.FLAGS.LOADING | ((body.data && body.data.flags) || 0n & MessageFlags.FLAGS.EPHEMERAL ? MessageFlags.FLAGS.EPHEMERAL : 0n)),
+                    // webhook_id: interaction.applicationId, // This one requires a webhook to be created first
+                    interaction: {
+                        id: interactionId,
+                        name: interaction.commandName,
+                        type: 2,
+                        user,
+                    },
+                    interaction_metadata: {
+                        id: interactionId,
+                        type: 2,
+                        user_id: interaction.userId,
+                        user,
+                        authorizing_integration_owners: {
+                            "1": interaction.userId,
+                        },
+                        name: interaction.commandName,
+                        command_type: interaction.commandType,
+                    },
+                });
                 break;
+            }
             case InteractionCallbackType.DEFERRED_UPDATE_MESSAGE:
                 //TODO keep track of state of this
                 interaction.timeout = setTimeout(() => {

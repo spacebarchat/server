@@ -194,6 +194,7 @@ async function processMedia(media: UnfurledMediaItem, messageId: string, batchId
             });
     }
 }
+
 export function handleComps(components: BaseMessageComponents[], flags: number) {
     const conf = Config.get();
     const mediaGalleryLimit = conf.components.mediaGalleryLimit ?? 10;
@@ -287,6 +288,7 @@ export function handleComps(components: BaseMessageComponents[], flags: number) 
         (await Promise.all(medias.map((m, index) => processMedia(m, messageId, batchId, user, channel, index + "")))).forEach((_) => _?.());
     };
 }
+
 export async function handleMessage(opts: MessageOptions): Promise<Message> {
     const conf = Config.get();
     const handle = opts.components ? handleComps(opts.components, opts.flags || 0) : undefined;

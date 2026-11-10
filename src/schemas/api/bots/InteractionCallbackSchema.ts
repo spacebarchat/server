@@ -22,41 +22,43 @@ import { InteractionCallbackType } from "./InteractionCallbackType";
 
 export interface InteractionCallbackSchema {
     type: InteractionCallbackType;
-    data: unknown;
+    data?: unknown;
 }
+
 export interface PongCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.PONG;
 }
+
 export interface AckCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.ACKNOWLEDGE;
 }
+
 export interface MessageCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.CHANNEL_MESSAGE;
 }
+
 export interface MessageWSourceCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE;
     data: InteractionMessage;
 }
-export interface MessageDWSourceCallback extends InteractionCallbackSchema {
+
+export interface DeferredChannelMessageWithSourceCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE;
-    data: InteractionMessage;
+    data?: InteractionMessage;
 }
+
 export interface MessageUpdateCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.UPDATE_MESSAGE;
     data: InteractionMessage;
 }
-export interface MessageDUpdateCallback extends InteractionCallbackSchema {
+
+export interface DeferredMessageUpdateCallback extends InteractionCallbackSchema {
     type: InteractionCallbackType.DEFERRED_UPDATE_MESSAGE;
-    data: InteractionMessage;
+    data?: InteractionMessage;
 }
+
 export type InteractionCallbacksSchema =
-    | PongCallback
-    | AckCallback
-    | MessageCallback
-    | MessageWSourceCallback
-    | MessageDWSourceCallback
-    | MessageUpdateCallback
-    | MessageDUpdateCallback;
+    PongCallback | AckCallback | MessageCallback | MessageWSourceCallback | DeferredChannelMessageWithSourceCallback | MessageUpdateCallback | DeferredMessageUpdateCallback;
 
 export interface InteractionMessage {
     content?: string;
