@@ -18,7 +18,6 @@
 
 import { Config } from "./Config";
 import { FieldErrors } from "./FieldError";
-import { HTTPError } from "lambert-server/HTTPError";
 
 export function ValidateName(name: string) {
     const check_username = name.replace(/\s/g, "");
@@ -44,13 +43,23 @@ export function ValidateName(name: string) {
     const { blockedContains, blockedEquals } = general.user;
     for (const word of blockedContains) {
         if (name.toLowerCase().includes(word)) {
-            throw new HTTPError(`Username cannot contain "${word}"`, 400);
+            throw FieldErrors({
+                username: {
+                    code: "USERNAME_CONTAINS_BLOCKED_WORD",
+                    message: `Username cannot contain "${word}"`,
+                },
+            });
         }
     }
 
     for (const word of blockedEquals) {
         if (name.toLowerCase() === word) {
-            throw new HTTPError(`Username cannot be "${word}"`, 400);
+            throw FieldErrors({
+                username: {
+                    code: "USERNAME_BLOCKED",
+                    message: `Username cannot be "${word}"`,
+                },
+            });
         }
     }
     return name;
