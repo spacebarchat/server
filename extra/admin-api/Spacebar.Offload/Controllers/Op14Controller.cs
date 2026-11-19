@@ -57,7 +57,8 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
                 {
                     GuildId = payload.GuildId,
                     // this doesnt appear to work currently, skip it
-                    ListId = "everyone", // await GetMemberListIdAsync(db, guildId: payload.GuildId, channelId: long.Parse(cid)),
+                    ListId = await GetMemberListIdAsync(db, guildId: payload.GuildId, channelId: long.Parse(cid)),
+                    // ListId = "everyone", 
                     OnlineCount = memberList.TakeWhile(x => x is not GuildMemberListSyncItem.RoleEntry { Group.Id: "offline" }).Count(),
                     MemberCount = await db.Members.CountAsync(x => x.GuildId == payload.GuildId),
                     Operations =
@@ -90,16 +91,18 @@ public class Op14Controller(ILogger<Op12Controller> logger, SpacebarAspNetAuthen
             return "everyone";
         }
 
-        List<string> perms = [];
-        foreach (var overwrite in channel.MappedPermissionOverwrites)
-        {
-            if (((Permissions)overwrite.Allow).HasFlag(Permissions.ViewChannel)) perms.Add($"allow:{overwrite}");
-            else if (((Permissions)overwrite.Deny).HasFlag(Permissions.ViewChannel)) perms.Add($"deny:{overwrite}");
+        List<ulong> allow = [], deny = [];
+        foreach (var overwrite in channel.MappedPermissionOverwrites) {
+            if (((Permissions)overwrite.Allow).HasFlag(Permissions.ViewChannel)) allow.Add(overwrite.Id);
+            else if (((Permissions)overwrite.Deny).HasFlag(Permissions.ViewChannel)) deny.Add(overwrite.Id);
         }
 
-        perms.Sort();
+        if (allow is { Count: 0 } && deny is { Count: 0 }) return "everyone";
 
-        ReadOnlySpan<byte> hashData = Encoding.UTF8.GetBytes(string.Join(",", perms));
+        ReadOnlySpan<byte> hashData = Encoding.UTF8.GetBytes(string.Join(",", [
+            ..allow.Order().Select(x=>$"allow:{x}"), 
+            ..deny.Order().Select(x=>$"deny:{x}")
+        ]));
         var hashResult = MurmurHash3.Hash32(ref hashData);
         return hashResult.ToString();
     }

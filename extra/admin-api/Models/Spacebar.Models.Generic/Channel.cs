@@ -53,8 +53,8 @@ public class Channel {
 }
 
 public class ChannelPermissionOverwrite {
-    [JsonPropertyName("id")]
-    public string Id { get; set; }
+    [JsonPropertyName("id"), JsonNumberHandling(JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString)]
+    public ulong Id { get; set; }
 
     [JsonPropertyName("type")]
     public int Type { get; set; }
