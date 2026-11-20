@@ -49,7 +49,7 @@ export async function onPresenceUpdate(this: WebSocket, { d }: Payload) {
     await Session.update({ session_id: this.session_id }, { status: presence.status as PrivateStatus, activities: presence.activities });
 
     const session = await Session.findOneOrFail({
-        select: { client_status: true },
+        select: { client_status: true, status: true },
         where: { session_id: this.session_id },
     });
 
