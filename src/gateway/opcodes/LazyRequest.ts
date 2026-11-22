@@ -147,7 +147,7 @@ async function getMembers(guild_id: string, range: [number, number]) {
 async function subscribeToMemberEvents(this: WebSocket, user_id: string) {
     if (this.events[user_id]) return false; // already subscribed as friend
     if (this.member_events[user_id]) return false; // already subscribed in member list
-    this.member_events[user_id] = await listenEvent(user_id, handlePresenceUpdate.bind(this), this.listen_options);
+    this.internEvent(this.member_events, user_id, await listenEvent(user_id, handlePresenceUpdate.bind(this), this.listen_options));
     return true;
 }
 

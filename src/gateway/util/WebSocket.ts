@@ -62,4 +62,9 @@ export class WebSocket {
     large_threshold: number;
     qos?: QoSPayload;
     session?: Session;
+
+    internEvent(map: Record<string, () => Promise<unknown>>, key: string, handler: () => Promise<unknown>) {
+        if (key in map) map[key]();
+        map[key] = handler;
+    }
 }

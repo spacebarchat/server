@@ -123,18 +123,18 @@ export async function setupListener(this: WebSocket) {
             console.log("[RabbitMQ] channel created: ", typeof opts.channel, "with channel id", opts.channel?.ch);
         }
 
-        this.events[this.user_id] = await listenEvent(this.user_id, consumer, opts);
-        this.events[this.session_id] = await listenEvent(this.session_id, consumer, opts);
+        this.internEvent(this.events, this.user_id, await listenEvent(this.user_id, consumer, opts));
+        this.internEvent(this.events, this.session_id, await listenEvent(this.session_id, consumer, opts));
 
         await Promise.all(
             relationships.map(async (relationship) => {
-                this.events[relationship.to_id] = await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts);
+                this.internEvent(this.events, relationship.to_id, await listenEvent(relationship.to_id, handlePresenceUpdate.bind(this), opts));
             }),
         );
 
         await Promise.all(
             dm_channels.map(async (channel) => {
-                this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                this.internEvent(this.events, channel.id, await listenEvent(channel.id, consumer, opts));
             }),
         );
 
@@ -142,12 +142,12 @@ export async function setupListener(this: WebSocket) {
             guilds.map(async (guild) => {
                 const permission = await getPermission(this.user_id, guild.id);
                 this.permissions[guild.id] = permission;
-                this.events[guild.id] = await listenEvent(guild.id, consumer, opts);
+                this.internEvent(this.events, guild.id, await listenEvent(guild.id, consumer, opts));
 
                 await Promise.all(
                     guild.channels.map(async (channel) => {
                         if (permission.overwriteChannel(channel.permission_overwrites ?? []).has("VIEW_CHANNEL")) {
-                            this.events[channel.id] = await listenEvent(channel.id, consumer, opts);
+                            this.internEvent(this.events, channel.id, await listenEvent(channel.id, consumer, opts));
                         }
                     }),
                 );
@@ -243,7 +243,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
             break;
         case "GUILD_MEMBER_ADD":
             if (this.member_events[data.user.id]) break; // already subscribed
-            this.member_events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+            this.internEvent(this.member_events, data.user.id, await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options));
             break;
         case "GUILD_MEMBER_UPDATE":
             if (!this.member_events[data.user.id]) break;
@@ -271,18 +271,18 @@ async function consume(this: WebSocket, opts: EventOpts) {
         case "CHANNEL_CREATE": {
             if (!permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) return;
             const channel_id = data.id as string;
-            this.events[channel_id] = await listenEvent(channel_id, consumer, listenOpts);
+            this.internEvent(this.events, channel_id, await listenEvent(channel_id, consumer, listenOpts));
             break;
         }
         case "RELATIONSHIP_ADD":
             // don't let a payload without a user object stop the dispatch below
-            if (data.user?.id) this.events[data.user.id] = await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options);
+            if (data.user?.id) this.internEvent(this.events, data.user.id, await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options));
             break;
         case "GUILD_CREATE": {
             const guild_id = data.id as string;
             await Promise.all([
                 ...data.channels.map(async ({ id }: { id: string }) => {
-                    this.events[id] = await listenEvent(id, consumer, listenOpts);
+                    this.internEvent(this.events, id, await listenEvent(id, consumer, listenOpts));
                 }),
                 listenEvent(guild_id, consumer, listenOpts).then((ret) => (this.events[guild_id] = ret)),
             ]);
@@ -293,7 +293,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
             const exists = channel_id in this.events;
             if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
                 if (exists) break;
-                this.events[channel_id] = await listenEvent(channel_id, consumer, listenOpts);
+                this.internEvent(this.events, channel_id, await listenEvent(channel_id, consumer, listenOpts));
             } else {
                 if (!exists) return; // return -> do not send channel update events for hidden channels
                 opts.cancel(channel_id);
