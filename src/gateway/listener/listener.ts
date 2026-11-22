@@ -48,6 +48,37 @@ export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
+    this.rawSocket.once("close", async () => {
+        console.log("[Gateway/listener] Handling connection close...");
+        this.closedAt = new Date();
+
+        // Unsubscribe from RabbitMQ events
+        RabbitMQ.off("reconnected", handleReconnect);
+        RabbitMQ.off("disconnected", handleDisconnect);
+
+        console.log(`[Gateway/listener/${this.user_id}] Disconnected RabbitMQ handlers, if any...`);
+        // wait for event consumer cancellation
+        await Promise.all(
+            Object.values(this.events).map((x) => {
+                if (x) return x();
+                else return Promise.resolve();
+            }),
+        );
+        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all event listeners...`);
+
+        await Promise.all(Object.values(this.member_events).map((x) => x()));
+        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all member event listeners...`);
+
+        if (opts.channel) {
+            try {
+                await opts.channel.close();
+            } catch {
+                // Channel might already be closed
+            }
+            opts.channel.off("error", handleChannelError);
+        }
+    });
+
     const [members, recipients, relationships] = await Promise.all([
         Member.find({
             where: { id: this.user_id },
@@ -158,37 +189,6 @@ export async function setupListener(this: WebSocket) {
     // Subscribe to RabbitMQ connection events
     RabbitMQ.on("reconnected", handleReconnect);
     RabbitMQ.on("disconnected", handleDisconnect);
-
-    this.rawSocket.once("close", async () => {
-        console.log("[Gateway/listener] Handling connection close...");
-        this.closedAt = new Date();
-
-        // Unsubscribe from RabbitMQ events
-        RabbitMQ.off("reconnected", handleReconnect);
-        RabbitMQ.off("disconnected", handleDisconnect);
-
-        console.log(`[Gateway/listener/${this.user_id}] Disconnected RabbitMQ handlers, if any...`);
-        // wait for event consumer cancellation
-        await Promise.all(
-            Object.values(this.events).map((x) => {
-                if (x) return x();
-                else return Promise.resolve();
-            }),
-        );
-        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all event listeners...`);
-
-        await Promise.all(Object.values(this.member_events).map((x) => x()));
-        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all member event listeners...`);
-
-        if (opts.channel) {
-            try {
-                await opts.channel.close();
-            } catch {
-                // Channel might already be closed
-            }
-            opts.channel.off("error", handleChannelError);
-        }
-    });
 }
 
 // TODO: only subscribe for events that are in the connection intents
