@@ -79,6 +79,7 @@
         "@prometheus-io/client": "^0.16.1",
         "@spacebarchat/pion-webrtc": "^0.0.5",
         "@toondepauw/node-zstd": "^2.0.0",
+        "@types/pg-pool": "^2.0.7",
         "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
         "amqplib": "^2.0.1",

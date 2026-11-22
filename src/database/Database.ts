@@ -20,8 +20,13 @@ import path from "node:path";
 import fs from "node:fs";
 import { green, red, yellow } from "picocolors";
 import { DataSource } from "typeorm";
-import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import type Pool from "pg-pool";
+import type { Client } from "pg";
+import { Gauge } from "@prometheus-io/client";
 import { PostgresDataSourceOptions } from "typeorm/driver/postgres/PostgresDataSourceOptions";
+import { PostgresDriver } from "typeorm/driver/postgres/PostgresDriver";
+import { ProcessLifecycle } from "../util/util/ProcessLifecycle";
+import { Monitoring } from "@spacebar/util/monitoring/Monitoring";
 
 // UUID extension option is only supported with postgres
 // We want to generate all id's with Snowflakes that's why we have our own BaseEntity class
@@ -115,6 +120,48 @@ export async function initDatabase(): Promise<DataSource> {
     } while (!dbConnection && retries++ < 10);
 
     if (!dbConnection) throw new Error("[Database] FATAL: Could not connect to database!");
+
+    const getPool = () => (dbConnection!.driver as PostgresDriver).master as Pool<Client>;
+
+    Monitoring.attachMetric(
+        "spacebar_db_connections_active",
+        new Gauge({
+            name: "spacebar_db_connections_active",
+            help: "Number of active database connections",
+            registers: [],
+            collect() {
+                if (!dbConnection?.isInitialized) return;
+                const pool = getPool();
+                this.set(pool.totalCount - pool.idleCount);
+            },
+        }),
+    );
+
+    Monitoring.attachMetric(
+        "spacebar_db_connections_idle",
+        new Gauge({
+            name: "spacebar_db_connections_idle",
+            help: "Number of idle database connections",
+            registers: [],
+            collect() {
+                if (!dbConnection?.isInitialized) return;
+                this.set(getPool().idleCount);
+            },
+        }),
+    );
+
+    Monitoring.attachMetric(
+        "spacebar_db_query_queue_length",
+        new Gauge({
+            name: "spacebar_db_query_queue_length",
+            help: "Number of queries waiting for database connections",
+            registers: [],
+            collect() {
+                if (!dbConnection?.isInitialized) return;
+                this.set(getPool().waitingCount);
+            },
+        }),
+    );
 
     // Crude way of detecting if the migrations table exists.
     const dbExists = async () => {
