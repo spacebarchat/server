@@ -245,10 +245,6 @@ async function consume(this: WebSocket, opts: EventOpts) {
             if (this.member_events[data.user.id]) break; // already subscribed
             this.internEvent(this.member_events, data.user.id, await listenEvent(data.user.id, handlePresenceUpdate.bind(this), this.listen_options));
             break;
-        case "GUILD_MEMBER_UPDATE":
-            if (!this.member_events[data.user.id]) break;
-            await this.member_events[data.user.id]();
-            break;
         case "RELATIONSHIP_REMOVE":
         case "CHANNEL_DELETE":
         case "GUILD_DELETE": {
