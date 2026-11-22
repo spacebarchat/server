@@ -55,7 +55,7 @@ export class WebSocket {
     intents: Intents;
     sequence: number = 0;
     permissions: Record<string, Permissions> = {};
-    events: Record<string, undefined | (() => Promise<unknown>)> = {};
+    events: Record<string, () => Promise<unknown>> = {};
     member_events: Record<string, () => Promise<unknown>> = {};
     listen_options: ListenEventOpts;
     capabilities?: Capabilities;

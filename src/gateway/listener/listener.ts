@@ -290,7 +290,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
         }
         case "CHANNEL_UPDATE": {
             const channel_id = data.id as string;
-            const exists = this.events[channel_id];
+            const exists = channel_id in this.events;
             if (permission.overwriteChannel(data.permission_overwrites).has("VIEW_CHANNEL")) {
                 if (exists) break;
                 this.events[channel_id] = await listenEvent(channel_id, consumer, listenOpts);
