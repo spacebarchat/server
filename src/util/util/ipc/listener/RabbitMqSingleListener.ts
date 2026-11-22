@@ -19,7 +19,7 @@
 import EventEmitter from "node:events";
 import { randomUUID } from "node:crypto";
 import amqp, { Channel, ChannelModel } from "amqplib";
-import { Gauge } from "prom-client";
+import { Gauge } from "@prometheus-io/client";
 import { sleep, arraySum } from "@spacebar/extensions";
 import { EVENT, Event, EventOpts } from "@spacebar/util";
 import { Monitoring } from "../../../monitoring/Monitoring";
@@ -27,12 +27,12 @@ import { ProcessLifecycle } from "../../ProcessLifecycle";
 import { BaseEventListener } from "./BaseEventListener";
 
 export class RabbitMqSingleListener extends BaseEventListener {
-    static openListenersMetric: Gauge;
+    static openListenersMetric: Gauge<"host">;
     private readonly host: string;
     private connection?: ChannelModel;
     private channel?: Channel;
     eventEmitter: EventEmitter;
-    openListenersMetric: Gauge.Internal<string>;
+    openListenersMetric: Gauge.Internal<"host">;
 
     constructor(host: string) {
         super();
@@ -41,7 +41,7 @@ export class RabbitMqSingleListener extends BaseEventListener {
 
         RabbitMqSingleListener.openListenersMetric = Monitoring.attachMetric(
             "spacebar_ipc_unix_listener_open_listener_count",
-            new Gauge({
+            new Gauge<"host">({
                 name: "spacebar_ipc_rabbitmqsingle_listener_open_listener_count",
                 help: "Amount of open listeners on unix socket",
                 labelNames: ["host"],

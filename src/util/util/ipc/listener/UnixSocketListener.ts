@@ -19,7 +19,7 @@
 import EventEmitter from "node:events";
 import fs from "node:fs";
 import net, { Server } from "node:net";
-import { Gauge } from "prom-client";
+import { Gauge } from "@prometheus-io/client";
 import { arraySum } from "@spacebar/extensions";
 import { EVENT, Event, EventOpts } from "@spacebar/util";
 import { BaseEventListener } from "./BaseEventListener";
@@ -27,15 +27,15 @@ import { ProcessLifecycle } from "../../ProcessLifecycle";
 import { Monitoring } from "../../../monitoring/Monitoring";
 
 export class UnixSocketListener extends BaseEventListener {
-    static openConnectionsMetric?: Gauge;
-    static openListenersMetric?: Gauge;
+    static openConnectionsMetric?: Gauge<"path">;
+    static openListenersMetric?: Gauge<"path">;
 
     eventEmitter: EventEmitter;
     socketPath: string;
     server: Server;
     isInitialized = false;
-    openConnectionsMetric: Gauge.Internal<string>;
-    openListenersMetric: Gauge.Internal<string>;
+    openConnectionsMetric: Gauge.Internal<"path">;
+    openListenersMetric: Gauge.Internal<"path">;
 
     constructor(socketPath: string) {
         super();
@@ -44,7 +44,7 @@ export class UnixSocketListener extends BaseEventListener {
 
         UnixSocketListener.openConnectionsMetric = Monitoring.attachMetric(
             "spacebar_ipc_unix_listener_open_connection_count",
-            new Gauge({
+            new Gauge<"path">({
                 name: "spacebar_ipc_unix_listener_open_connection_count",
                 help: "Amount of open inbound connections on unix socket",
                 labelNames: ["path"],
@@ -55,7 +55,7 @@ export class UnixSocketListener extends BaseEventListener {
 
         UnixSocketListener.openListenersMetric = Monitoring.attachMetric(
             "spacebar_ipc_unix_listener_open_listener_count",
-            new Gauge({
+            new Gauge<"path">({
                 name: "spacebar_ipc_unix_listener_open_listener_count",
                 help: "Amount of open listeners on unix socket",
                 labelNames: ["path"],

@@ -31,7 +31,7 @@ import { Config } from "@spacebar/util";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { ProcessLifecycle } from "@spacebar/util/util/ProcessLifecycle";
 import { Monitoring } from "../../util/monitoring/Monitoring";
-import { Gauge } from "prom-client";
+import { Gauge } from "@prometheus-io/client";
 
 // TODO: check rate limit
 // TODO: specify rate limit in config

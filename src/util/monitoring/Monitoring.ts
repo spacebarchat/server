@@ -17,9 +17,9 @@
 */
 
 import { IncomingMessage, ServerResponse } from "node:http";
-import * as client from "prom-client";
 import { Application } from "express";
-import { Metric } from "prom-client";
+import * as client from "@prometheus-io/client";
+import { Metric } from "@prometheus-io/client";
 
 export class Monitoring {
     static isInitialised = false;

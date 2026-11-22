@@ -20,7 +20,7 @@ import net, { Socket } from "node:net";
 import fs, { FSWatcher } from "node:fs";
 import path from "node:path";
 import { red } from "picocolors";
-import { Gauge } from "prom-client";
+import { Gauge } from "@prometheus-io/client";
 import { sleep, Stopwatch } from "@spacebar/extensions";
 import { Event } from "@spacebar/util";
 import { Monitoring } from "../../../monitoring/Monitoring";
@@ -28,7 +28,7 @@ import { ProcessLifecycle } from "../../ProcessLifecycle";
 import { BaseEventWriter } from "./BaseEventWriter";
 
 export class UnixSocketWriter extends BaseEventWriter {
-    private static openConnectionsMetric: Gauge;
+    private static openConnectionsMetric: Gauge<"path">;
 
     socketPath: string;
     clients: { [key: string]: Socket } = {};
@@ -37,7 +37,7 @@ export class UnixSocketWriter extends BaseEventWriter {
     broadcastLock: Promise<void> = Promise.resolve();
     replayLock: Promise<void> = Promise.resolve();
     isInitializing = true;
-    openConnectionsMetric: Gauge.Internal<string>;
+    openConnectionsMetric: Gauge.Internal<"path">;
 
     constructor(socketPath: string) {
         super();
@@ -45,7 +45,7 @@ export class UnixSocketWriter extends BaseEventWriter {
 
         UnixSocketWriter.openConnectionsMetric = Monitoring.attachMetric(
             "spacebar_ipc_unix_writer_open_connection_count",
-            new Gauge({
+            new Gauge<"path">({
                 name: "spacebar_ipc_unix_writer_open_connection_count",
                 help: "Amount of open outbound connections on unix socket",
                 labelNames: ["path"],
