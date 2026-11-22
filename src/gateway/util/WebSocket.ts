@@ -28,9 +28,13 @@ export class WebSocket {
     rawSocket: WS;
     constructor(socket: WS) {
         this.rawSocket = socket;
+        this.openedAt = new Date();
     }
 
     recentTransactions: string[] = [];
+    openedAt: Date;
+    closedAt?: Date;
+
     version: number;
     user_id: string;
     session_id: string;

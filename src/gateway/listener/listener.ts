@@ -19,6 +19,7 @@
 import { Channel as AMQChannel } from "amqplib";
 import { bgRedBright } from "picocolors";
 import { Ban, Member, Message, Recipient, Relationship } from "@spacebar/database";
+import { TimeSpan } from "@spacebar/extensions";
 import { EVENTEnum, EventOpts, getPermission, listenEvent, ListenEventOpts, NewUrlUserSignatureData, Permissions, RabbitMQ } from "@spacebar/util";
 import { WebSocket } from "@spacebar/gateway";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
@@ -31,7 +32,9 @@ import { CLOSECODES, OPCODES, Send } from "../util";
 // Sharding: calculate if the current shard id matches the formula: shard_id = (guild_id >> 22) % num_shards
 // https://discord.com/developers/docs/topics/gateway#sharding
 
-export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data }: EventOpts) {
+export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data, cancel }: EventOpts) {
+    if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) cancel?.();
+
     acknowledge?.();
     if (event === EVENTEnum.PresenceUpdate) {
         return Send(this, {
@@ -157,10 +160,14 @@ export async function setupListener(this: WebSocket) {
     RabbitMQ.on("disconnected", handleDisconnect);
 
     this.rawSocket.once("close", async () => {
+        console.log("[Gateway/listener] Handling connection close...");
+        this.closedAt = new Date();
+
         // Unsubscribe from RabbitMQ events
         RabbitMQ.off("reconnected", handleReconnect);
         RabbitMQ.off("disconnected", handleDisconnect);
 
+        console.log(`[Gateway/listener/${this.user_id}] Disconnected RabbitMQ handlers, if any...`);
         // wait for event consumer cancellation
         await Promise.all(
             Object.values(this.events).map((x) => {
@@ -168,7 +175,10 @@ export async function setupListener(this: WebSocket) {
                 else return Promise.resolve();
             }),
         );
+        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all event listeners...`);
+
         await Promise.all(Object.values(this.member_events).map((x) => x()));
+        console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all member event listeners...`);
 
         if (opts.channel) {
             try {
@@ -190,6 +200,8 @@ async function consume(this: WebSocket, opts: EventOpts) {
     const consumer = consume.bind(this);
     const listenOpts = opts as ListenEventOpts;
     opts.acknowledge?.();
+
+    if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) opts.cancel?.();
     // console.log("event", event);
 
     // deduplicate gateway messages

@@ -59,7 +59,7 @@ export async function initEvent() {
             writer = new RabbitMqSingleWriter(Config.get().rabbitmq.host!);
             await writer.init();
         }
-    } else if (process.env.EVENT_TRANSMISSION === "unix" && process.env.EVENT_SOCKET_PATH) {
+    } else if (process.env.EVENT_TRANSMISSION === "unix") {
         if (!process.env.EVENT_SOCKET_PATH) {
             throw new Error("[Events] EVENT_SOCKET_PATH is not configured.");
         }
