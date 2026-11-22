@@ -69,6 +69,13 @@ export const DataSourceOptions = isHeadlessProcess
               undefined: "ignore",
           },
           connectTimeoutMS: 10000,
+          poolSize: process.env.DB_POOL_SIZE ? Number(process.env.DB_POOL_SIZE) : 10,
+          extra: {
+              min: process.env.DB_POOL_SIZE_MIN ? Number(process.env.DB_POOL_SIZE_MIN) : 0,
+              // redundant but for good measure:
+              max: process.env.DB_POOL_SIZE ? Number(process.env.DB_POOL_SIZE) : 10,
+              idleTimeoutMillis: process.env.DB_IDLE_TIMEOUT_MS ? Number(process.env.DB_IDLE_TIMEOUT_MS) : 10000,
+          },
       } satisfies PostgresDataSourceOptions);
 
 // Gets the existing database connection
