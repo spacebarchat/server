@@ -204,6 +204,7 @@ export async function onLazyRequest(this: WebSocket, { d }: Payload) {
                         activities: session?.activities || [],
                         client_status: session?.client_status,
                         status: session?.getPublicStatus() || "offline",
+                        guild_id,
                     } as Presence,
                 });
             }),
