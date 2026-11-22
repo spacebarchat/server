@@ -111,6 +111,7 @@
         "node-2fa": "^2.0.3",
         "node-unix-socket": "^0.2.7",
         "pg": "^8.23.0",
+        "pg-native": "^3.9.1",
         "pg-query-stream": "^4.17.0",
         "picocolors": "^1.1.1",
         "probe-image-size": "^7.4.0",
@@ -150,6 +151,7 @@
     },
     "allowScripts": {
         "bcrypt@6.0.0": true,
-        "cbor-extract@2.2.2": true
+        "cbor-extract@2.2.2": true,
+        "libpq@1.11.0": true
     }
 }

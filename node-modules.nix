@@ -39,7 +39,10 @@ pkgs.buildNpmPackage {
   makeCacheWritable = true;
 
   nativeBuildInputs = with pkgs; [
-    (pkgs.python3.withPackages (ps: with ps; [ setuptools ]))
+    (python3.withPackages (ps: with ps; [ setuptools ]))
+    # for libpq/pg-native:
+    postgresql_19.pg_config
+    which
   ];
 
   installPhase = ''
