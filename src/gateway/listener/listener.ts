@@ -52,10 +52,6 @@ export async function setupListener(this: WebSocket) {
         console.log("[Gateway/listener] Handling connection close...");
         this.closedAt = new Date();
 
-        // Unsubscribe from RabbitMQ events
-        RabbitMQ.off("reconnected", handleReconnect);
-        RabbitMQ.off("disconnected", handleDisconnect);
-
         console.log(`[Gateway/listener/${this.user_id}] Disconnected RabbitMQ handlers, if any...`);
         // wait for event consumer cancellation
         await Promise.all(
@@ -189,6 +185,11 @@ export async function setupListener(this: WebSocket) {
     // Subscribe to RabbitMQ connection events
     RabbitMQ.on("reconnected", handleReconnect);
     RabbitMQ.on("disconnected", handleDisconnect);
+
+    this.rawSocket.once("close", async () => {
+        RabbitMQ.off("reconnected", handleReconnect);
+        RabbitMQ.off("disconnected", handleDisconnect);
+    });
 }
 
 // TODO: only subscribe for events that are in the connection intents
