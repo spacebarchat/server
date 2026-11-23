@@ -48,6 +48,18 @@ export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data
 
 // TODO: use already queried guilds/channels of Identify and don't fetch them again
 export async function setupListener(this: WebSocket) {
+    const opts: {
+        acknowledge: boolean;
+        channel?: AMQChannel & { queues?: unknown; ch?: number };
+    } = {
+        acknowledge: true,
+    };
+    this.listen_options = opts;
+
+    const handleChannelError = (err: unknown) => {
+        console.error(`[RabbitMQ] [user-${this.user_id}] Channel Error (Handled):`, err);
+    };
+
     this.rawSocket.once("close", async () => {
         console.log("[Gateway/listener] Handling connection close...");
         this.closedAt = new Date();
@@ -95,18 +107,7 @@ export async function setupListener(this: WebSocket) {
     const guilds = members.map((x) => x.guild);
     const dm_channels = recipients.map((x) => x.channel);
 
-    const opts: {
-        acknowledge: boolean;
-        channel?: AMQChannel & { queues?: unknown; ch?: number };
-    } = {
-        acknowledge: true,
-    };
-    this.listen_options = opts;
     const consumer = consume.bind(this);
-
-    const handleChannelError = (err: unknown) => {
-        console.error(`[RabbitMQ] [user-${this.user_id}] Channel Error (Handled):`, err);
-    };
 
     // Function to set up all event listeners (used for initial setup and reconnection)
     const setupEventListeners = async () => {
