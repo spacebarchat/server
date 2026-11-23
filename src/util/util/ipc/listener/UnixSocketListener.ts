@@ -145,8 +145,11 @@ export class UnixSocketListener extends BaseEventListener {
         this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
 
         const cancel = async () => {
+            const beforeCount = this.eventEmitter.listenerCount(event);
+
             this.eventEmitter.removeListener(event, listener);
-            this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() - 1);
+            if (this.eventEmitter.listenerCount(event) < beforeCount) this.eventEmitter.setMaxListeners(this.eventEmitter.getMaxListeners() - 1);
+
             this.openListenersMetric.set(arraySum(this.eventEmitter.eventNames().map((e) => this.eventEmitter.listeners(e).length)));
         };
 

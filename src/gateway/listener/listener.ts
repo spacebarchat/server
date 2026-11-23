@@ -240,8 +240,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
     // subscription managment
     switch (event) {
         case "GUILD_MEMBER_REMOVE":
-            this.member_events[data.user.id]?.();
-            delete this.member_events[data.user.id];
+            this.removeEvent(this.member_events, data.user.id);
             break;
         case "GUILD_MEMBER_ADD":
             if (this.member_events[data.user.id]) break; // already subscribed
@@ -252,8 +251,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
         case "GUILD_DELETE": {
             const removed_id = data.id as string;
             if (!removed_id) break;
-            this.events[removed_id]?.();
-            delete this.events[removed_id];
+            this.removeEvent(this.events, removed_id);
             if (event === "GUILD_DELETE" && this.ipAddress) {
                 const ban = await Ban.findOne({
                     where: { guild_id: removed_id, user_id: this.user_id },
@@ -282,8 +280,8 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 ...data.channels.map(async ({ id }: { id: string }) => {
                     this.internEvent(this.events, id, await listenEvent(id, consumer, listenOpts));
                 }),
-                listenEvent(guild_id, consumer, listenOpts).then((ret) => (this.events[guild_id] = ret)),
             ]);
+            await this.internEvent(this.events, guild_id, await listenEvent(guild_id, consumer, listenOpts));
             break;
         }
         case "CHANNEL_UPDATE": {
@@ -294,8 +292,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
                 this.internEvent(this.events, channel_id, await listenEvent(channel_id, consumer, listenOpts));
             } else {
                 if (!exists) return; // return -> do not send channel update events for hidden channels
-                opts.cancel(channel_id);
-                delete this.events[channel_id];
+                this.removeEvent(this.events, channel_id);
             }
             break;
         }

@@ -20,6 +20,7 @@ import WS from "ws";
 import { Deflate, Inflate } from "fast-zlib";
 import { Decoder, Encoder } from "@toondepauw/node-zstd";
 import { Session } from "@spacebar/database";
+import { TimeSpan } from "@spacebar/extensions";
 import { Intents, ListenEventOpts, Permissions } from "@spacebar/util";
 import { QoSPayload } from "../opcodes/Heartbeat";
 import { Capabilities } from "./Capabilities";
@@ -29,11 +30,13 @@ export class WebSocket {
     constructor(socket: WS) {
         this.rawSocket = socket;
         this.openedAt = new Date();
+        this.discarded = false;
     }
 
     recentTransactions: string[] = [];
     openedAt: Date;
     closedAt?: Date;
+    discarded: boolean;
 
     version: number;
     user_id: string;
@@ -64,7 +67,49 @@ export class WebSocket {
     session?: Session;
 
     internEvent(map: Record<string, () => Promise<unknown>>, key: string, handler: () => Promise<unknown>) {
-        if (key in map) map[key]();
+        if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) {
+            console.warn(`[Gateway/${this.user_id}/WebSocket] Tried to register event after socket state expiry, discarding...`);
+            handler();
+            return;
+        }
+        if (key in map) map[key](); // unbind old handler
         map[key] = handler;
+    }
+
+    removeEvent(map: Record<string, () => Promise<unknown>>, key: string) {
+        if (key in map) {
+            map[key]();
+            delete map[key];
+        }
+    }
+
+    discardAllState() {
+        if (!this.closedAt) {
+            console.warn(`[Gateway/${this.user_id}/WebSocket] WARN: Tried to discard state before close!`);
+            return;
+        }
+        this.discarded = true;
+        this.recentTransactions = [];
+        this.permissions = {};
+        this.session = undefined;
+
+        this.deflate?.close();
+        this.deflate = undefined;
+        this.inflate?.close();
+        this.inflate = undefined;
+        this.zstdEncoder = undefined;
+        this.zstdDecoder = undefined;
+
+        for (const key in this.events) {
+            this.events[key]();
+            delete this.events[key];
+        }
+        this.events = {};
+
+        for (const key in this.member_events) {
+            this.member_events[key]();
+            delete this.member_events[key];
+        }
+        this.member_events = {};
     }
 }
