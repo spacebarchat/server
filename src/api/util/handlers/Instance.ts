@@ -40,7 +40,8 @@ export async function initInstance() {
     // ... but we can still expire temporary sessions for legacy tokens
     setInterval(
         async () => {
-            for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().stream()) {
+            // TODO: return to stream if we figure out what to do with pg-native
+            for await (const session of await Session.createQueryBuilder("session").where("last_seen = '1970/01/01'").select().getRawMany()) {
                 // session object has all fields prefixed with `session_`... thanks typeorm
                 if (TimeSpan.fromDates((session.session_created_at as Date).getTime(), new Date().getTime()).totalHours > 1) {
                     console.log(`[API/Instance.ts] Deleting unused session ${session.session_session_id} created at ${session.session_created_at}`);

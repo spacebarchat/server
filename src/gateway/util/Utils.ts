@@ -88,7 +88,8 @@ export async function cleanupOnStartup(): Promise<void> {
 }
 
 async function expireOldPresenceStates() {
-    for await (const session of await Session.createQueryBuilder("session").where("last_seen >= '2000/01/01' AND status != 'offline'").select().stream()) {
+    // TODO: return to stream if we figure out what to do with pg-native
+    for await (const session of await Session.createQueryBuilder("session").where("last_seen >= '2000/01/01' AND status != 'offline'").select().getRawMany()) {
         // session object has all fields prefixed with `session_`... thanks typeorm
         if (TimeSpan.fromDates((session.session_last_seen as Date).getTime(), new Date().getTime()).totalMinutes > 30) {
             console.log(`[Gateway/util/Utils.ts] Expiring presence for session ${session.session_session_id} last seen at ${session.session_last_seen}`);
