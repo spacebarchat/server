@@ -63,18 +63,13 @@ export async function setupListener(this: WebSocket) {
     this.rawSocket.once("close", async () => {
         console.log("[Gateway/listener] Handling connection close...");
         this.closedAt = new Date();
+        setTimeout(this.discardAllState.bind(this), 300_000);
 
-        console.log(`[Gateway/listener/${this.user_id}] Disconnected RabbitMQ handlers, if any...`);
         // wait for event consumer cancellation
-        await Promise.all(
-            Object.values(this.events).map((x) => {
-                if (x) return x();
-                else return Promise.resolve();
-            }),
-        );
+        for (const key in this.events) await this.events[key]();
         console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all event listeners...`);
 
-        await Promise.all(Object.values(this.member_events).map((x) => x()));
+        for (const key in this.member_events) await this.member_events[key]();
         console.log(`[Gateway/listener/${this.user_id}] Attempted to disable all member event listeners...`);
 
         if (opts.channel) {
@@ -190,6 +185,7 @@ export async function setupListener(this: WebSocket) {
     this.rawSocket.once("close", async () => {
         RabbitMQ.off("reconnected", handleReconnect);
         RabbitMQ.off("disconnected", handleDisconnect);
+        console.log(`[Gateway/${this.user_id}/listener] Disconnected RabbitMQ handlers, if any...`);
     });
 }
 

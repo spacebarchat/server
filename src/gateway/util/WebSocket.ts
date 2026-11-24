@@ -123,6 +123,9 @@ export class WebSocket {
             return;
         }
         this.discarded = true;
+
+        console.log(`[Gateway/${this.user_id}/WebSocket] Discarding all state after`, TimeSpan.fromDates(+this.closedAt, +new Date()));
+
         this.recentTransactions = [];
         this.permissions = {};
         this.session = undefined;
@@ -145,5 +148,11 @@ export class WebSocket {
             delete this.member_events[key];
         }
         this.member_events = {};
+
+        while (this.allEvents.length > 0) {
+            const key = this.allEvents[0].key;
+            this.allEvents[0].value().catch((x: unknown) => console.error("discardAllState: Failed to clean up event handler with key", key, ":", x));
+            this.allEvents.splice(0, 1);
+        }
     }
 }
