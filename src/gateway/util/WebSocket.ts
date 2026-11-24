@@ -63,8 +63,11 @@ export class WebSocket {
     readyTimeout: NodeJS.Timeout;
 
     permissions: Record<string, Permissions> = {};
+
+    private allEvents: { key: string; value: () => Promise<unknown> }[] = [];
     events: Record<string, () => Promise<unknown>> = {};
     member_events: Record<string, () => Promise<unknown>> = {};
+
     listen_options: ListenEventOpts;
     capabilities?: Capabilities;
     large_threshold: number;
@@ -76,13 +79,40 @@ export class WebSocket {
             handler();
             return;
         }
-        if (key in map) map[key](); // unbind old handler
+        if (key in map) {
+            this.removeEvent(map, key);
+
+            const duplicates = this.allEvents.filter((kv) => kv.key == key);
+            const exactDuplicates = duplicates.filter((kv) => kv.value == handler);
+            if (duplicates.length > 0) {
+                console.error(
+                    `[Gateway/${this.user_id}/WebSocket] BUGBUGBUG: Found`,
+                    duplicates.length,
+                    `leaked event handler(s) with key`,
+                    key,
+                    `, of which`,
+                    exactDuplicates.length,
+                    `are all using this same handler`,
+                    handler,
+                    `after removing the last handler\n`,
+                    new Error().stack,
+                );
+            }
+        }
         map[key] = handler;
+        this.allEvents.push({ key, value: handler });
     }
 
     removeEvent(map: Record<string, () => Promise<unknown>>, key: string) {
         if (key in map) {
-            map[key]();
+            const cancel = map[key];
+
+            const idx = this.allEvents.findIndex((kv) => kv.key == key && kv.value == cancel);
+            if (idx == -1) {
+                console.error(`[Gateway/${this.user_id}/WebSocket] BUGBUGBUG: Found non-interned event with key`, key, `and value`, cancel);
+            } else this.allEvents.splice(idx, 1); // remove *IN PLACE* to avoid race
+
+            cancel();
             delete map[key];
         }
     }
