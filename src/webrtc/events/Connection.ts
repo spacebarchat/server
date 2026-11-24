@@ -16,11 +16,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
 import { IncomingMessage } from "node:http";
 import { URL } from "node:url";
 import WS from "ws";
-import { VoiceOPCodes, WebRtcWebSocket, Send } from "../util";
+import { VoiceOPCodes, WebRtcWebSocket, Send, CLOSECODES, setHeartbeat } from "../util";
 import { onClose } from "./Close";
 import { onMessage } from "./Message";
 
@@ -54,11 +53,11 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
 
         socket.encoding = "json";
         socket.version = Number(searchParams.get("v")) || 9;
-        if (socket.version < 3) return socket.rawSocket.close(CLOSECODES.Unknown_error, "invalid version");
+        if (socket.version < 3) return socket.rawSocket.close(CLOSECODES.Bad_request, "invalid version");
 
         setHeartbeat(socket);
 
-        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timeout), 1000 * 30);
 
         await Send(socket, {
             op: VoiceOPCodes.HELLO,
@@ -68,6 +67,6 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
         });
     } catch (error) {
         console.error("[WebRTC]", error);
-        return socket.rawSocket.close(CLOSECODES.Unknown_error);
+        return socket.rawSocket.close(CLOSECODES.Bad_request); // webrtc doesnt have a defined generic error
     }
 }

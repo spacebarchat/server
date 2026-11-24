@@ -17,6 +17,7 @@
 */
 
 export * from "./Constants";
+export * from "./Heartbeat";
 export * from "./MediaServer";
 export * from "./WebRtcWebSocket";
 export * from "./Send";

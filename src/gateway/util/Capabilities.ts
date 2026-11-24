@@ -19,6 +19,13 @@ export class Capabilities extends BitField {
         USER_SETTINGS_PROTO: BitFlag(9),
         CLIENT_STATE_V2: BitFlag(10),
         PASSIVE_GUILD_UPDATE: BitFlag(11),
+        // RIP OpenCord 2025, long live DiscordUserDoccers
+        // https://docs.discord.food/gateway/using-gateway#list-of-capabilities
+        AUTO_CALL_CONNECT: BitFlag(12),
+        DEBOUNCE_MESSAGE_REACTIONS: BitFlag(13),
+        PASSIVE_GUILD_UPDATE_V2: BitFlag(14),
+        CHANNEL_OBFUSCATION: BitFlag(15),
+        AUTO_LOBBY_CONNECT: BitFlag(16),
     };
 
     any = (capability: CapabilityResolvable) => super.any(capability);

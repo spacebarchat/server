@@ -16,9 +16,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES } from "@spacebar/gateway";
 import OPCodeHandlers from "../opcodes";
-import { VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "../util";
+import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, CLOSECODES } from "../util";
 
 export async function onMessage(socket: WebRtcWebSocket, buffer: Buffer) {
     try {

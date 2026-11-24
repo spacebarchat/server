@@ -29,34 +29,39 @@ export class WebSocket {
     rawSocket: WS;
     constructor(socket: WS) {
         this.rawSocket = socket;
-        this.openedAt = new Date();
-        this.discarded = false;
     }
 
     recentTransactions: string[] = [];
-    openedAt: Date;
+    sequence: number = 0;
+    openedAt: Date = new Date();
     closedAt?: Date;
-    discarded: boolean;
+    discarded: boolean = false;
 
-    version: number;
-    user_id: string;
-    session_id: string;
     accessToken: string;
+    version: number;
     encoding: "etf" | "json";
     compress?: "zlib-stream" | "zstd-stream";
+    intents: Intents;
+
     ipAddress?: string;
     userAgent?: string; // for cdn request signing
+
+    user_id: string;
+    session_id: string;
+    session?: Session;
     fingerprint?: string;
+
     shard_count?: number;
     shard_id?: number;
+
     deflate?: Deflate;
     inflate?: Inflate;
     zstdEncoder?: Encoder;
     zstdDecoder?: Decoder;
+
     heartbeatTimeout: NodeJS.Timeout;
     readyTimeout: NodeJS.Timeout;
-    intents: Intents;
-    sequence: number = 0;
+
     permissions: Record<string, Permissions> = {};
     events: Record<string, () => Promise<unknown>> = {};
     member_events: Record<string, () => Promise<unknown>> = {};
@@ -64,7 +69,6 @@ export class WebSocket {
     capabilities?: Capabilities;
     large_threshold: number;
     qos?: QoSPayload;
-    session?: Session;
 
     internEvent(map: Record<string, () => Promise<unknown>>, key: string, handler: () => Promise<unknown>) {
         if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) {

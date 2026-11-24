@@ -38,7 +38,7 @@ export async function onHeartbeat(this: WebSocket, data: Payload) {
 
     setHeartbeat(this);
 
-    if (data.op === OPCODES.SetQoS) {
+    if (data.op === OPCODES.QoS_Heartbeat) {
         this.qos = (data.d as QoSData).qos;
     }
 

@@ -17,9 +17,8 @@
 */
 
 import { StreamSession, VoiceState } from "@spacebar/database";
-import { CLOSECODES } from "@spacebar/gateway";
 import { validateSchema, VoiceIdentifySchema } from "@spacebar/schemas";
-import { generateSsrc, mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket } from "@spacebar/webrtc";
+import { generateSsrc, mediaServer, Send, VoiceOPCodes, VoicePayload, WebRtcWebSocket, CLOSECODES } from "@spacebar/webrtc";
 import { SSRCs } from "@spacebarchat/spacebar-webrtc-types";
 import { subscribeToProducers } from "./Video";
 
@@ -82,7 +81,7 @@ export async function onIdentify(this: WebRtcWebSocket, data: VoicePayload) {
     try {
         this.webRtcClient = await mediaServer.join(voiceRoomId!, this.user_id, this, type!);
     } catch (e) {
-        return this.rawSocket.close(4013);
+        return this.rawSocket.close(CLOSECODES.WebRTC_crashed);
     }
 
     this.rawSocket.on("close", () => {

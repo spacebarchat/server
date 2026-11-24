@@ -16,8 +16,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Payload } from "@spacebar/gateway";
-
 export enum VoiceOPCodes {
     IDENTIFY = 0,
     SELECT_PROTOCOL = 1,
@@ -29,7 +27,8 @@ export enum VoiceOPCodes {
     RESUME = 7,
     HELLO = 8,
     RESUMED = 9,
-    // 10 is unknown
+    // 10 was "Signal [WebRTC peers for P2P]"
+    // 11 was "Reset [the voice connection]"
     CLIENTS_CONNECT = 11,
     VIDEO = 12,
     CLIENT_DISCONNECT = 13,
@@ -38,8 +37,8 @@ export enum VoiceOPCodes {
     VOICE_BACKEND_VERSION = 16,
     CHANNEL_OPTIONS_UPDATE = 17,
     CLIENT_FLAGS = 18,
+    SPEED_TEST = 19,
     CLIENT_PLATFORM = 20,
-    // crypto crap...
     DAVE_PROTOCOL_PREPARE_TRANSITION = 21,
     DAVE_PROTOCOL_EXECUTE_TRANSITION = 22,
     DAVE_PROTOCOL_TRANSITION_READY = 23,
@@ -51,8 +50,33 @@ export enum VoiceOPCodes {
     MLS_ANNOUNCE_COMMIT_TRANSITION = 29,
     MLS_WELCOME = 30,
     MLS_INVALID_COMMIT_WELCOME = 31,
-    // no more cypto crap?
     NO_ROUTE = 32,
 }
 
-export type VoicePayload = Omit<Payload, "op"> & { op: VoiceOPCodes };
+export enum CLOSECODES {
+    Unknown_opcode = 4001,
+    Failed_to_decode_payload = 4002,
+    Not_authenticated = 4003,
+    Authentication_failed = 4004,
+    Already_authenticated = 4005,
+    Session_no_longer_valid = 4006,
+    Session_timeout = 4009,
+    Server_not_found = 4011,
+    Unknown_protocol = 4012,
+    WebRTC_crashed = 4013,
+    Disconnected_individual = 4014, // Disconnected: kicked, main gateway lost, ...
+    Voice_server_crashed = 4015,
+    Unknown_encryption_mode = 4016,
+    E2EE_required = 4017,
+    Bad_request = 4020,
+    Rate_limited = 4021,
+    Disconnected_all = 4022, // Disconnected: channel deleted, voice server changed, call ended, ...
+}
+
+export interface VoicePayload {
+    op: VoiceOPCodes;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    d?: any;
+    s?: number;
+    t?: string;
+}

@@ -16,12 +16,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { CLOSECODES, setHeartbeat } from "@spacebar/gateway";
-import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, Send } from "../util";
+import { VoiceOPCodes, VoicePayload, WebRtcWebSocket, Send, CLOSECODES, setHeartbeat } from "../util";
 
 export async function onHeartbeat(this: WebRtcWebSocket, data: VoicePayload) {
     setHeartbeat(this);
-    if (isNaN(data.d)) return this.rawSocket.close(CLOSECODES.Decode_error);
+    if (isNaN(data.d)) return this.rawSocket.close(CLOSECODES.Failed_to_decode_payload);
 
     await Send(this, { op: VoiceOPCodes.HEARTBEAT_ACK, d: data.d });
 }
