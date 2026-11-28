@@ -22,6 +22,7 @@ export * from "./DefaultsConfiguration";
 export * from "./EmailConfiguration";
 export * from "./EndpointConfiguration";
 export * from "./ExternalTokensConfiguration";
+export * from "./GatewayConfiguration";
 export * from "./GeneralConfiguration";
 export * from "./GifConfiguration";
 export * from "./GuildConfiguration";

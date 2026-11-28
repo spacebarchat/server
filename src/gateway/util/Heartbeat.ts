@@ -16,12 +16,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Config } from "../../util/util/Config";
 import { CLOSECODES } from "./Constants";
 import { WebSocket } from "./WebSocket";
 
-// TODO: make heartbeat timeout configurable
 export function setHeartbeat(socket: WebSocket) {
     if (socket.heartbeatTimeout) clearTimeout(socket.heartbeatTimeout);
 
-    socket.heartbeatTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), 1000 * 45);
+    socket.heartbeatTimeout = setTimeout(
+        () => socket.rawSocket.close(CLOSECODES.Session_timed_out),
+        Config.get().gateway.heartbeatIntervalMs + Config.get().gateway.heartbeatIntervalFringeMs,
+    );
 }

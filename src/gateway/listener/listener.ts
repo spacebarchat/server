@@ -20,7 +20,7 @@ import { Channel as AMQChannel } from "amqplib";
 import { bgRedBright } from "picocolors";
 import { Ban, Member, Message, Recipient, Relationship } from "@spacebar/database";
 import { TimeSpan } from "@spacebar/extensions";
-import { EVENTEnum, EventOpts, getPermission, listenEvent, ListenEventOpts, NewUrlUserSignatureData, Permissions, RabbitMQ } from "@spacebar/util";
+import { EVENTEnum, EventOpts, getPermission, listenEvent, ListenEventOpts, NewUrlUserSignatureData, Permissions, RabbitMQ, Config } from "@spacebar/util";
 import { WebSocket } from "@spacebar/gateway";
 import { PublicMember, RelationshipType } from "@spacebar/schemas";
 import { CLOSECODES, OPCODES, Send } from "../util";
@@ -63,7 +63,7 @@ export async function setupListener(this: WebSocket) {
     this.rawSocket.once("close", async () => {
         console.log("[Gateway/listener] Handling connection close...");
         this.closedAt = new Date();
-        setTimeout(this.discardAllState.bind(this), 300_000);
+        setTimeout(this.discardAllState.bind(this), Config.get().gateway.discardStateAfterMs);
 
         // wait for event consumer cancellation
         for (const key in this.events) await this.events[key]();

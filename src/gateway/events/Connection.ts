@@ -161,11 +161,11 @@ export async function Connection(this: WS.Server, rawSocket: WS, request: Incomi
         await Send(socket, {
             op: OPCODES.Hello,
             d: {
-                heartbeat_interval: 1000 * 30,
+                heartbeat_interval: Config.get().gateway.heartbeatIntervalMs,
             },
         });
 
-        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), 1000 * 30);
+        socket.readyTimeout = setTimeout(() => socket.rawSocket.close(CLOSECODES.Session_timed_out), Config.get().gateway.readyTimeoutMs);
     } catch (error) {
         console.error(error);
         return socket.rawSocket.close(CLOSECODES.Unknown_error);
