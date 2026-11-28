@@ -74,7 +74,7 @@ export class WebSocket {
     qos?: QoSPayload;
 
     internEvent(map: Record<string, () => Promise<unknown>>, key: string, handler: () => Promise<unknown>) {
-        if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) {
+        if (this.discarded) {
             console.warn(`[Gateway/${this.user_id}/WebSocket] Tried to register event after socket state expiry, discarding...`);
             handler();
             return;

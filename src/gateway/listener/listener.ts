@@ -33,7 +33,7 @@ import { CLOSECODES, OPCODES, Send } from "../util";
 // https://discord.com/developers/docs/topics/gateway#sharding
 
 export function handlePresenceUpdate(this: WebSocket, { event, acknowledge, data, cancel }: EventOpts) {
-    if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) cancel?.();
+    if (this.discarded) cancel?.();
 
     acknowledge?.();
     if (event === EVENTEnum.PresenceUpdate) {
@@ -199,7 +199,7 @@ async function consume(this: WebSocket, opts: EventOpts) {
     const listenOpts = opts as ListenEventOpts;
     opts.acknowledge?.();
 
-    if (this.closedAt && TimeSpan.fromDates(+this.closedAt, +new Date()).totalSeconds > 300) opts.cancel?.();
+    if (this.discarded) opts.cancel?.();
     // console.log("event", event);
 
     // deduplicate gateway messages
